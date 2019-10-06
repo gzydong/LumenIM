@@ -1,0 +1,86 @@
+{
+  "id": "1425251",
+  "name": "wx-app",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "435978",
+      "name": "微信",
+      "font_class": "weixin1",
+      "unicode": "e7e5",
+      "unicode_decimal": 59365
+    },
+    {
+      "icon_id": "521966",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "778902",
+      "name": "手机号码图标",
+      "font_class": "icon_mobile",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "974803",
+      "name": "关闭",
+      "font_class": "guanbi11",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "1048353",
+      "name": "通讯录",
+      "font_class": "tongxunlu",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "1049931",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "1163310",
+      "name": "信息",
+      "font_class": "message",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "2119409",
+      "name": "文件夹",
+      "font_class": "folder_icon",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "2121741",
+      "name": "笑脸",
+      "font_class": "xiaolian",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "7336778",
+      "name": "确认密码",
+      "font_class": "querenmima",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    },
+    {
+      "icon_id": "7587976",
+      "name": "信息",
+      "font_class": "xinxi",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    }
+  ]
+}
