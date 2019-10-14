@@ -1,37 +1,99 @@
-*{ margin:0; padding:0;  }
-body, html {height: 100%;min-width: 1200px;  font-family: "Microsoft YaHei";font-size: 16px;  color: #333;}
-h1, h2, h3, h4, h5, h6, th { font-size: 100%; font-weight: normal; }
-button,input,select,textarea{font-size:100%;margin: 0;padding: 0;border: 1px solid transparent; outline: none;}
-fieldset,img{border:0;}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html {
+  height: 100%;
+  min-width: 1200px;
+  font-family: "Microsoft YaHei";
+  font-size: 16px;
+  color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
 a,
 img {
-    -webkit-touch-callout: none
+  -webkit-touch-callout: none
 }
+
 a,
 a:active,
 a:focus,
 a:hover,
-a:visited {text-decoration: none}
+a:visited {
+  text-decoration: none
+}
+
 input[type=password],
 input[type=text],
-textarea {
-    resize: none;
-    outline: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    border: none;
-    background: #fff;
-    font-family: "Microsoft YaHei";
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset
 }
-ul, ol { list-style: none; }
-:focus{ outline:none;}
-.clearfix{ clear: both; content: ""; display: block; overflow: hidden }
-.clear{clear: both;}
-.fl{ float: left; }
-.fr{float: right;}
-body {
-    background: url('//res.wx.qq.com/a/wx_fed/webwx/res/static/img/2zrdI1g.jpg') no-repeat;
-    overflow: hidden;
-    background-size:100% 100%;
 
+textarea {
+  resize: none;
+  outline: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border: none;
+  background: #fff;
+  font-family: "Microsoft YaHei";
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+:focus {
+  outline: none;
+}
+
+.clearfix {
+  clear: both;
+  content: "";
+  display: block;
+  overflow: hidden
+}
+
+.clear {
+  clear: both;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
 }

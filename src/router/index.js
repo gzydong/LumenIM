@@ -1,8 +1,10 @@
 /*eslint-disable */
 import Vue from 'vue'
 import Router from 'vue-router'
-import Left from '@/components/Left'
-import {Tab,Tabs } from 'vant';
+import login from '@/components/Login'
+import dialogue from '@/components/Dialogue'
+
+import {Tab,Tabs} from 'vant';
 Vue.use(Tab).use(Tabs);
 
 Vue.use(Router)
@@ -10,9 +12,17 @@ Vue.use(Router)
 export default new Router({
   routes: [{
       path: '/',
-      name: 'Left',
-      component: Left,
+      name: 'login',
+      component: login,
+      meta: {
+        title:'IM 聊天室 - 登录页面'
+      }
     },
-
-  ]
+    {
+      path: '/dialogue',
+      name: 'dialogue',
+      component: dialogue,
+    },
+  ],
+  mode:"history"
 })

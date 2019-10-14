@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "element-ui": "^2.12.0",
+    "js-cookie": "^2.2.1",
     "vant": "^2.2.2",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
@@ -27,6 +29,7 @@
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "^21.0.2",
     "babel-loader": "^7.1.1",
+    "babel-plugin-component": "^1.1.1",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-import": "^1.12.2",
     "babel-plugin-syntax-jsx": "^6.18.0",

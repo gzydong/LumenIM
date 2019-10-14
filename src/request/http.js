@@ -1,22 +1,28 @@
-
 import axios from 'axios';
+import qs from 'qs'; // 引入qs模块，用来序列化post类型的数据，后面会提到
+import {
+  getToken,
+  setToken
+} from '@/request/auth'
 
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = 'http://192.168.6.60:92'; //填写域名
+axios.defaults.baseURL = 'http://127.0.0.1:83'; //填写域名
 
-//http request 拦截器
-axios.interceptors.request.use(
-  config => {
-    config.data = JSON.stringify(config.data);
-    config.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    return config;
-  },
-  error => {
-    return Promise.reject(err);
-  }
-);
+
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+
+// http request拦截器 添加一个请求拦截器
+axios.interceptors.request.use(function(config) {
+
+  let access_token = getToken() || '';
+  config.headers['Authorization'] = `Bearer ${access_token}`;
+
+  return config;
+
+}, function(error) {
+  // Do something with request error
+  return Promise.reject(error);
+});
 
 //响应拦截器即异常处理
 axios.interceptors.response.use(response => {
@@ -70,6 +76,7 @@ axios.interceptors.response.use(response => {
 })
 
 
+
 /**
  * 封装get方法
  * @param url
@@ -77,7 +84,7 @@ axios.interceptors.response.use(response => {
  * @returns {Promise}
  */
 
-export function fetch(url, params = {}) {
+export function get(url, params = {}) {
   return new Promise((resolve, reject) => {
     axios.get(url, {
         params: params
@@ -90,6 +97,8 @@ export function fetch(url, params = {}) {
       })
   })
 }
+
+
 /**
  * 封装post请求
  * @param url
@@ -99,7 +108,7 @@ export function fetch(url, params = {}) {
 
 export function post(url, data = {}) {
   return new Promise((resolve, reject) => {
-    axios.post(url, data)
+    axios.post(url, qs.stringify(data))
       .then(response => {
         resolve(response.data);
       }, err => {
@@ -109,10 +118,75 @@ export function post(url, data = {}) {
 }
 
 /**
- * 获取商城主页数据
+ * 封装patch请求
+ * @param url
+ * @param data
+ * @returns {Promise}
  */
+
+export function patch(url, data = {}) {
+  return new Promise((resolve, reject) => {
+    axios.patch(url, data)
+      .then(response => {
+        resolve(response.data);
+      }, err => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * 封装put请求
+ * @param url
+ * @param data
+ * @returns {Promise}
+ */
+
+export function put(url, data = {}) {
+  return new Promise((resolve, reject) => {
+    axios.put(url, data)
+      .then(response => {
+        resolve(response.data);
+      }, err => {
+        reject(err)
+      })
+  })
+}
+
+
 export const server = {
-  userMain: function(paramObj) {
-    return fetch('/api', paramObj);
-  }
+
+  /**
+   * 账号注册接口
+   */
+  register: function(paramObj) {
+    return post('/api/auth/register', paramObj);
+  },
+
+
+  /**
+   * 登录授权接口
+   */
+  login: function(paramObj) {
+    return post('/api/auth/login', paramObj);
+  },
+
+
+
+  /**
+   * 用户好友列表
+   */
+  friends: function(paramObj) {
+    return get('/api/user/friends', paramObj);
+  },
+
+
+
+  /**
+   * 退出登录接口
+   */
+  logout: function(paramObj) {
+    return post('/api/auth/logout', paramObj);
+  },
+
 }

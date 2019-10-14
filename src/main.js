@@ -10,15 +10,24 @@ import VueResource from 'vue-resource'
 import '../static/css/common.css'
 import '../src/assets/iconfont/iconfont.css'
 
-import wxLeft from './components/Left.vue'
-import wxFixed from './components/Fixed.vue'
+import { Notification } from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.component('wxLeft', wxLeft)
-Vue.component('wxFixed', wxFixed)
-
-
-
+Vue.prototype.$notify = Notification;
 Vue.use(VueResource)
+
+
+
+
+router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
+});
+
+
 
 Vue.prototype.$server = server;
 Vue.config.productionTip = false

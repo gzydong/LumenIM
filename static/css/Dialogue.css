@@ -1,0 +1,377 @@
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.main {
+  max-width: 1000px;
+  min-width: 800px;
+  height: 770px;
+  margin: auto;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* 滚动条的整体样式 */
+::-webkit-scrollbar {
+  width: 7px;
+  background-color: #fff;
+}
+
+/* 滚动条的滚动轨迹 */
+::-webkit-scrollbar-track {
+  background-color: #ece9e8;
+}
+
+/* 滚动条上面的小滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #ccc9c7;
+}
+
+#Left {
+  position: relative;
+  width: 310px;
+  height: 100%;
+  float: left;
+  background: #ece9e8;
+}
+
+#Left .wx-left {
+  width: 62px;
+  height: 100%;
+  background-color: #2e3238;
+  float: left;
+  position: relative;
+}
+
+.wx-left ul>li {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.wx-left ul>li:nth-child(1) {
+  margin-top: 0;
+}
+
+.wx-left ul>li i {
+  color: #fff;
+  text-align: center;
+  font-size: 30px;
+}
+
+.wx-left ul>li .img {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+#Left .wx-right {
+  width: 248px;
+  height: 100%;
+  float: left;
+}
+
+#Left .wx-right header {
+  margin: 26px 0 17px 10px;
+  position: relative;
+}
+
+#Left .wx-right header>input {
+  width: 70%;
+  line-height: 27px;
+  font-size: 12px;
+  border-radius: 5px;
+  padding-left: 24px;
+  background-color: #dcd9d8;
+}
+
+#Left .wx-right header>.sousuo {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  color: #858484;
+}
+
+#Left .wx-right header>.jiahao {
+  width: 27px;
+  line-height: 27px;
+  text-align: center;
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  border-radius: 3px;
+  color: #858484;
+  background-color: #dcd9d8;
+}
+
+#Left .wx-right main {
+  width: 100%;
+  height: 91%;
+  overflow-y: scroll;
+}
+
+#Left .wx-right main>.content {
+  width: 90%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+#Left .wx-right main>.content .list {
+  padding: 12px 0;
+}
+
+#Left .wx-right main>.content .list::after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+
+#Left .wx-right main>.content .list img {
+  width: 50px;
+  height: 50px;
+  float: left;
+  border-radius: 3px;
+}
+
+#Left .wx-right main>.content .list .list-right {
+  width: 150px;
+  float: left;
+  margin-left: 11px;
+}
+
+.wx-right .content .list-right .name {
+  line-height: 24px;
+}
+
+.wx-right .content .list-right .time {
+  font-size: 13px;
+  float: right;
+  color: #a1a1a1;
+}
+
+.wx-right .content .list-right .chat {
+  width: 80%;
+  font-size: 13px;
+  color: #a1a1a1;
+  white-space: nowrap;
+  /*规定段落中的文本不进行换行*/
+  overflow: hidden;
+  /*内容会被修剪，并且其余内容是不可见的。*/
+  text-overflow: ellipsis;
+  /*显示省略号来代表被修剪的文本*/
+  margin-top: 6px;
+}
+
+.content .van-cell {
+  background-color: #ece9e8;
+}
+
+.cellHeader {
+  color: #323233;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 32px;
+}
+
+.cellTab {
+  width: 100%;
+  line-height: 40px;
+  margin: 10px 0;
+}
+
+.cellTab img {
+  width: 40px;
+  height: 40px;
+  float: left;
+  border-radius: 3px;
+}
+
+.cellTab span {
+  margin-left: 10px;
+}
+
+
+/* 右侧css */
+
+#Right {
+  width: 690px;
+  height: 100%;
+  background-color: #f5f5f5;
+  float: left;
+  border-radius: 0 5px 5px 0;
+  position: relative;
+}
+
+#Right header {
+  width: 100%;
+  height: 69px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+#Right header>span {
+  line-height: 70px;
+  margin-left: 35px;
+  font-size: 19px;
+}
+
+#Right main {
+  width: 100%;
+  height: 530px;
+  overflow-y: scroll;
+}
+
+#Right main .wx-main {
+  width: 90%;
+  padding: 20px 0;
+  margin: 0 auto;
+}
+
+#Right main .left {
+  max-width: 70%;
+  min-height: 40px;
+  margin-top: 20px;
+  float: left;
+}
+
+#Right main .left>img {
+  width: 40px;
+  height: 40px;
+  float: left;
+}
+
+#Right footer {
+  width: 100%;
+  height: 207px;
+  border-top: 1px solid #e7e7e7;
+  border-radius: 0 0 5px 0;
+  background-color: #fff;
+}
+
+#Right footer ul {
+  height: 45px;
+  line-height: 45px;
+}
+
+#Right footer li {
+  float: left;
+  text-align: center;
+  margin: 0 10px;
+}
+
+#Right footer li:nth-child(1) {
+  margin-left: 20px;
+}
+
+#Right footer li>i {
+  font-size: 20px;
+}
+
+#Right footer textarea {
+  width: 94%;
+  margin: 0 auto;
+  height: 135px;
+  display: block;
+  resize: none;
+  font-size: 15px
+}
+
+.left .send,
+.right .send {
+  max-width: 300px;
+  min-height: 40px;
+  border-radius: 3px;
+  position: relative;
+  font-size: 14px;
+  padding: 10px;
+  line-height: 22px;
+}
+
+main .left>.leftSend {
+  float: left;
+  background-color: #fff;
+  margin-left: 20px;
+}
+
+main .right>.rightSend {
+  float: right;
+  background-color: #9eea6a;
+  margin-right: 20px;
+}
+
+.leftSend .arrow,
+.rightSend .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  font-size: 0;
+  border: solid 8px;
+
+  top: 5px;
+}
+
+.left .leftSend>.leftArrow {
+  border-color: #f5f5f5 #fff #f5f5f5 #f5f5f5;
+  left: -16px;
+  /* 圆角的位置需要细心调试哦 */
+}
+
+.right .rightSend>.rightArrow {
+  border-color: #f5f5f5 #f5f5f5 #f5f5f5 #9eea6a;
+  right: -16px;
+  /* 圆角的位置需要细心调试哦 */
+}
+
+#Right .wx-main .rigth {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.wx-main .right {
+  max-width: 70%;
+  min-height: 40px;
+  margin-top: 20px;
+  float: right;
+}
+
+.wx-main .right>img {
+  width: 40px;
+  height: 40px;
+  float: right;
+}
+
+.wx-main div:nth-child(1) {
+  margin-top: 0px !important;
+}
+
+.weixinLogo {
+  text-align: center;
+  line-height: 770px;
+  font-size: 100px;
+  color: #EBEBEB;
+}
+
+
+.closeLogin {
+  color: #fff;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  font-size: 30px;
+  margin: 0 auto;
+  text-align: center;
+}
