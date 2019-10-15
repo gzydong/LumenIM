@@ -309,9 +309,7 @@
 
 <script scoped>
   import WsSocket from '@/request/WsSocket'
-  import {
-    removeToken
-  } from '@/request/auth'
+  import auth from '@/request/auth'
   export default {
     name: "Left",
     data() {
@@ -342,7 +340,7 @@
         let that = this
         this.$server.logout().then(res => {
           if (res.code == 200) {
-            removeToken();
+            auth.removeToken();
             this.$notify({
               title: '成功',
               message: '退出成功，即将跳转！',

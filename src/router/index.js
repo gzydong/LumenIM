@@ -16,7 +16,7 @@ export default new Router({
       }
     },
     {
-      path: '/dialogue',
+      path: '/',
       name: 'dialogue',
       component: dialogue,
       meta: {
