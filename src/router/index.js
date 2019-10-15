@@ -11,7 +11,7 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/',
+      path: '/login',
       name: 'login',
       component: login,
       meta: {
@@ -19,7 +19,7 @@ export default new Router({
       }
     },
     {
-      path: '/dialogue',
+      path: '/',
       name: 'dialogue',
       component: dialogue,
       meta: {

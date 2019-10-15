@@ -1,20 +1,15 @@
 import axios from 'axios';
 import qs from 'qs'; // 引入qs模块，用来序列化post类型的数据，后面会提到
-import {
-  getToken,
-  setToken
-} from '@/request/auth'
+import auth from '@/request/auth'
 
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = 'http://127.0.0.1:83'; //填写域名
-
-
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 // http request拦截器 添加一个请求拦截器
 axios.interceptors.request.use(function(config) {
 
-  let access_token = getToken() || '';
+  let access_token = auth.getToken() || '';
   config.headers['Authorization'] = `Bearer ${access_token}`;
 
   return config;

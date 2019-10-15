@@ -1,4 +1,4 @@
-import { setToken } from "@/request/auth";
+import auth from "@/request/auth";
 export default {
   name: "wxFixed",
   data() {
@@ -102,7 +102,7 @@ export default {
 
       that.$server.login(paramObj).then(res => {
         if (res.code == 200) {
-          setToken(res.data.access_token);
+          auth.setToken(res.data.access_token);
           this.$notify({
             title: "成功",
             message: "登录成功，即将跳转！",
