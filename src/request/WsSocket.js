@@ -34,7 +34,7 @@ class WsSocket {
         ws.onError = function (evt) {
 
             console.log('error',evt);
-            this.events.onError(evt);
+            _this.events.onError(evt);
         };
 
         ws.onOpen = function (evt) {  //绑定连接事件
@@ -90,7 +90,8 @@ class WsSocket {
             _this.config.reconnect.lockReconnect = false;
 
             _this.config.reconnect.lockReconnect.number--;
-
+            
+            console.log('正在尝试重新连接...');
         },_this.config.reconnect.time);
     };
 
