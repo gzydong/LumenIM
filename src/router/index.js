@@ -22,6 +22,9 @@ export default new Router({
       path: '/dialogue',
       name: 'dialogue',
       component: dialogue,
+      meta: {
+        title:'IM 聊天室'
+      }
     },
   ],
   mode:"history"

@@ -22,7 +22,8 @@ class WsSocket {
             reconnect:{
                 lockReconnect:false,
                 setTimeout:null,
-                time:3000
+                time:3000,
+                number:20//重连次数
             },
         }
     }
@@ -73,7 +74,7 @@ class WsSocket {
 
     reconnect() {//重新连接
         let _this = this;
-        if(_this.config.reconnect.lockReconnect) {
+        if(_this.config.reconnect.lockReconnect || _this.config.reconnect.lockReconnect.number == 0) {
             return;
         };
 
@@ -87,6 +88,9 @@ class WsSocket {
             _this.initWebSocket();
 
             _this.config.reconnect.lockReconnect = false;
+
+            _this.config.reconnect.lockReconnect.number--;
+
         },_this.config.reconnect.time);
     };
 
