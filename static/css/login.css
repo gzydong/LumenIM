@@ -1,100 +1,99 @@
 .fixed {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    background: #f2f4f8;
-  }
-  
-  .logo-box {
-    text-align: center;
-    width: 100%;
-    height: 50px;
-    font-size: 38px;
-    padding-top: 50px;
-    font-family: "Times New Roman", Georgia, Serif;
-    color: #1890ff;
-  }
-  
-  .wx-main {
-    width: 730px;
-    height: 530px;
-    margin: auto;
-    position: absolute;
-    background-color: rgba(255, 255, 255);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 5px;
-    opacity: 1;
-    display: flex;
-  }
-  
-  .box-left {
-    width: 380px;
-    height: 530px;
-    background: url("/static/image/banner.jpg");
-    background-size: cover;
-  }
-  
-  .box-right {
-    width: 350px;
-    height: 530px;
-  }
-  
-  .boxRight-header {
-    width: 70%;
-    margin: 0 auto;
-    margin-top: 50px;
-  }
-  
-  .activeBoder {
-    border-bottom: 1px solid #1890ff !important;
-    color: #1890ff !important;
-  }
-  
-  .boxRight-header span {
-    width: 49%;
-    line-height: 40px;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
-    border-bottom: 1px solid #f1eaea;
-    color: #a0a0a0;
-  }
-  
-  .headerTab {
-    width: 80%;
-    margin: 0px auto;
-    margin-top: 60px;
-  }
-  
-  .headerTab .tabList {
-    margin: 20px 0;
-  }
-  
-  .headerTab .tabList > input {
-    width: 100%;
-    font-size: 14px;
-    border-bottom: 1px solid #f1f1f1;
-    line-height: 40px;
-    text-indent: 10px;
-  }
-  
-  .headerTab .userRegister {
-    width: 100%;
-    text-align: center;
-    line-height: 40px;
-    background-color: #c7d6fd;
-    color: #fff;
-    margin: 0 auto;
-    margin-top: 50px;
-    display: block;
-  
-    background: -webkit-linear-gradient(left, #c7d6fd, #c7d6fd);
-    background: -o-linear-gradient(right, #c7d6fd, #c7d6fd);
-    background: -moz-linear-gradient(right, #c7d6fd, #c7d6fd);
-    background: linear-gradient(to right, #dde5f7, #c7d6fd);
-    cursor: pointer;
-  }
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  background: #f2f4f8;
+}
+
+.logo-box {
+  text-align: center;
+  width: 100%;
+  line-height: 50px;
+  font-size: 38px;
+  padding-top: 50px;
+  font-family: "Times New Roman", Georgia, Serif;
+  color: #1890ff;
+}
+
+.wx-main {
+  width: 730px;
+  height: 530px;
+  margin: auto;
+  position: absolute;
+  background-color: rgba(255, 255, 255);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 5px;
+  opacity: 1;
+  display: flex;
+}
+
+.box-left {
+  width: 380px;
+  height: 530px;
+  background: url("/static/image/banner.jpg");
+  background-size: cover;
+}
+
+.box-right {
+  width: 350px;
+  height: 530px;
+}
+
+.boxRight-header {
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.activeBoder {
+  border-bottom: 1px solid #1890ff !important;
+  color: #1890ff !important;
+}
+
+.boxRight-header span {
+  width: 49%;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  border-bottom: 1px solid #f1eaea;
+  color: #a0a0a0;
+}
+
+.headerTab {
+  width: 80%;
+  margin: 0px auto;
+  margin-top: 60px;
+}
+
+.headerTab .tabList {
+  margin: 20px 0;
+}
+
+.headerTab .tabList>input {
+  width: 100%;
+  font-size: 14px;
+  border-bottom: 1px solid #f1f1f1;
+  line-height: 40px;
+  text-indent: 10px;
+}
+
+.headerTab .userRegister {
+  width: 100%;
+  text-align: center;
+  line-height: 40px;
+  background-color: #c7d6fd;
+  color: #fff;
+  margin: 0 auto;
+  margin-top: 50px;
+  display: block;
+  background: -webkit-linear-gradient(left, #c7d6fd, #c7d6fd);
+  background: -o-linear-gradient(right, #c7d6fd, #c7d6fd);
+  background: -moz-linear-gradient(right, #c7d6fd, #c7d6fd);
+  background: linear-gradient(to right, #dde5f7, #c7d6fd);
+  cursor: pointer;
+}

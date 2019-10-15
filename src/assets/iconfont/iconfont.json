@@ -27,6 +27,13 @@
       "unicode_decimal": 58923
     },
     {
+      "icon_id": "632976",
+      "name": "菜单",
+      "font_class": "caidan",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "778902",
       "name": "手机号码图标",
       "font_class": "icon_mobile",
