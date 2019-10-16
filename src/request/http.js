@@ -3,7 +3,7 @@ import qs from 'qs'; // 引入qs模块，用来序列化post类型的数据，�
 import auth from '@/request/auth'
 
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = 'http://127.0.0.1:83'; //填写域名
+axios.defaults.baseURL = 'http://192.168.6.60:92/'; //填写域名
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 // http request拦截器 添加一个请求拦截器

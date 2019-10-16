@@ -13,7 +13,7 @@ class WsSocket {
         },events);
 
         this.config = {
-            wsUrl: 'ws://127.0.0.1:1215/socket.io?sid=' + sid,
+            wsUrl: 'ws://47.105.180.123:9501/socket.io?sid=' + sid,
             heartbeat: {
                 enabled: true,
                 time: 10000,//连接后,定时发送,否则不段时间不通信会自动断连(时间长短一般是服务端指定的),
@@ -22,8 +22,8 @@ class WsSocket {
             reconnect:{
                 lockReconnect:false,
                 setTimeout:null,
-                time:3000,
-                number:20//重连次数
+                time:3000,//重连间隔时间
+                number:20 //重连次数
             },
         }
     }
