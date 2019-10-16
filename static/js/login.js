@@ -15,7 +15,9 @@ export default {
       ],
       headType: 0,
       logphone: null,
-      logpwd: null
+      logpwd: null,
+      loginButton:'登录',
+      registerButton:'注册'
     };
   },
   methods: {
@@ -60,6 +62,7 @@ export default {
         invite_code: 123456
       };
 
+      that.registerButton = '注册中...';
       that.$server.register(paramObj).then(res => {
         if (res.code == 200) {
           this.$notify({
@@ -67,11 +70,18 @@ export default {
             message: "注册成功,快去登录吧",
             type: "success"
           });
-          that.$refs.mobile.value = "";
-          that.$refs.pwd.value = "";
-          that.$refs.pwd1.value = "";
-          that.headType = 0;
+          setTimeout(function(){
+            that.$refs.mobile.value = "";
+            that.$refs.pwd.value = "";
+            that.$refs.pwd1.value = "";
+            that.headType = 0;
+            that.registerButton = '注册成功';
+          },2000);
+        }else{
+          that.registerButton = '注册';
         }
+      }).catch(function (reason) {
+        alert('Failed: ' + reason);
       });
     },
 
@@ -100,23 +110,23 @@ export default {
         password: pwd
       };
 
+      this.loginButton ='登录中..';
+
       that.$server.login(paramObj).then(res => {
         if (res.code == 200) {
+          that.loginButton ='登录成功...';
           auth.setToken(res.data.access_token);
           this.$notify({
             title: "成功",
             message: "登录成功，即将跳转！",
             type: "success"
           });
-
-          that.$refs.logphone.value = "";
-          that.$refs.logpwd.value = "";
-
           that.$router.push({
-            path: "/dialogue"
+            path: "/"
           });
         } else {
           this.error(res.msg);
+          that.loginButton ='登录';
         }
       });
     },
