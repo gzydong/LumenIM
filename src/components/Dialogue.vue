@@ -297,12 +297,13 @@
       </div>
 
     </div>
-    <div class="boxFixed">
+
+    <!-- <div class="boxFixed">
       <div class="popupFixed">
         <div class="header">修改密码<icon class="iconfont icon-guanbi11"></icon>
         </div>
       </div>
-    </div>
+    </div> -->
 
   </div>
 </template>

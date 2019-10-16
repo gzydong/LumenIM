@@ -97,3 +97,7 @@
   background: linear-gradient(to right, #dde5f7, #c7d6fd);
   cursor: pointer;
 }
+
+.userRegister::hover{
+
+}

@@ -30,16 +30,18 @@ class WsSocket {
 
     //初始化连接
     initWebSocket() {
+        if(this.wsConnect){
+            this.wsConnect.close()
+        }
+        
         let _this = this, ws = new WebSocket(this.config.wsUrl);
-        ws.onError = function (evt) {
-
+        ws.onerror = function (evt) {
             console.log('error',evt);
             _this.events.onError(evt);
         };
 
-        ws.onOpen = function (evt) {  //绑定连接事件
-            console.log('error',evt);
-            console.log(_this.config.heartbeat.enabled)
+        ws.onopen = function (evt) {  //绑定连接事件
+            console.log('onopen',evt);
             if (_this.config.heartbeat.enabled) {
                 _this.heartbeat();
             }
@@ -47,13 +49,13 @@ class WsSocket {
             _this.events.onOpen(evt);
         };
 
-        ws.onMessage = function (evt) {//绑定收到消息事件
+        ws.onmessage = function (evt) {//绑定收到消息事件
             let [eventType, message] = JSON.parse(evt.data.substr(2));
 
             _this.events.onMessage(evt,eventType,message);
         };
 
-        ws.onClose = function (evt) { //绑定关闭或断开连接事件
+        ws.onclose = function (evt) { //绑定关闭或断开连接事件
             console.log('关闭回调参数',evt)
 
             if (_this.config.heartbeat.enabled) {
@@ -74,7 +76,7 @@ class WsSocket {
 
     reconnect() {//重新连接
         let _this = this;
-        if(_this.config.reconnect.lockReconnect || _this.config.reconnect.lockReconnect.number == 0) {
+        if(_this.config.reconnect.lockReconnect || _this.config.reconnect.number == 0) {
             return;
         };
 
@@ -89,17 +91,16 @@ class WsSocket {
 
             _this.config.reconnect.lockReconnect = false;
 
-            _this.config.reconnect.lockReconnect.number--;
+            _this.config.reconnect.number--;
             
-            console.log('正在尝试重新连接...');
+            let number = _this.config.reconnect.number;
+            console.log(`正在尝试重新连接(${number}S)...`);
         },_this.config.reconnect.time);
     };
 
     heartbeat() {
         let _this = this;
-        console.log('开启 heartbeat')
         _this.config.heartbeat.setInterval = setInterval(function () {
-            console.log('heartbeat')
             _this.wsConnect.send('heartbeat');
         }, _this.config.heartbeat.time);
     }

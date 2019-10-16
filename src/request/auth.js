@@ -7,7 +7,7 @@ export default {
     return Cookies.get(TokenKey)
   },
 
-  setToken(){
+  setToken(token){
     return Cookies.set(TokenKey, token)
   },
   removeToken(){

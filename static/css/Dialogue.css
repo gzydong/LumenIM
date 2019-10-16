@@ -74,6 +74,7 @@
   color: #fff;
   text-align: center;
   font-size: 30px;
+  cursor: pointer;
 }
 
 .wx-left ul>li .img {

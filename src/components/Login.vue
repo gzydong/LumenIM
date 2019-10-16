@@ -19,8 +19,7 @@
           <div class="tabList">
             <input type="password" placeholder="请输入您的密码" ref="logpwd" v-model="logpwd" />
           </div>
-          <button class="userRegister" @click="login">登录</button>
-
+          <button class="userRegister" @click="login">{{loginButton}}</button>
         </div>
 
         <div class="headerTab" v-else>
@@ -33,8 +32,7 @@
           <div class="tabList">
             <input type="password" placeholder="请重复您的密码" ref="pwd1" maxlength="20" />
           </div>
-          <button class="userRegister" @click="register">注册</button>
-
+          <button class="userRegister" @click="register">{{registerButton}}</button>
         </div>
       </div>
     </div>
