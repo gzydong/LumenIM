@@ -73,7 +73,7 @@
 .wx-left ul>li i {
   color: #fff;
   text-align: center;
-  font-size: 30px;
+  font-size: 26px;
   cursor: pointer;
 }
 
@@ -148,6 +148,7 @@
 
 .wx-right main>.content .list {
   padding: 12px 0;
+  cursor: pointer;
 }
 
 .wx-right main>.content .list:hover {
@@ -284,32 +285,52 @@
   background-color: #fff;
 }
 
-.Right footer ul {
+
+#message-edit {
+  padding-left: 10px;
+  height: 169px;
+  width: calc(100% - 10px);
+}
+
+
+#edit-toolbar{
+  width: calc(100% - 10px);
   height: 45px;
   line-height: 45px;
 }
 
-.Right footer li {
+#edit-toolbar li{
   float: left;
-  text-align: center;
-  margin: 0 10px;
+  margin-right: 15px;
 }
 
-.Right footer li:nth-child(1) {
-  margin-left: 20px;
-}
-
-.Right footer li>i {
+#edit-toolbar li i{
   font-size: 20px;
+  cursor: pointer;
 }
 
-.Right footer textarea {
-  width: 94%;
-  margin: 0 auto;
-  height: 135px;
-  display: block;
+
+
+
+#message-edit textarea{
+  width: calc(100% - 10px);
+  height: 115px;
   resize: none;
-  font-size: 15px
+  font-size: 15px;
+  overflow-y: auto;
+}
+
+#message-edit textarea::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+
+#message-edit textarea::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  background:#d5cfcf;
+}
+
+#message-edit textarea::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  background: #EDEDED;
 }
 
 .left .send,

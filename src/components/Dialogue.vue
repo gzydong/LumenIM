@@ -226,8 +226,8 @@
           </div>
         </main>
 
-        <footer>
-          <ul>
+        <footer id="message-edit" >
+          <ul id="edit-toolbar" >
             <li>
               <i class="iconfont icon-xiaolian"></i>
             </li>
@@ -238,7 +238,7 @@
               <i class="iconfont icon-xinxi"></i>
             </li>
           </ul>
-          <textarea></textarea>
+          <textarea rows="6"></textarea>
         </footer>
       </div>
 
