@@ -20,6 +20,18 @@ export default {
       registerButton:'注册'
     };
   },
+  created() {
+    let that = this;
+    document.onkeydown = function(e) {
+      if(e.code=='Enter'){
+        if(that.headType ==  0){
+          that.login();
+        }else{
+          that.register();
+        }
+      }
+    }
+  },
   methods: {
     // 注册
     change(val) {
@@ -95,7 +107,7 @@ export default {
       let pwd = this.$refs.logpwd.value;
 
       if (mobile == "") {
-        this.error("手机号不能为空！");
+        this.error("登录账号不能为空！");
         return false;
       } else if (that.isPoneAvailable(mobile) == false) {
         this.error("请输入正确的手机号！");
