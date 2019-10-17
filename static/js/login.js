@@ -1,4 +1,6 @@
-import auth from "@/request/auth";
+import auth from "@/utils/auth";
+import {loginApi,registerApi} from '@/services/api.js'
+
 export default {
   name: "wxFixed",
   data() {
@@ -75,7 +77,7 @@ export default {
       };
 
       that.registerButton = '注册中...';
-      that.$server.register(paramObj).then(res => {
+      registerApi(paramObj).then(res => {
         if (res.code == 200) {
           this.$notify({
             title: "成功",
@@ -124,10 +126,11 @@ export default {
 
       this.loginButton ='登录中..';
 
-      that.$server.login(paramObj).then(res => {
+      loginApi(paramObj).then(res => {
         if (res.code == 200) {
           that.loginButton ='登录成功...';
           auth.setToken(res.data.access_token);
+          auth.setSid(res.data.sid);
           this.$notify({
             title: "成功",
             message: "登录成功，即将跳转！",

@@ -1,17 +1,18 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-
 import router from './router'
-import {server} from './request/http.js'
-import auth from './request/auth.js'
-import VueResource from 'vue-resource'
 
+import VueResource from 'vue-resource'
 import { Notification } from 'element-ui';
+import auth from './utils/auth.js'
+
+
 import 'element-ui/lib/theme-chalk/index.css';
 import '../static/css/common.css'
 import '../src/assets/iconfont/iconfont.css'
+
+
+
 
 Vue.prototype.$notify = Notification;
 
@@ -41,10 +42,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-
-
-
-Vue.prototype.$server = server;
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

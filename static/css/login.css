@@ -41,6 +41,7 @@
 .box-right {
   width: 350px;
   height: 530px;
+  background: #fff;
 }
 
 .boxRight-header {
@@ -78,6 +79,7 @@
   width: 100%;
   font-size: 14px;
   border-bottom: 1px solid #f1f1f1;
+  height: 40px;
   line-height: 40px;
   text-indent: 10px;
 }

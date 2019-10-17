@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'authorize'
+const sid = 'SIDBHJBDAHJBjDSBA';
 
 export default {
   getToken(){
@@ -15,5 +16,11 @@ export default {
   },
   checkLogin(){
     return this.getToken() ? true:false;
+  },
+  getSid(){
+    return Cookies.get(sid)
+  },
+  setSid(str){
+    return Cookies.set(sid, str)
   }
 }
