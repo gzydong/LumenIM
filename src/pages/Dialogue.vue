@@ -319,7 +319,16 @@
       }
     },
     mounted() {
-      let wsObj = new WsSocket(1017, {});
+      let wsObj = new WsSocket(auth.getSid(), {
+            onError:function(evt){},
+            onOpen:function(evt){
+
+            },
+            onMessage:function(evt){
+              
+            },
+            onClose:function(evt){},
+        });
 
 
       wsObj.initWebSocket();

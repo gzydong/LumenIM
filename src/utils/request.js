@@ -10,9 +10,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 // http request拦截器 添加一个请求拦截器
 axios.interceptors.request.use(function(config) {
-  let access_token =  auth.getToken();
-  access_token = 'fasjkdf nakjsdfnb ajsbdfkjasbdfjkasbdkj b';
-  config.headers['Authorization'] = 'Bearer '+access_token;
+  config.headers['Authorization'] = 'Bearer '+ auth.getToken();
   return config;
 }, function(error) {
   return Promise.reject(error);

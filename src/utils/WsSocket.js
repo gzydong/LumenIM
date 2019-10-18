@@ -41,7 +41,7 @@ class WsSocket {
         };
 
         ws.onopen = function (evt) {  //绑定连接事件
-            console.log('onopen',evt);
+            console.log('Websocket connection succeeded...');
             if (_this.config.heartbeat.enabled) {
                 _this.heartbeat();
             }
