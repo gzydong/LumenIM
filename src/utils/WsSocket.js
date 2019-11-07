@@ -104,6 +104,19 @@ class WsSocket {
             _this.wsConnect.send('heartbeat');
         }, _this.config.heartbeat.time);
     }
+
+    //发送聊天消息
+    sendMsg(type,user_id,receive_id,str){
+        let msg = JSON.stringify({
+            sourceType:type,//1:私信  2:群聊
+            receiveUser: receive_id,//接收者信息
+            sendUser: user_id,//发送者ID
+            msgType:1,
+            textMessage:str
+        });
+
+        this.wsConnect.send(msg);
+    }
 }
 
 export default WsSocket;

@@ -12,6 +12,7 @@ npm install
 npm run dev
 
 # build for production with minification
+npm install -g http-server  
 npm run build
 
 # build for production and view the bundle analyzer report

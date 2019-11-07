@@ -12,7 +12,7 @@ export default new Router({
       name: 'login',
       component: login,
       meta: {
-        title: 'IM 聊天室 - 登录页面'
+        title: 'Lumen IM 聊天室'
       }
     },
     {
@@ -20,10 +20,9 @@ export default new Router({
       name: 'dialogue',
       component: dialogue,
       meta: {
-        title: 'IM 聊天室'
+        title: 'Lumen IM 聊天室'
       }
     },
-
   ],
-  mode: "history"
+  mode: "hash"
 })

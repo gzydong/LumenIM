@@ -13,7 +13,7 @@
   font-size: 38px;
   padding-top: 50px;
   font-family: "Times New Roman", Georgia, Serif;
-  color: #1890ff;
+  color: #53acff;
 }
 
 .wx-main {
@@ -88,18 +88,18 @@
   width: 100%;
   text-align: center;
   line-height: 40px;
-  background-color: #c7d6fd;
   color: #fff;
   margin: 0 auto;
   margin-top: 50px;
   display: block;
-  background: -webkit-linear-gradient(left, #c7d6fd, #c7d6fd);
-  background: -o-linear-gradient(right, #c7d6fd, #c7d6fd);
-  background: -moz-linear-gradient(right, #c7d6fd, #c7d6fd);
-  background: linear-gradient(to right, #dde5f7, #c7d6fd);
+  background: -webkit-linear-gradient(left, #90c8fb, #7cbaf3);
+  background: -o-linear-gradient(right, #90c8fb, #7cbaf3);
+  background: -moz-linear-gradient(right, #90c8fb, #7cbaf3);
+  background: linear-gradient(to right, #90c8fb, #7cbaf3);
   cursor: pointer;
+  border-radius: 2px;
 }
 
-.userRegister::hover{
-
+.headerTab .userRegister:active{
+background: #53acff !important;
 }

@@ -6,21 +6,10 @@
 body,
 html {
   height: 100%;
-  min-width: 1200px;
+  min-width: 500px;
   font-family: "Microsoft YaHei";
   font-size: 16px;
   color: #333;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-th {
-  font-size: 100%;
-  font-weight: normal;
 }
 
 button,
@@ -42,22 +31,6 @@ img {
 a,
 img {
   -webkit-touch-callout: none
-}
-
-a,
-a:active,
-a:focus,
-a:hover,
-a:visited {
-  text-decoration: none
-}
-
-input[type=password],
-input[type=text],
-input:-webkit-autofill,
-textarea:-webkit-autofill,
-select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px white inset
 }
 
 textarea {
@@ -96,4 +69,9 @@ ol {
 
 .fr {
   float: right;
+}
+
+
+.pointer {
+  cursor: pointer;
 }

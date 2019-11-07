@@ -1,59 +1,62 @@
-#app {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-#app {
-  width: 100%;
-  height: 100%;
-  background: url('//res.wx.qq.com/a/wx_fed/webwx/res/static/img/2zrdI1g.jpg') no-repeat !important;
-  overflow: hidden;
-  background-size: 100% 100%;
-}
-
-.main {
+.dialogue-panel-body {
   max-width: 1000px;
   min-width: 800px;
   height: 770px;
-  margin: auto;
-  background-color: #fff;
+  box-shadow: -3px -1px 20px #9a9a9a;
+  background-color: black;
+
+  margin: auto auto;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 5px;
   overflow: hidden;
 }
 
-/* 滚动条的整体样式 */
+.search input {
+  background-color: #fff;
+}
+
+.search input:focus {
+  background-color: #ffffff !important;
+}
+
+.search .jiahao:active {
+  color: #fff4f4 !important;
+}
+
+.clear {
+  clear: both;
+}
+
+
 .listWebkit::-webkit-scrollbar {
-  width: 7px;
+  width: 4px;
   background-color: #E4E4E5;
 }
 
-/* 滚动条上面的小滑块 */
 .listWebkit::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background-color: #C0BEBC;
 }
 
 
-
-/* 滚动条的整体样式 */
-.rightWebkit::-webkit-scrollbar {
-  width: 7px;
+.rightWebkit::-webkit-scrollbar,
+.applyList::-webkit-scrollbar {
+  width: 5px;
   background-color: #f5f5f5;
 }
 
-/* 滚动条上面的小滑块 */
-.rightWebkit::-webkit-scrollbar-thumb {
+
+.rightWebkit::-webkit-scrollbar-thumb,
+.applyList::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background-color: #D2D2D2;
 }
 
-#Left {
+
+#layout-left-box {
   position: relative;
   width: 62px;
   height: 100%;
@@ -61,7 +64,18 @@
   background: #ece9e8;
 }
 
-#Left .wx-left {
+/* 右侧css */
+
+.layout-right-box {
+  width: calc(100% - 62px) !important;
+  height: 100%;
+  background-color: #f5f5f5;
+  float: left;
+  position: relative;
+}
+
+
+#layout-left-box .layout-nav-menu {
   width: 100%;
   height: 100%;
   background-color: #2e3238;
@@ -69,27 +83,33 @@
   position: relative;
 }
 
-.wx-left .switch>li {
+
+.layout-nav-menu .switch>li {
   margin-top: 25px;
   text-align: center;
 }
 
-.wx-left ul>li:nth-child(1) {
+.layout-nav-menu ul>li:nth-child(1) {
   margin-top: 0;
 }
 
-.wx-left ul>li i {
+.layout-nav-menu ul>li i {
   color: #fff;
   text-align: center;
   font-size: 26px;
   cursor: pointer;
 }
 
-.wx-left ul>li .img {
+.layout-nav-menu ul>li .img {
   width: 40px;
   height: 40px;
   display: inline-block;
   margin-top: 20px;
+  border-radius: 50%;
+}
+
+.layout-nav-menu .activeModuleClass i {
+  color: #416641 !important;
 }
 
 .wx-right {
@@ -102,13 +122,16 @@
 .search {
   position: relative;
   height: 70px;
+  background: #e8e8e8;
 }
 
 .wx-right .search>input {
-  width: 70%;
+  width: 150px;
+  height: 27px;
   line-height: 27px;
   font-size: 12px;
   border-radius: 5px;
+  padding-right: 20px;
   padding-left: 24px;
   background-color: #dcd9d8;
   position: absolute;
@@ -134,36 +157,51 @@
   border-radius: 3px;
   color: #858484;
   background-color: #dcd9d8;
+  cursor: pointer;
 }
 
 .wx-right .nav-left {
   width: 100%;
-  height: 91%;
-  overflow-y: scroll;
+  height: calc(100% - 70px);
+  overflow-y: auto;
 }
 
-.wx-right main>.content {
+
+.nav-friends-menu .nav-left {
+  height: calc(100% - 120px) !important;
+}
+
+
+
+.nav-group-menu .nav-left {
+  height: calc(100% - 69px) !important;
+}
+
+
+.wx-right main>.msg-notify-items {
   width: 100%;
-  height: 100%;
+  height: auto;
   margin: 0 auto;
 }
 
-.wx-right main>.box-fired {
-  width: 90%;
-  height: 100%;
-  margin: 0 auto;
+
+.addNotify {
+  background-color: #dcdcdc;
 }
 
-.wx-right main>.content .list {
+.msg-notify-item,
+.addNotify {
   padding: 12px 0;
   cursor: pointer;
+  border-bottom: 1px solid #e3d9d9;
 }
 
-.wx-right main>.content .list:hover {
+.msg-notify-item:hover {
   background-color: #DDDBDB;
 }
 
-.wx-right main>.content .list::after {
+.msg-notify-item::after,
+.addNotify::after {
   display: block;
   clear: both;
   content: "";
@@ -171,180 +209,126 @@
   height: 0;
 }
 
-.wx-right main>.content .list img {
-  width: 50px;
-  height: 50px;
+.msg-notify-item img,
+.addNotify img {
+  width: 40px;
+  height: 40px;
   float: left;
   border-radius: 3px;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
-.wx-right main>.content .list .list-right {
-  width: 150px;
+.msg-notify-item .list-right,
+.addNotify .list-right {
+  width: 155px;
   float: left;
   margin-left: 11px;
 }
 
-.wx-right .content .list-right .name {
-  line-height: 24px;
+.wx-right .msg-notify-items .list-right .name {
+  line-height: 22px;
+  font-size: 14px;
 }
 
-.wx-right .content .list-right .time {
+.wx-right .msg-notify-items .list-right .firname {
+  width: 70%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wx-right .msg-notify-items .list-right .time {
   font-size: 13px;
   float: right;
   color: #a1a1a1;
 }
 
-.wx-right .content .list-right .chat {
-  width: 80%;
+.wx-right .msg-notify-items .list-right .chat {
+  width: 100%;
   font-size: 13px;
   color: #a1a1a1;
   white-space: nowrap;
-  /*规定段落中的文本不进行换行*/
   overflow: hidden;
-  /*内容会被修剪，并且其余内容是不可见的。*/
   text-overflow: ellipsis;
-  /*显示省略号来代表被修剪的文本*/
-  margin-top: 6px;
 }
 
-.content .van-cell {
+.msg-notify-items .van-cell {
   background-color: #ece9e8;
 }
 
-.cellHeader {
-  color: #323233;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 32px;
-}
-
-.cellTab {
-  width: 100%;
-  line-height: 40px;
-  margin: 10px 0;
-}
-
-.cellTab img {
-  width: 40px;
-  height: 40px;
-  float: left;
-  border-radius: 3px;
-}
-
-.cellTab span {
-  margin-left: 10px;
-}
 
 
-/* 右侧css */
 
-.Right {
-  width: 938px;
-  height: 100%;
-  background-color: #f5f5f5;
-  float: left;
-  border-radius: 0 5px 5px 0;
-  position: relative;
-}
 
-.friendName {
+
+
+.chat-dialogue-box .friendName {
   width: 100%;
   height: 69px;
   border-bottom: 1px solid #e7e7e7;
 }
 
-.friendName>span {
+.chat-dialogue-box .friendName>span {
   line-height: 70px;
   margin-left: 35px;
   font-size: 19px;
 }
 
-.Right .box-right {
-  width: 100%;
-  height: 530px;
+
+
+.chat-dialogue {
+  padding: 20px;
+  width: calc(100% - 40px) !important;
+  height: calc(100% - 269px) !important;
   overflow-y: scroll;
 }
 
-.Right .box-right .wx-main {
-  width: 90%;
-  padding: 20px 0;
-  margin: 0 auto;
+.chat-dialogue .toolbar-load-chat-msg {
+  color: #00d7ff;
+  cursor: pointer;
+  text-align: center;
 }
 
-.Right .box-right .left {
-  max-width: 70%;
+.chat-dialogue .toolbar-load-chat-msg .not-have-msg {
+  color: #bdb7b7;
+}
+
+
+.chat-dialogue .right {
   min-height: 40px;
-  margin-top: 20px;
-  float: left;
+  margin-top: 10px;
+  float: right;
+  width: 100%;
+  padding-bottom: 10px;
 }
 
-.Right .box-right .left>img {
+.chat-dialogue .right>img {
+  width: 40px;
+  height: 40px;
+  float: right;
+}
+
+.chat-dialogue .left {
+  min-height: 40px;
+  margin-top: 10px;
+  float: left;
+  width: 100%;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.chat-dialogue .left>img {
   width: 40px;
   height: 40px;
   float: left;
 }
 
-.Right footer {
-  width: 100%;
-  height: 207px;
-  border-top: 1px solid #e7e7e7;
-  border-radius: 0 0 5px 0;
-  background-color: #fff;
-}
 
-
-#message-edit {
-  padding-left: 10px;
-  height: 169px;
-  width: calc(100% - 10px);
-}
-
-
-#edit-toolbar{
-  width: calc(100% - 10px);
-  height: 45px;
-  line-height: 45px;
-}
-
-#edit-toolbar li{
-  float: left;
-  margin-right: 15px;
-}
-
-#edit-toolbar li i{
-  font-size: 20px;
-  cursor: pointer;
-}
-
-
-
-
-#message-edit textarea{
-  width: calc(100% - 10px);
-  height: 115px;
-  resize: none;
-  font-size: 15px;
-  overflow-y: auto;
-}
-
-#message-edit textarea::-webkit-scrollbar {/*滚动条整体样式*/
-  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
-  height: 1px;
-}
-
-#message-edit textarea::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-  background:#d5cfcf;
-}
-
-#message-edit textarea::-webkit-scrollbar-track {/*滚动条里面轨道*/
-  background: #EDEDED;
-}
-
-.left .send,
+.chat-dialogue .left .send,
 .right .send {
   max-width: 300px;
-  min-height: 40px;
+  min-height: 20px;
   border-radius: 3px;
   position: relative;
   font-size: 14px;
@@ -352,73 +336,115 @@
   line-height: 22px;
 }
 
-main .left>.leftSend {
-  float: left;
+.chat-dialogue .left .send {
   background-color: #fff;
+}
+
+.chat-dialogue .box-group {
+  float: left;
   margin-left: 20px;
 }
 
-main .right>.rightSend {
+
+.chat-dialogue .right>.rightSend {
   float: right;
   background-color: #9eea6a;
   margin-right: 20px;
 }
 
-.leftSend .arrow,
+.chat-dialogue .leftSend .arrow,
 .rightSend .arrow {
   position: absolute;
   width: 0;
   height: 0;
   font-size: 0;
   border: solid 8px;
-
   top: 5px;
 }
 
-.left .leftSend>.leftArrow {
+.chat-dialogue .left .leftSend>.leftArrow {
   border-color: #f5f5f5 #fff #f5f5f5 #f5f5f5;
   left: -16px;
-  /* 圆角的位置需要细心调试哦 */
 }
 
-.right .rightSend>.rightArrow {
+.chat-dialogue .right .rightSend>.rightArrow {
   border-color: #f5f5f5 #f5f5f5 #f5f5f5 #9eea6a;
   right: -16px;
-  /* 圆角的位置需要细心调试哦 */
 }
 
-.Right .wx-main .rigth {
-  float: right;
-}
-
-.clear {
-  clear: both;
-}
-
-.wx-main .right {
-  max-width: 70%;
-  min-height: 40px;
-  margin-top: 20px;
-  float: right;
-}
-
-.wx-main .right>img {
-  width: 40px;
-  height: 40px;
-  float: right;
-}
-
-.wx-main div:nth-child(1) {
+.chat-dialogue div:nth-child(1) {
   margin-top: 0px !important;
 }
+
+
+.chat-dialogue-box footer {
+  width: 100%;
+  height: 207px;
+  background-color: #fff;
+  box-shadow: 1px -2px 20px 0px #e9dcdc;
+  border-top: 1px solid #ececec;
+}
+
+
+#message-edit {
+  padding-left: 10px;
+  height: 158px;
+  width: calc(100% - 10px);
+}
+
+#edit-toolbar {
+  width: calc(100% - 10px);
+  height: 45px;
+  line-height: 45px;
+}
+
+#edit-toolbar li {
+  float: left;
+  margin-right: 15px;
+}
+
+#edit-toolbar li i {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+#message-edit textarea {
+  width: calc(100% - 10px);
+  height: 105px;
+  resize: none;
+  font-size: 15px;
+  overflow-y: auto;
+}
+
+#message-edit textarea::-webkit-scrollbar {
+  width: 5px;
+  height: 1px;
+}
+
+#message-edit textarea::-webkit-scrollbar-thumb {
+  background: #d5cfcf;
+}
+
+#message-edit textarea::-webkit-scrollbar-track {
+  background: #EDEDED;
+}
+
+
+#message-edit textarea::-webkit-input-placeholder {
+  color: #a9a4a4;
+  font-size: 12px;
+}
+
 
 .weixinLogo {
   text-align: center;
   line-height: 770px;
-  font-size: 100px;
-  color: #EBEBEB;
+  font-size: 38px;
+  color: #dfdede;
+  text-shadow: 5px 2px 6px #e4e4e4;
+  font-family: "Times New Roman", Georgia, Serif;
+  font-style: italic;
 }
-
 
 .closeLogin {
   color: #fff;
@@ -429,21 +455,23 @@ main .right>.rightSend {
   font-size: 30px;
   margin: 0 auto;
   text-align: center;
+  cursor: pointer;
 }
 
 .nav-right {
-  width: 690px;
+  width: calc(100% - 248px) !important;
   float: left;
+  position: relative;
+  height: 100%;
 }
 
-#Left .setUp {
-  width: 100px;
+#layout-left-box .setUp {
+  width: 120px;
   position: absolute;
-  bottom: 60px;
-  left: 17px;
+  bottom: 0px;
+  left: 62px;
   z-index: 66;
   background-color: #fff;
-  border-radius: 5px;
 }
 
 .setUp li {
@@ -458,40 +486,370 @@ main .right>.rightSend {
   border-bottom: none;
 }
 
-.boxFixed {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 70;
+.setUp li:hover {
+  background: #f1f1f1cc;
 }
 
-.popupFixed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #fff;
-  z-index: 99;
-  width: 450px;
-  height: 350px;
-  margin: auto;
-  opacity: 1;
+
+
+/* 用户模块开始 */
+
+
+
+.friends-notify {
+  height: 50px;
+  line-height: 50px;
+  background: #e4e4e5;
+  border-bottom: 1px solid #e3d9d9;
+  padding: 5px 5px 5px 10px;
+  cursor: pointer;
 }
 
-.popupFixed .header {
-  line-height: 40px;
-  border: 1px solid #EDEDEE;
+
+.friends-notify:active {
+  background: #dcdcdc;
+}
+
+.friends-notify .tubiao {
+  height: 40px;
+  width: 40px;
+  display: inline-block;
+  background: #43b735;
   text-align: center;
-  font-size: 14px;
+  line-height: 42px;
+  color: #ffff;
+  border-radius: 5px;
+}
+
+.friends-notify span {
+  padding-left: 5px;
+}
+
+
+.users-list-items {
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.users-list-items .users-list-item {
+  height: 44px;
+  position: relative;
+  padding: 10px 3px 10px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #e3d9d9;
+}
+
+.users-list-items .users-list-item-active {
+  background-color: #dcdcdc !important;
+}
+
+.users-list-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+}
+
+.users-list-item span {
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+  top: 20px;
+  left: 63px;
+}
+
+.users-list-item .user-online {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  width: 10px;
+  height: 10px;
+  background: #269e37;
+  line-height: 8px;
+  text-align: center;
+  font-size: 10px;
+  color: white;
+}
+
+
+
+.users-list-item:hover {
+  background-color: #DDDBDB;
+}
+
+/* 用户模块结束 */
+
+
+/* 用户信息 */
+.nav-user-message {
+  width: 350px;
+  height: 500px;
+  margin: 100px auto;
+  margin-top: 135px;
+  -webkit-box-shadow: #666 0px 0px 10px;
+  -moz-box-shadow: #666 0px 0px 10px;
+  box-shadow: #ded2d2 0px 0px 20px;
+  border-radius: 5px;
   position: relative;
 }
 
-.popupFixed .header>icon {
+.nav-user-message header {
+  width: 100%;
+  background: linear-gradient(to right, #94c4dc, #299ce8);
+  padding: 40px 0;
+  display: flex;
+  position: relative;
+}
+
+.nav-user-message header>i {
+  cursor: pointer;
+  font-size: 29px;
+  color: #fff;
   position: absolute;
-  right: 10px;
-  font-size: 26px;
-  color: #999;
+  right: 8px;
+  top: 5px;
+}
+
+.nav-user-message header>img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-left: 25px;
+}
+
+.nav-user-message header>span {
+  line-height: 60px;
+  margin-left: 15px;
+  color: #fff;
+}
+
+.nav-user-message main {
+  width: 80%;
+  margin: 0 auto;
+  font-size: 15px;
+  padding: 10px 0;
+}
+
+.nav-user-message main>h5 {
+  line-height: 30px;
+}
+
+.nav-user-message main>.userName {
+  line-height: 35px;
+}
+
+.nav-user-message main>.userName>.name {
+  width: 55px;
+  color: #B6AEB2;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.nav-user-message main>.userName>.user-motto {
+  color: #868686;
+}
+
+.nav-user-message main>.userName .remarks {
+  color: #92CBFF;
+  font-size: 18px;
+  position: relative;
+  top: 2px;
+}
+
+.nav-user-message main .reviseName {
+  width: 70%;
+  display: inline-block;
+}
+
+.nav-user-message main .reviseName>input {
+  width: 60%;
+  line-height: 25px;
+  border: 1px solid #92CBFF;
+  padding-left: 5px;
+  border-radius: 3px;
+}
+
+.nav-user-message main .reviseName>span {
+  width: 55px;
+  text-align: center;
+  line-height: 27px;
+  background-color: #008CEE;
+  border-radius: 2px;
+  display: inline-block;
+  color: #fff;
+  font-size: 12px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.nav-user-message .sendNews {
+  width: 126px;
+  text-align: center;
+  line-height: 35px;
+  border-radius: 3px;
+  background-color: #53b8ff;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+  left: 34%;
+}
+
+.chat-dialogue .groupChat {
+  display: block;
+  line-height: 7px;
+  font-size: 13px;
+  color: #B2B2B2;
+  padding-bottom: 11px;
+}
+
+
+.nav-right>header {
+  width: 100%;
+  height: 69px;
+  line-height: 69px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.nav-right>header span {
+  margin-left: 25px;
+  font-size: 18px;
+}
+
+.nav-right .applyList {
+  width: 95%;
+  height: calc(100% - 80px);
+  margin: 0 auto;
+  margin-top: 10px;
+  overflow-y: auto;
+  position: relative;
+}
+
+
+
+.applyList .apply-handle-from {
+  height: 65px;
+  line-height: 65px;
+  width: 100%;
+  background: #e8e3e3;
+  position: absolute;
+  box-shadow: inset 9px 3px 20px #d5d5d5;
+}
+
+
+
+.apply-handle-from div:nth-child(1) {
+  float: left;
+  margin-left: 13px;
+}
+
+
+.apply-handle-from div:nth-child(1) input {
+  height: 30px;
+  line-height: 30px;
+  border-radius: 3px;
+  padding: 3px 5px 3px 5px;
+}
+
+
+.apply-handle-from div:nth-child(2) {
+  float: right;
+  margin-right: 23px;
+}
+
+
+.apply-handle-from .handle-from-btn span {
+  width: 45px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
+  margin-left: 8px;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+
+.apply-handle-from .handle-from-btn span:nth-child(1) {
+  background-color: #24ba39;
+}
+
+.apply-handle-from .handle-from-btn span:nth-child(2) {
+  background-color: #CCCCCC;
+}
+
+.apply-list-empty {
+  text-align: center;
+  line-height: 300px;
+  font-size: 20px;
+  color: #dfdede;
+  text-shadow: 5px 2px 6px #e4e4e4;
+  font-family: "Times New Roman", Georgia, Serif;
+  font-style: italic;
+}
+
+.applyList>.applyList_content {
+  border-bottom: 1px solid #eae4e4;
+  padding: 10px;
+  height: 45px;
+}
+
+.applyList>.applyList_content:hover {
+  background: #e7e7e7;
+}
+
+
+.applyList>.applyList_content img {
+  width: 45px;
+  border-radius: 6px;
+  height: 45px;
+  float: left;
+  cursor: pointer;
+}
+
+.applyList_content .name {
+  float: left;
+  width: calc(100% - 180px);
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.applyList_content .name>p:last-child {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}
+
+.applyList_content .message {
+  float: right;
+  line-height: 45px;
+  font-size: 12px;
+  color: #999999;
+  margin-right: 10px;
+}
+
+.applyList_content .success>span {
+  padding: 3px 10px;
+  line-height: 22px;
+  background-color: #24ba39;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.applyList_content .success>span:last-child {
+  background-color: #cccccc;
+  margin-left: 6px;
 }

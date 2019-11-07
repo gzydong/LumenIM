@@ -1,8 +1,9 @@
 import auth from "@/utils/auth";
 import {loginApi,registerApi} from '@/services/api.js'
+import validate from '@/utils/validate'
 
 export default {
-  name: "wxFixed",
+  name: "loginPage",
   data() {
     return {
       arr: [
@@ -15,157 +16,136 @@ export default {
           name: "用户注册"
         }
       ],
-      headType: 0,
-      logphone: null,
-      logpwd: null,
+      activate: 0,
+
+      username: null,
+      password: null,
       loginButton:'登录',
+
+
+      mobile:'',
+      regPassword:'',
+      regPassword2:'',
       registerButton:'注册'
     };
   },
-  created() {
-    let that = this;
-    document.onkeydown = function(e) {
-      if(e.code=='Enter'){
-        if(that.headType ==  0){
-          that.login();
-        }else{
-          that.register();
-        }
-      }
-    }
-  },
   methods: {
     // 注册
-    change(val) {
-        this.logphone = val.replace(/[^0-9]+/g,'');
-    },
     error(msg){
       this.$notify({
           title: "温馨提示：",
           message: msg
       });
     },
+
+    isIE:function() {
+        if(!!window.ActiveXObject || "ActiveXObject" in window){
+          return true;
+        }else{
+          return false;
+    　　 }
+    },
+
+    //账号注册方法
     register: function() {
-      let that = this;
-      let mobile = this.$refs.mobile.value;
-      let pwd = this.$refs.pwd.value;
-      let pwd1 = this.$refs.pwd1.value;
-      if (mobile == "") {
+      let that = this,params = {
+        mobile: this.mobile,
+        password: this.regPassword,
+        password2:this.regPassword2,
+        invite_code: 123456
+      };
+
+      if (params.mobile == "") {
         this.error("手机号不能为空！");
         return false;
-      } else if (that.isPoneAvailable(mobile) == false) {
+      } else if (validate.validatPhone(params.mobile) == false) {
         this.error("请输入正确的手机号！");
         return false;
-      } else if (pwd == "") {
+      } else if (params.password == "") {
         this.error("密码不能为空！");
         return false;
-      } else if (that.ispwdAvailable(pwd) == false) {
+      } else if (validate.validatPassword(params.password) == false) {
         this.error("请输入字母加数字格式的密码！");
         return false;
-      } else if (pwd1 == "") {
-        this.error("请重复你的密码！");
-        return false;
-      } else if (pwd1 != pwd) {
+      } else if (params.password != params.password2) {
         this.error("两次密码输入不一致！");
         return false;
       }
 
-      let paramObj = {
-        mobile: mobile,
-        password: pwd,
-        invite_code: 123456
-      };
-
       that.registerButton = '注册中...';
-      registerApi(paramObj).then(res => {
+      registerApi(params).then(res => {
         if (res.code == 200) {
-          this.$notify({
+          that.$notify({
             title: "成功",
             message: "注册成功,快去登录吧",
             type: "success"
           });
+
+          that.registerButton = '注册成功...';
           setTimeout(function(){
-            that.$refs.mobile.value = "";
-            that.$refs.pwd.value = "";
-            that.$refs.pwd1.value = "";
-            that.headType = 0;
-            that.registerButton = '注册成功';
+            that.activate = 0;
           },2000);
         }else{
           that.registerButton = '注册';
         }
       }).catch(function (reason) {
-        alert('Failed: ' + reason);
+        that.$notify({
+          title: "提示",
+          message: reason,
+          type: "warning"
+        });
       });
     },
 
-    // 登录
+    // 登录方法
     login: function(e) {
-      let that = this;
+      let that=this,params = {
+        mobile: this.username,
+        password: this.password
+      };
 
-      this.logphone = this.$refs.logphone.value;
-      this.logpwd = this.$refs.logpwd.value;
-      let mobile = this.$refs.logphone.value;
-      let pwd = this.$refs.logpwd.value;
+      if(this.isIE()){
+          alert('对不起当前已禁止IE浏览器的使用，推荐使用Chrome浏览器、360浏览器、QQ浏览器');return;
+      }
 
-      if (mobile == "") {
+      if (params.mobile == "") {
         this.error("登录账号不能为空！");
         return false;
-      } else if (that.isPoneAvailable(mobile) == false) {
+      } else if (validate.validatPhone(params.mobile) == false) {
         this.error("请输入正确的手机号！");
         return false;
-      } else if (pwd == "") {
+      } else if (params.password == "") {
         this.error("密码不能为空！");
         return false;
       }
 
-      let paramObj = {
-        mobile: mobile,
-        password: pwd
-      };
 
       this.loginButton ='登录中..';
-
-      loginApi(paramObj).then(res => {
+      loginApi(params).then(res => {
         if (res.code == 200) {
           that.loginButton ='登录成功...';
-          auth.setToken(res.data.access_token);
+
+          auth.setToken({
+            access_token:res.data.access_token,
+            expires_in:res.data.expires_in
+          });
+
           auth.setSid(res.data.sid);
-          this.$notify({
-            title: "成功",
-            message: "登录成功，即将跳转！",
-            type: "success"
-          });
-          that.$router.push({
-            path: "/"
-          });
+          auth.setUserInfo(res.data.userInfo);
+
+          that.$store.dispatch('login');
+          that.$router.push({path: "/"});
         } else {
-          this.error(res.msg);
+          that.error(res.msg);
           that.loginButton ='登录';
         }
       });
     },
 
-    isPoneAvailable: function(mobile) {
-      var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
-      if (!myreg.test(mobile)) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-
-    ispwdAvailable: function(pwd) {
-      let myreg = /^(?![^a-zA-Z]+$)(?!\D+$)/;
-      if (!myreg.test(pwd)) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    clickHead: function(e) {
-      let that = this;
-      this.headType = e;
+    //切换导航
+    changingOver: function(index) {
+      this.activate = index;
+      this.username = this.password = this.mobile = this.regPassword = this.regPassword2 = '';
     }
   }
 };
