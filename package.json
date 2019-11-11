@@ -1,8 +1,7 @@
 {
-  "name": "wx_app",
+  "name": "LumenIM",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "吴永辉 <17629068235@163.com>",
+  "description": "LumenIM Web 网页版即时聊天项目",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -17,7 +16,6 @@
     "axios": "^0.19.0",
     "element-ui": "^2.12.0",
     "js-cookie": "^2.2.1",
-    "vant": "^2.2.2",
     "vue": "^2.5.2",
     "vue-cropper": "^0.4.9",
     "vue-resource": "^1.5.1",
