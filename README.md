@@ -1,31 +1,32 @@
-# wx_app
+# LumenIM Web 网页版即时聊天项目
 
-> A Vue.js project
+>项目前端采用Vue + Element Ui 模式进行开发,项目模仿了目前流行的一些网页版聊天项目，功能包含了添加好友、好友私信、创建群聊、邀请群聊、发送聊天消息(文字消息、图片消息、表情包及文件传输)等相关功能。
 
-## Build Setup
 
+>项目展示 [查看预览](http://47.105.180.123:83/)
+
+
+<div align="center" style="text-align:center">
+    <img src="https://t1.picb.cc/uploads/2019/11/11/kVrXBv.png"  width="500" >
+    <img src="https://t1.picb.cc/uploads/2019/11/11/kVrFJi.png"  width="500" >
+    <img src="https://t1.picb.cc/uploads/2019/11/11/kVrP1L.png"  width="500" >
+    <img src="https://t1.picb.cc/uploads/2019/11/11/kV8Syi.png"  width="500" >
+    <img src="https://t1.picb.cc/uploads/2019/11/11/kVMZMg.png"  width="500" >
+</div>
+
+###项目安装及部署
 ``` bash
-# install dependencies
+# 安装项目依赖扩展组件
 npm install
 
-# serve with hot reload at localhost:8080
+# 启动本地开发环境
 npm run dev
 
-# build for production with minification
-npm install -g http-server  
+# 生产环境构建项目
 npm run build
 
-# build for production and view the bundle analyzer report
+# 生产环境构建项目并查看构建报告
 npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+有关后端的相关源码信息请移步至 https://github.com/gzydong/lumenim 
