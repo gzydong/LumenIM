@@ -6,8 +6,6 @@ import UserGroupChat from '@/components/UserGroupChat'
 import LaunchGroupChat from '@/components/LaunchGroupChat'
 import SeekFriend from '@/components/SeekFriend'
 
-
-
 import {
   logoutApi,
   friendsApi,
@@ -19,16 +17,16 @@ import {
   refreshToken,
   userGroups,
   friendApplyRecords,
-  handleFriendApplyApi
-} from '@/services/api.js'
+  handleFriendApplyApi,
+  updateChatUnreadNumApi,
+  friendApplyNumApi
+} from '@/services/api'
 
 import {
-  getNowTime,
-  getUnixTime,
   formateTime,
   trim,
   checkClient
-} from '@/utils/functions.js'
+} from '@/utils/functions'
 
 
 export default {
@@ -64,12 +62,6 @@ export default {
           isOpen: false,
         },
       },
-      //用户信息
-      userInfo: {
-        user_id: 0,
-        avatar: '/static/image/detault-avatar.jpg',
-        nickname: '未定义...',
-      },
 
       //当前选中模块
       activeModule: 0,
@@ -87,7 +79,7 @@ export default {
         loadStatus: 0, //历史消息加载状态 0:未加载|已加载完成  1:正在加载..
         scrollHeight: 0, //加载历史记录前滚动条的高度
 
-        keyWords:'',//搜索关键词
+        keyWords: '', //搜索关键词
       },
 
       //当前查看的用户信息
@@ -109,16 +101,16 @@ export default {
         editing: false,
         editFriendRemark: '',
 
-        keyWords:'',//搜索关键词
+        keyWords: '', //搜索关键词
       },
 
       //群聊模块
-      groupModuleInfo:{
+      groupModuleInfo: {
         groupId: 0, //当前查看的群聊ID
         itemIndex: null, //当前查看的群聊索引
         groupList: [], //用户加入的群聊列表
 
-        keyWords:'',//搜索关键词
+        keyWords: '', //搜索关键词
       },
 
       // 工具栏是否显示
@@ -130,61 +122,65 @@ export default {
       //WsSocket
       wsSocketObj: null,
 
-      detaultAvatar: "this.src='/static/image/detault-avatar.jpg'",//用户默认头像
-      detaultGroupAvatar: "this.src='/static/image/detault-group-avatar.jpg'",//群默认头像
-
       //好友申请处理模块
       applyHandle: {
-        applyRecordList:[],
+        applyRecordList: [],
         isShow: false,
         top: 0,
         apply_id: 0,
         type: 1,
         remark: '',
+
+        //统计未处理的好友申请数
+        applyNum:0,
       }
     }
   },
   created() {
-    this.loadUserInfo();
-
     this.loadWebsocket();
-
     this.chatLists();
+
+    let that = this;
+    friendApplyNumApi().then((res)=>{
+      if(res.data.unread_num > 0){
+        that.applyHandle.applyNum = res.data.unread_num;
+      }
+    })
+  },
+  computed:{
+    //统计消息未读数
+    unreadNum(){
+      let num = 0;
+      this.chatModuleInfo.notifyList.map(v => {
+          num +=v.unread_num
+      })
+      return num;
+    }
   },
   methods: {
-    error(msg) {
-      this.$notify({
-        title: "温馨提示：",
-        message: msg
-      });
-    },
-
-    //加载用户信息
-    loadUserInfo() {
-      let userInfo = auth.getUserInfo();
-      this.userInfo.avatar = userInfo.avatar;
-      this.userInfo.user_id = userInfo.uid;
-      this.userInfo.nickname = userInfo.nickname;
-    },
-
     //左菜单点击事件
-    activeNavMenu(even) {
-      let that = this
-      this.activeModule = even;
-      if (even == 0) {
-        that.fullscreenLoading = true;
-        that.friendModuleInfo.indexGroup = null;
-        that.chatLists();
-      } else if (even == 1) {
-        this.friendModuleInfo.itemIndex = null;
-        that.friendModuleInfo.indexGroup = null;
-        this.friendModuleInfo.isCatNewFriends = false;
-        this.fullscreenLoading = true;
+    activeNavMenu(idx) {
+      this.activeModule = idx;
+      this.fullscreenLoading = true;
+      switch(idx){
+        case 0:
+          this.chatModuleInfo.itemIndex = null;
+          this.chatLists();
+          break;
 
-        that.friendsApi();
-      } else {
-        that.fullscreenLoading = true;
-        that.userGroupsList();
+        case 1:
+          this.friendModuleInfo.itemIndex = null;
+          this.friendModuleInfo.isCatNewFriends = false;
+          this.friendsApi();
+          break;
+
+        case 2:
+          this.groupModuleInfo.itemIndex = null;
+          this.userGroupsList();
+          break;
+
+        default:
+          break;
       }
     },
 
@@ -210,6 +206,7 @@ export default {
       this.chatModuleInfo.title = this.chatModuleInfo.notifyList[index].name;
       this.chatModuleInfo.minChatRecordId = 0;
       this.chatModuleInfo.cahtRecords = [];
+      this.chatModuleInfo.notifyList[index].unread_num = 0;
 
       //这里需要加载用户聊天记录
       this.getChatRecordsApi();
@@ -254,6 +251,8 @@ export default {
           setTimeout(function() {
             chatPanel.scrollTop = chatPanel.scrollHeight;
           }, 0);
+
+          updateChatUnreadNumApi({type:params.type,receive:params.receive_id});
         } else { //加载数据完成之后将滚动条重置到加载之前的位置
           setTimeout(function() {
             chatPanel.scrollTop = chatPanel.scrollHeight - that.chatModuleInfo.scrollHeight;
@@ -272,6 +271,9 @@ export default {
 
     //查看朋友信息
     catFriendInfo(index, data) {
+      this.catFirendDetail(data.id,2);
+
+      return;
       let that = this;
       this.friendModuleInfo.itemIndex = index;
       this.friendModuleInfo.friendId = data.id;
@@ -295,13 +297,9 @@ export default {
 
     // 退出登录
     closeLogin() {
-      let that = this
-      logoutApi().then(res => {
-        auth.removeUserInfo();
-        that.$store.dispatch('logout');
-        that.wsSocketObj.wsConnect.close(4031, '用户退出登录');
-        that.$router.push({path: '/login'});
-      });
+      //关闭 Websocket连接
+      this.wsSocketObj.wsConnect.close(4031, '用户退出登录');
+      this.$store.dispatch('logout',this.$router);
     },
 
     // 获取用户聊天记录列表
@@ -344,7 +342,6 @@ export default {
     // 控制修改备注图标是否显示
     startEditFriendRemark(even) {
       let that = this;
-
       this.friendModuleInfo.editing = true;
       setTimeout(function() {
         that.$refs.refEditFriendRemark.focus();
@@ -378,8 +375,7 @@ export default {
 
     //创建用户聊天记录列表
     crateChatList(id, type) {
-      let that = this;
-      let paramObj = {
+      let that = this,paramObj = {
         receive_id: id,
         type: type
       }
@@ -397,14 +393,13 @@ export default {
       })
     },
 
-    //加载 Websocket
+    //加载Websocket
     loadWebsocket() {
-      let that = this;
       this.wsSocketObj = new WsSocket(auth.getSid(), {
-        onError: that.onError,
-        onOpen: that.onOpen,
-        onMessage: that.onMessage,
-        onClose: that.onClose
+        onError: this.onError,
+        onOpen: this.onOpen,
+        onMessage: this.onMessage,
+        onClose: this.onClose
       });
 
       this.wsSocketObj.initWebSocket();
@@ -436,6 +431,8 @@ export default {
             message: `您有新的好友申请，请尽快处理...`,
             position: 'top-right'
           });
+
+          this.applyHandle.applyNum++;
           break;
       }
     },
@@ -451,91 +448,129 @@ export default {
       }
     },
 
+    //发送消息检测
+    sendMsgCheck(e){
+      if(e.keyCode == 13 && this.chatModuleInfo.message == ''){
+        e.preventDefault() // 阻止浏览器默认换行操作
+      }
+    },
 
     //提交发送聊天消息
-    submitSendMesage() {
+    submitSendMesage(e) {
+      if(e.shiftKey){
+        return false;
+      }
+
+      if(this.chatModuleInfo.message == ''){
+        return false;
+      }
+
       let info = this.chatModuleInfo;
       let receiveInfo = info.notifyList[info.itemIndex];
       let receive_id = receiveInfo.type == 1 ? receiveInfo.friend_id : receiveInfo.group_id;
 
-      if (trim(info.message) == '') {
-        this.chatModuleInfo.message = '';
-        return;
-      }
-
-      this.wsSocketObj.sendMsg(receiveInfo.type, this.userInfo.user_id, receive_id, info.message);
+      this.wsSocketObj.sendMsg(receiveInfo.type,this.$store.state.user.uid, receive_id, info.message);
       this.chatModuleInfo.message = '';
     },
 
     //接收聊天消息
     receiveChatMssage(message) {
-      let that = this,
-        user = that.userInfo,
-        chatPanel = this.$refs.chatPanel;
+      let uid = this.$store.state.user.uid;
+
+      let that = this,user = that.userInfo,chatPanel = this.$refs.chatPanel,friends = that.chatModuleInfo.notifyList;
+
+      //获取当前选中的聊天好友
+      let receiveInfo = this.chatModuleInfo.notifyList[this.chatModuleInfo.itemIndex];
+
+      this.renderList(message);
+
+      //判断当前是否打开聊天窗
+      if (this.isPanDuan(message)) {
+        this.chatModuleInfo.cahtRecords.push({
+          id: null,
+          avatar: message.sendUser == uid ? this.$store.state.user.avatar : receiveInfo.avatar,float: message.sendUser == uid ? 'right' : 'left',
+          msg_type: message.msgType,
+          nickname: "",
+          nickname_remarks: "",
+          receive_id: message.receiveUser,
+          send_time: message.send_time,
+          source: message.sourceType,
+          text_msg: trim(message.textMessage),
+          user_id: message.sendUser
+        });
+
+        //更新消息未读数
+        if(this.$store.state.user.uid != message.sendUser){
+          updateChatUnreadNumApi({type:message.sourceType,receive:message.sendUser});
+        }
+
+        setTimeout(function() {
+          chatPanel.scrollTop = chatPanel.scrollHeight;
+        }, 0);
+        return;
+      }
+
+      //... 这里处理其它情况的数据
+    },
+
+    //判断消息是否来自当前聊天窗口的消息
+    isPanDuan(message){
+       if(this.activeModule != 0 || this.chatModuleInfo.itemIndex == null){
+          return false;
+       }
+
+       //获取当前选中的聊天好友
+       let receiveInfo = this.chatModuleInfo.notifyList[this.chatModuleInfo.itemIndex];
+       if(message.sourceType != receiveInfo.type){//判断消息来源是否一致
+         return false;
+       }
+
+       if(message.receiveUser == receiveInfo.friend_id || message.receiveUser == receiveInfo.group_id || message.sendUser == receiveInfo.friend_id || message.sendUser == receiveInfo.group_id) {
+          return true;
+       }
+
+       return false;
+    },
+
+    //渲染左侧聊天列表信息
+    renderList(message){
+      let uid = this.$store.state.user.uid;
+      let that = this,user = that.userInfo,chatPanel = this.$refs.chatPanel,friends = that.chatModuleInfo.notifyList;
+
+      //获取当前选中的聊天好友
+      let receiveInfo = this.chatModuleInfo.notifyList[this.chatModuleInfo.itemIndex];
+
+      //判断消息是否来自正在聊天的对象
+      let isChatting = function () {
+        if(receiveInfo == undefined || receiveInfo.type != message.sourceType){
+            return false;
+        }
+
+        if((receiveInfo.type == 1 && receiveInfo.friend_id == message.sendUser) || (receiveInfo.type == 2 && receiveInfo.group_id == message.receiveUser)){
+          return true;
+        }
+
+        return false;
+      }
+
+      //更新聊天列表信息
+      let render = function(index){
+        that.chatModuleInfo.notifyList[index].msg_text = message.textMessage;
+        that.chatModuleInfo.notifyList[index].unread_num++;
+      }
 
       //更新聊天栏用户发送的消息记录
-      if (true) {
-        let user_id = this.userInfo.user_id,
-          friends = that.chatModuleInfo.notifyList;
-        let receive_id = (message.sendUser == user_id) ? message.receiveUser : message.sendUser;
-        let receiveInfo = friends[that.chatModuleInfo.itemIndex];
+      if (!isChatting() && message.sendUser != uid) {
+        for (const idx1 in friends) {
+          if (friends[idx1].type != message.sourceType) {
+            continue;
+          }
 
-        //先判断消息是否是当前正在聊天的用户（防止过度循环）
-        if (receiveInfo && receiveInfo.type == message.sourceType && (message.sourceType == 1 && receive_id ==
-            receiveInfo.friend_id) || (message.sourceType == 2 && receive_id == receiveInfo.group_id)) {
-          that.chatModuleInfo.notifyList[that.chatModuleInfo.itemIndex].msg_text = message.textMessage;
-        } else {
-          //循环判断赋值
-          for (const idx1 in friends) {
-            if (friends[idx1].type != message.sourceType) {
-              continue;
-            }
-
-            if ((message.sourceType == 1 && receive_id == friends[idx1].friend_id) || (message.sourceType == 2 &&
-                receive_id == friends[idx1].group_id)) {
-              that.chatModuleInfo.notifyList[idx1].msg_text = message.textMessage;
-              break;
-            }
+          if((message.sourceType == 1 && message.sendUser == friends[idx1].friend_id) || (message.sourceType == 2 && message.receiveUser == friends[idx1].group_id)){
+            render(idx1);break;
           }
         }
       }
-
-
-      //判断当前是否打开聊天窗
-      if (this.activeModule == 0 || this.chatModuleInfo.itemIndex !== null) {
-
-        //获取当前选中的聊天好友
-        let receiveInfo = this.chatModuleInfo.notifyList[this.chatModuleInfo.itemIndex];
-        // receiveInfo {"type":1,"friend_id":2055,"group_id":0,"created_at":"14:22","name":"2055凡凡","unread_num":0,"msg_text":"......","avatar":"http://192.168.6.60:92/static/image/sys-head/2019030508031890594.jpg"}
-        // message {"sourceType":1,"receiveUser":2055,"sendUser":2054,"msgType":1,"textMessage":"阿萨打算\n","send_time":"2019-10-24 07:13:21"}
-        if (receiveInfo && receiveInfo.type == message.sourceType && (message.receiveUser == receiveInfo.friend_id ||
-            message.receiveUser == receiveInfo.group_id || message.sendUser == receiveInfo.friend_id || message.sendUser ==
-            receiveInfo.group_id)) {
-          let data = {
-            avatar: message.sendUser == user.user_id ? user.avatar : receiveInfo.avatar,
-            float: message.sendUser == user.user_id ? 'right' : 'left',
-            id: null,
-            msg_type: message.msgType,
-            nickname: "",
-            nickname_remarks: "",
-            receive_id: message.receiveUser,
-            send_time: message.send_time,
-            source: message.sourceType,
-            text_msg: message.textMessage,
-            user_id: message.sendUser
-          };
-
-          this.chatModuleInfo.cahtRecords.push(data);
-          setTimeout(function() {
-            chatPanel.scrollTop = chatPanel.scrollHeight;
-          }, 0);
-          return;
-        }
-      }
-
-
-
-      //... 这里处理其它情况的数据
     },
 
     //修改密码回调方法
@@ -549,15 +584,11 @@ export default {
       }
     },
 
-    //修改密码回调方法
-    closeUserSetupBox() {
-      this.subgroup.userSetup.isOpen = false;
-    },
-
-
+    //查看好友申请列表
     clickNewFriend() {
       let that = this;
       this.friendModuleInfo.isCatNewFriends = true;
+      this.applyHandle.applyNum = 0;
       friendApplyRecords().then(res => {
         if (res.code == 200) {
           that.applyHandle.applyRecordList = res.data.rows
@@ -570,7 +601,7 @@ export default {
       });
     },
 
-    // 获取群聊列表接口
+    //获取群聊列表接口
     userGroupsList() {
       let that = this;
       userGroups().then(res => {
@@ -585,11 +616,14 @@ export default {
         }
       });
     },
-    catGroupInfo(index, data) {
-      this.groupModuleInfo.itemIndex = index;
+
+    //查看群信息
+    catGroupInfo(idx, data) {
+      this.groupModuleInfo.itemIndex = idx;
       this.groupModuleInfo.groupId = data.id;
     },
 
+    //关闭发起群聊窗口
     closeLaunchGroupChatBox(type) {
       this.subgroup.launchGroupChat.isOpen = false;
       if (type == 1) {
@@ -598,52 +632,48 @@ export default {
           message: '聊天群创建成功...',
           position: 'bottom-right'
         });
-      }else if(type == 2){
+      } else if (type == 2) {
         this.$refs.ugcChild.groupDetailList();
       }
     },
 
-
+    //关闭好友搜索框
     closeSeekFriendBox(id) {
       this.subgroup.seekFriend.isOpen = false;
       if (id > 0) {
         this.crateChatList(id, 1);
       }
     },
-    closeUserGroup: function(data) {
-      this.groupModuleInfo.itemIndex = data;
-    },
 
-    // 选择需要处理的好友申请，接受或者拒绝
+    //选择需要处理的好友申请，接受或者拒绝
     selectHandleFriend(ridx, type, data) {
       this.applyHandle.isShow = true;
       this.applyHandle.top = ridx * 65;
       this.applyHandle.type = type;
       this.applyHandle.apply_id = data.id;
-      if (type == 1) {
-        this.applyHandle.remark = data.nickname;
-      } else {
-        this.applyHandle.remark = '';
-      }
+      this.applyHandle.remark = (type == 1) ? data.nickname : '';
     },
 
+
     confirmHandleApply(type) {
-      let that = this,fuc = ()=>{
-        that.applyHandle.isShow = false;
-        that.applyHandle.top = 0;
-        that.applyHandle.type = 0;
-        that.applyHandle.apply_id = 0
-        that.applyHandle.remark = '';
-      }
+      let that = this,
+        fuc = () => {
+          that.applyHandle.isShow = false;
+          that.applyHandle.top = 0;
+          that.applyHandle.type = 0;
+          that.applyHandle.apply_id = 0
+          that.applyHandle.remark = '';
+        }
 
       if (type == 2) {
-        fuc();return;
+        fuc();
+        return;
       }
 
       handleFriendApplyApi({
         type: that.applyHandle.type,
         apply_id: this.applyHandle.apply_id,
-        remarks:this.applyHandle.remark
+        remarks: this.applyHandle.remark
       }).then(res => {
         if (res.code == 200) {
           that.clickNewFriend();
@@ -659,8 +689,8 @@ export default {
     },
 
     //查看好友信息
-    catApplyFriendInfo(mobile){
-      sessionStorage.setItem("query_mobile",mobile);
+    catFirendDetail(mobile,type) {
+      sessionStorage.setItem("query_mobile",`${mobile},${type}`);
       this.subgroup.seekFriend.isOpen = true;
     },
   }

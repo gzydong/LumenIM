@@ -1,6 +1,7 @@
 <template>
   <!-- 添加好友组件 -->
   <div id="add-friend-mask">
+
     <div v-if="!query" class="query-user-panel">
       <div class="panel-header">
         <h5>好友搜索</h5>
@@ -9,20 +10,20 @@
       <div class="panel-body">
         <div class="from-box">
           <input type="text" placeholder="请输入查找的手机号" maxlength="11" autofocus="autofocus" v-model="searchMobile" @input="inputQueryMobile"
-            @keyup.enter="queryMobile">
+            @keyup.enter="queryMobile(1)">
         </div>
         <p class="search-tip" v-show="errorTip">{{errorTip}}</p>
       </div>
       <div class="panel-footer">
-        <button class="from-submit" @click="queryMobile">确认</button>
+        <button class="from-submit" @click="queryMobile(1)">确认</button>
       </div>
     </div>
 
     <div v-else class="peofile-from-panel">
       <div class="panel-header">
-        <p class="head-pic"><img :src="userInfo.avatarurl" :onerror="detaultAvatar"></p>
+        <p class="head-pic"><img :src="userInfo.avatarurl" :onerror="$store.state.user.detaultAvatar"></p>
 
-        <p class="previous-step" v-show="isReturn"  @click="query = false"><i class="el-icon-back"></i> 返回</p>
+        <p class="previous-step" v-show="isReturn" @click="query = false"><i class="el-icon-back"></i> 返回</p>
 
         <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
       </div>
@@ -30,16 +31,26 @@
       <div class="panel-body">
         <ul>
           <li>
-            <i class="iconfont icon-xingmingyonghumingnicheng"></i>
-            <p>+86 ~ {{ userInfo.mobile}}</p>
+            <label>手机号 </label>
+            <p>+86 - {{ userInfo.mobile}}</p>
           </li>
           <li>
-            <i class="iconfont icon-6nichengzhao"></i>
-            <p>{{ userInfo.nickname}} &nbsp;&nbsp;<span v-show="userInfo.nicknameRemark" class="n-remark-color" >({{userInfo.nicknameRemark}})</span>  </p>
+            <label>昵称 </label>
+            <p>{{ userInfo.nickname}}</p>
           </li>
-          <li>
-            <i class="iconfont icon-qianming"></i>
-            <p>{{ userInfo.motto?userInfo.motto:'暂未设置'}}</p>
+          <li v-if="userInfo.friendStatus == 2">
+            <label>备注 </label>
+            <p v-if="!isEditRemark" style="height: 25px;line-height: 25px;">
+              {{userInfo.nicknameRemark?userInfo.nicknameRemark:'暂无备注'}} <i class="iconfont icon-beizhu pointer edit-remark-icon"
+                @click="isEditRemark = true;editText = userInfo.nicknameRemark"></i>
+            </p>
+            <p v-else><input type="text" class="edit-input" v-model="editText" @keyup.enter="editRemark"><span class="input-submit"
+                @click="editRemark">确认</span></p>
+          </li>
+
+          <li style="position: relative;">
+            <label>座右铭 </label>
+            <p style="position: absolute;left: 55px;">{{ userInfo.motto?userInfo.motto:'暂未设置'}}</p>
           </li>
         </ul>
       </div>
@@ -55,10 +66,9 @@
         </div>
       </div>
 
-
       <div v-if="userInfo.friendStatus == 2" class="panel-footer">
-        <p class="green-color"  @click="$emit('close',userInfo.user_id)">发消息</p>
-        <p class="red-color" >删除好友</p>
+        <p class="green-color" @click="$emit('close',userInfo.user_id)">发消息</p>
+        <p class="red-color" @click="delFirend">删除好友</p>
       </div>
       <div v-else-if="userInfo.friendApply == 1" class="panel-footer padding-none">
         <button class="from-submit grey-bag">已发送好友申请</button>
@@ -75,17 +85,17 @@
     editUserSetupApi,
     getUserDetailApi,
     searchUserApi,
-    sendFriendApplyApi
-  } from '@/services/api.js'
+    sendFriendApplyApi,
+    friendRemarkApi
+  } from '@/services/api'
   import validate from '@/utils/validate'
 
   export default {
     data() {
       return {
-        detaultAvatar: "this.src='/static/image/detault-avatar.jpg'",
         query: false,
         searchMobile: '',
-        isReturn:true,
+        isReturn: true,
         errorTip: '',
         userInfo: {
           mobile: '',
@@ -94,20 +104,24 @@
           motto: '',
           friendStatus: 0,
           friendApply: 0,
-          nicknameRemark:''
+          nicknameRemark: ''
         },
         showFromBox: false,
         applyRemark: '',
+
+        isEditRemark: false,
+        editText: '',
       }
     },
-    created(){
-       let queryMobile = sessionStorage.getItem('query_mobile');
-       sessionStorage.removeItem('query_mobile');
-       if(queryMobile){
-         this.isReturn = false;
-         this.searchMobile = queryMobile;
-         this.queryMobile();
-       }
+    created() {
+      let queryMobile = sessionStorage.getItem('query_mobile');
+      sessionStorage.removeItem('query_mobile');
+      if (queryMobile) {
+        let [val, type] = queryMobile.split(',');
+        this.isReturn = false;
+        this.searchMobile = val;
+        this.queryMobile(type);
+      }
     },
     methods: {
       inputQueryMobile() {
@@ -115,16 +129,23 @@
       },
 
       //手机号查询
-      queryMobile() {
-        let that = this;
-        if (!validate.validatPhone(this.searchMobile)) {
-          this.errorTip = '手机号格式不正确';
-          return;
+      queryMobile(type = 1) {
+        let that = this,data = {};
+        if (type == 1) {
+          if (!validate.validatPhone(this.searchMobile)) {
+            this.errorTip = '手机号格式不正确';
+            return;
+          }
+          data = {
+            mobile: this.searchMobile
+          };
+        } else {
+          data = {
+            user_id: this.searchMobile
+          };
         }
 
-        searchUserApi({
-          mobile: this.searchMobile
-        }).then((res) => {
+        searchUserApi(data).then((res) => {
           if (res.code == 200) {
             that.query = true;
             let data = res.data;
@@ -162,6 +183,33 @@
             alert('发送好友申请失败,请稍后再试...');
           }
         });
+      },
+
+      //编辑好友备注昵称
+      editRemark() {
+        let that = this,
+          data = {
+            friend_id: this.userInfo.user_id,
+            remarks: this.editText
+          };
+          
+        if(data.remarks == that.userInfo.nicknameRemark){
+          that.isEditRemark = false;
+          return;
+        }
+          
+
+        friendRemarkApi(data).then(res => {
+          if (res.code == 200) {
+            that.isEditRemark = false;
+            that.userInfo.nicknameRemark = data.remarks;
+          }
+        })
+      },
+
+
+      delFirend() {
+        alert('此功能暂未开发，请耐心等待...')
       }
     }
   }
@@ -194,15 +242,15 @@
     position: relative;
   }
 
-  .query-user-panel .panel-header{
+  .query-user-panel .panel-header {
     color: #000000 !important;
     box-shadow: 1px 0px 6px 0px #b0a8a8;
   }
 
 
   .peofile-from-panel .panel-header {
-    background: url(/static/image/qingx.jpg);
-    background-size: 100%;
+    background: url(/static/image/banner-bag.jpg);
+    background-size: 100% 100%;
   }
 
   .query-user-panel .panel-header .close-btn,
@@ -220,19 +268,18 @@
   }
 
   .peofile-from-panel .panel-header .head-pic {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     position: absolute;
-    left: 132px;
+    left: 145px;
     top: 46px;
   }
 
   .peofile-from-panel .panel-header .head-pic img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50% 50%;
     cursor: pointer;
-    box-shadow: 0 0 20px #b6b6b6;
   }
 
   .peofile-from-panel .panel-header .previous-step {
@@ -250,52 +297,71 @@
   }
 
   .peofile-from-panel .panel-body ul {
-    width: 80%;
+    width: 85%;
     margin: 0 auto;
     padding-top: 30px;
   }
 
   .peofile-from-panel .panel-body ul li {
-    min-height: 50px;
+    min-height: 46px;
     width: 100%;
     position: relative;
   }
 
-  .peofile-from-panel .panel-body ul li>i {
-    position: absolute;
-    top: 5px;
-    color: #31cafe;
-  }
-
-  .peofile-from-panel .panel-body ul li:nth-child(1) label i,
-  .peofile-from-panel .panel-body ul li:nth-child(3) label i {
-    font-size: 14px;
-  }
-
-  .peofile-from-panel .panel-body ul li:nth-child(2) label i {
-    font-size: 16px;
-  }
 
   input::-webkit-input-placeholder {
     color: #a9a4a4;
     font-size: 12px;
   }
 
+
+  .peofile-from-panel .panel-body ul li label {
+    display: inline-block;
+    font-size: 13px;
+    color: #2dcee9;
+    width: 50px;
+  }
+
   .peofile-from-panel .panel-body ul li p {
-    width: 240px;
-    border-bottom: 1px dashed #f1e9e9;
+    width: 245px;
+    border-bottom: 1px dashed #e6e6e6;
     color: #a9a4a4;
     font-size: 12px;
     display: inline-block;
-    margin-left: 30px;
     padding: 5px 0;
     line-height: 20px;
     min-height: 20px;
   }
 
+  .panel-body .edit-remark-icon {
+    position: absolute;
+    margin-left: 5px;
+    color: rgb(0, 215, 255);
+  }
 
-  .n-remark-color{
-    color: #70d5e0;
+  .panel-body .edit-input {
+    width: 60%;
+    line-height: 25px;
+    border: 1px solid #92CBFF;
+    padding-left: 5px;
+    border-radius: 3px;
+  }
+
+  .panel-body .input-submit {
+    width: 55px;
+    text-align: center;
+    line-height: 27px;
+    background-color: #008CEE;
+    border-radius: 2px;
+    display: inline-block;
+    color: #fff;
+    font-size: 12px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  .panel-body .input-submit:active {
+    background-color: #59bbff;
   }
 
   .query-user-panel .panel-footer {
@@ -463,12 +529,12 @@
     cursor: not-allowed;
   }
 
-  .panel-footer .green-color{
+  .panel-footer .green-color {
     color: #43b735;
     font-size: 14px;
   }
 
-  .panel-footer .red-color{
+  .panel-footer .red-color {
     color: #ed3c3b;
     font-size: 14px;
   }

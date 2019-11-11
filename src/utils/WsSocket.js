@@ -33,7 +33,7 @@ class WsSocket {
         if(this.wsConnect){
             this.wsConnect.close()
         }
-        
+
         let _this = this, ws = new WebSocket(this.config.wsUrl);
         ws.onerror = function (evt) {
             console.log('error',evt);
@@ -92,7 +92,7 @@ class WsSocket {
             _this.config.reconnect.lockReconnect = false;
 
             _this.config.reconnect.number--;
-            
+
             let number = _this.config.reconnect.number;
             console.log(`正在尝试重新连接(${number}S)...`);
         },_this.config.reconnect.time);

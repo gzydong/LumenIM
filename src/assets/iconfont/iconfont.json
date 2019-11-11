@@ -55,6 +55,13 @@
       "unicode_decimal": 59047
     },
     {
+      "icon_id": "1010106",
+      "name": "列表",
+      "font_class": "liebiao",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
       "icon_id": "1048353",
       "name": "通讯录",
       "font_class": "tongxunlu",
@@ -76,6 +83,20 @@
       "unicode_decimal": 58972
     },
     {
+      "icon_id": "1092157",
+      "name": "列表3",
+      "font_class": "liebiao3",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "1129590",
+      "name": "列表3",
+      "font_class": "liebiao31",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
       "icon_id": "1177770",
       "name": "签名",
       "font_class": "qianming",
@@ -90,11 +111,25 @@
       "unicode_decimal": 58924
     },
     {
+      "icon_id": "1488899",
+      "name": "列表循环",
+      "font_class": "liebiaoxunhuan",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
       "icon_id": "3978309",
       "name": "备注",
       "font_class": "beizhu",
       "unicode": "e648",
       "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "6099299",
+      "name": "列表",
+      "font_class": "liebiao1",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
     },
     {
       "icon_id": "6366918",

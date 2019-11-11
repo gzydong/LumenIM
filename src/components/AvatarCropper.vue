@@ -45,12 +45,8 @@
 </template>
 
 <script>
-  import {
-    VueCropper
-  } from 'vue-cropper'
-  import {
-    uploadFileStream
-  } from '@/services/api.js'
+  import {VueCropper} from 'vue-cropper'
+  import {uploadFileStream} from '@/services/api'
 
   export default {
     components: {
@@ -79,9 +75,6 @@
         fixed: true,
         fixedNumber: [1, 1]
       }
-    },
-    created() {
-
     },
     methods: {
       clearCrop() {

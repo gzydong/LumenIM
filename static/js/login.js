@@ -6,22 +6,11 @@ export default {
   name: "loginPage",
   data() {
     return {
-      arr: [
-        {
-          id: 0,
-          name: "我要登录"
-        },
-        {
-          id: 1,
-          name: "用户注册"
-        }
-      ],
       activate: 0,
 
       username: null,
       password: null,
       loginButton:'登录',
-
 
       mobile:'',
       regPassword:'',
@@ -30,7 +19,7 @@ export default {
     };
   },
   methods: {
-    // 注册
+    //消息提示
     error(msg){
       this.$notify({
           title: "温馨提示：",
@@ -38,12 +27,19 @@ export default {
       });
     },
 
+    //切换导航
+    changingOver: function(index) {
+      this.activate = index;
+      this.username = this.password = this.mobile = this.regPassword = this.regPassword2 = '';
+    },
+
+    //判断是否是IE浏览器
     isIE:function() {
         if(!!window.ActiveXObject || "ActiveXObject" in window){
           return true;
         }else{
           return false;
-    　　 }
+    　　}
     },
 
     //账号注册方法
@@ -52,7 +48,7 @@ export default {
         mobile: this.mobile,
         password: this.regPassword,
         password2:this.regPassword2,
-        invite_code: 123456
+        invite_code: ''
       };
 
       if (params.mobile == "") {
@@ -140,12 +136,6 @@ export default {
           that.loginButton ='登录';
         }
       });
-    },
-
-    //切换导航
-    changingOver: function(index) {
-      this.activate = index;
-      this.username = this.password = this.mobile = this.regPassword = this.regPassword2 = '';
     }
   }
 };

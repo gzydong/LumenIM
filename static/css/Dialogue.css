@@ -84,23 +84,35 @@
 }
 
 
-.layout-nav-menu .switch>li {
+.layout-nav-menu li {
   margin-top: 25px;
   text-align: center;
 }
 
-.layout-nav-menu ul>li:nth-child(1) {
+.layout-nav-menu li:nth-child(1) {
   margin-top: 0;
 }
 
-.layout-nav-menu ul>li i {
+.layout-nav-menu li i {
   color: #fff;
   text-align: center;
   font-size: 26px;
   cursor: pointer;
+  position: relative !important;
 }
 
-.layout-nav-menu ul>li .img {
+.layout-nav-menu li i .i-hotspot {
+  width: 5px;
+  height: 5px;
+  background: #ff1e1e;
+  display: inline-block;
+  border-radius: 5px;
+  position: absolute;
+  left: 26px;
+  top: 0px;
+}
+
+.layout-nav-menu li .img {
   width: 40px;
   height: 40px;
   display: inline-block;
@@ -189,19 +201,34 @@
   background-color: #dcdcdc;
 }
 
-.msg-notify-item,
-.addNotify {
+.msg-notify-item {
   padding: 12px 0;
   cursor: pointer;
   border-bottom: 1px solid #e3d9d9;
+  position: relative;
+}
+
+.msg-notify-item .notify-unread-num {
+  display: inline-block;
+  background: rgb(253, 0, 0);
+  border-radius: 50%;
+  color: rgb(255, 236, 236);
+  font-size: 10px;
+  position: absolute;
+  left: 43px;
+  height: 15px;
+  text-align: center;
+  line-height: 15px;
+  max-width: 19px;
+  min-width: 15px;
+  top: 6px;
 }
 
 .msg-notify-item:hover {
   background-color: #DDDBDB;
 }
 
-.msg-notify-item::after,
-.addNotify::after {
+.msg-notify-item::after {
   display: block;
   clear: both;
   content: "";
@@ -209,8 +236,7 @@
   height: 0;
 }
 
-.msg-notify-item img,
-.addNotify img {
+.msg-notify-item img {
   width: 40px;
   height: 40px;
   float: left;
@@ -218,14 +244,14 @@
   margin-left: 10px;
 }
 
-.msg-notify-item .list-right,
-.addNotify .list-right {
-  width: 155px;
+.msg-notify-item .list-right {
+  width: 172px;
   float: left;
   margin-left: 11px;
 }
 
 .wx-right .msg-notify-items .list-right .name {
+  height: 22px;
   line-height: 22px;
   font-size: 14px;
 }
@@ -246,11 +272,13 @@
 
 .wx-right .msg-notify-items .list-right .chat {
   width: 100%;
-  font-size: 13px;
+  font-size: 10px;
   color: #a1a1a1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 20px;
+  line-height: 20px;
 }
 
 .msg-notify-items .van-cell {
@@ -307,6 +335,7 @@
   width: 40px;
   height: 40px;
   float: right;
+  cursor: pointer;
 }
 
 .chat-dialogue .left {
@@ -322,11 +351,12 @@
   width: 40px;
   height: 40px;
   float: left;
+  cursor: pointer;
 }
 
 
 .chat-dialogue .left .send,
-.right .send {
+.chat-dialogue .right .send {
   max-width: 300px;
   min-height: 20px;
   border-radius: 3px;
@@ -350,10 +380,11 @@
   float: right;
   background-color: #9eea6a;
   margin-right: 20px;
+  white-space: pre-line;
 }
 
 .chat-dialogue .leftSend .arrow,
-.rightSend .arrow {
+.chat-dialogue .rightSend .arrow {
   position: absolute;
   width: 0;
   height: 0;
@@ -510,7 +541,7 @@
   background: #dcdcdc;
 }
 
-.friends-notify .tubiao {
+.friends-notify .cus-tubiao {
   height: 40px;
   width: 40px;
   display: inline-block;
@@ -519,7 +550,21 @@
   line-height: 42px;
   color: #ffff;
   border-radius: 5px;
+  position: relative;
 }
+
+.friends-notify .cus-tubiao .appyle-hotspot {
+  width: 0px;
+  height: 5px;
+  background: #ff6060;
+  display: inline-block;
+  border-radius: 50%;
+  position: absolute;
+  left: 33px;
+  top: 4px;
+  line-height: 5px;
+}
+
 
 .friends-notify span {
   padding-left: 5px;
@@ -814,14 +859,19 @@
   cursor: pointer;
 }
 
-.applyList_content .name {
+.applyList_content .name{
   float: left;
   width: calc(100% - 180px);
   margin-left: 10px;
   font-size: 16px;
 }
 
-.applyList_content .name>p:last-child {
+.applyList_content .name p:first-child{
+  height: 20px;
+  line-height: 20px;
+}
+
+.applyList_content .name p:last-child {
   font-size: 12px;
   color: #999999;
   margin-top: 8px;

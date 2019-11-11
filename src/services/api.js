@@ -129,3 +129,20 @@ export const groupChatMemebers = (data) => {
 export const uploadFileStream = (data) =>{
   return post('/api/upload/file-stream', data);
 }
+
+
+//更新用户消息未读数
+export const updateChatUnreadNumApi = (data)=>{
+ return get('/api/chat/update-chat-unread-num',data);
+}
+
+//获取好友申请未读数量
+export const friendApplyNumApi = ()=>{
+ return get('/api/user/friend-apply-num');
+}
+
+
+//设置用户群名片
+export const setUserGroupCardApi = (data) =>{
+  return post('/api/chat/set-group-card', data);
+}

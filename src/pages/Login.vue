@@ -5,7 +5,8 @@
       <div class="box-right">
         <div class="logo-box">Lumen IM</div>
         <div class="boxRight-header">
-          <span v-for="(item,index) in arr" @click="changingOver(item.id)" :class="activate==index?'activeBoder':''">{{ item.name }}</span>
+            <span  @click="changingOver(0)" :class="activate==0?'activeBoder':''">我要登录</span>
+            <span  @click="changingOver(1)" :class="activate==1?'activeBoder':''">用户注册</span>
         </div>
 
         <!-- 登录 -->

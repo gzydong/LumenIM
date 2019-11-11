@@ -3,7 +3,7 @@
   <div id="user-setup-mask">
     <div class="usersetup-from-panel">
       <div class="panel-header">
-        <p><img :src="userInfo.avatarurl" :onerror="detaultAvatar"></p>
+        <p><img :src="userInfo.avatarurl" :onerror="$store.state.user.detaultAvatar"></p>
         <p class="edit-pic" @click="isAvatarCropper = true">＋ 更换头像</p>
         <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
       </div>
@@ -40,7 +40,7 @@
   import {
     editUserSetupApi,
     getUserDetailApi
-  } from '@/services/api.js'
+  } from '@/services/api'
   export default {
     data() {
       return {
@@ -51,7 +51,6 @@
           avatarurl: '',
           motto: ''
         },
-        detaultAvatar:"this.src='/static/image/detault-avatar.jpg'",
         buttonText:'保存设置'
       }
     },
@@ -131,7 +130,7 @@
     background: #6bc5e8;
     color: #fff;
     position: relative;
-    background: url('/static/image/qingx.jpg');
+    background: url(/static/image/banner-bag.jpg);
     background-color: #29befd;
     background-size: 100% 100%;
   }

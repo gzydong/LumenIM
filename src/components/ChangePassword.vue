@@ -35,7 +35,7 @@
 
 <script>
   import validate from '@/utils/validate'
-  import {changePwdApi} from '@/services/api.js'
+  import {changePwdApi} from '@/services/api'
   export default {
     data() {
       return {

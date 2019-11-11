@@ -6,17 +6,17 @@
       <!-- 左菜单 -->
       <div id="layout-left-box">
         <div class="layout-nav-menu">
-          <ul class="switch">
+          <ul >
             <li>
-              <img :src="$store.state.user.avatar" alt class="img pointer"  :onerror="detaultAvatar" @click="subgroup.userSetup.isOpen = true" />
+              <img :src="$store.state.user.avatar" alt class="img pointer"  :onerror="$store.state.user.detaultAvatar" @click="subgroup.userSetup.isOpen = true" />
             </li>
 
             <li @click="activeNavMenu(0)" v-bind:class="{ activeModuleClass: activeModule == 0?true:false }">
-              <i class="iconfont icon-duanxin"></i>
+              <i class="iconfont icon-duanxin"><span class="i-hotspot" v-show="unreadNum > 0" ></span></i>
             </li>
 
             <li @click="activeNavMenu(1)" v-bind:class="{ activeModuleClass: activeModule == 1?true:false }">
-              <i class="iconfont icon-tongxunlu"></i>
+              <i class="iconfont icon-tongxunlu"><span class="i-hotspot" v-show="applyHandle.applyNum > 0" ></span></i>
             </li>
 
             <li @click="activeNavMenu(2)" v-bind:class="{ activeModuleClass: activeModule == 2?true:false }">
@@ -47,12 +47,14 @@
           </header>
 
           <main class="nav-left listWebkit msg-notify-items" ref="msgNotifyItems">
-            <div :class="chatModuleInfo.itemIndex == index?'addNotify':'msg-notify-item'" v-for="(notify,index) in chatModuleInfo.notifyList"
+            <div  v-bind:class="{'msg-notify-item':true ,'addNotify': chatModuleInfo.itemIndex == index?true:false }"  v-for="(notify,index) in chatModuleInfo.notifyList"
               @click="catChatRecord(index)" @contextmenu.prevent="">
-              <img v-if="notify.type == 1" :src="notify.avatar" :onerror="detaultAvatar" class="img" />
-              <img v-else :src="notify.avatar" :onerror="detaultGroupAvatar" class="img" />
+              <img v-if="notify.type == 1" :src="notify.avatar" :onerror="$store.state.user.detaultAvatar" class="img" />
+              <img v-else :src="notify.avatar" :onerror="$store.state.user.detaultGroupAvatar" class="img" />
+
+              <span v-show="notify.unread_num" class="notify-unread-num" >{{notify.unread_num >99?'99':notify.unread_num}}</span>
               <div class="list-right">
-                <div class="name"><span class="firname">{{notify.name}}</span><span class="time">{{ notify.created_at }}</span>
+                <div class="name"><span class="firname"> {{notify.name}}</span><span class="time">{{ notify.created_at }}</span>
                 </div>
                 <div class="chat">{{notify.msg_text}}</div>
               </div>
@@ -84,21 +86,19 @@
             </div>
 
             <div :class="recordInfo.float == 'left' ?'left':'right'" v-for="recordInfo in chatModuleInfo.cahtRecords">
-              <img :src="recordInfo.avatar" class="img" :onerror="detaultAvatar"  />
+              <img :src="recordInfo.avatar" @click="catFirendDetail(recordInfo.user_id,2)"  class="img" :onerror="$store.state.user.detaultAvatar"  />
               <div class="box-group" v-if="recordInfo.float == 'left'">
 
                 <span v-if="recordInfo.float == 'left' && recordInfo.source == 2" class="groupChat ">
                   {{recordInfo.nickname_remark || recordInfo.nickname }}
                 </span>
 
-                <div class="leftSend send">
-                  {{recordInfo.text_msg}}
-                  <div class="leftArrow arrow"></div>
+                <div class="leftSend send"><span v-text="recordInfo.text_msg" ></span><div class="leftArrow arrow"></div>
                 </div>
               </div>
 
               <div class="rightSend send" v-else>
-                {{recordInfo.text_msg}}
+                <span v-text="recordInfo.text_msg"></span>
                 <div class="rightArrow arrow"></div>
               </div>
               <div class="clear"></div>
@@ -111,7 +111,7 @@
               <li><i class="iconfont icon-file"></i></li>
               <li><i class="iconfont icon-xinxi1"></i></li>
             </ul>
-            <textarea rows="6" v-model="chatModuleInfo.message" @keyup.enter="submitSendMesage" placeholder="你想要的聊点什么呢..."></textarea>
+            <textarea  ref='chatMessage' rows="6" v-model.trim="chatModuleInfo.message"  @keydown="sendMsgCheck($event)"  @keyup.enter="submitSendMesage($event)"  placeholder="你想要的聊点什么呢..."></textarea>
           </footer>
         </div>
       </div>
@@ -126,14 +126,17 @@
           </header>
 
           <div class="friends-notify" @click="clickNewFriend">
-            <div class="tubiao"><i class="iconfont icon-jurassic_add-users"></i></div>
+            <div class="cus-tubiao">
+              <i class="iconfont icon-jurassic_add-users"></i>
+              <span v-show="applyHandle.applyNum > 0" class="appyle-hotspot"></span>
+            </div>
             <span>新的朋友</span>
           </div>
 
           <main class="nav-left listWebkit users-list-items">
             <div :class="friendModuleInfo.itemIndex == index?'users-list-item users-list-item-active':'users-list-item'"
-              v-for='(item2,index) in friendModuleInfo.friendList' @click="catFriendInfo(index,item2)">
-              <img :src="item2.avatarurl" :onerror="detaultAvatar">
+              v-for='(item2,index) in friendModuleInfo.friendList'  @click="catFriendInfo(index,item2)">
+              <img :src="item2.avatarurl" :onerror="$store.state.user.detaultAvatar">
               <span class="user-online" v-if="item2.online == 1">✔</span>
               <span>{{ item2.friend_remark?item2.friend_remark:item2.nickname }}</span>
             </div>
@@ -144,10 +147,10 @@
           <header><span>好友申请</span></header>
           <div v-if="applyHandle.applyRecordList.length > 0" class="applyList ">
             <div class="applyList_content clear" v-for="(applyRecord,ridx) in applyHandle.applyRecordList">
-              <img :src="applyRecord.avatarurl" :onerror="detaultAvatar" @click="catApplyFriendInfo(applyRecord.mobile)"  >
+              <img :src="applyRecord.avatarurl" :onerror="$store.state.user.detaultAvatar" @click="catFirendDetail(applyRecord.mobile,1)"  >
               <div class="name">
                 <p>{{ applyRecord.nickname }}</p>
-                <p>备注: {{ applyRecord.remarks }}</p>
+                <p>{{ applyRecord.remarks }}</p>
               </div>
 
               <div class="message success" v-if="applyRecord.status == 0">
@@ -184,7 +187,7 @@
           <div class="nav-user-message">
             <header>
               <i class="iconfont icon-guanbi11" @click="friendModuleInfo.itemIndex = null"></i>
-              <img :src="friendModuleInfo.friendInfo.avatar" :onerror="detaultAvatar" ><span>{{friendModuleInfo.friendInfo.nickname_remark || friendModuleInfo.friendInfo.nickname }}</span>
+              <img :src="friendModuleInfo.friendInfo.avatar" :onerror="$store.state.user.detaultAvatar" ><span>{{friendModuleInfo.friendInfo.nickname_remark || friendModuleInfo.friendInfo.nickname }}</span>
             </header>
 
             <main>
@@ -221,7 +224,7 @@
           <main class="nav-left listWebkit users-list-items">
             <div :class="groupModuleInfo.itemIndex == index?'users-list-item users-list-item-active':'users-list-item'"
               v-for='(item2,index) in groupModuleInfo.groupList' @click="catGroupInfo(index,item2)">
-              <img :src="item2.avatarurl" :onerror="detaultGroupAvatar">
+              <img :src="item2.avatarurl" :onerror="$store.state.user.detaultGroupAvatar">
               <span>{{ item2.group_name }}</span>
             </div>
           </main>
@@ -231,7 +234,7 @@
           <div class="weixinLogo">Lumen IM</div>
         </div>
         <div class="nav-right" v-else>
-          <user-group-chat v-bind:groupId="groupModuleInfo.groupId" v-on:close="closeUserGroup" ref='ugcChild' ></user-group-chat>
+          <user-group-chat v-bind:groupId="groupModuleInfo.groupId" v-on:close="groupModuleInfo.itemIndex = null" ref='ugcChild' ></user-group-chat>
         </div>
       </div>
     </div>
@@ -240,7 +243,7 @@
     <change-password v-if="subgroup.password.isOpen" v-on:close="closePasswordBox"></change-password>
 
     <!-- 用户信息设置组件 -->
-    <user-setup v-if="subgroup.userSetup.isOpen" v-on:close="closeUserSetupBox"></user-setup>
+    <user-setup v-if="subgroup.userSetup.isOpen" v-on:close="subgroup.userSetup.isOpen = false"></user-setup>
 
     <!-- 创建群聊组件 -->
     <launch-group-chat v-if="subgroup.launchGroupChat.isOpen" v-on:close="closeLaunchGroupChatBox"></launch-group-chat>
@@ -248,8 +251,8 @@
     <!-- 添加、查找好友组件 -->
     <seek-friend v-if="subgroup.seekFriend.isOpen" v-on:close="closeSeekFriendBox"></seek-friend>
 
+    <audio ref='mp3' src="../../static/image/59y888piCn92.mp3" type="audio/mpeg"  controls="controls"  hidden="true" >    </audio>
   </div>
-
 </template>
 
 <style>
@@ -258,7 +261,5 @@
     background-size: 100% 100%;
   }
 </style>
-<style scoped>
-  @import url("../../static/css/dialogue.css");
-</style>
+<style scoped src="../../static/css/dialogue.css"></style>
 <script src="../../static/js/dialogue.js"></script>

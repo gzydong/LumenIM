@@ -13,7 +13,7 @@
             <li class="group-avatar-box" >
               <label>群头像:</label>
               <div>
-                <img :src="frGroupAvatar" :onerror="detaultAvatar"  >
+                <img :src="frGroupAvatar" :onerror="$store.state.user.detaultAvatar"  >
                 <span @click="showAvatarCropper">设置头像</span>
               </div>
             </li>
@@ -31,7 +31,7 @@
             <div v-if="groupMember.length == 0" class="no-select-member">{{queryGroupId==0?'您还未选择群聊好友...':'您还未选择需要邀请的好友...'}}</div>
             <ul v-else >
               <li v-for='member in groupMember' @click="clickSelect(member.id,member)" :title="member.friend_remark?member.friend_remark:member.nickname">
-                <img :src="member.avatarurl" :onerror="detaultAvatar">
+                <img :src="member.avatarurl" :onerror="$store.state.user.detaultAvatar">
               </li>
             </ul>
           </div>
@@ -46,7 +46,7 @@
           </div>
           <ul>
             <li v-for='(friend,idx) in searchFriendsList' @click="clickSelect(friend.id,friend)">
-              <img :src="friend.avatarurl" :onerror="detaultAvatar">
+              <img :src="friend.avatarurl" :onerror="$store.state.user.detaultAvatar">
               <span class="friend-nickname">{{ friend.friend_remark?friend.friend_remark:friend.nickname }}</span>
               <span class="select-btn"><i class="el-icon-success" v-bind:class="{'i-color-green': ids.indexOf(friend.id) >= 0  }"></i></span>
             </li>
@@ -68,15 +68,15 @@
     groupChatMemebers,
     createGroupChatApi,
     inviteGroupMember
-  } from '@/services/api.js'
-    import AvatarCropper from '@/components/AvatarCropper'
+  } from '@/services/api'
+  
+  import AvatarCropper from '@/components/AvatarCropper'
   export default {
     components: {
       AvatarCropper
     },
     data() {
       return {
-        detaultAvatar: "this.src='/static/image/detault-avatar.jpg'", //用户默认头像
         searchName: '', //查询关键字
         friendsList: [], //好友列表
         searchFriendsList: [], //好友搜索查询结果
