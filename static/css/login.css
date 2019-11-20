@@ -56,7 +56,7 @@
 }
 
 .boxRight-header span {
-  width: 49%;
+  width: 48%;
   line-height: 40px;
   text-align: center;
   display: inline-block;
@@ -82,6 +82,11 @@
   height: 40px;
   line-height: 40px;
   text-indent: 10px;
+}
+
+.headerTab .tabList input::-webkit-input-placeholder {
+    color: #CCC9C9;
+    font-size: 12px;
 }
 
 .headerTab .userRegister {

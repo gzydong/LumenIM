@@ -1,46 +1,62 @@
-import Cookies from 'js-cookie'
-
-const authorize = 'LOGIN_AUTHORIAE'
-const sid       = 'SID_WEBSOCKET';
-const userInfo  = 'LOGIN_USER_INFO';
+const authorize = 'LUMEN_WEB_AUTHORIAE'
+const userInfo = 'LUMEN_WEB_USER';
+import JsBase64 from 'js-base64'
+import {testApi} from '@/services/api'
 
 export default {
-  checkLogin(){
-    return this.getToken() ? true:false;
+  setData(keyName, data) {
+    localStorage.setItem(keyName, JsBase64.Base64.encode(JSON.stringify(data)));
+  },
+  getData(keyName) {
+    let obj = {};
+    try {
+      obj = JSON.parse(JsBase64.Base64.decode(localStorage.getItem(keyName)))
+    } catch (e) {}
+
+    return obj;
   },
 
-  setToken(data){
+  setUserInfo(data) {
+    this.setData(userInfo, data);
+  },
+  getUserInfo() {
+    return this.getData(userInfo);
+  },
+
+  setToken(data) {
     let time = parseInt(new Date().getTime() / 1000);
-    data.expires_in = time + data.expires_in - 60*10;
-    return Cookies.set(authorize, JSON.stringify(data));
-  },
-  getToken(){
-    let auth =  Cookies.get(authorize);
+    data.expires_in = time + data.expires_in - 60 * 10;
 
-    if(auth === undefined){return '';}
-
-    auth = JSON.parse(auth);
-    return auth.access_token;
+    this.setData(authorize, data);
   },
 
-  setSid(str){
-    return Cookies.set(sid, str)
-  },
-  getSid(){
-    return Cookies.get(sid)
+  getToken() {
+    let data = this.getData(authorize);
+    if (!data) {
+      return '';
+    }
+
+    let time = parseInt(new Date().getTime() / 1000);
+    if (time < data.expires_in) {
+      return data.access_token;
+    }
+
+    return '';
   },
 
-  setUserInfo(data){
-    return Cookies.set(userInfo,JSON.stringify(data))
-  },
-  getUserInfo(){
-    let str =  Cookies.get(userInfo);
-    return str === undefined ? {} : JSON.parse(str);
+  //获取token 过期时间
+  getTokenExpiresin() {
+    let data = this.getData(authorize);
+    if (!data) {
+      return false;
+    }
+
+    let t = data.expires_in - parseInt(new Date().getTime() / 1000);
+    return t < 0 ? 0 : t;
   },
 
-  removeUserInfo(){
-    Cookies.remove(sid);
-    Cookies.remove(authorize)
-    Cookies.remove(userInfo);
-  }
+  remove() {
+    localStorage.removeItem(authorize);
+    localStorage.removeItem(userInfo);
+  },
 }

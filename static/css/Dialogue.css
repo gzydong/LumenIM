@@ -323,7 +323,9 @@
 }
 
 
-.chat-dialogue .right {
+
+
+.chat-dialogue .chat-right-box {
   min-height: 40px;
   margin-top: 10px;
   float: right;
@@ -331,23 +333,22 @@
   padding-bottom: 10px;
 }
 
-.chat-dialogue .right>img {
+.chat-dialogue .chat-right-box>img {
   width: 40px;
   height: 40px;
   float: right;
   cursor: pointer;
 }
 
-.chat-dialogue .left {
+.chat-dialogue .chat-left-box {
   min-height: 40px;
   margin-top: 10px;
   float: left;
   width: 100%;
   padding-bottom: 10px;
-  position: relative;
 }
 
-.chat-dialogue .left>img {
+.chat-dialogue .chat-left-box>img {
   width: 40px;
   height: 40px;
   float: left;
@@ -355,9 +356,11 @@
 }
 
 
-.chat-dialogue .left .send,
-.chat-dialogue .right .send {
-  max-width: 300px;
+
+
+.chat-dialogue .chat-left-box .send,
+.chat-dialogue .chat-right-box .send {
+  max-width: 78%;
   min-height: 20px;
   border-radius: 3px;
   position: relative;
@@ -366,25 +369,30 @@
   line-height: 22px;
 }
 
-.chat-dialogue .left .send {
+.chat-dialogue .chat-left-box .send {
   background-color: #fff;
 }
 
-.chat-dialogue .box-group {
+.chat-dialogue .chat-left-box>.leftSend {
   float: left;
   margin-left: 20px;
 }
 
-
-.chat-dialogue .right>.rightSend {
+.chat-dialogue .chat-right-box>.rightSend {
   float: right;
   background-color: #9eea6a;
   margin-right: 20px;
-  white-space: pre-line;
 }
 
-.chat-dialogue .leftSend .arrow,
-.chat-dialogue .rightSend .arrow {
+.chat-dialogue .send pre {
+  white-space: pre-line;
+  overflow: hidden;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+
+.chat-dialogue .leftSend .dialogue-arrow,
+.chat-dialogue .rightSend .dialogue-arrow {
   position: absolute;
   width: 0;
   height: 0;
@@ -393,18 +401,14 @@
   top: 5px;
 }
 
-.chat-dialogue .left .leftSend>.leftArrow {
+.chat-dialogue .chat-left-box .leftSend>.left-arrow {
   border-color: #f5f5f5 #fff #f5f5f5 #f5f5f5;
   left: -16px;
 }
 
-.chat-dialogue .right .rightSend>.rightArrow {
+.chat-dialogue .chat-right-box .rightSend>.right-arrow {
   border-color: #f5f5f5 #f5f5f5 #f5f5f5 #9eea6a;
   right: -16px;
-}
-
-.chat-dialogue div:nth-child(1) {
-  margin-top: 0px !important;
 }
 
 
@@ -418,53 +422,10 @@
 
 
 #message-edit {
-  padding-left: 10px;
   height: 158px;
-  width: calc(100% - 10px);
+  width: calc(100%);
 }
 
-#edit-toolbar {
-  width: calc(100% - 10px);
-  height: 45px;
-  line-height: 45px;
-}
-
-#edit-toolbar li {
-  float: left;
-  margin-right: 15px;
-}
-
-#edit-toolbar li i {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-#message-edit textarea {
-  width: calc(100% - 10px);
-  height: 105px;
-  resize: none;
-  font-size: 15px;
-  overflow-y: auto;
-}
-
-#message-edit textarea::-webkit-scrollbar {
-  width: 5px;
-  height: 1px;
-}
-
-#message-edit textarea::-webkit-scrollbar-thumb {
-  background: #d5cfcf;
-}
-
-#message-edit textarea::-webkit-scrollbar-track {
-  background: #EDEDED;
-}
-
-
-#message-edit textarea::-webkit-input-placeholder {
-  color: #a9a4a4;
-  font-size: 12px;
-}
 
 
 .weixinLogo {
@@ -859,14 +820,14 @@
   cursor: pointer;
 }
 
-.applyList_content .name{
+.applyList_content .name {
   float: left;
   width: calc(100% - 180px);
   margin-left: 10px;
   font-size: 16px;
 }
 
-.applyList_content .name p:first-child{
+.applyList_content .name p:first-child {
   height: 20px;
   line-height: 20px;
 }

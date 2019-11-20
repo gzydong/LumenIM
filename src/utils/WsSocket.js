@@ -13,7 +13,7 @@ class WsSocket {
         },events);
 
         this.config = {
-            wsUrl: 'ws://47.105.180.123:9501/socket.io?sid=' + sid,
+            wsUrl: process.env.WEB_SOCTET_URL+'?sid=' + sid,
             heartbeat: {
                 enabled: true,
                 time: 10000,//连接后,定时发送,否则不段时间不通信会自动断连(时间长短一般是服务端指定的),
@@ -56,8 +56,6 @@ class WsSocket {
         };
 
         ws.onclose = function (evt) { //绑定关闭或断开连接事件
-            console.log('关闭回调参数',evt)
-
             if (_this.config.heartbeat.enabled) {
                 clearInterval(_this.config.heartbeat.setInterval);
             }

@@ -9,7 +9,7 @@
       </div>
       <div class="panel-body">
         <div class="from-box">
-          <input type="text" placeholder="请输入查找的手机号" maxlength="11" autofocus="autofocus" v-model="searchMobile" @input="inputQueryMobile"
+          <input type="text" v-focus placeholder="请输入查找的手机号" maxlength="11" autofocus="autofocus" v-model="searchMobile" @input="inputQueryMobile"
             @keyup.enter="queryMobile(1)">
         </div>
         <p class="search-tip" v-show="errorTip">{{errorTip}}</p>

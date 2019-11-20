@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/pages/Login'
 import dialogue from '@/pages/Dialogue'
+import ChatEditor from '@/components/ChatEditor'
 
 Vue.use(Router)
 
@@ -23,6 +24,16 @@ export default new Router({
         title: 'Lumen IM 聊天室'
       }
     },
+
+    {
+      path: '/editor',
+      name: 'editor',
+      component: ChatEditor,
+      meta: {
+        title: 'Lumen IM 聊天室'
+      }
+    },
+
   ],
-  mode: "hash"
+  mode: "history"
 })

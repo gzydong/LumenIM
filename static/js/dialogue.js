@@ -5,6 +5,7 @@ import UserSetup from '@/components/UserSetup'
 import UserGroupChat from '@/components/UserGroupChat'
 import LaunchGroupChat from '@/components/LaunchGroupChat'
 import SeekFriend from '@/components/SeekFriend'
+import ChatEditor from '@/components/ChatEditor'
 
 import {
   logoutApi,
@@ -36,7 +37,8 @@ export default {
     UserSetup,
     UserGroupChat,
     LaunchGroupChat,
-    SeekFriend
+    SeekFriend,
+    ChatEditor
   },
   data() {
     return {
@@ -74,7 +76,6 @@ export default {
         itemIndex: null, //判断是否选择聊天记录
         minChatRecordId: 0, //这里用户拉取以前的聊天记录 null 为已加载全部
         cahtRecords: [],
-        message: '',
 
         loadStatus: 0, //历史消息加载状态 0:未加载|已加载完成  1:正在加载..
         scrollHeight: 0, //加载历史记录前滚动条的高度
@@ -395,7 +396,7 @@ export default {
 
     //加载Websocket
     loadWebsocket() {
-      this.wsSocketObj = new WsSocket(auth.getSid(), {
+      this.wsSocketObj = new WsSocket(this.$store.state.user.sid, {
         onError: this.onError,
         onOpen: this.onOpen,
         onMessage: this.onMessage,
@@ -448,29 +449,13 @@ export default {
       }
     },
 
-    //发送消息检测
-    sendMsgCheck(e){
-      if(e.keyCode == 13 && this.chatModuleInfo.message == ''){
-        e.preventDefault() // 阻止浏览器默认换行操作
-      }
-    },
-
     //提交发送聊天消息
-    submitSendMesage(e) {
-      if(e.shiftKey){
-        return false;
-      }
-
-      if(this.chatModuleInfo.message == ''){
-        return false;
-      }
-
+    submitSendMesage(text) {
       let info = this.chatModuleInfo;
       let receiveInfo = info.notifyList[info.itemIndex];
       let receive_id = receiveInfo.type == 1 ? receiveInfo.friend_id : receiveInfo.group_id;
 
-      this.wsSocketObj.sendMsg(receiveInfo.type,this.$store.state.user.uid, receive_id, info.message);
-      this.chatModuleInfo.message = '';
+      this.wsSocketObj.sendMsg(receiveInfo.type,this.$store.state.user.uid, receive_id, text);
     },
 
     //接收聊天消息

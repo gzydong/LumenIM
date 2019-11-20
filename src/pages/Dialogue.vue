@@ -85,33 +85,21 @@
               </span>
             </div>
 
-            <div :class="recordInfo.float == 'left' ?'left':'right'" v-for="recordInfo in chatModuleInfo.cahtRecords">
+
+            <div :class="recordInfo.float == 'left' ?'chat-left-box':'chat-right-box'" v-for="recordInfo in chatModuleInfo.cahtRecords">
               <img :src="recordInfo.avatar" @click="catFirendDetail(recordInfo.user_id,2)"  class="img" :onerror="$store.state.user.detaultAvatar"  />
-              <div class="box-group" v-if="recordInfo.float == 'left'">
+              <div  :class="{send:true,leftSend:recordInfo.float == 'left'?true:false,rightSend:recordInfo.float == 'right'?true:false}" >
 
-                <span v-if="recordInfo.float == 'left' && recordInfo.source == 2" class="groupChat ">
-                  {{recordInfo.nickname_remark || recordInfo.nickname }}
-                </span>
+                <!-- 文本内容输出 -->
+                <pre  v-html="recordInfo.text_msg" ></pre>
 
-                <div class="leftSend send"><span v-text="recordInfo.text_msg" ></span><div class="leftArrow arrow"></div>
-                </div>
+                <div :class="{'dialogue-arrow':true,'left-arrow':recordInfo.float == 'left'?true:false,'right-arrow':recordInfo.float == 'right'?true:false}" ></div>
               </div>
-
-              <div class="rightSend send" v-else>
-                <span v-text="recordInfo.text_msg"></span>
-                <div class="rightArrow arrow"></div>
-              </div>
-              <div class="clear"></div>
             </div>
           </main>
 
           <footer id="message-edit">
-            <ul id="edit-toolbar">
-              <li><i class="iconfont icon-biaoqing"></i></li>
-              <li><i class="iconfont icon-file"></i></li>
-              <li><i class="iconfont icon-xinxi1"></i></li>
-            </ul>
-            <textarea  ref='chatMessage' rows="6" v-model.trim="chatModuleInfo.message"  @keydown="sendMsgCheck($event)"  @keyup.enter="submitSendMesage($event)"  placeholder="你想要的聊点什么呢..."></textarea>
+            <chat-editor v-on:send="submitSendMesage"></chat-editor>
           </footer>
         </div>
       </div>
@@ -255,7 +243,7 @@
   </div>
 </template>
 
-<style>
+<style >
   body {
     background: url('//res.wx.qq.com/a/wx_fed/webwx/res/static/img/2zrdI1g.jpg') no-repeat;
     background-size: 100% 100%;

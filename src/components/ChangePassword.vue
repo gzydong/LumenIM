@@ -11,7 +11,7 @@
         <ul>
           <li>
             <label>旧密码:</label>
-            <input type="password" placeholder="请填写旧密码" v-model="oldPassword" autofocus="autofocus" @keyup.enter="submit">
+            <input type="password" v-focus placeholder="请填写旧密码" v-model="oldPassword" autofocus="autofocus" @keyup.enter="submit">
           </li>
           <li>
             <label>新密码:</label>

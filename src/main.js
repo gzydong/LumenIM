@@ -6,12 +6,13 @@ import VueResource from 'vue-resource'
 import store from './store/store'
 import auth from './utils/auth'
 
-import { Notification,Loading,MessageBox} from 'element-ui';
+import { Notification,Loading,MessageBox,Popover} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '../static/css/common.css'
-import '../src/assets/iconfont/iconfont.css'
 
 
+
+Vue.use(Popover);
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$notify = Notification;
@@ -24,7 +25,7 @@ router.beforeEach((to, from, next) => {
   }
 
   // 如果有token 说明该用户已登陆
-  if (auth.checkLogin()) {
+  if (auth.getTokenExpiresin() > 0) {
     if (to.path === '/login') {// 在已登陆的情况下访问登陆页会重定向到首页
         next({path: '/'});
     }else{
@@ -41,6 +42,16 @@ router.beforeEach((to, from, next) => {
 
 Vue.config.productionTip = false
 
+
+
+//自定义聚焦指令 和自定义过滤器一样,我们这里定义的是全局指令
+Vue.directive('focus',{
+  inserted(el) {
+    el.focus()
+  }
+});
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -49,5 +60,8 @@ new Vue({
   components: {
     App
   },
-  template: '<App/>'
+  template: '<App/>',
+  created(){
+    this.$store.dispatch('syncUserInfo');
+  }
 })

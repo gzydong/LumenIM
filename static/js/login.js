@@ -1,6 +1,9 @@
 import auth from "@/utils/auth";
-import {loginApi,registerApi} from '@/services/api.js'
-import validate from '@/utils/validate'
+import {
+  loginApi,
+  registerApi
+} from '@/services/api';
+import validate from '@/utils/validate';
 
 export default {
   name: "loginPage",
@@ -10,20 +13,24 @@ export default {
 
       username: null,
       password: null,
-      loginButton:'登录',
+      loginButton: '登录',
 
-      mobile:'',
-      regPassword:'',
-      regPassword2:'',
-      registerButton:'注册'
+      mobile: '',
+      regPassword: '',
+      regPassword2: '',
+      registerButton: '注册'
     };
+  },
+
+  created() {
+
   },
   methods: {
     //消息提示
-    error(msg){
+    error(msg) {
       this.$notify({
-          title: "温馨提示：",
-          message: msg
+        title: "温馨提示：",
+        message: msg
       });
     },
 
@@ -34,22 +41,23 @@ export default {
     },
 
     //判断是否是IE浏览器
-    isIE:function() {
-        if(!!window.ActiveXObject || "ActiveXObject" in window){
-          return true;
-        }else{
-          return false;
-    　　}
+    isIE: function() {
+      if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        return true;
+      } else {
+        return false;
+      }
     },
 
     //账号注册方法
     register: function() {
-      let that = this,params = {
-        mobile: this.mobile,
-        password: this.regPassword,
-        password2:this.regPassword2,
-        invite_code: ''
-      };
+      let that = this,
+        params = {
+          mobile: this.mobile,
+          password: this.regPassword,
+          password2: this.regPassword2,
+          invite_code: ''
+        };
 
       if (params.mobile == "") {
         this.error("手机号不能为空！");
@@ -78,13 +86,13 @@ export default {
           });
 
           that.registerButton = '注册成功...';
-          setTimeout(function(){
+          setTimeout(function() {
             that.activate = 0;
-          },2000);
-        }else{
+          }, 2000);
+        } else {
           that.registerButton = '注册';
         }
-      }).catch(function (reason) {
+      }).catch(function(reason) {
         that.$notify({
           title: "提示",
           message: reason,
@@ -95,13 +103,15 @@ export default {
 
     // 登录方法
     login: function(e) {
-      let that=this,params = {
-        mobile: this.username,
-        password: this.password
-      };
+      let that = this,
+        params = {
+          mobile: this.username,
+          password: this.password
+        };
 
-      if(this.isIE()){
-          alert('对不起当前已禁止IE浏览器的使用，推荐使用Chrome浏览器、360浏览器、QQ浏览器');return;
+      if (this.isIE()) {
+        alert('对不起当前已禁止IE浏览器的使用，推荐使用Chrome浏览器、360浏览器、QQ浏览器');
+        return;
       }
 
       if (params.mobile == "") {
@@ -116,24 +126,26 @@ export default {
       }
 
 
-      this.loginButton ='登录中..';
+      this.loginButton = '登录中..';
       loginApi(params).then(res => {
         if (res.code == 200) {
-          that.loginButton ='登录成功...';
+          res.data.userInfo.sid = res.data.sid;
+          that.loginButton = '登录成功...';
 
-          auth.setToken({
-            access_token:res.data.access_token,
-            expires_in:res.data.expires_in
+          that.$store.dispatch('login', {
+            authInfo: {
+              access_token: res.data.access_token,
+              expires_in: res.data.expires_in
+            },
+            userInfo:res.data.userInfo
           });
 
-          auth.setSid(res.data.sid);
-          auth.setUserInfo(res.data.userInfo);
-
-          that.$store.dispatch('login');
-          that.$router.push({path: "/"});
+          that.$router.push({
+            path: "/"
+          });
         } else {
           that.error(res.msg);
-          that.loginButton ='登录';
+          that.loginButton = '登录';
         }
       });
     }

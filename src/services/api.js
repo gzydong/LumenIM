@@ -1,6 +1,7 @@
 import {
   post,
-  get
+  get,
+  upload
 } from '@/utils/request.js'
 
 //登录请求接口

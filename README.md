@@ -29,4 +29,49 @@ npm run build
 npm run build --report
 ```
 
-有关后端的相关源码信息请移步至 https://github.com/gzydong/lumenim 
+有关后端的相关源码信息请移步至 https://github.com/gzydong/lumenim
+
+
+关于Nginx的一些配置
+```
+    server {
+        listen       80;
+        server_name  www.your-domain.coom;
+
+        root /project-path/dist;
+        index  index.html
+
+        # 根请求会指向的页面
+        location / {
+          # 此处的 @router 实际上是引用下面的转发，否则在 Vue 路由刷新时可能会抛出 404
+          try_files $uri $uri/ @router;
+          # 请求指向的首页
+          index index.html;
+        }
+
+        # 由于路由的资源不一定是真实的路径，无法找到具体文件
+        # 所以需要将请求重写到 index.html 中，然后交给真正的 Vue 路由处理请求资源
+        location @router {
+          rewrite ^.*$ /index.html last;
+        }
+
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+            expires 30d;
+            access_log off;
+        }
+
+        location ~ .*\.(js|css)?$ {
+            expires 7d;
+            access_log off;
+        }
+
+        location = /favicon.ico {
+          root  /project-path;
+        }
+    }
+```
+
+```
+npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+npm install --ignore-scripts
+```
