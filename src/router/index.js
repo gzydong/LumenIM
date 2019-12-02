@@ -2,8 +2,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/pages/Login'
-import dialogue from '@/pages/Dialogue'
-import ChatEditor from '@/components/ChatEditor'
+import Home from '@/pages/Home'
 
 Vue.use(Router)
 
@@ -18,22 +17,12 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'dialogue',
-      component: dialogue,
+      name: 'home',
+      component: Home,
       meta: {
         title: 'Lumen IM 聊天室'
       }
-    },
-
-    {
-      path: '/editor',
-      name: 'editor',
-      component: ChatEditor,
-      meta: {
-        title: 'Lumen IM 聊天室'
-      }
-    },
-
+    }
   ],
   mode: "history"
 })

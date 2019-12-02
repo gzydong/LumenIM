@@ -5,7 +5,7 @@
       <div class="panel-header">
         <p><img :src="userInfo.avatarurl" :onerror="$store.state.user.detaultAvatar"></p>
         <p class="edit-pic" @click="isAvatarCropper = true">＋ 更换头像</p>
-        <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
+        <i class="close-btn el-icon-circle-close" @click="$store.commit('showUserSetupBox',false)"></i>
       </div>
 
       <div class="panel-body">

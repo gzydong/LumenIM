@@ -1,7 +1,6 @@
 const authorize = 'LUMEN_WEB_AUTHORIAE'
 const userInfo = 'LUMEN_WEB_USER';
 import JsBase64 from 'js-base64'
-import {testApi} from '@/services/api'
 
 export default {
   setData(keyName, data) {
@@ -29,7 +28,8 @@ export default {
 
     this.setData(authorize, data);
   },
-
+  
+  //获取用户token
   getToken() {
     let data = this.getData(authorize);
     if (!data) {
@@ -55,6 +55,7 @@ export default {
     return t < 0 ? 0 : t;
   },
 
+  //清除用户信息
   remove() {
     localStorage.removeItem(authorize);
     localStorage.removeItem(userInfo);

@@ -5,7 +5,7 @@ import UserSetup from '@/components/UserSetup'
 import UserGroupChat from '@/components/UserGroupChat'
 import LaunchGroupChat from '@/components/LaunchGroupChat'
 import SeekFriend from '@/components/SeekFriend'
-import ChatEditor from '@/components/ChatEditor'
+import LumenEditor from '@/components/layout/LumenEditor'
 
 import {
   logoutApi,
@@ -38,7 +38,7 @@ export default {
     UserGroupChat,
     LaunchGroupChat,
     SeekFriend,
-    ChatEditor
+    LumenEditor
   },
   data() {
     return {
@@ -134,10 +134,13 @@ export default {
 
         //统计未处理的好友申请数
         applyNum:0,
-      }
+      },
+
+      loadingError: "this.src='/static/image/loading-error.jpeg'",
     }
   },
   created() {
+
     this.loadWebsocket();
     this.chatLists();
 
@@ -330,6 +333,8 @@ export default {
 
             that.chatModuleInfo.tpmRecordId = null;
           }
+
+          that.$store.commit('updateChatList',list);
         } else {
           that.$notify.error({
             title: '错误',
@@ -577,6 +582,9 @@ export default {
       friendApplyRecords().then(res => {
         if (res.code == 200) {
           that.applyHandle.applyRecordList = res.data.rows
+
+          //更新状态管理器
+          that.$store.commit('updateApply',res.data.rows);
         } else {
           that.$notify.error({
             title: '错误',

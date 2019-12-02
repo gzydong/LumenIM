@@ -4,16 +4,16 @@
     <div class="launchgroup-from-panel">
       <div class="panel-header">
         <p>{{queryGroupId==0?'创建群聊':'请选择需要邀请的好友'}}</p>
-        <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
+        <i class="close-btn el-icon-circle-close" @click="$emit('close')"></i>
       </div>
 
       <div class="panel-body">
         <div class="float-left">
           <ul class="group-from" v-show="!readonly">
-            <li class="group-avatar-box" >
+            <li class="group-avatar-box">
               <label>群头像:</label>
               <div>
-                <img :src="frGroupAvatar" :onerror="$store.state.user.detaultAvatar"  >
+                <img :src="frGroupAvatar" :onerror="$store.state.user.detaultAvatar">
                 <span @click="showAvatarCropper">设置头像</span>
               </div>
             </li>
@@ -27,9 +27,9 @@
             </li>
           </ul>
 
-          <div v-bind:class="{ height100: readonly,'friend-selectd-list':true }"  >
+          <div v-bind:class="{ height100: readonly,'friend-selectd-list':true }">
             <div v-if="groupMember.length == 0" class="no-select-member">{{queryGroupId==0?'您还未选择群聊好友...':'您还未选择需要邀请的好友...'}}</div>
-            <ul v-else >
+            <ul v-else>
               <li v-for='member in groupMember' @click="clickSelect(member.id,member)" :title="member.friend_remark?member.friend_remark:member.nickname">
                 <img :src="member.avatarurl" :onerror="$store.state.user.detaultAvatar">
               </li>
@@ -53,13 +53,14 @@
           </ul>
         </div>
       </div>
+
       <div class="panel-footer">
-        <button class="from-submit" v-if="queryGroupId==0" @click="fromSubmit">立即创建({{ ids.length }})</button>
-        <button class="from-submit" v-else @click="fromSubmit2">立即邀请({{ ids.length }})</button>
+        <button class="from-submit" v-if="queryGroupId==0" @click="createSubmit">立即创建({{ ids.length }})</button>
+        <button class="from-submit" v-else @click="inviteSubmit">立即邀请({{ ids.length }})</button>
       </div>
     </div>
 
-      <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" ></avatar-cropper>
+    <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper"></avatar-cropper>
   </div>
 </template>
 
@@ -69,11 +70,17 @@
     createGroupChatApi,
     inviteGroupMember
   } from '@/services/api'
-  
+
   import AvatarCropper from '@/components/AvatarCropper'
   export default {
     components: {
       AvatarCropper
+    },
+    props: {
+      groupId: {
+        type: [String, Number],
+        default: null,
+      }
     },
     data() {
       return {
@@ -83,22 +90,20 @@
         ids: [], //选择的好友id
         groupMember: [], //群聊成员
 
-        frGroupAvatar:'',
+        frGroupAvatar: '',
         frGroupName: '',
         frGroupProfile: '',
 
         readonly: false,
         queryGroupId: 0,
 
-        isAvatarCropper:false,
+        isAvatarCropper: false,
       }
     },
     created() {
-      let groupid = sessionStorage.getItem('invite_group_id');
-      sessionStorage.removeItem('invite_group_id');
-      if (groupid) {
+      if (this.groupId > 0) {
         this.readonly = true;
-        this.queryGroupId = groupid;
+        this.queryGroupId = this.groupId;
       }
 
       this.friendsApi();
@@ -149,13 +154,14 @@
           if (res.code == 200) {
             that.friendsList = that.searchFriendsList = res.data;
           }
-        })
+        });
       },
 
-      fromSubmit() {
+      //创建聊天群
+      createSubmit() {
         let that = this,
           data = {
-            group_avatar:this.frGroupAvatar,
+            group_avatar: this.frGroupAvatar,
             group_name: this.frGroupName,
             group_profile: this.frGroupProfile,
             uids: this.ids.join(',')
@@ -172,39 +178,35 @@
 
         createGroupChatApi(data).then((res) => {
           if (res.code == 200) {
-            that.$emit('close', 1);
+            that.$emit('create-success');
+          } else {
+            alert('创建群聊失败');
           }
         });
       },
 
       //好友邀请提交
-      fromSubmit2() {
-        let that = this,
-          data = {
-            group_id: this.queryGroupId,
-            uids: this.ids.join(',')
-          };
-
-        inviteGroupMember(data).then((res) => {
+      inviteSubmit() {
+        let that = this;
+        inviteGroupMember({
+          group_id: this.queryGroupId,
+          uids: this.ids.join(',')
+        }).then((res) => {
           if (res.code == 200) {
-            that.$emit('close', 2);
+            that.$emit('invite-success');
           } else {
-            this.$notify.info({
-              title: '提示',
-              message: '邀请好友失败...',
-              position: 'bottom-right'
-            });
+            alert('邀请好友失败...');
           }
         });
       },
 
-      showAvatarCropper(){
+      showAvatarCropper() {
         this.isAvatarCropper = true;
       },
 
-      closeAvatarCropper(type,avatar = ''){
+      closeAvatarCropper(type, avatar = '') {
         this.isAvatarCropper = false;
-        if(type == 1){
+        if (type == 1) {
           this.frGroupAvatar = avatar;
         }
       }
@@ -308,12 +310,15 @@
     width: 249px;
   }
 
-  .group-avatar-box div img{
-    width: 50px;height: 50px;box-shadow: 1px 1px 9px #cfc3c3;border-radius: 5px;
+  .group-avatar-box div img {
+    width: 50px;
+    height: 50px;
+    box-shadow: 1px 1px 9px #cfc3c3;
+    border-radius: 5px;
     cursor: pointer;
   }
 
-  .group-avatar-box div span{
+  .group-avatar-box div span {
     height: 30px;
     width: 70px;
     display: inline-block;
@@ -370,7 +375,7 @@
     padding: 10px;
   }
 
-  .height100{
+  .height100 {
     height: 100%;
   }
 

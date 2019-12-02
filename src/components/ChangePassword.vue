@@ -4,7 +4,7 @@
     <div class="pwd-from-panel">
       <div class="panel-header">
         <p>密码修改</p>
-        <i class="iconfont icon-guanbi11" v-on:click="$emit('close',0)"></i>
+        <i class="iconfont icon-guanbi11" v-on:click="$store.commit('showPasswordBox',false)"></i>
       </div>
 
       <div class="panel-body">
@@ -87,7 +87,7 @@
             that.oldPassword = '';
             that.newPassword = '';
             that.repeatPassword = '';
-            that.$emit('close', 1);
+            that.$store.commit('showPasswordBox',false);
           } else {
             that.error = res.msg;
             setTimeout(function() {

@@ -75,3 +75,14 @@ ol {
 .pointer {
   cursor: pointer;
 }
+
+
+.lumen-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  background-color: #E4E4E5;
+}
+
+.lumen-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #C0BEBC;
+}

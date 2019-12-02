@@ -35,7 +35,8 @@ module.exports = {
 		alias: {
 			'vue$': 'vue/dist/vue.esm.js',
 			'@': resolve('src'),
-			'request': resolve('src/request')
+			'request': resolve('src/request'),
+			'@static': resolve('static')
 		}
 	},
 	module: {
@@ -75,7 +76,7 @@ module.exports = {
 					name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
 				}
 			},
-      { 
+      {
         //手动添加这一条，相当于是编译识别sass!
         test: /\.scss$/,
         loaders: ["style", "css", "sass"]

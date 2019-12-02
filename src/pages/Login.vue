@@ -33,13 +33,10 @@
           </div>
           <button class="userRegister" @click="register">{{registerButton}}</button>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-  @import url("../../static/css/login.css");
-</style>
-<script src="../../static/js/login.js"></script>
+<style scoped src="@static/css/login.css"></style>
+<script src="@static/js/login.js"></script>

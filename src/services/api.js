@@ -147,3 +147,8 @@ export const friendApplyNumApi = ()=>{
 export const setUserGroupCardApi = (data) =>{
   return post('/api/chat/set-group-card', data);
 }
+
+//上传图片接口
+export const uploadImgApi = (data)=>{
+  return upload('/api/upload/img',data);
+}

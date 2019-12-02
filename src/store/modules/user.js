@@ -54,10 +54,10 @@ const user = {
     logout({ commit,state },$router){
       logoutApi().then((res) =>{
         auth.remove();
-        $router.push({path: '/login'});
+        location.reload();
       }).catch(res =>{
         auth.remove();
-        $router.push({path: '/login'});
+        location.reload();
       })
     },
     //同步登录用户信息

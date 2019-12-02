@@ -1,70 +1,86 @@
 /** 公共方法类 */
 
-// 获得当前时间
-export function getNowTime() {
-  // 加0
-  function time(num) {
-    if (num < 10) {
-      num = '0' + num
-    }
-    return num;
-  }
-  var myDate = new Date();
-  myDate.getYear(); //获取当前年份(2位)
-  myDate.getFullYear(); //获取完整的年份(4位,1970-????)
-  myDate.getMonth(); //获取当前月份(0-11,0代表1月)
-  myDate.getDate(); //获取当前日(1-31)
-  myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
-  myDate.getTime(); //获取当前时间(从1970.1.1开始的毫秒数)
-  myDate.getHours(); //获取当前小时数(0-23)
-  myDate.getMinutes(); //获取当前分钟数(0-59)
-  myDate.getSeconds(); //获取当前秒数(0-59)
-  myDate.getMilliseconds(); //获取当前毫秒数(0-999)
-  myDate.toLocaleDateString(); //获取当前日期
-  var nowTime = myDate.getFullYear() + '-' + time(myDate.getMonth() + 1) + '-' + myDate.getDate() + ' ' + time(myDate.getHours()) + ':' + time(myDate.getMinutes()) + ':' + time(myDate.getSeconds());
+/**
+ * 格式化时间
+ *
+ * @param {Object} fmt
+ * @param {Object} date
+ */
+export function dateFormat(fmt, date) {
+  let ret;
+  let opt = {
+    "Y+": date.getFullYear().toString(), // 年
+    "m+": (date.getMonth() + 1).toString(), // 月
+    "d+": date.getDate().toString(), // 日
+    "H+": date.getHours().toString(), // 时
+    "M+": date.getMinutes().toString(), // 分
+    "S+": date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
 
-  return nowTime;
+  for (let k in opt) {
+    ret = new RegExp("(" + k + ")").exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+    };
+  };
+
+  return fmt;
 }
 
-
-
+/**
+ * 人性化时间显示
+ * 
+ * @param {Object} datetime
+ */
 export function formateTime(datetime) {
-  let nowTime = getNowTime().substr(0, 10);
-  let listTime = datetime.substr(0, 10);
+  datetime = datetime.replace(/-/g, "/");
 
-  if (nowTime === listTime) {
-    return datetime.substr(11, 5);
-  } else {
-    return datetime.substr(5, 5);
+  //当前时间戳
+  let time = new Date();
+  let outTime = new Date(datetime);
+  if (/^[1-9]\d*$/.test(datetime)) {
+    outTime = new Date(parseInt(datetime) * 1000);
   }
 
-}
+  if (time.getTime() < outTime.getTime()) {
+    return dateFormat("YYYY/mm/dd HH:MM", outTime);
+  }
 
+  if (time.getFullYear() != outTime.getFullYear()) {
+    return dateFormat("YYYY/mm/dd HH:MM", outTime);
+  }
 
+  if (time.getMonth() != outTime.getMonth()) {
+    return dateFormat("mm/dd HH:MM", outTime);
+  }
 
-export function trim(str){
-   return str.replace(/(^\s*)|(\s*$)/g, "");
-}
+  if (time.getDate() != outTime.getDate()) {
+    let day = outTime.getDate() - time.getDate();
+    if (day > 0) {
+      return dateFormat("mm-dd HH:MM", outTime);
+    }
 
+    if (day == -1) {
+      return dateFormat("昨天 HH:MM", outTime);
+    }
 
-export function checkClient(){
-  let ua = navigator.userAgent;
-  let browser = {},
-      weixin = ua.match(/MicroMessenger\/([^\s]+)/i),
-      webkit = ua.match(/WebKit\/([\d.]+)/i),
-      android = ua.match(/(Android)\s+([\d.]+)/i),
-      ipad = ua.match(/(iPad).*OS\s([\d_]+)/i),
-      ipod = ua.match(/(iPod).*OS\s([\d_]+)/i),
-      iphone = !ipod && !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/i),
-      webos = ua.match(/(webOS|hpwOS)[\s\/]([\d.]+)/i),
-      touchpad = webos && ua.match(/TouchPad/i),
-      kindle = ua.match(/Kindle\/([\d.]+)/i),
-      silk = ua.match(/Silk\/([\d._]+)/i),
-      blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/i),
-      mqqbrowser = ua.match(/MQQBrowser\/([\d.]+)/i),
-      chrome = ua.match(/CriOS\/([\d.]+)/i),
-      opera = ua.match(/Opera\/([\d.]+)/i),
-      safari = ua.match(/Safari\/([\d.]+)/i);
+    if (day == -2) {
+      return dateFormat("前天 HH:MM", outTime);
+    }
 
-      console.log(ua)
+    return dateFormat("mm-dd HH:MM", outTime);
+  }
+
+  if (time.getHours() != outTime.getHours()) {
+    return dateFormat("HH:MM", outTime);
+  }
+
+  let minutes = outTime.getMinutes() - time.getMinutes();
+  if (minutes == 0) {
+    return '刚刚';
+  }
+
+  minutes = Math.abs(minutes)
+  return `${minutes}分钟前`;
 }

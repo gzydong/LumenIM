@@ -17,7 +17,7 @@ axios.interceptors.request.use(function(config) {
   return Promise.reject(error);
 });
 
-
+//自动刷新token
 // axios.interceptors.response.use(success, async (error) => {
 //  let {status} = error.response;
 //   if (status == 401) {
@@ -34,29 +34,25 @@ axios.interceptors.request.use(function(config) {
 //   return res
 // }
 
-
-
-
 export const request = (option) => {
   return new Promise((resolve, reject) => {
     axios(option).then(v => {
       if (v && v.status == 200) {
-        if (v.data.code == 401) {
-          auth.remove();
-        }
         resolve(v.data);
       } else {
         reject(v);
       }
     }).catch(err => {
-      Notification({
-        title: '温馨提示:',
-        message: '接口或处理逻辑出错,...',
-        position: 'bottom-right'
-      });
+      if (err.response.status == 401) {
+        auth.remove();
+        location.reload();
+      }else{
+        Notification({
+          message: '接口或处理逻辑出错,...',
+          position: 'top-right'
+        });
+      }
 
-
-      console.log(err,err.response)
       reject(err);
     })
   })
@@ -72,7 +68,7 @@ export const request = (option) => {
 export const get = (url, data = {}, options = {}) => {
   const params = {
     url,
-    params:data,
+    params: data,
     method: 'get',
     ...options
   }
@@ -99,8 +95,14 @@ export const post = (url, data = {}, options = {}) => {
   return request(params)
 }
 
-
-export const upload = (url, data = {},options = {})=>{
+/**
+ * 发送上传文件 post 请求
+ * @param {string} url
+ * @param {object} data
+ * @param {object} options
+ * @returns {Promise<any>}
+ */
+export const upload = (url, data = {}, options = {}) => {
   const params = {
     url,
     data,

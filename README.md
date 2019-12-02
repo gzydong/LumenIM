@@ -14,8 +14,12 @@
     <img src="https://t1.picb.cc/uploads/2019/11/11/kVMZMg.png"  width="500" >
 </div>
 
-###项目安装及部署
+### 前端项目安装及部署
+##### 注意需要与后端一起使用，有关后端部署及相关源码信息请移步至 [https://github.com/gzydong/lumenim](https://github.com/gzydong/lumenim)
 ``` bash
+# 克隆项目源码包
+git clone git@github.com:gzydong/lumenim-web.git
+
 # 安装项目依赖扩展组件
 npm install
 
@@ -29,46 +33,45 @@ npm run build
 npm run build --report
 ```
 
-有关后端的相关源码信息请移步至 https://github.com/gzydong/lumenim
 
 
 关于Nginx的一些配置
 ```
-    server {
-        listen       80;
-        server_name  www.your-domain.coom;
+server {
+    listen       80;
+    server_name  www.your-domain.coom;
 
-        root /project-path/dist;
-        index  index.html
+    root /project-path/dist;
+    index  index.html
 
-        # 根请求会指向的页面
-        location / {
-          # 此处的 @router 实际上是引用下面的转发，否则在 Vue 路由刷新时可能会抛出 404
-          try_files $uri $uri/ @router;
-          # 请求指向的首页
-          index index.html;
-        }
-
-        # 由于路由的资源不一定是真实的路径，无法找到具体文件
-        # 所以需要将请求重写到 index.html 中，然后交给真正的 Vue 路由处理请求资源
-        location @router {
-          rewrite ^.*$ /index.html last;
-        }
-
-        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
-            expires 30d;
-            access_log off;
-        }
-
-        location ~ .*\.(js|css)?$ {
-            expires 7d;
-            access_log off;
-        }
-
-        location = /favicon.ico {
-          root  /project-path;
-        }
+    # 根请求会指向的页面
+    location / {
+      # 此处的 @router 实际上是引用下面的转发，否则在 Vue 路由刷新时可能会抛出 404
+      try_files $uri $uri/ @router;
+      # 请求指向的首页
+      index index.html;
     }
+
+    # 由于路由的资源不一定是真实的路径，无法找到具体文件
+    # 所以需要将请求重写到 index.html 中，然后交给真正的 Vue 路由处理请求资源
+    location @router {
+      rewrite ^.*$ /index.html last;
+    }
+
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+        expires 30d;
+        access_log off;
+    }
+
+    location ~ .*\.(js|css)?$ {
+        expires 7d;
+        access_log off;
+    }
+
+    location = /favicon.ico {
+      root  /project-path;
+    }
+}
 ```
 
 ```

@@ -5,12 +5,12 @@
     <div v-if="!query" class="query-user-panel">
       <div class="panel-header">
         <h5>好友搜索</h5>
-        <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
+        <i class="close-btn el-icon-circle-close" @click="$store.commit('showSeekFriendBox',false);"></i>
       </div>
       <div class="panel-body">
         <div class="from-box">
-          <input type="text" v-focus placeholder="请输入查找的手机号" maxlength="11" autofocus="autofocus" v-model="searchMobile" @input="inputQueryMobile"
-            @keyup.enter="queryMobile(1)">
+          <input type="text" v-focus placeholder="请输入查找的手机号" maxlength="11" autofocus="autofocus" v-model="searchMobile"
+            @input="inputQueryMobile" @keyup.enter="queryMobile(1)">
         </div>
         <p class="search-tip" v-show="errorTip">{{errorTip}}</p>
       </div>
@@ -25,7 +25,7 @@
 
         <p class="previous-step" v-show="isReturn" @click="query = false"><i class="el-icon-back"></i> 返回</p>
 
-        <i class="close-btn el-icon-circle-close" v-on:click="$emit('close',0)"></i>
+        <i class="close-btn el-icon-circle-close" @click="$store.commit('showSeekFriendBox',false);"></i>
       </div>
 
       <div class="panel-body">
@@ -44,7 +44,7 @@
               {{userInfo.nicknameRemark?userInfo.nicknameRemark:'暂无备注'}} <i class="iconfont icon-beizhu pointer edit-remark-icon"
                 @click="isEditRemark = true;editText = userInfo.nicknameRemark"></i>
             </p>
-            <p v-else><input type="text" class="edit-input" v-model="editText" @keyup.enter="editRemark"><span class="input-submit"
+            <p v-else><input type="text" class="edit-input" v-focus v-model="editText" @keyup.enter="editRemark"><span class="input-submit"
                 @click="editRemark">确认</span></p>
           </li>
 
@@ -67,7 +67,7 @@
       </div>
 
       <div v-if="userInfo.friendStatus == 2" class="panel-footer">
-        <p class="green-color" @click="$emit('close',userInfo.user_id)">发消息</p>
+        <p class="green-color" @click="sendMessage(userInfo)">发消息</p>
         <p class="red-color" @click="delFirend">删除好友</p>
       </div>
       <div v-else-if="userInfo.friendApply == 1" class="panel-footer padding-none">
@@ -86,9 +86,15 @@
     getUserDetailApi,
     searchUserApi,
     sendFriendApplyApi,
-    friendRemarkApi
+    friendRemarkApi,
+    crateChatListApi
   } from '@/services/api'
   import validate from '@/utils/validate'
+
+  import {
+    dateFormat,
+    formateTime
+  } from '@/utils/functions';
 
   export default {
     data() {
@@ -130,7 +136,8 @@
 
       //手机号查询
       queryMobile(type = 1) {
-        let that = this,data = {};
+        let that = this,
+          data = {};
         if (type == 1) {
           if (!validate.validatPhone(this.searchMobile)) {
             this.errorTip = '手机号格式不正确';
@@ -174,7 +181,6 @@
           friend_id: this.userInfo.user_id,
           remarks: this.applyRemark
         }).then((res) => {
-          console.log(res)
           if (res.code == 200) {
             that.showFromBox = false;
             that.applyRemark = '';
@@ -192,25 +198,77 @@
             friend_id: this.userInfo.user_id,
             remarks: this.editText
           };
-          
-        if(data.remarks == that.userInfo.nicknameRemark){
+
+        if (data.remarks == that.userInfo.nicknameRemark) {
           that.isEditRemark = false;
           return;
         }
-          
+
 
         friendRemarkApi(data).then(res => {
           if (res.code == 200) {
             that.isEditRemark = false;
             that.userInfo.nicknameRemark = data.remarks;
+
+            that.$store.dispatch('asyncFriendInfo',data);
           }
         })
       },
 
-
+      //删除好友方法
       delFirend() {
         alert('此功能暂未开发，请耐心等待...')
-      }
+      },
+
+      // 获取聊天列表数组索引
+      getChatListIdx(index_name) {
+        let list = this.$store.state.dialogue.chatModule.chatList;
+        for (let i in list) {
+          if (list[i].index_name == index_name) {
+            return i;
+          }
+        }
+        return -1;
+      },
+
+      //发送好友消息
+      sendMessage(userInfo) {
+        this.$store.commit('updateNavModule', 0);
+        this.$store.commit('showSeekFriendBox', false);
+
+        let index_name = `1_${userInfo.user_id}`;
+        let idx = this.getChatListIdx(index_name);
+
+        if (idx < 0) {
+          //创建聊天列表
+          crateChatListApi({
+            receive_id: userInfo.user_id,
+            type: 1
+          });
+          this.$store.commit('updateChatList', {
+            type: 4,
+            message: {
+              type: 1,
+              group_id: 0,
+              friend_id: userInfo.user_id,
+              index_name: `1_${userInfo.user_id}`,
+              avatar: userInfo.avatarurl,
+              name: userInfo.nickname,
+              nickname: userInfo.nicknameRemark,
+              unread_num: 0,
+              msg_text: '...',
+              created_at: dateFormat('YYYY/mm/dd HH:MM:SS',new Date())
+            }
+          });
+        }
+
+        this.$store.commit('func', {
+          idx: index_name,
+          minRecordId: 0,
+          cahtRecords: []
+        });
+      },
+
     }
   }
 </script>
