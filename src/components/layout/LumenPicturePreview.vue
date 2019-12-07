@@ -3,7 +3,7 @@
     <!-- 这是聊天图片预览插件 -->
     <div class="editor-image-preview">
       <div class="image-preview-box">
-        <img src="http://47.105.180.123:5000/chatimg/20191201/EEq9Kq1tzGK8bnyv16kcxNflwd8XiQDs2Q1tyyTN.jpeg">
+        <img src="http://47.105.180.123:5000/chatimg/20191204/6WP171izhBc5aGteV722tAEJpoHnGvG7jKzGerOg.jpeg">
       </div>
     </div>
   </div>
@@ -38,13 +38,12 @@
     top: 0;
     bottom: 0;
     background: rgb(0, 0, 0, .3);
-    width: fit-content;
     margin: auto;
+    text-align: center;
   }
 
-  .image-preview-box img{
+  .image-preview-box img {
     max-width: 90%;
     max-height: 90%;
   }
-
 </style>

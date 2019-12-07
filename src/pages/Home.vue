@@ -31,7 +31,7 @@
           <li @click="showBox('showUserSetupBox')">个人信息</li>
           <li @click="showBox('showPasswordBox')">密码修改</li>
           <li @click="showBox('showSeekFriendBox')">添加好友</li>
-          <li @click="showBox('showlaunchGroupChatBox')">创建群聊</li>
+          <li @click="isLaunchGroupChat = true;setupToolbar= false;">创建群聊</li>
           <li @click="logout">退出登录</li>
         </ul>
       </div>
@@ -57,7 +57,10 @@
     <user-setup v-if="$store.state.dialogue.subgroup.userSetupIsOpen"></user-setup>
 
     <!-- 添加、查找好友组件 -->
-    <seek-friend v-if="$store.state.dialogue.subgroup.seekFriendIsOpen"></seek-friend>
+    <seek-friend v-if="$store.state.dialogue.subgroup.seekFriendIsOpen" @sendFirendMsg="sendFirendMsg"></seek-friend>
+
+    <!-- 创建群聊组件 -->
+    <launch-group-chat v-if="isLaunchGroupChat" @close="isLaunchGroupChat = false" @create-success="launchGroupChatSuccess"></launch-group-chat>
   </div>
 </template>
 
@@ -79,12 +82,16 @@
 
   //用户搜索组件
   import SeekFriend from '@/components/SeekFriend';
+  //创建群聊组件
+  import LaunchGroupChat from '@/components/LaunchGroupChat';
 
   import ChatDialoguePage from '@/pages/ChatDialoguePage';
   import FridensPanelPage from '@/pages/FridensPanelPage';
   import GroupPanelPage from '@/pages/GroupPanelPage';
 
-  var newMessageRemind = {
+  import MessageHandle from '@/utils/MessageHandle';
+
+  let newMessageRemind = {
     _step: 0,
     _title: document.title,
     _timer: null,
@@ -115,7 +122,6 @@
     }
   };
 
-
   export default {
     name: "lumen-dialogue-panel",
     components: {
@@ -124,7 +130,8 @@
       SeekFriend,
       ChatDialoguePage,
       FridensPanelPage,
-      GroupPanelPage
+      GroupPanelPage,
+      LaunchGroupChat
     },
     computed: {
       unreadNum() {
@@ -147,6 +154,8 @@
 
         //WsSocket
         wsSocketObj: null,
+
+        isLaunchGroupChat: false
       }
     },
     created() {
@@ -154,8 +163,6 @@
 
       //异步获取用户相关数据
       this.$store.dispatch('asyncServer');
-
-      // newMessageRemind.show();
     },
     methods: {
       //左菜单点击事件
@@ -208,14 +215,26 @@
             });
             break;
           case 'chat_message':
-            this.$refs.refDialoguePage.syncMessage(message, this.activeModule);
+            this.$refs.refDialoguePage.syncMessage(message, this.$store.getters.navModule);
             break;
           case 'join_group':
-            this.$notify({
-              message: `您已成功加入[${message.group_name}]聊天群...`,
-              position: 'top-right'
-            });
+            let idx = this.$refs.refDialoguePage.getIndex(`2_${message.group_info.id}`);
+            if (idx == -1) {
+              this.$refs.refDialoguePage.unshiftDialogue(MessageHandle.getDialogueObj({
+                type: 2,
+                index_name: `2_${message.group_info.id}`,
+                group_id: message.group_info.id,
+                avatar: message.group_info.avatarurl,
+                name: message.group_info.group_name
+              }));
 
+              this.$notify({
+                message: `您已成功加入[${message.group_info.group_name}]聊天群...`,
+                position: 'top-right'
+              });
+            }
+
+            this.$refs.refDialoguePage.syncMessage(message.message, this.$store.getters.navModule);
             break;
           case 'friend_apply':
             this.$notify({
@@ -228,12 +247,31 @@
         }
       },
 
-      supported() {
-        if (window.webkitNotifications) {
-          alert('浏览器支持Notifications');
-        } else {
-          alert('浏览器不支持Notifications');
+      //发起群聊成功后回调方法
+      launchGroupChatSuccess(data) {
+        this.isLaunchGroupChat = false;
+        let groupInfo = data.group_info;
+        this.$refs.refDialoguePage.clickTab(1, {
+          type: 2,
+          group_id: groupInfo.id,
+          friend_id: 0,
+          index_name: `2_${groupInfo.id}`,
+          avatar: groupInfo.avatarurl,
+          name: groupInfo.group_name,
+          created_at: groupInfo.created_at
+        });
+
+        this.$store.commit('updateNavModule', 0);
+      },
+
+      sendFirendMsg(friendInfo) {
+        let index = this.$refs.refDialoguePage.getIndex(friendInfo.index_name);
+        if (index >= 0) {
+          this.$refs.refDialoguePage.clickTab(2, friendInfo.index_name);
+          return;
         }
+
+        this.$refs.refDialoguePage.clickTab(1, friendInfo);
       }
     }
   };

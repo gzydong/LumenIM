@@ -2,7 +2,7 @@
   <div id="lumen-search">
     <div class="lumen-search">
       <i class="lumen-icon-sousuo iconfont icon-sousuo"></i>
-      <input type="text" ref="lumenSearchInput" :placeholder="placeholder" v-model="search" @change="change" class="lumen-search-input"
+      <input type="text" ref="lumenSearchInput" :placeholder="placeholder" v-model="search" @keyup.enter="change" class="lumen-search-input"
         :class="{'lumen-bg-white':search?true:false}">
       <i class="lumen-icon-open iconfont icon-jia" @click="open"></i>
       <i class="lumen-icon-clear iconfont icon-RectangleCopy" v-show="search" @click="clear"></i>

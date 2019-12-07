@@ -4,7 +4,7 @@
     <div class="launchgroup-from-panel">
       <div class="panel-header">
         <p>{{queryGroupId==0?'创建群聊':'请选择需要邀请的好友'}}</p>
-        <i class="close-btn el-icon-circle-close" @click="$emit('close')"></i>
+        <i class="iconfont icon-guanbi close-btn" @click="$emit('close')"></i>
       </div>
 
       <div class="panel-body">
@@ -27,7 +27,7 @@
             </li>
           </ul>
 
-          <div v-bind:class="{ height100: readonly,'friend-selectd-list':true }">
+          <div class="lumen-scrollbar" v-bind:class="{ height100: readonly,'friend-selectd-list':true}">
             <div v-if="groupMember.length == 0" class="no-select-member">{{queryGroupId==0?'您还未选择群聊好友...':'您还未选择需要邀请的好友...'}}</div>
             <ul v-else>
               <li v-for='member in groupMember' @click="clickSelect(member.id,member)" :title="member.friend_remark?member.friend_remark:member.nickname">
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper"></avatar-cropper>
+    <lumen-avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper"></lumen-avatar-cropper>
   </div>
 </template>
 
@@ -68,13 +68,13 @@
   import {
     groupChatMemebers,
     createGroupChatApi,
-    inviteGroupMember
+    inviteGroupMember,
   } from '@/services/api'
 
-  import AvatarCropper from '@/components/AvatarCropper'
+  import LumenAvatarCropper from '@/components/layout/LumenAvatarCropper'
   export default {
     components: {
-      AvatarCropper
+      LumenAvatarCropper
     },
     props: {
       groupId: {
@@ -178,7 +178,7 @@
 
         createGroupChatApi(data).then((res) => {
           if (res.code == 200) {
-            that.$emit('create-success');
+            that.$emit('create-success', res.data);
           } else {
             alert('创建群聊失败');
           }
@@ -231,7 +231,9 @@
     height: 550px;
     background: #FFFFFF;
     margin: auto auto;
-    margin-top: calc(50vh - 225px);
+    margin-top: calc((100vh - 550px) / 2);
+    margin-top: -moz-calc((100vh - 550px) / 2);
+    margin-top: -webkit-calc((100vh - 550px) / 2);
   }
 
 
@@ -245,11 +247,11 @@
 
   .launchgroup-from-panel .panel-header .close-btn {
     position: absolute;
-    right: -40px;
+    right: -30px;
     top: 0px;
-    font-size: 26px;
+    font-size: 20px;
     cursor: pointer;
-    color: #FFF4F4;
+    color: white;
   }
 
   .launchgroup-from-panel .panel-header p {
@@ -372,7 +374,8 @@
     height: 250px;
     background: #fcfcfc;
     box-shadow: inset 3px 1px 8px 3px #f9f4f4;
-    padding: 10px;
+    padding: 8px;
+    overflow-y: auto;
   }
 
   .height100 {
@@ -472,6 +475,7 @@
   .float-right ul li img {
     width: 35px;
     height: 35px;
+    border-radius: 50%;
   }
 
   .float-right ul li .friend-nickname {

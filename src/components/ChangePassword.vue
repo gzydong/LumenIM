@@ -1,6 +1,6 @@
 <template>
   <!-- 用户密码修改组件 -->
-  <div id="pwd-mask" >
+  <div id="pwd-mask">
     <div class="pwd-from-panel">
       <div class="panel-header">
         <p>密码修改</p>
@@ -11,7 +11,8 @@
         <ul>
           <li>
             <label>旧密码:</label>
-            <input type="password" v-focus placeholder="请填写旧密码" v-model="oldPassword" autofocus="autofocus" @keyup.enter="submit">
+            <input type="password" v-focus placeholder="请填写旧密码" v-model="oldPassword" autofocus="autofocus"
+              @keyup.enter="submit">
           </li>
           <li>
             <label>新密码:</label>
@@ -27,7 +28,8 @@
       </div>
 
       <div class="panel-footer">
-        <button  :class="(oldPassword != '' && newPassword !='' && repeatPassword !='') ? 'pwd-from-submit btn-bag' : 'pwd-from-submit' "   @click="submit">立即修改</button>
+        <button :class="(oldPassword != '' && newPassword !='' && repeatPassword !='') ? 'pwd-from-submit btn-bag' : 'pwd-from-submit' "
+          @click="submit">立即修改</button>
       </div>
     </div>
   </div>
@@ -35,7 +37,9 @@
 
 <script>
   import validate from '@/utils/validate'
-  import {changePwdApi} from '@/services/api'
+  import {
+    changePwdApi
+  } from '@/services/api'
   export default {
     data() {
       return {
@@ -44,9 +48,6 @@
         repeatPassword: '',
         error: ''
       }
-    },
-    created() {
-
     },
     methods: {
       submit() {
@@ -87,7 +88,7 @@
             that.oldPassword = '';
             that.newPassword = '';
             that.repeatPassword = '';
-            that.$store.commit('showPasswordBox',false);
+            that.$store.commit('showPasswordBox', false);
           } else {
             that.error = res.msg;
             setTimeout(function() {
@@ -214,7 +215,7 @@
     color: #fff;
   }
 
-  .btn-bag{
-    background:#31c9fe !important;
+  .btn-bag {
+    background: #31c9fe !important;
   }
 </style>

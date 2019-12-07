@@ -1,7 +1,8 @@
 .dialogue-panel-body {
   max-width: 1000px;
-  min-width: 800px;
-  height: 770px;
+  min-width: 650px;
+  min-height: 300px;
+  max-height: 770px;
   box-shadow: -3px -1px 20px #9a9a9a;
   background-color: black;
 

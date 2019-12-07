@@ -17,12 +17,7 @@ const store = new Vuex.Store({
 
     //统计消息未读数
     unreadNum: state => {
-      let num = 0;
-      state.dialogue.chatModule.chatList.map(v => {
-        num += parseInt(v.unread_num)
-      });
-
-      return num;
+      return state.dialogue.unreadNum;
     },
     applyUnreadNum: state => {
       return state.dialogue.applyUnreadNum;

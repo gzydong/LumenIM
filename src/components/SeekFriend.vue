@@ -5,7 +5,7 @@
     <div v-if="!query" class="query-user-panel">
       <div class="panel-header">
         <h5>好友搜索</h5>
-        <i class="close-btn el-icon-circle-close" @click="$store.commit('showSeekFriendBox',false);"></i>
+        <i class="iconfont icon-guanbi close-btn" style="color: white;" @click="$store.commit('showSeekFriendBox',false);"></i>
       </div>
       <div class="panel-body">
         <div class="from-box">
@@ -25,7 +25,7 @@
 
         <p class="previous-step" v-show="isReturn" @click="query = false"><i class="el-icon-back"></i> 返回</p>
 
-        <i class="close-btn el-icon-circle-close" @click="$store.commit('showSeekFriendBox',false);"></i>
+        <i class="iconfont icon-guanbi close-btn" @click="$store.commit('showSeekFriendBox',false);"></i>
       </div>
 
       <div class="panel-body">
@@ -44,8 +44,8 @@
               {{userInfo.nicknameRemark?userInfo.nicknameRemark:'暂无备注'}} <i class="iconfont icon-beizhu pointer edit-remark-icon"
                 @click="isEditRemark = true;editText = userInfo.nicknameRemark"></i>
             </p>
-            <p v-else><input type="text" class="edit-input" v-focus v-model="editText" @keyup.enter="editRemark"><span class="input-submit"
-                @click="editRemark">确认</span></p>
+            <p v-else><input type="text" class="edit-input" v-focus v-model="editText" @keyup.enter="editRemark"><span
+                class="input-submit" @click="editRemark">确认</span></p>
           </li>
 
           <li style="position: relative;">
@@ -89,12 +89,8 @@
     friendRemarkApi,
     crateChatListApi
   } from '@/services/api'
-  import validate from '@/utils/validate'
 
-  import {
-    dateFormat,
-    formateTime
-  } from '@/utils/functions';
+  import validate from '@/utils/validate'
 
   export default {
     data() {
@@ -204,13 +200,12 @@
           return;
         }
 
-
         friendRemarkApi(data).then(res => {
           if (res.code == 200) {
             that.isEditRemark = false;
             that.userInfo.nicknameRemark = data.remarks;
 
-            that.$store.dispatch('asyncFriendInfo',data);
+            that.$store.dispatch('asyncFriendInfo', data);
           }
         })
       },
@@ -235,40 +230,15 @@
       sendMessage(userInfo) {
         this.$store.commit('updateNavModule', 0);
         this.$store.commit('showSeekFriendBox', false);
-
-        let index_name = `1_${userInfo.user_id}`;
-        let idx = this.getChatListIdx(index_name);
-
-        if (idx < 0) {
-          //创建聊天列表
-          crateChatListApi({
-            receive_id: userInfo.user_id,
-            type: 1
-          });
-          this.$store.commit('updateChatList', {
-            type: 4,
-            message: {
-              type: 1,
-              group_id: 0,
-              friend_id: userInfo.user_id,
-              index_name: `1_${userInfo.user_id}`,
-              avatar: userInfo.avatarurl,
-              name: userInfo.nickname,
-              nickname: userInfo.nicknameRemark,
-              unread_num: 0,
-              msg_text: '...',
-              created_at: dateFormat('YYYY/mm/dd HH:MM:SS',new Date())
-            }
-          });
-        }
-
-        this.$store.commit('func', {
-          idx: index_name,
-          minRecordId: 0,
-          cahtRecords: []
+        this.$emit('sendFirendMsg', {
+          type: 1,
+          index_name: `1_${userInfo.user_id}`,
+          friend_id: userInfo.user_id,
+          avatar: userInfo.avatarurl,
+          name: userInfo.nickname,
+          nickname: userInfo.nicknameRemark
         });
-      },
-
+      }
     }
   }
 </script>
@@ -289,7 +259,9 @@
     height: 550px;
     background: #FFFFFF;
     margin: auto auto;
-    margin-top: calc(50vh - 225px);
+    margin-top: calc((100vh - 550px) / 2);
+    margin-top: -moz-calc((100vh - 550px) / 2);
+    margin-top: -webkit-calc((100vh - 550px) / 2);
   }
 
   .query-user-panel .panel-header,
@@ -314,11 +286,10 @@
   .query-user-panel .panel-header .close-btn,
   .peofile-from-panel .panel-header .close-btn {
     position: absolute;
-    right: -40px;
+    right: -30px;
     top: 0px;
-    font-size: 26px;
+    font-size: 20px;
     cursor: pointer;
-    color: #FFFFFF !important;
   }
 
   .peofile-from-panel {

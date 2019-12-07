@@ -104,8 +104,8 @@ export const groupDetail = (data) => {
 }
 
 //退出群聊
-export const dismissGroup = (data) => {
-  return post('/api/chat/dismiss-group-chat', data);
+export const quitGroupChat = (data) => {
+  return post('/api/chat/quit-group-chat', data);
 }
 
 // 创建群聊接口
@@ -146,6 +146,12 @@ export const friendApplyNumApi = ()=>{
 //设置用户群名片
 export const setUserGroupCardApi = (data) =>{
   return post('/api/chat/set-group-card', data);
+}
+
+
+//设置群聊免打扰状态接口
+export const setGroupDisturb = (data) =>{
+  return post('/api/chat/set-group-disturb', data);
 }
 
 //上传图片接口

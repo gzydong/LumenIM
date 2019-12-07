@@ -5,21 +5,21 @@
       <div class="panel-header">
         <p><img :src="userInfo.avatarurl" :onerror="$store.state.user.detaultAvatar"></p>
         <p class="edit-pic" @click="isAvatarCropper = true">＋ 更换头像</p>
-        <i class="close-btn el-icon-circle-close" @click="$store.commit('showUserSetupBox',false)"></i>
+        <i class="iconfont icon-guanbi close-btn" @click="$store.commit('showUserSetupBox',false)"></i>
       </div>
 
       <div class="panel-body">
         <ul>
           <li>
-            <label>账号 <!-- <i class="iconfont icon-xingmingyonghumingnicheng"></i> --></label>
+            <label>账号</label>
             <input type="text" placeholder="请设置新的登录密码" v-model="userInfo.mobile" readonly>
           </li>
           <li>
-            <label>昵称 <!-- <i class="iconfont icon-6nichengzhao"></i> --></label>
+            <label>昵称</label>
             <input type="text" placeholder="请设置账户昵称" v-model="userInfo.nickname" @keyup.enter="editUserDetail">
           </li>
           <li>
-            <label>座右铭 <!-- <i class="iconfont icon-qianming"></i> --></label>
+            <label>座右铭</label>
             <input type="text" placeholder="请设置座右铭" v-model="userInfo.motto" @keyup.enter="editUserDetail">
           </li>
         </ul>
@@ -31,12 +31,12 @@
 
     </div>
 
-    <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" ></avatar-cropper>
+    <lumen-avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper"></lumen-avatar-cropper>
   </div>
 </template>
 
 <script>
-  import AvatarCropper from '@/components/AvatarCropper'
+  import LumenAvatarCropper from '@/components/layout/LumenAvatarCropper'
   import {
     editUserSetupApi,
     getUserDetailApi
@@ -44,18 +44,18 @@
   export default {
     data() {
       return {
-        isAvatarCropper:false,
+        isAvatarCropper: false,
         userInfo: {
           mobile: '',
           nickname: '',
           avatarurl: '',
           motto: ''
         },
-        buttonText:'保存设置'
+        buttonText: '保存设置'
       }
     },
     components: {
-      AvatarCropper
+      LumenAvatarCropper
     },
     created() {
       this.getUserDetail();
@@ -71,15 +71,15 @@
           if (res.code == 200) {
             that.buttonText = '设置成功...';
             that.$store.dispatch('setAvatar', that.userInfo.avatarurl);
-          }else{
+          } else {
             that.buttonText = '设置失败,请稍后再试...';
           }
 
-          setTimeout(function(){
+          setTimeout(function() {
             that.buttonText = '保存设置';
-          },3000);
-        }).catch((res)=>{
-            alert('信息设置失败，请稍后再试...');
+          }, 3000);
+        }).catch((res) => {
+          alert('信息设置失败，请稍后再试...');
         });
       },
       getUserDetail() {
@@ -93,11 +93,11 @@
           }
         });
       },
-      closeAvatarCropper(type,avatar = ''){
-         this.isAvatarCropper = false;
-         if(type == 1 && avatar != ''){
-            this.userInfo.avatarurl = avatar;
-         }
+      closeAvatarCropper(type, avatar = '') {
+        this.isAvatarCropper = false;
+        if (type == 1 && avatar != '') {
+          this.userInfo.avatarurl = avatar;
+        }
       },
     }
   }
@@ -120,7 +120,9 @@
     height: 550px;
     background: #FFFFFF;
     margin: auto auto;
-    margin-top: calc(50vh - 225px);
+    margin-top: calc((100vh - 550px) / 2);
+    margin-top: -moz-calc((100vh - 550px) / 2);
+    margin-top: -webkit-calc((100vh - 550px) / 2);
   }
 
 
@@ -137,9 +139,9 @@
 
   .usersetup-from-panel .panel-header .close-btn {
     position: absolute;
-    right: -40px;
+    right: -30px;
     top: 0px;
-    font-size: 26px;
+    font-size: 20px;
     cursor: pointer;
   }
 

@@ -1,61 +1,76 @@
 <template>
-  <div id="chat-dialogue-page">
+  <div id="dialogue-page">
     <lumen-layout-panel :subarea="true">
       <template v-slot:lcolumn>
-        <lumen-search @search-change="searchChange" @click-open="isLaunchGroupChat = true" placeholder="搜索聊天列表"></lumen-search>
-        <div class="lumen-chat-sidebar lumen-scrollbar">
-          <lumen-chat-list @lumen-click="lumenClick" v-for="(item,idx) in $store.state.dialogue.chatModule.chatList"
+        <lumen-search ref='lumenSearch' @search-change="searchChange" @click-open="launchGroupChatShow = true"
+          placeholder="搜索聊天列表">
+        </lumen-search>
+        <div ref="lumenChatSidebar" class="lumen-chat-sidebar lumen-scrollbar">
+          <p class="sidebar-load-status" v-show="dialogueListLoadStatus == 0"> <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i>
+            正在加载聊天列表...
+          </p>
+
+          <p class="sidebar-load-status" v-show="dialogueListLoadStatus == 2" @click="loadChatList"> 加载失败，点击我再次尝试...</p>
+
+          <lumen-chat-list v-show="dialogueListLoadStatus == 1" @lumen-click="lumenClick" v-for="(item,idx) in searchDialogueList"
             :key="idx" :idx="idx" :img="item.avatar" :name="item.name" :content="item.msg_text" :time="item.created_at"
-            :nickname='item.remark_name' :unreadNum="item.unread_num" :active="$store.state.dialogue.chatModule.idx == item.index_name"
-            :params="item"></lumen-chat-list>
+            :nickname='item.remark_name' :unreadNum="item.unread_num" :active="indexName == item.index_name" :params="item"
+            :disturb="item.not_disturb">
+          </lumen-chat-list>
         </div>
       </template>
 
       <template v-slot:rcolumn>
-        <!-- 群聊信息窗口 -->
-        <div v-show="show" class="lumen-chat-group-box">
-          <lumen-user-group v-if="groupId" :group-id='groupId' @close="show = false"></lumen-user-group>
+        <div v-show="indexName == null" class="lumen-w-h100">
+          <lumen-amicable></lumen-amicable>
         </div>
 
-        <lumen-amicable v-show="$store.state.dialogue.chatModule.idx == null"></lumen-amicable>
-        <div v-show="$store.state.dialogue.chatModule.idx != null" style="height: 100%;width: 100%;">
+        <div v-show="indexName != null" class="lumen-w-h100">
           <header class="lumen-chat-header">
             <p class="lumen-chat-title">
-              <span class="lumen-chat-title-icon" :class="{'bg-friend':false,'bg-group':true}">友</span>
-              <span class="lumen-chat-title-name">{{otherPartyName}} </span>
+              <span class="lumen-chat-title-icon" :class="{'bg-friend':indexNameInfo.type==1,'bg-group':indexNameInfo.type==2}">{{indexNameInfo.type==1?'友':'群'}}</span>
+              <span class="lumen-chat-title-name">&nbsp;{{indexNameInfo.remark_name?indexNameInfo.remark_name:indexNameInfo.name}}</span>
             </p>
 
             <div class="lumen-chat-icon-toolbar">
               <i class="iconfont icon-shijian"></i>
               <i class="iconfont icon-iconzhengli_wenjian"></i>
-              <i class="iconfont icon-qunzu" v-show="groupId" @click="show = !show" style="font-size: 22px;"></i>
+              <i class="lumen-icon-group iconfont icon-qunzu" v-show="indexNameInfo.group_id" @click="groupBoxShow = !groupBoxShow"></i>
             </div>
           </header>
 
           <main ref="lumenChatPanel" class="lumen-chat-main lumen-scrollbar">
-
             <div class="lumen-message-container">
               <div class="toolbar-loading-box">
-                <span v-show="$store.state.dialogue.chatModule.loadStatus == 1">
+                <span v-show="loadStatus == 1">
                   <i class="el-icon-loading"></i> 正在加载数据中...
                 </span>
 
-                <span v-show="$store.state.dialogue.chatModule.minRecordId != null && $store.state.dialogue.chatModule.loadStatus == 0"
-                  @click="loadChatRecords">
+                <span v-show="minRecord != 0 && loadStatus == 0" @click="loadChatRecords">
                   查看更多消息...
                 </span>
 
-                <span class="not-have-msg" v-show="$store.state.dialogue.chatModule.minRecordId == null && $store.state.dialogue.chatModule.loadStatus == 0">
+                <span class="not-have-msg" v-show="minRecord == 0 && loadStatus == 0">
                   没有更多消息了...
                 </span>
               </div>
             </div>
 
-            <div class="lumen-message-container" v-for="(item,idx) in $store.state.dialogue.chatModule.cahtRecords">
+            <div class="lumen-message-container" v-for="(item,idx) in dialogueRecords">
               <!-- 系统提示消息 -->
               <div v-if="item.float =='center'" class="lumen-message-container">
                 <div class="lumen-message-system">
-                  <span v-text="item.text_msg"></span>
+                  <span v-if="item.msg_type == 1" v-text="item.text_msg"></span>
+                  <span v-if="item.msg_type == 5" class="group-invite-tips">
+                    <a @click="$store.commit('showSeekFriendBox', {type: 2,text: item.text_msg[0].id})">{{item.text_msg[0].nickname}}</a>
+                    邀请了
+                    <a v-for="user in item.text_msg.slice(1)" @click="$store.commit('showSeekFriendBox', {type: 2,text: user.id})">{{user.nickname}}</a>
+                    加入了群聊...
+                  </span>
+                  <span v-if="item.msg_type == 6" class="group-invite-tips">
+                    <a @click="$store.commit('showSeekFriendBox', {type: 2,text: item.text_msg[0].id})">{{item.text_msg[0].nickname}}</a>
+                    退出了群聊...
+                  </span>
                 </div>
               </div>
 
@@ -114,8 +129,7 @@
               </div>
 
               <!-- 消息发送时间 -->
-              <p class="lumen-message-time" v-show="compareTime(idx,$store.state.dialogue.chatModule.cahtRecords.length,item.send_time)"
-                v-text="sendTime(item.send_time)"></p>
+              <p class="lumen-message-time" v-show="compareTime(idx,item.send_time)" v-text="sendTime(item.send_time)"></p>
             </div>
           </main>
 
@@ -123,13 +137,21 @@
             <lumen-editor @send="submitSendMesage"></lumen-editor>
           </footer>
         </div>
+
+
+        <!-- 群聊信息窗口 -->
+        <div v-show="groupBoxShow" class="lumen-chat-group-box">
+          <lumen-user-group v-if="indexNameInfo.group_id" :group-id='indexNameInfo.group_id' @sendGroup="sendGroupMsg"
+            @close="groupBoxShow = false" @quitGroup="quitGroupSuccess"></lumen-user-group>
+        </div>
       </template>
     </lumen-layout-panel>
 
+    <!-- 聊天图片预览插件 -->
     <!-- <lumen-picture-preview></lumen-picture-preview> -->
 
     <!-- 创建群聊组件 -->
-    <launch-group-chat v-if="isLaunchGroupChat" @close="isLaunchGroupChat = false" @create-success="launchGroupChatSuccess"></launch-group-chat>
+    <launch-group-chat v-if="launchGroupChatShow" @close="launchGroupChatShow = false" @create-success="launchGroupChatSuccess"></launch-group-chat>
   </div>
 </template>
 
@@ -137,13 +159,16 @@
   import {
     chatListsApi,
     chatRecordsApi,
-    updateChatUnreadNumApi
-  } from '@/services/api'
+    updateChatUnreadNumApi,
+    crateChatListApi
+  } from '@/services/api';
 
   import {
     dateFormat,
     formateTime
-  } from '@/utils/functions'
+  } from '@/utils/functions';
+
+  import MessageHandle from '@/utils/MessageHandle';
 
   import LumenLayoutPanel from '@/components/layout/LumenLayoutPanel';
   import LumenSearch from '@/components/layout/LumenSearch';
@@ -151,13 +176,11 @@
   import LumenEditor from '@/components/layout/LumenEditor';
   import LumenAmicable from '@/components/layout/LumenAmicable';
   import LumenPicturePreview from '@/components/layout/LumenPicturePreview';
-  import LumenUserGroup from '@/components/layout/LumenUserGroup.vue';
-
-  //创建群聊组件
+  import LumenUserGroup from '@/components/layout/LumenUserGroup';
   import LaunchGroupChat from '@/components/LaunchGroupChat';
 
   export default {
-    name: "chat-dialogue-page",
+    name: "dialogue-page",
     components: {
       LumenLayoutPanel,
       LumenSearch,
@@ -168,180 +191,144 @@
       LumenUserGroup,
       LaunchGroupChat
     },
-    computed: {
-      getIdx() {
-        return this.$store.state.dialogue.chatModule.idx
-      }
-    },
-    watch: {
-      getIdx(newVal, oldVal) {
-        this.show = false;
-        let info = this.$store.state.dialogue.chatModule.chatList[this.getChatListIdx(newVal)];
-        this.otherPartyName = info.remark_name || info.name;
-        this.groupId = info.group_id;
-        this.loadChatRecords();
-      }
-    },
-    created() {
-      this.loadChatLists();
-    },
+
     data() {
       return {
+        //群设置窗口
+        groupBoxShow: false,
 
-        show: false,
-        //对方聊天名称
-        otherPartyName: '',
+        //是否显示群聊发起窗口
+        launchGroupChatShow: false,
 
-        groupId: 0,
+        //当前正在对话的索引对对应的数据
+        indexNameInfo: {},
 
-        isLaunchGroupChat: false
+        //当前正在对话的索引
+        indexName: null,
+
+        dialogueListLoadStatus: 0,
+        //用户对话列表
+        dialogueList: [],
+        //筛选后的对话列表
+        searchDialogueList: [],
+
+        //对话最小记录ID
+        minRecord: 0,
+
+        //加载历史记录前滚动条的高度
+        scrollHeight: 0,
+
+        //对话记录加载状态
+        loadStatus: 0,
+
+        //用户对话记录
+        dialogueRecords: []
       }
     },
+
+    computed: {
+      unreadNum() {
+        let num = 0;
+        this.dialogueList.map(v => {
+          num += parseInt(v.unread_num)
+        });
+        return num;
+      },
+    },
+
+    watch: {
+      unreadNum(nval, oval) {
+        this.$store.commit('updateUnreadNum', nval);
+      }
+    },
+
+    created() {
+      this.loadChatList();
+    },
+
     methods: {
       //搜索框修改触发事件
-      searchChange(value) {
-        alert('功能正在研发中请耐心等待...');
+      searchChange(keyWords) {
+        if (keyWords == '') {
+          this.searchDialogueList = this.dialogueList;
+          return;
+        }
+
+        this.searchDialogueList = this.dialogueList.filter((item, i, a) => {
+          if (item.remark_name !== '') {
+            if (item.remark_name.match(keyWords) != null) {
+              return item;
+            }
+          } else if (item.name.match(keyWords) != null) {
+            return item;
+          }
+        });
       },
 
       //聊天列表点击事件
       lumenClick(data) {
-        this.$store.commit('func', {
-          idx: data.object.index_name,
-          minRecordId: 0,
-          cahtRecords: []
-        });
-        if (this.getIdx == data.object.index_name) {
-          this.loadChatRecords();
-        }
+        this.indexName = data.object.index_name;
+        this.indexNameInfo = data.object;
+        this.groupBoxShow = false;
+        this.clickTab(2, this.indexName);
       },
 
-      //格式化显示时间
-      formateTime(datetime) {
-        datetime = datetime.replace(/-/g, "/");
-
-        //当前时间戳
-        let time = new Date();
-        let outTime = new Date(datetime);
-        if (/^[1-9]\d*$/.test(datetime)) {
-          outTime = new Date(parseInt(datetime) * 1000);
-        }
-
-        if (time.getTime() < outTime.getTime()) {
-          return dateFormat("YYYY/mm/dd", outTime);
-        }
-
-        if (time.getFullYear() != outTime.getFullYear()) {
-          return dateFormat("YYYY/mm/dd", outTime);
-        }
-
-        if (time.getMonth() != outTime.getMonth()) {
-          return dateFormat("mm/dd", outTime);
-        }
-
-        if (time.getDate() != outTime.getDate()) {
-          let day = outTime.getDate() - time.getDate();
-          if (day > 0) {
-            return dateFormat("mm-dd", outTime);
-          }
-
-          if (day == -1) {
-            return dateFormat("昨天 HH:MM", outTime);
-          }
-
-          if (day == -2) {
-            return dateFormat("前天 HH:MM", outTime);
-          }
-
-          return dateFormat("mm-dd", outTime);
-        }
-
-        if (time.getHours() != outTime.getHours()) {
-          return dateFormat("HH:MM", outTime);
-        }
-
-        let minutes = outTime.getMinutes() - time.getMinutes();
-        if (minutes == 0) {
-          return '刚刚';
-        }
-
-        minutes = Math.abs(minutes)
-        return `${minutes}分钟前`;
-      },
-
-      //获取用户聊天记录列表
-      loadChatLists() {
+      //获取用户对话列表
+      loadChatList() {
         let that = this;
+        this.dialogueListLoadStatus = 0;
         chatListsApi().then(res => {
           if (res.code == 200) {
-            let list = res.data;
-            let compare = function(prop) {
-              return function(obj1, obj2) {
-                let val1 = obj1[prop],
-                  val2 = obj2[prop];
-                if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
-                  val1 = Number(val1);
-                  val2 = Number(val2);
-                }
-                if (val1 > val2) {
-                  return -1;
-                } else if (val1 < val2) {
-                  return 1;
-                } else {
-                  return 0;
-                }
-              }
-            }
-
-            list.sort(compare("created_at"));
-            list.map((item) => {
-              item.index_name = (item.type == 1) ? `${item.type}_${item.friend_id}` :
-                `${item.type}_${item.group_id}`;
-              item.created_at = that.formateTime(item.created_at);
-              return item;
-            });
-
-            that.$store.commit('updateChatList', {
-              type: 1,
-              list
-            });
+            that.searchDialogueList = that.dialogueList = res.data.sort(MessageHandle.sortCompare("created_at")).map(
+              (item) => {
+                let index = item.type == 1 ? item.friend_id : item.group_id;
+                item.index_name = `${item.type}_${index}`;
+                item.created_at = MessageHandle.beautifyTime(item.created_at);
+                return item;
+              });
+            that.dialogueListLoadStatus = 1;
+          } else {
+            that.dialogueListLoadStatus = 2;
           }
-        })
+        }).catch(err => {
+          that.dialogueListLoadStatus = 2;
+        });
       },
 
-      //获取聊天详情信息
+      //加载用户聊天详情信息
       loadChatRecords() {
         let that = this;
-        let module = this.$store.state.dialogue.chatModule;
-        let o = module.chatList[this.getChatListIdx(module.idx)];
         let params = {
-          record_id: module.minRecordId,
-          receive_id: o.type == 1 ? o.friend_id : o.group_id,
-          type: o.type,
+          record_id: this.minRecord,
+          receive_id: this.indexNameInfo.type == 1 ? this.indexNameInfo.friend_id : this.indexNameInfo.group_id,
+          type: this.indexNameInfo.type,
         };
 
-        that.$store.commit('func', {
-          loadStatus: 1,
-          scrollHeight: this.$refs.lumenChatPanel.scrollHeight
-        });
-
+        this.loadStatus = 1;
+        this.scrollHeight = this.$refs.lumenChatPanel.scrollHeight;
+        let indexName = this.indexName;
         chatRecordsApi(params).then(res => {
-          let chatModule = that.$store.state.dialogue.chatModule;
-
-          //防止点击过快，导致数据返回出错
-          if (chatModule.idx != module.idx) {
+          if (res.code != 200) {
             return;
           }
 
-          let tmpArr = chatModule.cahtRecords;
-          for (const record of res.data.rows) {
-            tmpArr.unshift(record);
+          //防止点击切换过快消息返回延迟，导致信息错误
+          if (indexName != that.indexName) {
+            return false;
           }
 
-          that.$store.commit('func', {
-            minRecordId: (res.data.rows.length == res.data.page_size) ? res.data.record_id : null,
-            loadStatus: 0,
-            cahtRecords: tmpArr,
-          });
+          let records = that.dialogueRecords;
+          if (params.record_id == 0) {
+            records = [];
+          }
+
+          for (const record of res.data.rows) {
+            records.unshift(record);
+          }
+
+          that.minRecord = res.data.rows.length == res.data.page_size ? res.data.record_id : 0;
+          that.loadStatus = 0;
+          that.dialogueRecords = records;
 
           //滚动条处理
           let lumenChatPanel = that.$refs.lumenChatPanel;
@@ -349,70 +336,64 @@
             setTimeout(function() {
               lumenChatPanel.scrollTop = lumenChatPanel.scrollHeight;
             }, 0);
-
-            updateChatUnreadNumApi({
-              type: params.type,
-              receive: params.receive_id
-            });
-
-            this.$store.commit('updateChatList', {
-              type: 3,
-              idx: that.getChatListIdx(that.getIdx)
-            });
           } else { //加载数据完成之后将滚动条重置到加载之前的位置
             setTimeout(function() {
-              lumenChatPanel.scrollTop = lumenChatPanel.scrollHeight - chatModule.scrollHeight;
+              lumenChatPanel.scrollTop = lumenChatPanel.scrollHeight - that.scrollHeight;
             }, 0);
           }
-        }).catch(e => {
-          that.$store.commit('func', {
-            loadStatus: 0
+
+          //清空消息未读数
+          that.dialogueList[that.getIndex(that.indexName)].unread_num = 0;
+
+          //清空消息未读数(后期改成websocket发送消息)
+          updateChatUnreadNumApi({
+            type: params.type,
+            receive: params.receive_id
           });
+        }).catch(e => {
+          that.loadStatus = 0;
         });
       },
 
       //回车键发送消息回调事件
       submitSendMesage(content) {
-        let module = this.$store.state.dialogue.chatModule;
-        let receiveInfo = module.chatList[this.getChatListIdx(module.idx)];
-        let message = {
+        //调用父类Websocket组件发送消息
+        this.$parent.wsSocketObj.send({
           event: 'event_chat_dialogue',
           data: {
-            source_type: receiveInfo.type,
+            source_type: this.indexNameInfo.type,
             msg_type: content.type,
             send_user: this.$store.state.user.uid,
-            receive_user: receiveInfo.type == 1 ? receiveInfo.friend_id : receiveInfo.group_id,
+            receive_user: this.indexNameInfo.type == 1 ? this.indexNameInfo.friend_id : this.indexNameInfo.group_id,
             content: content.text
           }
-        };
-
-        this.$parent.wsSocketObj.send(message);
+        });
       },
 
       //同步用户聊天消息
       syncMessage(message, isActive) {
-        let that = this;
         let uid = this.$store.state.user.uid;
-        let index_name = '';
-        if (message.source_type == 1) {
-          if (message.send_user == uid) {
-            index_name = `${message.source_type}_${message.receive_user}`;
-          } else {
-            index_name = `${message.source_type}_${message.send_user}`;
-          }
-        } else {
-          index_name = `${message.source_type}_${message.receive_user}`;
-        }
+        let that = this;
 
-        if (this.$store.state.dialogue.chatModule.idx != index_name) {
-          let idx = this.getChatListIdx(index_name);
-          this.$store.commit('updateChatList', {
-            type: 2,
-            message: {
-              idx,
-              text: message.content
-            }
-          });
+        //获取对话索引
+        let index_name = message.source_type == 2 || (message.source_type == 1 && message.send_user == uid) ?
+          `${message.source_type}_${message.receive_user}` : `${message.source_type}_${message.send_user}`;
+
+        let idx = this.getIndex(index_name);
+
+        //判断消息是否来自当前对话
+        if (this.indexName != index_name) {
+          if (message.send_user == 0) return;
+
+          let text = message.content;
+          if (message.msg_type == 2) {
+            text = '[图片消息]';
+          } else if (message.msg_type == 3) {
+            text = '[文件消息]';
+          }
+
+          this.dialogueList[idx].unread_num++;
+          this.dialogueList[idx].msg_text = text;
 
           this.$notify({
             message: `您有新的消息请注意查收...`,
@@ -422,33 +403,10 @@
           return false;
         }
 
-        let module = this.$store.state.dialogue.chatModule;
-        let receiveInfo = module.chatList[this.getChatListIdx(module.idx)];
-
-        let avatar = '';
-        if (message.send_user == uid) {
-          avatar = this.$store.state.user.avatar;
-        } else if (message.source_type == 1) {
-          avatar = receiveInfo.avatar;
-        } else {
-          avatar = message.sendUserInfo.avatar;
-        }
-
-        this.$store.commit('pushCahtRecords', {
-          avatar: avatar,
-          float: message.send_user == uid ? 'right' : 'left',
-          msg_type: message.msg_type,
-          nickname: message.sendUserInfo.nickname,
-          nickname_remarks: message.sendUserInfo.remark_nickname,
-          receive_id: message.receive_user,
-          send_time: message.send_time,
-          source: message.source_type,
-          text_msg: message.content,
-          user_id: message.send_user
-        });
+        this.dialogueRecords.push(MessageHandle.handle(message, this.indexNameInfo, this.$store.state.user));
 
         //更新消息未读数
-        if (this.$store.state.user.uid != message.send_user) {
+        if (uid != message.send_user) {
           updateChatUnreadNumApi({
             type: message.source_type,
             receive: message.send_user
@@ -459,44 +417,143 @@
         setTimeout(function() {
           let lumenChatPanel = that.$refs.lumenChatPanel;
           lumenChatPanel.scrollTop = lumenChatPanel.scrollHeight;
-        }, 0);
+        }, 50);
       },
 
-      // 获取聊天列表数组索引
-      getChatListIdx(index_name) {
-        let list = this.$store.state.dialogue.chatModule.chatList;
-        for (let i in list) {
-          if (list[i].index_name == index_name) {
-            return i;
-          }
-        }
-        return -1;
-      },
-
-      sendTime(time) {
-        return formateTime(time);
-      },
+      //聊天时间人性化处理
+      sendTime: formateTime,
 
       //处理时间是否显示
-      compareTime(idx, length, datetime) {
+      compareTime(index, datetime) {
         datetime = datetime.replace(/-/g, "/");
         let time = Math.floor(Date.parse(datetime) / 1000);
         let currTime = Math.floor(new Date().getTime() / 1000);
-        return !((currTime - time) < 300);
+
+        //当前时间5分钟内时间不显示
+        if (((currTime - time) < 300)) {
+          return false;
+        }
+
+        let len = this.dialogueRecords.length - 1;
+        if (index == len) {
+          return true;
+        }
+
+        let nextDate = this.dialogueRecords[index + 1].send_time.replace(/-/g, "/");
+        return !(dateFormat("YYYY-mm-dd HH:MM", new Date(datetime)) == dateFormat("YYYY-mm-dd HH:MM", new Date(nextDate)));
       },
 
-      launchGroupChatSuccess() {
-        this.isLaunchGroupChat = false;
-        this.loadChatLists();
+      //发起群聊成功后回调方法
+      launchGroupChatSuccess(data) {
+        let groupInfo = data.group_info;
+        let index_name = `2_${groupInfo.id}`;
+        if (this.getIndex(index_name) >= 0) {
+          this.clickTab(2, index_name);
+        } else {
+          this.clickTab(1, {
+            type: 2,
+            group_id: groupInfo.id,
+            index_name: index_name,
+            avatar: groupInfo.avatarurl,
+            name: groupInfo.group_name
+          });
+        }
+
+        this.launchGroupChatShow = false;
+      },
+
+      //根据用户对话索引获取对话数组对应的key
+      getIndex(index_name) {
+        return this.dialogueList.findIndex(function(item, index, arr) {
+          return item.index_name == index_name;
+        });
+      },
+
+      //新增对话列表
+      unshiftDialogue(obj) {
+        this.dialogueList.unshift(obj);
+        this.searchDialogueList = this.dialogueList;
+      },
+
+      //切换聊天栏目
+      clickTab(type = 1, obj) {
+        let that = this;
+
+        //初始化数据
+        let sync = function(index_name, obj) {
+          that.minRecord = 0;
+          that.scrollHeight = 0;
+          that.dialogueRecords = [];
+          that.indexName = index_name;
+          that.indexNameInfo = obj;
+        };
+
+        if (type == 1) {
+          obj = MessageHandle.getDialogueObj(obj);
+
+          this.unshiftDialogue(obj);
+
+          sync(obj.index_name, obj);
+
+          this.loadChatRecords();
+          crateChatListApi({
+            type: obj.type,
+            receive_id: obj.type == 1 ? obj.friend_id : obj.group_id
+          });
+
+          return;
+        }
+
+        let idx = this.getIndex(obj);
+        if (idx < 0) return;
+
+        sync(obj, this.dialogueList[idx]);
+
+        this.searchDialogueList = this.dialogueList;
+        this.loadChatRecords();
+
+        setTimeout(function() {
+          let lumenChatSidebar = that.$refs.lumenChatSidebar;
+          let top = 64 * idx;
+          let minHeight = lumenChatSidebar.scrollTop;
+          let maxHeight = minHeight + lumenChatSidebar.offsetHeight;
+          if (!(top >= minHeight && top <= maxHeight)) {
+            lumenChatSidebar.scrollTop = top;
+          }
+        }, 0);
+      },
+
+      //退出群聊回调事件
+      quitGroupSuccess() {
+        this.indexName = null;
+        this.groupBoxShow = false;
+        this.loadChatList();
+      },
+
+      //群聊窗口点击发送群聊信息按钮回调事件
+      sendGroupMsg() {
+        this.groupBoxShow = false;
       }
     }
   };
 </script>
 
 <style scoped>
-  #chat-dialogue-page {
+  #dialogue-page {
     width: 100%;
     height: 100%;
+  }
+
+  .lumen-w-h100 {
+    width: 100%;
+    height: 100%;
+  }
+
+
+
+
+  #dialogue-page>>>#luem-layout-panel .luem-panel-rcolumn {
+    position: relative;
   }
 
   .lumen-chat-sidebar {
@@ -506,6 +563,14 @@
     background: #e4e4e5;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  .lumen-chat-sidebar .sidebar-load-status {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 30px;
+    color: #a0a0a0;
+    cursor: pointer;
   }
 
   .lumen-chat-header {
@@ -543,7 +608,6 @@
     font-size: 14px;
   }
 
-
   .lumen-chat-header .lumen-chat-icon-toolbar {
     position: absolute;
     top: 0;
@@ -560,6 +624,10 @@
     color: #676767;
     cursor: pointer;
     margin-left: 8px;
+  }
+
+  .lumen-chat-header .lumen-chat-icon-toolbar .lumen-icon-group {
+    font-size: 22px;
   }
 
   .lumen-chat-icon-toolbar i:active {
@@ -579,8 +647,6 @@
     overflow: hidden;
   }
 
-
-
   .lumen-message-container .lumen-message-system {
     text-align: center;
   }
@@ -591,7 +657,21 @@
     padding: 3px 10px 3px 10px;
     border-radius: 3px;
     font-size: 12px;
-    color: white;
+    color: #b9b8b8;
+  }
+
+  .lumen-message-system .group-invite-tips a {
+    color: #71a7ea;
+    cursor: pointer;
+  }
+
+  .lumen-message-system .group-invite-tips a:after {
+    content: '、';
+  }
+
+  .lumen-message-system .group-invite-tips a:first-child:after,
+  .lumen-message-system .group-invite-tips a:last-child:after {
+    content: '' !important;
   }
 
   .lumen-chat-main .lumen-message-container:last-child {
@@ -635,6 +715,7 @@
     border-radius: 2px;
     position: relative;
     padding: 5px 5px 0 5px;
+    min-height: 35px;
   }
 
   .no-background {
@@ -787,6 +868,7 @@
     position: absolute;
     width: 350px;
     height: 100%;
+    top: 0px;
     right: 0;
     z-index: 2;
     animation: showBox .5s ease-in-out;

@@ -30,7 +30,7 @@ export function dateFormat(fmt, date) {
 
 /**
  * 人性化时间显示
- * 
+ *
  * @param {Object} datetime
  */
 export function formateTime(datetime) {

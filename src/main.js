@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
        next({path: '/login'});
     }
   }
-})
+});
 
 Vue.config.productionTip = false;
 

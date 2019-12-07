@@ -2,14 +2,16 @@
   <div>
     <div class="luem-chat-list" :class="{'luem-chat-active':active}" @click="luemClick()">
       <img :src="img" :onerror="$store.state.user.detaultAvatar">
-      <span  class="notify-unread-num" v-show="unreadNum"  v-text="unreadNum"></span>
+      <span class="notify-unread-num" v-show="unreadNum" v-text="unreadNum"></span>
       <div class="luem-chat-right">
         <p class="luem-chat-title">
           <span class="luem-chat-name">{{nickname?nickname:name}}</span>
           <span class="luem-chat-time">{{time?time:''}}</span>
         </p>
-        <p class="luem-chat-content" v-html="content" ></p>
+        <p class="luem-chat-content" v-html="content"></p>
+
       </div>
+      <i v-show="disturb" class="iconfont icon-xiaoximiandarao miandarao"></i>
     </div>
   </div>
 </template>
@@ -26,9 +28,13 @@
       content: [String, Number],
       active: Boolean,
       params: Object,
-      unreadNum:{
-        type:[String, Number],
-        default:0
+      unreadNum: {
+        type: [String, Number],
+        default: 0
+      },
+      disturb: {
+        type: [String, Number],
+        default: 0
       }
     },
     methods: {
@@ -48,6 +54,14 @@
 </script>
 
 <style scoped>
+  .miandarao {
+    position: absolute;
+    right: 5px;
+    bottom: 10px;
+    font-size: 12px;
+    color: #c0c0c7;
+  }
+
   .notify-unread-num {
     display: inline-block;
     background: rgb(253, 0, 0);
@@ -129,7 +143,7 @@
   }
 
   .luem-chat-list .luem-chat-content {
-    width: 90%;
+    width: 85%;
     height: 20px;
     line-height: 14px;
     text-indent: 10px;

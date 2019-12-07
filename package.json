@@ -1,7 +1,8 @@
 {
-  "name": "LumenIM",
+  "name": "LumenIm",
   "version": "1.0.0",
-  "description": "LumenIM Web 网页版即时聊天项目",
+  "description": "Lumen Im是一个网页版在线聊天应用,功能主要包含添加好友、添加群聊等基本功能",
+  "author": "YuanDong <837215079@qq.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

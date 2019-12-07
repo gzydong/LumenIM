@@ -1,19 +1,28 @@
 <template>
+  <!--
+    组件描述:
+    group-id  | 类型:参数(int)   |  说明:群聊id
+    sendGroup | 类型:事件  |  说明:点击发送群聊按钮回调事件     回调参数:(data 群信息)
+    close     | 类型:事件  |  说明:点击关闭按钮回调事件
+    quitGroup | 类型:事件  |  说明:用户退出群聊回调事件
+    dismissGroup | 类型:事件  |  说明:用户解散群聊回调事件
+   -->
   <div class="lumen-user-group">
     <div class="group-box-header">
-      <i class="iconfont icon-duanxin group-message" @click="send()"></i>
+      <i class="iconfont icon-duanxin group-message" @click="sendGroup"></i>
       <span>群设置</span>
       <i class="group-close iconfont icon-RectangleCopy" @click="$emit('close')"></i>
     </div>
 
     <div v-if="loadStatus != 1" class="group-box-main lumen-scrollbar">
-      <div v-if="loadStatus == 0" class="group-history-tips" style="margin-top: 200px;text-align: center;">
-        数据加载中，请耐心等待...
+      <div v-if="loadStatus == 0" class="group-history-tips load-tips">
+        <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i> 数据加载中，请耐心等待...
       </div>
-      <div v-else class="group-history-tips" style="margin-top: 200px;text-align: center;cursor: pointer;" @click="groupDetailList">
+      <div v-else class="group-history-tips load-tips" @click="groupDetailList">
         数据加载失败，点击我重新加载...
       </div>
     </div>
+
     <div v-else class="group-box-main lumen-scrollbar">
       <div class="group-setting-row">
         <span>群名称：</span>
@@ -27,23 +36,23 @@
 
       <div class="group-setting-row">
         <span>我的群昵称：</span>
-        <span v-if="!isEditRemark" style="display: inline-block;position: relative;">
-          <span style="color: #67aaf1;font-size: 12px;height: 25px;line-height: 25px;">{{groupMessage.visitCard}} <span
-              v-show="!groupMessage.visitCard">添加群名片</span> </span>
+        <span class="edit-visit-card" v-if="!isEditRemark"><span>{{groupMessage.visitCard}} <span v-show="!groupMessage.visitCard">添加群名片</span>
+          </span>
           <i class="iconfont icon-beizhu pointer edit-remark-icon" @click="isEditRemark = true;editRemarkText = groupMessage.visitCard"></i>
         </span>
         <span v-else>
-          <input type="text" v-model="editRemarkText" @keyup.enter="editRemark" class="edit-input">
-          <span class="input-submit" @click="isEditRemark = false">确认</span>
+          <input type="text" v-focus v-model="editRemarkText" @keyup.enter="editRemark" class="edit-input">
+          <span class="input-submit" @click="editRemark">确认</span>
         </span>
       </div>
 
       <div class="group-setting-row">
-        <span>消息免打扰：</span>
-        <span style="width: 70%;text-align: right;display: inline-block;">
-          <el-switch v-model="value5" active-color="#1ebafc" inactive-color="#ccc" active-value="100" inactive-value="0">
+        <span style="display: inline-block;float: left;">消息免打扰：</span>
+        <span style="display: inline-block;float: right;">
+          <el-switch v-model="groupMessage.disturb" active-color="#13ce66" inactive-color="#e0d6d6" @change="changeDisturb">
           </el-switch>
         </span>
+        <div class="clear"></div>
       </div>
 
       <div class="group-setting-row">
@@ -56,9 +65,18 @@
       </div>
 
       <div class="group-setting-row">
+        <span style="display: inline-block;float: left;">群公告</span>
+        <span style="display: inline-block;float: right;color: #6cbaff;font-size: 12px;cursor: pointer;">更多</span>
+        <div class="clear"></div>
+      </div>
+      <div class="group-history-tips" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">暂无群公告</div>
+
+
+      <div class="group-setting-row">
         <span>群简介</span>
       </div>
       <div class="group-history-tips">{{groupMessage.groupProfile?groupMessage.groupProfile:'暂无群简介'}}</div>
+
 
       <div class="group-setting-row">
         <p class="lumen-group-invite" @click="addGroupMembers"><i class="iconfont icon-jia "></i> 邀请好友</p>
@@ -89,8 +107,9 @@
                   <th width="120px">名片</th>
                   <th width="80px" style="text-align: center;">性别</th>
                 </tr>
+
                 <tr>
-                  <th colspan="3" style="border-bottom: 1px solid rgb(226, 223, 223);;height: 3px;padding: 0 5px 0 5px;"></th>
+                  <th colspan="3" class="border-bottom"></th>
                 </tr>
               </thead>
               <tbody>
@@ -112,7 +131,7 @@
                 </tr>
 
                 <tr v-show="searchList.length == 0">
-                  <td colspan="3" style="text-align: center;padding-top: 30px;">暂无相关搜索</td>
+                  <td colspan="3" class="no-search">暂无相关搜索</td>
                 </tr>
               </tbody>
             </table>
@@ -121,21 +140,43 @@
         </div>
       </div>
     </div>
+
     <div class="group-box-footer">
-      <button>退出群聊</button>
+      <button @click="isShowSignout = true">退出该群聊</button>
     </div>
 
-    <launch-group-chat v-if="isShow" :group-id="groupId" @close="isShow = false" @create-success="createSuccess"
-      @invite-success="inviteSuccess"></launch-group-chat>
+    <div class="signout-confirm-box" v-show="isShowSignout">
+      <p v-show="signoutStatus == 0">您确认退出群聊吗？</p>
+      <p v-show="signoutStatus == 0">退群后群聊信息将不能查看</p>
+      <p v-show="signoutStatus == 0" class="signout-button">
+        <button @click="signout">确认</button>
+        <button @click="isShowSignout = false">取消</button>
+      </p>
+
+      <p v-show="signoutStatus == 1" class="signout-button mt38">
+        <span style="color: rgb(123, 212, 255);"><i class="iconfont icon-jiazaizhong lumen-icon-spin"></i> 正在退出群聊...</span>
+      </p>
+
+      <p v-show="signoutStatus == 2" class="signout-button mt38">
+        <span style="color: #CCCCCC;">退出群聊失败，请3(s)后再试...</span>
+      </p>
+
+      <p v-show="signoutStatus == 3" class="signout-button mt38">
+        <span style="color: #339e19;"><i class="iconfont icon-success_no_circle"></i> 已成功退出群聊...</span>
+      </p>
+
+    </div>
+
+    <launch-group-chat v-if="isShow" :group-id="groupId" @close="isShow = false" @invite-success="inviteSuccess"></launch-group-chat>
   </div>
 </template>
 
 <script>
   import {
     groupDetail,
-    dismissGroup,
+    quitGroupChat,
     setUserGroupCardApi,
-    crateChatListApi
+    setGroupDisturb
   } from '@/services/api';
 
   //创建群聊组件
@@ -168,18 +209,22 @@
           groupName: '',
           groupOwner: '',
           groupProfile: '',
+          disturb: 0,
           members: [],
           visitCard: '',
         },
+        value2: true,
 
         isEditRemark: false,
         editRemarkText: '',
         searchMember: '',
 
-        value5: false,
         reveal: true,
         searchList: [],
-        isShow: false
+        isShow: false,
+        isShowSignout: false,
+
+        signoutStatus: 0,
       };
     },
     created() {
@@ -188,6 +233,16 @@
       }
     },
     methods: {
+      changeDisturb(value) {
+        setGroupDisturb({
+          group_id: this.groupId,
+          status: value ? 1 : 0
+        }).then(res => {
+
+        }).catch(err => {
+
+        });
+      },
       searchKeyword() {
         let keyWords = this.searchMember;
         if (keyWords == '') {
@@ -195,21 +250,19 @@
           return;
         }
 
-        this.searchList = [];
-        if (this.groupMessage.members.length > 0) {
-          for (const info of this.groupMessage.members) {
-            if (info.visit_card.match(keyWords) != null) {
-              this.searchList.push(info);
-            } else if (info.nickname.match(keyWords) != null) {
-              this.searchList.push(info);
-            }
+        this.searchList = this.groupMessage.members.filter((item, i, a) => {
+          if (item.visit_card.match(keyWords) != null) {
+            return item;
+          } else if (item.nickname.match(keyWords) != null) {
+            return item;
           }
-        }
+        });
       },
 
       groupDetailList() {
         let that = this;
         this.loadStatus = 0;
+        this.isEditRemark = false;
         groupDetail({
           group_id: that.groupId
         }).then((res) => {
@@ -222,15 +275,14 @@
             that.groupMessage.groupName = res.data.group_name;
             that.groupMessage.groupOwner = res.data.group_owner;
             that.groupMessage.groupProfile = res.data.group_profile;
+            that.groupMessage.disturb = res.data.not_disturb == 1 ? true : false;
             that.searchList = that.groupMessage.members = res.data.members;
-            if (res.data.members) {
-              for (let o of res.data.members) {
-                if (o.user_id == this.$store.state.user.uid) {
-                  that.groupMessage.visitCard = o.visit_card;
-                  break;
-                }
-              }
-            }
+
+            let uid = this.$store.state.user.uid;
+            let item = that.groupMessage.members.find((item, key, arr) => {
+              return item.user_id == uid;
+            });
+            that.groupMessage.visitCard = item.visit_card || '';
           }
         });
       },
@@ -238,9 +290,7 @@
       //邀请好友加入群聊
       addGroupMembers() {
         sessionStorage.setItem("invite_group_id", this.groupMessage.groupId);
-
         this.isShow = true;
-        // this.$store.commit('showlaunchGroupChatBox', true);
       },
 
       //提交修改用户群名片
@@ -266,29 +316,67 @@
         });
       },
 
-      createSuccess() {
-
-      },
+      //邀请好友成功之后的回调事件
       inviteSuccess() {
         this.isShow = false;
         this.groupDetailList();
       },
 
-      send(){
-        this.$emit('send',{
-          groupId:this.groupMessage.groupId,
-          avatar:this.groupMessage.groupAvatar,
-          groupName:this.groupMessage.groupName
+      //发送群聊
+      sendGroup() {
+        this.$emit('sendGroup', {
+          groupId: this.groupMessage.groupId,
+          avatar: this.groupMessage.groupAvatar,
+          groupName: this.groupMessage.groupName
         })
+      },
+
+      //退出群操操作
+      signout() {
+        let that = this;
+        this.signoutStatus = 1;
+        quitGroupChat({
+          group_id: this.groupMessage.groupId
+        }).then((res) => {
+          if (res.code == 200) {
+            that.signoutStatus = 3;
+            setTimeout(function() {
+              that.signoutStatus = 0;
+              that.isShowSignout = false;
+              that.$emit('quitGroup');
+            }, 1500);
+          } else {
+            that.signoutStatus = 2;
+            setTimeout(function() {
+              that.signoutStatus = 0;
+            }, 3000);
+          }
+        }).catch(err => {
+          that.signoutStatus = 2;
+          setTimeout(function() {
+            that.signoutStatus = 0;
+          }, 3000);
+        });
       }
     }
   }
 </script>
 
 <style scoped>
+  .mt38 {
+    margin-top: 38px !important;
+  }
+
   .lumen-user-group {
     width: 100%;
     height: 100%;
+    position: relative;
+  }
+
+  .load-tips {
+    margin-top: 200px;
+    text-align: center;
+    cursor: pointer;
   }
 
   .lumen-user-group .group-box-header {
@@ -327,11 +415,16 @@
     font-size: 14px;
   }
 
+  .group-setting-row .edit-visit-card {
+    position: initial;
+    color: #a29f9f;
+  }
+
   .group-setting-row .edit-remark-icon {
-    position: absolute;
     margin-left: 5px;
     color: rgb(169, 184, 187);
-    top: 6px
+    position: absolute;
+    top: 19px;
   }
 
   .group-setting-row .edit-input {
@@ -385,7 +478,6 @@
     padding-right: 16px;
   }
 
-
   .group-setting-row .lumen-group-invite {
     height: 30px;
     background: #fdf2f2;
@@ -396,8 +488,8 @@
     border-radius: 2px;
   }
 
-  .group-setting-row .lumen-group-invite:active {
-    color: #CCCCCC;
+  .group-setting-row .lumen-group-invite:hover {
+    font-size: 16px;
   }
 
   .lumen-user-group .group-box-footer {
@@ -415,6 +507,10 @@
     color: #ffff;
     cursor: pointer;
     font-size: 12px;
+  }
+
+  .lumen-user-group .group-box-footer button:active {
+    background: #f5b8b8;
   }
 
   .lumen-user-group .member-box {
@@ -478,6 +574,12 @@
     font-size: 14px;
   }
 
+  .view-chart2 .border-bottom {
+    border-bottom: 1px solid rgb(226, 223, 223);
+    height: 3px;
+    padding: 0 5px 0 5px;
+  }
+
   .view-chart2 table tbody tr {
     height: 30px;
     line-height: 30px;
@@ -507,6 +609,11 @@
     border-radius: 50%;
     position: inherit;
     top: 4px;
+  }
+
+  .view-chart2 .no-search {
+    text-align: center;
+    padding-top: 30px;
   }
 
 
@@ -542,5 +649,76 @@
     margin: 0px 5px 5px 4px;
     line-height: 40px;
     color: #c3bbbb;
+  }
+
+  .signout-confirm-box {
+    width: 100%;
+    height: 100px;
+    background: #ffffff;
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    box-shadow: -1px -3px 11px 0px #cccccc82;
+    -webkit-animation: showFooter .35s ease-in-out;
+    -moz-animation: showFooter .35s ease-in-out;
+    animation: showFooter .35s ease-in-out;
+  }
+
+  .signout-confirm-box p:first-child {
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+  }
+
+  .signout-confirm-box p:nth-child(2) {
+    text-align: center;
+    font-size: 12px;
+    color: #CCCCCC;
+  }
+
+  .signout-button {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .signout-confirm-box button {
+    height: 30px;
+    width: 90px;
+    line-height: 30px;
+    background: #007FBB;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .signout-button button:first-child {
+    background: #ff3333;
+    color: white;
+  }
+
+  .signout-button button:last-child {
+    background: #f1eded;
+  }
+
+
+
+  @keyframes showFooter {
+    0% {
+      transform: translateY(75px)
+    }
+
+    to {
+      transform: translateY(0)
+    }
+  }
+
+  @-webkit-keyframes showFooter {
+    0% {
+      -webkit-transform: translateY(75px)
+    }
+
+    to {
+      -webkit-transform: translateY(0)
+    }
   }
 </style>

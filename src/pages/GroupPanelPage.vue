@@ -4,14 +4,14 @@
       <template v-slot:lcolumn>
         <lumen-search @search-change="searchChange" placeholder="搜索群名称" @click-open="isLaunchGroupChat = true"></lumen-search>
         <div class="lumen-chat-sidebar lumen-scrollbar">
-          <lumen-chat-list @lumen-click="lumenClick" v-for="(item,idx) in list" :key="idx" :idx="idx" :img="item.avatarurl"
-            :name="item.group_name" :content="'简介: '+item.group_profile" :active="idx == index?true:false" :params="item"></lumen-chat-list>
+          <lumen-chat-list @lumen-click="lumenClick" v-for="(item,idx) in groups" :key="idx" :idx="idx" :img="item.avatarurl"
+            :name="item.group_name" :content="'@'+item.group_profile" :active="idx == index?true:false" :params="item" :disturb='item.not_disturb' ></lumen-chat-list>
         </div>
       </template>
 
       <template v-slot:rcolumn>
         <div v-show="groupId > 0" class="lumen-chat-group-box">
-          <lumen-user-group @close="groupId = 0" :group-id="groupId" @send="sendMessage"></lumen-user-group>
+          <lumen-user-group @close="groupId = 0;index = null" :group-id="groupId" @sendGroup="sendMessage" @quitGroup="quitGroupSuccess"></lumen-user-group>
         </div>
         <lumen-amicable v-show="groupId == 0"></lumen-amicable>
       </template>
@@ -24,13 +24,8 @@
 
 <script>
   import {
-    userGroups,
-    crateChatListApi
+    userGroups
   } from '@/services/api';
-
-  import {
-    dateFormat
-  } from '@/utils/functions'
 
   import LumenLayoutPanel from '@/components/layout/LumenLayoutPanel';
   import LumenSearch from '@/components/layout/LumenSearch';
@@ -56,14 +51,18 @@
       return {
         index: null,
         groupId: 0,
-        list: [],
+
+        //用户群聊列表
+        groups: [],
+
+        //创建群聊窗口是否显示
         isLaunchGroupChat: false
       }
     },
     methods: {
       // 列表点击事件
       lumenClick(data) {
-        this.idx = data.idx;
+        this.index = data.idx;
         this.groupId = data.object.id;
       },
 
@@ -72,65 +71,52 @@
         alert('功能正在研发中请耐心等待...');
       },
 
-      //获取群聊列表接口
+      //获取用户群聊列表接口
       loadUserGroups() {
         let that = this;
+        this.index = null;
+        this.groupId = 0;
         userGroups().then(res => {
           if (res.code == 200) {
-            that.list = res.data;
+            that.groups = res.data;
           }
         });
       },
 
+      //创建群聊成功后的回调事件
       launchGroupChatSuccess() {
         this.isLaunchGroupChat = false;
         this.loadUserGroups();
       },
 
-
-      // 获取聊天列表数组索引
-      getChatListIdx(index_name) {
-        let list = this.$store.state.dialogue.chatModule.chatList;
-        for (let i in list) {
-          if (list[i].index_name == index_name) {
-            return i;
-          }
-        }
-        return -1;
-      },
+      //群聊窗口点击发送群聊信息按钮回调事件
       sendMessage(groupInfo) {
-        let index_name = `2_${groupInfo.groupId}`;
-        let idx = this.getChatListIdx(index_name);
+        this.index = null;
+        this.groupId = 0;
 
-        if (idx < 0) {
-          //创建聊天列表
-          crateChatListApi({
-            receive_id: groupInfo.groupId,
-            type: 2
-          });
-          this.$store.commit('updateChatList', {
-            type: 4,
-            message: {
-              type: 2,
-              group_id: groupInfo.groupId,
-              friend_id: 0,
-              index_name: index_name,
-              avatar: groupInfo.avatar,
-              name: groupInfo.groupName,
-              nickname: '',
-              unread_num: 0,
-              msg_text: '...',
-              created_at: dateFormat('YYYY/mm/dd HH:MM:SS',new Date())
-            }
-          });
+        let index_name = `2_${groupInfo.groupId}`;
+        this.$store.commit('updateNavModule', 0);
+        let index = this.$parent.$refs.refDialoguePage.getIndex(index_name);
+        if (index >= 0) {
+          this.$parent.$refs.refDialoguePage.clickTab(2, index_name);
+          return;
         }
 
-        this.$store.commit('updateNavModule', 0);
-        this.$store.commit('func', {
-          idx: index_name,
-          minRecordId: 0,
-          cahtRecords: []
+        this.$parent.$refs.refDialoguePage.clickTab(1, {
+          type: 2,
+          friend_id: 0,
+          group_id: groupInfo.groupId,
+          index_name: index_name,
+          avatar: groupInfo.avatar,
+          name: groupInfo.groupName,
         });
+      },
+
+      //用户退出群聊回调事件
+      quitGroupSuccess() {
+        this.index = null;
+        this.groupId = 0;
+        this.loadUserGroups();
       }
     }
   };
