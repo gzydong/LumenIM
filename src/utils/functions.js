@@ -1,0 +1,513 @@
+/** 公共方法类 */
+import {
+  getToken
+} from '@/utils/auth';
+
+/**
+ * 人性化时间显示
+ *
+ * @param {Object} datetime
+ */
+export function formateTime(datetime) {
+  datetime = datetime.replace(/-/g, "/");
+
+  //当前时间戳
+  let time = new Date();
+  let outTime = new Date(datetime);
+  if (/^[1-9]\d*$/.test(datetime)) {
+    outTime = new Date(parseInt(datetime) * 1000);
+  }
+
+  if ((time.getTime() < outTime.getTime()) || (time.getFullYear() != outTime.getFullYear())) {
+    return parseTime(outTime, '{y}-{m}-{d} {h}:{i}');
+  }
+
+  if (time.getMonth() != outTime.getMonth()) {
+    return parseTime(outTime, '{m}-{d} {h}:{i}');
+  }
+
+  if (time.getDate() != outTime.getDate()) {
+    let day = outTime.getDate() - time.getDate();
+    if (day == -1) {
+      return parseTime(outTime, '昨天 {h}:{i}');
+    }
+
+    if (day == -2) {
+      return parseTime(outTime, '前天 {h}:{i}');
+    }
+
+    return parseTime(outTime, '{m}-{d} {h}:{i}');
+  }
+
+  if (time.getHours() != outTime.getHours()) {
+    return parseTime(outTime, '{h}:{i}');
+  }
+
+  let minutes = outTime.getMinutes() - time.getMinutes();
+  if (minutes == 0) {
+    return '刚刚';
+  }
+
+  minutes = Math.abs(minutes)
+  return `${minutes}分钟前`;
+}
+
+/**
+ * 格式化文件大小
+ * 
+ * @param {Object} value 文件大小(字节)
+ */
+export function formateSize(value) {
+  if (null == value || value == '') {
+    return "0";
+  }
+  let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let index = 0;
+  let srcsize = parseFloat(value);
+  index = Math.floor(Math.log(srcsize) / Math.log(1024));
+  let size = srcsize / Math.pow(1024, index);
+  size = size.toFixed(2); //保留的小数位数
+  return size + unitArr[index];
+}
+/**
+ * 获取文件后缀名
+ *
+ * @param {Object} fileName
+ */
+export function getFileExt(fileName) {
+  let ext = fileName.split('.');
+  ext = ext[ext.length - 1]; // 获取文件后缀名
+  return ext;
+}
+
+/**
+ * 根据图片url下载图片
+ * @param {Object} imgsrc
+ * @param {Object} name
+ */
+export function downloadIamge(imgsrc, name) { //下载图片地址和图片名
+  let image = new Image();
+  // 解决跨域 Canvas 污染问题
+  image.setAttribute("crossOrigin", "anonymous");
+  image.onload = function () {
+    let canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    let context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, image.width, image.height);
+    let url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
+    let a = document.createElement("a"); // 生成一个a元素
+    let event = new MouseEvent("click"); // 创建一个单击事件
+    a.download = name || "photo"; // 设置图片名称
+    a.href = url; // 将生成的URL设置为a.href属性
+    a.dispatchEvent(event); // 触发a的单击事件
+  };
+  image.src = imgsrc;
+}
+
+
+/**
+ * 通过图片url获取图片大小
+ *
+ * @param {Object} imgsrc
+ */
+export function getImageInfo(imgsrc) {
+  let data = {
+    width: 0,
+    height: 0
+  }
+
+  let info = imgsrc.match(/\d+x\d+/g);
+  if (info == null) return data;
+
+  info = info[0].split('x');
+
+  data.width = parseInt(info[0]);
+  data.height = parseInt(info[1]);
+  return data;
+}
+
+/**
+ * 文件下载方法
+ * 
+ * @param {number} cr_id 
+ */
+export function download(cr_id) {
+  let api = process.env.API_URL;
+  let token = getToken();
+  try {
+    let link = document.createElement('a');
+    link.href = `${api}/api/download/user-chat-file?cr_id=${cr_id}&token=${token}`
+    link.click();
+  } catch (e) {}
+}
+
+
+/**
+ * 时间格式化方法
+ * 
+ * @param {(Object|string|number)} time
+ * @param {string} cFormat
+ * @returns {string | null}
+ */
+export function parseTime(time, cFormat) {
+  if (arguments.length === 0) {
+    return null;
+  }
+  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}';
+  let date;
+  if (typeof time === 'object') {
+    date = time;
+  } else {
+    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
+      time = parseInt(time);
+    }
+    if ((typeof time === 'number') && (time.toString().length === 10)) {
+      time = time * 1000;
+    }
+
+    date = new Date(time.replace(/-/g, "/"));
+  }
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    i: date.getMinutes(),
+    s: date.getSeconds(),
+    a: date.getDay()
+  }
+  const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
+    const value = formatObj[key];
+    // Note: getDay() returns 0 on Sunday
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value];
+    }
+
+    return value.toString().padStart(2, '0');
+  })
+  return time_str;
+}
+
+
+/**
+ * 去除字符串控制
+ * 
+ * @param {String} str 
+ */
+export function trim(str, type = null) {
+  if (type) {
+    return str.replace(/(^\s*)|(\s*$)/g, '');
+  } else if (type == 'l') {
+    return str.replace(/(^\s*)/g, '');
+  } else {
+    return str.replace(/(\s*$)/g, '');
+  }
+}
+
+
+
+/**
+ * 解析url中参数
+ * 
+ * @param {string} url
+ * @returns {Object}
+ */
+export function param2Obj(url) {
+  const search = url.split('?')[1]
+  if (!search) {
+    return {};
+  }
+  return JSON.parse(
+    '{"' +
+    decodeURIComponent(search)
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"')
+    .replace(/\+/g, ' ') +
+    '"}'
+  );
+}
+
+
+/**
+ * @param {Object} json
+ * @returns {Array}
+ */
+export function param(json) {
+  if (!json) return '';
+  return cleanArray(
+    Object.keys(json).map(key => {
+      if (json[key] === undefined) return '';
+      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+    })
+  ).join('&');
+}
+
+/**
+ * @param {Array} actual
+ * @returns {Array}
+ */
+export function cleanArray(actual) {
+  const newArray = [];
+  for (let i = 0; i < actual.length; i++) {
+    if (actual[i]) {
+      newArray.push(actual[i]);
+    }
+  }
+  return newArray;
+}
+
+
+/**
+ * @param {HTMLElement} element
+ * @param {string} className
+ */
+export function toggleClass(element, className) {
+  if (!element || !className) {
+    return;
+  }
+  let classString = element.className;
+  const nameIndex = classString.indexOf(className)
+  if (nameIndex === -1) {
+    classString += '' + className;
+  } else {
+    classString =
+      classString.substr(0, nameIndex) +
+      classString.substr(nameIndex + className.length);
+  }
+  element.className = classString;
+}
+
+/**
+ * Check if an element has a class
+ * @param {HTMLElement} elm
+ * @param {string} cls
+ * @returns {boolean}
+ */
+export function hasClass(ele, cls) {
+  return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+}
+
+/**
+ * Add class to element
+ * @param {HTMLElement} elm
+ * @param {string} cls
+ */
+export function addClass(ele, cls) {
+  if (!hasClass(ele, cls)) ele.className += ' ' + cls;
+}
+
+/**
+ * Remove class from element
+ * @param {HTMLElement} elm
+ * @param {string} cls
+ */
+export function removeClass(ele, cls) {
+  if (hasClass(ele, cls)) {
+    const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+    ele.className = ele.className.replace(reg, ' ');
+  }
+}
+
+/**
+ * 通过图片Url获取图片等比例缩放的宽度和高度信息
+ * 
+ * @param {string} src 
+ * @param {number} width 
+ */
+export function imgZoom(src, width = 200) {
+  const info = getImageInfo(src);
+
+  if (info.width < width) {
+    return {
+      width: `${info.width}px`,
+      height: `${info.height}px`
+    };
+  }
+
+  return {
+    width: width + "px",
+    height: parseInt(info.height / (info.width / width)) + "px"
+  };
+}
+
+/**
+ * 获取浏览器光标选中内容
+ *
+ * @export
+ * @returns
+ */
+export function getSelection() {
+  return window.getSelection ? window.getSelection().toString() : document.selection.createRange().text;
+}
+
+
+/**
+ * 剪贴板复制功能
+ * 
+ * @param {*} value 复制内容
+ * @param {*} callback 复制成功回调方法
+ */
+export const copyTextToClipboard = (value, callback) => {
+  let textArea = document.createElement("textarea");
+  textArea.style.background = 'transparent';
+  textArea.value = value;
+  document.body.appendChild(textArea);
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    if (callback) callback();
+  } catch (err) {
+    alert('Oops, unable to copy');
+  }
+
+  document.body.removeChild(textArea);
+}
+
+/**
+ * 隐藏用户手机号中间四位
+ * 
+ * @param {string} phone  手机号
+ */
+export function hidePhone(phone) {
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+}
+
+
+/**
+ * 包装聊天记录消息
+ *
+ * @param {Object} obj 聊天消息
+ */
+export function packTalkRecord(obj) {
+  return Object.assign({
+    id: null,
+    msg_type: 1, //消息类型 1:文本消息 2:文件消息  3:系统提示好友入群消息 4:系统提示好友退群消息  5:转发消息
+    source: 1, //聊天类型 1:私聊 2:群聊
+    user_id: 0, //发送消息的用户ID
+    receive_id: 0, //接收用户ID(或接收群的ID)
+    float: 'center', //消息浮动类型
+    avatar: '', //发送者用户头像
+    nickname: '', //发送者账号昵称
+    friend_remarks: '', //好友备注(或群聊昵称)
+    send_time: "", //消息发送时间
+
+    //文本消息
+    content: '',
+
+    //文件消息信息
+    file_id: null,
+    file_original_name: "",
+    file_size: 0,
+    file_suffix: "",
+    file_type: 1,
+    file_url: "",
+    file_source: 1,
+
+    //代码块消息
+    is_code: 0,
+    code_lang: '',
+    is_revoke: 0,
+
+    //转发消息
+    forward_id: 0,
+    forward_info: {
+      list:[],  // 前3条信息
+      num:0     // 消息数量
+    },
+
+    //群通知(1:入群通知  2:退群通知)
+    group_notify: {
+      type: 1,
+      operate_user: null,
+      users: []
+    },
+  }, obj);
+}
+
+
+/**
+ * 包装聊天对话列表数据
+ *
+ * @param {Object} params
+ */
+export function packTalkItem(params) {
+  let options = {
+    id: null,
+    type: 1,
+    index_name: "",
+    name: "未设置昵称",
+    remark_name: "",
+    avatar: "",
+    friend_id: 0,
+    group_id: 0,
+    group_members_num: 0,
+    not_disturb: 0,
+    is_top: 0,
+    unread_num: 0,
+    content: "......",
+    created_at: parseTime(new Date()),
+  };
+
+  options = Object.assign(options, params);
+  options.index_name = options.type == 1 ? `${options.type}_${options.friend_id}` : `${options.type}_${options.group_id}`;
+
+  return options;
+}
+
+/**
+ * 人性化显示时间
+ *
+ * @param {Object} datetime
+ */
+export function beautifyTime(datetime = '') {
+  if (datetime == null) {
+    return ''
+  }
+  datetime = datetime.replace(/-/g, "/");
+
+  //当前时间戳
+  let time = new Date();
+  let outTime = new Date(datetime);
+  if (/^[1-9]\d*$/.test(datetime)) {
+    outTime = new Date(parseInt(datetime) * 1000);
+  }
+
+  if (time.getTime() < outTime.getTime()) {
+    return parseTime(outTime, '{y}/{m}/{d}')
+  }
+
+  if (time.getFullYear() != outTime.getFullYear()) {
+    return parseTime(outTime, '{y}/{m}/{d}')
+  }
+
+  if (time.getMonth() != outTime.getMonth()) {
+    return parseTime(outTime, '{m}/{d}')
+  }
+
+  if (time.getDate() != outTime.getDate()) {
+    let day = outTime.getDate() - time.getDate();
+    if (day == -1) {
+      return parseTime(outTime, '昨天 {h}:{i}')
+    }
+
+    if (day == -2) {
+      return parseTime(outTime, '前天 {h}:{i}')
+    }
+
+    return parseTime(outTime, '{m}-{d}')
+  }
+
+  if (time.getHours() != outTime.getHours()) {
+    return parseTime(outTime, '{h}:{i}')
+  }
+
+  let minutes = outTime.getMinutes() - time.getMinutes();
+  if (minutes == 0) {
+    return '刚刚';
+  }
+
+  minutes = Math.abs(minutes)
+  return `${minutes}分钟前`;
+}

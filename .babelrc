@@ -1,0 +1,62 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false,
+        "useBuiltIns": "entry",
+        "targets": {
+          "browsers": [
+            "> 1%",
+            "last 2 versions",
+            "not ie <= 8"
+          ]
+        }
+      }
+    ],
+    "stage-2"
+  ],
+  "plugins": [
+    "transform-vue-jsx",
+    "transform-runtime",
+    [
+      "prismjs",
+      {
+        "languages": [
+          "html",
+          "css",
+          "javascript",
+          "json",
+          "bash",
+          "nginx",
+          "sql",
+          "docker",
+          "php",
+          "java",
+          "go",
+          "python",
+          "ruby",
+          "rust",
+          "objectivec",
+          "c",
+          "lua",
+          "shell"
+        ],
+        "theme": "okaidia"
+      }
+    ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        "env",
+        "stage-2"
+      ],
+      "plugins": [
+        "transform-vue-jsx",
+        "transform-es2015-modules-commonjs",
+        "dynamic-import-node"
+      ]
+    }
+  }
+}
