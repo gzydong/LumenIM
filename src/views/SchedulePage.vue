@@ -3,7 +3,7 @@
     <main-layout :idx="3">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
-        <el-aside width="320px" class="aside-box padding0">
+        <el-aside width="300px" class="aside-box padding0">
           <el-container class="hv100" direction="vertical">
 
             <!-- 搜索栏 -->
@@ -543,8 +543,8 @@
 <style scoped>
   .aside-box {
     position: relative;
-    /* background-color: white; */
-    background-color: rgb(230, 230, 230);
+    background-color: white;
+    border-right: 1px solid rgb(245, 245, 245);
     overflow: hidden;
   }
 
@@ -563,7 +563,7 @@
   }
 
   .aside-box .header .from>>>.el-autocomplete {
-    width: 245px;
+    width: 225px;
   }
 
   .aside-box .header .from>>>.el-autocomplete .el-input__inner {
