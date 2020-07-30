@@ -7,9 +7,9 @@
           <el-container class="hv100" direction="vertical">
 
             <!-- 搜索栏 -->
-            <el-header height="70px" class="padding0 header">
+            <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-autocomplete popper-class="my-autocomplete" :fetch-suggestions="querySearch" placeholder="请输入内容"
+                <el-autocomplete popper-class="my-autocomplete" :fetch-suggestions="querySearch" placeholder="搜索聊天列表"
                   prefix-icon="el-icon-search" size="small">
                   <template slot-scope="{ item }">
                     <div class="name">{{ item.value }}</div>
@@ -17,47 +17,53 @@
                   </template>
                 </el-autocomplete>
               </div>
+              <!-- 工具栏 -->
               <div class="tools">
                 <el-button icon="el-icon-plus" circle plain size="small" v-show="subMenu"></el-button>
                 <el-button icon="el-icon-plus" circle plain size="small" v-show="!subMenu" @click="subMenu = true">
                 </el-button>
                 <transition name="el-zoom-in-top">
                   <div class="tools-menu" v-show="subMenu" v-outside="closeSubMenu">
-                    <div class="menu-item">创建群聊</div>
-                    <div class="menu-item">添加好友</div>
+                    <div class="menu-item" @click="triggerSubMenu(1)">创建群聊</div>
+                    <div class="menu-item" @click="triggerSubMenu(2)">添加好友</div>
                   </div>
                 </transition>
               </div>
             </el-header>
 
             <!-- 置顶栏 -->
-            <transition name="el-zoom-in-top">
-              <el-header v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
-                <div class="top-item" v-for="(item,idx) in $store.state.talkItems.items" v-if="item.is_top">
-                  <div class="avatar">远</div>
-                  <div class="name">{{item.remark_name?item.remark_name:item.name}}</div>
+            <el-header id="subheader" v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
+              <div class="top-item" v-for="(item,idx) in $store.state.talkItems.items" v-if="item.is_top"
+                @click="clickTab(2, item.index_name)">
+                <div class="avatar">
+                  <span v-show="!item.avatar">
+                    {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
+                  </span>
+                  <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar"
+                    class="avatar-img" />
                 </div>
-              </el-header>
-            </transition>
-
+                <div class="name" :class="{'name-active':index_name == item.index_name}">
+                  {{item.remark_name?item.remark_name:item.name}}</div>
+              </div>
+            </el-header>
 
             <!-- 对话列表栏 -->
             <el-main class="padding0 main">
-              <el-scrollbar :native="false" class="hv100" tag="section">
+              <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
                 <p class="main-menu">
-                  <span class="title">消息记录({{$store.state.talkItems.items.length}})</span>
-                  <span class="icon"><i class="el-icon-caret-bottom"></i></span>
+                  <span class="title">消息记录 ({{$store.state.talkItems.items.length}})</span>
                 </p>
 
+                <!-- 对话列表 -->
                 <div class="talk-item" v-for="(item,idx) in $store.state.talkItems.items" :key="idx"
                   :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="chatItemsMenu(item,$event)">
-                  <div class="avatar">
-                    <span v-show="!item.avatar" class="avatar-text">
+                  <div class="avatar" style="position: relative;">
+                    <span v-show="!item.avatar">
                       {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
                     </span>
                     <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar"
-                      class="avatar-img" style="width: 100%;height: 100%;border-radius: 50%;background-color: white;">
+                      class="avatar-img" />
                   </div>
                   <div class="card">
                     <div class="title">
@@ -82,7 +88,7 @@
         <!-- 聊天面板容器 -->
         <el-main class="padding0 hv100" style="overflow: hidden;">
           <template v-if="index_name == null">
-            <main-amicable />
+            <div class="reserve-box">LumenIM 让聊天更简单 ...</div>
           </template>
           <template v-else>
             <talk-editor-panel class="hv100" :params="params" :is-online="isFriendOnline" @change-talk="changeTalk"
@@ -91,17 +97,26 @@
         </el-main>
       </el-container>
     </main-layout>
+
+    <!-- 创建群聊组件 -->
+    <launch-group-chat v-if="launchGroupShow" @close="launchGroupShow = false" @create-success="groupChatSuccess" />
+
+    <!-- 查看好友用户信息 -->
+    <user-business-card ref="userBusinessCard" />
+
+    <!-- 用户查询 -->
+    <search-users ref="searchUsers" />
   </div>
 </template>
 
 <script>
   import Vue from "vue";
   import MainLayout from "@/views/layout/MainLayout";
-  import MainAmicable from "@/views/layout/MainAmicable";
   import SearchChatRecord from "@/components/chat/SearchChatRecord";
   import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
   import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
+  import SearchUsers from "@/components/user/SearchUsers";
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
 
@@ -123,18 +138,20 @@
 
   import {
     packTalkItem,
-    beautifyTime
+    beautifyTime,
+    addClass,
+    removeClass
   } from '@/utils/functions';
 
   export default {
     name: 'schedule-page',
     components: {
       MainLayout,
-      MainAmicable,
       LaunchGroupChat,
       SearchChatRecord,
       TalkEditorPanel,
-      UserBusinessCard
+      UserBusinessCard,
+      SearchUsers
     },
     data() {
       return {
@@ -182,7 +199,7 @@
       // 计算子Header的高度
       subHeaderPx() {
         let num = this.topNum,
-          len = 58;
+          len = 65;
 
         if (num > 7) {
           let y = (num % 7) > 0 ? 1 : 0;
@@ -246,15 +263,38 @@
 
     mounted() {
       this.loadChatList();
+      this.scrollEvent();
     },
     destroyed() {
       this.$root.updateMessage(0, 0);
     },
-
-
     methods: {
+      // header 功能栏隐藏事件
       closeSubMenu() {
         this.subMenu = false;
+      },
+      triggerSubMenu(type) {
+        if (type == 1) {
+          this.launchGroupShow = true;
+        }else{
+          this.$refs.searchUsers.open();
+        }
+
+        this.closeSubMenu();
+      },
+
+      // 监听自定义滚动条事件
+      scrollEvent(e) {
+        let _self = this;
+        let scrollbarEl = this.$refs.myScrollbar.wrap
+        scrollbarEl.onscroll = function () {
+          let el = document.getElementById('subheader');
+          if (scrollbarEl.scrollTop == 0) {
+            removeClass(el, 'header-shadow');
+          } else {
+            addClass(el, 'header-shadow');
+          }
+        }
       },
 
       // 搜索框查询
@@ -297,18 +337,9 @@
           online = info.online ?
             '<span style="color:#058205a3">[在线]</span>' :
             "[离线]";
-          return `${online} ${info.msg_text}`;
         }
 
         return `${online} ${info.msg_text}`;
-      },
-
-      //搜索框修改触发事件
-      searchChange(keyWords) {
-        this.$notify({
-          title: '友情提示:',
-          message: "功能正在研发中请耐心等待..."
-        });
       },
 
       //获取用户对话列表
@@ -611,6 +642,10 @@
 
   /* subheader start */
 
+  .aside-box .header-shadow {
+    box-shadow: 0 2px 6px 0 rgba(31, 35, 41, .05);
+  }
+
   .aside-box .subheader {
     display: flex;
     flex-direction: row;
@@ -644,6 +679,14 @@
     font-size: 10px;
     color: white;
     flex-shrink: 0;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .top-item .avatar img {
+    width: 100%;
+    height: 100%;
+    background-color: white;
   }
 
   .top-item .name {
@@ -655,6 +698,11 @@
     line-height: 20px;
     word-break: break-all;
     overflow: hidden;
+  }
+
+  .top-item .name-active {
+    color: red;
+    font-weight: 600;
   }
 
   /* subheader end */
@@ -709,8 +757,8 @@
   }
 
   .aside-box .talk-item:hover .avatar {
-    transition: ease-in 2s;
-    transform: rotate(360deg);
+    transition: ease-in .5s;
+    border-radius: 3px;
   }
 
   .aside-box .talk-item .avatar {
@@ -726,6 +774,13 @@
     font-size: 14px;
     color: white;
     user-select: none;
+    overflow: hidden;
+  }
+
+  .aside-box .talk-item .avatar img {
+    width: 100%;
+    height: 100%;
+    background-color: white;
   }
 
   .aside-box .talk-item .card {
@@ -822,5 +877,16 @@
   }
 
   /* aside main end */
+
+  .reserve-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    font-size: 24px;
+    color: #d8dae2;
+    background-color: white;
+  }
 
 </style>
