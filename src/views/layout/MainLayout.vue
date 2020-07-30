@@ -2,7 +2,7 @@
   <div>
     <el-container class="mian-layout">
       <el-aside width="70px" class="side-edge">
-        <el-container style="height: 100%;overflow: hidden;">
+        <el-container class="hv100" style="overflow: hidden;">
           <el-header height="70px" class="padding0">
             <el-popover placement="right" trigger="click" :visible-arrow="false" popper-class="padding0">
               <user-card />
@@ -14,7 +14,7 @@
               </div>
             </el-popover>
           </el-header>
-          <el-main class="padding0">
+          <el-main class="padding0" style="overflow: hidden;">
             <div class="sidebar-menu">
               <el-tooltip class="item" content="我的聊天消息" placement="right" :visible-arrow="false">
                 <div class="menu-items" @click="toLink(0)" :class="{'menu-items-active':idx == 0}">
@@ -34,11 +34,6 @@
                   <i class="iconfont icon-biji"></i>
                 </div>
               </el-tooltip>
-              <!-- <el-tooltip class="item" content="日程管理" placement="right" :visible-arrow="false">
-                <div class="menu-items" @click="toLink(3)" :class="{'menu-items-active':idx == 3}">
-                  <i class="iconfont icon-rili1" style="margin-left: 0;"></i>
-                </div>
-              </el-tooltip> -->
             </div>
           </el-main>
           <el-footer height="60px" class="padding0">

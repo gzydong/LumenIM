@@ -15,7 +15,7 @@ const routes = [{
   {
     path: '/message',
     name: 'message',
-    component: () => import('@/views/MessagePage'),
+    component: () => import('@/views/SchedulePage'),
     meta: {
       title: '消息通知',
       needLogin: true

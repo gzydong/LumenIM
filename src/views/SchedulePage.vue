@@ -5,37 +5,89 @@
         <!-- 左侧侧边栏 -->
         <el-aside width="320px" class="aside-box padding0">
           <el-container class="hv100" direction="vertical">
-            <el-header height="70px" class="padding0 header">
 
-            </el-header>
-            <el-header height="105px" class="padding0 subheader">
-              <div class="top-item" v-for="i in 8">
-                  <div class="avatar">远</div>
-                  <div>那就阿</div>
+            <!-- 搜索栏 -->
+            <el-header height="70px" class="padding0 header">
+              <div class="from">
+                <el-autocomplete popper-class="my-autocomplete" :fetch-suggestions="querySearch" placeholder="请输入内容"
+                  prefix-icon="el-icon-search" size="small">
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.value }}</div>
+                    <span class="addr">{{ item.address }}</span>
+                  </template>
+                </el-autocomplete>
               </div>
-            </el-header>
-            <el-main class="padding0 main">
-              <div class="talk-item" v-for="i in 10" :class="{'talk-item-border':i==2}">
-                <div class="avatar">远</div>
-                <div class="card">
-                  <div class="title">
-                    <div class="card-name">
-                      <p class="nickname">马赛克吗卡什么发卡量唉什么克隆反拉伸膜弗拉开门阿里卡密萨弗拉开门拉莫斯</p>
-                      <div class="larkc-tag top">TOP</div>
-                      <div class="larkc-tag group">群组</div>
-                      <div class="larkc-tag disturb"><i class="iconfont icon-xiaoximiandarao"></i></div>
-                    </div>
-                    <div class="card-time">7月20日</div>
+              <div class="tools">
+                <el-button icon="el-icon-plus" circle plain size="small" v-show="subMenu"></el-button>
+                <el-button icon="el-icon-plus" circle plain size="small" v-show="!subMenu" @click="subMenu = true">
+                </el-button>
+                <transition name="el-zoom-in-top">
+                  <div class="tools-menu" v-show="subMenu" v-outside="closeSubMenu">
+                    <div class="menu-item">创建群聊</div>
+                    <div class="menu-item">添加好友</div>
                   </div>
-                  <div class="content">安居客饭安科技是否按实际开发</div>
-                </div>
+                </transition>
               </div>
+            </el-header>
+
+            <!-- 置顶栏 -->
+            <transition name="el-zoom-in-top">
+              <el-header v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
+                <div class="top-item" v-for="(item,idx) in $store.state.talkItems.items" v-if="item.is_top">
+                  <div class="avatar">远</div>
+                  <div class="name">{{item.remark_name?item.remark_name:item.name}}</div>
+                </div>
+              </el-header>
+            </transition>
+
+
+            <!-- 对话列表栏 -->
+            <el-main class="padding0 main">
+              <el-scrollbar :native="false" class="hv100" tag="section">
+                <p class="main-menu">
+                  <span class="title">消息记录({{$store.state.talkItems.items.length}})</span>
+                  <span class="icon"><i class="el-icon-caret-bottom"></i></span>
+                </p>
+
+                <div class="talk-item" v-for="(item,idx) in $store.state.talkItems.items" :key="idx"
+                  :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
+                  @contextmenu.prevent="chatItemsMenu(item,$event)">
+                  <div class="avatar">
+                    <span v-show="!item.avatar" class="avatar-text">
+                      {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
+                    </span>
+                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar"
+                      class="avatar-img" style="width: 100%;height: 100%;border-radius: 50%;background-color: white;">
+                  </div>
+                  <div class="card">
+                    <div class="title">
+                      <div class="card-name">
+                        <p class="nickname">{{item.remark_name?item.remark_name:item.name}}</p>
+                        <div class="larkc-tag top" v-show="item.is_top">TOP</div>
+                        <div class="larkc-tag group" v-show="item.group_id">群组</div>
+                        <div class="larkc-tag disturb" v-show="item.not_disturb">
+                          <i class="iconfont icon-xiaoximiandarao"></i>
+                        </div>
+                      </div>
+                      <div class="card-time">{{beautifyTime(item.updated_at)}}</div>
+                    </div>
+                    <div class="content">{{handleTip(item)}}</div>
+                  </div>
+                </div>
+              </el-scrollbar>
             </el-main>
           </el-container>
         </el-aside>
 
-        <el-main style="background-color: white;">
-
+        <!-- 聊天面板容器 -->
+        <el-main class="padding0 hv100" style="overflow: hidden;">
+          <template v-if="index_name == null">
+            <main-amicable />
+          </template>
+          <template v-else>
+            <talk-editor-panel class="hv100" :params="params" :is-online="isFriendOnline" @change-talk="changeTalk"
+              @close-talk="closeTalk" />
+          </template>
         </el-main>
       </el-container>
     </main-layout>
@@ -43,83 +95,617 @@
 </template>
 
 <script>
+  import Vue from "vue";
   import MainLayout from "@/views/layout/MainLayout";
+  import MainAmicable from "@/views/layout/MainAmicable";
+  import SearchChatRecord from "@/components/chat/SearchChatRecord";
+  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+  import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
+  import UserBusinessCard from "@/components/user/UserBusinessCard";
+  import Contextmenu from "vue-contextmenujs";
+  Vue.use(Contextmenu);
+
+  import {
+    chatListsServ,
+    clearChatUnreadNumServ,
+    delChatItemServ,
+    topChatItemServ,
+    setNotDisturbServ
+  } from "@/api/chat";
+
+  import {
+    removeFriendServ
+  } from "@/api/user";
+
+  import {
+    secedeGroupServ
+  } from "@/api/group";
+
+  import {
+    packTalkItem,
+    beautifyTime
+  } from '@/utils/functions';
+
   export default {
     name: 'schedule-page',
     components: {
-      MainLayout
+      MainLayout,
+      MainAmicable,
+      LaunchGroupChat,
+      SearchChatRecord,
+      TalkEditorPanel,
+      UserBusinessCard
     },
     data() {
       return {
+        groupBoxShow: false,
+        launchGroupShow: false,
 
+        index_name: null,
+        params: {
+          source: 0,
+          receiveId: 0,
+          nickname: '',
+        },
+
+        //用户对话列表加载状态
+        dataStatus: 0,
+
+
+        input: '',
+        restaurants: [{
+            "value": "三全鲜食（北新泾店）",
+            "address": "长宁区新渔路144号"
+          },
+          {
+            "value": "Hot honey 首尔炸鸡（仙霞路）",
+            "address": "上海市长宁区淞虹路661号"
+          },
+          {
+            "value": "南拳妈妈龙虾盖浇饭",
+            "address": "普陀区金沙江路1699号鑫乐惠美食广场A13"
+          }
+        ],
+        subMenu: false,
       };
     },
+    computed: {
+      // 计算置顶数量
+      topNum() {
+        let items = this.$store.state.talkItems.items.filter((item) => {
+          return item.is_top == 1;
+        });
+
+        return items.length;
+      },
+
+      // 计算子Header的高度
+      subHeaderPx() {
+        let num = this.topNum,
+          len = 58;
+
+        if (num > 7) {
+          let y = (num % 7) > 0 ? 1 : 0;
+          len = (Math.floor(num / 7) + y) * len;
+        }
+
+        return `${len}px`;
+      },
+
+      reloadDialogues() {
+        return this.$store.state.talkItems.heavyLoad;
+      },
+      unreadNum() {
+        return this.$store.state.talkItems.items.reduce(function (total, item) {
+          return total + parseInt(item.unread_num);
+        }, 0);
+      },
+      monitorUserStatus() {
+        return this.$store.state.notify.friendStatus;
+      },
+      enterGroup() {
+        return this.$store.state.notify.enterGroup;
+      },
+      isFriendOnline() {
+        let i = this.getIndex(this.index_name);
+        if (i == -1) return 0;
+        return this.$store.state.talkItems.items[i].online == 1;
+      }
+    },
+    watch: {
+      unreadNum(nval, oval) {
+        this.$store.commit("setUnreadNum", nval);
+      },
+
+      //监听用户在线状态
+      monitorUserStatus(nval, oval) {
+        let [status, friend_id] = nval.split("_");
+        let key = this.getIndex(`1_${friend_id}`);
+        if (key == -1) return;
+
+        this.$store.commit({
+          type: "updateOnlineStatus",
+          key,
+          status
+        });
+      },
+
+      //监听入群通知消息
+      enterGroup(nval, oval) {
+        this.loadChatList();
+      },
+
+      //监听是否刷新聊天菜单
+      reloadDialogues(n, o) {
+        if (n) {
+          this.loadChatList();
+          this.$store.commit("setHeavyLoad", false);
+        }
+      }
+    },
+
+    mounted() {
+      this.loadChatList();
+    },
+    destroyed() {
+      this.$root.updateMessage(0, 0);
+    },
+
+
     methods: {
+      closeSubMenu() {
+        this.subMenu = false;
+      },
+
+      // 搜索框查询
+      querySearch(queryString, cb) {
+        let restaurants = this.restaurants;
+        let createFilter = (queryString) => {
+          return (restaurant) => {
+            return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          };
+        };
+
+        let results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
+
+        cb(results);
+      },
+
+      // -------
+
+      //美化时间格式
+      beautifyTime: beautifyTime,
+
+      //发送消息方法
+      sendSocket(message) {
+        if (this.$store.getters.socketStatus) {
+          this.$notify({
+            title: '友情提示:',
+            message: "网络服务器已断开，正在尝试连接..."
+          });
+
+          return false;
+        }
+
+        this.$root.socket.send(message);
+      },
+
+      //格式化好友消息
+      handleTip(info) {
+        let online = "[群消息]";
+        if (info.type == 1) {
+          online = info.online ?
+            '<span style="color:#058205a3">[在线]</span>' :
+            "[离线]";
+          return `${online} ${info.msg_text}`;
+        }
+
+        return `${online} ${info.msg_text}`;
+      },
+
+      //搜索框修改触发事件
+      searchChange(keyWords) {
+        this.$notify({
+          title: '友情提示:',
+          message: "功能正在研发中请耐心等待..."
+        });
+      },
+
+      //获取用户对话列表
+      loadChatList() {
+        if (this.$store.state.talkItems.items.length == 0) {
+          this.dataStatus = 0;
+        }
+
+        chatListsServ().then(res => {
+          if (res.code == 200) {
+            this.$store.commit({
+              type: "setItems",
+              items: res.data.map(item => packTalkItem(item))
+            });
+
+            this.dataStatus = 1;
+
+            let index_name = sessionStorage.getItem("send_message_index_name");
+            if (index_name) {
+              this.$nextTick(function () {
+                this.clickTab(2, index_name);
+              });
+
+              sessionStorage.removeItem("send_message_index_name");
+            }
+          } else {
+            this.dataStatus = 2;
+          }
+        }).catch(err => {
+          this.dataStatus = 2;
+        });
+      },
+
+      //发起群聊成功后回调方法
+      groupChatSuccess(data) {
+        this.launchGroupShow = false;
+        sessionStorage.setItem("send_message_index_name", `2_${data.group_info.id}`);
+        this.loadChatList();
+      },
+
+      //根据用户对话索引获取对话数组对应的key
+      getIndex(index_name) {
+        return this.$store.state.talkItems.items.findIndex(
+          item => item.index_name == index_name
+        );
+      },
+
+      //切换聊天栏目
+      clickTab(type = 1, index_name) {
+        let idx = this.getIndex(index_name);
+
+        if (idx == -1) return;
+
+        let item = this.$store.state.talkItems.items[idx];
+        let [source, receive_id] = index_name.split("_");
+        this.index_name = item.index_name;
+        this.params = {
+          source: source,
+          receiveId: receive_id,
+          nickname: source == 2 ? item.name : (item.remark_name ? item.remark_name : item.name)
+        }
+
+        this.$root.updateMessage(source, receive_id, item.avatar);
+        this.$nextTick(function () {
+          if (index_name == this.$root.message.index_name) {
+            //清空对话的未读数
+            this.$store.commit("clearUnreadNum", idx);
+
+            //清空消息未读数(后期改成websocket发送消息)
+            clearChatUnreadNumServ({
+              type: source,
+              receive: receive_id
+            });
+          }
+        });
+      },
+
+      //修改当前对话
+      changeTalk(index_name) {
+        sessionStorage.setItem("send_message_index_name", index_name);
+        this.loadChatList();
+      },
+      //关闭当前对话
+      closeTalk() {
+        this.index_name = null;
+        this.loadChatList();
+      },
+
+
+      //右键菜单
+      chatItemsMenu(data, event) {
+        let item = data;
+        let items = {
+          items: [{
+              label: "好友信息",
+              icon: "el-icon-user",
+              disabled: item.type == 2,
+              onClick: () => {
+                this.$refs.userBusinessCard.open(item.friend_id);
+              }
+            },
+            {
+              label: item.is_top == 0 ? "会话置顶" : "取消置顶",
+              icon: "el-icon-top",
+              onClick: () => {
+                this.topChatItem(item);
+              }
+            },
+            {
+              label: item.not_disturb == 0 ? "消息免打扰" : "开启消息提示",
+              icon: item.not_disturb == 0 ?
+                "el-icon-close-notification" : "el-icon-bell",
+              onClick: () => {
+                this.setNotDisturb(item);
+              }
+            },
+            {
+              label: "移除会话",
+              icon: "el-icon-remove-outline",
+              divided: true,
+              onClick: () => {
+                this.delChatItem(item);
+              }
+            },
+            {
+              label: item.type == 1 ? "删除好友" : '退出群聊',
+              icon: "el-icon-delete",
+              onClick: () => {
+                let title = item.type == 1 ? "删除好友" : '退出群聊';
+                this.$confirm(`此操作将 <span style="color:red;font-size:16px;">${title}</span>, 是否继续?`, '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning',
+                  center: true,
+                  dangerouslyUseHTMLString: true
+                }).then(() => {
+                  if (item.type == 1) {
+                    this.removeFriend(item);
+                  } else {
+                    this.removeGroup(item);
+                  }
+                });
+              }
+            }
+          ],
+          event: event,
+          zIndex: 3
+        };
+
+        this.$contextmenu(items);
+        return false;
+      },
+
+      //会话列表置顶
+      topChatItem(item) {
+        topChatItemServ({
+          list_id: item.id,
+          type: item.is_top == 0 ? 1 : 2
+        }).then(res => {
+          if (res.code == 200) {
+            this.loadChatList();
+          }
+        });
+      },
+
+      //设置消息免打扰
+      setNotDisturb(item) {
+        setNotDisturbServ({
+          type: item.type,
+          receive_id: item.type == 1 ? item.friend_id : item.group_id,
+          not_disturb: item.not_disturb == 0 ? 1 : 0
+        }).then(res => {
+          if (res.code == 200) {
+            this.$store.commit({
+              type: "updateItem",
+              key: this.getIndex(item.index_name),
+              item: {
+                not_disturb: item.not_disturb == 0 ? 1 : 0
+              }
+            });
+          }
+        });
+      },
+      //移除会话列表
+      delChatItem(item) {
+        delChatItemServ({
+          list_id: item.id
+        }).then(res => {
+          if (res.code == 200) {
+            this.$store.commit("removeItem", item.index_name);
+          }
+        });
+      },
+      //解除好友关系
+      removeFriend(item) {
+        removeFriendServ({
+          friend_id: item.friend_id
+        }).then(res => {
+          if (res.code == 200) {
+            if (this.index_name == item.index_name) {
+              this.index_name = null;
+            }
+            this.loadChatList();
+          } else {
+            alert('解除好友失败...');
+          }
+        });
+      },
+      //退出群聊
+      removeGroup(item) {
+        secedeGroupServ({
+          group_id: item.group_id
+        }).then(res => {
+          if (res.code == 200) {
+            if (this.index_name == item.index_name) {
+              this.index_name = null;
+            }
+
+            this.loadChatList();
+          } else {
+            alert('退出群聊失败...');
+          }
+        });
+      }
+
 
     }
   };
 
 </script>
+
 <style scoped>
   .aside-box {
     position: relative;
-    background-color: white;
+    /* background-color: white; */
+    background-color: rgb(230, 230, 230);
     overflow: hidden;
   }
 
+  /* header start */
   .aside-box .header {
-    background-color: turquoise;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 15px;
   }
 
+  .aside-box .header .from {
+    flex: 1 1;
+    flex-shrink: 0;
+    height: 40px;
+  }
+
+  .aside-box .header .from>>>.el-autocomplete {
+    width: 245px;
+  }
+
+  .aside-box .header .from>>>.el-autocomplete .el-input__inner {
+    border-radius: 20px;
+  }
+
+  .aside-box .header .tools {
+    flex-basis: 32px;
+    flex-shrink: 0;
+    height: 32px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    line-height: 32px;
+    text-align: center;
+    position: relative;
+    user-select: none;
+  }
+
+  .aside-box .header .tools .tools-menu {
+    position: absolute;
+    right: 0;
+    top: 38px;
+    width: 100px;
+    min-height: 80px;
+    box-sizing: border-box;
+    background-color: rgba(31, 35, 41, .9);
+    border-radius: 5px;
+    z-index: 1;
+    padding: 3px 0;
+  }
+
+  .aside-box .header .tools .tools-menu .menu-item {
+    height: 40px;
+    line-height: 40px;
+    color: white;
+    font-size: 14px;
+  }
+
+  .aside-box .header .tools .tools-menu .menu-item:hover {
+    background-color: rgba(70, 72, 73, 0.9);
+  }
+
+  /* header end */
+
+
+  /* subheader start */
 
   .aside-box .subheader {
-    background-color: white;
-    border-bottom: 1px solid #f3f0f0;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    padding: 3px 8px 10px;
+    overflow: hidden;
+    flex-shrink: 0;
   }
 
-  .aside-box .subheader .top-item{
-    flex-basis: 50px;
+  .aside-box .subheader .top-item {
+    flex-basis: 41px;
     flex-shrink: 0;
     height: 50px;
-    background-color: royalblue;
-    margin: 1px 1px 0 1px;
+    margin: 0 1px 6px 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
   }
 
+  .top-item .avatar {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    background-color: #508afe;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .top-item .name {
+    font-size: 12px;
+    text-align: center;
+    color: #8f959e;
+    transform: scale(.84);
+    text-align: center;
+    line-height: 20px;
+    word-break: break-all;
+    overflow: hidden;
+  }
+
+  /* subheader end */
 
 
-
-
-
-
-
+  /* aside main start */
   .aside-box .main {
-    background-color: white;
+    padding-top: 10px;
+    overflow: hidden;
   }
 
+  .aside-box>>>.el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+
+  .aside-box .main .main-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 3px 10px 3px 10px;
+    align-items: center;
+    user-select: none;
+  }
+
+  .aside-box .main .main-menu .title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2329;
+  }
+
+  .aside-box .main .main-menu .icon {
+    cursor: pointer;
+  }
 
   .aside-box .talk-item {
-    padding: 8px 5px;
+    padding: 8px 10px;
     height: 50px;
     display: flex;
     flex-direction: row;
     align-items: center;
     cursor: pointer;
     border-left: 3px solid white;
-    transition: background-color .2s ease-in;
+    transition: .2s ease-in;
   }
 
   .aside-box .talk-item-border {
     border-color: #3370ff;
   }
 
-
   .aside-box .talk-item:hover {
     background-color: #eff0f1;
-    border-color: #eff0f1;
-
   }
 
   .aside-box .talk-item:hover .avatar {
@@ -139,6 +725,7 @@
     align-items: center;
     font-size: 14px;
     color: white;
+    user-select: none;
   }
 
   .aside-box .talk-item .card {
@@ -175,6 +762,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-right: 3px;
   }
 
   .aside-box .talk-item .card .title .card-name .larkc-tag {
@@ -219,6 +807,7 @@
     color: #8f959e;
     font-size: 12px;
     margin-left: 10px;
+    user-select: none;
   }
 
   .aside-box .talk-item .card .content {
@@ -228,6 +817,10 @@
     overflow: hidden;
     margin-top: 3px;
     font-weight: 300;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
+
+  /* aside main end */
 
 </style>

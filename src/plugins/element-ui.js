@@ -30,7 +30,9 @@ import {
   Input,
   Divider,
   Link,
-  Tooltip
+  Tooltip,
+  Autocomplete,
+  Scrollbar
 } from 'element-ui';
 
 Vue.use(Popover);
@@ -57,6 +59,8 @@ Vue.use(FormItem);
 Vue.use(Divider);
 Vue.use(Link);
 Vue.use(Tooltip);
+Vue.use(Autocomplete);
+Vue.use(Scrollbar);
 
 Vue.use(Loading.directive);
 
