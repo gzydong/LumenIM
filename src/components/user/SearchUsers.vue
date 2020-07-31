@@ -19,7 +19,7 @@
     </div>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" />
   </div>
 </template>
 
@@ -70,6 +70,12 @@
         }).catch(err => {
           this.loading = false;
         });
+      },
+
+      // 发送好友消息
+      sendFriendMsg(data) {
+        this.close();
+        this.$emit('send-friend-msg', data);
       }
     }
   }

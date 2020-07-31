@@ -211,7 +211,7 @@
         this.applyFrom.isShow = false;
       },
 
-      // 发送好友申请
+      // 发送好友消息
       sendMessage() {
         let userInfo = this.userInfo;
         chatListCrateServ({

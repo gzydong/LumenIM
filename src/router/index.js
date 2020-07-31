@@ -6,7 +6,7 @@ Vue.use(Router);
 const routes = [{
     path: '/',
     name: 'home',
-    component: () => import('@/views/MessagePage'),
+    component: () => import('@/views/NewMessagePage'),
     meta: {
       title: '',
       needLogin: true
@@ -15,7 +15,7 @@ const routes = [{
   {
     path: '/message',
     name: 'message',
-    component: () => import('@/views/SchedulePage'),
+    component: () => import('@/views/NewMessagePage'),
     meta: {
       title: '消息通知',
       needLogin: true
@@ -36,15 +36,6 @@ const routes = [{
     component: () => import('@/views/NotePage'),
     meta: {
       title: '我的笔记',
-      needLogin: true
-    }
-  },
-  {
-    path: '/schedule',
-    name: 'schedule',
-    component: () => import('@/views/SchedulePage'),
-    meta: {
-      title: '日程安排',
       needLogin: true
     }
   },
@@ -81,16 +72,6 @@ const routes = [{
     path: '*',
     name: '404 NotFound',
     component: () => import('@/views/auth/NotFoundPage'),
-    meta: {
-      title: '404 NotFound',
-      needLogin: false
-    }
-  },
-
-  {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/views/TestPage'),
     meta: {
       title: '404 NotFound',
       needLogin: false
