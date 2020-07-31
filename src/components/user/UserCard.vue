@@ -110,7 +110,7 @@
     },
     methods: {
       logout() {
-        this.$store.dispatch("logout", this.$router);
+        this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
       },
       user() {
         findUserDetailServ().then(res => {

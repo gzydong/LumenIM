@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import user from './modules/user';
-import talkItems from './modules/talkItems';
+import talks from './modules/talk';
 import notify from './modules/notify';
 import states from './states';
 import getters from './getters';
@@ -12,12 +12,12 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   modules: {
     user,
-    talkItems,
-    notify
+    notify,
+    talks
   },
 
   // 根级别的 state
-  state:states,
+  state: states,
 
   getters,
 

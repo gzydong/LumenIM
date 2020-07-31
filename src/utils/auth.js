@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 import JsBase64 from 'js-base64';
 
-const TokenKey = 'On-LineIM-TOKEN';
-const UserKey = 'On-LineIM-USERINFO';
+const TokenKey = 'LUMNEIM-TOKEN';
+const UserKey = 'LUMNEIM-USERINFO';
 
 // 设置授权token
 export function setToken(token, expires) {

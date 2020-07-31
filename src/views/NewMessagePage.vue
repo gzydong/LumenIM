@@ -34,7 +34,7 @@
 
             <!-- 置顶栏 -->
             <el-header id="subheader" v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
-              <div class="top-item" v-for="(item,idx) in $store.state.talkItems.items" v-if="item.is_top"
+              <div class="top-item" v-for="(item,idx) in $store.state.talks.items" v-if="item.is_top"
                 @click="clickTab(2, item.index_name)">
                 <div class="avatar">
                   <span v-show="!item.avatar">
@@ -51,11 +51,11 @@
             <el-main class="padding0 main">
               <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
                 <p class="main-menu">
-                  <span class="title">消息记录 ({{$store.state.talkItems.items.length}})</span>
+                  <span class="title">消息记录 ({{$store.state.talks.items.length}})</span>
                 </p>
 
                 <!-- 对话列表 -->
-                <div class="talk-item" v-for="(item,idx) in $store.state.talkItems.items" :key="idx"
+                <div class="talk-item" v-for="(item,idx) in $store.state.talks.items" :key="idx"
                   :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="chatItemsMenu(item,$event)">
                   <div class="avatar">
@@ -198,7 +198,7 @@
     computed: {
       // 计算置顶数量
       topNum() {
-        return this.$store.state.talkItems.items.filter((item) => {
+        return this.$store.state.talks.items.filter((item) => {
           return item.is_top == 1;
         }).length;
       },
@@ -206,8 +206,8 @@
       // 置顶栏目的高度
       subHeaderPx() {
         let num = this.topNum,
-          len = 65;
-        let n = 6; // 一排能显示的用户数
+          len = 65,
+          n = 6; // 一排能显示的用户数
 
         if (num > n) {
           let y = (num % n) > 0 ? 1 : 0;
@@ -218,10 +218,10 @@
       },
 
       reloadDialogues() {
-        return this.$store.state.talkItems.heavyLoad;
+        return this.$store.state.talks.heavyLoad;
       },
       unreadNum() {
-        return this.$store.state.talkItems.items.reduce(function (total, item) {
+        return this.$store.state.talks.items.reduce(function (total, item) {
           return total + parseInt(item.unread_num);
         }, 0);
       },
@@ -234,7 +234,7 @@
       isFriendOnline() {
         let i = this.getIndex(this.index_name);
         if (i == -1) return 0;
-        return this.$store.state.talkItems.items[i].online == 1;
+        return this.$store.state.talks.items[i].online == 1;
       }
     },
     watch: {
@@ -249,7 +249,7 @@
         if (key == -1) return;
 
         this.$store.commit({
-          type: "updateOnlineStatus",
+          type: "UPDATE_TALK_ONLINE_STATUS",
           key,
           status
         });
@@ -264,7 +264,7 @@
       reloadDialogues(n, o) {
         if (n) {
           this.loadChatList();
-          this.$store.commit("setHeavyLoad", false);
+          this.$store.commit("TRIGGER_TALK_ITEMS_LOAD", false);
         }
       }
     },
@@ -358,14 +358,14 @@
 
       // 获取用户对话列表
       loadChatList() {
-        if (this.$store.state.talkItems.items.length == 0) {
+        if (this.$store.state.talks.items.length == 0) {
           this.dataStatus = 0;
         }
 
         chatListsServ().then(res => {
           if (res.code == 200) {
             this.$store.commit({
-              type: "setItems",
+              type: "SET_TALK_ITEM",
               items: res.data.map(item => packTalkItem(item))
             });
 
@@ -396,7 +396,7 @@
 
       // 根据用户对话索引获取对话数组对应的key
       getIndex(index_name) {
-        return this.$store.state.talkItems.items.findIndex(
+        return this.$store.state.talks.items.findIndex(
           item => item.index_name == index_name
         );
       },
@@ -407,7 +407,7 @@
 
         if (idx == -1) return;
 
-        let item = this.$store.state.talkItems.items[idx];
+        let item = this.$store.state.talks.items[idx];
         let [source, receive_id] = index_name.split("_");
         this.index_name = item.index_name;
         this.params = {
@@ -421,7 +421,7 @@
         this.$nextTick(function () {
           if (index_name == this.$root.message.index_name) {
             //清空对话的未读数
-            this.$store.commit("clearUnreadNum", idx);
+            this.$store.commit("CLEAR_TLAK_UNREAD_NUM", idx);
 
             //清空消息未读数(后期改成websocket发送消息)
             clearChatUnreadNumServ({
@@ -516,7 +516,7 @@
         }).then(res => {
           if (res.code == 200) {
             this.$store.commit({
-              type: "updateItem",
+              type: "UPDATE_TALK_ITEM",
               key: this.getIndex(item.index_name),
               item: {
                 is_top: item.is_top == 0 ? 1 : 0
@@ -535,7 +535,7 @@
         }).then(res => {
           if (res.code == 200) {
             this.$store.commit({
-              type: "updateItem",
+              type: "UPDATE_TALK_ITEM",
               key: this.getIndex(item.index_name),
               item: {
                 not_disturb: item.not_disturb == 0 ? 1 : 0
@@ -551,7 +551,7 @@
           list_id: item.id
         }).then(res => {
           if (res.code == 200) {
-            this.$store.commit("removeItem", item.index_name);
+            this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
           }
         });
       },
@@ -565,9 +565,8 @@
             if (this.index_name == item.index_name) {
               this.index_name = null;
             }
-            this.loadChatList();
-          } else {
-            alert('解除好友失败...');
+
+            this.$store.commit('REMOVE_TALK_ITEM', item.index_name);
           }
         });
       },
@@ -582,9 +581,7 @@
               this.index_name = null;
             }
 
-            this.loadChatList();
-          } else {
-            alert('退出群聊失败...');
+            this.$store.commit('REMOVE_TALK_ITEM', item.index_name);
           }
         });
       }

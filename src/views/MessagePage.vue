@@ -16,12 +16,12 @@
 
               <p class="sidebar-load-status" v-show="dataStatus == 2" @click="loadChatList">加载失败，点击我再次尝试...</p>
 
-              <div v-if="dataStatus == 1 && $store.state.talkItems.items.length == 0" class="empty-chat-list">暂时没有新的消息
+              <div v-if="dataStatus == 1 && $store.state.talks.items.length == 0" class="empty-chat-list">暂时没有新的消息
               </div>
 
-              <div v-show="dataStatus == 1 && $store.state.talkItems.items.length > 0">
+              <div v-show="dataStatus == 1 && $store.state.talks.items.length > 0">
                 <lumen-chat-list class="avatar-odd-bag" @lumen-click="clickTab(2, item.index_name)"
-                  v-for="(item,idx) in $store.state.talkItems.items" :key="idx" :idx="idx" :img="item.avatar"
+                  v-for="(item,idx) in $store.state.talks.items" :key="idx" :idx="idx" :img="item.avatar"
                   :name="item.name" :content="handleTip(item)" :time="beautifyTime(item.updated_at)"
                   :nickname="item.remark_name" :unread-num="item.unread_num" :active="index_name == item.index_name"
                   :params="item" :disturb="item.not_disturb" :is-top="item.is_top == 1"
@@ -116,10 +116,10 @@
     },
     computed: {
       reloadDialogues() {
-        return this.$store.state.talkItems.heavyLoad;
+        return this.$store.state.talks.heavyLoad;
       },
       unreadNum() {
-        return this.$store.state.talkItems.items.reduce(function (total, item) {
+        return this.$store.state.talks.items.reduce(function (total, item) {
           return total + parseInt(item.unread_num);
         }, 0);
       },
@@ -132,7 +132,7 @@
       isFriendOnline() {
         let i = this.getIndex(this.index_name);
         if (i == -1) return 0;
-        return this.$store.state.talkItems.items[i].online == 1;
+        return this.$store.state.talks.items[i].online == 1;
       }
     },
     watch: {
@@ -147,7 +147,7 @@
         if (key == -1) return;
 
         this.$store.commit({
-          type: "updateOnlineStatus",
+          type: "UPDATE_TALK_ONLINE_STATUS",
           key,
           status
         });
@@ -162,7 +162,7 @@
       reloadDialogues(n, o) {
         if (n) {
           this.loadChatList();
-          this.$store.commit("setHeavyLoad", false);
+          this.$store.commit("TRIGGER_TALK_ITEMS_LOAD", false);
         }
       }
     },
@@ -213,14 +213,14 @@
 
       //获取用户对话列表
       loadChatList() {
-        if (this.$store.state.talkItems.items.length == 0) {
+        if (this.$store.state.talks.items.length == 0) {
           this.dataStatus = 0;
         }
 
         chatListsServ().then(res => {
           if (res.code == 200) {
             this.$store.commit({
-              type: "setItems",
+              type: "SET_TALK_ITEM",
               items: res.data.map(item => packTalkItem(item))
             });
 
@@ -251,7 +251,7 @@
 
       //根据用户对话索引获取对话数组对应的key
       getIndex(index_name) {
-        return this.$store.state.talkItems.items.findIndex(
+        return this.$store.state.talks.items.findIndex(
           item => item.index_name == index_name
         );
       },
@@ -262,7 +262,7 @@
 
         if (idx == -1) return;
 
-        let item = this.$store.state.talkItems.items[idx];
+        let item = this.$store.state.talks.items[idx];
         let [source, receive_id] = index_name.split("_");
         this.index_name = item.index_name;
         this.params = {
@@ -275,7 +275,7 @@
         this.$nextTick(function () {
           if (index_name == this.$root.message.index_name) {
             //清空对话的未读数
-            this.$store.commit("clearUnreadNum", idx);
+            this.$store.commit("CLEAR_TLAK_UNREAD_NUM", idx);
 
             //清空消息未读数(后期改成websocket发送消息)
             clearChatUnreadNumServ({
@@ -383,7 +383,7 @@
         }).then(res => {
           if (res.code == 200) {
             this.$store.commit({
-              type: "updateItem",
+              type: "UPDATE_TALK_ITEM",
               key: this.getIndex(item.index_name),
               item: {
                 not_disturb: item.not_disturb == 0 ? 1 : 0
@@ -398,7 +398,7 @@
           list_id: item.id
         }).then(res => {
           if (res.code == 200) {
-            this.$store.commit("removeItem", item.index_name);
+            this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
           }
         });
       },

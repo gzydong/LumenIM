@@ -90,7 +90,7 @@
         }).then((res) => {
           if (res.code == 200) {
             that.buttonText = '修改完成';
-            that.$store.dispatch('setAvatar', that.userInfo.avatar);
+            that.$store.dispatch('dispatch("ACT_USER_UPDATE_AVATAR"', that.userInfo.avatar);
           } else {
             that.buttonText = '修改失败,请稍后再试 ...';
           }

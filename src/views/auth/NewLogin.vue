@@ -120,7 +120,7 @@
         }).then(res => {
           this.loginLoading = false;
           if (res.code == 200) {
-            this.$store.dispatch("login", {
+            this.$store.dispatch("ACT_USER_LOGIN", {
               authInfo: {
                 access_token: res.data.access_token,
                 expires_in: res.data.expires_in

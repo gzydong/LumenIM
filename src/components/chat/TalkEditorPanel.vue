@@ -976,11 +976,11 @@
 
       //修改群聊免打扰状态
       disturbChange(detail) {
-        let key = this.$store.state.talkItems.items.findIndex(item => item.index_name == `2_${this.params.receiveId}`);
+        let key = this.$store.state.talks.items.findIndex(item => item.index_name == `2_${this.params.receiveId}`);
         if (key == -0) return false;
 
         this.$store.commit({
-          type: "updateItem",
+          type: "UPDATE_TALK_ITEM",
           key: key,
           item: {
             not_disturb: parseInt(detail.status)

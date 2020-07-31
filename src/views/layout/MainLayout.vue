@@ -2,7 +2,7 @@
   <div>
     <el-container class="mian-layout">
       <el-aside width="70px" class="side-edge">
-        <el-container class="hv100" style="overflow: hidden;">
+        <el-container class="hv100 ov-hidden">
           <el-header height="70px" class="padding0">
             <el-popover placement="right" trigger="click" :visible-arrow="false" popper-class="padding0">
               <user-card />
@@ -14,25 +14,32 @@
               </div>
             </el-popover>
           </el-header>
-          <el-main class="padding0" style="overflow: hidden;">
+          <el-main class="padding0 ov-hidden">
             <div class="sidebar-menu">
               <el-tooltip class="item" content="我的聊天消息" placement="right" :visible-arrow="false">
-                <div class="menu-items" @click="toLink(0)" :class="{'menu-items-active':idx == 0}">
-                  <i class="iconfont icon-duanxin"></i>
-                  <span v-show="$store.state.notify.unreadNum" class="message-notify"></span>
-                </div>
+                <router-link to="/message">
+                  <div class="menu-items" :class="{'menu-items-active':idx == 0}">
+                    <i class="iconfont icon-duanxin"></i>
+                    <span v-show="$store.state.notify.unreadNum" class="message-notify"></span>
+                  </div>
+                </router-link>
               </el-tooltip>
 
               <el-tooltip class="item" content="我的好友及群聊" placement="right" :visible-arrow="false">
-                <div class="menu-items" @click="toLink(1)" :class="{'menu-items-active':idx == 1}">
-                  <i class="iconfont icon-qunzu"></i>
-                </div>
+                <router-link to="/friends">
+                  <div class="menu-items" :class="{'menu-items-active':idx == 1}">
+                    <i class="iconfont icon-qunzu"></i>
+                  </div>
+                </router-link>
               </el-tooltip>
 
               <el-tooltip class="item" content="我的笔记" placement="right" :visible-arrow="false">
-                <div class="menu-items" @click="toLink(2)" :class="{'menu-items-active':idx == 2}">
-                  <i class="iconfont icon-biji"></i>
-                </div>
+                <router-link to="/notes">
+                  <div class="menu-items" :class="{'menu-items-active':idx == 2}">
+                    <i class="iconfont icon-biji"></i>
+                  </div>
+                </router-link>
+
               </el-tooltip>
             </div>
           </el-main>
@@ -94,15 +101,7 @@
       }
     },
     methods: {
-      //菜单链接跳转
-      toLink(i) {
-        let links = ["/message", "/friends", "/notes", '/schedule'];
-        if (this.idx !== i) {
-          this.$router.push({
-            path: links[i]
-          });
-        }
-      },
+      // 播放消息提示音
       play() {
         this.lastRunTime = Date.now();
         let audio = document.querySelector("#audio");
@@ -114,6 +113,7 @@
           this.stop(timeOut);
         }, 1000);
       },
+      // 停止消息提示音
       stop(timeOut) {
         this.currentTime = Date.now();
         let audio = document.querySelector("#audio");
@@ -127,7 +127,7 @@
         clearTimeout(timeOut);
       },
       logout() {
-        this.$store.dispatch("logout", this.$router);
+        this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
       }
     }
   };

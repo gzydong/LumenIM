@@ -51,7 +51,7 @@ const user = {
   },
   actions: {
     //设置头像信息
-    setAvatar({
+    ACT_USER_UPDATE_AVATAR({
       commit,
       state
     }, avatar) {
@@ -62,18 +62,17 @@ const user = {
     },
 
     //用户登录处理
-    login({
+    ACT_USER_LOGIN({
       commit,
       state
     }, user) {
       setToken(user.authInfo.access_token, user.authInfo.expires_in);
-
       setUserInfo(user.userInfo);
       commit('login', user.userInfo);
     },
 
     //退出登录处理操作
-    logout({
+    ACT_USER_LOGOUT({
       commit,
       state
     }, $router) {

@@ -57,7 +57,7 @@ class TalkEvent extends AppMessageEvent {
 
     this.vm.$store.commit('setScrollHeight');
     this.vm.$store.commit({
-      type: 'updateItem',
+      type: 'UPDATE_TALK_ITEM',
       key: idx,
       item: {
         msg_text: this.getTalkText(),
@@ -80,12 +80,12 @@ class TalkEvent extends AppMessageEvent {
   updateTalkItem(idx) {
     this.vm.$store.commit('incrUnreadNum');
     if (idx == -1) {
-      this.vm.$store.commit('setHeavyLoad', true);
+      this.vm.$store.commit('TRIGGER_TALK_ITEMS_LOAD', true);
       return;
     }
 
     this.vm.$store.commit({
-      type: 'updateUnreadInfo',
+      type: 'UPDATE_TALK_MESSAGE',
       key: idx,
       item: {
         msg_text: this.getTalkText(),
@@ -125,7 +125,7 @@ class TalkEvent extends AppMessageEvent {
    * @param {string} index_name 
    */
   getIndex(index_name) {
-    return this.vm.$store.state.talkItems.items.findIndex(item => item.index_name == index_name);
+    return this.vm.$store.state.talks.items.findIndex(item => item.index_name == index_name);
   }
 
   /**
