@@ -22,6 +22,15 @@ const routes = [{
     }
   },
   {
+    path: '/contacts',
+    name: 'contacts',
+    component: () => import('@/views/ContactsPage'),
+    meta: {
+      title: '我的联系人',
+      needLogin: true
+    }
+  },
+  {
     path: '/friends',
     name: 'friends',
     component: () => import('@/views/FriendsPage'),

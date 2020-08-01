@@ -130,7 +130,6 @@
 <script>
   import Vue from "vue";
   import MainLayout from "@/views/layout/MainLayout";
-  import SearchChatRecord from "@/components/chat/SearchChatRecord";
   import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
   import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
@@ -166,7 +165,6 @@
     components: {
       MainLayout,
       LaunchGroupChat,
-      SearchChatRecord,
       TalkEditorPanel,
       UserBusinessCard,
       SearchUsers
@@ -801,6 +799,7 @@
 
   .aside-box .talk-item-border {
     border-color: #3370ff;
+    background-color: #eff0f1;
   }
 
   .aside-box .talk-item:hover {
