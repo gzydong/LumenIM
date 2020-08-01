@@ -20,7 +20,7 @@
             <p class="tip-title">附件</p>
           </li>
 
-          <p class="text-tips">
+          <p class="text-tips no-user-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
             <el-popover placement="top-start" width="600" trigger="click">
               <div class="editor-books">
@@ -48,7 +48,7 @@
       </el-header>
       <el-main class="padding0 textarea">
         <textarea ref="textarea" v-paste="pasteImage" v-drag="dragPasteImage" v-model.trim="editorText"
-          @keydown="keydownEvent($event)" placeholder="你想要的聊点什么呢 ..."></textarea>
+          @keydown="keydownEvent($event)" placeholder="你想要的聊点什么呢 ..." rows="6"></textarea>
       </el-main>
     </el-container>
 
@@ -85,12 +85,12 @@
       CodeBlock
     },
     computed: {
-      talkUser(){
+      talkUser() {
         return this.$root.message.index_name;
       }
     },
     watch: {
-      talkUser(ndata,odata){
+      talkUser(ndata, odata) {
         this.$refs.filesManager.clear();
       }
     },
@@ -249,11 +249,11 @@
             text: data.value
           });
         }
-        
+
         this.$refs.popoverEmoticon.doClose();
       },
 
-      reloadEmoticon(){
+      reloadEmoticon() {
         this.$refs.editorEmoticon.loadUserEmoji();
       }
     }
@@ -325,13 +325,16 @@
   }
 
   .editor-container .textarea {
-    background-color: tomato;
     overflow: hidden;
   }
 
   textarea {
     width: calc(100% - 10px);
+    width: -moz-calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
     height: calc(100% - 10px);
+    height: -moz-calc(100% - 10px);
+    height: -webkit-calc(100% - 10px);
     border: 0 none;
     outline: none;
     resize: none;

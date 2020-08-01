@@ -2,7 +2,7 @@
   <div>
     <el-container class="vh100" style="position: relative;">
       <!-- 头部信息 -->
-      <el-header class="padding0 panel-header">
+      <el-header class="padding0 panel-header no-user-select">
         <div class="title">
           <span class="badge badge-friend" v-if="params.source == 1">友</span>
           <span class="badge" v-else>群</span>

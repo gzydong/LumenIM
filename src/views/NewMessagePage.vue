@@ -9,11 +9,21 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-autocomplete :fetch-suggestions="querySearch" placeholder="搜索聊天列表" prefix-icon="el-icon-search"
-                  size="small">
+                <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索聊天列表(开发中)"
+                  prefix-icon="el-icon-search" size="small" clearable>
                   <template slot-scope="{ item }">
-                    <div class="name">{{ item.value }}</div>
-                    <span class="addr">{{ item.address }}</span>
+                    <div class="search-item">
+                      <div class="avatar">
+                        <span v-show="!item.avatar">
+                          {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
+                        </span>
+                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                      </div>
+                      <div class="card">
+                        <div class="title">{{item.name}}</div>
+                        <div class="content">备注：{{item.remark_name}}</div>
+                      </div>
+                    </div>
                   </template>
                 </el-autocomplete>
               </div>
@@ -36,20 +46,24 @@
             <el-header id="subheader" v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
               <div class="top-item" v-for="(item,idx) in $store.state.talks.items" v-if="item.is_top"
                 @click="clickTab(2, item.index_name)">
-                <div class="avatar">
-                  <span v-show="!item.avatar">
-                    {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
-                  </span>
-                  <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
-                </div>
+                <el-tooltip effect="dark" :content="(item.remark_name?item.remark_name:item.name)"
+                  placement="top-start">
+                  <div class="avatar">
+                    <span v-show="!item.avatar">
+                      {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
+                    </span>
+                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                  </div>
+                </el-tooltip>
+
                 <div class="name" :class="{'name-active':index_name == item.index_name}">
                   {{item.remark_name?item.remark_name:item.name}}</div>
               </div>
             </el-header>
 
             <!-- 对话列表栏 -->
-            <el-main class="padding0 main">
-              <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
+            <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
+              <el-main class="padding0 main">
                 <p class="main-menu">
                   <span class="title">消息记录 ({{$store.state.talks.items.length}})</span>
                 </p>
@@ -82,16 +96,16 @@
                     <div class="content" v-html="formatHandleText(item)"></div>
                   </div>
                 </div>
-              </el-scrollbar>
-            </el-main>
-
+              </el-main>
+            </el-scrollbar>
           </el-container>
         </el-aside>
 
         <!-- 聊天面板容器 -->
         <el-main class="padding0 hv100 ov-hidden">
           <template v-if="index_name == null">
-            <div class="reserve-box">LumenIM 让聊天更简单 ...</div>
+            <div class="reserve-box">
+              <img src="/static/image/chat.png" width="300"></div>
           </template>
           <template v-else>
             <talk-editor-panel class="hv100" :params="params" :is-online="isFriendOnline" @change-talk="changeTalk"
@@ -344,10 +358,14 @@
 
       // 搜索框查询
       querySearch(queryString, cb) {
-        let restaurants = this.restaurants;
+        let restaurants = this.$store.state.talks.items.map((item) => {
+          item.value = item.name + ' ' + item.remark_name;
+          return item;
+        });
+
         let createFilter = (queryString) => {
           return (restaurant) => {
-            return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            return (restaurant.value.indexOf(queryString) === 0);
           };
         };
 
@@ -589,7 +607,12 @@
   };
 
 </script>
+<style>
+  .el-autocomplete-suggestion__wrap li {
+    padding: 0 10px !important;
+  }
 
+</style>
 <style scoped>
   .aside-box {
     position: relative;
@@ -729,7 +752,6 @@
 
   /* aside main start */
   .aside-box .main {
-    padding-top: 10px;
     overflow: hidden;
   }
 
@@ -918,6 +940,71 @@
     font-size: 24px;
     color: #d8dae2;
     background-color: white;
+  }
+
+  /* search-item */
+  .search-item {
+    display: flex;
+    height: 50px;
+    /* background-color: red; */
+    margin-top: 2px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    /* border-bottom: 1px solid #ece5e5; */
+  }
+
+  .search-item .avatar {
+    height: 35px;
+    width: 35px;
+    flex-basis: 35px;
+    flex-shrink: 0;
+    background-color: #508afe;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: white;
+    user-select: none;
+    transition: ease 1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-item .avatar img {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+  }
+
+  .search-item .card {
+    height: 40px;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex: 1 1;
+    margin-left: 10px;
+    overflow: hidden;
+  }
+
+  .search-item .card .title {
+    width: 100%;
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-item .card .content {
+    font-size: 10px;
+    line-height: 18px;
+    color: #8f959e;
+    overflow: hidden;
+    margin-top: 3px;
+    font-weight: 300;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
 </style>

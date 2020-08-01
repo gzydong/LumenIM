@@ -141,6 +141,7 @@
   border-radius: 6px;
   position: relative;
   padding: 5px;
+  min-height: 20px;
 }
 
 
