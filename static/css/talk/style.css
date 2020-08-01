@@ -8,9 +8,9 @@
 .panel-header {
   height: 60px;
   line-height: 60px;
-  background-color: rgb(245, 245, 245);
   position: relative;
-  box-shadow: -1px 1px 20px #e8e3e3;
+  background-color: white;
+  border-bottom: 1px solid #ece6e6;
 }
 
 .panel-header .title {
@@ -45,7 +45,8 @@
 }
 
 .panel-header .title .name .num {
-  color: rgb(130, 124, 124);
+  color: rgb(150, 142, 142);
+  font-weight: 300;
 }
 
 .panel-header .online {
@@ -64,6 +65,7 @@
   line-height: 60px;
   text-align: center;
   color: #cccccc;
+  font-weight: 200;
 }
 
 .panel-header .online .yes-badge {

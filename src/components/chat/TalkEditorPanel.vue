@@ -83,7 +83,7 @@
               <i class="el-icon-success" :class="{'selected-record':verifyMultiSelect(item.id)}"></i>
             </div>
 
-            <div class="record-avatar">
+            <div class="record-avatar no-user-select">
               <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)"
                 :onerror="$store.state.user.detaultAvatar" />
             </div>
@@ -175,7 +175,8 @@
           </div>
 
           <!-- 消息发送时间 -->
-          <p class="record-time" v-show="compareTime(idx,item.send_time)" v-text="sendTime(item.send_time)"></p>
+          <p class="record-time no-user-select" v-show="compareTime(idx,item.send_time)"
+            v-text="sendTime(item.send_time)"></p>
         </div>
       </el-main>
 
@@ -977,8 +978,7 @@
       //修改群聊免打扰状态
       disturbChange(detail) {
         let key = this.$store.state.talks.items.findIndex(item => item.index_name == `2_${this.params.receiveId}`);
-        if (key == -0) return false;
-
+        if (key == -1) return false;
         this.$store.commit({
           type: "UPDATE_TALK_ITEM",
           key: key,

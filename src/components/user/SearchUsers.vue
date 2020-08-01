@@ -4,7 +4,7 @@
       <div class="container" v-outside="close">
         <el-container class="hv100">
           <el-header class="padding0 header" height="50px">
-            <span>用户查询</span>
+            <span>添加好友</span>
             <i class="close-btn el-icon-close" @click="close"></i>
           </el-header>
           <el-main class="main">

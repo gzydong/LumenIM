@@ -105,7 +105,8 @@
         <el-main class="padding0 hv100 ov-hidden">
           <template v-if="index_name == null">
             <div class="reserve-box">
-              <img src="/static/image/chat.png" width="300"></div>
+              <img src="/static/image/chat.png" width="300">
+            </div>
           </template>
           <template v-else>
             <talk-editor-panel class="hv100" :params="params" :is-online="isFriendOnline" @change-talk="changeTalk"
@@ -475,6 +476,15 @@
               }
             },
             {
+              label: "修改备注",
+              icon: "el-icon-edit-outline",
+              disabled: item.type == 2,
+              
+              onClick: () => {
+                alert('修改好友备注，开发中...');
+              }
+            },
+            {
               label: item.is_top == 0 ? "会话置顶" : "取消置顶",
               icon: "el-icon-top",
               onClick: () => {
@@ -516,7 +526,7 @@
                   }
                 });
               }
-            }
+            },
           ],
           event: event,
           zIndex: 3
