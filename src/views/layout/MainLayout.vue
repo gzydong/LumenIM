@@ -7,7 +7,7 @@
             <el-popover placement="right" trigger="click" :visible-arrow="false" popper-class="padding0">
               <user-card />
               <div class="userlogo" slot="reference">
-                <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" />
+                <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" class="no-user-select" />
                 <p class="p1" v-show="!$store.state.socketStatus"></p>
                 <p class="p2" v-show="!$store.state.socketStatus"></p>
                 <p class="p3" v-show="!$store.state.socketStatus"></p>
@@ -26,7 +26,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" content="我的好友及群聊" placement="right" :visible-arrow="false">
-                <router-link to="/friends">
+                <router-link to="/contacts">
                   <div class="menu-items" :class="{'menu-items-active':idx == 1}">
                     <i class="iconfont icon-qunzu"></i>
                   </div>
@@ -36,7 +36,7 @@
               <el-tooltip class="item" content="我的笔记" placement="right" :visible-arrow="false">
                 <router-link to="/notes">
                   <div class="menu-items" :class="{'menu-items-active':idx == 2}">
-                    <i class="iconfont icon-biji"></i>
+                    <i class="el-icon-notebook-2"></i>
                   </div>
                 </router-link>
 

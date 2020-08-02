@@ -79,7 +79,7 @@
   import ChangeMobile from "@/components/user/ChangeMobile";
   import UserSetup from "@/components/user/UserSetup";
   import {
-    findUserDetailServ
+    findUserDetailServ,
   } from "@/api/user";
 
   export default {

@@ -32,7 +32,8 @@ import {
   Link,
   Tooltip,
   Autocomplete,
-  Scrollbar
+  Scrollbar,
+  Avatar
 } from 'element-ui';
 
 Vue.use(Popover);
@@ -61,9 +62,12 @@ Vue.use(Link);
 Vue.use(Tooltip);
 Vue.use(Autocomplete);
 Vue.use(Scrollbar);
+Vue.use(Avatar);
 
 Vue.use(Loading.directive);
 
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
+Vue.prototype.$alert = MessageBox.alert;

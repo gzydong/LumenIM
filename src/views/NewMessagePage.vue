@@ -64,7 +64,10 @@
             <!-- 对话列表栏 -->
             <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
               <el-main class="padding0 main">
-                <p class="main-menu">
+                <p class="talk-item-empty" v-if="$store.state.talks.items.length == 0">
+                  暂无聊天消息
+                </p>
+                <p class="main-menu" v-else>
                   <span class="title">消息记录 ({{$store.state.talks.items.length}})</span>
                 </p>
 
@@ -477,7 +480,7 @@
               label: "修改备注",
               icon: "el-icon-edit-outline",
               disabled: item.type == 2,
-              
+
               onClick: () => {
                 alert('修改好友备注，开发中...');
               }
@@ -784,6 +787,13 @@
 
   .aside-box .main .main-menu .icon {
     cursor: pointer;
+  }
+
+
+  .aside-box .talk-item-empty {
+    text-align: center;
+    padding-top: 40px;
+    color: #ccc;
   }
 
   .aside-box .talk-item {

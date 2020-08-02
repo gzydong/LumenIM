@@ -86,7 +86,8 @@
 
   import {
     searchUserServ,
-    friendRemarkEditServ
+    friendRemarkEditServ,
+    friendApplyServ
   } from '@/api/user';
 
   export default {

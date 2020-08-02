@@ -370,7 +370,7 @@
           },
           {
             name: "回收站",
-            icon: "icon-huishouzhan11",
+            icon: "el-icon-delete",
             color: "#fd6f41",
             isShowSub: true,
             isActive: false,

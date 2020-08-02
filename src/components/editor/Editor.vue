@@ -32,7 +32,7 @@
                 <p>5. 按Enter发送 / Shift+Enter 换行</p>
                 <p>6. (注意) 当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败</p>
               </div>
-              <i class="iconfont icon-tishi1" slot="reference"></i>
+              <i class="el-icon-info" slot="reference"></i>
             </el-popover>
           </p>
         </ul>

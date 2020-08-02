@@ -58,6 +58,10 @@ textarea {
   border: 0;
 }
 
+.border-radius0{
+  border-radius: 0;
+}
+
 .hv100 {
   height: 100%;
 }

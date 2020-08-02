@@ -126,7 +126,7 @@
                     </div>
                   </el-image>
 
-                  <i class="iconfont icon-addition_fill enlarge"></i>
+                  <i class="el-icon-circle-plus enlarge"></i>
                 </div>
 
                 <!-- 文件消息 -->
