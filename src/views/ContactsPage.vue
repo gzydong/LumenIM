@@ -64,15 +64,21 @@
         <el-container class="padding0 hv100 ov-hidden panel">
           <el-header height="60px" class="panel-header no-user-select">
             <template v-if="activeIndex == 0">
-              <span>新的联系人</span>
+              <p>新的联系人</p>
             </template>
             <template v-else-if="activeIndex == 1">
-              <span>我的好友({{friends.items.length}})</span>
-              <span @click="$refs.searchUsers.open()" class="pointer"><i class="el-icon-plus"></i> 添加好友</span>
+              <p>我的好友({{friends.items.length}})</p>
+              <p @click="$refs.searchUsers.open()" class="pointer">
+                <i class="iconfont icon-tianjialianxiren"></i>
+                <span>添加好友</span>
+              </p>
             </template>
             <template v-else-if="activeIndex == 2">
-              <span>我的群组({{groups.items.length}})</span>
-              <span class="pointer" @click="launchGroupShow = true"><i class="el-icon-plus"></i> 创建群组</span>
+              <p>我的群组({{groups.items.length}})</p>
+              <p class="pointer" @click="launchGroupShow = true">
+                <i class="iconfont icon-jurassic_add-users"></i>
+                <span>创建群组</span>
+              </p>
             </template>
           </el-header>
           <el-main class="panel-main lumen-scrollbar">
@@ -225,7 +231,7 @@
     <launch-group-chat v-if="launchGroupShow" @close="launchGroupShow = false" @create-success="groupChatSuccess" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" />
+    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" @changeRemark="changeRemark" />
 
     <!-- 用户查询 -->
     <search-users ref="searchUsers" @send-friend-msg="sendFriendMsg" />
@@ -233,7 +239,6 @@
 </template>
 
 <script>
-  import Vue from "vue";
   import MainLayout from "@/views/layout/MainLayout";
   import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
@@ -328,6 +333,7 @@
 
         cb(results);
       },
+
       // header 功能栏隐藏事件
       closeSubMenu() {
         this.subMenu = false;
@@ -343,9 +349,9 @@
         }
       },
 
+      // 左侧菜单栏点击事件
       triggerMenu(i) {
         this.activeIndex = i;
-
         if (i == 1) {
           if (this.friends.status == 0) {
             this.loadFriends();
@@ -356,9 +362,7 @@
           }
         }
 
-        if (i != 2) {
-          this.groupDetailId = 0;
-        }
+        if (i != 2) this.groupDetailId = 0;
       },
 
       // 查看好友申请列表
@@ -400,6 +404,7 @@
         this.$refs.userBusinessCard.open(user_id);
       },
 
+      // 跳转聊天页面
       toTalk(index_name) {
         sessionStorage.setItem("send_message_index_name", index_name);
         this.$router.push({
@@ -553,7 +558,16 @@
             }
           }
         });
-      }
+      },
+
+      // 更新好友备注昵称
+      changeRemark(firendInfo) {
+        let index = this.friends.items.findIndex((item) => {
+          return item.id == firendInfo.friend_id;
+        });
+
+        if (index >= 0) this.friends.items[index].friend_remark = firendInfo.remarks;
+      },
     }
   };
 
@@ -663,7 +677,6 @@
     position: relative;
   }
 
-
   .panel .panel-header {
     display: flex;
     align-items: center;
@@ -699,11 +712,10 @@
     align-items: center;
     padding: 5px 15px;
     position: relative;
-    border-bottom: 1px solid white;
   }
 
   .data-item:hover {
-    border-color: #ff5722;
+    box-shadow: 0 0 8px 4px #f1f1f1;
   }
 
   .data-item .avatar {
@@ -712,7 +724,8 @@
     flex-basis: 35px;
     flex-shrink: 0;
     background-color: #508afe;
-    border-radius: 3px;
+    border-radius: 50%;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -738,7 +751,6 @@
     height: 20px;
     display: flex;
     align-items: center;
-
   }
 
   .data-item .card .title .name {
@@ -787,7 +799,7 @@
   .data-item .apply-from {
     position: absolute;
     right: 5px;
-    top: -8px;
+    top: 0px;
     height: 100%;
     width: 0;
     display: block;
@@ -806,7 +818,6 @@
 
   .data-item .apply-from button {
     margin: 2px;
-    width: 100px;
   }
 
   .broadside-box {

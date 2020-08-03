@@ -53,7 +53,7 @@
         </el-container>
       </el-aside>
 
-      <el-main style="padding:0;background-color:#f5f5f5;">
+      <el-main class="padding0">
         <slot name="container"></slot>
       </el-main>
     </el-container>

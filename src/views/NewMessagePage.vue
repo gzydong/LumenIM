@@ -822,7 +822,7 @@
     flex-basis: 35px;
     flex-shrink: 0;
     background-color: #508afe;
-    border-radius: 3px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -831,6 +831,7 @@
     user-select: none;
     transition: ease 1s;
     position: relative;
+    overflow: hidden;
   }
 
   .aside-box .talk-item .avatar img {
