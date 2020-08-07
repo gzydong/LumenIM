@@ -15,7 +15,8 @@
             </el-dropdown>
           </el-header>
           <div class="note-headline">我的笔记</div>
-          <div class="note-aside lumen-scrollbar">
+
+          <el-scrollbar :native="false" tag="section" class="note-aside">
             <div v-for="(menu,i) in menus">
               <div class="note-list-first" @click="clickNoteMenu(1,i)" :class="{'note-list-active':menu.isActive}"
                 @contextmenu.prevent="noteClassMenu($event,i)">
@@ -39,7 +40,7 @@
                 </p>
               </div>
             </div>
-          </div>
+          </el-scrollbar>
         </el-aside>
 
         <el-aside width="350px" class="el-aside-two">

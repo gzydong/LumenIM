@@ -34,8 +34,8 @@
                 </el-button>
                 <transition name="el-zoom-in-top">
                   <div class="tools-menu" v-show="subMenu" v-outside="closeSubMenu">
-                    <div class="menu-item" @click="triggerSubMenu(1)">创建群聊</div>
-                    <div class="menu-item" @click="triggerSubMenu(2)">添加好友</div>
+                    <div class="menu1-item" @click="triggerSubMenu(1)">创建群聊</div>
+                    <div class="menu1-item" @click="triggerSubMenu(2)">添加好友</div>
                   </div>
                 </transition>
               </div>
@@ -595,7 +595,7 @@
   }
 
   .aside-box .header .from>>>.el-autocomplete {
-    width: 180px;
+    width: 170px;
   }
 
   .aside-box .header .from>>>.el-autocomplete .el-input__inner {
@@ -627,14 +627,14 @@
     padding: 3px 0;
   }
 
-  .aside-box .header .tools .tools-menu .menu-item {
+  .aside-box .header .tools .tools-menu .menu1-item {
     height: 40px;
     line-height: 40px;
     color: white;
     font-size: 14px;
   }
 
-  .aside-box .header .tools .tools-menu .menu-item:hover {
+  .aside-box .header .tools .tools-menu .menu1-item:hover {
     background-color: rgba(70, 72, 73, 0.9);
   }
 

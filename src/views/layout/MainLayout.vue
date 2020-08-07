@@ -141,6 +141,7 @@
     background: url(/static/image/background/003.jpg);
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    background-color: black;
   }
 
 </style>

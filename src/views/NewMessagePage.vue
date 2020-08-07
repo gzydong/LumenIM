@@ -62,7 +62,7 @@
             </el-header>
 
             <!-- 对话列表栏 -->
-            <el-scrollbar :native="false" class="hv100" tag="section" ref="myScrollbar">
+            <el-scrollbar :native="false" tag="section" ref="myScrollbar">
               <el-main class="padding0 main">
                 <p class="talk-item-empty" v-if="$store.state.talks.items.length == 0">
                   暂无聊天消息
