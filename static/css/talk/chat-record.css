@@ -3,7 +3,7 @@
 }
 
 .no-background {
-  background: #f5f5f5 !important;
+  background: none !important;
 }
 
 /* 消息记录容器 */
@@ -22,7 +22,7 @@
 
 /* 记录工具栏 */
 .record-container .toolbars {
-  color: #00d7ff;
+  color: #409eff;
   cursor: pointer;
   text-align: center;
   font-size: 13px;
@@ -42,7 +42,7 @@
 
 .record-container .message-system span {
   display: inline-block;
-  background-color: rgba(226, 226, 226, 0.8);;
+  background-color: #f5f5f5;
   padding: 3px 5px;
   border-radius: 3px;
   font-size: 12px;
@@ -51,12 +51,13 @@
   word-wrap: break-word;
 }
 
-.record-container .message-system .recall{
-  padding: 5px;display: inline;
+.record-container .message-system .recall {
+  padding: 5px;
+  display: inline;
 }
 
 .record-container .message-system .group-invite-tips a {
-  color: #5bb6ff;
+  color: #939596;
   cursor: pointer;
 }
 
@@ -64,8 +65,8 @@
   margin-right: 5px;
 }
 
-.record-container .message-system .group-invite-tips a:hover{
-  color: white;
+.record-container .message-system .group-invite-tips a:hover {
+  color: black;
 }
 
 /* 消息时间 */
@@ -126,7 +127,7 @@
 }
 
 .record-container .left-record .lumen-arrow {
-  border-color: rgba(247, 247, 247, 0) #ffffff rgba(247, 247, 247, 0) rgba(247, 247, 247, 0);
+  border-color: rgba(247, 247, 247, 0) #f5f5f5 rgba(247, 247, 247, 0) rgba(247, 247, 247, 0);
   left: -10px;
 }
 
@@ -151,7 +152,7 @@
 }
 
 .record-container .left-record .talk-content {
-  background: #ffffff;
+  background: #f5f5f5;
   color: #3a3a3a;
 }
 
@@ -204,22 +205,25 @@
   font-size: 22px;
 }
 
+.talk-content .images-record>>>.el-image {
+  box-shadow: 0 0 2px #e8e3e3;
+}
+
 .talk-content .images-record>>>.el-image img {
   max-width: 200px;
   min-width: 20px;
   border-radius: 3px !important;
 }
 
-.talk-content .images-record>>>.el-image-viewer__wrapper {
-  z-index: 999999999999 !important;
-}
 
-.talk-content .images-record .enlarge{
-  position: absolute;right: 5px;bottom: 8px;
+.talk-content .images-record .enlarge {
+  position: absolute;
+  right: 5px;
+  bottom: 8px;
   display: none;
 }
 
-.talk-content .images-record:hover .enlarge{
+.talk-content .images-record:hover .enlarge {
   display: block;
   color: white;
 }
@@ -280,6 +284,7 @@
   height: 85px;
   background: white;
   box-shadow: 0 0 7px 0px #e8e4e4;
+  padding: 5px;
 }
 
 .talk-content .file-record .lumen-files-icon {
@@ -291,7 +296,7 @@
   background: #49a4ff;
   margin-left: 3px;
   float: left;
-  border-radius: 2px;
+  border-radius: 10px;
   font-size: 12px;
 }
 
@@ -338,7 +343,7 @@
   text-align: right;
   padding-right: 5px;
   line-height: 30px;
-  color: #00d7ff;
+  color: #409eff;
   font-size: 12px;
   cursor: pointer;
 }
@@ -379,8 +384,10 @@
 
 /* 多选样式 */
 .container-checked {
-  background: white;
+  border: 1px solid #e4e7ec;
   padding-left: 50px;
+  border-radius: 5px;
+  box-shadow: 0 0 12px 0 rgba(0,0,0,.15);
 }
 
 .container-checked .checked-button {

@@ -108,8 +108,9 @@ export function downloadIamge(imgsrc, name) { //下载图片地址和图片名
 
 /**
  * 通过图片url获取图片大小
+ * 
  *
- * @param {Object} imgsrc
+ * @param {Object} imgsrc 例如图片名： 20200719/5f13a53dbc4abbhK24wky9ScSeyAD8x5f13a53dbc4b9_350x345.png
  */
 export function getImageInfo(imgsrc) {
   let data = {
@@ -117,14 +118,17 @@ export function getImageInfo(imgsrc) {
     height: 0
   }
 
-  let info = imgsrc.match(/\d+x\d+/g);
+  let arr = imgsrc.split('_');
+  if (arr.length == 1) return data;
+
+  let info = arr[arr.length - 1].match(/\d+x\d+/g);
   if (info == null) return data;
 
   info = info[0].split('x');
-
-  data.width = parseInt(info[0]);
-  data.height = parseInt(info[1]);
-  return data;
+  return {
+    width: parseInt(info[0]),
+    height: parseInt(info[1])
+  }
 }
 
 /**
@@ -413,8 +417,8 @@ export function packTalkRecord(obj) {
     //转发消息
     forward_id: 0,
     forward_info: {
-      list:[],  // 前3条信息
-      num:0     // 消息数量
+      list: [], // 前3条信息
+      num: 0 // 消息数量
     },
 
     //群通知(1:入群通知  2:退群通知)

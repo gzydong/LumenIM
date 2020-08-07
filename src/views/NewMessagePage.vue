@@ -81,13 +81,12 @@
                     </span>
 
                     <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
-
-                    <div class="unread" v-show="item.unread_num" v-text="item.unread_num"></div>
                   </div>
                   <div class="card">
                     <div class="title">
                       <div class="card-name">
                         <p class="nickname">{{item.remark_name?item.remark_name:item.name}}</p>
+                        <div class="larkc-tag" v-show="item.unread_num">{{item.unread_num}}未读</div>
                         <div class="larkc-tag top" v-show="item.is_top">TOP</div>
                         <div class="larkc-tag group" v-show="item.group_id">群组</div>
                         <div class="larkc-tag disturb" v-show="item.not_disturb">
@@ -164,7 +163,7 @@
   } from '@/utils/functions';
 
   export default {
-    name: 'schedule-page',
+    name: 'message-page',
     components: {
       MainLayout,
       LaunchGroupChat,
@@ -839,21 +838,6 @@
     height: 100%;
     background-color: white;
     border-radius: 3px;
-  }
-
-  .aside-box .talk-item .avatar .unread {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    min-width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: red;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: scale(.8);
   }
 
   .aside-box .talk-item .card {

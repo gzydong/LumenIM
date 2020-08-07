@@ -270,6 +270,7 @@
   .editor-container .toolbar {
     line-height: 35px;
     border-bottom: 1px solid #f5f0f0;
+    border-top: 1px solid #f5f0f0;
   }
 
   .editor-container .toolbar li {

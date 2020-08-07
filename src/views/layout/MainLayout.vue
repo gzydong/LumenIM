@@ -1,18 +1,16 @@
 <template>
   <div>
-    <el-container class="mian-layout">
+    <el-container class="mian-layout full-mode">
       <el-aside width="70px" class="side-edge">
         <el-container class="hv100 ov-hidden">
-          <el-header height="70px" class="padding0">
-            <el-popover placement="right" trigger="click" :visible-arrow="false" popper-class="padding0">
-              <user-card />
-              <div class="userlogo" slot="reference">
-                <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" class="no-user-select" />
-                <p class="p1" v-show="!$store.state.socketStatus"></p>
-                <p class="p2" v-show="!$store.state.socketStatus"></p>
-                <p class="p3" v-show="!$store.state.socketStatus"></p>
-              </div>
-            </el-popover>
+          <el-header height="100px" class="padding0">
+            <div class="userlogo" v-popover:usercard style="position: relative;">
+              <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" class="no-user-select" />
+            </div>
+            <p class="user-status">
+              <span class="online" v-if="$store.state.socketStatus">在线</span>
+              <span v-else>连线中...</span>
+            </p>
           </el-header>
           <el-main class="padding0 ov-hidden">
             <div class="sidebar-menu">
@@ -61,6 +59,10 @@
     <audio id="audio" preload="auto" loop>
       <source src="/static/image/59y888piCn92.mp3" type="audio/mp3" />
     </audio>
+
+    <el-popover ref="usercard" placement="right-start" trigger="click" :visible-arrow="false" popper-class="padding0">
+      <user-card></user-card>
+    </el-popover>
   </div>
 </template>
 
@@ -134,14 +136,33 @@
 
 </script>
 
+<style>
+  body {
+    background: url(/static/image/background/003.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+</style>
 <style scoped="scoped">
-  .mian-layout {
+  .full-mode {
     position: fixed;
+    width: 80%;
+    height: 80%;
+    max-width: 1000%;
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    margin: auto;
     overflow: hidden;
+  }
+
+  @media screen and (max-width: 1000px) {
+    .full-mode {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .mian-layout .side-edge {
@@ -266,84 +287,29 @@
     border-radius: 50%;
     position: relative;
     cursor: pointer;
+    overflow: hidden;
   }
 
   .userlogo img {
-    position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-
   }
 
-  .userlogo img:hover {
-    transform: scale(1.1);
-    transition: ease-in 1s;
+  .userlogo:hover {
+    transform: rotate(360deg);
+    transition: ease-in 2s;
   }
 
-  .userlogo .p1:after,
-  .userlogo .p2:after,
-  .userlogo .p3:after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border-radius: 50%;
-    border: 2px solid #75abfa;
-    opacity: 0;
-    background-color: rgba(160, 195, 244, .3);
+  .user-status {
+    text-align: center;
+    margin-top: 10px;
+    color: #ccc9c9;
+    font-size: 13px;
+    font-weight: 300;
   }
 
-  .userlogo .p1:after {
-    -webkit-animation: ripple 4.5s ease-out 225ms infinite;
-    animation: ripple 4.5s ease-out 225ms infinite;
-  }
-
-  .userlogo .p2:after {
-    -webkit-animation: ripple 4.5s ease-out .9s infinite;
-    animation: ripple 4.5s ease-out .9s infinite;
-  }
-
-  .userlogo .p3:after {
-    -webkit-animation: ripple 4.5s ease-out 1.8s infinite;
-    animation: ripple 4.5s ease-out 6s infinite;
-  }
-
-  @-webkit-keyframes ripple {
-    0% {
-      opacity: 0;
-      -webkit-transform: scale(0.01);
-    }
-
-    5% {
-      opacity: 1
-    }
-
-    to {
-      opacity: 0;
-      -webkit-transform: scale(1.5);
-    }
-  }
-
-  @keyframes ripple {
-    0% {
-      opacity: 0;
-      -webkit-transform: scale(0.01);
-      transform: scale(0.01);
-    }
-
-    5% {
-      opacity: 1
-    }
-
-    to {
-      opacity: 0;
-      -webkit-transform: scale(1.5);
-      transform: scale(1.5);
-    }
+  .user-status .online {
+    color: #0d710d;
   }
 
 </style>

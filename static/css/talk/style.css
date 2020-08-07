@@ -10,7 +10,7 @@
   line-height: 60px;
   position: relative;
   background-color: white;
-  border-bottom: 1px solid #ece6e6;
+  border-bottom: 1px solid rgb(245, 245, 245);
 }
 
 .panel-header .title {
@@ -69,7 +69,36 @@
 }
 
 .panel-header .online .yes-badge {
-  color: #4dbe51;
+  color: #1890ff;
+}
+
+
+.panel-header .online .badge-status-dot {
+  position: relative;
+  top: -1px;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+.panel-header .online .badge-status-processing {
+  position: relative;
+  background-color: #1890ff
+}
+
+.panel-header .online .badge-status-processing:after {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #1890ff;
+  border-radius: 50%;
+  -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
+  animation: antStatusProcessing 1.2s ease-in-out infinite;
+  content: ""
 }
 
 .panel-header .online .input {
@@ -115,9 +144,6 @@
 
 
 /* 面板主体 */
-.panel-main {
-  background-color: rgb(245, 245, 245);
-}
 
 
 /* 面板页脚 */
@@ -133,7 +159,7 @@
   text-align: center;
   position: relative;
   padding-top: 50px;
-  background-color: white;
+  background-color: #f5f5f5;
 }
 
 .multi-select .multi-close {
@@ -169,7 +195,7 @@
   width: 45px;
   height: 45px;
   line-height: 45px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
   border-radius: 50%;
   cursor: pointer;
   margin: 0 auto;
@@ -257,5 +283,35 @@
 
   to {
     opacity: 1;
+  }
+}
+
+
+
+@-webkit-keyframes antStatusProcessing {
+  0% {
+    -webkit-transform: scale(.8);
+    transform: scale(.8);
+    opacity: .5
+  }
+
+  to {
+    -webkit-transform: scale(2.4);
+    transform: scale(2.4);
+    opacity: 0
+  }
+}
+
+@keyframes antStatusProcessing {
+  0% {
+    -webkit-transform: scale(.8);
+    transform: scale(.8);
+    opacity: .5
+  }
+
+  to {
+    -webkit-transform: scale(2.4);
+    transform: scale(2.4);
+    opacity: 0
   }
 }

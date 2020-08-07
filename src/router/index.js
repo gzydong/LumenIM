@@ -31,15 +31,6 @@ const routes = [{
     }
   },
   {
-    path: '/friends',
-    name: 'friends',
-    component: () => import('@/views/FriendsPage'),
-    meta: {
-      title: '我的好友',
-      needLogin: true
-    }
-  },
-  {
     path: '/notes',
     name: 'notes',
     component: () => import('@/views/NotePage'),

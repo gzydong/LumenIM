@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container class="vh100" style="position: relative;">
+    <el-container class="vh100" style="position: relative;background-color: white;">
       <!-- 头部信息 -->
       <el-header class="padding0 panel-header no-user-select">
         <div class="title">
@@ -12,7 +12,10 @@
           </span>
         </div>
         <div class="online" v-show="params.source == 1">
-          <p class="badge" :class="{'yes-badge':isOnline == true}">{{isOnline?'在线':'离线'}}</p>
+          <p class="badge" :class="{'yes-badge':isOnline == true}">
+            <span class="badge-status-dot badge-status-processing" v-show="isOnline == true"></span>
+            <span>{{isOnline?'在线':'离线'}}</span>
+          </p>
           <p class="input" v-show="keyEvent.isShow">对方正在输入 ...</p>
         </div>
         <div class="means">
@@ -211,6 +214,12 @@
               </div>
               <p>批量删除</p>
             </div>
+            <div class="multi-btn-group">
+              <div class="multi-icon" @click="closeMultiSelect">
+                <i class="el-icon-close"></i>
+              </div>
+              <p>关闭</p>
+            </div>
           </div>
         </template>
       </el-footer>
@@ -388,6 +397,7 @@
       },
     },
     watch: {
+      // 监听面板传递参数
       params(val) {
         this.loadRecord.minRecord = 0;
         this.$root.message.records = [];
@@ -398,6 +408,7 @@
         }
 
         this.loadChatRecords();
+        this.tipsBoard = false;
       },
       scroll(n, o) {
         this.$nextTick(() => {

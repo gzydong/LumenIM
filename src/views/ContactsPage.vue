@@ -803,7 +803,7 @@
     height: 100%;
     width: 0;
     display: block;
-    transition: ease-in-out .2s;
+    transition: ease .5s .2s;
     z-index: 1;
     display: flex;
     justify-content: center;
