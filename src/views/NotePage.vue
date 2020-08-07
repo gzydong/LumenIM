@@ -140,7 +140,7 @@
             <p @click="reloadCatNote" class="pointer">加载笔记失败，点击重试 ...</p>
           </div>
         </el-main>
-        <el-main v-else class="el-main-content lumen-scrollbar animated fadeIn"
+        <el-main v-else class="el-main-content lumen-scrollbar"
           :class="{'el-main-content-full':markdown.isFull}">
           <div class="note-editor-header">
             <div class="editor-title">
