@@ -140,8 +140,8 @@
             <p @click="reloadCatNote" class="pointer">加载笔记失败，点击重试 ...</p>
           </div>
         </el-main>
-        <el-main v-else class="el-main-content lumen-scrollbar"
-          :class="{'el-main-content-full':markdown.isFull}">
+
+        <el-main v-else class="el-main-content lumen-scrollbar" :class="{'el-main-content-full':markdown.isFull}">
           <div class="note-editor-header">
             <div class="editor-title">
               <input type="text" v-model="markdown.editData.title" :readonly="!markdown.isEdit"
@@ -177,7 +177,7 @@
               <div class="note-header-tool">
                 <span class="tool-groups" v-popover:fileManager>
                   <i class="el-icon-link"></i>
-                  <span>笔记附件({{filesManager.files.length}})</span>
+                  <span class="no-user-select">笔记附件({{filesManager.files.length}})</span>
                   <el-popover ref="fileManager" placement="bottom" trigger="click" :visible-arrow="false">
                     <div class="note-files-manager lumen-scrollbar">
                       <input type="file" ref="uploadNoteFile" @change="uploadAnnex" />
@@ -212,13 +212,13 @@
                 <span class="tool-groups" @click="setAsterisk">
                   <i v-if="markdown.editData.is_asterisk == 1" class="el-icon-star-on"></i>
                   <i v-else class="el-icon-star-off"></i>
-                  <span>{{markdown.editData.is_asterisk == 1?'取消星标':'星标笔记'}}</span>
+                  <span class="no-user-select">{{markdown.editData.is_asterisk == 1?'取消星标':'星标笔记'}}</span>
                 </span>
 
                 <span class="tool-groups">
                   <i class="el-icon-collection-tag"></i>
                   <span v-for="tag in markdown.editData.tags">{{tag.tag_name}}&nbsp;|&nbsp;</span>
-                  <span class="add-tags" v-popover:tagManager>编辑标签</span>
+                  <span class="add-tags no-user-select" v-popover:tagManager>编辑标签</span>
                   <el-popover ref="tagManager" placement="bottom" width="300" trigger="click" :visible-arrow="false">
                     <div class="tag-manager">
                       <div class="tag-manager-title">
@@ -267,6 +267,10 @@
       </el-container>
     </main-layout>
 
+
+
+
+
     <recycle-note-annex v-if="recycleAnnexBox" @close="recycleAnnexBox = false" />
 
     <!-- 选择联系人窗口 -->
@@ -285,7 +289,6 @@
   } from "mavon-editor";
 
   import "mavon-editor/dist/css/index.css";
-  import "@static/css/github-hljs.css";
   import "@static/css/github-markdown.css";
 
   import Contextmenu from "vue-contextmenujs";
@@ -373,7 +376,7 @@
             name: "回收站",
             icon: "el-icon-delete",
             color: "#fd6f41",
-            isShowSub: true,
+            isShowSub: false,
             isActive: false,
             submenus: [{
                 name: "笔记回收站",

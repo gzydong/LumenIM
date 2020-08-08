@@ -32,13 +32,10 @@
         </span>
       </div>
 
-      <div class="group-setting-row">
-        <span style="display: inline-block;">消息免打扰：</span>
-        <span style="display: inline-block;float: right;">
-          <el-switch v-model="groupMessage.disturb" :disabled="disturbDisabled" inactive-color="#e0d6d6"
-            @change="changeDisturb"></el-switch>
-        </span>
-        <div class="clear"></div>
+      <div class="group-setting-row group-flex">
+        <span>消息免打扰：</span>
+        <el-switch v-model="groupMessage.disturb" :disabled="disturbDisabled" inactive-color="#e0d6d6"
+          @change="changeDisturb" />
       </div>
 
       <div class="group-setting-row">
@@ -48,10 +45,9 @@
 
       <div class="group-history-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
 
-      <div class="group-setting-row">
-        <span style="display: inline-block;">群公告</span>
-        <span style="display: inline-block;float: right;color: #6cbaff;font-size: 12px;cursor: pointer;">更多</span>
-        <div class="clear"></div>
+      <div class="group-setting-row group-flex">
+        <span>群公告</span>
+        <span style="color: #409eff;">更多</span>
       </div>
 
       <div class="group-history-tips" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">暂无群公告</div>
@@ -67,7 +63,6 @@
           <i class="iconfont icon-jia"></i> 邀请好友
         </p>
       </div>
-
 
       <div class="group-setting-row">
         <div class="member-box">
@@ -86,7 +81,7 @@
           <el-row class="row-items" v-for="(member,i) in searchList" :key="i">
             <el-col :span="11">
               <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar" width="20px" />
-              <span @click="showFriendInfo(member.user_id)">{{member.nickname}}</span>
+              <span @click="showFriendInfo(member.user_id)" class="nickname">{{member.nickname}}</span>
             </el-col>
             <el-col :span="8">
               <span>{{member.visit_card?member.visit_card:'-'}}</span>
@@ -419,6 +414,11 @@
     font-size: 14px;
   }
 
+  .group-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .group-setting-row .edit-visit-card {
     position: initial;
     color: #a29f9f;
@@ -521,15 +521,15 @@
     color: rgb(179, 176, 176);
     position: absolute;
     left: 10px;
-    top: 6px;
+    top: 9px;
   }
 
   .member-view-box input {
     width: calc(100% - 40px);
-    height: 25px;
+    height: 30px;
     line-height: 28px;
     border-radius: 3px;
-    border: 1px solid #d6d6d6;
+    border: 1px solid #f1e9e9;
     color: #b3b0b0;
     font-size: 13px;
     padding: 0 10px 0 30px;
@@ -594,9 +594,9 @@
     top: 4px;
   }
 
-
-
-
+  .row-items .nickname:hover{
+    color: #3685d6;
+  }
 
   .member-box .addGroupFired {
     border: 1px dashed #c3bbbb;

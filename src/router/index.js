@@ -6,7 +6,7 @@ Vue.use(Router);
 const routes = [{
     path: '/',
     name: 'home',
-    component: () => import('@/views/NewMessagePage'),
+    component: () => import('@/views/MessagePage'),
     meta: {
       title: '',
       needLogin: true
@@ -15,7 +15,7 @@ const routes = [{
   {
     path: '/message',
     name: 'message',
-    component: () => import('@/views/NewMessagePage'),
+    component: () => import('@/views/MessagePage'),
     meta: {
       title: '消息通知',
       needLogin: true
@@ -44,7 +44,7 @@ const routes = [{
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/auth/NewLogin'),
+    component: () => import('@/views/auth/LoginPage'),
     meta: {
       title: '登录',
       needLogin: false
@@ -53,7 +53,7 @@ const routes = [{
   {
     path: '/register',
     name: 'register',
-    component: () => import('@/views/auth/NewRegister'),
+    component: () => import('@/views/auth/RegisterPage'),
     meta: {
       title: '账号注册',
       needLogin: false
@@ -62,7 +62,7 @@ const routes = [{
   {
     path: '/forget',
     name: 'forget',
-    component: () => import('@/views/auth/NewForgetPassword'),
+    component: () => import('@/views/auth/ForgetPasswordPage'),
     meta: {
       title: '找回密码',
       needLogin: false

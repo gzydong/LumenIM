@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="3">
+    <main-layout :idx="1">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
         <el-aside width="250px" class="aside-box padding0">
@@ -201,7 +201,7 @@
                       <div class="title">
                         <span class="name">{{item.group_name}}</span>
                         <div class="larkc-tag" v-show="item.not_disturb == 1">
-                          <i class="iconfont icon-xiaoximiandarao" style="font-size: 10px;"></i>
+                          <i class="iconfont icon-xiaoximiandarao" style="font-size: 10px;color: #7d7a7a;"></i>
                         </div>
                       </div>
                       <div class="content">[简介] ~ {{item.group_profile}}</div>
@@ -680,7 +680,7 @@
   .panel .panel-header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #eae1e1;
+    border-bottom: 1px solid rgb(245, 245, 245);
     justify-content: space-between;
   }
 

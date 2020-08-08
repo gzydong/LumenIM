@@ -14,7 +14,7 @@
           </el-header>
           <el-main class="padding0 ov-hidden">
             <div class="sidebar-menu">
-              <el-tooltip class="item" content="我的聊天消息" placement="right" :visible-arrow="false">
+              <el-tooltip class="item" content="我的消息" placement="right" :visible-arrow="false">
                 <router-link to="/message">
                   <div class="menu-items" :class="{'menu-items-active':idx == 0}">
                     <i class="iconfont icon-duanxin"></i>
@@ -23,7 +23,7 @@
                 </router-link>
               </el-tooltip>
 
-              <el-tooltip class="item" content="我的好友及群聊" placement="right" :visible-arrow="false">
+              <el-tooltip class="item" content="我的联系人" placement="right" :visible-arrow="false">
                 <router-link to="/contacts">
                   <div class="menu-items" :class="{'menu-items-active':idx == 1}">
                     <i class="iconfont icon-qunzu"></i>
@@ -39,6 +39,16 @@
                 </router-link>
 
               </el-tooltip>
+
+              <el-tooltip class="item" content="系统设置" placement="right" :visible-arrow="false">
+                <div class="menu-items" :class="{'menu-items-active':idx == 3}">
+                  <i class="el-icon-setting"></i>
+                </div>
+              </el-tooltip>
+
+
+
+
             </div>
           </el-main>
           <el-footer height="60px" class="padding0">
@@ -63,6 +73,9 @@
     <el-popover ref="usercard" placement="right-start" trigger="click" :visible-arrow="false" popper-class="padding0">
       <user-card></user-card>
     </el-popover>
+
+
+    <div class="copyright" v-html="$store.state.copyright"></div>
   </div>
 </template>
 
@@ -193,12 +206,6 @@
     color: #416641 !important;
   }
 
-  .sidebar-menu .menu-items:hover {
-    background: #38373a;
-    color: white !important;
-    font-weight: bold;
-  }
-
   .sidebar-menu .menu-items:active {
     box-shadow: 0px 0px 8px white;
     transition-duration: 0.2s;
@@ -311,6 +318,19 @@
 
   .user-status .online {
     color: #0d710d;
+  }
+
+  .copyright {
+    width: 300px;
+    color: #545050 !important;
+    height: 30px;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0;
+    font-size: 13px;
   }
 
 </style>

@@ -22,7 +22,7 @@
 
           <p class="text-tips no-user-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
-            <el-popover placement="top-start" width="600" trigger="click">
+            <el-popover placement="top-end" width="600" trigger="click">
               <div class="editor-books">
                 <div class="books-title">编辑说明:</div>
                 <p>1. 支持上传QQ及微信截图，在QQ或微信中截图后使用Ctrl+v上传图片</p>

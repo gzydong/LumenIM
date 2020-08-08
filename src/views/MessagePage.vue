@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="3">
+    <main-layout :idx="0">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
         <el-aside width="300px" class="aside-box padding0">
@@ -106,8 +106,9 @@
         <!-- 聊天面板容器 -->
         <el-main class="padding0 hv100 ov-hidden">
           <template v-if="index_name == null">
-            <div class="reserve-box">
+            <div class="reserve-box no-user-select">
               <img src="/static/image/chat.png" width="300">
+              <p style="text-shadow: rgb(239 232 232) 7px 4px 3px;">Lumen IM 开源的在线聊天软件</p>
             </div>
           </template>
           <template v-else>
