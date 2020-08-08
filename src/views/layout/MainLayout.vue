@@ -40,10 +40,13 @@
 
               </el-tooltip>
 
-              <el-tooltip class="item" content="系统设置" placement="right" :visible-arrow="false">
-                <div class="menu-items" :class="{'menu-items-active':idx == 3}">
-                  <i class="el-icon-setting"></i>
-                </div>
+              <el-tooltip class="item" content="个人设置" placement="right" :visible-arrow="false">
+                <router-link to="/settings">
+                  <div class="menu-items" :class="{'menu-items-active':idx == 3}">
+                    <i class="el-icon-setting"></i>
+                  </div>
+                </router-link>
+                
               </el-tooltip>
 
 
@@ -61,7 +64,7 @@
         </el-container>
       </el-aside>
 
-      <el-main class="padding0">
+      <el-main class="padding0" style="background-color: white;">
         <slot name="container"></slot>
       </el-main>
     </el-container>

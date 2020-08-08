@@ -39,6 +39,15 @@ const routes = [{
       needLogin: true
     }
   },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('@/views/SettingsPage'),
+    meta: {
+      title: '个人设置',
+      needLogin: true
+    }
+  },
 
   // 授权相关
   {
