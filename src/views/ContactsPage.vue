@@ -156,7 +156,6 @@
                       <div class="title">
                         <span class="name">{{item.friend_remark?item.friend_remark:item.name}}</span>
                         <div class="larkc-tag agree" v-show="item.online == 1">在线</div>
-                        <div class="larkc-tag" v-show="item.online == 0" style="color: white;">离线</div>
                       </div>
                       <div class="content">[签名] ~ {{item.motto}}</div>
                     </div>
@@ -204,7 +203,7 @@
                           <i class="iconfont icon-xiaoximiandarao" style="font-size: 10px;color: #7d7a7a;"></i>
                         </div>
                         <div class="larkc-tag wait" v-show="item.isGroupLeader">我的创建</div>
-                        
+
                       </div>
                       <div class="content">[简介] ~ {{item.group_profile}}</div>
 

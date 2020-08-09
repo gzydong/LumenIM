@@ -42,11 +42,53 @@ const routes = [{
   {
     path: '/settings',
     name: 'settings',
-    component: () => import('@/views/SettingsPage'),
     meta: {
       title: '个人设置',
       needLogin: true
-    }
+    },
+    redirect: "/settings/base",
+    component: () => import('@/views/SettingsPage'),
+    children: [{
+        path: 'base',
+        meta: {
+          title: '个人信息',
+          needLogin: true
+        },
+        component: () => import('@/views/settings/base'),
+      },
+      {
+        path: 'security',
+        meta: {
+          title: '安全设置',
+          needLogin: true
+        },
+        component: () => import('@/views/settings/security'),
+      },
+      {
+        path: 'binding',
+        meta: {
+          title: '账户绑定',
+          needLogin: true
+        },
+        component: () => import('@/views/settings/binding'),
+      },
+      {
+        path: 'personalize',
+        meta: {
+          title: '个性化设置',
+          needLogin: true
+        },
+        component: () => import('@/views/settings/personalize'),
+      },
+      {
+        path: 'notification',
+        meta: {
+          title: '消息设置',
+          needLogin: true
+        },
+        component: () => import('@/views/settings/notification'),
+      }
+    ]
   },
 
   // 授权相关

@@ -33,7 +33,9 @@ import {
   Tooltip,
   Autocomplete,
   Scrollbar,
-  Avatar
+  Avatar,
+  Radio,
+  RadioGroup
 } from 'element-ui';
 
 Vue.use(Popover);
@@ -63,6 +65,8 @@ Vue.use(Tooltip);
 Vue.use(Autocomplete);
 Vue.use(Scrollbar);
 Vue.use(Avatar);
+Vue.use(Radio);
+Vue.use(RadioGroup);
 
 Vue.use(Loading.directive);
 

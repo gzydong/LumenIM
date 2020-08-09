@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="full-background">
     <el-container class="mian-layout full-mode">
       <el-aside width="70px" class="side-edge">
         <el-container class="hv100 ov-hidden">
@@ -37,7 +37,6 @@
                     <i class="el-icon-notebook-2"></i>
                   </div>
                 </router-link>
-
               </el-tooltip>
 
               <el-tooltip class="item" content="个人设置" placement="right" :visible-arrow="false">
@@ -46,12 +45,7 @@
                     <i class="el-icon-setting"></i>
                   </div>
                 </router-link>
-                
               </el-tooltip>
-
-
-
-
             </div>
           </el-main>
           <el-footer height="60px" class="padding0">
@@ -73,12 +67,12 @@
       <source src="/static/image/59y888piCn92.mp3" type="audio/mp3" />
     </audio>
 
+    <!-- 用户卡片 -->
     <el-popover ref="usercard" placement="right-start" trigger="click" :visible-arrow="false" popper-class="padding0">
-      <user-card></user-card>
+      <user-card />
     </el-popover>
 
-
-    <div class="copyright" v-html="$store.state.copyright"></div>
+    <div class="copyright no-user-select" v-html="$store.state.copyright"></div>
   </div>
 </template>
 
@@ -151,17 +145,20 @@
   };
 
 </script>
-
-<style>
-  body {
+<style scoped="scoped">
+  .full-background {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    left: 0;
     background: url(/static/image/background/003.jpg);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-color: black;
   }
 
-</style>
-<style scoped="scoped">
   .full-mode {
     position: fixed;
     width: 80%;
@@ -180,6 +177,10 @@
       width: 100%;
       height: 100%;
     }
+
+    .copyright {
+      display: none;
+    }
   }
 
   .mian-layout .side-edge {
@@ -190,6 +191,10 @@
     width: 60px;
     margin: 0 auto;
     text-align: center;
+  }
+
+  .sidebar-menu a {
+    text-decoration: none;
   }
 
   .sidebar-menu .menu-items {

@@ -9,8 +9,7 @@
           </el-header>
           <el-main class="main">
             <el-input prefix-icon="el-icon-search" placeholder="请输入对方手机号(精确查找)" v-model="input" clearable
-              @keyup.enter.native="onSubmit" class="input" @input="isError = false">
-            </el-input>
+              @keyup.enter.native="onSubmit" class="input" @input="isError = false" />
             <p class="error" v-show="isError">无法找到该用户，请检查搜索内容并重试</p>
             <el-button type="primary" size="small" @click="onSubmit" :loading="loading">确定</el-button>
           </el-main>

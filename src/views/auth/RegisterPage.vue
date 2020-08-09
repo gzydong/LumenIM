@@ -11,29 +11,28 @@
             <el-form ref="form" :model="form" :rules="rules">
               <el-form-item prop="nickname">
                 <el-input v-model="form.nickname" placeholder="用户昵称" class="cuborder-radius" maxlength="11"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')"/>
               </el-form-item>
               <el-form-item prop="password">
                 <el-input v-model="form.password" type="password" placeholder="密码" class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')"/>
               </el-form-item>
               <el-form-item prop="password2">
                 <el-input v-model="form.password2" type="password" placeholder="确认密码" class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')"/>
               </el-form-item>
               <el-form-item prop="username">
                 <el-input v-model="form.username" placeholder="手机号" class="cuborder-radius" maxlength="11"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')"/>
               </el-form-item>
               <el-form-item prop="sms_code">
                 <el-input v-model="form.sms_code" placeholder="验证码(随意填写)" class="cuborder-radius" maxlength="6"
-                  @keyup.enter.native="onSubmit('form')" style="width: 205px;"></el-input>
+                  @keyup.enter.native="onSubmit('form')" style="width: 205px;"/>
 
                 <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
                 <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取短信
                 </div>
                 <div class="send-code-btn send-sms-disable" v-else>重新发送({{smsLockObj.time}}s)</div>
-
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="registerLoading">立即注册

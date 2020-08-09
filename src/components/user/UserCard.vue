@@ -2,8 +2,8 @@
   <div>
     <div class="im-user-card animated fadeIn">
       <div class="card-header">
-        <img :src="userCard.imgbag" alt="个性背景..." />
-        <div class="user-avatar">
+        <img :src="userCard.imgbag" class="no-user-select" />
+        <div class="user-avatar no-user-select">
           <img :src="userCard.avatar" :onerror="$store.state.user.detaultAvatar" />
         </div>
         <div class="user-nickname">
@@ -22,7 +22,7 @@
             <span>编辑个签，展示我的独特态度。</span>
           </span>
         </div>
-        <div class="count">
+        <div class="count no-user-select">
           <div>
             <span>好友</span>
             <span>({{userCard.friends_num}})</span>
@@ -36,83 +36,36 @@
             <span>({{userCard.note_num}})</span>
           </div>
         </div>
-
-        <div class="card-rows">
-          <div class="card-row" @click="userSetup = true">
-            <span>编辑资料</span>
-            <i class="iconfont icon-jiantou1"></i>
-          </div>
-          <div class="card-row" @click="changePassword">
-            <span>修改密码</span>
-            <i class="iconfont icon-jiantou1"></i>
-          </div>
-          <div class="card-row" @click="setupMobile">
-            <span>更换手机</span>
-            <i class="iconfont icon-jiantou1"></i>
-          </div>
-          <div class="card-row" @click="setup">
-            <span>个人设置</span>
-            <i class="iconfont icon-jiantou1"></i>
-          </div>
-          <div class="card-row" @click="logout">
-            <span>退出登录</span>
-            <i class="iconfont icon-jiantou1"></i>
-          </div>
-        </div>
       </div>
     </div>
-
-    <!-- 修改密码组件 -->
-    <change-password ref="changePasswrodRef" />
-
-    <!-- 修改手机号组件 -->
-    <change-mobile ref="changeMobileRef" />
-
-    <!-- 用户信息设置组件 -->
-    <user-setup v-if="userSetup" @close="userSetup = false" />
   </div>
 </template>
 
 <script>
-  //修改密码组件
-  import ChangePassword from "@/components/user/ChangePassword";
-  import ChangeMobile from "@/components/user/ChangeMobile";
-  import UserSetup from "@/components/user/UserSetup";
   import {
     findUserDetailServ,
   } from "@/api/user";
-
   export default {
     name: "uesr-card",
-    components: {
-      ChangePassword,
-      UserSetup,
-      ChangeMobile
-    },
     data() {
       return {
         userCard: {
           nickname: this.$store.state.user.nickname,
           signature: "",
           avatar: this.$store.state.user.avatar,
-          imgbag: "static/image/default-user-banner.png",
+          imgbag: "/static/image/default-user-banner.png",
           sex: 1, //(0:未知 1:男 2:女 默认0)
           friends_num: 0,
           groups_num: 0,
           note_num: 0
         },
-
-        userSetup: false,
       };
     },
     mounted() {
-      this.user();
+      this.getUserDetail();
     },
     methods: {
-      logout() {
-        this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
-      },
-      user() {
+      getUserDetail() {
         findUserDetailServ().then(res => {
           if (res.code == 200) {
             this.userCard.avatar = res.data.avatar;
@@ -124,22 +77,11 @@
             this.userCard.note_num = res.data.count.note_num;
           }
         });
-      },
-      setup() {
-        alert('个人设置功能暂未开放，请耐心等待...')
-      },
-      changePassword() {
-        this.$refs.changePasswrodRef.open();
-      },
-      setupMobile() {
-        this.$refs.changeMobileRef.open();
       }
     }
   };
 
 </script>
-
-
 <style scoped="scoped">
   .icon-nan {
     color: rgb(0, 145, 255);
@@ -159,7 +101,7 @@
 
   .im-user-card {
     width: 320px;
-    min-height: 400px;
+    min-height: 370px;
     background: #ffffff;
     box-shadow: -1px 1px 9px 0px #e6e3e3;
     padding-bottom: 10px;
@@ -262,31 +204,6 @@
     width: 33.3%;
     text-align: center;
     font-size: 12px;
-  }
-
-  .im-user-card .card-body .card-rows {
-    margin-top: 30px;
-  }
-
-  .im-user-card .card-body .card-row {
-    height: 35px;
-    line-height: 35px;
-    font-size: 13px;
-    border-bottom: 1px solid #f5f0f0;
-    position: relative;
-    cursor: pointer;
-    color: #736f6f;
-    padding-left: 5px;
-  }
-
-  .im-user-card .card-body .card-row:hover {
-    background: #fcfcfc;
-    border-bottom-color: #fcfcfc;
-  }
-
-  .im-user-card .card-body .card-row i {
-    position: absolute;
-    right: 3px;
   }
 
 </style>

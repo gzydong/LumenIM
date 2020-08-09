@@ -833,3 +833,7 @@
   background-color: #9f9898;
   overflow-x: auto;
 }
+
+.note-aside>>>.el-scrollbar__wrap {
+  overflow-x: hidden;
+}

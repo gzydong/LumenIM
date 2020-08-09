@@ -233,9 +233,10 @@
   .cropper-preview-box .preview-img {
     width: 135px;
     height: 135px;
-    box-shadow: 0 0 11px #dfdfdf;
     margin: 0px auto;
     margin-bottom: 5px;
+    box-shadow: 0 0 4px #ccc;
+    border-radius: 50%;
   }
 
   .cropper-preview-box .preview-img img {

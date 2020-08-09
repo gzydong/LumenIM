@@ -2,7 +2,7 @@
   <div>
     <main-layout :idx="2">
       <el-container slot="container" class="el-container-note">
-        <el-aside width="230px" class="el-aside-one lumen-scrollbar">
+        <el-aside width="230px" class="el-aside-one lumen-scrollbar ov-hidden">
           <el-header>
             <el-dropdown split-button type="primary" @click="insterNote" @command="handleCommand"
               class="btn-dropdown-menu">

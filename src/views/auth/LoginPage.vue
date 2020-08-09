@@ -11,11 +11,11 @@
             <el-form ref="form" :model="form" :rules="rules">
               <el-form-item prop="username">
                 <el-input v-model="form.username" placeholder="手机号" class="cuborder-radius" maxlength="11"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')" />
               </el-form-item>
               <el-form-item prop="password">
                 <el-input v-model="form.password" type="password" placeholder="密码" class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')"></el-input>
+                  @keyup.enter.native="onSubmit('form')" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loginLoading">立即登录

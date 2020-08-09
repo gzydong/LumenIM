@@ -1,5 +1,4 @@
 <template>
-  <!-- 用户密码修改组件 -->
   <div class="base-mask animated fadeIn" v-show="isShow">
     <div class="container" v-outside="close">
       <el-container class="hv100">
@@ -11,11 +10,11 @@
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
             <el-form-item prop="username" label="手机号">
               <el-input v-model="form.username" placeholder="请填写新手机号" class="cuborder-radius" maxlength="11"
-                @keyup.enter.native="onSubmit('form')"></el-input>
+                @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="sms_code" label="验证码">
               <el-input v-model="form.sms_code" placeholder="验证码" class="cuborder-radius" maxlength="6"
-                @keyup.enter.native="onSubmit('form')" style="width: 185px;"></el-input>
+                @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" />
 
               <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
               <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取短信
@@ -24,10 +23,11 @@
             </el-form-item>
             <el-form-item prop="password" label="密码">
               <el-input v-model="form.password" type="password" placeholder="登录密码验证" class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')"></el-input>
+                @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item style="margin-top: 40px;">
-              <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loading">立即提交
+              <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loading" size="medium">
+                立即提交
               </el-button>
             </el-form-item>
           </el-form>
@@ -95,7 +95,7 @@
 
         smsLock: false,
         smsLockObj: null,
-        isShow: true,
+        isShow: false,
       };
     },
     created() {
@@ -218,8 +218,8 @@
 
   .send-code-btn {
     width: 140px;
-    height: 40px;
-    line-height: 40px;
+    height: 36px;
+    line-height: 36px;
     display: inline-block;
     background: #f3ecec;
     text-align: center;
