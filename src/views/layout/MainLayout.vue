@@ -1,7 +1,7 @@
 <template>
   <div class="full-background">
     <el-container class="mian-layout full-mode">
-      <el-aside width="70px" class="side-edge">
+      <el-aside width="70px" class="side-edge no-user-select">
         <el-container class="hv100 ov-hidden">
           <el-header height="100px" class="padding0">
             <div class="userlogo" v-popover:usercard style="position: relative;">
