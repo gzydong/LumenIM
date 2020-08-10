@@ -34,7 +34,7 @@
               <el-tooltip class="item" content="我的笔记" placement="right" :visible-arrow="false">
                 <router-link to="/notes">
                   <div class="menu-items" :class="{'menu-items-active':idx == 2}">
-                    <i class="el-icon-notebook-2"></i>
+                    <i class="el-icon-notebook-1"></i>
                   </div>
                 </router-link>
               </el-tooltip>
@@ -173,6 +173,12 @@
       height: 100%;
     }
 
+    .copyright {
+      display: none;
+    }
+  }
+
+  @media screen and (max-height: 700px) {
     .copyright {
       display: none;
     }

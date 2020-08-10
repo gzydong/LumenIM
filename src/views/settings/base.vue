@@ -1,10 +1,13 @@
 <template>
-  <div>
+  <div style="height: 100%;overflow-y: auto;">
     <div class="container">
       <h4>设置个人信息</h4>
       <el-row>
         <el-col :span="16">
           <el-form ref="form" :model="form" :rules="rules">
+            <el-form-item label="登录账号:">
+              <p class="no-user-select account-mobile">{{form.mobile}}</p>
+            </el-form-item>
             <el-form-item label="昵称:" prop="nickname">
               <el-input v-model="form.nickname" size="medium" placeholder="给自己起个名字" />
             </el-form-item>
@@ -68,7 +71,8 @@
           gender: '',
           avatar: '',
           motto: '',
-          email: ''
+          email: '',
+          mobile: '',
         },
         rules: {
           nickname: [{
@@ -108,7 +112,7 @@
       getUserDetail() {
         findUserDetailServ().then((res) => {
           if (res.code == 200) {
-            this.form.mobile = res.data.mobile;
+            this.form.mobile = res.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
             this.form.nickname = res.data.nickname;
             this.form.avatar = res.data.avatar;
             this.form.motto = res.data.motto;
@@ -161,6 +165,12 @@
 
   .container>>>.el-button {
     border-radius: 0;
+  }
+
+  .account-mobile {
+    color: #ec1919;
+    font-weight: 300;
+    font-size: 16px;
   }
 
   .avatar-col {

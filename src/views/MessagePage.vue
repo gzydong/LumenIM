@@ -86,7 +86,7 @@
                     <div class="title">
                       <div class="card-name">
                         <p class="nickname">{{item.remark_name?item.remark_name:item.name}}</p>
-                        <div class="larkc-tag" v-show="item.unread_num">{{item.unread_num}}未读</div>
+                        <div class="larkc-tag" v-show="item.unread_num">{{item.unread_num}}条未读</div>
                         <div class="larkc-tag top" v-show="item.is_top">TOP</div>
                         <div class="larkc-tag group" v-show="item.group_id">群组</div>
                         <div class="larkc-tag disturb" v-show="item.not_disturb">

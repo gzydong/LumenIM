@@ -79,10 +79,11 @@
             <el-col :span="5">性别</el-col>
           </el-row>
 
-          <el-row class="row-items" v-for="(member,i) in searchList" :key="i">
+          <el-row class="row-items" v-for="(member,i) in searchList" :key="i"
+            @click.native="showFriendInfo(member.user_id)">
             <el-col :span="11">
               <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar" width="20px" />
-              <span @click="showFriendInfo(member.user_id)" class="nickname">{{member.nickname}}</span>
+              <span class="nickname">{{member.nickname}}</span>
             </el-col>
             <el-col :span="8">
               <span>{{member.visit_card?member.visit_card:'-'}}</span>
@@ -573,6 +574,10 @@
     width: 100%;
     height: 30px;
     margin-bottom: 3px;
+  }
+
+  .row-items:hover {
+    background-color: #f9efef;
   }
 
   .row-items div {

@@ -25,10 +25,12 @@
             <span>好友</span>
             <span>({{userCard.friends_num}})</span>
           </div>
+          <span style="color: #f1efef;">|</span>
           <div>
             <span>群组</span>
             <span>({{userCard.groups_num}})</span>
           </div>
+          <span style="color: #f1efef;">|</span>
           <div>
             <span>笔记</span>
             <span>({{userCard.note_num}})</span>

@@ -1,9 +1,9 @@
 <template>
   <div>
     <main-layout :idx="3">
-      <el-container slot="container" class="container">
+      <el-container slot="container" class="container hv100 ov-hidden">
         <el-header height="60px" class="header no-user-select">个人设置</el-header>
-        <el-container>
+        <el-container class="hv100">
           <el-aside width="200px" class="aside no-user-select">
             <router-link to="/settings/base">
               <div class="menu-list" :class="{'menu-list-selectd':$route.path == '/settings/base'}">个人信息</div>
