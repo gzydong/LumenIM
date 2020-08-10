@@ -1,45 +1,44 @@
 <template>
-  <!-- 头像裁剪组件 dome地址:https://codepen.io/xyxiao001/pen/wxwKGz -->
-  <div class="base-mask">
-    <div class="avatar-cropper animated fadeInDownBig">
-      <div class="panel-header">
-        <p>选择头像</p>
-        <i class="iconfont icon-guanbi11" v-on:click="$emit('close',0)"></i>
-      </div>
-
-      <div class="panel-body">
-        <div class="cus-columns">
-          <div class="vue-cropper-box">
-            <vue-cropper ref="cropper" :img="option.img" :output-size="option.size" :output-type="option.outputType"
-              :info="true" :full="option.full" :fixed="fixed" :fixed-number="fixedNumber" :can-move="option.canMove"
-              :can-move-box="option.canMoveBox" :fixed-box="option.fixedBox" :original="option.original"
-              :auto-crop="option.autoCrop" :auto-crop-width="option.autoCropWidth"
-              :auto-crop-height="option.autoCropHeight" :center-box="option.centerBox" @real-time="realTime"
-              :high="option.high" mode="cover">
-            </vue-cropper>
-            <input type="file" id="uploads" ref='fileInput' accept="image/png, image/jpeg, image/gif, image/jpg"
-              style="display: none;" @change="uploadImg($event, 1)">
-          </div>
-        </div>
-        <div class="cus-columns">
-          <div class="cropper-preview-box">
-            <div class="preview-img">
-              <img v-if="cusPreviewsImg" :src="cusPreviewsImg">
-            </div>
-          </div>
-
-          <div class="cropper-fuc-toolbar">
-            <span @click="clickUpload">上传</span>
-            <span @click="refreshCrop">刷新</span>
-            <span @click="rotateLeft">左转</span>
-            <span @click="rotateRight">右转</span>
-          </div>
-
-          <div class="cropper-button">
-            <button class="from-submit" @click="uploadService">保存图片</button>
-          </div>
-        </div>
-      </div>
+  <div class="base-mask animated fadeIn">
+    <div class="container">
+      <el-container class="hv100">
+        <el-header class="padding0 header" height="50px">
+          <span>选择头像</span>
+          <i class="close-btn el-icon-close" v-on:click="$emit('close',0)"></i>
+        </el-header>
+        <el-main class="main">
+          <el-container class="hv100">
+            <el-aside width="400px">
+              <div class="cropper-box">
+                <vue-cropper ref="cropper" :img="option.img" :output-size="option.size" :output-type="option.outputType"
+                  :info="true" :full="option.full" :fixed="fixed" :fixed-number="fixedNumber" :can-move="option.canMove"
+                  :can-move-box="option.canMoveBox" :fixed-box="option.fixedBox" :original="option.original"
+                  :auto-crop="option.autoCrop" :auto-crop-width="option.autoCropWidth"
+                  :auto-crop-height="option.autoCropHeight" :center-box="option.centerBox" @real-time="realTime"
+                  :high="option.high" mode="cover" />
+                <input type="file" id="uploads" ref='fileInput' accept="image/png, image/jpeg, image/gif, image/jpg"
+                  style="display: none;" @change="uploadImg($event, 1)">
+              </div>
+              <div class="tools tools1">
+                <el-button type="primary" size="small" icon="el-icon-upload" @click="clickUpload">上传图片</el-button>
+                <el-button type="primary" size="small" icon="el-icon-refresh" @click="refreshCrop">刷新</el-button>
+                <el-button type="primary" size="small" icon="el-icon-refresh-left" @click="rotateLeft">左转</el-button>
+                <el-button type="primary" size="small" icon="el-icon-refresh-right" @click="rotateRight">右转</el-button>
+              </div>
+            </el-aside>
+            <el-main class="padding0">
+              <div class="cropper-box">
+                <div class="preview-img">
+                  <img v-if="cusPreviewsImg" :src="cusPreviewsImg">
+                </div>
+              </div>
+              <div class="tools" style="text-align: center;">
+                <el-button type="primary" size="small" @click="uploadService">保存</el-button>
+              </div>
+            </el-main>
+          </el-container>
+        </el-main>
+      </el-container>
     </div>
   </div>
 </template>
@@ -109,14 +108,15 @@
         })
       },
       uploadImg(e, num) {
-        var file = e.target.files[0]
+        let file = e.target.files[0]
         if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
           alert('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
           return false
         }
-        var reader = new FileReader()
+
+        let reader = new FileReader()
         reader.onload = (e) => {
-          let data
+          let data;
           if (typeof e.target.result === 'object') {
             // 把Array Buffer转化为blob 如果是base64不需要
             data = window.URL.createObjectURL(new Blob([e.target.result]))
@@ -137,16 +137,15 @@
 
       //上传图片到服务器
       uploadService() {
-        let that = this;
         if (this.cusPreviewsImg == '') {
           return;
         }
 
         uploadFileStreamServ({
-          'fileStream': this.cusPreviewsImg
+          fileStream: this.cusPreviewsImg
         }).then((res) => {
           if (res.code == 200) {
-            that.$emit('close', 1, res.data.avatar);
+            this.$emit('close', 1, res.data.avatar);
           } else {
             alert('文件上传失败,请稍后再试...');
           }
@@ -166,143 +165,60 @@
     align-items: center;
   }
 
-  .avatar-cropper {
-    width: 650px;
-    height: 455px;
-    background: #FFFFFF;
-    border-radius: 3px;
+  .container {
+    background-color: white;
+    width: 800px;
+    height: 550px;
+    border-radius: 2px;
     overflow: hidden;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
-  .avatar-cropper .panel-header {
-    height: 45px;
-    width: 100%;
+  .container .header {
+    height: 50px;
+    line-height: 50px;
     position: relative;
-    box-shadow: 0 0 4px #ccc;
+    text-indent: 20px;
+    border-bottom: 1px solid #f5eeee;
   }
 
-  .avatar-cropper .panel-header i {
+  .container .header .close-btn {
     position: absolute;
-    right: 15px;
-    top: 13px;
+    right: 20px;
+    top: 15px;
     font-size: 20px;
     cursor: pointer;
   }
 
-  .avatar-cropper .panel-header p {
-    height: 45px;
-    line-height: 45px;
-    text-indent: 15px;
-  }
-
-  .avatar-cropper .panel-body {
-    height: calc(100% - 45px);
-    width: 100%;
-  }
-
-  .cus-columns {
-    float: left;
-    height: 100%;
-  }
-
-  .cus-columns:nth-child(1) {
-    width: 60%;
-  }
-
-  .cus-columns:nth-child(2) {
-    width: 39%;
-    border-left: 1px solid #f9f7f7;
-    height: 100%;
-  }
-
-  .vue-cropper-box {
-    width: 380px;
+  .cropper-box {
     height: 400px;
-    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .cropper-preview-box {
-    border: 1px solid #fffdfd;
-    margin-top: 50px;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #ccc;
-    font-size: 14px;
-  }
-
-  .cropper-preview-box .preview-img {
-    width: 135px;
-    height: 135px;
-    margin: 0px auto;
-    margin-bottom: 5px;
-    box-shadow: 0 0 4px #ccc;
+  .cropper-box .preview-img {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 4px #ccc;
   }
 
-  .cropper-preview-box .preview-img img {
-    width: 135px;
-    height: 135px;
+  .tools {
+    height: 40px;
+    margin-top: 20px;
   }
 
-  .cropper-fuc-toolbar {
-    margin-top: 100px;
-    text-align: center;
+  .tools1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .cropper-fuc-toolbar span {
-    display: inline-block;
-    background: #e1e1e1;
-    margin: 5px;
-    padding: 3px;
-    width: 35px;
-    text-align: center;
-    cursor: pointer;
-    color: #fff;
-    border-radius: 3px;
-    font-size: 12px;
-  }
-
-  .cropper-fuc-toolbar span:hover {
-    background: #47e2ff;
-  }
-
-  .cropper-fuc-toolbar span:active {
-    background: #00D7FF;
-  }
-
-  .cropper-button {
-    text-align: center;
-    margin-top: 30px;
-  }
-
-  #uploads {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 50px;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .avatar-cropper .panel-footer {
-    height: 45px;
-    width: 100%;
-    border-top: 1px solid #f2f2f2;
-    text-align: center;
-  }
-
-  .from-submit {
-    width: 240px;
-    height: 35px;
-    background: #31c9fe;
-    margin: 4px auto;
-    cursor: pointer;
-    color: #fff;
-    border-radius: 3px;
-  }
-
-  .from-submit:active {
-    background: #8ce1ff;
+  .tools>>>button {
+    border-radius: 1px;
   }
 
 </style>

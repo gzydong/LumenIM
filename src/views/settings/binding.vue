@@ -39,12 +39,7 @@
 
 <script>
   export default {
-    name: 'binding-page',
-    data() {
-      return {
-
-      }
-    }
+    name: 'binding-page'
   };
 
 </script>

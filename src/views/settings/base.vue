@@ -5,8 +5,8 @@
       <el-row>
         <el-col :span="16">
           <el-form ref="form" :model="form" :rules="rules">
-            <el-form-item label="用户昵称:" prop="nickname">
-              <el-input v-model="form.nickname" size="medium" />
+            <el-form-item label="昵称:" prop="nickname">
+              <el-input v-model="form.nickname" size="medium" placeholder="给自己起个名字" />
             </el-form-item>
             <el-form-item label="性别:">
               <el-radio-group v-model="form.gender">
@@ -15,7 +15,7 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="电子邮箱:" prop="email">
-              <el-input v-model="form.email" size="medium" />
+              <el-input v-model="form.email" size="medium" placeholder="电子邮箱" />
             </el-form-item>
             <el-form-item label="座右铭:">
               <el-input type="textarea" v-model="form.motto" rows="3" placeholder="编辑我的座右铭..." />

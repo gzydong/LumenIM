@@ -44,16 +44,16 @@
             <!-- 对话列表栏 -->
             <el-main class="padding0 main no-user-select">
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 0}" @click="triggerMenu(0)">
-                <i class="el-icon-user-solid" style="color: #f80;"></i>
+                <i class="el-icon-user-solid"></i>
                 <span>新的联系人</span>
                 <span v-show="$store.state.notify.applyNum">({{$store.state.notify.applyNum}})</span>
               </div>
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 1}" @click="triggerMenu(1)">
-                <i class="el-icon-s-custom" style="color:#ff3f3f;"></i>
+                <i class="el-icon-s-custom"></i>
                 <span>我的好友</span>
               </div>
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 2}" @click="triggerMenu(2)">
-                <i class="iconfont icon-qunzutianchong" style="color: #2196f3;"></i>
+                <i class="iconfont icon-qunzutianchong"></i>
                 <span>我的群组</span>
               </div>
             </el-main>
@@ -670,6 +670,19 @@
     background-color: #eff0f1;
     border-color: #eff0f1;
   }
+
+  .menu-item .el-icon-user-solid {
+    color: #f80;
+  }
+
+  .menu-item .el-icon-s-custom {
+    color: #ff3f3f;
+  }
+
+  .menu-item .icon-qunzutianchong {
+    color: #2196f3;
+  }
+
 
 
   /* 右侧面板 */

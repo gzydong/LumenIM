@@ -267,10 +267,6 @@
       </el-container>
     </main-layout>
 
-
-
-
-
     <recycle-note-annex v-if="recycleAnnexBox" @close="recycleAnnexBox = false" />
 
     <!-- 选择联系人窗口 -->

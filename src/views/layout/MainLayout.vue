@@ -1,11 +1,11 @@
 <template>
-  <div class="full-background">
-    <el-container class="mian-layout full-mode">
+  <div class="body-background" :class="$store.state.settings.themeBagImg">
+    <el-container class="mian-layout" :class="{'full-mode':$store.state.settings.themeMode}">
       <el-aside width="70px" class="side-edge no-user-select">
         <el-container class="hv100 ov-hidden">
           <el-header height="100px" class="padding0">
-            <div class="userlogo" v-popover:usercard style="position: relative;">
-              <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" class="no-user-select" />
+            <div class="userlogo" v-popover:usercard>
+              <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" />
             </div>
             <p class="user-status">
               <span class="online" v-if="$store.state.socketStatus">在线</span>
@@ -63,7 +63,7 @@
       </el-main>
     </el-container>
 
-    <audio id="audio" preload="auto" loop>
+    <audio id="audio" preload="auto">
       <source src="/static/image/59y888piCn92.mp3" type="audio/mp3" />
     </audio>
 
@@ -72,7 +72,8 @@
       <user-card />
     </el-popover>
 
-    <div class="copyright no-user-select" v-html="$store.state.copyright"></div>
+    <div class="copyright no-user-select" v-show="$store.state.settings.themeMode == false"
+      v-html="$store.state.copyright"></div>
   </div>
 </template>
 
@@ -108,7 +109,9 @@
     watch: {
       msg(n, o) {
         if (n > 0 && n > o) {
-          this.play();
+          if (this.$store.state.settings.notifyCueTone) {
+            this.play();
+          }
         }
       }
     },
@@ -146,34 +149,26 @@
 
 </script>
 <style scoped="scoped">
-  .full-background {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    overflow: hidden;
-    top: 0;
-    left: 0;
-    background: url(/static/image/background/003.jpg);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color: black;
-  }
-
-  .full-mode {
+  .mian-layout {
     position: fixed;
     width: 80%;
     height: 80%;
-    max-width: 1000%;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     margin: auto;
     overflow: hidden;
+    transition: ease .5s;
+  }
+
+  .full-mode {
+    width: 100%;
+    height: 100%;
   }
 
   @media screen and (max-width: 1000px) {
-    .full-mode {
+    .mian-layout {
       width: 100%;
       height: 100%;
     }
@@ -199,29 +194,21 @@
 
   .sidebar-menu .menu-items {
     cursor: pointer;
-    color: #afabab;
+    color: #706d6d;
     position: relative;
     width: 45px;
     height: 45px;
-    background: #3a3232;
-    margin: 10px auto 0;
+    margin: 6px auto 0;
     line-height: 45px;
     text-align: center;
-    border-radius: 50%;
   }
 
   .sidebar-menu .menu-items-active {
     color: #416641 !important;
   }
 
-  .sidebar-menu .menu-items:active {
-    box-shadow: 0px 0px 8px white;
-    transition-duration: 0.2s;
-  }
-
   .sidebar-menu .menu-items i {
     font-size: 20px;
-    margin-left: 3px;
   }
 
   .sidebar-menu .menu-items .message-notify {
@@ -339,6 +326,42 @@
     margin: auto;
     z-index: 0;
     font-size: 13px;
+  }
+
+
+  /* 主题背景图片 */
+  .body-background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    background-color: #121212;
+  }
+
+  .bag001 {
+    background: url(/static/image/background/001.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .bag002 {
+    background: url(/static/image/background/002.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .bag003 {
+    background: url(/static/image/background/003.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .bag004 {
+    background: url(/static/image/background/004.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
 
 </style>

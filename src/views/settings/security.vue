@@ -45,7 +45,9 @@
 <script>
   import ChangePassword from "@/components/user/ChangePassword";
   import ChangeMobile from "@/components/user/ChangeMobile";
-
+  import {
+    findUserDetailServ
+  } from '@/api/user';
   export default {
     name: 'security-page',
     components: {
@@ -55,13 +57,27 @@
     data() {
       return {
         // 密码强度
-        cipherStrength: '强',
+        cipherStrength: '中',
 
-        bindMobile: '138****8293',
+        bindMobile: '',
 
-        bindEmail: 'xxx****xxx.com'
+        bindEmail: ''
       }
-    }
+    },
+    created() {
+      this.getUserDetail();
+    },
+    methods: {
+      // 获取登录用户信息
+      getUserDetail() {
+        findUserDetailServ().then((res) => {
+          if (res.code == 200) {
+            this.bindMobile = res.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+            this.bindEmail = res.data.email;
+          }
+        });
+      }
+    },
   };
 
 </script>
