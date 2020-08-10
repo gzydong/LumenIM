@@ -15,12 +15,12 @@
                     <li>
                       <label>群名称:</label>
                       <input type="text" v-model="frGroupName" placeholder="请设置群名称(必填)" @keyup.enter="fromSubmit"
-                        :readonly="readonly">
+                        :readonly="readonly" />
                     </li>
                     <li>
                       <label>群简介:</label>
                       <input type="text" v-model="frGroupProfile" placeholder="请设置群简介(选填)" @keyup.enter="fromSubmit"
-                        :readonly="readonly">
+                        :readonly="readonly" />
                     </li>
                   </ul>
                 </el-header>

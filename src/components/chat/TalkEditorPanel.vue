@@ -500,6 +500,11 @@
 
       //推送编辑事件消息
       inputEventPush() {
+        // 判断是否推送键盘输入事件消息
+        if (!this.$store.state.settings.keyboardEventNotify) {
+          return false;
+        }
+
         let time = new Date().getTime();
 
         //判断当前对话是否属于私聊信息

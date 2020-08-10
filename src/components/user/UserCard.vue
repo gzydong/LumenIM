@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="im-user-card animated fadeIn">
+    <div class="user-card animated fadeIn">
       <div class="card-header">
         <img :src="userCard.imgbag" class="no-user-select" />
         <div class="user-avatar no-user-select">
@@ -9,14 +9,12 @@
         <div class="user-nickname">
           <i class="iconfont icon-qianming"></i>
           <span v-text="userCard.nickname"></span>
-          <i v-show="userCard.sex == 1" class="iconfont icon-nan"></i>
-          <i v-show="userCard.sex == 2" class="iconfont icon-nv"></i>
         </div>
       </div>
-      <div class="card-body">
-        <div class="user-sign">
-          <div class="user-sign-arrow"></div>
-          <span v-if="userCard.signature"><span style="font-weight: 500;">个性签名</span> ： {{userCard.signature}}</span>
+      <div class="card-main">
+        <div class="usersign">
+          <div class="usersign-arrow"></div>
+          <span v-if="userCard.signature"><span style="font-weight: 600;">个性签名</span> ： {{userCard.signature}}</span>
           <span v-else>
             <i class="iconfont icon-bianji"></i>
             <span>编辑个签，展示我的独特态度。</span>
@@ -83,23 +81,7 @@
 
 </script>
 <style scoped="scoped">
-  .icon-nan {
-    color: rgb(0, 145, 255);
-  }
-
-  .icon-nv {
-    color: rgb(255, 77, 148);
-  }
-
-  .icon-qianming {
-    color: #007cff;
-  }
-
-  .user-sign .icon-bianji {
-    margin-left: 10px;
-  }
-
-  .im-user-card {
+  .user-card {
     width: 320px;
     min-height: 370px;
     background: #ffffff;
@@ -107,26 +89,26 @@
     padding-bottom: 10px;
   }
 
-  .im-user-card .card-header {
+  .user-card .card-header {
     height: 230px;
     overflow: hidden;
   }
 
-  .im-user-card .card-header img {
+  .user-card .card-header img {
     width: 100%;
     height: 180px;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
   }
 
-  .im-user-card .card-header>img:hover {
+  .user-card .card-header>img:hover {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     -webkit-filter: contrast(130%);
     filter: contrast(130%);
   }
 
-  .im-user-card .card-header .user-avatar {
+  .user-card .card-header .user-avatar {
     height: 70px;
     width: 70px;
     border: 5px solid #fff;
@@ -137,7 +119,7 @@
     margin-left: 15px;
   }
 
-  .im-user-card .card-header .user-avatar img {
+  .user-card .card-header .user-avatar img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -161,14 +143,14 @@
     font-weight: 400;
   }
 
-  .im-user-card .card-body {
+  .user-card .card-main {
     margin-top: 10px;
     min-height: 130px;
     text-align: left;
     padding: 0 16px;
   }
 
-  .im-user-card .card-body .user-sign {
+  .user-card .card-main .usersign {
     min-height: 26px;
     border-radius: 5px;
     padding: 5px;
@@ -180,7 +162,11 @@
     position: relative;
   }
 
-  .im-user-card .card-body .user-sign .user-sign-arrow {
+  .user-card .card-main .usersign .icon-bianji {
+    margin-left: 10px;
+  }
+
+  .user-card .card-main .usersign .usersign-arrow {
     position: absolute;
     width: 0;
     height: 0;
@@ -192,18 +178,18 @@
     left: 31px;
   }
 
-  .im-user-card .card-body .count {
+  .user-card .card-main .count {
     height: 38px;
     border-radius: 5px;
     box-shadow: 0 0 5px #f1eded;
     display: flex;
-    line-height: 38px;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
   }
 
-  .im-user-card .card-body .count div {
-    width: 33.3%;
-    text-align: center;
-    font-size: 12px;
+  .user-card .card-main .count div {
+    font-size: 13px;
   }
 
 </style>

@@ -5,12 +5,24 @@
 
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
-          <h4>打开新消息提示音</h4>
-          <p>{{value1?'已开启':'已关闭'}}</p>
+          <h4>新消息提示音</h4>
+          <p>{{notifyCueTone?'已开启':'已关闭'}}</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <span class="action">
-            <el-switch v-model="value1" @change="changeNotifyCueTone" />
+            <el-switch v-model="notifyCueTone" @change="changeNotifyCueTone" />
+          </span>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" class="list-item">
+        <el-col :span="20" class="left-col">
+          <h4>推送键盘输入消息</h4>
+          <p>{{keyboardEvent?'已开启':'已关闭'}}</p>
+        </el-col>
+        <el-col :span="4" class="right-col">
+          <span class="action">
+            <el-switch v-model="keyboardEvent" @change="changeKeyboardEvent" />
           </span>
         </el-col>
       </el-row>
@@ -23,17 +35,24 @@
     name: 'notification-page',
     data() {
       return {
-        value1: true
+        notifyCueTone: true,
+        keyboardEvent: true
       }
     },
     created() {
-      this.value1 = this.$store.state.settings.notifyCueTone;
+      this.notifyCueTone = this.$store.state.settings.notifyCueTone;
+      this.keyboardEvent = this.$store.state.settings.keyboardEventNotify;
     },
     methods: {
       // 触发修改消息提示音状态
       changeNotifyCueTone(value) {
         this.$store.commit('SET_NOTIFY_CUE_TONE', value);
       },
+
+      // 修改键盘消息推送状态
+      changeKeyboardEvent(value) {
+        this.$store.commit('SET_KEYBOARD_EVENT_NOTIFY', value);
+      }
     },
   };
 

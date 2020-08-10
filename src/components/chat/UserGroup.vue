@@ -60,7 +60,8 @@
 
       <div class="group-setting-row">
         <p class="lumen-group-invite" @click="addGroupMembers">
-          <i class="iconfont icon-jia"></i> 邀请好友
+          <i class="iconfont icon-jia"></i>
+          <span>邀请好友</span>
         </p>
       </div>
 
@@ -594,7 +595,7 @@
     top: 4px;
   }
 
-  .row-items .nickname:hover{
+  .row-items .nickname:hover {
     color: #3685d6;
   }
 

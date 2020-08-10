@@ -701,6 +701,10 @@
 
       //给代码块添加复制按钮
       addProCodeCopy() {
+        if (!document.getElementById("markdown-reply")) {
+          return false;
+        }
+
         let els = document.getElementById("markdown-reply").querySelectorAll('pre');
         let len = els.length;
 

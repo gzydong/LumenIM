@@ -12,6 +12,9 @@ const Settings = {
 
     // 消息提示音
     notifyCueTone: true,
+
+    // 键盘输入事件消息推送开关
+    keyboardEventNotify: true
   },
   mutations: {
 
@@ -33,6 +36,11 @@ const Settings = {
     // 设置消息提示音状态
     SET_NOTIFY_CUE_TONE(state, isTrue) {
       state.notifyCueTone = isTrue;
+    },
+
+    // 设置键盘输入事件消息推送状态
+    SET_KEYBOARD_EVENT_NOTIFY(state, isTrue) {
+      state.keyboardEventNotify = isTrue;
     }
   }
 }

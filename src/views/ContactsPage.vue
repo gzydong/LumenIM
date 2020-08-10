@@ -202,7 +202,7 @@
                         <div class="larkc-tag" v-show="item.not_disturb == 1">
                           <i class="iconfont icon-xiaoximiandarao" style="font-size: 10px;color: #7d7a7a;"></i>
                         </div>
-                        <div class="larkc-tag wait" v-show="item.isGroupLeader">我的创建</div>
+                        <div class="larkc-tag wait" v-show="item.isGroupLeader">群主</div>
 
                       </div>
                       <div class="content">[简介] ~ {{item.group_profile}}</div>

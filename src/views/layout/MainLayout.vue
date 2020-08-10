@@ -17,7 +17,7 @@
               <el-tooltip class="item" content="我的消息" placement="right" :visible-arrow="false">
                 <router-link to="/message">
                   <div class="menu-items" :class="{'menu-items-active':idx == 0}">
-                    <i class="iconfont icon-duanxin"></i>
+                    <i class="el-icon-chat-line-round"></i>
                     <span v-show="$store.state.notify.unreadNum" class="message-notify"></span>
                   </div>
                 </router-link>
@@ -26,7 +26,7 @@
               <el-tooltip class="item" content="我的联系人" placement="right" :visible-arrow="false">
                 <router-link to="/contacts">
                   <div class="menu-items" :class="{'menu-items-active':idx == 1}">
-                    <i class="iconfont icon-qunzu"></i>
+                    <i class="el-icon-user-solid"></i>
                   </div>
                 </router-link>
               </el-tooltip>
@@ -51,7 +51,7 @@
           <el-footer height="60px" class="padding0">
             <div class="fixed-sidebar">
               <div class="menu-items" @click="logout">
-                <span style="color: #9e9e9e;">退出</span>
+                <span class="logout">退出</span>
               </div>
             </div>
           </el-footer>
@@ -237,6 +237,14 @@
 
   .fixed-sidebar .menu-items i {
     font-size: 20px;
+  }
+
+  .fixed-sidebar .menu-items .logout {
+    color: #9e9e9e;
+  }
+
+  .fixed-sidebar .menu-items .logout:hover {
+    color: #ff5722;
   }
 
   @keyframes notifymove {

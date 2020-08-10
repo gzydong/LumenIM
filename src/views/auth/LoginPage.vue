@@ -62,7 +62,7 @@
   export default {
     name: "new-login-page",
     data() {
-      var validateMobile = (rule, value, callback) => {
+      let validateMobile = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('登录手机号不能为空！'));
         } else {

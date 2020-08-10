@@ -6,11 +6,11 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <h4>主题模式</h4>
-          <p>当前主题模式 ：全屏模式</p>
+          <p>当前主题模式 ：{{themeMode?'全屏模式':'窗口居中模式'}}</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <div class="action">
-            <el-switch v-model="value1" active-text="全屏" inactive-text="居中" @change="changeThemeMode" />
+            <el-switch v-model="themeMode" active-text="全屏" inactive-text="居中" @change="changeThemeMode" />
           </div>
         </el-col>
       </el-row>
@@ -59,7 +59,7 @@
     name: 'personalize-page',
     data() {
       return {
-        value1: false,
+        themeMode: false,
 
         bagItems: [{
             name: 'bag001',
@@ -81,7 +81,7 @@
       }
     },
     created() {
-      this.value1 = this.$store.state.settings.themeMode;
+      this.themeMode = this.$store.state.settings.themeMode;
     },
     methods: {
       // 触发修改主题模式
