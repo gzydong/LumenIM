@@ -6,7 +6,14 @@
         <el-col :span="16">
           <el-form ref="form" :model="form" :rules="rules">
             <el-form-item label="登录账号:">
-              <p class="no-user-select account-mobile">{{form.mobile}}</p>
+              <p>{{form.mobile}}</p>
+            </el-form-item>
+            <el-form-item label="电子邮箱:">
+              <p>
+                <span>{{form.email?form.email:'未设置邮箱'}}</span>
+                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;" @click="toEmail">
+                  {{form.email?'修改邮箱':'设置邮箱'}}</el-button>
+              </p>
             </el-form-item>
             <el-form-item label="昵称:" prop="nickname">
               <el-input v-model="form.nickname" size="medium" placeholder="给自己起个名字" />
@@ -16,9 +23,6 @@
                 <el-radio :label="1">男</el-radio>
                 <el-radio :label="2">女</el-radio>
               </el-radio-group>
-            </el-form-item>
-            <el-form-item label="电子邮箱:" prop="email">
-              <el-input v-model="form.email" size="medium" placeholder="电子邮箱" />
             </el-form-item>
             <el-form-item label="座右铭:">
               <el-input type="textarea" v-model="form.motto" rows="3" placeholder="编辑我的座右铭..." />
@@ -55,15 +59,6 @@
       AvatarCropper
     },
     data() {
-      let checkEmail = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('邮箱不能为空'));
-        }
-
-        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-        mailReg.test(value) ? callback() : callback(new Error('请输入正确的邮箱格式'));
-      }
-
       return {
         isAvatarCropper: false,
         form: {
@@ -79,10 +74,6 @@
             required: true,
             message: '用户昵称不能为空!',
             trigger: 'blur'
-          }],
-          email: [{
-            validator: checkEmail,
-            trigger: 'blur'
           }]
         },
 
@@ -93,6 +84,11 @@
       this.getUserDetail();
     },
     methods: {
+      toEmail() {
+        this.$router.push({
+          path: '/settings/security'
+        })
+      },
       onSubmit() {
         this.$refs['form'].validate((valid) => {
           if (!valid) return false;
@@ -130,7 +126,6 @@
           nickname: this.form.nickname,
           avatar: this.form.avatar,
           motto: this.form.motto,
-          email: this.form.email,
           gender: this.form.gender
         }).then((res) => {
           if (res.code == 200) {
@@ -167,10 +162,12 @@
     border-radius: 0;
   }
 
-  .account-mobile {
-    color: #ec1919;
+  .action {
+    color: rgb(24, 144, 255);
+    font-size: 14px;
     font-weight: 300;
-    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
   }
 
   .avatar-col {

@@ -8,7 +8,7 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索"
+                <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索(开发中)"
                   prefix-icon="el-icon-search" size="small" clearable>
                   <template slot-scope="{ item }">
                     <div class="search-item">
@@ -46,7 +46,6 @@
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 0}" @click="triggerMenu(0)">
                 <i class="el-icon-user-solid"></i>
                 <span>新的联系人</span>
-                <span v-show="$store.state.notify.applyNum">({{$store.state.notify.applyNum}})</span>
               </div>
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 1}" @click="triggerMenu(1)">
                 <i class="el-icon-s-custom"></i>
@@ -65,6 +64,12 @@
           <el-header height="60px" class="panel-header no-user-select">
             <template v-if="activeIndex == 0">
               <p>新的联系人</p>
+              <p>
+                <span class="wait-handle-btn" v-show="waitHandleNum">
+                  【{{waitHandleNum}}】待处理
+                  <i class="el-icon-warning"></i>
+                </span>
+              </p>
             </template>
             <template v-else-if="activeIndex == 1">
               <p>我的好友({{friends.items.length}})</p>
@@ -315,6 +320,13 @@
 
         groupDetailId: 0
       };
+    },
+    computed: {
+      waitHandleNum() {
+        return this.apply.items.filter((item) => {
+          return item.status == 0;
+        }).length;
+      }
     },
     created() {
       this.loadFriendApply();
@@ -683,8 +695,6 @@
     color: #2196f3;
   }
 
-
-
   /* 右侧面板 */
   .panel {
     background-color: white;
@@ -696,6 +706,17 @@
     align-items: center;
     border-bottom: 1px solid rgb(245, 245, 245);
     justify-content: space-between;
+  }
+
+  .panel .panel-header .wait-handle-btn {
+    font-weight: 500;
+    padding: 3px 8px;
+    font-size: 14px;
+    border-radius: 1px;
+  }
+
+  .panel .panel-header .wait-handle-btn i {
+    color: tomato;
   }
 
   .panel-main {

@@ -3,7 +3,7 @@
     <main-layout :idx="0">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
-        <el-aside width="300px" class="aside-box padding0">
+        <el-aside width="320px" class="aside-box padding0">
           <el-container class="hv100" direction="vertical">
 
             <!-- 搜索栏 -->
@@ -62,7 +62,7 @@
             </el-header>
 
             <!-- 对话列表栏 -->
-            <el-scrollbar :native="false" tag="section" ref="myScrollbar">
+            <el-scrollbar :native="false" tag="section" ref="myScrollbar" class="hv100">
               <el-main class="padding0 main">
                 <p class="talk-item-empty" v-if="$store.state.talks.items.length == 0">
                   暂无聊天消息
@@ -223,7 +223,7 @@
       subHeaderPx() {
         let num = this.topNum,
           len = 65,
-          n = 6; // 一排能显示的用户数
+          n = 7; // 一排能显示的用户数
 
         if (num > n) {
           let y = (num % n) > 0 ? 1 : 0;
@@ -647,7 +647,7 @@
   }
 
   .aside-box .header .from>>>.el-autocomplete {
-    width: 225px;
+    width: 245px;
   }
 
   .aside-box .header .from>>>.el-autocomplete .el-input__inner {

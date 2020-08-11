@@ -2,7 +2,7 @@
   <el-container class="container">
     <el-header class="header">
       <span>群信息</span>
-      <i class="send-message el-icon-chat-line-round" @click="sendGroup"></i>
+      <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
       <i class="close-box el-icon-close" @click="$emit('close')"></i>
     </el-header>
     <el-main class="main lumen-scrollbar">
@@ -23,7 +23,7 @@
             {{groupMessage.visitCard}}
             <span v-show="!groupMessage.visitCard">添加群名片</span>
           </span>
-          <i class="iconfont icon-beizhu pointer edit-remark-icon"
+          <i class="el-icon-edit-outline edit-remark-icon"
             @click="isEditRemark = true;editRemarkText = groupMessage.visitCard"></i>
         </span>
         <span v-else>
@@ -292,6 +292,7 @@
       editRemark() {
         let that = this;
         if (this.editRemarkText == "") {
+          this.isEditRemark = false;
           return;
         }
 
@@ -430,7 +431,8 @@
     margin-left: 5px;
     color: rgb(169, 184, 187);
     position: absolute;
-    top: 18px;
+    top: 20px;
+    cursor: pointer;
   }
 
   .group-setting-row .edit-input {

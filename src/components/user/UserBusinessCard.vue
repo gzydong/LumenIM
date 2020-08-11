@@ -46,8 +46,7 @@
             <span v-if="!editRemark.isShow">{{userInfo.nicknameRemark?userInfo.nicknameRemark:'暂无备注'}}</span>
             <span v-else><input class="friend-remark" v-focus v-model="editRemark.text" @keyup.enter="editRemarkSubmit"
                 type="text"></span>
-            <i v-show="!editRemark.isShow" @click="clickEditRemark" style="position:relative;top:2px;"
-              class="iconfont icon-beizhu"></i>
+            <i v-show="!editRemark.isShow" @click="clickEditRemark" class="el-icon-edit-outline"></i>
           </div>
           <div class="card-row">
             <label>邮箱</label>

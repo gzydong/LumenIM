@@ -10,6 +10,7 @@ const WEBSITE_NAME = process.env.WEBSITE_NAME;
 // 登录用户强制重定向页面
 const login_redirect = ['/login', '/register', '/forget'];
 
+
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title ? `${WEBSITE_NAME} | ${to.meta.title}` : WEBSITE_NAME;
 

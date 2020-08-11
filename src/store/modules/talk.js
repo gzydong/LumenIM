@@ -1,6 +1,5 @@
 const Talks = {
   state: {
-
     //用户对话列表
     items: [],
 

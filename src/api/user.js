@@ -34,6 +34,11 @@ export const editMobileServ = (data) => {
   return post('/api/user/change-mobile', data);
 }
 
+//修改手机号服务接口
+export const editEmailServ = (data) => {
+  return post('/api/user/change-email', data);
+}
+
 //发送手机号修改验证码服务接口
 export const sendMobileCodeServ = (data) => {
   return post('/api/user/send-mobile-code', data);
@@ -75,7 +80,7 @@ export const findUserDetailServ = () => {
 }
 
 //查询好友申请未读数量服务接口
-export const findfriendApplyNumServ = () => {
+export const findFriendApplyNumServ = () => {
   return get('/api/user/friend-apply-num');
 }
 
@@ -103,3 +108,9 @@ export const friendsServ = (data) => {
 export const findUserGroupsServ = () => {
   return get('/api/user/user-groups');
 }
+
+//发送邮箱验证码服务接口
+export const sendEmailCodeServ = (data) => {
+  return post('/api/user/send-change-email-code', data);
+}
+

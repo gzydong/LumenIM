@@ -210,7 +210,7 @@
             </div>
             <div class="multi-btn-group">
               <div class="multi-icon" @click="handleMultiMode(3)">
-                <i class="iconfont icon-shanchu"></i>
+                <i class="el-icon-delete"></i>
               </div>
               <p>批量删除</p>
             </div>

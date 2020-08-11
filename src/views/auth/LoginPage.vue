@@ -129,6 +129,7 @@
             });
 
             this.$root.loadWebsocket();
+            this.$root.loadUserSetting();
             this.$router.push({
               path: "/"
             });

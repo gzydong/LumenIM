@@ -76,10 +76,7 @@ const user = {
       commit,
       state
     }, $router) {
-      logoutServ().then((res) => {
-        removeAll();
-        location.reload();
-      }).catch(res => {
+      logoutServ().finally(()=>{
         removeAll();
         location.reload();
       });

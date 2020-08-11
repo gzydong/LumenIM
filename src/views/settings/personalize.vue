@@ -17,11 +17,11 @@
 
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
-          <h4>主题背景</h4>
+          <h4>主题背景幕布</h4>
           <p>当前未设置背景图片</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action" v-popover:popover>修改</span>
+          <span class="action" v-popover:popover>设置</span>
         </el-col>
       </el-row>
 

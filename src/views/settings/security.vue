@@ -19,7 +19,7 @@
           <p>已绑定手机 ：{{bindMobile}}</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action" @click="$refs.changeMobileRef.open()">修改</span>
+          <span class="action" @click="$refs.changeMobileRef.open()">更换</span>
         </el-col>
       </el-row>
 
@@ -29,7 +29,7 @@
           <p>已绑定邮箱 ：{{bindEmail}}</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action">修改</span>
+          <span class="action" @click="$refs.changeEmailRef.open()">修改</span>
         </el-col>
       </el-row>
     </div>
@@ -38,13 +38,17 @@
     <change-password ref="changePasswrodRef" />
 
     <!-- 修改手机号组件 -->
-    <change-mobile ref="changeMobileRef" />
+    <change-mobile ref="changeMobileRef" @success="getUserDetail" />
+
+    <!-- 修改邮箱组件 -->
+    <change-email ref="changeEmailRef" @success="getUserDetail" />
   </div>
 </template>
 
 <script>
   import ChangePassword from "@/components/user/ChangePassword";
   import ChangeMobile from "@/components/user/ChangeMobile";
+  import ChangeEmail from "@/components/user/ChangeEmail";
   import {
     findUserDetailServ
   } from '@/api/user';
@@ -52,7 +56,8 @@
     name: 'security-page',
     components: {
       ChangePassword,
-      ChangeMobile
+      ChangeMobile,
+      ChangeEmail
     },
     data() {
       return {

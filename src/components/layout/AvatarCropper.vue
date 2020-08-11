@@ -16,7 +16,7 @@
                   :auto-crop="option.autoCrop" :auto-crop-width="option.autoCropWidth"
                   :auto-crop-height="option.autoCropHeight" :center-box="option.centerBox" @real-time="realTime"
                   :high="option.high" mode="cover" />
-                <input type="file" id="uploads" ref='fileInput' accept="image/png, image/jpeg, image/gif, image/jpg"
+                <input type="file" id="uploads" ref='fileInput' accept="image/png, image/jpeg, image/jpg"
                   style="display: none;" @change="uploadImg($event, 1)">
               </div>
               <div class="tools tools1">
@@ -203,6 +203,11 @@
     border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 0 4px #ccc;
+  }
+
+  .cropper-box .preview-img img{
+    width: 100%;
+    height: 100%;
   }
 
   .tools {

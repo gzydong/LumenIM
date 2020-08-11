@@ -27,6 +27,7 @@
                 <router-link to="/contacts">
                   <div class="menu-items" :class="{'menu-items-active':idx == 1}">
                     <i class="el-icon-user-solid"></i>
+                    <span v-show="$store.state.notify.applyNum" class="message-notify"></span>
                   </div>
                 </router-link>
               </el-tooltip>
@@ -78,12 +79,12 @@
 </template>
 
 <script>
-  import {
-    removeClass,
-    addClass
-  } from "@/utils/functions";
-
   import UserCard from "@/components/user/UserCard";
+
+  import {
+    findFriendApplyNumServ
+  } from '@/api/user';
+
   export default {
     name: "main-layout",
     components: {
@@ -115,34 +116,34 @@
         }
       }
     },
+    created() {
+      this.setApplyNum();
+    },
     methods: {
       // 播放消息提示音
       play() {
-        this.lastRunTime = Date.now();
         let audio = document.querySelector("#audio");
         if (!this.isPlaying) {
           audio.play();
           this.isPlaying = true;
         }
-        let timeOut = setTimeout(() => {
-          this.stop(timeOut);
-        }, 1000);
-      },
-      // 停止消息提示音
-      stop(timeOut) {
-        this.currentTime = Date.now();
-        let audio = document.querySelector("#audio");
-        if (this.currentTime - this.lastRunTime < 1000) {} else {
+
+        setTimeout(() => {
           if (this.isPlaying) {
-            audio.currentTime = 0;
             audio.pause();
             this.isPlaying = false;
           }
-        }
-        clearTimeout(timeOut);
+        }, 1000);
       },
       logout() {
         this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
+      },
+      setApplyNum() {
+        findFriendApplyNumServ().then(res => {
+          if (res.code == 200 && res.data.unread_num > 0) {
+            this.$store.commit('incrApplyNum');
+          }
+        });
       }
     }
   };
@@ -215,6 +216,10 @@
 
   .sidebar-menu .menu-items i {
     font-size: 20px;
+  }
+
+  .sidebar-menu .menu-items:hover i {
+    transform: scale(1.3);
   }
 
   .sidebar-menu .menu-items .message-notify {

@@ -51,6 +51,7 @@ let VueApp = new Vue({
     // 判断用户是否登录
     if (this.$store.getters.loginStatus) {
       this.loadWebsocket();
+      this.loadUserSetting();
     }
   },
   methods: {
@@ -90,6 +91,11 @@ let VueApp = new Vue({
       this.message.avatar = avatar;
       this.message.records = [];
       this.message.index_name = source + '_' + receive_id;
+    },
+
+    // 加载用户相关设置信息
+    loadUserSetting() {
+      console.log('加载用户设置...');
     }
   }
 });

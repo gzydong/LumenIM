@@ -16,7 +16,7 @@
             <p class="tip-title">图片</p>
           </li>
           <li @click="$refs.restFile2.click()">
-            <i class="iconfont icon-icon_file"></i>
+            <i class="el-icon-folder"></i>
             <p class="tip-title">附件</p>
           </li>
 

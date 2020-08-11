@@ -3,21 +3,21 @@
     <div class="container" v-outside="close">
       <el-container class="hv100">
         <el-header class="padding0 header" height="50px">
-          <span>绑定手机</span>
+          <span>绑定邮箱</span>
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item prop="username" label="手机号">
-              <el-input v-model="form.username" placeholder="请填写新手机号" class="cuborder-radius" maxlength="11"
+            <el-form-item prop="email" label="邮箱地址">
+              <el-input v-model="form.email" placeholder="请填写邮箱地址" class="cuborder-radius"
                 @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="sms_code" label="验证码">
-              <el-input v-model="form.sms_code" placeholder="验证码" class="cuborder-radius" maxlength="6"
+              <el-input v-model="form.sms_code" placeholder="验证码" class="cuborder-radius"
                 @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" />
 
               <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
-              <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取短信
+              <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取验证码
               </div>
               <div class="send-code-btn send-sms-disable" v-else>重新发送({{smsLockObj.time}}s)</div>
             </el-form-item>
@@ -38,49 +38,37 @@
 </template>
 
 <script>
-  import validate from '@/utils/validate';
   import SmsLock from '@/plugins/sms-lock';
-
   import {
-    sendMobileCodeServ,
-    editMobileServ
+    sendEmailCodeServ,
+    editEmailServ
   } from '@/api/user';
 
   export default {
-    name: 'change-mobile',
+    name: 'change-email',
     data() {
-      var validateMobile = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('登录手机号不能为空！'));
-        } else {
-          if (!validate.validatPhone(value)) {
-            callback(new Error('登录手机号格式不正确！'));
-          } else {
-            callback();
-          }
+      let checkEmail = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('邮箱不能为空'));
         }
-      };
+
+        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+        mailReg.test(value) ? callback() : callback(new Error('请输入正确的邮箱格式'));
+      }
 
       return {
         loading: false,
         form: {
-          username: '',
+          email: '',
           password: '',
           sms_code: ''
         },
         rules: {
-          username: [{
-              required: true,
-              validator: validateMobile,
-              trigger: 'blur'
-            },
-            {
-              min: 11,
-              max: 11,
-              message: '手机号格式不正确!',
-              trigger: 'blur'
-            }
-          ],
+          email: [{
+            required: true,
+            validator: checkEmail,
+            trigger: 'blur'
+          }],
           password: [{
             required: true,
             message: '登录密码不能为空!',
@@ -99,7 +87,7 @@
       };
     },
     created() {
-      this.smsLockObj = new SmsLock('FORGET_SMS', 120);
+      this.smsLockObj = new SmsLock('CHANGE_EMAIL_SMS', 120);
     },
     destroyed() {
       clearInterval(this.smsLockObj.timer);
@@ -116,23 +104,22 @@
         this.isShow = false;
       },
 
-      //点击发送验证码
+      //点击发送邮件验证码
       sendSms() {
-        if (!validate.validatPhone(this.form.username)) {
-          this.$refs.form.validateField("username");
+        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+        if (!mailReg.test(this.form.email)) {
+          this.$refs.form.validateField("email");
           return false;
         }
 
         this.smsLock = true;
-        sendMobileCodeServ({
-          mobile: this.form.username
+        sendEmailCodeServ({
+          email: this.form.email
         }).then(res => {
           if (res.code == 200) {
             this.smsLockObj.start();
           }
-
-          this.smsLock = false;
-        }).catch(err => {
+        }).finally(() => {
           this.smsLock = false;
         });
       },
@@ -141,25 +128,26 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (!valid) return false;
-          this.changeMobile();
+          this.changeEmail();
         });
       },
 
       // 提交修改手机号
-      changeMobile() {
+      changeEmail() {
         this.loading = true;
-        editMobileServ({
-          mobile: this.form.username,
-          sms_code: this.form.sms_code,
+        editEmailServ({
+          email: this.form.email,
+          email_code: this.form.sms_code,
           password: this.form.password
         }).then(res => {
           if (res.code == 200) {
             this.$refs['form'].resetFields();
             this.$notify({
               title: '成功',
-              message: '更换手机号成功...',
+              message: '修改邮箱成功...',
               type: 'success'
             });
+
             this.$emit('success');
             this.close();
           } else {
