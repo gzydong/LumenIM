@@ -341,29 +341,27 @@
         let that = this;
         this.signoutStatus = 1;
         secedeGroupServ({
-            group_id: this.groupMessage.groupId
-          })
-          .then(res => {
-            if (res.code == 200) {
-              that.signoutStatus = 3;
-              setTimeout(function () {
-                that.signoutStatus = 0;
-                that.isShowSignout = false;
-                that.$emit("quit-group");
-              }, 1500);
-            } else {
-              that.signoutStatus = 2;
-              setTimeout(function () {
-                that.signoutStatus = 0;
-              }, 3000);
-            }
-          })
-          .catch(err => {
+          group_id: this.groupMessage.groupId
+        }).then(res => {
+          if (res.code == 200) {
+            that.signoutStatus = 3;
+            setTimeout(function () {
+              that.signoutStatus = 0;
+              that.isShowSignout = false;
+              that.$emit("quit-group");
+            }, 1500);
+          } else {
             that.signoutStatus = 2;
             setTimeout(function () {
               that.signoutStatus = 0;
             }, 3000);
-          });
+          }
+        }).catch(err => {
+          that.signoutStatus = 2;
+          setTimeout(function () {
+            that.signoutStatus = 0;
+          }, 3000);
+        });
       }
     }
   };

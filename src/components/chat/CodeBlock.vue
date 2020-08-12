@@ -27,7 +27,7 @@
           </div>
 
           <div class="buttom-group">
-            <el-button size="small" @click="close" type="info" plain>{{editMode?'取消编辑':'关闭预览'}}</el-button>
+            <el-button size="small" @click="close"  plain>{{editMode?'取消编辑':'关闭预览'}}</el-button>
             <el-button type="primary" size="small" @click="submit" v-show="editMode">发送代码</el-button>
           </div>
         </el-footer>

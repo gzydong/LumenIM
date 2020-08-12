@@ -41,8 +41,8 @@
           <div class="subheader">
             <div class="type-items">
               <span :class="{'color-blue':findType == 0}" @click="changeLoadType(0)">全部</span>
-              <!-- <span :class="{'color-blue':findType == 1}" @click="changeLoadType(1)">图片</span>
-              <span :class="{'color-blue':findType == 2}" @click="changeLoadType(2)">文件</span> -->
+              <span :class="{'color-blue':findType == 1}">图片</span>
+              <span :class="{'color-blue':findType == 2}">文件</span>
             </div>
           </div>
 

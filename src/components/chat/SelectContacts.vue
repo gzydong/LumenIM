@@ -1,60 +1,69 @@
 <template>
   <div class="base-mask">
-    <div class="container no-user-select" v-outside="close">
-      <el-container class="container no-user-select">
-        <el-header class="padding0 header" height="50px">
-          <span>联系列表</span>
-          <i class="iconfont icon-guanbi11 close-btn" @click="close"></i>
+    <div class="container" v-outside="close">
+      <el-container class="hv100">
+        <el-header class="padding0 header no-user-select" height="50px">
+          <span>我的联系人</span>
+          <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main padding0">
-          <el-container class="contacts-container">
-            <el-aside width="250px">
-              <div class="contacts-search-box">
-                <i class="contacts-search-icon el-icon-search"></i>
-                <input type="text" v-model="keywords" class="contacts-search" placeholder="搜索关键词 ...">
-              </div>
-
-              <div class="lumen-scrollbar contacts-items" style="overflow-y: scroll;">
-                <div class="contacts-item" v-for="(item,index) in search" @click="triggerContacts(item)">
-                  <div class="contacts-avatar">
-                    <div class="avatar-text">{{item.nickname.substr(0,1)}}</div>
-                  </div>
-                  <div class="contacts-nickname">
-                    <div class="flag" :class="{'blue-flag':item.type == 2}">{{item.type == 1?'友':'群'}}</div>
-                    <span>{{item.nickname}}</span>
-                  </div>
-                  <div class="contacts-checkedbox">
-                    <i class="el-icon-success" :class="{'checked':item.checked}"></i>
-                  </div>
-                </div>
-              </div>
+          <el-container class="hv100">
+            <el-aside width="250px" class="aside-border">
+              <el-container class="hv100 no-user-select">
+                <el-header class="padding0 search-header" height="50px" id="search-header">
+                  <el-input placeholder="搜索 | 好友 or 群组" prefix-icon="el-icon-search" v-model="keywords" clearable
+                    size="small" />
+                </el-header>
+                <el-main class="padding0">
+                  <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
+                    <ul class="friend-items no-user-select">
+                      <li v-for="(item,index) in search" @click="triggerContacts(item)">
+                        <el-avatar :size="30" :src="item.avatar" class="avatar">
+                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        </el-avatar>
+                        <span class="nickname">[{{item.type == 1?'友':'群'}}] ~ {{item.nickname}}</span>
+                        <span class="select-btn">
+                          <i class="el-icon-success" :class="{'i-color-green':item.checked}"></i>
+                        </span>
+                      </li>
+                    </ul>
+                  </el-scrollbar>
+                </el-main>
+              </el-container>
             </el-aside>
-            <el-main style="padding: 12px 5px 0px 10px;">
-              <div class="contacts-title">
-                <span>已选择：{{selected.length}}个</span>
-              </div>
 
-              <div class="lumen-scrollbar contacts-items contacts-items-selected">
-                <div class="contacts-item" v-for="(item,index) in selected">
-                  <div class="contacts-avatar">
-                    <div class="avatar-text">{{item.nickname.substr(0,1)}}</div>
-                  </div>
-                  <div class="contacts-nickname">
-                    <p class="flag" :class="{'blue-flag':item.type == 2}">{{item.type == 1?'友':'群'}}</p>
-                    <span>{{item.nickname}}</span>
-                  </div>
-                  <div class="contacts-checkedbox">
-                    <i class="el-icon-error" @click="delContacts(item)"></i>
-                  </div>
-                </div>
-              </div>
+            <el-main class="padding0">
+              <el-container class="hv100">
+                <el-header height="40px">
+                  <el-divider content-position="left" class="no-user-select">
+                    <span style="color: #c4c5c7;">已选联系人 ({{selected.length}})</span>
+                  </el-divider>
+                </el-header>
+                <el-main>
+                  <el-scrollbar :native="false" tag="section" class="hv100">
+                    <div class="selectd-items">
+                      <div class="selectd-item no-user-select" v-for="(item,index) in selected">
+                        <el-avatar :size="25" :src="item.avatar">
+                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        </el-avatar>
+                        <p>{{item.nickname}}</p>
+                        <div class="triangle-topleft" :class="{'triangle-topleft-group':item.type == 2}"></div>
+                        <div class="del-mask" @click="delContacts(item)">
+                          <i class="el-icon-delete"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </el-scrollbar>
+                </el-main>
+              </el-container>
             </el-main>
           </el-container>
         </el-main>
-        <el-footer class="padding0 footer" height="50px">
-          <p class="tips">已勾选：{{selected.length}}个</p>
-          <el-button size="medium" @click="close">取消选择</el-button>
-          <el-button size="medium" type="primary" @click="confirm">确定选择</el-button>
+        <el-footer height="50px" class="padding0 footer">
+          <el-button size="small" @click="close" plain>取消</el-button>
+          <el-button type="primary" size="small" @click="confirm">
+            确认选择<span v-show="selected.length">({{selected.length}})</span>
+          </el-button>
         </el-footer>
       </el-container>
     </div>
@@ -67,7 +76,7 @@
   } from "@/api/user";
 
   export default {
-    name: "container",
+    name: "select-contacts",
     data() {
       return {
         contacts: [],
@@ -182,6 +191,10 @@
 
 </script>
 <style scoped>
+  .container>>>.el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+
   .base-mask {
     display: flex;
     justify-content: center;
@@ -189,207 +202,177 @@
   }
 
   .container {
-    width: 500px;
-    height: 600px;
-    border-radius: 2px;
+    width: 650px;
+    height: 550px;
+    border-radius: 3px;
     overflow: hidden;
-    background: white;
+    background-color: white;
   }
 
   .container .header {
     height: 50px;
     line-height: 50px;
-    background-color: white;
-    padding-left: 10px;
-    border-bottom: 1px solid #e4e4e4;
+    position: relative;
+    text-indent: 15px;
+    border-bottom: 1px solid #f5eeee;
   }
 
   .container .header .close-btn {
     position: absolute;
-    right: 12px;
-    top: 0px;
-    font-size: 24px;
+    right: 20px;
+    top: 15px;
+    font-size: 20px;
     cursor: pointer;
-  }
-
-  .container .main {
-    height: 480px;
-    padding: 10px 5px;
-  }
-
-  .contacts-container {
-    height: 100%;
-    width: 100%;
-  }
-
-  .contacts-search-box {
-    height: 40px;
-    padding-top: 10px;
-    position: relative;
-  }
-
-  .contacts-search-box .contacts-search {
-    width: 200px;
-    display: block;
-    height: 32px;
-    padding: 0 10px 0 30px;
-    font-size: 13px;
-    color: #4e4b4b;
-    border: 1px solid #e8e6e6;
-  }
-
-  .contacts-search-box .contacts-search:focus {
-    border-color: #66b1ff;
-  }
-
-  .contacts-search-box .contacts-search-icon {
-    position: absolute;
-    top: 19px;
-    left: 10px;
-    color: #ccc;
-  }
-
-  .contacts-search-box .contacts-search::-webkit-input-placeholder {
-    font-size: 13px;
-    color: #ccc;
-  }
-
-  .contacts-title {
-    height: 30px;
-    line-height: 30px;
-    text-align: right;
-    border-bottom: 1px solid rgb(226, 219, 219);
-    color: #a5a0a0;
-    font-weight: 400;
-  }
-
-  .contacts-items {
-    height: 430px;
-    overflow-y: auto;
-    padding-right: 5px;
-  }
-
-  .contacts-items .contacts-item {
-    width: 100%;
-    height: 50px;
-    background: #f7f7f7;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-
-  .contacts-items .contacts-item:hover {
-    background-color: #f3f0f0;
-  }
-
-  .contacts-items .contacts-item .contacts-avatar {
-    width: 50px;
-    height: 50px;
-    float: left;
-  }
-
-  .contacts-items .contacts-item .contacts-avatar .avatar-text {
-    width: 35px;
-    height: 35px;
-    background: #8f8ff5;
-    border-radius: 3px;
-    margin: auto;
-    margin-top: 7px;
-    text-align: center;
-    line-height: 35px;
-    color: white;
-  }
-
-  .contacts-items .contacts-item .contacts-nickname {
-    width: 145px;
-    height: 50px;
-    line-height: 50px;
-    float: left;
-    padding-left: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .contacts-items .contacts-item .contacts-nickname .flag {
-    display: inline-table;
-    width: 15px;
-    height: 16px;
-    background: #e6a23c;
-    text-align: center;
-    font-size: 10px;
-    line-height: 20px;
-    color: white;
-    border-radius: 3px;
-    position: relative;
-    top: -2px;
-  }
-
-  .contacts-items .contacts-item .contacts-nickname .blue-flag {
-    background-color: #409eff;
-  }
-
-  .contacts-items .contacts-item .contacts-checkedbox {
-    width: 42px;
-    height: 50px;
-    float: left;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-  }
-
-  .contacts-items .contacts-item .contacts-checkedbox i {
-    color: #cccccc;
-  }
-
-  .contacts-items .contacts-item .contacts-checkedbox .checked {
-    color: #409eff !important
-  }
-
-  .contacts-items .contacts-item .contacts-checkedbox .el-icon-error:hover {
-    color: #a5a5a5;
-  }
-
-  .contacts-items-selected {
-    margin-top: 6px;
-  }
-
-  .contacts-items-selected .contacts-item {
-    background: #ffffff;
-    border: 1px dashed #d6d6d6;
-  }
-
-  .contacts-items-selected .contacts-item:hover {
-    border-color: #f3f0f0;
-  }
-
-  .contacts-items-selected .contacts-item .contacts-nickname {
-    width: 130px;
-  }
-
-  .contacts-items-selected .contacts-item .contacts-checkedbox {
-    width: 30px;
   }
 
   .container .footer {
-    height: 50px;
-    text-align: right;
-    padding-right: 20px;
-    line-height: 50px;
-    border-top: 1px solid #f3f2f2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 10px;
+    border-top: 1px solid #f5eeee;
+  }
+
+  .container .aside-border {
+    border-right: 1px solid #f5eeee;
+  }
+
+  .search-header {
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .search-header-shadow {
+    box-shadow: 0 2px 6px 0 rgba(31, 35, 41, .05);
+  }
+
+  .friend-items li {
+    padding: 10px;
+    cursor: pointer;
     position: relative;
   }
 
-  .container .footer>>>button {
-    font-weight: 400;
-    border-radius: 0;
+  .friend-items li:hover {
+    background: #fcfcfc;
   }
 
-  .container .footer .tips {
+  .friend-items li .avatar {
+    margin-top: 3px;
+  }
+
+  .friend-items li .nickname {
+    width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    top: 10px;
+    left: 52px;
+    height: 35px;
+    line-height: 35px;
+    font-weight: 400;
+    font-size: 13px;
+  }
+
+  .friend-items li .select-btn {
+    position: absolute;
+    width: 32px;
+    height: 35px;
+    right: 3px;
+    top: 10px;
+    line-height: 35px;
+    text-align: center;
+  }
+
+  .friend-items li .select-btn i {
+    color: #ccc;
+  }
+
+  .friend-items li .select-btn .i-color-green {
+    color: #26bcfe !important;
+  }
+
+  .group-from label {
+    height: 45px;
+    line-height: 47px;
+    width: 50px;
+    color: #606266;
+    padding-right: 3px;
+    font-size: 13px;
+  }
+
+  .group-from input {
+    height: 25px;
+    width: 100%;
+    text-indent: 3px;
+    color: #a9a4a4;
+    font-size: 12px;
+    border-bottom: 1px solid #efebeb;
+  }
+
+  .selectd-items {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .selectd-item {
+    width: 50px;
+    height: 65px;
+    margin: 3px 5px 0px 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0px 0px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .selectd-item .triangle-topleft {
+    width: 0;
+    height: 0;
+    border-top: 15px solid #03a9f4;
+    border-right: 15px solid transparent;
     position: absolute;
     top: 0;
-    left: 10px;
-    font-size: 13px;
-    color: #b9b4b4;
+    left: 0;
+  }
+
+  .selectd-item .triangle-topleft-group {
+    border-top: 15px solid #ff9800;
+  }
+
+  .selectd-item p {
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .selectd-item .del-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(31, 35, 41, .5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: ease .5s;
+  }
+
+  .selectd-item:hover .del-mask {
+    display: flex;
   }
 
 </style>

@@ -44,15 +44,12 @@
             <!-- 对话列表栏 -->
             <el-main class="padding0 main no-user-select">
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 0}" @click="triggerMenu(0)">
-                <i class="el-icon-user-solid"></i>
                 <span>新的联系人</span>
               </div>
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 1}" @click="triggerMenu(1)">
-                <i class="el-icon-s-custom"></i>
                 <span>我的好友</span>
               </div>
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 2}" @click="triggerMenu(2)">
-                <i class="iconfont icon-qunzutianchong"></i>
                 <span>我的群组</span>
               </div>
             </el-main>

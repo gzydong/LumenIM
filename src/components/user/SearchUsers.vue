@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="base-mask animated fadeIn" v-show="isShow">
+    <div class="base-mask" v-show="isShow">
       <div class="container" v-outside="close">
         <el-container class="hv100">
           <el-header class="padding0 header" height="50px">

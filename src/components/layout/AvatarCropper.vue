@@ -1,5 +1,5 @@
 <template>
-  <div class="base-mask animated fadeIn">
+  <div class="base-mask">
     <div class="container">
       <el-container class="hv100">
         <el-header class="padding0 header" height="50px">

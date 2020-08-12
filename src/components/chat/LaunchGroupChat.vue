@@ -1,77 +1,83 @@
 <template>
-  <div class="base-mask animated fadeIn">
+  <div class="base-mask">
     <div class="container" v-outside="close">
       <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>{{queryGroupId==0?'创建群聊':'请选择需要邀请的好友'}}</span>
+        <el-header class="padding0 header no-user-select" height="50px">
+          <p>
+            <i class="iconfont icon-jurassic_add-users"></i>
+            <span>{{from.groupId==0?'创建群组':'请选择需要邀请的好友'}}</span>
+          </p>
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main padding0">
           <el-container class="hv100">
-            <el-main class="padding0">
-              <el-container class="hv100">
-                <el-header class="padding0" height="100px" v-show="!readonly">
-                  <ul class="group-from">
-                    <li>
-                      <label>群名称:</label>
-                      <input type="text" v-model="frGroupName" placeholder="请设置群名称(必填)" @keyup.enter="fromSubmit"
-                        :readonly="readonly" />
-                    </li>
-                    <li>
-                      <label>群简介:</label>
-                      <input type="text" v-model="frGroupProfile" placeholder="请设置群简介(选填)" @keyup.enter="fromSubmit"
-                        :readonly="readonly" />
-                    </li>
-                  </ul>
+            <el-aside width="250px" class="aside-border">
+              <el-container class="hv100 no-user-select">
+                <el-header class="padding0 search-header" height="50px" id="search-header">
+                  <el-input placeholder="搜索 | 好友 or 群组" prefix-icon="el-icon-search" v-model="keywords" clearable
+                    size="small" />
                 </el-header>
-                <el-main class="padding0 friend-selectd-list lumen-scrollbar">
-                  <div v-if="groupMember.length == 0" class="no-select-member">
-                    {{queryGroupId==0?'您还未选择群聊好友...':'您还未选择需要邀请的好友...'}}</div>
-                  <ul v-else>
-                    <li v-for='member in groupMember' @click="clickSelect(member.id,member)"
-                      :title="member.friend_remark?member.friend_remark:member.nickname">
-                      <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar">
-                    </li>
-                  </ul>
-                </el-main>
-              </el-container>
-            </el-main>
-            <el-aside width="220px" class="padding0">
-              <el-container class="hv100">
-                <el-header class="padding0 list-title" height="40px">
-                  <div class="input-item">
-                    <i class="iconfont icon-sousuo"></i>
-                    <input type="text" v-model="searchName" placeholder="搜索" @input="searchKeyword"
-                      @keyup.enter="searchKeyword">
-                  </div>
-                </el-header>
-                <el-main class="lumen-scrollbar padding0 friend-list">
-                  <ul>
-                    <li v-for='(friend,idx) in searchFriendsList' @click="clickSelect(friend.id,friend)">
-                      <div v-if="friend.avatar">
-                        <img :src="friend.avatar" :onerror="$store.state.user.detaultAvatar" />
-                      </div>
-                      <div v-else class="avatar-text">
-                        {{(friend.friend_remark?friend.friend_remark:friend.nickname).substr(0,1)}}
-                      </div>
-
-                      <span
-                        class="friend-nickname">{{ friend.friend_remark?friend.friend_remark:friend.nickname }}</span>
-                      <span class="select-btn">
-                        <i class="el-icon-success" v-bind:class="{'i-color-green': ids.indexOf(friend.id) >= 0  }"></i>
-                      </span>
-                    </li>
-                  </ul>
+                <el-main class="padding0">
+                  <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
+                    <ul class="friend-items no-user-select">
+                      <li v-for="(item,index) in search" @click="triggerContacts(item)">
+                        <el-avatar :size="30" :src="item.avatar" class="avatar">
+                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        </el-avatar>
+                        <span class="nickname">{{item.nickname}}</span>
+                        <span class="select-btn">
+                          <i class="el-icon-success" :class="{'i-color-green':item.checked}"></i>
+                        </span>
+                      </li>
+                    </ul>
+                  </el-scrollbar>
                 </el-main>
               </el-container>
             </el-aside>
+
+            <el-main class="padding0">
+              <el-container class="hv100">
+                <el-header height="50px" v-show="!readonly">
+                  <div class="group-from no-user-select">
+                    <label>群名称</label>
+                    <p>
+                      <el-input v-model="from.groupName" placeholder="请输入群名称(必填)" size="small" />
+                    </p>
+                  </div>
+                </el-header>
+                <el-header height="40px" :class="{'mt40':!readonly}">
+                  <el-divider content-position="left" class="no-user-select">
+                    <span style="color: #c4c5c7;">邀请成员 ({{selected.length}})</span>
+                  </el-divider>
+                </el-header>
+                <el-main>
+                  <el-scrollbar :native="false" tag="section" class="hv100">
+                    <div class="selectd-items">
+                      <div class="selectd-item no-user-select" v-for="(item,index) in selected">
+                        <el-avatar :size="25" :src="item.avatar">
+                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        </el-avatar>
+                        <p>{{item.nickname}}</p>
+                        <div class="triangle-topleft" :class="{'triangle-topleft-group':item.type == 2}"></div>
+                        <div class="del-mask" @click="delContacts(item)">
+                          <i class="el-icon-delete"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </el-scrollbar>
+                </el-main>
+              </el-container>
+            </el-main>
           </el-container>
         </el-main>
         <el-footer height="50px" class="padding0 footer">
-          <el-button size="small" style="width: 100px;" @click="close">取消</el-button>
-          <el-button type="primary" size="small" v-if="queryGroupId==0" @click="createSubmit">创建群聊({{ ids.length }})
+          <el-button size="small" @click="close" plain>取消</el-button>
+          <el-button type="primary" size="small" v-if="from.groupId==0" @click="createSubmit">
+            创建群组<span v-show="selected.length">({{ selected.length }})</span>
           </el-button>
-          <el-button type="primary" size="small" v-else @click="inviteSubmit">立即邀请({{ ids.length }})</el-button>
+          <el-button type="primary" size="small" v-else @click="inviteSubmit">
+            立即邀请({{ selected.length }})
+          </el-button>
         </el-footer>
       </el-container>
     </div>
@@ -85,12 +91,12 @@
     getGroupMembersServ
   } from '@/api/group';
 
-  import AvatarCropper from '@/components/layout/AvatarCropper';
+  import {
+    addClass,
+    removeClass
+  } from '@/utils/functions';
   export default {
     name: 'launch-group-chat',
-    components: {
-      AvatarCropper
-    },
     props: {
       groupId: {
         type: [String, Number],
@@ -99,133 +105,156 @@
     },
     data() {
       return {
-        searchName: '', //查询关键字
-        friendsList: [], //好友列表
-        searchFriendsList: [], //好友搜索查询结果
-        ids: [], //选择的好友id
-        groupMember: [], //群聊成员
-
-        frGroupAvatar: '',
-        frGroupName: '',
-        frGroupProfile: '',
-
         readonly: false,
-        queryGroupId: 0,
-
+        from: {
+          groupId: 0,
+          groupName: '',
+        },
+        contacts: [],
+        search: [],
+        keywords: '',
         isAvatarCropper: false,
+      }
+    },
+    computed: {
+      selected() {
+        return this.contacts.filter((item, index) => {
+          return item.checked;
+        });
+      }
+    },
+    watch: {
+      keywords(val) {
+        this.search = val == '' ? this.contacts : this.contacts.filter((item, index) => {
+          return item.nickname.match(this.keywords) != null;
+        });
+      },
+      contacts(arr) {
+        if (this.keywords == '') {
+          this.search = arr;
+        }
       }
     },
     created() {
       if (this.groupId > 0) {
         this.readonly = true;
-        this.queryGroupId = this.groupId;
+        this.from.groupId = this.groupId;
       }
-
       this.friendsApi();
     },
+    mounted() {
+      this.handleScroll();
+    },
     methods: {
+      //触发选择联系人事件
+      triggerContacts(item) {
+        let index = this.contacts.findIndex(val => {
+          return val.id == item.id
+        });
+
+        this.contacts[index].checked = !this.contacts[index].checked;
+      },
+
+      //取消选中的联系人
+      delContacts(item) {
+        let index = this.contacts.findIndex(val => {
+          return val.id == item.id
+        });
+
+        this.contacts[index].checked = false;
+      },
+
+      //移除所有选中选项
+      delAll() {
+        this.contacts.forEach((item, i) => {
+          this.contacts[i].checked = false;
+        });
+      },
+
+      // 关闭窗口
       close() {
         this.$emit('close');
       },
-      clickSelect(friend_id, friendInfo) {
-        let idx = this.ids.indexOf(friend_id);
-        if (idx == -1) {
-          this.ids.push(friend_id);
-          this.groupMember.push(friendInfo);
-        } else {
-          this.ids.splice(idx, 1);
-          for (const i in this.groupMember) {
-            if (this.groupMember[i].id == friend_id) {
-              this.groupMember.splice(i, 1);
-              break;
-            }
-          }
-        }
-      },
-      searchKeyword() {
-        let keyWords = this.searchName;
-        if (keyWords == '') {
-          this.searchFriendsList = this.friendsList;
-          return;
-        }
 
-        this.searchFriendsList = [];
-        if (this.friendsList.length > 0) {
-          for (const info of this.friendsList) {
-            if (info.friend_remark !== '') {
-              if (info.friend_remark.match(this.searchName) != null) {
-                this.searchFriendsList.push(info);
-              }
-            } else if (info.nickname.match(this.searchName) != null) {
-              this.searchFriendsList.push(info);
-            }
-          }
-        }
+      // 获取选中的ID列表
+      getIds() {
+        return this.selected.map((item) => {
+          return item.id;
+        })
       },
 
       // 加载好友列表
       friendsApi() {
-        let that = this
         getGroupMembersServ({
-          group_id: this.queryGroupId
+          group_id: this.from.groupId
         }).then(res => {
-          if (res.code == 200) {
-            that.friendsList = that.searchFriendsList = res.data;
+          if (res.code == 200 && res.data) {
+            this.contacts = [];
+            let data = res.data.map((item) => {
+              return Object.assign(item, {
+                nickname: item.friend_remark ? item.friend_remark : item.nickname,
+                checked: false
+              })
+            });
+            this.contacts.push(...data);
           }
+        }).catch(err => {
+          console.log(err)
         });
       },
 
       //创建聊天群
       createSubmit() {
-        let that = this,
-          data = {
-            group_avatar: this.frGroupAvatar,
-            group_name: this.frGroupName,
-            group_profile: this.frGroupProfile,
-            uids: this.ids.join(',')
-          };
+        let data = {
+          group_avatar: '',
+          group_name: this.from.groupName,
+          group_profile: '',
+          uids: this.getIds().join(',')
+        };
 
         if (data.group_name == '') {
-          alert('群聊名称不能为空...');
+          this.$message('群聊名称不能为空');
           return;
         }
-        if (this.ids.length < 2) {
-          alert('群聊人数必须大于俩人...');
+
+        if (this.this.getIds().length < 2) {
+          this.$message('群聊人数必须大于俩人');
           return;
         }
 
         createGroupServ(data).then((res) => {
           if (res.code == 200) {
-            that.$emit('create-success', res.data);
+            this.$emit('create-success', res.data);
           } else {
-            alert('创建群聊失败');
+            this.$message('创建群聊失败');
           }
         });
       },
 
       //好友邀请提交
       inviteSubmit() {
-        let that = this;
         inviteGroupServ({
-          group_id: this.queryGroupId,
-          uids: this.ids.join(',')
+          group_id: this.from.groupId,
+          uids: this.getIds().join(',')
         }).then((res) => {
           if (res.code == 200) {
-            that.$emit('invite-success');
+            this.$emit('invite-success');
           } else {
-            alert('邀请好友失败...');
+            this.$message('邀请好友失败');
           }
         });
       },
 
-      showAvatarCropper() {
-        this.isAvatarCropper = true;
-      },
-
-      closeAvatarCropper(type, avatar = '') {
-        this.isAvatarCropper = false;
-        if (type == 1) {
-          this.frGroupAvatar = avatar;
+      // 滚动条监听
+      handleScroll() {
+        let scrollbarEl = this.$refs.scrollbar.wrap
+        scrollbarEl.onscroll = () => {
+          let el = document.getElementById('search-header');
+          if (scrollbarEl.scrollTop == 0) {
+            removeClass(el, 'search-header-shadow');
+          } else {
+            addClass(el, 'search-header-shadow');
+          }
         }
       }
     }
@@ -234,6 +263,10 @@
 </script>
 
 <style scoped>
+  .container>>>.el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+
   .base-mask {
     display: flex;
     justify-content: center;
@@ -241,7 +274,7 @@
   }
 
   .container {
-    width: 550px;
+    width: 650px;
     height: 550px;
     border-radius: 3px;
     overflow: hidden;
@@ -252,7 +285,7 @@
     height: 50px;
     line-height: 50px;
     position: relative;
-    text-indent: 20px;
+    text-indent: 15px;
     border-bottom: 1px solid #f5eeee;
   }
 
@@ -269,189 +302,39 @@
     justify-content: flex-end;
     align-items: center;
     padding-right: 10px;
+    border-top: 1px solid #f5eeee;
   }
 
-  .group-avatar-box {
-    height: 66px !important;
-    position: relative;
+  .container .aside-border{
+    border-right: 1px solid #f5eeee;
   }
 
-  .group-avatar-box div {
-    display: inline-block;
-    position: absolute;
-    left: 59px;
-    border-bottom: 1px dashed #ccc;
-    width: 249px;
-  }
-
-  .group-avatar-box div img {
-    width: 50px;
-    height: 50px;
-    box-shadow: 1px 1px 9px #cfc3c3;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .group-avatar-box div span {
-    height: 30px;
-    width: 70px;
-    display: inline-block;
-    position: absolute;
-    line-height: 30px;
-    margin-left: 25px;
-    top: 10px;
-    cursor: pointer;
-    color: #c4c5c7;
-  }
-
-  .group-from li label {
-    height: 45px;
-    line-height: 47px;
-    width: 50px;
-    display: inline-block;
-    text-align: right;
-    color: #606266;
-    padding-right: 3px;
-    font-size: 13px;
-  }
-
-  .group-from li:nth-child(1) label i,
-  .group-from li:nth-child(3) label i {
-    font-size: 14px;
-  }
-
-  .group-from li:nth-child(2) label i {
-    font-size: 16px;
-  }
-
-  .group-from li input {
-    height: 25px;
-    width: 250px;
-    text-indent: 3px;
-    color: #a9a4a4;
-    font-size: 12px;
-    border-bottom: 1px solid #efebeb;
-  }
-
-  input::-webkit-input-placeholder {
-    color: #a9a4a4;
-    font-size: 12px;
-  }
-
-  .friend-selectd-list {
-    background-color: #fdfafa;
-    padding: 5px;
-  }
-
-  .friend-selectd-list li {
-    float: left;
-    margin: 2px;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    overflow: hidden;
-  }
-
-  .friend-selectd-list li img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-
-  .friend-selectd-list li img:hover {
-    transform: rotate(7deg);
-    -ms-transform: rotate(7deg);
-    /* IE 9 */
-    -moz-transform: rotate(7deg);
-    /* Firefox */
-    -webkit-transform: rotate(7deg);
-    /* Safari 和 Chrome */
-    -o-transform: rotate(7deg);
-    /* Opera */
-  }
-
-  .no-select-member {
-    color: #cecece;
-    margin-top: 15px;
-    height: 83%;
-    width: 100%;
+  .search-header {
+    padding: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .list-title {
-    background: #f7f7f7;
-    font-size: 16px;
-    color: #706e6e;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .search-header-shadow {
+    box-shadow: 0 2px 6px 0 rgba(31, 35, 41, .05);
   }
 
-  .list-title .input-item {
-    width: 95%;
-    height: 30px;
-    background: white;
-    border-radius: 3px;
-    padding-left: 5px;
-    position: relative;
-  }
-
-  .list-title .input-item input {
-    position: absolute;
-    top: 6px;
-    width: 174px;
-    color: #747474;
-    padding-left: 20px;
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
-  }
-
-  .list-title .input-item input::-webkit-input-placeholder {
-    color: #a9a4a4;
-    font-size: 12px;
-  }
-
-  .list-title .input-item i {
-    position: absolute;
-    top: 8px;
-    z-index: 1;
-  }
-
-  .friend-list ul li {
+  .friend-items li {
     padding: 10px;
     cursor: pointer;
     position: relative;
   }
 
-  .friend-list ul li:hover {
+  .friend-items li:hover {
     background: #fcfcfc;
   }
 
-  .friend-list ul li img {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+  .friend-items li .avatar {
+    margin-top: 3px;
   }
 
-  .friend-list ul li .avatar-text {
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-    border-radius: 50%;
-    background: #8f8ff5;
-    text-align: center;
-    color: white;
-  }
-
-  .friend-list ul li:nth-child(odd)>>>.avatar-text {
-    background: #fd8866;
-  }
-
-  .friend-list ul li .friend-nickname {
+  .friend-items li .nickname {
     width: 60%;
     white-space: nowrap;
     overflow: hidden;
@@ -461,9 +344,11 @@
     left: 52px;
     height: 35px;
     line-height: 35px;
+    font-weight: 400;
+    font-size: 13px;
   }
 
-  .friend-list ul li .select-btn {
+  .friend-items li .select-btn {
     position: absolute;
     width: 32px;
     height: 35px;
@@ -473,12 +358,84 @@
     text-align: center;
   }
 
-  .friend-list ul li .select-btn i {
+  .friend-items li .select-btn i {
     color: #ccc;
   }
 
-  .friend-list ul li .select-btn .i-color-green {
+  .friend-items li .select-btn .i-color-green {
     color: #26bcfe !important;
+  }
+
+  .group-from label {
+    height: 45px;
+    line-height: 47px;
+    width: 50px;
+    color: #606266;
+    padding-right: 3px;
+    font-size: 13px;
+  }
+
+  .group-from input {
+    height: 25px;
+    width: 100%;
+    text-indent: 3px;
+    color: #a9a4a4;
+    font-size: 12px;
+    border-bottom: 1px solid #efebeb;
+  }
+
+  .selectd-items {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .selectd-item {
+    width: 50px;
+    height: 65px;
+    margin: 6px 2px 0px 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0px 0px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .selectd-item p {
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+
+  .selectd-item .del-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(31, 35, 41, .5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: ease .5s;
+  }
+
+  .selectd-item:hover .del-mask {
+    display: flex;
+  }
+
+  .mt40 {
+    margin-top: 40px;
   }
 
 </style>
