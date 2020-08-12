@@ -3,25 +3,28 @@
     <el-header class="header">
       <span>群信息</span>
       <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
-      <i class="close-box el-icon-close" @click="$emit('close')"></i>
+      <i class="close-btn el-icon-close" @click="$emit('close')"></i>
     </el-header>
     <el-main class="main lumen-scrollbar">
-      <div class="group-setting-row">
-        <span>群名称：</span>
-        <span class="group-setting-title">{{groupMessage.groupName}}</span>
+      <div class="list-item list-item-flex">
+        <p>
+          <span>群名称：</span>
+          <span class="group-setting-title">{{groupMessage.groupName}}</span>
+        </p>
+        <span class="more">群管理</span>
       </div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <span>群主：</span>
         <span class="group-boss-name">{{ groupMessage.groupOwner }}</span>
       </div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <span>我的群昵称：</span>
         <span class="edit-visit-card" v-if="!isEditRemark">
           <span>
             {{groupMessage.visitCard}}
-            <span v-show="!groupMessage.visitCard">添加群名片</span>
+            <span v-show="!groupMessage.visitCard" style="font-size: 12px;">添加群名片</span>
           </span>
           <i class="el-icon-edit-outline edit-remark-icon"
             @click="isEditRemark = true;editRemarkText = groupMessage.visitCard"></i>
@@ -32,40 +35,40 @@
         </span>
       </div>
 
-      <div class="group-setting-row group-flex">
+      <div class="list-item list-item-flex">
         <span>消息免打扰：</span>
         <el-switch v-model="groupMessage.disturb" :disabled="disturbDisabled" inactive-color="#e0d6d6"
           @change="changeDisturb" />
       </div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <span>群成员：</span>
         <span>{{groupMessage.members.length}} 人</span>
       </div>
 
-      <div class="group-history-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
+      <div class="list-item-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
 
-      <div class="group-setting-row group-flex">
+      <div class="list-item list-item-flex">
         <span>群公告</span>
-        <span style="color: #409eff;">更多</span>
+        <span class="more">更多</span>
       </div>
 
-      <div class="group-history-tips" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">暂无群公告</div>
+      <div class="list-item-tips group-notice">暂无群公告</div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <span>群简介</span>
       </div>
 
-      <div class="group-history-tips">{{groupMessage.groupProfile?groupMessage.groupProfile:'暂无群简介'}}</div>
+      <div class="list-item-tips">{{groupMessage.groupProfile?groupMessage.groupProfile:'暂无群简介'}}</div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <p class="lumen-group-invite" @click="addGroupMembers">
-          <i class="iconfont icon-jia"></i>
+          <i class="el-icon-circle-plus-outline"></i>
           <span>邀请好友</span>
         </p>
       </div>
 
-      <div class="group-setting-row">
+      <div class="list-item">
         <div class="member-box">
           <div class="member-view-box">
             <i class="iconfont icon-sousuo i-sousuo"></i>
@@ -96,7 +99,6 @@
           </el-row>
         </div>
       </div>
-
     </el-main>
     <el-footer class="footer">
       <button @click="isShowSignout = true">退出该群聊</button>
@@ -395,7 +397,7 @@
     cursor: pointer;
   }
 
-  .container .header .close-box {
+  .container .header .close-btn {
     position: absolute;
     right: 15px;
     top: 22px;
@@ -403,29 +405,28 @@
     cursor: pointer;
   }
 
-
   .container .main {
     padding: 0;
   }
 
-  .group-setting-row {
+  .list-item {
     position: relative;
     padding: 16px 16px 0;
     min-height: 18px;
     font-size: 14px;
   }
 
-  .group-flex {
+  .list-item-flex {
     display: flex;
     justify-content: space-between;
   }
 
-  .group-setting-row .edit-visit-card {
+  .list-item .edit-visit-card {
     position: initial;
     color: #a29f9f;
   }
 
-  .group-setting-row .edit-remark-icon {
+  .list-item .edit-remark-icon {
     margin-left: 5px;
     color: rgb(169, 184, 187);
     position: absolute;
@@ -433,7 +434,7 @@
     cursor: pointer;
   }
 
-  .group-setting-row .edit-input {
+  .list-item .edit-input {
     width: 46%;
     height: 25px;
     line-height: 25px;
@@ -442,7 +443,7 @@
     border-radius: 3px;
   }
 
-  .group-setting-row .input-submit {
+  .list-item .input-submit {
     width: 55px;
     text-align: center;
     height: 25px;
@@ -456,7 +457,7 @@
     cursor: pointer;
   }
 
-  .group-setting-row .group-setting-title {
+  .list-item .group-setting-title {
     max-width: 250px;
     display: inline-block;
     overflow: hidden;
@@ -465,7 +466,7 @@
     vertical-align: bottom;
   }
 
-  .group-setting-row .group-boss-name {
+  .list-item .group-boss-name {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -476,7 +477,7 @@
     top: 4px;
   }
 
-  .group-history-tips {
+  .list-item-tips {
     font-size: 12px;
     color: #b1b1b1;
     margin-top: 5px;
@@ -484,7 +485,7 @@
     padding-right: 16px;
   }
 
-  .group-setting-row .lumen-group-invite {
+  .list-item .lumen-group-invite {
     height: 30px;
     background: #fdf2f2;
     line-height: 30px;
@@ -494,8 +495,20 @@
     border-radius: 2px;
   }
 
-  .group-setting-row .lumen-group-invite:active {
+  .list-item .lumen-group-invite:active {
     background: #f7e5e5;
+  }
+
+  .list-item .more {
+    color: #409eff;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .group-notice {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .member-box {

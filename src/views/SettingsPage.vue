@@ -28,15 +28,19 @@
         </el-container>
       </el-container>
     </main-layout>
+
+    <!-- <group-manager :group-id="15"></group-manager> -->
   </div>
 </template>
 
 <script>
   import MainLayout from "@/views/layout/MainLayout";
+  import GroupManager from "@/components/chat/GroupManager";
   export default {
     name: 'contacts-page',
     components: {
-      MainLayout
+      MainLayout,
+      GroupManager
     }
   };
 
