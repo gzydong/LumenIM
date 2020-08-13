@@ -1,7 +1,7 @@
 <template>
   <div class="base-mask">
     <el-container class="container" v-outside="close">
-      <el-header height="60px" class="header">
+      <el-header height="60px" class="header no-user-select">
         <i class="el-icon-close" @click="close"></i>
         <span>消息管理器</span>
         <div class="title" v-if="findSource == 1">好友【{{title}}】</div>
@@ -28,20 +28,17 @@
                 我的群组</div>
             </el-header>
             <el-main class="padding0">
-
               <el-scrollbar :native="false" tag="section" class="hv100">
-
-                <div v-for="(item,i) in contacts[contacts.show]" class="contacts-item" @click="triggerMenuItem(item)">
+                <div v-for="(item,i) in contacts[contacts.show]" class="contacts-item" @click="triggerMenuItem(item)"
+                  :class="{'contacts-item-selected':findSource == item.type && findReceiveId == item.id}">
                   <div class="avatar">
                     <el-avatar :size="30" :src="item.avatar">
                       <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                     </el-avatar>
                   </div>
-                  <div class="content" v-text="item.name" :class="{'color-blue':findSource == item.type && findReceiveId == item.id}"></div>
+                  <div class="content" v-text="item.name"></div>
                 </div>
-
               </el-scrollbar>
-              
             </el-main>
           </el-container>
         </el-aside>
@@ -58,7 +55,7 @@
 
           <!-- 用户聊天记录 -->
           <div class="im-message lumen-scrollbar" id="recordBox1">
-            <div v-show="records.isEmpty" class="empty-message">
+            <div v-show="records.isEmpty" class="empty-message no-user-select">
               <img src="/static/image/chat-search-no-message.png" />
               <p>未找到匹配结果</p>
             </div>
@@ -86,7 +83,7 @@
                 <div class="talk-content message-dashed">
                   <!-- 文字消息 -->
                   <div class="text-record" v-if="item.msg_type == 1 && item.is_code == 0">
-                    <pre v-html="item.content"></pre>
+                    <pre v-html="item.content" v-hrefstyle></pre>
                   </div>
 
                   <!-- 代码块消息 -->
@@ -419,6 +416,18 @@
     components: {
       PrismEditor,
       ForwardRecords
+    },
+    directives: {
+      hrefstyle: {
+        inserted: function (el) {
+          let els = el.querySelectorAll('a');
+          if (els) {
+            els.forEach((item, i) => {
+              item.style = 'color: #409eff;';
+            });
+          }
+        }
+      }
     },
     props: {
       receiveId: {
@@ -797,8 +806,10 @@
   }
 
   .container {
-    width: 800px;
+    width: 70%;
     height: 600px;
+    min-width: 500px;
+    max-width: 1000px;
     background-color: white;
     position: fixed;
     left: 0;
@@ -1055,6 +1066,7 @@
   .message-main .talk-content {
     min-height: 30px;
     width: 100%;
+    margin-top: 3px;
   }
 
   /* 文本信息消息 */
@@ -1072,7 +1084,7 @@
     min-height: 20px;
   }
 
-  .talk-content .text-record pre>a {
+  .talk-content .text-record pre a {
     color: #919496 !important;
   }
 
@@ -1096,6 +1108,11 @@
 
   .talk-content .images-record .image-slot i {
     font-size: 22px;
+  }
+
+  .talk-content .images-record>>>.el-image {
+    box-shadow: 1px 1px 8px #eae4e4;
+    border-radius: 3px;
   }
 
   .talk-content .images-record>>>.el-image img {
@@ -1334,7 +1351,14 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding-left: 10px;
   }
+
+  .contacts-item:hover,
+  .contacts-item-selected {
+    background-color: #f5f5f5;
+  }
+
 
   .contacts-item .avatar {
     flex-basis: 40px;

@@ -201,20 +201,19 @@
   font-size: 14px;
 }
 
-.talk-content .images-record .image-slot i {
+.talk-content .images-record .image-slot {
+  font-size: 14px;
+  color: white;
+}
+
+.talk-content .images-record .image-slot i{
   font-size: 22px;
 }
 
 .talk-content .images-record>>>.el-image {
-  box-shadow: 0 0 2px #e8e3e3;
+  box-shadow: 1px 1px 8px #eae4e4;
+  border-radius: 3px;
 }
-
-.talk-content .images-record>>>.el-image img {
-  max-width: 200px;
-  min-width: 20px;
-  border-radius: 3px !important;
-}
-
 
 .talk-content .images-record .enlarge {
   position: absolute;
@@ -234,11 +233,11 @@
   width: 230px;
   min-height: 95px;
   max-height: 150px;
-  border-radius: 5px;
+  border-radius: 3px;
   background-color: white;
   padding: 3px 10px;
   cursor: pointer;
-  box-shadow: 0 0 9px 0px #eae2e2;
+  box-shadow: 0 0 7px 0px #e8e4e4;
 }
 
 .talk-content .dialogue-records:hover {
@@ -285,6 +284,7 @@
   background: white;
   box-shadow: 0 0 7px 0px #e8e4e4;
   padding: 5px;
+  border-radius: 3px;
 }
 
 .talk-content .file-record .lumen-files-icon {
@@ -296,7 +296,7 @@
   background: #49a4ff;
   margin-left: 3px;
   float: left;
-  border-radius: 10px;
+  border-radius: 3px;
   font-size: 12px;
 }
 
