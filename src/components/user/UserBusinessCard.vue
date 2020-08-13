@@ -1,8 +1,8 @@
 <template>
-  <div class="base-mask animated fadeIn" v-show="isShow">
+  <div class="base-mask" v-show="isShow">
     <el-container class="container" v-outside="close">
       <el-header class="padding0 header" height="180px">
-        <i class="iconfont icon-guanbi close-icon" @click="close"></i>
+        <i class="el-icon-error close-icon" @click="close"></i>
         <div class="img-banner">
           <img :src="userInfo.imgbag" class="img-banner" alt="">
         </div>
@@ -37,8 +37,8 @@
           </div>
           <div class="card-row">
             <label>性别</label>
-            <span v-if="userInfo.gender == 1"><i alt="男" class="iconfont icon-nan"></i> 男</span>
-            <span v-else-if="userInfo.gender == 2"><i alt="女" class="iconfont icon-nv"></i> 女</span>
+            <span v-if="userInfo.gender == 1">男</span>
+            <span v-else-if="userInfo.gender == 2">女</span>
             <span v-else>未知</span>
           </div>
           <div class="card-row" v-show="userInfo.friendStatus == 2">

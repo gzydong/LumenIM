@@ -9,7 +9,7 @@
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </div>
-          <i class="iconfont icon-guanbi11 close-btn" @click="close"></i>
+          <i class="el-icon-close close-btn" @click="close"></i>
           <i class="iconfont icon-full-screen"
             :class="{'icon-tuichuquanping':isFullScreen,'icon-quanping ':!isFullScreen}"
             :title="isFullScreen?'关闭全屏模式':'打开全屏模式'" @click="isFullScreen = !isFullScreen"></i>

@@ -1,45 +1,55 @@
 <template>
   <div class="base-mask">
-    <el-container class="container animated bounceInDown" v-outside="close">
+    <el-container class="container" v-outside="close">
       <el-header height="60px" class="header">
-        <i class="iconfont icon-guanbi11" @click="close"></i>
+        <i class="el-icon-close" @click="close"></i>
         <span>消息管理器</span>
-        <div class="title" v-if="findSource == 1">好友({{title}})</div>
-        <div class="title" v-else>群({{title}})</div>
+        <div class="title" v-if="findSource == 1">好友【{{title}}】</div>
+        <div class="title" v-else>群【{{title}}】</div>
       </el-header>
 
       <el-header height="38px" class="header-tool">
         <i class="iconfont pointer" :class="{'icon-shouqi2':broadside,'icon-zhankai':!broadside}"
           @click="showBroadside"></i>
-
-        <div class="search-box">
+        <div class="search-box no-user-select">
           <i class="iconfont icon-sousuo"></i>
           <input type="text" placeholder="关键字搜索" v-model="search.keyword" @input="searchText($event)" />
         </div>
       </el-header>
 
-      <el-container style="height: 100%;overflow: hidden;">
-        <!-- 侧边栏 -->
-        <el-aside width="200px" class="im-broadside lumen-scrollbar no-user-select" v-show="broadside">
-          <div class="menu-list" v-for="(menu,midx) in menus">
-            <p class="menu-name" @click="triggerMenu(midx)">
-              <i class="iconfont" :class="{'icon-tubiao-':menu.isShow,'icon-jiantou1':!menu.isShow}"></i>
-              <span>{{menu.menu_name}}({{menu.items.length}})</span>
-            </p>
-            <div v-show="menu.isShow" v-for="(item,idx) in menu.items" class="menu-group">
-              <div>
-                <img :src="item.img" :onerror="$store.state.user.detaultAvatar" />
-              </div>
-              <div @click="triggerMenuItem(item)"
-                :class="{'color-blue':findSource == item.type && findReceiveId == item.id}">{{item.name}}</div>
-            </div>
-          </div>
+      <el-container class="hv100 ov-hidden">
+        <el-aside width="200px" class="broadside no-user-select" v-show="broadside">
+          <el-container class="hv100">
+            <el-header height="40px" class="padding0 aside-header">
+              <div class="item" :class="{'item-selected':contacts.show == 'friends'}"
+                @click="contacts.show = 'friends'">我的好友</div>
+              <div class="item-shuxian">|</div>
+              <div class="item" :class="{'item-selected':contacts.show == 'groups'}" @click="contacts.show = 'groups'">
+                我的群组</div>
+            </el-header>
+            <el-main class="padding0">
+
+              <el-scrollbar :native="false" tag="section" class="hv100">
+
+                <div v-for="(item,i) in contacts[contacts.show]" class="contacts-item" @click="triggerMenuItem(item)">
+                  <div class="avatar">
+                    <el-avatar :size="30" :src="item.avatar">
+                      <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                    </el-avatar>
+                  </div>
+                  <div class="content" v-text="item.name" :class="{'color-blue':findSource == item.type && findReceiveId == item.id}"></div>
+                </div>
+
+              </el-scrollbar>
+              
+            </el-main>
+          </el-container>
         </el-aside>
 
         <!-- 聊天记录阅览 -->
         <el-main v-show="showBox == 0" class="im-container">
           <div class="subheader">
-            <div class="type-items">
+            <div class="type-items no-user-select">
               <span :class="{'color-blue':findType == 0}" @click="changeLoadType(0)">全部</span>
               <span :class="{'color-blue':findType == 1}">图片</span>
               <span :class="{'color-blue':findType == 2}">文件</span>
@@ -53,7 +63,7 @@
               <p>未找到匹配结果</p>
             </div>
 
-            <div class="message-group" v-show="records.loadStatus == 0 || records.loadStatus == 1">
+            <div class="message-group no-user-select" v-show="records.loadStatus == 0 || records.loadStatus == 1">
               <div v-if="records.loadStatus == 0" class="load-button" @click="loadChatRecord">
                 <span>加载更多...</span>
               </div>
@@ -426,18 +436,13 @@
     },
     data() {
       return {
+        // 侧边栏相关信息
         broadside: false,
-        menus: [{
-            menu_name: "我的好友",
-            isShow: false,
-            items: []
-          },
-          {
-            menu_name: "我的群组",
-            isShow: false,
-            items: []
-          }
-        ],
+        contacts: {
+          show: 'friends',
+          friends: [],
+          groups: []
+        },
 
         uid: this.$store.state.user.uid,
         title: "",
@@ -495,6 +500,10 @@
 
       this.loadChatRecord(0);
     },
+    created() {
+      this.loadFriends();
+      this.loadGroups();
+    },
     methods: {
       //格式化文件大小
       renderSize: formateSize,
@@ -528,36 +537,18 @@
         this.$refs.forwardRecordsRef.open(records_id);
       },
 
-      triggerMenu(idx) {
-        this.menus[idx].isShow = !this.menus[idx].isShow;
-      },
-
-      showBroadside() {
-        if (!this.broadside) {
-          if (this.menus[0].items.length == 0) {
-            this.loadFriends();
-          }
-
-          if (this.menus[1].items.length == 0) {
-            this.loadGroups();
-          }
-        }
-
-        this.broadside = !this.broadside;
-      },
-
       //获取好友列表
       loadFriends() {
         friendsServ().then(res => {
           if (res.code == 200) {
-            this.menus[0].items = [];
+            this.contacts.friends = [];
             for (let friend of res.data) {
-              this.menus[0].items.push({
+              this.contacts.friends.push({
                 id: friend.id,
                 type: 1,
                 name: friend.friend_remark ?
                   friend.friend_remark : friend.nickname,
-                img: friend.avatar
+                avatar: friend.avatar
               });
             }
           }
@@ -568,13 +559,13 @@
       loadGroups() {
         findUserGroupsServ().then(res => {
           if (res.code == 200) {
-            this.menus[1].items = [];
+            this.contacts.groups = [];
             for (let group of res.data) {
-              this.menus[1].items.push({
+              this.contacts.groups.push({
                 id: group.id,
                 type: 2,
                 name: group.group_name,
-                img: group.avatar
+                avatar: group.avatar
               });
             }
           }
@@ -791,6 +782,10 @@
             this.query.afterStatus = 0;
           }
         });
+      },
+
+      showBroadside() {
+        this.broadside = !this.broadside;
       }
     }
   };
@@ -832,13 +827,13 @@
 
   .header>i {
     position: absolute;
-    right: 12px;
-    top: 0px;
+    right: 20px;
+    top: 18px;
     color: #4d4d4d;
     cursor: pointer;
   }
 
-  .header .icon-guanbi11 {
+  .header .el-icon-close {
     font-size: 22px;
   }
 
@@ -897,77 +892,10 @@
     background: #f9f4f4;
   }
 
-
   /* 侧边栏 */
-  .im-broadside {
+  .broadside {
     border-right: 1px solid #f9f9f9;
   }
-
-  .im-broadside .menu-list {
-    min-height: 20px;
-    margin-top: 10px;
-  }
-
-  .im-broadside .menu-list .menu-name {
-    height: 30px;
-    line-height: 30px;
-    padding-left: 25px;
-    font-size: 14px;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .im-broadside .menu-list .menu-name i {
-    font-size: 18px;
-    position: absolute;
-    left: 5px;
-    top: 0;
-  }
-
-  .im-broadside .menu-list .menu-name .icon-tubiao- {
-    font-size: 14px;
-    color: #9499a5;
-    left: 8px;
-  }
-
-  .im-broadside .menu-list .menu-group {
-    display: flex;
-    height: 40px;
-    margin: 3px 0;
-    cursor: pointer;
-    background-color: #ffffff;
-    padding-left: 13px;
-  }
-
-  .im-broadside .menu-list .menu-group:hover {
-    background-color: rgb(240, 235, 235);
-  }
-
-  .im-broadside .menu-list .menu-group div:first-child {
-    width: 40px;
-    height: 40px;
-    text-align: center;
-  }
-
-  .im-broadside .menu-list .menu-group div:first-child img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-top: 5px;
-  }
-
-  .im-broadside .menu-list .menu-group div:last-child {
-    width: 130px;
-    height: 40px;
-    line-height: 40px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    color: #524e4e;
-  }
-
-
 
   .im-container {
     height: 100%;
@@ -985,7 +913,8 @@
     float: left;
     width: 220px;
     height: 100%;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 300;
   }
 
   .im-container .subheader .type-items span {
@@ -1022,7 +951,7 @@
     padding: 0 3px;
 
     cursor: pointer;
-    font-weight: 400;
+    font-weight: 300;
     color: #cccccc;
   }
 
@@ -1144,7 +1073,7 @@
   }
 
   .talk-content .text-record pre>a {
-    color: #20aaec !important;
+    color: #919496 !important;
   }
 
   /* 图片信息消息 */
@@ -1365,6 +1294,67 @@
     position: absolute;
     top: 0px;
     left: 8px;
+  }
+
+
+  .broadside .aside-header {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    border-bottom: 1px solid #f9f9f9;
+  }
+
+  .broadside .aside-header>div {
+    text-align: center;
+    line-height: 40px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+
+  .broadside .aside-header .item {
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .broadside .aside-header .item-shuxian {
+    flex-basis: 1px;
+    flex-shrink: 0;
+    color: rgb(232 224 224);
+  }
+
+  .broadside .aside-header .item-selected {
+    color: #66b1ff;
+    font-weight: 500;
+  }
+
+  .contacts-item {
+    height: 35px;
+    margin: 5px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contacts-item .avatar {
+    flex-basis: 40px;
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contacts-item .content {
+    flex: 1 1;
+    height: 100%;
+    line-height: 35px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    padding-right: 10px;
+    cursor: pointer;
   }
 
 </style>

@@ -4,20 +4,24 @@
       <el-header class="padding0 toolbar" height="35px">
         <ul>
           <li v-popover:popoverEmoticon>
-            <i class="iconfont icon-icon_im_face"></i>
+            <i class="iconfont icon-icon_im_face" style="font-size: 15px;"></i>
             <p class="tip-title">表情符号</p>
           </li>
           <li @click="codeBlock.isShow = true">
             <i class="iconfont icon-daima"></i>
-            <p class="tip-title">发送代码片段</p>
+            <p class="tip-title">代码片段</p>
           </li>
           <li @click="$refs.restFile.click()">
-            <i class="iconfont icon-icon_photo"></i>
+            <i class="el-icon-picture-outline-round"></i>
             <p class="tip-title">图片</p>
           </li>
           <li @click="$refs.restFile2.click()">
             <i class="el-icon-folder"></i>
             <p class="tip-title">附件</p>
+          </li>
+          <li>
+            <i class="el-icon-microphone"></i>
+            <p class="tip-title">录音(开发中)</p>
           </li>
 
           <p class="text-tips no-user-select">
@@ -359,8 +363,9 @@
   }
 
   textarea::-webkit-input-placeholder {
-    color: #a9a4a4;
+    color: #dccdcd;
     font-size: 12px;
+    font-weight: 400;
   }
 
 

@@ -2,7 +2,9 @@
   <el-container class="container">
     <el-header class="header">
       <span>群信息</span>
-      <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
+      <el-tooltip content="发送消息" placement="top" >
+        <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
+      </el-tooltip>
       <i class="close-btn el-icon-close" @click="$emit('close')"></i>
     </el-header>
     <el-main class="main lumen-scrollbar">

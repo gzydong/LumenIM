@@ -34,7 +34,7 @@
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
             </span>
-            <span v-show="loadRecord.status == 1" @click="loadChatRecords">查看更多消息...</span>
+            <span v-show="loadRecord.status == 1" @click="loadChatRecords"><i class="el-icon-bottom" ></i> 查看更多消息...</span>
             <span v-show="loadRecord.status == 2" class="not-have-msg">没有更多消息了...</span>
           </div>
         </div>
@@ -50,7 +50,7 @@
               <a
                 @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
               <span style="background: none;">邀请了</span>
-              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">[ {{user.nickname}} ]</a>
+              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">{{user.nickname}} 、</a>
               <span style="background: none;">加入了群聊 ...</span>
             </span>
 
@@ -58,7 +58,7 @@
               <a
                 @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
               <span style="background: none;">将</span>
-              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">[ {{user.nickname}} ]</a>
+              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">{{user.nickname}} 、</a>
               <span style="background: none;">踢出了群聊 ...</span>
             </span>
 

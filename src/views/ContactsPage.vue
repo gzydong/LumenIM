@@ -680,18 +680,6 @@
     border-color: #eff0f1;
   }
 
-  .menu-item .el-icon-user-solid {
-    color: #f80;
-  }
-
-  .menu-item .el-icon-s-custom {
-    color: #ff3f3f;
-  }
-
-  .menu-item .icon-qunzutianchong {
-    color: #2196f3;
-  }
-
   /* 右侧面板 */
   .panel {
     background-color: white;

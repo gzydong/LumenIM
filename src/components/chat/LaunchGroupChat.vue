@@ -217,7 +217,7 @@
           return;
         }
 
-        if (this.this.getIds().length < 2) {
+        if (this.getIds().length < 2) {
           this.$message('群聊人数必须大于俩人');
           return;
         }
