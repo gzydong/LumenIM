@@ -20,10 +20,10 @@
                   style="display: none;" @change="uploadImg($event, 1)">
               </div>
               <div class="tools tools1">
-                <el-button type="primary" size="small" icon="el-icon-upload" @click="clickUpload">上传图片</el-button>
-                <el-button type="primary" size="small" icon="el-icon-refresh" @click="refreshCrop">刷新</el-button>
-                <el-button type="primary" size="small" icon="el-icon-refresh-left" @click="rotateLeft">左转</el-button>
-                <el-button type="primary" size="small" icon="el-icon-refresh-right" @click="rotateRight">右转</el-button>
+                <el-button size="small" plain icon="el-icon-upload" @click="clickUpload">上传图片</el-button>
+                <el-button size="small" plain icon="el-icon-refresh" @click="refreshCrop">刷新</el-button>
+                <el-button size="small" plain icon="el-icon-refresh-left" @click="rotateLeft">左转</el-button>
+                <el-button size="small" plain icon="el-icon-refresh-right" @click="rotateRight">右转</el-button>
               </div>
             </el-aside>
             <el-main class="padding0">
@@ -33,7 +33,7 @@
                 </div>
               </div>
               <div class="tools" style="text-align: center;">
-                <el-button type="primary" size="small" @click="uploadService">保存</el-button>
+                <el-button type="primary" size="small" @click="uploadService">保存图片</el-button>
               </div>
             </el-main>
           </el-container>
@@ -107,10 +107,12 @@
           that.cusPreviewsImg = img;
         })
       },
+
+      // 上传回调事件
       uploadImg(e, num) {
         let file = e.target.files[0]
         if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-          alert('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
+          this.$message('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种');
           return false
         }
 
@@ -135,22 +137,19 @@
         reader.readAsArrayBuffer(file)
       },
 
-      //上传图片到服务器
+      // 上传图片到服务器
       uploadService() {
-        if (this.cusPreviewsImg == '') {
-          return;
-        }
-
+        if (this.cusPreviewsImg == '') return;
         uploadFileStreamServ({
           fileStream: this.cusPreviewsImg
         }).then((res) => {
           if (res.code == 200) {
             this.$emit('close', 1, res.data.avatar);
           } else {
-            alert('文件上传失败,请稍后再试...');
+            this.$message('文件上传失败,请稍后再试...');
           }
         }).catch((err) => {
-          alert('文件上传失败,请稍后再试...');
+          this.$message('文件上传失败,请稍后再试...');
         });
       }
     }
@@ -205,7 +204,7 @@
     box-shadow: 0 0 4px #ccc;
   }
 
-  .cropper-box .preview-img img{
+  .cropper-box .preview-img img {
     width: 100%;
     height: 100%;
   }

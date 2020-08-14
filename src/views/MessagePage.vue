@@ -95,7 +95,12 @@
                       </div>
                       <div class="card-time">{{beautifyTime(item.updated_at)}}</div>
                     </div>
-                    <div class="content" v-html="formatHandleText(item)"></div>
+                    <div class="content">
+                      <span v-if="item.type == 1"
+                        :class="{'online-color':item.online}">[{{item.online?'在线':'离线'}}]</span>
+                      <span v-else>[群消息]</span>
+                      <span v-text="item.msg_text"></span>
+                    </div>
                   </div>
                 </div>
               </el-main>
@@ -193,19 +198,7 @@
         input: '',
 
         // 搜索列表
-        restaurants: [{
-            "value": "测试数据（功能尚未完善）",
-            "address": "长宁区新渔路144号"
-          },
-          {
-            "value": "Hot honey 首尔炸鸡（仙霞路）",
-            "address": "上海市长宁区淞虹路661号"
-          },
-          {
-            "value": "南拳妈妈龙虾盖浇饭",
-            "address": "普陀区金沙江路1699号鑫乐惠美食广场A13"
-          }
-        ],
+        restaurants: [],
 
         // header 工具菜单
         subMenu: false,
@@ -295,16 +288,6 @@
     methods: {
       // 美化时间格式
       beautifyTime,
-
-      // 格式化好友消息
-      formatHandleText(info) {
-        let online = "[群消息]";
-        if (info.type == 1) {
-          online = info.online ? '<span style="color: #4CAF50;font-weight: 500;">[在线]</span>' : "[离线]";
-        }
-
-        return `${online} ${info.msg_text}`;
-      },
 
       // 发送消息方法
       sendSocket(message) {
@@ -894,6 +877,11 @@
     transform: scale(.8);
     transform-origin: left;
     flex-shrink: 0;
+  }
+
+  .aside-box .talk-item .online-color {
+    color: #4aa71c;
+    font-weight: 400;
   }
 
   .top {

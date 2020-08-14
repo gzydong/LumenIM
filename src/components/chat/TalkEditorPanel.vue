@@ -34,7 +34,8 @@
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
             </span>
-            <span v-show="loadRecord.status == 1" @click="loadChatRecords"><i class="el-icon-bottom" ></i> 查看更多消息...</span>
+            <span v-show="loadRecord.status == 1" @click="loadChatRecords"><i class="el-icon-bottom"></i>
+              查看更多消息...</span>
             <span v-show="loadRecord.status == 2" class="not-have-msg">没有更多消息了...</span>
           </div>
         </div>
@@ -104,7 +105,7 @@
                 <!-- 文字消息 -->
                 <div class="text-record" v-if="item.msg_type == 1 && item.is_code == 0"
                   @contextmenu="onCopy(idx,item,$event)">
-                  <pre v-html="item.content" :id="'copy_class_'+item.id"></pre>
+                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-hrefstyle></pre>
                 </div>
 
                 <!-- 代码块消息 -->
@@ -331,6 +332,18 @@
         type: Boolean,
         default: false
       },
+    },
+    directives: {
+      hrefstyle: {
+        inserted: function (el) {
+          let els = el.querySelectorAll('a');
+          if (els) {
+            els.forEach((item, i) => {
+              item.style = 'color: white;padding:0 2px';
+            });
+          }
+        }
+      }
     },
     data() {
       return {
@@ -804,12 +817,7 @@
       //获取会话记录消息名称
       getForwardTitle(item) {
         let arr = [...new Set(item.map(v => v.nickname))];
-
-        if (arr.length == 1) {
-          return arr[0] + '的会话记录';
-        }
-
-        return arr.slice(0, arr.length - 1).join('、') + '及' + arr[arr.length - 1] + '的会话记录';
+        return arr.join('、') + '的会话记录';
       },
 
       //开启多选模式

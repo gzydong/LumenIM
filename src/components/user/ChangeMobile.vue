@@ -27,7 +27,7 @@
             </el-form-item>
             <el-form-item style="margin-top: 40px;">
               <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loading" size="medium">
-                立即提交
+                立即修改
               </el-button>
             </el-form-item>
           </el-form>

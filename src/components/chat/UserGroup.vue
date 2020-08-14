@@ -106,7 +106,7 @@
       <button @click="isShowSignout = true">退出该群聊</button>
     </el-footer>
 
-    <div class="signout-confirm-box" v-show="isShowSignout">
+    <div class="signout-confirm-box no-user-select" v-show="isShowSignout">
       <p v-show="signoutStatus == 0">您确认退出当前群聊吗？</p>
       <p v-show="signoutStatus == 0">退群后群聊信息将不能查看</p>
       <p v-show="signoutStatus == 0" class="signout-button">

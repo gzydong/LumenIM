@@ -22,10 +22,10 @@
           <el-container class="hv100">
             <el-header height="40px" class="padding0 aside-header">
               <div class="item" :class="{'item-selected':contacts.show == 'friends'}"
-                @click="contacts.show = 'friends'">我的好友</div>
+                @click="contacts.show = 'friends'">我的好友({{contacts.friends.length}})</div>
               <div class="item-shuxian">|</div>
               <div class="item" :class="{'item-selected':contacts.show == 'groups'}" @click="contacts.show = 'groups'">
-                我的群组</div>
+                我的群组({{contacts.groups.length}})</div>
             </el-header>
             <el-main class="padding0">
               <el-scrollbar :native="false" tag="section" class="hv100">
@@ -423,7 +423,7 @@
           let els = el.querySelectorAll('a');
           if (els) {
             els.forEach((item, i) => {
-              item.style = 'color: #409eff;';
+              item.style = 'color: #409eff;padding:0px 2px';
             });
           }
         }
@@ -1341,7 +1341,6 @@
 
   .broadside .aside-header .item-selected {
     color: #66b1ff;
-    font-weight: 500;
   }
 
   .contacts-item {

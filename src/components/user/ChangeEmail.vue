@@ -13,7 +13,7 @@
                 @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="sms_code" label="验证码">
-              <el-input v-model="form.sms_code" placeholder="验证码" class="cuborder-radius"
+              <el-input v-model="form.sms_code" placeholder="邮件验证码" class="cuborder-radius"
                 @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" />
 
               <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
@@ -27,7 +27,7 @@
             </el-form-item>
             <el-form-item style="margin-top: 40px;">
               <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loading" size="medium">
-                立即提交
+                立即修改
               </el-button>
             </el-form-item>
           </el-form>

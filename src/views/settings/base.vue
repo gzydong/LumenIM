@@ -11,8 +11,7 @@
             <el-form-item label="电子邮箱:">
               <p>
                 <span>{{form.email?form.email:'未设置邮箱'}}</span>
-                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;" @click="toEmail">
-                  {{form.email?'修改邮箱':'设置邮箱'}}</el-button>
+                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;font-weight: 300;" @click="toEmail">{{form.email?'修改邮箱':'设置邮箱'}}</el-button>
               </p>
             </el-form-item>
             <el-form-item label="昵称:" prop="nickname">
