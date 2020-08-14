@@ -61,22 +61,24 @@
             <el-main v-else-if="tabIndex == 2" class="padding0">
               <el-container class="hv100">
                 <el-header height="50px" style="display: flex;justify-content: space-between;align-items: center;">
-                  <span>群公告(15条)</span>
+                  <span>群公告 (共{{notice.items.length}}条)</span>
                   <span>
-                    <el-button plain size="small" icon="el-icon-circle-plus-outline" style="font-weight: 400;">添加群公告
+                    <el-button plain size="small" icon="el-icon-plus" style="font-weight: 400;" @click="showNoticeBox">
+                      添加群公告
                     </el-button>
                   </span>
                 </el-header>
-                <el-main class="padding0">
+                <el-main>
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="notices">
-                      <template v-for="i in 23">
-                        <div class="notice">
-                          <h5>
-                            按手机卡那就开始拿那是看见那那会计师哪看见那按手机卡那就开始拿那是看见那那会计师哪看见那</h5>
-                          <p>发表于 2020-05-06 15:18</p>
-                        </div>
-                      </template>
+                      <div v-for="(item,index) in notice.items" class="notice">
+                        <h6 @click="showNoticeBox(item.id,item.title,item.content)">{{item.title}}</h6>
+                        <p>发表于 {{item.datetime}}</p>
+                        <p class="no-user-select" :class="{'retract':!item.isShow}" @click="catNoticeDetail(index)">
+                          <i :class="item.isShow?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
+                          <span>{{item.content}}</span>
+                        </p>
+                      </div>
                     </div>
                   </el-scrollbar>
                 </el-main>
@@ -90,23 +92,27 @@
     <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
 
 
-
-    <!-- <div class="base-mask">
+    <!-- 编辑公告信息 -->
+    <div class="base-mask" v-show="notice.isShowform">
       <div class="notice-box">
-        <h4>编辑公告信息</h4>
+        <h4>编辑群公告</h4>
+        <el-form ref="noticeForm" :model="notice.form" :rules="notice.rules">
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="notice.form.title" size="medium" placeholder="请输入标题..." />
+          </el-form-item>
+          <el-form-item label="详情" prop="content">
+            <el-input type="textarea" v-model="notice.form.content" rows="5" placeholder="请输入公告详情..." />
+          </el-form-item>
+          <el-form-item style="text-align: right;">
+            <el-button plain size="small" @click="notice.isShowform = false">取消</el-button>
+            <el-button type="primary" size="small" @click="onSubmitNotice">提交</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 <script>
-  import Vue from 'vue';
-  import {
-    Collapse,
-    CollapseItem
-  } from 'element-ui';
-  Vue.use(Collapse);
-  Vue.use(CollapseItem);
-
   import AvatarCropper from '@/components/layout/AvatarCropper';
   export default {
     name: "group-manager",
@@ -143,13 +149,57 @@
         searchMembers: '',
 
 
-        // 公告列表
-        notices: [{
-          id: 1,
-          title: '',
-          content: '',
-          datetime: '',
-        }]
+        // 群成员列表
+        members: [
+
+        ],
+
+        // 群公告相关数据
+        notice: {
+          isShowform: false,
+          form: {
+            id: 0,
+            title: '',
+            content: ''
+          },
+          rules: {
+            title: [{
+              required: true,
+              message: '标题不能为空!',
+              trigger: 'blur'
+            }],
+            content: [{
+              required: true,
+              message: '内容不能为空',
+              trigger: 'blur'
+            }]
+          },
+          items: [{
+            id: 1,
+            title: '按时看见那看那会计师DNA',
+            content: 'as没课啦吗 马拉喀什',
+            datetime: '2020-05-08 15:13',
+            isShow:false,
+          }, {
+            id: 1,
+            title: '按时看见那看那会计师DNA',
+            content: 'as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什as没课啦吗 马拉喀什',
+            datetime: '2020-05-08 15:13',
+            isShow:false,
+          }, {
+            id: 1,
+            title: '按时看见那看那会计师DNA',
+            content: 'as没课啦吗 马拉喀什',
+            datetime: '2020-05-08 15:13',
+            isShow:false,
+          }, {
+            id: 1,
+            title: '按时看见那看那会计师DNA',
+            content: 'as没课啦吗 马拉喀什',
+            datetime: '2020-05-08 15:13',
+            isShow:false,
+          }]
+        }
       };
     },
     methods: {
@@ -168,6 +218,28 @@
 
       triggerTab(i) {
         this.tabIndex = i;
+      },
+
+      // 显示编辑公告窗口
+      showNoticeBox(id = 0, title = '', content = '') {
+        this.notice.isShowform = true;
+        this.notice.form.id = id;
+        this.notice.form.title = title;
+        this.notice.form.content = content;
+      },
+      onSubmitNotice() {
+        this.$refs.noticeForm.validate((valid) => {
+          if (!valid) return false;
+          this.editNotice();
+        });
+      },
+
+      editNotice(item) {
+
+      },
+
+      catNoticeDetail(index){
+        this.notice.items[index].isShow = !this.notice.items[index].isShow;
       }
     }
   };
@@ -309,16 +381,14 @@
 
 
 
-  .members,
-  .notices {
+  .members {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     padding: 5px 15px;
   }
 
-  .members .member,
-  .notices .notice {
+  .members .member {
     width: 105px;
     height: 120px;
     background-color: white;
@@ -329,45 +399,49 @@
 
 
   .notices .notice {
-    flex-basis: 24%;
-    flex-shrink: 0;
     cursor: pointer;
+    min-height: 76px;
+    overflow: hidden;
+    border-bottom: 1px dashed #e2dcdc;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    padding-bottom: 5px;
   }
 
-  .notices .notice h5 {
-    font-weight: 400;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    padding: 6px 5px;
-    line-height: 24px;
-    height: 70px;
+  .notices .notice h6 {
+    font-size: 15px;
+    font-weight: 300;
   }
 
   .notices .notice p {
     font-size: 10px;
+    color: #a59696;
     font-weight: 300;
-    margin: 8px 5px;
-    color: #635f5f;
+    margin-top: 9px;
+
   }
 
-  .notices .notice p i {
-    margin-right: 5px;
+  .notices .notice .retract {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-
-
-  .notice-box{
+  .notice-box {
     position: relative;
     padding: 28px;
     background: #fff;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,.2);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .2);
     border-radius: 4px;
     overflow: hidden;
     box-sizing: border-box;
-    height: 375px;
+    height: 415px;
     width: 420px;
+  }
+
+  .notice-box h4 {
+    margin-bottom: 20px;
+    font-weight: 400;
   }
 
 </style>
