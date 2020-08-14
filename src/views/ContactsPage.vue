@@ -34,7 +34,7 @@
                 </el-button>
                 <transition name="el-zoom-in-top">
                   <div class="tools-menu" v-show="subMenu" v-outside="closeSubMenu">
-                    <div class="menu1-item" @click="triggerSubMenu(1)">创建群聊</div>
+                    <div class="menu1-item" @click="triggerSubMenu(1)">创建群组</div>
                     <div class="menu1-item" @click="triggerSubMenu(2)">添加好友</div>
                   </div>
                 </transition>

@@ -35,7 +35,7 @@
                 </el-button>
                 <transition name="el-zoom-in-top">
                   <div class="tools-menu" v-show="subMenu" v-outside="closeSubMenu">
-                    <div class="menu-item" @click="triggerSubMenu(1)">创建群聊</div>
+                    <div class="menu-item" @click="triggerSubMenu(1)">创建群组</div>
                     <div class="menu-item" @click="triggerSubMenu(2)">添加好友</div>
                   </div>
                 </transition>
@@ -288,20 +288,6 @@
     methods: {
       // 美化时间格式
       beautifyTime,
-
-      // 发送消息方法
-      sendSocket(message) {
-        if (this.$store.getters.socketStatus) {
-          this.$notify({
-            title: '友情提示:',
-            message: "网络服务器已断开，正在尝试连接..."
-          });
-
-          return false;
-        }
-
-        this.$root.socket.send(message);
-      },
 
       // header 功能栏隐藏事件
       closeSubMenu() {
@@ -602,12 +588,6 @@
   };
 
 </script>
-<style>
-  .el-autocomplete-suggestion__wrap li {
-    padding: 0 10px !important;
-  }
-
-</style>
 <style scoped>
   .aside-box {
     position: relative;

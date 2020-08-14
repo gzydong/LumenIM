@@ -29,7 +29,7 @@
       <!-- 主体信息 -->
       <el-main class="padding0 panel-main lumen-scrollbar" ref="lumenChatPanel" id="lumenChatPanel"
         @scroll.native="talkPanelScroll($event)">
-        <div class="record-container">
+        <div class="record-container no-user-select">
           <div class="toolbars">
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
@@ -44,7 +44,7 @@
           :class="{'container-checked':multiSelect.isOpen === true}">
 
           <!-- 系统提示消息 -->
-          <div v-if="item.float =='center'" class="message-system">
+          <div v-if="item.float =='center'" class="message-system no-user-select">
             <span v-if="item.msg_type == 1" v-text="item.content"></span>
 
             <span v-if="item.msg_type == 3 && item.group_notify.type == 1" class="group-invite-tips">
@@ -71,7 +71,7 @@
           </div>
 
           <!-- 撤回消息提示 -->
-          <div v-else-if="item.is_revoke == 1" class="message-system">
+          <div v-else-if="item.is_revoke == 1" class="message-system no-user-select">
             <span v-if="$store.state.user.uid == item.user_id" class="recall">你撤回了一条消息 |
               {{sendTime(item.send_time)}}</span>
             <span v-else-if="params.source == 1" class="recall">对方撤回了一条消息 | {{sendTime(item.send_time)}}</span>
