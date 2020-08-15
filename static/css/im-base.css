@@ -58,7 +58,7 @@ textarea {
   border: 0;
 }
 
-.border-radius0{
+.border-radius0 {
   border-radius: 0;
 }
 
@@ -105,11 +105,9 @@ textarea {
   float: right;
 }
 
-
 .pointer {
   cursor: pointer;
 }
-
 
 .lumen-scrollbar::-webkit-scrollbar {
   width: 3px;
@@ -474,3 +472,25 @@ textarea {
 }
 
 /* ant-spin 加载动画 end */
+
+
+
+
+
+.larkc-tag {
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  height: 20px;
+  border-radius: 2px;
+  cursor: default;
+  user-select: none;
+  background-color: #dee0e3;
+  transform: scale(.83);
+  transform-origin: left;
+  flex-shrink: 0;
+  margin: 0 3px;
+}

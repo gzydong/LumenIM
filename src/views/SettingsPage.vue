@@ -29,7 +29,7 @@
       </el-container>
     </main-layout>
 
-    <group-manager :group-id="15"></group-manager>
+    <!-- <group-manager :group-id="105"></group-manager> -->
   </div>
 </template>
 

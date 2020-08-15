@@ -39,7 +39,22 @@ export const setGroupCardServ = (data) => {
   return post('/api/group/set-group-card', data);
 }
 
-//设置群聊名片服务接口
+//获取用户可邀请加入群组的好友列表
+export const getInviteFriendsServ = (data) => {
+  return get('/api/group/invite-friends', data);
+}
+
+// 获取群组成员列表
 export const getGroupMembersServ = (data) => {
-  return get('/api/group/get-group-members', data);
+  return get('/api/group/members', data);
+}
+
+// 获取群组公告列表
+export const getGroupNoticesServ = (data) => {
+  return get('/api/group/notices', data);
+}
+
+// 编辑群公告
+export const editNoticeServ = (data) => {
+  return post('/api/group/edit-notice', data);
 }

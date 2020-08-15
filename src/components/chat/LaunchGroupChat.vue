@@ -88,7 +88,7 @@
   import {
     createGroupServ,
     inviteGroupServ,
-    getGroupMembersServ
+    getInviteFriendsServ
   } from '@/api/group';
 
   import {
@@ -185,7 +185,7 @@
 
       // 加载好友列表
       friendsApi() {
-        getGroupMembersServ({
+        getInviteFriendsServ({
           group_id: this.from.groupId
         }).then(res => {
           if (res.code == 200 && res.data) {
