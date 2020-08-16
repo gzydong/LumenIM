@@ -1,7 +1,7 @@
 <template>
   <div class="body-background" :class="$store.state.settings.themeBagImg">
     <el-container class="mian-layout" :class="{'full-mode':$store.state.settings.themeMode}">
-      <el-aside width="70px" class="side-edge no-user-select">
+      <el-aside width="70px" class="side-edge no-select">
         <el-container class="hv100 ov-hidden">
           <el-header height="100px" class="padding0">
             <div class="userlogo" v-popover:usercard>
@@ -73,7 +73,7 @@
       <user-card />
     </el-popover>
 
-    <div class="copyright no-user-select" v-show="$store.state.settings.themeMode == false"
+    <div class="copyright no-select" v-show="$store.state.settings.themeMode == false"
       v-html="$store.state.copyright"></div>
   </div>
 </template>

@@ -26,7 +26,7 @@
           </span>
         </div>
 
-        <div class="card-rows no-user-select">
+        <div class="card-rows no-select">
           <div class="card-row">
             <label>手机</label>
             <span>{{ mobile(userInfo.mobile)}} </span>
@@ -58,7 +58,8 @@
         <el-button type="primary" size="small" v-if="userInfo.friendStatus == 1 && userInfo.friendApply == 0"
           @click="applyFrom.isShow = true" icon="el-icon-circle-plus-outline">添加好友</el-button>
         <el-button type="primary" size="small" v-else-if="userInfo.friendApply == 1">已发送好友申请，请耐心等待...</el-button>
-        <el-button type="primary" size="small" icon="el-icon-s-promotion" v-else="userInfo.friendStatus == 2" @click="sendMessage(userInfo)">发消息
+        <el-button type="primary" size="small" icon="el-icon-s-promotion" v-else="userInfo.friendStatus == 2"
+          @click="sendMessage(userInfo)">发消息
         </el-button>
       </el-footer>
 
@@ -220,16 +221,7 @@
         }).then(res => {
           if (res.code !== 200) return;
 
-          this.close();
-          this.$emit('send-friend-msg', {
-            list_id: res.data.list_id,
-            type: 1,
-            index_name: `1_${userInfo.user_id}`,
-            friend_id: userInfo.user_id,
-            avatar: userInfo.avatar,
-            name: userInfo.nickname,
-            nickname: userInfo.nicknameRemark
-          });
+          this.$root.dumpTalkPage(`1_${userInfo.user_id}`);
         });
       }
     }

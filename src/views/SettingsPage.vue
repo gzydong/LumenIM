@@ -2,9 +2,9 @@
   <div>
     <main-layout :idx="3">
       <el-container slot="container" class="container hv100 ov-hidden">
-        <el-header height="60px" class="header no-user-select">个人设置</el-header>
+        <el-header height="60px" class="header no-select">个人设置</el-header>
         <el-container class="hv100">
-          <el-aside width="200px" class="aside no-user-select">
+          <el-aside width="200px" class="aside no-select">
             <router-link to="/settings/base">
               <div class="menu-list" :class="{'menu-list-selectd':$route.path == '/settings/base'}">个人信息</div>
             </router-link>
@@ -28,19 +28,15 @@
         </el-container>
       </el-container>
     </main-layout>
-
-    <!-- <group-manager :group-id="105"></group-manager> -->
   </div>
 </template>
 
 <script>
   import MainLayout from "@/views/layout/MainLayout";
-  import GroupManager from "@/components/chat/GroupManager";
   export default {
     name: 'contacts-page',
     components: {
-      MainLayout,
-      GroupManager
+      MainLayout
     }
   };
 

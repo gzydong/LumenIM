@@ -43,7 +43,7 @@ textarea {
 }
 
 /* css解决 页面多次点击时出现部分蓝色 */
-.no-user-select {
+.no-select {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -479,7 +479,7 @@ textarea {
 
 .larkc-tag {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -492,5 +492,4 @@ textarea {
   transform: scale(.83);
   transform-origin: left;
   flex-shrink: 0;
-  margin: 0 3px;
 }

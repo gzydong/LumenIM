@@ -2,21 +2,21 @@
   <div class="base-mask">
     <div class="container" v-outside="close">
       <el-container class="hv100">
-        <el-header class="padding0 header no-user-select" height="50px">
+        <el-header class="padding0 header no-select" height="50px">
           <span>我的联系人</span>
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main padding0">
           <el-container class="hv100">
             <el-aside width="250px" class="aside-border">
-              <el-container class="hv100 no-user-select">
+              <el-container class="hv100 no-select">
                 <el-header class="padding0 search-header" height="50px" id="search-header">
                   <el-input placeholder="搜索 | 好友 or 群组" prefix-icon="el-icon-search" v-model="keywords" clearable
                     size="small" />
                 </el-header>
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
-                    <ul class="friend-items no-user-select">
+                    <ul class="friend-items no-select">
                       <li v-for="(item,index) in search" @click="triggerContacts(item)">
                         <el-avatar :size="30" :src="item.avatar" class="avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -35,14 +35,14 @@
             <el-main class="padding0">
               <el-container class="hv100">
                 <el-header height="40px">
-                  <el-divider content-position="left" class="no-user-select">
+                  <el-divider content-position="left" class="no-select">
                     <span style="color: #c4c5c7;">已选联系人 ({{selected.length}})</span>
                   </el-divider>
                 </el-header>
                 <el-main>
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="selectd-items">
-                      <div class="selectd-item no-user-select" v-for="(item,index) in selected">
+                      <div class="selectd-item no-select" v-for="(item,index) in selected">
                         <el-avatar :size="25" :src="item.avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                         </el-avatar>

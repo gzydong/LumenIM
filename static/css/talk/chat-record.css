@@ -45,7 +45,7 @@
   background-color: #f5f5f5;
   padding: 3px 5px;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 11px;
   color: #b9b8b8;
   word-break: break-all;
   word-wrap: break-word;
@@ -59,10 +59,6 @@
 .record-container .message-system .group-invite-tips a {
   color: #939596;
   cursor: pointer;
-}
-
-.record-container .message-system .group-invite-tips>a:not(:first-child) {
-  margin-right: 5px;
 }
 
 .record-container .message-system .group-invite-tips a:hover {
@@ -206,7 +202,7 @@
   color: white;
 }
 
-.talk-content .images-record .image-slot i{
+.talk-content .images-record .image-slot i {
   font-size: 22px;
 }
 

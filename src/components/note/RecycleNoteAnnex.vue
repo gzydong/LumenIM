@@ -2,7 +2,7 @@
   <div class="base-mask">
     <div class="container animated bounceInDown" v-outside="close">
       <el-container class="hv100">
-        <el-header height="60px" class="header no-user-select">近 30 天删除的附件({{tableData.length}})
+        <el-header height="60px" class="header no-select">近 30 天删除的附件({{tableData.length}})
         </el-header>
         <el-main class="main lumen-scrollbar">
           <el-table :data="tableData" style="width: 100%;" header-cell-class-name="tab-header-row">

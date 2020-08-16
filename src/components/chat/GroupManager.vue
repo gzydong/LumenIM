@@ -1,14 +1,14 @@
 <template>
   <div class="base-mask">
-    <div class="container" v-outside="close">
+    <div class="container">
       <el-container class="hv100">
-        <el-header class="padding0 header no-user-select" height="50px">
+        <el-header class="padding0 header no-select" height="50px">
           <span>群管理【{{detail.group_name}}】</span>
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main padding0">
           <el-container class="hv100">
-            <el-aside width="100px" class="aside-border no-user-select">
+            <el-aside width="100px" class="aside-border no-select">
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 0}" @click="triggerTab(0)">群信息</div>
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 1}" @click="triggerTab(1)">群成员</div>
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 2}" @click="triggerTab(2)">群公告</div>
@@ -18,15 +18,16 @@
             <el-main v-if="tabIndex == 0">
               <el-row>
                 <el-col :span="14">
-                  <el-form ref="form" :model="form" :rules="rules">
-                    <el-form-item label="群名:" prop="nickname">
-                      <el-input v-model="form.nickname" size="medium" placeholder="给自己起个名字" />
+                  <el-form ref="groupForm" :model="form" :rules="rules">
+                    <el-form-item label="群名:" prop="group_name">
+                      <el-input v-model="form.group_name" size="medium" placeholder="请输入群名称" maxlength="30"
+                        show-word-limit />
                     </el-form-item>
-                    <el-form-item label="群简介:">
-                      <el-input type="textarea" v-model="form.motto" rows="3" placeholder="编辑我的座右铭..." />
+                    <el-form-item label="群描述:">
+                      <el-input type="textarea" v-model="form.profile" rows="3" placeholder="请输入群描述" />
                     </el-form-item>
                     <el-form-item>
-                      <el-button type="primary" size="small">修改</el-button>
+                      <el-button type="primary" size="small" @click="editGroup" :loading="loading">修改</el-button>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -45,10 +46,10 @@
             <el-main v-else-if="tabIndex == 1" class="padding0">
               <el-container class="hv100">
                 <el-header height="50px" class="notice-header">
-                  <el-input placeholder="搜索群成员" v-model="searchMembers" clearable style="width: 200px;" size="small"
-                    prefix-icon="el-icon-search" />
+                  <el-input :placeholder="`搜索群成员 ( 共${members.length}人 )`" v-model="searchMembers" clearable
+                    style="width: 200px;" size="small" prefix-icon="el-icon-search" />
                   <p>
-                    <el-button plain size="small" icon="el-icon-plus">
+                    <el-button plain size="small" icon="el-icon-plus" @click="inviteFriendBox = true">
                       邀请好友
                     </el-button>
                     <el-button size="small" icon="el-icon-delete" type="danger" v-if="batchDelMember"
@@ -63,13 +64,14 @@
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="members">
-                      <div v-for="(member,i) in members" class="member no-user-select">
+                      <div v-for="(member,i) in members" class="member no-select"
+                        :class="{'member-selectd':member.is_delete && batchDelMember}">
                         <div class="item-header">
                           <div class="avatar" @click="catUserDetail(member)">
                             <el-avatar :size="30" :src="member.avatar">
                               <img src="/static/image/detault-avatar.jpg" alt="">
                             </el-avatar>
-                            <span v-text="member.nickname" style="margin-left: 15px;font-size: 13px;"></span>
+                            <span class="nickname" v-text="member.nickname"></span>
                             <span class="larkc-tag" v-show="member.is_manager">群主</span>
                           </div>
                           <div class="tools" v-show="batchDelMember && !member.is_manager">
@@ -94,14 +96,20 @@
                     添加公告
                   </el-button>
                 </el-header>
+
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100">
-                    <div class="notices">
+                    <div v-if="notice.items.length == 0" class="empty-notice">
+                      <svg-icon icon-class="not-data" style="width: 80px;" />
+                      <span>暂无群公告</span>
+                    </div>
+
+                    <div v-else class="notices">
                       <div v-for="(item,index) in notice.items" class="notice">
                         <div class="title">
                           <span class="left-title" v-text="item.title"
                             @click="showNoticeBox(item.id,item.title,item.content)"></span>
-                          <span class="right-tools no-user-select"
+                          <span class="right-tools no-select"
                             @click="catNoticeDetail(index)">{{item.isShow?'收起':'展开'}}</span>
                         </div>
                         <p class="datetime">
@@ -133,12 +141,11 @@
             <el-input v-model="notice.form.title" size="medium" placeholder="请输入标题..." maxlength="30" show-word-limit />
           </el-form-item>
           <el-form-item label="详情" prop="content">
-            <el-input type="textarea" v-model="notice.form.content" rows="5" placeholder="请输入公告详情..." maxlength="500"
-              show-word-limit />
+            <el-input type="textarea" v-model="notice.form.content" rows="5" placeholder="请输入公告详情..." maxlength="500" />
           </el-form-item>
           <el-form-item style="text-align: right;">
             <el-button plain size="small" @click="notice.isShowform = false">取消</el-button>
-            <el-button type="primary" size="small" @click="onSubmitNotice">提交</el-button>
+            <el-button type="primary" size="small" @click="onSubmitNotice" :loading="notice.loading">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -147,17 +154,24 @@
     <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <user-business-card ref="userBusinessCard"  />
+
+    <launch-group-chat v-if="inviteFriendBox" :group-id="groupId" @close="inviteFriendBox = false"
+      @invite-success="inviteSuccess" />
   </div>
 </template>
 <script>
   import AvatarCropper from '@/components/layout/AvatarCropper';
   import UserBusinessCard from "@/components/user/UserBusinessCard";
+  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+
   import {
     getGroupMembersServ,
     getGroupNoticesServ,
     editNoticeServ,
-    removeMembersGroupServ
+    removeMembersGroupServ,
+    groupDetailServ,
+    editGroupServ
   } from '@/api/group';
 
   export default {
@@ -171,45 +185,42 @@
     components: {
       AvatarCropper,
       UserBusinessCard,
+      LaunchGroupChat
     },
     data() {
       return {
+        // 当前选中菜单
+        tabIndex: 0,
+
+        loading: false,
         form: {
-          nickname: '',
-          gender: '',
+          group_name: '',
+          profile: '',
           avatar: '',
-          motto: '',
-          email: '',
-          mobile: '',
         },
         rules: {
-          nickname: [{
+          group_name: [{
             required: true,
             message: '用户昵称不能为空!',
             trigger: 'blur'
           }]
         },
-        isAvatarCropper: false,
 
-        tabIndex: 1,
-
-        searchMembers: '',
-
-        // 群信息
         detail: {
-          group_name: '马木留克',
-          avatar: '',
+          group_name: '',
           profile: '',
-          datetime: '',
+          avatar: '',
         },
 
         // 群成员列表
+        searchMembers: '',
         batchDelMember: false,
         members: [],
 
         // 群公告相关数据
         notice: {
           isShowform: false,
+          loading: false,
           form: {
             id: 0,
             title: '',
@@ -223,22 +234,108 @@
             }],
             content: [{
               required: true,
-              message: '内容不能为空',
+              message: '详情不能为空',
               trigger: 'blur'
             }]
           },
           items: []
-        }
+        },
+
+        inviteFriendBox: false,
+        isAvatarCropper: false,
       };
     },
     created() {
+      this.loadGroupDetail();
       this.loadMembers();
       this.loadNotices();
     },
     methods: {
-      //关闭窗口
+      // 加载群信息
+      loadGroupDetail() {
+        groupDetailServ({
+          group_id: this.groupId
+        }).then(res => {
+          if (res.code == 200) {
+            let result = res.data;
+            this.form.group_name = result.group_name;
+            this.form.profile = result.group_profile;
+            this.form.avatar = result.avatar;
+
+            this.detail = {
+              group_name: result.group_name,
+              profile: result.profile,
+              avatar: result.avatar,
+            };
+          }
+        });
+      },
+
+      // 加载群组成员列表
+      loadMembers() {
+        getGroupMembersServ({
+          group_id: this.groupId
+        }).then(res => {
+          if (res.code == 200) {
+            this.members = res.data.map((item) => {
+              item.is_delete = false;
+              return item;
+            });
+          }
+        });
+      },
+
+      // 加载群组公告列表
+      loadNotices() {
+        getGroupNoticesServ({
+          group_id: this.groupId,
+        }).then(res => {
+          if (res.code == 200) {
+            this.notice.items = res.data.map((item) => {
+              item.isShow = false;
+              return item;
+            });
+          }
+        });
+      },
+
+      // 修改群信息
+      editGroup() {
+        this.$refs.groupForm.validate((valid) => {
+          if (!valid) return false;
+          this.loading = true;
+          editGroupServ({
+            group_id: this.groupId,
+            group_name: this.form.group_name,
+            group_profile: this.form.profile,
+            avatar: this.form.avatar,
+          }).then(res => {
+            if (res.code == 200) {
+              this.detail.group_name = this.form.group_name;
+              this.detail.profile = this.form.profile;
+              this.detail.avatar = this.form.avatar;
+
+              this.$message({
+                message: '信息修改成功...',
+                type: 'success'
+              });
+            } else {
+              this.$message('信息修改失败...');
+            }
+          }).finally(() => {
+            this.loading = false;
+          });
+        });
+      },
+
+      // 关闭窗口
       close() {
         this.$emit("close");
+      },
+
+      // 左侧菜单栏切换事件
+      triggerTab(i) {
+        this.tabIndex = i;
       },
 
       // 关闭头像裁剪弹出层
@@ -249,10 +346,6 @@
         }
       },
 
-      triggerTab(i) {
-        this.tabIndex = i;
-      },
-
       // 显示编辑公告窗口
       showNoticeBox(id = 0, title = '', content = '') {
         this.notice.isShowform = true;
@@ -260,9 +353,13 @@
         this.notice.form.title = title;
         this.notice.form.content = content;
       },
+
+      // 编辑公告提交事件
       onSubmitNotice() {
         this.$refs.noticeForm.validate((valid) => {
           if (!valid) return false;
+
+          this.notice.loading = true;
           editNoticeServ({
             notice_id: this.notice.form.id,
             group_id: this.groupId,
@@ -293,53 +390,28 @@
               position: 'bottom-right',
               type: 'warning'
             });
+          }).finally(() => {
+            this.notice.loading = false;
           });
         });
       },
 
+      // 展开/收起群公告详情
       catNoticeDetail(index) {
         this.notice.items[index].isShow = !this.notice.items[index].isShow;
       },
 
-      // 查看用户信息
+      // 查看群成员信息事件
       catUserDetail(item) {
         this.$refs.userBusinessCard.open(item.user_id);
       },
 
-      // 勾选删除成员按钮
+      // 选中删除成员事件
       triggerDelBtn(i) {
         this.members[i].is_delete = !this.members[i].is_delete;
       },
 
-      // 加载群组成员列表
-      loadMembers() {
-        getGroupMembersServ({
-          group_id: this.groupId,
-        }).then(res => {
-          if (res.code == 200) {
-            this.members = res.data.map((item) => {
-              item.is_delete = false;
-              return item;
-            });
-          }
-        });
-      },
-
-      // 加载群组公告列表
-      loadNotices() {
-        getGroupNoticesServ({
-          group_id: this.groupId,
-        }).then(res => {
-          if (res.code == 200) {
-            this.notice.items = res.data.map((item) => {
-              item.isShow = false;
-              return item;
-            });
-          }
-        });
-      },
-
-      // 批量踢出群组成员
+      // 批量删除群成员
       deleteMembers() {
         let ids = [],
           names = [];
@@ -351,6 +423,12 @@
           }
         });
 
+        if (ids.length == 0) {
+          this.batchDelMember = false;
+          return;
+        }
+
+
         this.$confirm(`您确定要将【 ${names.join('、')}】移出群聊?`, '温馨提示', {
           confirmButtonText: '确定删除',
           cancelButtonText: '取消',
@@ -358,14 +436,22 @@
           customClass: 'border-radius0'
         }).then(() => {
           removeMembersGroupServ({
-            group_id:this.groupId,
-            members_ids:ids
-          }).then(res=>{
-
+            group_id: this.groupId,
+            members_ids: ids
+          }).then(res => {
+            if (res.code == 200) {
+              this.loadMembers();
+            }
           });
         }).catch(() => {
           this.batchDelMember = false;
         });
+      },
+
+      // 好友邀请成功回调方法
+      inviteSuccess() {
+        this.inviteFriendBox = false;
+        this.loadMembers();
       }
     }
   };
@@ -524,8 +610,9 @@
     margin: 5px 0;
   }
 
-  .members .member:hover {
-    border-color: #a3d6ff;
+  .members .member:hover,
+  .members .member-selectd {
+    border-color: #2196f3;
   }
 
   .members .member .item-header {
@@ -549,6 +636,11 @@
     flex-direction: row;
     align-items: center;
     padding: 3px 5px;
+  }
+
+  .members .member .item-header .avatar .nickname {
+    font-size: 13px;
+    margin: 0 5px 0 15px;
   }
 
   .members .member .item-header .tools {
@@ -577,6 +669,7 @@
   }
 
 
+
   /* 群成员相关 end */
 
 
@@ -587,6 +680,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .empty-notice {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .empty-notice span {
+    color: #cccccc;
   }
 
   .notices .notice {
@@ -658,7 +764,7 @@
 
   .notices .notice .content {
     font-size: 12px;
-    line-height: 20px;
+    line-height: 28px;
     font-weight: 500;
     color: #7d7a7a;
   }

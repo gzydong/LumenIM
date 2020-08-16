@@ -24,7 +24,7 @@
             <p class="tip-title">录音(开发中)</p>
           </li>
 
-          <p class="text-tips no-user-select">
+          <p class="text-tips no-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
             <el-popover placement="top-end" width="600" trigger="click">
               <div class="editor-books">

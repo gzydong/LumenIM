@@ -1,7 +1,7 @@
 <template>
   <div class="base-mask">
     <el-container class="container" v-outside="close">
-      <el-header height="60px" class="header no-user-select">
+      <el-header height="60px" class="header no-select">
         <i class="el-icon-close" @click="close"></i>
         <span>消息管理器</span>
         <div class="title" v-if="findSource == 1">好友【{{title}}】</div>
@@ -11,14 +11,14 @@
       <el-header height="38px" class="header-tool">
         <i class="iconfont pointer" :class="{'icon-shouqi2':broadside,'icon-zhankai':!broadside}"
           @click="showBroadside"></i>
-        <div class="search-box no-user-select">
+        <div class="search-box no-select">
           <i class="iconfont icon-sousuo"></i>
           <input type="text" placeholder="关键字搜索" v-model="search.keyword" @input="searchText($event)" />
         </div>
       </el-header>
 
       <el-container class="hv100 ov-hidden">
-        <el-aside width="200px" class="broadside no-user-select" v-show="broadside">
+        <el-aside width="200px" class="broadside no-select" v-show="broadside">
           <el-container class="hv100">
             <el-header height="40px" class="padding0 aside-header">
               <div class="item" :class="{'item-selected':contacts.show == 'friends'}"
@@ -46,7 +46,7 @@
         <!-- 聊天记录阅览 -->
         <el-main v-show="showBox == 0" class="im-container">
           <div class="subheader">
-            <div class="type-items no-user-select">
+            <div class="type-items no-select">
               <span :class="{'color-blue':findType == 0}" @click="changeLoadType(0)">全部</span>
               <span :class="{'color-blue':findType == 1}">图片</span>
               <span :class="{'color-blue':findType == 2}">文件</span>
@@ -55,12 +55,12 @@
 
           <!-- 用户聊天记录 -->
           <div class="im-message lumen-scrollbar" id="recordBox1">
-            <div v-show="records.isEmpty" class="empty-message no-user-select">
+            <div v-show="records.isEmpty" class="empty-message no-select">
               <img src="/static/image/chat-search-no-message.png" />
               <p>未找到匹配结果</p>
             </div>
 
-            <div class="message-group no-user-select" v-show="records.loadStatus == 0 || records.loadStatus == 1">
+            <div class="message-group no-select" v-show="records.loadStatus == 0 || records.loadStatus == 1">
               <div v-if="records.loadStatus == 0" class="load-button" @click="loadChatRecord">
                 <span>加载更多...</span>
               </div>
@@ -161,7 +161,7 @@
                   value-format="yyyy-MM-dd">
                 </el-date-picker>
               </div>
-              <div class="paging no-user-select">
+              <div class="paging no-select">
                 <div @click="triggerPaging(1)"><i class="el-icon-d-arrow-left"></i></div>
                 <div @click="triggerPaging(2)"><i class="el-icon-arrow-left"></i></div>
                 <div><input type="text" v-model="search.page" readonly /></div>
@@ -819,6 +819,9 @@
     margin: auto auto;
     overflow: hidden;
     border-radius: 3px;
+  }
+  .container>>>.el-scrollbar__wrap {
+    overflow-x: hidden;
   }
 
   .header {

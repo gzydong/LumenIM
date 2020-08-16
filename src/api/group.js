@@ -14,6 +14,11 @@ export const createGroupServ = (data) => {
   return post('/api/group/create', data);
 }
 
+// 修改群信息
+export const editGroupServ = (data) => {
+  return post('/api/group/edit', data);
+}
+
 //邀请好友加入群聊服务接口
 export const inviteGroupServ = (data) => {
   return post('/api/group/invite', data);

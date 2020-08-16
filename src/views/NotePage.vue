@@ -48,7 +48,7 @@
             <i class="lumen-icon-sousuo iconfont icon-sousuo"></i>
             <input type="text" placeholder="搜索我的笔记 ..." maxlength="30" ref="querykeywords" @keyup.enter="queryNote" />
           </div>
-          <div class="note-count-title no-user-select">
+          <div class="note-count-title no-select">
             <span>{{notes.length}} 篇笔记</span>
 
             <span v-if="loadNoteStatus == 0" class="load-span">
@@ -177,7 +177,7 @@
               <div class="note-header-tool">
                 <span class="tool-groups" v-popover:fileManager>
                   <i class="el-icon-link"></i>
-                  <span class="no-user-select">笔记附件({{filesManager.files.length}})</span>
+                  <span class="no-select">笔记附件({{filesManager.files.length}})</span>
                   <el-popover ref="fileManager" placement="bottom" trigger="click" :visible-arrow="false">
                     <div class="note-files-manager lumen-scrollbar">
                       <input type="file" ref="uploadNoteFile" @change="uploadAnnex" />
@@ -212,13 +212,13 @@
                 <span class="tool-groups" @click="setAsterisk">
                   <i v-if="markdown.editData.is_asterisk == 1" class="el-icon-star-on"></i>
                   <i v-else class="el-icon-star-off"></i>
-                  <span class="no-user-select">{{markdown.editData.is_asterisk == 1?'取消星标':'星标笔记'}}</span>
+                  <span class="no-select">{{markdown.editData.is_asterisk == 1?'取消星标':'星标笔记'}}</span>
                 </span>
 
                 <span class="tool-groups">
                   <i class="el-icon-collection-tag"></i>
                   <span v-for="tag in markdown.editData.tags">{{tag.tag_name}}&nbsp;|&nbsp;</span>
-                  <span class="add-tags no-user-select" v-popover:tagManager>编辑标签</span>
+                  <span class="add-tags no-select" v-popover:tagManager>编辑标签</span>
                   <el-popover ref="tagManager" placement="bottom" width="300" trigger="click" :visible-arrow="false">
                     <div class="tag-manager">
                       <div class="tag-manager-title">

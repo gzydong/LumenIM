@@ -2,8 +2,8 @@
   <div>
     <div class="user-card animated fadeIn">
       <div class="card-header">
-        <img :src="userCard.imgbag" class="no-user-select" />
-        <div class="user-avatar no-user-select">
+        <img :src="userCard.imgbag" class="no-select" />
+        <div class="user-avatar no-select">
           <img :src="userCard.avatar" :onerror="$store.state.user.detaultAvatar" />
         </div>
         <div class="user-nickname">
@@ -20,7 +20,7 @@
             <span>编辑个签，展示我的独特态度。</span>
           </span>
         </div>
-        <div class="count no-user-select">
+        <div class="count no-select">
           <div>
             <span>好友</span>
             <span>({{userCard.friends_num}})</span>

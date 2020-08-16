@@ -111,7 +111,7 @@
         <!-- 聊天面板容器 -->
         <el-main class="padding0 hv100 ov-hidden">
           <template v-if="index_name == null">
-            <div class="reserve-box no-user-select">
+            <div class="reserve-box no-select">
               <img src="/static/image/chat.png" width="300">
               <p style="text-shadow: rgb(239 232 232) 7px 4px 3px;">Lumen IM 开源的在线聊天软件</p>
             </div>
@@ -128,10 +128,10 @@
     <launch-group-chat v-if="launchGroupShow" @close="launchGroupShow = false" @create-success="groupChatSuccess" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" />
+    <user-business-card ref="userBusinessCard"  />
 
     <!-- 用户查询 -->
-    <search-users ref="searchUsers" @send-friend-msg="sendFriendMsg" />
+    <search-users ref="searchUsers"  />
   </div>
 </template>
 
@@ -315,16 +315,6 @@
           } else {
             addClass(el, 'header-shadow');
           }
-        }
-      },
-
-      // 用户卡片回调事件
-      sendFriendMsg(data) {
-        let index = this.getIndex(data.index_name);
-        if (index >= 0) {
-          this.clickTab(1, data.index_name);
-        } else {
-          this.changeTalk(data.index_name);
         }
       },
 
@@ -842,22 +832,7 @@
     margin-right: 3px;
   }
 
-  .aside-box .talk-item .card .title .card-name .larkc-tag {
-    font-size: 12px;
-    font-weight: 400;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 6px;
-    height: 20px;
-    border-radius: 2px;
-    cursor: default;
-    user-select: none;
-    background-color: #dee0e3;
-    transform: scale(.8);
-    transform-origin: left;
-    flex-shrink: 0;
-  }
+
 
   .aside-box .talk-item .online-color {
     color: #4aa71c;

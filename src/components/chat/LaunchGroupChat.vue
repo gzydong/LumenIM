@@ -2,7 +2,7 @@
   <div class="base-mask">
     <div class="container" v-outside="close">
       <el-container class="hv100">
-        <el-header class="padding0 header no-user-select" height="50px">
+        <el-header class="padding0 header no-select" height="50px">
           <p>
             <i class="iconfont icon-jurassic_add-users"></i>
             <span>{{from.groupId==0?'创建群组':'请选择需要邀请的好友'}}</span>
@@ -12,14 +12,14 @@
         <el-main class="main padding0">
           <el-container class="hv100">
             <el-aside width="250px" class="aside-border">
-              <el-container class="hv100 no-user-select">
+              <el-container class="hv100 no-select">
                 <el-header class="padding0 search-header" height="50px" id="search-header">
                   <el-input placeholder="搜索 | 好友 or 群组" prefix-icon="el-icon-search" v-model="keywords" clearable
                     size="small" />
                 </el-header>
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
-                    <ul class="friend-items no-user-select">
+                    <ul class="friend-items no-select">
                       <li v-for="(item,index) in search" @click="triggerContacts(item)">
                         <el-avatar :size="30" :src="item.avatar" class="avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -38,7 +38,7 @@
             <el-main class="padding0">
               <el-container class="hv100">
                 <el-header height="50px" v-show="!readonly">
-                  <div class="group-from no-user-select">
+                  <div class="group-from no-select">
                     <label>群名称</label>
                     <p>
                       <el-input v-model="from.groupName" placeholder="请输入群名称(必填)" size="small" />
@@ -46,14 +46,14 @@
                   </div>
                 </el-header>
                 <el-header height="40px" :class="{'mt40':!readonly}">
-                  <el-divider content-position="left" class="no-user-select">
+                  <el-divider content-position="left" class="no-select">
                     <span style="color: #c4c5c7;">邀请成员 ({{selected.length}})</span>
                   </el-divider>
                 </el-header>
                 <el-main>
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="selectd-items">
-                      <div class="selectd-item no-user-select" v-for="(item,index) in selected">
+                      <div class="selectd-item no-select" v-for="(item,index) in selected">
                         <el-avatar :size="25" :src="item.avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                         </el-avatar>

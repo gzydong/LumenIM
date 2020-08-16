@@ -33,7 +33,7 @@ let VueApp = new Vue({
   components: {
     App
   },
-  template: '<App/>',
+  template: '<App ref="$view" />',
   data: {
     // WsSocket对象 
     socket: null,
@@ -45,7 +45,7 @@ let VueApp = new Vue({
       receiveId: 0,
       records: [],
       index_name: '',
-    }
+    },
   },
   created() {
     // 判断用户是否登录
@@ -96,6 +96,20 @@ let VueApp = new Vue({
     // 加载用户相关设置信息
     loadUserSetting() {
       console.log('加载用户设置...');
+    },
+
+    // 与指定好友对话
+    dumpTalkPage(index_name) {
+      sessionStorage.setItem("send_message_index_name", index_name);
+
+      if (this.$route.path == '/message') {
+        this.$refs.$view.refreshView();
+        return;
+      }
+
+      this.$router.push({
+        path: "/message"
+      });
     }
   }
 });

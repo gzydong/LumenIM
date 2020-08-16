@@ -2,7 +2,7 @@
   <div>
     <el-container class="vh100" style="position: relative;background-color: white;">
       <!-- 头部信息 -->
-      <el-header class="padding0 panel-header no-user-select">
+      <el-header class="padding0 panel-header no-select">
         <div class="title">
           <span class="badge badge-friend" v-if="params.source == 1">友</span>
           <span class="badge" v-else>群</span>
@@ -29,7 +29,7 @@
       <!-- 主体信息 -->
       <el-main class="padding0 panel-main lumen-scrollbar" ref="lumenChatPanel" id="lumenChatPanel"
         @scroll.native="talkPanelScroll($event)">
-        <div class="record-container no-user-select">
+        <div class="record-container no-select">
           <div class="toolbars">
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
@@ -44,23 +44,19 @@
           :class="{'container-checked':multiSelect.isOpen === true}">
 
           <!-- 系统提示消息 -->
-          <div v-if="item.float =='center'" class="message-system no-user-select">
+          <div v-if="item.float =='center'" class="message-system no-select">
             <span v-if="item.msg_type == 1" v-text="item.content"></span>
 
-            <span v-if="item.msg_type == 3 && item.group_notify.type == 1" class="group-invite-tips">
+            <span v-else-if="item.msg_type == 3 && (item.group_notify.type == 1 || item.group_notify.type == 2)"
+              class="group-invite-tips">
               <a
                 @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
-              <span style="background: none;">邀请了</span>
-              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">{{user.nickname}} 、</a>
-              <span style="background: none;">加入了群聊 ...</span>
-            </span>
-
-            <span v-else-if="item.msg_type == 3 && item.group_notify.type == 2" class="group-invite-tips">
-              <a
-                @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
-              <span style="background: none;">将</span>
-              <a v-for="user in item.group_notify.users" @click="catFriendDetail(user.id,2)">{{user.nickname}} 、</a>
-              <span style="background: none;">踢出了群聊 ...</span>
+              <span>{{item.group_notify.type == 1?'邀请了':'将'}}</span>
+              <template v-for="(user,uidx) in item.group_notify.users">
+                <a @click="catFriendDetail(user.id,2)">{{user.nickname}}</a>
+                <em v-show="uidx < item.group_notify.users.length - 1">、</em>
+              </template>
+              <span>{{item.group_notify.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
 
             <span v-else-if="item.msg_type == 3 && item.group_notify.type == 3" class="group-invite-tips">
@@ -71,7 +67,7 @@
           </div>
 
           <!-- 撤回消息提示 -->
-          <div v-else-if="item.is_revoke == 1" class="message-system no-user-select">
+          <div v-else-if="item.is_revoke == 1" class="message-system no-select">
             <span v-if="$store.state.user.uid == item.user_id" class="recall">你撤回了一条消息 |
               {{sendTime(item.send_time)}}</span>
             <span v-else-if="params.source == 1" class="recall">对方撤回了一条消息 | {{sendTime(item.send_time)}}</span>
@@ -87,7 +83,7 @@
               <i class="el-icon-success" :class="{'selected-record':verifyMultiSelect(item.id)}"></i>
             </div>
 
-            <div class="record-avatar no-user-select">
+            <div class="record-avatar no-select">
               <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)"
                 :onerror="$store.state.user.detaultAvatar" />
             </div>
@@ -179,8 +175,8 @@
           </div>
 
           <!-- 消息发送时间 -->
-          <p class="record-time no-user-select" v-show="compareTime(idx,item.send_time)"
-            v-text="sendTime(item.send_time)"></p>
+          <p class="record-time no-select" v-show="compareTime(idx,item.send_time)" v-text="sendTime(item.send_time)">
+          </p>
         </div>
       </el-main>
 
@@ -229,13 +225,13 @@
       <div class="sidebar-box" :class="{'sidebar-box-show':groupBoxShow}" v-outside="hideChatGroup">
         <user-group v-if="params.source == 2" :group-id="params.receiveId" @close="hideChatGroup"
           @send-group="hideChatGroup" @quit-group="quitGroupSuccess" @disturb-change="disturbChange"
-          @send-friend-msg="sendFriendMsg" @group-info="syncGroupInfo" />
+          @group-info="syncGroupInfo" />
       </div>
 
       <!-- 置底按钮 -->
       <transition name="el-fade-in-linear">
         <div class="tips-board" v-show="tipsBoard" @click="talkPanelScrollBottom">
-          <svg-icon icon-class="mention-down" />
+          <svg-icon icon-class="mention-down" style="width: 10px;" />
           <span>回到底部</span>
         </div>
       </transition>
@@ -257,7 +253,7 @@
       @confirm="confirmSelectContacts" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" />
+    <user-business-card ref="userBusinessCard" />
   </div>
 </template>
 
@@ -991,12 +987,6 @@
       },
       hideChatGroup() {
         this.groupBoxShow = false;
-      },
-
-      //切换聊天对象
-      sendFriendMsg(friendInfo) {
-        this.groupBoxShow = false;
-        this.$emit('change-talk', friendInfo.index_name);
       },
 
       //修改群聊免打扰状态

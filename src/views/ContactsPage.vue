@@ -42,7 +42,7 @@
             </el-header>
 
             <!-- 对话列表栏 -->
-            <el-main class="padding0 main no-user-select">
+            <el-main class="padding0 main no-select">
               <div class="menu-item" :class="{'menu-item-border':activeIndex == 0}" @click="triggerMenu(0)">
                 <span>新的联系人</span>
               </div>
@@ -58,7 +58,7 @@
 
         <!-- 聊天面板容器 -->
         <el-container class="padding0 hv100 ov-hidden panel">
-          <el-header height="60px" class="panel-header no-user-select">
+          <el-header height="60px" class="panel-header no-select">
             <template v-if="activeIndex == 0">
               <p>新的联系人</p>
               <p>
@@ -224,7 +224,7 @@
 
           <div class="broadside-box" v-show="groupDetailId">
             <user-group :group-id="groupDetailId" @close="groupDetailId = 0" @send-group="sendMessage"
-              @disturb-change="disturbChange" @send-friend-msg="sendFriendMsg" @quit-group="quitGroupSuccess" />
+              @disturb-change="disturbChange" @quit-group="quitGroupSuccess" />
           </div>
         </el-container>
       </el-container>
@@ -234,10 +234,10 @@
     <launch-group-chat v-if="launchGroupShow" @close="launchGroupShow = false" @create-success="groupChatSuccess" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFriendMsg" @changeRemark="changeRemark" />
+    <user-business-card ref="userBusinessCard" @changeRemark="changeRemark" />
 
     <!-- 用户查询 -->
-    <search-users ref="searchUsers" @send-friend-msg="sendFriendMsg" />
+    <search-users ref="searchUsers" />
   </div>
 </template>
 
@@ -416,15 +416,7 @@
 
       // 跳转聊天页面
       toTalk(index_name) {
-        sessionStorage.setItem("send_message_index_name", index_name);
-        this.$router.push({
-          path: "/message"
-        });
-      },
-
-      // 给群聊成员发送好友信息
-      sendFriendMsg(friendInfo) {
-        this.toTalk(friendInfo.index_name);
+        this.$root.dumpTalkPage(index_name);
       },
 
       // 发起群聊成功后回调方法

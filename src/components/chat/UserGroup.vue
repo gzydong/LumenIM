@@ -2,34 +2,35 @@
   <el-container class="container">
     <el-header class="header">
       <span>群信息</span>
-      <el-tooltip content="发送消息" placement="top" >
+      <el-tooltip content="发送消息" placement="top">
         <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
       </el-tooltip>
       <i class="close-btn el-icon-close" @click="$emit('close')"></i>
     </el-header>
+
     <el-main class="main lumen-scrollbar">
       <div class="list-item list-item-flex">
         <p>
           <span>群名称：</span>
-          <span class="group-setting-title">{{groupMessage.groupName}}</span>
+          <span class="group-setting-title">{{detail.groupName}}</span>
         </p>
-        <span class="more">群管理</span>
+        <span class="more" @click="isShowManager = true" v-show="detail.is_manager">管理</span>
       </div>
 
       <div class="list-item">
         <span>群主：</span>
-        <span class="group-boss-name">{{ groupMessage.groupOwner }}</span>
+        <span class="group-boss-name">{{ detail.groupOwner }}</span>
       </div>
 
       <div class="list-item">
         <span>我的群昵称：</span>
         <span class="edit-visit-card" v-if="!isEditRemark">
           <span>
-            {{groupMessage.visitCard}}
-            <span v-show="!groupMessage.visitCard" style="font-size: 12px;">添加群名片</span>
+            {{detail.visitCard}}
+            <span v-show="!detail.visitCard" style="font-size: 12px;">添加群名片</span>
           </span>
           <i class="el-icon-edit-outline edit-remark-icon"
-            @click="isEditRemark = true;editRemarkText = groupMessage.visitCard"></i>
+            @click="isEditRemark = true;editRemarkText = detail.visitCard"></i>
         </span>
         <span v-else>
           <input type="text" v-focus v-model="editRemarkText" @keyup.enter="editRemark" class="edit-input" />
@@ -39,33 +40,38 @@
 
       <div class="list-item list-item-flex">
         <span>消息免打扰：</span>
-        <el-switch v-model="groupMessage.disturb" :disabled="disturbDisabled" inactive-color="#e0d6d6"
-          @change="changeDisturb" />
+        <el-switch v-model="detail.disturb" :disabled="disturbDisabled" inactive-color="#e0d6d6"
+          @change="editDisturb" />
       </div>
 
       <div class="list-item">
         <span>群成员：</span>
-        <span>{{groupMessage.members.length}} 人</span>
+        <span>{{members.length}} 人</span>
       </div>
 
       <div class="list-item-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
-
-      <div class="list-item list-item-flex">
-        <span>群公告</span>
-        <span class="more">更多</span>
-      </div>
-
-      <div class="list-item-tips group-notice">暂无群公告</div>
 
       <div class="list-item">
         <span>群简介</span>
       </div>
 
-      <div class="list-item-tips">{{groupMessage.groupProfile?groupMessage.groupProfile:'暂无群简介'}}</div>
+      <div class="list-item-tips">{{detail.groupProfile?detail.groupProfile:'暂无群简介'}}</div>
+
+      <div class="list-item list-item-flex">
+        <span>群公告</span>
+        <span class="more" v-show="detail.group_notice">更多</span>
+      </div>
+
+      <div class="list-item-tips group-notice">
+        <span v-if="detail.group_notice.title">
+          <b>##{{detail.group_notice.title}}##</b> {{detail.group_notice.content}}
+        </span>
+        <span v-else>暂无群公告</span>
+      </div>
 
       <div class="list-item">
-        <p class="lumen-group-invite" @click="addGroupMembers">
-          <i class="el-icon-circle-plus-outline"></i>
+        <p class="group-invite" @click="addGroupMembers">
+          <i class="el-icon-plus"></i>
           <span>邀请好友</span>
         </p>
       </div>
@@ -74,8 +80,7 @@
         <div class="member-box">
           <div class="member-view-box">
             <i class="iconfont icon-sousuo i-sousuo"></i>
-            <input type="text" placeholder="搜索群成员" v-model="searchMember" @input="searchKeyword"
-              @keyup.enter="searchKeyword" />
+            <input type="text" placeholder="搜索群成员" v-model="keywords" />
           </div>
 
           <el-row class="row-header">
@@ -84,8 +89,8 @@
             <el-col :span="5">性别</el-col>
           </el-row>
 
-          <el-row class="row-items" v-for="(member,i) in searchList" :key="i"
-            @click.native="showFriendInfo(member.user_id)">
+          <el-row class="row-items" v-for="(member,i) in searchs" :key="i"
+            @click.native="openUserDetail(member.user_id)">
             <el-col :span="11">
               <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar" width="20px" />
               <span class="nickname">{{member.nickname}}</span>
@@ -102,29 +107,31 @@
         </div>
       </div>
     </el-main>
+
     <el-footer class="footer">
       <button @click="isShowSignout = true">退出该群聊</button>
     </el-footer>
 
-    <div class="signout-confirm-box no-user-select" v-show="isShowSignout">
+    <!-- 退群提示层 -->
+    <div class="signout-box no-select" v-show="isShowSignout">
       <p v-show="signoutStatus == 0">您确认退出当前群聊吗？</p>
       <p v-show="signoutStatus == 0">退群后群聊信息将不能查看</p>
-      <p v-show="signoutStatus == 0" class="signout-button">
+      <p v-show="signoutStatus == 0" class="signout-btn">
         <button @click="signout">确认</button>
         <button @click="isShowSignout = false">取消</button>
       </p>
 
-      <p v-show="signoutStatus == 1" class="signout-button mt38">
+      <p v-show="signoutStatus == 1" class="signout-btn mt38">
         <span style="color: rgb(123, 212, 255);">
           <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i> 正在退出群聊...
         </span>
       </p>
 
-      <p v-show="signoutStatus == 2" class="signout-button mt38">
+      <p v-show="signoutStatus == 2" class="signout-btn mt38">
         <span style="color: #CCCCCC;">退出群聊失败，请3(s)后再试...</span>
       </p>
 
-      <p v-show="signoutStatus == 3" class="signout-button mt38">
+      <p v-show="signoutStatus == 3" class="signout-btn mt38">
         <span style="color: #339e19;">
           <i class="iconfont icon-success_no_circle"></i> 已成功退出群聊...
         </span>
@@ -132,9 +139,12 @@
     </div>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @send-friend-msg="sendFirendMsg" />
+    <user-business-card ref="userBusinessCard"  />
 
-    <launch-group-chat v-if="isShow" :group-id="groupId" @close="isShow = false" @invite-success="inviteSuccess" />
+    <launch-group-chat v-if="inviteFriendBox" :group-id="groupId" @close="inviteFriendBox = false"
+      @invite-success="inviteSuccess" />
+
+    <group-manager v-if="isShowManager" :group-id="groupId" @close="isShowManager = false"></group-manager>
   </el-container>
 </template>
 
@@ -147,17 +157,21 @@
   import {
     groupDetailServ,
     setGroupCardServ,
-    secedeGroupServ
+    secedeGroupServ,
+    getGroupMembersServ
   } from "@/api/group";
 
   //创建群聊组件
   import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
+  import GroupManager from "@/components/chat/GroupManager";
+
   export default {
     name: "user-group",
     components: {
       LaunchGroupChat,
-      UserBusinessCard
+      UserBusinessCard,
+      GroupManager
     },
     props: {
       groupId: {
@@ -167,140 +181,124 @@
     },
     data() {
       return {
-        loadStatus: 0,
-        groupMessage: {
+        detail: {
           groupAvatar: "",
           groupId: 0,
           groupName: "",
           groupOwner: "",
           groupProfile: "",
           disturb: 0,
-          members: [],
-          visitCard: ""
+          visitCard: "",
+          is_manager: false,
+          group_notice: [],
         },
+
+        keywords: '',
+        members: [],
 
         isEditRemark: false,
         editRemarkText: "",
-        searchMember: "",
 
-        reveal: true,
-        searchList: [],
-        isShow: false,
+        inviteFriendBox: false,
         isShowSignout: false,
 
         signoutStatus: 0,
 
-        disturbDisabled: false
+        disturbDisabled: false,
+
+        isShowManager: false,
       };
     },
     watch: {
       groupId: function (newval, oldval) {
         if (newval > 0) {
-          this.groupDetailList();
+          this.loadGroupDetail();
+          this.loadMembers();
         }
+      }
+    },
+    computed: {
+      searchs() {
+        return this.keywords == '' ? this.members : this.members.filter((item, index) => {
+          return item.nickname.match(this.keywords) != null || item.visit_card.match(this.keywords) != null;
+        });
       }
     },
     created() {
       if (parseInt(this.groupId) > 0) {
-        this.groupDetailList();
+        this.loadGroupDetail();
+        this.loadMembers();
       }
     },
     methods: {
-      // 列表点击事件
-      showFriendInfo(user_id) {
-        this.$refs.userBusinessCard.open(user_id);
+      // 加载群组成员列表
+      loadMembers() {
+        getGroupMembersServ({
+          group_id: this.groupId,
+        }).then(res => {
+          if (res.code == 200) {
+            this.members = res.data;
+            this.$emit("group-info", {
+              group_id: this.members.groupId,
+              members_num: this.members.length
+            });
+          }
+        });
       },
-      //发送好友消息
-      sendFirendMsg(firendInfo) {
-        this.$emit('send-friend-msg', firendInfo)
+
+      // 加载群信息
+      loadGroupDetail() {
+        this.isEditRemark = false;
+        groupDetailServ({
+          group_id: this.groupId
+        }).then(res => {
+          if (res.code == 200) {
+            let result = res.data;
+            this.detail.groupAvatar = result.avatar;
+            this.detail.groupId = result.group_id;
+            this.detail.userId = res.data.user_id;
+            this.detail.groupName = result.group_name;
+            this.detail.groupOwner = result.manager_nickname;
+            this.detail.groupProfile = result.group_profile;
+            this.detail.disturb = result.not_disturb == 1 ? true : false;
+            this.detail.visitCard = result.visit_card;
+            this.detail.is_manager = result.is_manager;
+            this.detail.group_notice = result.notice;
+          }
+        });
       },
-      changeDisturb(value) {
+
+      // 设置群免打扰状态
+      editDisturb(value) {
         this.disturbDisabled = true;
         setNotDisturbServ({
           type: 2,
           receive_id: this.groupId,
           not_disturb: value ? 1 : 0
         }).then(res => {
-          this.disturbDisabled = false;
           if (res.code == 200) {
             this.$emit("disturb-change", {
               group_id: this.groupId,
               status: value ? 1 : 0
             });
           } else {
-            this.groupMessage.disturb = value ? 0 : 1;
+            this.detail.disturb = value ? 0 : 1;
           }
         }).catch(err => {
+          this.detail.disturb = value ? 0 : 1;
+        }).finally(() => {
           this.disturbDisabled = false;
-          this.groupMessage.disturb = value ? 0 : 1;
-        });
-      },
-      searchKeyword() {
-        let keyWords = this.searchMember;
-        if (keyWords == "") {
-          this.searchList = this.groupMessage.members;
-          return;
-        }
-
-        this.searchList = this.groupMessage.members.filter((item, i, a) => {
-          if (item.visit_card.match(keyWords) != null) {
-            return item;
-          } else if (item.nickname.match(keyWords) != null) {
-            return item;
-          }
-        });
-      },
-      groupDetailList() {
-        let that = this;
-        this.loadStatus = 0;
-        this.isEditRemark = false;
-        groupDetailServ({
-          group_id: that.groupId
-        }).then(res => {
-          if (res.code == 200) {
-            that.loadStatus = 1;
-            that.searchMember = "";
-            that.groupMessage.groupAvatar = res.data.group_avatar;
-            that.groupMessage.groupId = res.data.group_id;
-            that.groupMessage.userId = res.data.user_id;
-            that.groupMessage.groupName = res.data.group_name;
-            that.groupMessage.groupOwner = res.data.group_owner;
-            that.groupMessage.groupProfile = res.data.group_profile;
-            that.groupMessage.disturb = res.data.not_disturb == 1 ? true : false;
-            that.searchList = that.groupMessage.members = res.data.members;
-
-            let uid = this.$store.state.user.uid;
-            let item = that.groupMessage.members.find((item, key, arr) => {
-              return item.user_id == uid;
-            });
-
-            if (item) {
-              that.groupMessage.visitCard = item.visit_card;
-            }
-
-            that.$emit("group-info", {
-              group_id: that.groupMessage.groupId,
-              members_num: that.groupMessage.members.length
-            });
-          }
         });
       },
 
-      //邀请好友加入群聊
-      addGroupMembers() {
-        sessionStorage.setItem("invite_group_id", this.groupMessage.groupId);
-        this.isShow = true;
-      },
-
-      //提交修改用户群名片
+      // 设置用户群名片
       editRemark() {
-        let that = this;
         if (this.editRemarkText == "") {
           this.isEditRemark = false;
           return;
         }
 
-        if (this.groupMessage.visitCard == this.editRemarkText) {
+        if (this.detail.visitCard == this.editRemarkText) {
           this.isEditRemark = false;
           return;
         }
@@ -310,60 +308,70 @@
           visit_card: this.editRemarkText
         }).then(res => {
           if (res.code == 200) {
-            that.isEditRemark = false;
-            that.groupMessage.visitCard = that.editRemarkText;
+            this.isEditRemark = false;
+            this.detail.visitCard = this.editRemarkText;
           }
         });
       },
 
+      // 查看用户信息
+      openUserDetail(user_id) {
+        this.$refs.userBusinessCard.open(user_id);
+      },
+
+      // 邀请好友加入群聊
+      addGroupMembers() {
+        sessionStorage.setItem("invite_group_id", this.detail.groupId);
+        this.inviteFriendBox = true;
+      },
+
       //邀请好友成功之后的回调事件
       inviteSuccess() {
-        this.isShow = false;
-        this.groupDetailList();
+        this.inviteFriendBox = false;
+        this.loadMembers();
       },
 
       //发送群聊
       sendGroup() {
         chatListCrateServ({
           type: 2,
-          receive_id: this.groupMessage.groupId
+          receive_id: this.detail.groupId
         }).then(res => {
           if (res.code !== 200) return;
           this.$emit("send-group", {
             list_id: res.data.list_id,
-            index_name: `2_${this.groupMessage.groupId}`,
+            index_name: `2_${this.detail.groupId}`,
             type: 2,
-            groupId: this.groupMessage.groupId,
-            avatar: this.groupMessage.groupAvatar,
-            groupName: this.groupMessage.groupName
+            groupId: this.detail.groupId,
+            avatar: this.detail.groupAvatar,
+            groupName: this.detail.groupName
           });
         });
       },
 
       //退出群操操作
       signout() {
-        let that = this;
         this.signoutStatus = 1;
         secedeGroupServ({
-          group_id: this.groupMessage.groupId
+          group_id: this.detail.groupId
         }).then(res => {
           if (res.code == 200) {
-            that.signoutStatus = 3;
-            setTimeout(function () {
-              that.signoutStatus = 0;
-              that.isShowSignout = false;
-              that.$emit("quit-group");
+            this.signoutStatus = 3;
+            setTimeout(() => {
+              this.signoutStatus = 0;
+              this.isShowSignout = false;
+              this.$emit("quit-group");
             }, 1500);
           } else {
-            that.signoutStatus = 2;
-            setTimeout(function () {
-              that.signoutStatus = 0;
+            this.signoutStatus = 2;
+            setTimeout(() => {
+              this.signoutStatus = 0;
             }, 3000);
           }
         }).catch(err => {
-          that.signoutStatus = 2;
-          setTimeout(function () {
-            that.signoutStatus = 0;
+          this.signoutStatus = 2;
+          setTimeout(() => {
+            this.signoutStatus = 0;
           }, 3000);
         });
       }
@@ -487,7 +495,7 @@
     padding-right: 16px;
   }
 
-  .list-item .lumen-group-invite {
+  .list-item .group-invite {
     height: 30px;
     background: #fdf2f2;
     line-height: 30px;
@@ -497,7 +505,7 @@
     border-radius: 2px;
   }
 
-  .list-item .lumen-group-invite:active {
+  .list-item .group-invite:active {
     background: #f7e5e5;
   }
 
@@ -508,9 +516,7 @@
   }
 
   .group-notice {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 22px;
   }
 
   .member-box {
@@ -589,10 +595,14 @@
     width: 100%;
     height: 30px;
     margin-bottom: 3px;
+    font-size: 12px;
   }
 
   .row-items:hover {
-    background-color: #f9efef;
+    background: #f6f6f6;
+    padding: 0 5px;
+    font-size: 12px;
+    border-radius: 3px;
   }
 
   .row-items div {
@@ -630,7 +640,7 @@
     color: #c3bbbb;
   }
 
-  .signout-confirm-box {
+  .signout-box {
     width: 100%;
     height: 100px;
     background: #ffffff;
@@ -643,24 +653,24 @@
     animation: showFooter 0.35s ease-in-out;
   }
 
-  .signout-confirm-box p:first-child {
+  .signout-box p:first-child {
     text-align: center;
     height: 35px;
     line-height: 35px;
   }
 
-  .signout-confirm-box p:nth-child(2) {
+  .signout-box p:nth-child(2) {
     text-align: center;
     font-size: 12px;
     color: #cccccc;
   }
 
-  .signout-button {
+  .signout-btn {
     text-align: center;
     margin-top: 10px;
   }
 
-  .signout-confirm-box button {
+  .signout-box button {
     height: 30px;
     width: 90px;
     line-height: 30px;
@@ -670,12 +680,12 @@
     font-size: 14px;
   }
 
-  .signout-button button:first-child {
+  .signout-btn button:first-child {
     background: #ff3333;
     color: white;
   }
 
-  .signout-button button:last-child {
+  .signout-btn button:last-child {
     background: #f1eded;
   }
 
