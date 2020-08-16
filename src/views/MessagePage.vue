@@ -43,9 +43,9 @@
             </el-header>
 
             <!-- 置顶栏 -->
-            <el-header id="subheader" v-show="topNum > 0" :height="subHeaderPx" class="padding0 subheader">
-              <div class="top-item" v-for="(item,idx) in $store.state.talks.items" v-if="item.is_top"
-                @click="clickTab(2, item.index_name)">
+            <el-header id="subheader" v-show="topItems.length > 0" :height="subHeaderPx" class="padding0 subheader">
+              <div class="top-item" v-for="(item,idx) in topItems" @click="clickTab(2, item.index_name)"
+                :key="item.index_name">
                 <el-tooltip effect="dark" :content="(item.remark_name?item.remark_name:item.name)"
                   placement="top-start">
                   <div class="avatar">
@@ -64,17 +64,17 @@
             <!-- 对话列表栏 -->
             <el-scrollbar :native="false" tag="section" ref="myScrollbar" class="hv100">
               <el-main class="padding0 main">
-                <p class="talk-item-empty" v-if="$store.state.talks.items.length == 0">
+                <p class="talk-item-empty" v-if="$store.state.talks.items.length == 0" key="empty">
                   暂无聊天消息
                 </p>
-                <p class="main-menu" v-else>
+                <p class="main-menu" v-else key="no-empty">
                   <span class="title">消息记录 ({{$store.state.talks.items.length}})</span>
                 </p>
 
                 <!-- 对话列表 -->
-                <div class="talk-item" v-for="(item,idx) in $store.state.talks.items" :key="idx"
+                <div class="talk-item" v-for="(item,idx) in $store.state.talks.items"
                   :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
-                  @contextmenu.prevent="chatItemsMenu(item,$event)">
+                  @contextmenu.prevent="chatItemsMenu(item,$event)" :key="item.index_name">
                   <div class="avatar">
                     <span v-show="!item.avatar">
                       {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
@@ -113,7 +113,7 @@
           <template v-if="index_name == null">
             <div class="reserve-box no-select">
               <img src="/static/image/chat.png" width="300">
-              <p style="text-shadow: rgb(239 232 232) 7px 4px 3px;">Lumen IM 开源的在线聊天软件</p>
+              <p style="text-shadow: rgb(239, 232, 232) 3px -2px 11px;">Lumen IM 开源的在线聊天软件</p>
             </div>
           </template>
           <template v-else>
@@ -128,10 +128,10 @@
     <launch-group-chat v-if="launchGroupShow" @close="launchGroupShow = false" @create-success="groupChatSuccess" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard"  />
+    <user-business-card ref="userBusinessCard" />
 
     <!-- 用户查询 -->
-    <search-users ref="searchUsers"  />
+    <search-users ref="searchUsers" />
   </div>
 </template>
 
@@ -201,21 +201,13 @@
         restaurants: [],
 
         // header 工具菜单
-        subMenu: false,
-
+        subMenu: false
       };
     },
     computed: {
-      // 计算置顶数量
-      topNum() {
-        return this.$store.state.talks.items.filter((item) => {
-          return item.is_top == 1;
-        }).length;
-      },
-
-      // 置顶栏目的高度
+      // 计算置顶栏目的高度
       subHeaderPx() {
-        let num = this.topNum,
+        let num = this.topItems.length,
           len = 65,
           n = 7; // 一排能显示的用户数
 
@@ -245,6 +237,13 @@
         let i = this.getIndex(this.index_name);
         if (i == -1) return 0;
         return this.$store.state.talks.items[i].online == 1;
+      },
+
+      // 置顶列表
+      topItems() {
+        return this.$store.state.talks.items.filter((item) => {
+          return item.is_top == 1;
+        })
       }
     },
     watch: {

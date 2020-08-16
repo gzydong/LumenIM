@@ -47,15 +47,6 @@
   export default {
     name: 'change-email',
     data() {
-      let checkEmail = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('邮箱不能为空'));
-        }
-
-        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-        mailReg.test(value) ? callback() : callback(new Error('请输入正确的邮箱格式'));
-      }
-
       return {
         loading: false,
         form: {
@@ -66,7 +57,11 @@
         rules: {
           email: [{
             required: true,
-            validator: checkEmail,
+            message: '请输入邮箱地址',
+            trigger: 'blur'
+          }, {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
             trigger: 'blur'
           }],
           password: [{

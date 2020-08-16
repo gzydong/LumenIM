@@ -294,14 +294,13 @@
     position: absolute;
     top: 38px;
     left: 0px;
-    height: 20px;
-    line-height: 20px;
-    background: #353434;
+    height: 26px;
+    line-height: 26px;
+    background-color: rgba(31, 35, 41, .9);
     color: white;
     min-width: 30px;
     font-size: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 0 5px;
     border-radius: 2px;
     white-space: pre;
     text-align: center;

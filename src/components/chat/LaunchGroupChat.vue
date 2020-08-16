@@ -20,7 +20,7 @@
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
                     <ul class="friend-items no-select">
-                      <li v-for="(item,index) in search" @click="triggerContacts(item)">
+                      <li v-for="(item,index) in search" :key="item.id" @click="triggerContacts(item)">
                         <el-avatar :size="30" :src="item.avatar" class="avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                         </el-avatar>
@@ -53,7 +53,7 @@
                 <el-main>
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="selectd-items">
-                      <div class="selectd-item no-select" v-for="(item,index) in selected">
+                      <div class="selectd-item no-select" v-for="(item,index) in selected" :key="item.id">
                         <el-avatar :size="25" :src="item.avatar">
                           <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                         </el-avatar>
@@ -305,7 +305,7 @@
     border-top: 1px solid #f5eeee;
   }
 
-  .container .aside-border{
+  .container .aside-border {
     border-right: 1px solid #f5eeee;
   }
 

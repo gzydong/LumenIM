@@ -20,7 +20,7 @@
             <p>正在努力加载中 ...</p>
           </div>
 
-          <div v-else class="message-group" v-for="(record,i) in records">
+          <div v-else class="message-group" v-for="(record,i) in records" :key="record.id">
             <div class="avatar-box">
               <img :src="record.avatar" :onerror="$store.state.user.detaultAvatar" />
             </div>

@@ -70,7 +70,7 @@
             </template>
             <template v-else>
               <div class="article-row" v-for="(note,i) in notes"
-                :class="{'article-row-active':note.id == markdown.editData.loadId}"
+                :class="{'article-row-active':note.id == markdown.editData.loadId}" :key="note.id"
                 @contextmenu.prevent="noteListMenu($event,i,note)">
                 <div class="article-title" @click="catNote(note)">
                   <span v-text="note.title"></span>

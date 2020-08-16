@@ -106,7 +106,8 @@
                   </div>
                 </template>
                 <template>
-                  <div class="data-item" v-for="(item,i) in apply.items" @click="openUserDetail(item.user_id)">
+                  <div class="data-item" v-for="(item,i) in apply.items" @click="openUserDetail(item.user_id)"
+                    :key="item.id">
                     <el-avatar shape="square" :size="35" class="avatar" :src="item.avatar">
                       {{item.nickname.substr(0,1)}}
                     </el-avatar>
@@ -150,7 +151,7 @@
                   </div>
                 </template>
                 <template>
-                  <div class="data-item" v-for="(item,i) in friends.items" @click="openUserDetail(item.id)">
+                  <div class="data-item" v-for="(item,i) in friends.items" @click="openUserDetail(item.id)" :key="item.id">
                     <el-avatar shape="square" :size="35" class="avatar" :src="item.avatar">
                       {{item.nickname.substr(0,1)}}
                     </el-avatar>
@@ -194,7 +195,7 @@
                   </div>
                 </template>
                 <template>
-                  <div class="data-item" v-for="(item,i) in groups.items" @click="groupDetailId = item.id">
+                  <div class="data-item" v-for="(item,i) in groups.items" @click="groupDetailId = item.id" :key="item.id">
                     <el-avatar shape="square" :size="35" class="avatar" :src="item.avatar">
                       {{item.group_name.substr(0,1)}}
                     </el-avatar>

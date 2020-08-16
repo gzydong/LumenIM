@@ -65,7 +65,7 @@
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="members">
                       <div v-for="(member,i) in members" class="member no-select"
-                        :class="{'member-selectd':member.is_delete && batchDelMember}">
+                        :class="{'member-selectd':member.is_delete && batchDelMember}" :key="member.user_id">
                         <div class="item-header">
                           <div class="avatar" @click="catUserDetail(member)">
                             <el-avatar :size="30" :src="member.avatar">
@@ -105,7 +105,7 @@
                     </div>
 
                     <div v-else class="notices">
-                      <div v-for="(item,index) in notice.items" class="notice">
+                      <div v-for="(item,index) in notice.items" :key="item.id" class="notice">
                         <div class="title">
                           <span class="left-title" v-text="item.title"
                             @click="showNoticeBox(item.id,item.title,item.content)"></span>
@@ -154,7 +154,7 @@
     <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard"  />
+    <user-business-card ref="userBusinessCard" />
 
     <launch-group-chat v-if="inviteFriendBox" :group-id="groupId" @close="inviteFriendBox = false"
       @invite-success="inviteSuccess" />

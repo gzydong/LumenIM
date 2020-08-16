@@ -71,7 +71,7 @@
               </div>
             </div>
 
-            <div class="message-group" v-for="(item,i) in records.items">
+            <div class="message-group" v-for="(item,i) in records.items" :key="item.id">
               <div class="avatar-box">
                 <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
               </div>
@@ -180,7 +180,7 @@
               <p>未找到匹配结果</p>
             </div>
 
-            <div class="message-group" v-for="(item,i) in search.items">
+            <div class="message-group" v-for="(item,i) in search.items" :key="item.id">
               <div class="avatar-box">
                 <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
               </div>
@@ -280,7 +280,7 @@
               </div>
             </div>
 
-            <div class="message-group" v-for="(item,i) in query.items" :id="'records-items-'+item.id">
+            <div class="message-group" v-for="(item,i) in query.items" :key="item.id" :id="'records-items-'+item.id">
               <div class="avatar-box">
                 <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
               </div>
@@ -820,6 +820,7 @@
     overflow: hidden;
     border-radius: 3px;
   }
+
   .container>>>.el-scrollbar__wrap {
     overflow-x: hidden;
   }

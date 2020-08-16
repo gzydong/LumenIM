@@ -33,7 +33,7 @@ let VueApp = new Vue({
   components: {
     App
   },
-  template: '<App ref="$view" />',
+  template: '<App ref="view" />',
   data: {
     // WsSocket对象 
     socket: null,
@@ -98,12 +98,12 @@ let VueApp = new Vue({
       console.log('加载用户设置...');
     },
 
-    // 与指定好友对话
+    // 跳转到指定好友对话页
     dumpTalkPage(index_name) {
       sessionStorage.setItem("send_message_index_name", index_name);
 
       if (this.$route.path == '/message') {
-        this.$refs.$view.refreshView();
+        this.$refs.view.refreshView();
         return;
       }
 

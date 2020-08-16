@@ -89,7 +89,7 @@
             <el-col :span="5">性别</el-col>
           </el-row>
 
-          <el-row class="row-items" v-for="(member,i) in searchs" :key="i"
+          <el-row class="row-items" v-for="(member,i) in searchs" :key="member.user_id"
             @click.native="openUserDetail(member.user_id)">
             <el-col :span="11">
               <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar" width="20px" />
@@ -139,7 +139,7 @@
     </div>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard"  />
+    <user-business-card ref="userBusinessCard" />
 
     <launch-group-chat v-if="inviteFriendBox" :group-id="groupId" @close="inviteFriendBox = false"
       @invite-success="inviteSuccess" />

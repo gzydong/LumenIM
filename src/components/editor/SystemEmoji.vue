@@ -153,7 +153,6 @@
     -webkit-line-clamp: 2;
     width: 200px;
     color: #615d5d;
-    font-weight: 300;
   }
 
   .container .mian .pkg-status {

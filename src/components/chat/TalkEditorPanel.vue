@@ -41,7 +41,7 @@
         </div>
 
         <div class="record-container" v-for="(item,idx) in records"
-          :class="{'container-checked':multiSelect.isOpen === true}">
+          :class="{'container-checked':multiSelect.isOpen === true}" :key="item.id">
 
           <!-- 系统提示消息 -->
           <div v-if="item.float =='center'" class="message-system no-select">
@@ -266,7 +266,7 @@
   import SelectContacts from "@/components/chat/SelectContacts";
   import UserGroup from "@/components/chat/UserGroup";
   import CodeBlock from "@/components/chat/CodeBlock";
-  import Editor from "@/components/editor/Editor";
+  import Editor from "@/components/editor";
 
   import Prism from "prismjs";
   import "prismjs/themes/prism-okaidia.css";
