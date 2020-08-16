@@ -612,7 +612,10 @@
         if (this.records.loadStatus == 1) return;
 
         this.records.loadStatus = 1;
-        let scroll = document.getElementById("recordBox1").scrollHeight;
+
+        let elBox = document.getElementById("recordBox1");
+
+        let scroll = elBox ? elBox.scrollHeight : 0;
         findChatRecordsServ(data).then(res => {
           if (res.code != 200) return;
 
