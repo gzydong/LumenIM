@@ -6,7 +6,7 @@ import talks from './modules/talk';
 import notify from './modules/notify';
 import settings from './modules/settings';
 
-import states from './states';
+import state from './state';
 import getters from './getters';
 import mutations from './mutations';
 
@@ -21,7 +21,7 @@ const store = new Vuex.Store({
   },
 
   // 根级别的 state
-  state: states,
+  state,
 
   getters,
 

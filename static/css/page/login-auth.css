@@ -69,6 +69,13 @@
   border-radius: 1px !important;
 }
 
+.links{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 400;
+}
+
 
 .preview-account {
   text-align: center;

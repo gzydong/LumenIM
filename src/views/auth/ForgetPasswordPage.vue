@@ -35,11 +35,10 @@
                 </el-button>
               </el-form-item>
               <el-form-item>
-                <el-link type="primary" @click="toLink('/register')" :underline="false"
-                  style="float: left;font-weight: 400;">注册账号</el-link>
-                <el-link type="primary" @click="toLink('/login')" :underline="false"
-                  style="float: right;font-weight: 400;">
-                  已有账号，立即登录?</el-link>
+                <div class="links">
+                  <el-link type="primary" @click="toLink('/register')" :underline="false">注册账号</el-link>
+                  <el-link type="primary" @click="toLink('/login')" :underline="false">已有账号，立即登录?</el-link>
+                </div>
               </el-form-item>
             </el-form>
           </div>

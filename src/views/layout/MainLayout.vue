@@ -69,7 +69,7 @@
     </audio>
 
     <!-- 用户卡片 -->
-    <el-popover ref="usercard" placement="right-start" trigger="click" :visible-arrow="false" popper-class="padding0">
+    <el-popover ref="usercard" placement="right-start" trigger="hover" :visible-arrow="false" popper-class="padding0">
       <user-card />
     </el-popover>
 
@@ -84,6 +84,10 @@
   import {
     findFriendApplyNumServ
   } from '@/api/user';
+
+
+  // let audio = new Audio("/static/image/59y888piCn92.mp3"); //这里的路径写上mp3文件在项目中的绝对路径
+  // audio.play(); //播放
 
   export default {
     name: "main-layout",

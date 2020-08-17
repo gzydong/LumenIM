@@ -22,10 +22,10 @@
                 </el-button>
               </el-form-item>
               <el-form-item>
-                <el-link type="primary" @click="toLink('/forget')" :underline="false"
-                  style="float: left;font-weight: 400;">找回密码</el-link>
-                <el-link type="primary" @click="toLink('/register')" :underline="false"
-                  style="float: right;font-weight: 400;">还没有账号？立即注册</el-link>
+                <div class="links">
+                  <el-link type="primary" @click="toLink('/forget')" :underline="false">找回密码</el-link>
+                  <el-link type="primary" @click="toLink('/register')" :underline="false">还没有账号？立即注册</el-link>
+                </div>
               </el-form-item>
 
               <p style="margin-top: 50px;">
