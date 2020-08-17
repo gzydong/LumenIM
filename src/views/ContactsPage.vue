@@ -10,20 +10,6 @@
               <div class="from">
                 <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索(开发中)"
                   prefix-icon="el-icon-search" size="small" clearable>
-                  <template slot-scope="{ item }">
-                    <div class="search-item">
-                      <div class="avatar">
-                        <span v-show="!item.avatar">
-                          {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
-                        </span>
-                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
-                      </div>
-                      <div class="card">
-                        <div class="title">{{item.name}}</div>
-                        <div class="content">备注：{{item.remark_name}}</div>
-                      </div>
-                    </div>
-                  </template>
                 </el-autocomplete>
               </div>
 
@@ -332,16 +318,16 @@
     methods: {
       // 搜索框查询
       querySearch(queryString, cb) {
-        let restaurants = this.restaurants;
+        // let restaurants = this.restaurants;
 
-        let createFilter = (queryString) => {
-          return (restaurant) => {
-            return (restaurant.value.indexOf(queryString) === 0);
-          };
-        };
+        // let createFilter = (queryString) => {
+        //   return (restaurant) => {
+        //     return (restaurant.value.indexOf(queryString) === 0);
+        //   };
+        // };
 
-        let results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
-
+        // let results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
+        let results = this.restaurants;
         cb(results);
       },
 

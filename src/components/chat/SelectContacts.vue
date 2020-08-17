@@ -320,9 +320,9 @@
   }
 
   .selectd-item {
-    width: 50px;
+    width: 23%;
     height: 65px;
-    margin: 3px 5px 0px 4px;
+    margin: 6px 2px 0px 2px;
     cursor: pointer;
     box-sizing: border-box;
     display: flex;
@@ -369,6 +369,7 @@
     align-items: center;
     color: white;
     transition: ease .5s;
+    border-radius: 2px;
   }
 
   .selectd-item:hover .del-mask {

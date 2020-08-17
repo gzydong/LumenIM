@@ -64,7 +64,7 @@
                 <el-main class="padding0">
                   <el-scrollbar :native="false" tag="section" class="hv100">
                     <div class="members">
-                      <div v-for="(member,i) in members" class="member no-select"
+                      <div v-for="(member,i) in filterMembers" class="member no-select"
                         :class="{'member-selectd':member.is_delete && batchDelMember}" :key="member.user_id">
                         <div class="item-header">
                           <div class="avatar" @click="catUserDetail(member)">
@@ -75,7 +75,7 @@
                             <span class="larkc-tag" v-show="member.is_manager">群主</span>
                           </div>
                           <div class="tools" v-show="batchDelMember && !member.is_manager">
-                            <i class="el-icon-success" @click.stop="triggerDelBtn(i)"
+                            <i class="el-icon-success" @click.stop="triggerDelBtn(member)"
                               :class="{'is-delete':member.is_delete}"></i>
                           </div>
                         </div>
@@ -245,6 +245,14 @@
         isAvatarCropper: false,
       };
     },
+    computed: {
+      filterMembers() {
+        return this.searchMembers == '' ? this.members : this.members.filter((item, index) => {
+          return item.nickname.match(this.searchMembers) != null || item.visit_card.match(this.searchMembers) !=
+            null;
+        });
+      }
+    },
     created() {
       this.loadGroupDetail();
       this.loadMembers();
@@ -407,7 +415,11 @@
       },
 
       // 选中删除成员事件
-      triggerDelBtn(i) {
+      triggerDelBtn(member) {
+        let i = this.members.findIndex((item) => {
+          return item.id == member.id;
+        });
+
         this.members[i].is_delete = !this.members[i].is_delete;
       },
 
@@ -428,7 +440,6 @@
           return;
         }
 
-
         this.$confirm(`您确定要将【 ${names.join('、')}】移出群聊?`, '温馨提示', {
           confirmButtonText: '确定删除',
           cancelButtonText: '取消',
@@ -444,6 +455,9 @@
             }
           });
         }).catch(() => {
+          this.members.map((item) => {
+            return item.is_delete = false;
+          });
           this.batchDelMember = false;
         });
       },
@@ -602,12 +616,13 @@
   }
 
   .members .member {
-    width: 49%;
+    width: 48%;
     height: 70px;
     border-radius: 3px;
     cursor: pointer;
     border: 1px dashed #e2dcdc;
     margin: 5px 0;
+    padding: 3px;
   }
 
   .members .member:hover,

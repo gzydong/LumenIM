@@ -44,6 +44,11 @@
           @change="editDisturb" />
       </div>
 
+      <div class="list-item list-item-flex">
+        <span>全员禁言：</span>
+        <el-switch v-model="detail.no_message" inactive-color="#e0d6d6" />
+      </div>
+
       <div class="list-item">
         <span>群成员：</span>
         <span>{{members.length}} 人</span>
@@ -188,6 +193,7 @@
           groupOwner: "",
           groupProfile: "",
           disturb: 0,
+          no_message: false,
           visitCard: "",
           is_manager: false,
           group_notice: [],
