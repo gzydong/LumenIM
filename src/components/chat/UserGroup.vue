@@ -92,7 +92,7 @@
           <el-row class="row-items" v-for="(member,i) in searchs" :key="member.user_id"
             @click.native="openUserDetail(member.user_id)">
             <el-col :span="11">
-              <img :src="member.avatar" :onerror="$store.state.user.detaultAvatar" width="20px" />
+              <img :src="member.avatar" :onerror="$store.state.detaultAvatar" width="20px" />
               <span class="nickname">{{member.nickname}}</span>
             </el-col>
             <el-col :span="8">

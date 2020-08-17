@@ -85,7 +85,7 @@
 
             <div class="record-avatar no-select">
               <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)"
-                :onerror="$store.state.user.detaultAvatar" />
+                :onerror="$store.state.detaultAvatar" />
             </div>
 
             <div class="talk-container">

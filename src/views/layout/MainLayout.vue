@@ -5,7 +5,7 @@
         <el-container class="hv100 ov-hidden">
           <el-header height="100px" class="padding0">
             <div class="userlogo" v-popover:usercard>
-              <img :src="$store.state.user.avatar" :onerror="$store.state.user.detaultAvatar" />
+              <img :src="$store.state.user.avatar" :onerror="$store.state.detaultAvatar" />
             </div>
             <p class="user-status">
               <span class="online" v-if="$store.state.socketStatus">在线</span>
@@ -73,8 +73,8 @@
       <user-card />
     </el-popover>
 
-    <div class="copyright no-select" v-show="$store.state.settings.themeMode == false"
-      v-html="$store.state.copyright"></div>
+    <div class="copyright no-select" v-show="$store.state.settings.themeMode == false" v-html="$store.state.copyright">
+    </div>
   </div>
 </template>
 

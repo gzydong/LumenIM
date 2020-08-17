@@ -16,7 +16,7 @@
                         <span v-show="!item.avatar">
                           {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
                         </span>
-                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
                       </div>
                       <div class="card">
                         <div class="title">{{item.name}}</div>

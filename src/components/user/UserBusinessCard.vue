@@ -9,7 +9,7 @@
         <div class="user-header">
           <div class="avatar">
             <div class="avatar-box">
-              <img :src="userInfo.avatar" :onerror="$store.state.user.detaultAvatar" alt="">
+              <img :src="userInfo.avatar" :onerror="$store.state.detaultAvatar" alt="">
             </div>
           </div>
           <div class="nickname">

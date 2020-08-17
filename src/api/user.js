@@ -79,6 +79,12 @@ export const findUserDetailServ = () => {
   return get('/api/user/detail');
 }
 
+//获取用户相关设置信息
+export const findUserSettingServ = () => {
+  return get('/api/user/setting');
+}
+
+
 //查询好友申请未读数量服务接口
 export const findFriendApplyNumServ = () => {
   return get('/api/user/friend-apply-num');
@@ -113,4 +119,3 @@ export const findUserGroupsServ = () => {
 export const sendEmailCodeServ = (data) => {
   return post('/api/user/send-change-email-code', data);
 }
-

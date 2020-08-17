@@ -26,6 +26,11 @@ import {
 } from '@/utils/auth';
 
 
+import {
+  findUserSettingServ
+} from "@/api/user";
+
+
 let VueApp = new Vue({
   el: '#app',
   router,
@@ -50,11 +55,16 @@ let VueApp = new Vue({
   created() {
     // 判断用户是否登录
     if (this.$store.getters.loginStatus) {
-      this.loadWebsocket();
-      this.loadUserSetting();
+      this.initialize();
     }
   },
   methods: {
+    // 页面初始化设置
+    initialize() {
+      this.loadWebsocket();
+      this.loadUserSetting();
+    },
+
     // 连接websocket服务器
     loadWebsocket() {
       let app = this,
@@ -93,9 +103,22 @@ let VueApp = new Vue({
       this.message.index_name = source + '_' + receive_id;
     },
 
-    // 加载用户相关设置信息
+    // 加载用户相关设置信息，更新本地缓存
     loadUserSetting() {
-      console.log('加载用户设置...');
+      findUserSettingServ().then(res => {
+        if (res.code == 200) {
+          let setting = res.data.setting;
+          let userInfo = res.data.user_info;
+
+          this.$store.commit('UPDATE_USER_INFO', {
+            uid: userInfo.uid,
+            nickname: userInfo.nickname,
+            sex: userInfo.gender,
+            signature: userInfo.motto,
+            avatar: userInfo.avatar
+          });
+        }
+      });
     },
 
     // 跳转到指定好友对话页

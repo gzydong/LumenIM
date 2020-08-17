@@ -17,7 +17,7 @@
                         <span v-show="!item.avatar">
                           {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
                         </span>
-                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
                       </div>
                       <div class="card">
                         <div class="title">{{item.name}}</div>
@@ -45,14 +45,14 @@
             <!-- 置顶栏 -->
             <el-header id="subheader" v-show="topItems.length > 0" :height="subHeaderPx" class="padding0 subheader">
               <div class="top-item" v-for="(item,idx) in topItems" @click="clickTab(2, item.index_name)"
-                :key="item.index_name">
+                :key="item.index_name" @contextmenu.prevent="topItemsMenu(item,$event)">
                 <el-tooltip effect="dark" :content="(item.remark_name?item.remark_name:item.name)"
                   placement="top-start">
                   <div class="avatar">
                     <span v-show="!item.avatar">
                       {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
                     </span>
-                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
                   </div>
                 </el-tooltip>
 
@@ -74,13 +74,14 @@
                 <!-- 对话列表 -->
                 <div class="talk-item" v-for="(item,idx) in $store.state.talks.items"
                   :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
-                  @contextmenu.prevent="chatItemsMenu(item,$event)" :key="item.index_name">
+                  @contextmenu.prevent="talkItemsMenu(item,$event)" :key="item.index_name">
                   <div class="avatar">
                     <span v-show="!item.avatar">
                       {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
                     </span>
-
-                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                    <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
+                    <div class="top-mask" v-show="item.is_top == 0" @click.stop="topChatItem(item)"><i
+                        class="el-icon-top"></i></div>
                   </div>
                   <div class="card">
                     <div class="title">
@@ -113,7 +114,7 @@
           <template v-if="index_name == null">
             <div class="reserve-box no-select">
               <img src="/static/image/chat.png" width="300">
-              <p style="text-shadow: rgb(239, 232, 232) 3px -2px 11px;">Lumen IM 开源的在线聊天软件</p>
+              <p>Lumen IM 开源的在线聊天软件</p>
             </div>
           </template>
           <template v-else>
@@ -154,7 +155,8 @@
   } from "@/api/chat";
 
   import {
-    removeFriendServ
+    removeFriendServ,
+    friendRemarkEditServ
   } from "@/api/user";
 
   import {
@@ -190,9 +192,6 @@
           receiveId: 0,
           nickname: '',
         },
-
-        //用户对话列表加载状态
-        dataStatus: 0,
 
         // 查询关键词
         input: '',
@@ -277,8 +276,10 @@
         }
       }
     },
-    mounted() {
+    created() {
       this.loadChatList();
+    },
+    mounted() {
       this.scrollEvent();
     },
     destroyed() {
@@ -337,18 +338,12 @@
 
       // 获取用户对话列表
       loadChatList() {
-        if (this.$store.state.talks.items.length == 0) {
-          this.dataStatus = 0;
-        }
-
         chatListsServ().then(res => {
           if (res.code == 200) {
             this.$store.commit({
               type: "SET_TALK_ITEM",
               items: res.data.map(item => packTalkItem(item))
             });
-
-            this.dataStatus = 1;
 
             let index_name = sessionStorage.getItem("send_message_index_name");
             if (index_name) {
@@ -358,11 +353,7 @@
 
               sessionStorage.removeItem("send_message_index_name");
             }
-          } else {
-            this.dataStatus = 2;
           }
-        }).catch(err => {
-          this.dataStatus = 2;
         });
       },
 
@@ -424,7 +415,7 @@
       },
 
       // 对话列表的右键自定义菜单
-      chatItemsMenu(data, event) {
+      talkItemsMenu(data, event) {
         let item = data;
         let items = {
           items: [{
@@ -439,9 +430,8 @@
               label: "修改备注",
               icon: "el-icon-edit-outline",
               disabled: item.type == 2,
-
               onClick: () => {
-                alert('修改好友备注，开发中...');
+                this.editFriendRemarks(item);
               }
             },
             {
@@ -488,6 +478,25 @@
               }
             },
           ],
+          event: event,
+          zIndex: 3
+        };
+
+        this.$contextmenu(items);
+        return false;
+      },
+
+      // 置顶栏右键菜单栏
+      topItemsMenu(data, event) {
+        let item = data;
+        let items = {
+          items: [{
+            label: item.is_top == 0 ? "会话置顶" : "取消置顶",
+            icon: "el-icon-top",
+            onClick: () => {
+              this.topChatItem(item);
+            }
+          }],
           event: event,
           zIndex: 3
         };
@@ -572,6 +581,59 @@
             this.$store.commit('REMOVE_TALK_ITEM', item.index_name);
           }
         });
+      },
+
+      // 修改好友备注信息
+      editFriendRemarks(item) {
+        let title = `您正在设置【${item.name}】好友的备注信息`;
+
+        if (item.remark_name) {
+          title += `，当前备注为【${item.remark_name}】`;
+        }
+
+        this.$prompt(title, '修改备注', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          customClass: 'border-radius0',
+          inputPlaceholder: '请设置好友备注信息',
+          inputValue: item.remark_name ? item.remark_name : item.name,
+          inputValidator(val) {
+            return (val == null || val == '') ? '好友备注不能为空' : true;
+          }
+        }).then(({
+          value
+        }) => {
+          if (value == item.remark_name) {
+            return false;
+          }
+
+          friendRemarkEditServ({
+            friend_id: item.friend_id,
+            remarks: value
+          }).then(res => {
+            if (res.code == 200) {
+              this.$store.commit({
+                type: "UPDATE_TALK_ITEM",
+                key: this.getIndex(item.index_name),
+                item: {
+                  remark_name: value
+                }
+              });
+
+              this.$notify({
+                title: '成功',
+                message: '好友备注修改成功...',
+                type: 'success'
+              });
+            } else {
+              this.$notify({
+                title: '消息',
+                message: '好友备注修改失败，请稍后再试...',
+                type: 'warning'
+              });
+            }
+          })
+        }).catch(() => {});
       }
     }
   };
@@ -769,7 +831,7 @@
     background-color: #eff0f1;
   }
 
-  .aside-box .talk-item .avatar {
+  .talk-item .avatar {
     height: 35px;
     width: 35px;
     flex-basis: 35px;
@@ -787,14 +849,32 @@
     overflow: hidden;
   }
 
-  .aside-box .talk-item .avatar img {
+  .talk-item .avatar img {
     width: 100%;
     height: 100%;
     background-color: white;
     border-radius: 3px;
   }
 
-  .aside-box .talk-item .card {
+  .talk-item .avatar .top-mask {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 25, 29, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .talk-item .avatar:hover .top-mask {
+    display: flex;
+  }
+
+  .talk-item .card {
     height: 40px;
     display: flex;
     align-content: center;
@@ -804,14 +884,14 @@
     overflow: hidden;
   }
 
-  .aside-box .talk-item .card .title {
+  .talk-item .card .title {
     width: 100%;
     height: 20px;
     display: flex;
     align-items: center;
   }
 
-  .aside-box .talk-item .card .title .card-name {
+  .talk-item .card .title .card-name {
     color: #1f2329;
     font-size: 14px;
     line-height: 20px;
@@ -823,7 +903,7 @@
     overflow: hidden;
   }
 
-  .aside-box .talk-item .card .title .card-name .nickname {
+  .talk-item .card .title .card-name .nickname {
     font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
@@ -831,9 +911,7 @@
     margin-right: 3px;
   }
 
-
-
-  .aside-box .talk-item .online-color {
+  .talk-item .online-color {
     color: #4aa71c;
     font-weight: 400;
   }
@@ -888,6 +966,7 @@
     font-size: 24px;
     color: #d8dae2;
     background-color: white;
+    text-shadow: rgb(239, 232, 232) 3px -2px 11px;
   }
 
   /* search-item */

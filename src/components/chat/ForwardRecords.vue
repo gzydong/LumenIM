@@ -22,7 +22,7 @@
 
           <div v-else class="message-group" v-for="(record,i) in records" :key="record.id">
             <div class="avatar-box">
-              <img :src="record.avatar" :onerror="$store.state.user.detaultAvatar" />
+              <img :src="record.avatar" :onerror="$store.state.detaultAvatar" />
             </div>
             <div class="contnet-box">
               <div class="message-header">

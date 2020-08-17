@@ -11,7 +11,8 @@
             <el-form-item label="电子邮箱:">
               <p>
                 <span>{{form.email?form.email:'未设置邮箱'}}</span>
-                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;font-weight: 300;" @click="toEmail">{{form.email?'修改邮箱':'设置邮箱'}}</el-button>
+                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;font-weight: 300;"
+                  @click="toEmail">{{form.email?'修改邮箱':'设置邮箱'}}</el-button>
               </p>
             </el-form-item>
             <el-form-item label="昵称:" prop="nickname">
@@ -128,12 +129,17 @@
           gender: this.form.gender
         }).then((res) => {
           if (res.code == 200) {
+            this.$store.commit('UPDATE_USER_INFO', {
+              nickname: this.form.nickname,
+              sex: this.form.gender,
+              signature: this.form.motto,
+              avatar: this.form.avatar
+            });
+
             this.$message({
               message: '信息修改成功...',
               type: 'success'
             });
-
-            _this.$store.dispatch('ACT_USER_UPDATE_AVATAR', this.form.avatar);
           }
         }).finally(function () {
           _this.loading = false;

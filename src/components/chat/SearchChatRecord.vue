@@ -73,7 +73,7 @@
 
             <div class="message-group" v-for="(item,i) in records.items" :key="item.id">
               <div class="avatar-box">
-                <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                <img :src="item.avatar" :onerror="$store.state.detaultAvatar" />
               </div>
               <div class="message-main">
                 <div class="nickname">
@@ -182,7 +182,7 @@
 
             <div class="message-group" v-for="(item,i) in search.items" :key="item.id">
               <div class="avatar-box">
-                <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                <img :src="item.avatar" :onerror="$store.state.detaultAvatar" />
               </div>
               <div class="message-main">
                 <div class="nickname">
@@ -282,7 +282,7 @@
 
             <div class="message-group" v-for="(item,i) in query.items" :key="item.id" :id="'records-items-'+item.id">
               <div class="avatar-box">
-                <img :src="item.avatar" :onerror="$store.state.user.detaultAvatar" />
+                <img :src="item.avatar" :onerror="$store.state.detaultAvatar" />
               </div>
               <div class="message-main">
                 <div class="nickname" :class="{'nickname-bg':item.id == query.initial_id}">

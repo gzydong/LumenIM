@@ -57,6 +57,11 @@
     loginServ
   } from "@/api/user";
 
+  import {
+    setToken,
+    setUserInfo
+  } from '@/utils/auth';
+
   import validate from "@/utils/validate";
 
   export default {
@@ -120,24 +125,20 @@
         }).then(res => {
           this.loginLoading = false;
           if (res.code == 200) {
-            this.$store.dispatch("ACT_USER_LOGIN", {
-              authInfo: {
-                access_token: res.data.access_token,
-                expires_in: res.data.expires_in
-              },
-              userInfo: res.data.userInfo
-            });
+            let result = res.data;
 
-            this.$root.loadWebsocket();
-            this.$root.loadUserSetting();
+            // 保存授权信息到本地缓存
+            setToken(result.authorize.access_token, result.authorize.expires_in);
+
+            this.$store.commit("UPDATE_USER_INFO", result.userInfo);
+            this.$store.commit("UPDATE_LOGIN_STATUS");
+
+            this.$root.initialize();
             this.$router.push({
               path: "/"
             });
           } else {
-            this.$notify({
-              title: '登录提示',
-              message: '登录密码不正确或账号不存在...'
-            });
+            this.$message('登录密码不正确或账号不存在...');
           }
         }).catch(err => {
           this.loginLoading = false;
