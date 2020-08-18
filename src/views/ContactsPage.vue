@@ -86,7 +86,7 @@
               </template>
               <template v-if="apply.status == 1">
                 <template v-if="apply.items.length == 0">
-                  <div class="preloading">
+                  <div class="preloading" style="height: 50%;">
                     <img src="/static/image/no-oncall.6b776fcf.png" width="180">
                     <p>暂无联系人申请</p>
                   </div>
@@ -102,14 +102,18 @@
                         <span class="name">{{item.nickname}}</span>
                         <div class="larkc-tag wait" v-show="item.status == 0">待处理</div>
                         <div class="larkc-tag agree" v-show="item.status == 1">已同意</div>
-                        <div class="larkc-tag" v-show="item.status == 2">已拒绝</div>
                       </div>
                       <div class="content">[申请时间] {{item.created_at}} ~ [备注说明] {{item.remarks}}</div>
                     </div>
 
-                    <div class="apply-from" v-if="item.status == 0" @click.prevent.stop>
-                      <el-button size="mini" round type="primary" @click="handleFrom(1,item)">同意</el-button>
-                      <el-button size="mini" round @click="handleFrom(2,item)">拒绝</el-button>
+                    <div class="apply-from" @click.prevent.stop>
+                      <el-button size="mini" type="primary" icon="el-icon-check" v-show="item.status == 0"
+                        @click="handleFrom(item)">同意申请
+                      </el-button>
+                      <el-button size="mini" type="primary" icon="el-icon-s-promotion" v-show="item.status == 1"
+                        @click="toTalk(1,`1_${item.id}`)">发送消息</el-button>
+                      <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteFriendApply(item)">删除记录
+                      </el-button>
                     </div>
                   </div>
                 </template>
@@ -137,7 +141,8 @@
                   </div>
                 </template>
                 <template>
-                  <div class="data-item" v-for="(item,i) in friends.items" @click="openUserDetail(item.id)" :key="item.id">
+                  <div class="data-item" v-for="(item,i) in friends.items" @click="openUserDetail(item.id)"
+                    :key="item.id">
                     <el-avatar shape="square" :size="35" class="avatar" :src="item.avatar">
                       {{item.nickname.substr(0,1)}}
                     </el-avatar>
@@ -150,9 +155,9 @@
                     </div>
 
                     <div class="apply-from" @click.prevent.stop>
-                      <el-button size="mini" round type="primary" icon="el-icon-s-promotion"
-                        @click="toTalk(`1_${item.id}`)">发送消息</el-button>
-                      <el-button size="mini" round type="danger" icon="el-icon-delete" @click="deleteFriend(item)">删除好友
+                      <el-button size="mini" type="primary" icon="el-icon-s-promotion"
+                        @click="toTalk(1,`1_${item.id}`)">发送消息</el-button>
+                      <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteFriend(item)">删除好友
                       </el-button>
                     </div>
                   </div>
@@ -181,7 +186,8 @@
                   </div>
                 </template>
                 <template>
-                  <div class="data-item" v-for="(item,i) in groups.items" @click="groupDetailId = item.id" :key="item.id">
+                  <div class="data-item" v-for="(item,i) in groups.items" @click="groupDetailId = item.id"
+                    :key="item.id">
                     <el-avatar shape="square" :size="35" class="avatar" :src="item.avatar">
                       {{item.group_name.substr(0,1)}}
                     </el-avatar>
@@ -197,9 +203,9 @@
                       <div class="content">[简介] ~ {{item.group_profile}}</div>
 
                       <div class="apply-from" @click.prevent.stop>
-                        <el-button size="mini" round type="primary" icon="el-icon-s-promotion"
-                          @click="toTalk(`2_${item.id}`)">发送消息</el-button>
-                        <el-button size="mini" round type="danger" icon="el-icon-delete" @click="deleteGroup(item)">退出群聊
+                        <el-button size="mini" type="primary" icon="el-icon-s-promotion"
+                          @click="toTalk(2,`2_${item.id}`)">发送消息</el-button>
+                        <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteGroup(item)">退出群聊
                         </el-button>
                       </div>
                     </div>
@@ -240,12 +246,16 @@
     findFriendApplyServ,
     handleFriendApplyServ,
     findUserGroupsServ,
-    removeFriendServ
+    removeFriendServ,
+    deleteFriendApplyServ
   } from "@/api/user";
 
   import {
     secedeGroupServ
   } from "@/api/group";
+  import {
+    chatListCrateServ
+  } from '@/api/chat';
 
   export default {
     name: 'contacts-page',
@@ -318,15 +328,6 @@
     methods: {
       // 搜索框查询
       querySearch(queryString, cb) {
-        // let restaurants = this.restaurants;
-
-        // let createFilter = (queryString) => {
-        //   return (restaurant) => {
-        //     return (restaurant.value.indexOf(queryString) === 0);
-        //   };
-        // };
-
-        // let results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
         let results = this.restaurants;
         cb(results);
       },
@@ -402,8 +403,15 @@
       },
 
       // 跳转聊天页面
-      toTalk(index_name) {
-        this.$root.dumpTalkPage(index_name);
+      toTalk(type, index_name) {
+        let receive_id = index_name.split('_')[1];
+        chatListCrateServ({
+          type,
+          receive_id
+        }).then(res => {
+          if (res.code !== 200) return;
+          this.$root.dumpTalkPage(index_name);
+        });
       },
 
       // 发起群聊成功后回调方法
@@ -427,7 +435,7 @@
 
       // 群聊窗口点击发送群聊信息按钮回调事件
       sendMessage(groupInfo) {
-        this.toTalk(`2_${groupInfo.groupId}`);
+        this.toTalk(2, `2_${groupInfo.groupId}`);
       },
 
       // 用户退出群聊回调事件
@@ -437,22 +445,17 @@
       },
 
       // 处理好友申请信息
-      handleFrom(type, item) {
-        this.$prompt(type == 1 ? `请设置好友备注【${item.nickname}】` : '请填写拒绝原因', '提示', {
+      handleFrom(item) {
+        this.$prompt(`请设置好友备注【${item.nickname}】`, '好友备注', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           customClass: 'border-radius0',
           inputValidator(val) {
-            if (val == null) {
-              return type == 1 ? '好友备注不能为空' : '拒绝添加原因不能为空';
-            } else {
-              return true;
-            }
-          },
+            return (val == null || val == '') ? '好友备注不能为空' : true;
+          }
         }).then((data) => {
           handleFriendApplyServ({
             apply_id: item.id,
-            type: type,
             remarks: data.value
           }).then(res => {
             if (res.code == 200) {
@@ -461,7 +464,7 @@
                 return item.id == apply_id;
               });
 
-              this.apply.items[idx].status = type == 1 ? 1 : 2;
+              this.apply.items[idx].status = 1;
               this.$message({
                 message: '处理成功...',
                 type: 'success'
@@ -475,6 +478,20 @@
           });
         }).catch(action => {
 
+        });
+      },
+
+      // 删除好友申请记录
+      deleteFriendApply(item) {
+        let apply_id = item.id;
+        deleteFriendApplyServ({
+          apply_id
+        }).then(res => {
+          if (res.code == 200) {
+            this.$delete(this.apply.items, this.apply.items.findIndex((item) => {
+              return item.id == apply_id;
+            }))
+          }
         });
       },
 
@@ -694,12 +711,14 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    user-select: none;
   }
 
   .panel .preloading p {
     margin-top: 20px;
-    color: #646a73;
+    color: #afacac;
     font-size: 14px;
+    font-weight: 300;
   }
 
   .data-item {
@@ -711,6 +730,8 @@
     align-items: center;
     padding: 5px 15px;
     position: relative;
+    overflow-x: hidden;
+    border-bottom: 1px solid #f1ebeb;
   }
 
   .data-item:hover {
@@ -733,6 +754,10 @@
     user-select: none;
     transition: ease 1s;
     position: relative;
+  }
+
+  .data-item:hover .avatar {
+    border-radius: 0;
   }
 
   .data-item .card {
@@ -797,22 +822,22 @@
 
   .data-item .apply-from {
     position: absolute;
-    right: 5px;
+    right: -120px;
     top: 0px;
     height: 100%;
-    width: 0;
+    width: 120px;
     display: block;
-    transition: ease .5s .2s;
+    transition: ease .5s .3s;
     z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    overflow: hidden;
+    z-index: 22;
   }
 
   .data-item:hover .apply-from {
-    width: 120px;
+    right: 0px;
   }
 
   .data-item .apply-from button {

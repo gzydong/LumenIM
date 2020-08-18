@@ -360,7 +360,7 @@
       // 发起群聊成功后回调方法
       groupChatSuccess(data) {
         this.launchGroupShow = false;
-        sessionStorage.setItem("send_message_index_name", `2_${data.group_info.id}`);
+        sessionStorage.setItem("send_message_index_name", `2_${data.group_id}`);
         this.loadChatList();
       },
 

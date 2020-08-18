@@ -12,6 +12,7 @@
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 0}" @click="triggerTab(0)">群信息</div>
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 1}" @click="triggerTab(1)">群成员</div>
               <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 2}" @click="triggerTab(2)">群公告</div>
+              <div class="menu-list" :class="{'menu-list-selectd':tabIndex == 3}" @click="triggerTab(3)">群设置</div>
             </el-aside>
 
             <!-- 群介绍模块 -->
@@ -126,6 +127,9 @@
                   </el-scrollbar>
                 </el-main>
               </el-container>
+            </el-main>
+
+            <el-main v-else-if="tabIndex == 3" class="padding0">
             </el-main>
           </el-container>
         </el-main>

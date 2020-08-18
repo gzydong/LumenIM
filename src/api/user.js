@@ -105,6 +105,11 @@ export const handleFriendApplyServ = (data) => {
   return post('/api/user/handle-friend-apply', data);
 }
 
+//删除好友申请记录服务接口
+export const deleteFriendApplyServ = (data) => {
+  return post('/api/user/delete-friend-apply', data);
+}
+
 //获取好友列表服务接口
 export const friendsServ = (data) => {
   return get('/api/user/friends', data);
