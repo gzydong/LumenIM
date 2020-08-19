@@ -366,7 +366,6 @@
       // 查看好友申请列表
       loadFriendApply() {
         findFriendApplyServ({
-          type: 1,
           page: 1,
           page_size: 10000
         }).then(res => {
