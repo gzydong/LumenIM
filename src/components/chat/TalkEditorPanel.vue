@@ -30,7 +30,7 @@
       </el-header>
 
       <!-- 主体信息 -->
-      <el-main class="padding0 panel-main lumen-scrollbar" ref="lumenChatPanel" id="lumenChatPanel"
+      <el-main class="padding0 panel-main lm-scrollbar" ref="lumenChatPanel" id="lumenChatPanel"
         @scroll.native="talkPanelScroll($event)">
         <div class="record-container no-select">
           <div class="toolbars">

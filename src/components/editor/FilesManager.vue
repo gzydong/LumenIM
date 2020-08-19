@@ -7,7 +7,7 @@
           <i class="close-btn el-icon-close" @click="closeBox"></i>
         </el-header>
 
-        <el-main class="padding0 mian lumen-scrollbar">
+        <el-main class="padding0 mian lm-scrollbar">
           <div class="empty-data" v-show="total == 0">
             <svg-icon icon-class="not-data" />
             <p>没有数据</p>

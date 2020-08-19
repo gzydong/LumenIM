@@ -8,7 +8,7 @@
       <i class="close-btn el-icon-close" @click="$emit('close')"></i>
     </el-header>
 
-    <el-main class="main lumen-scrollbar">
+    <el-main class="main lm-scrollbar">
       <div class="list-item list-item-flex">
         <p>
           <span>群名称：</span>
@@ -74,7 +74,7 @@
         <span v-else>暂无群公告</span>
       </div>
 
-      <div class="list-item">
+      <div class="list-item no-select">
         <p class="group-invite" @click="addGroupMembers">
           <i class="el-icon-plus"></i>
           <span>邀请好友</span>
@@ -128,7 +128,7 @@
 
       <p v-show="signoutStatus == 1" class="signout-btn mt38">
         <span style="color: rgb(123, 212, 255);">
-          <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i> 正在退出群聊...
+          <i class="iconfont icon-jiazaizhong lm-icon-spin"></i> 正在退出群聊...
         </span>
       </p>
 

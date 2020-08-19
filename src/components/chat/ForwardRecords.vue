@@ -7,7 +7,7 @@
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
 
-        <el-main class="padding0 mian lumen-scrollbar">
+        <el-main class="padding0 mian lm-scrollbar">
           <div v-if="loadStatus == 0" class="loading">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
               <span class="ant-spin-dot ant-spin-dot-spin">

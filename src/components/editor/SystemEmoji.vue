@@ -7,7 +7,7 @@
           <i class="close-btn el-icon-close" @click="closeBox"></i>
         </el-header>
 
-        <el-main class="padding0 mian lumen-scrollbar">
+        <el-main class="padding0 mian lm-scrollbar">
           <ul>
             <li v-for="(item,i) in items">
               <div class="pkg-avatar">

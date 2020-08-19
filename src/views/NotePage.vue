@@ -2,7 +2,7 @@
   <div>
     <main-layout :idx="2">
       <el-container slot="container" class="el-container-note">
-        <el-aside width="230px" class="el-aside-one lumen-scrollbar ov-hidden">
+        <el-aside width="230px" class="el-aside-one lm-scrollbar ov-hidden">
           <el-header>
             <el-dropdown split-button type="primary" @click="insterNote" @command="handleCommand"
               class="btn-dropdown-menu">
@@ -59,7 +59,7 @@
             </span>
           </div>
 
-          <div class="article-container lumen-scrollbar">
+          <div class="article-container lm-scrollbar">
             <template v-if="notes.length == 0">
               <div class="note-list-empty">
                 <svg-icon icon-class="note-book" class="svg-notebook" />
@@ -141,7 +141,7 @@
           </div>
         </el-main>
 
-        <el-main v-else class="el-main-content lumen-scrollbar" :class="{'el-main-content-full':markdown.isFull}">
+        <el-main v-else class="el-main-content lm-scrollbar" :class="{'el-main-content-full':markdown.isFull}">
           <div class="note-editor-header">
             <div class="editor-title">
               <input type="text" v-model="markdown.editData.title" :readonly="!markdown.isEdit"
@@ -165,7 +165,7 @@
             </div>
           </div>
 
-          <div class="note-editor-box animated fadeIn lumen-scrollbar">
+          <div class="note-editor-box animated fadeIn lm-scrollbar">
             <div v-if="markdown.isEdit" style="height:100%;width:100%;">
               <mavon-editor ref="mavonEditor" v-if="markdown.isEdit" v-model="markdown.editData.content" fontSize="14px"
                 :toolbars-flag="markdown.toolbarsFlag" :default-open="markdown.defaultOpen"
@@ -179,7 +179,7 @@
                   <i class="el-icon-link"></i>
                   <span class="no-select">笔记附件({{filesManager.files.length}})</span>
                   <el-popover ref="fileManager" placement="bottom" trigger="click" :visible-arrow="false">
-                    <div class="note-files-manager lumen-scrollbar">
+                    <div class="note-files-manager lm-scrollbar">
                       <input type="file" ref="uploadNoteFile" @change="uploadAnnex" />
                       <div class="file-box">
                         <p class="no-file" v-show="filesManager.files.length == 0">暂无附件</p>

@@ -6,24 +6,51 @@
           <span>群公告({{items.length}})</span>
           <i class="close-btn el-icon-close" @click="$emit('close')"></i>
         </el-header>
-        <el-main class="main">
-          <el-scrollbar :native="false" tag="section" class="hv100">
-            <div v-for="(item,index) in items" :key="item.id" class="notice-item">
-              <div class="title">
-                <span class="left-title" v-text="item.title"></span>
-                <span class="right-tools no-select" @click="catNoticeDetail(index)">{{item.isShow?'收起':'展开'}}</span>
+        <el-main class="main padding0">
+          <template v-if="loadStatus == 0">
+            <div class="loading">
+              <div class="ant-spin ant-spin-lg ant-spin-spinning">
+                <span class="ant-spin-dot ant-spin-dot-spin">
+                  <i class="ant-spin-dot-item"></i>
+                  <i class="ant-spin-dot-item"></i>
+                  <i class="ant-spin-dot-item"></i>
+                  <i class="ant-spin-dot-item"></i>
+                </span>
               </div>
-              <p class="datetime">
-                <el-avatar :size="15" :src="item.avatar">
-                  <img src="/static/image/detault-avatar.jpg" alt="">
-                </el-avatar>
-                <span class="text nickname" v-text="item.nickname"
-                  @click="$refs.userBusinessCard.open(item.user_id)"></span>
-                <span class="text">发表于 {{item.created_at}}</span>
-              </p>
-              <p class="content" :class="{'retract':!item.isShow}" v-text="item.content"></p>
+              <p>正在努力加载中 ...</p>
             </div>
-          </el-scrollbar>
+          </template>
+          <template v-if="loadStatus == 1 && items.length == 0">
+            <div class="loading">
+              <svg-icon icon-class="not-data" style="width: 60px;height: 60px;" />
+              <p>暂无群公告</p>
+            </div>
+          </template>
+          <template v-if="loadStatus == 2">
+            <div class="loading">
+              <i class="el-icon-warning" style="font-size: 50px;color: #ff5151;"></i>
+              <p>加载失败， <a @click="loadNotices" class="pointer">点击重试</a>...</p>
+            </div>
+          </template>
+          <template v-else>
+            <el-scrollbar :native="false" tag="section" class="hv100">
+              <div v-for="(item,index) in items" :key="item.id" class="notice-item">
+                <div class="title">
+                  <span class="left-title" v-text="item.title"></span>
+                  <span class="right-tools no-select" @click="catNoticeDetail(index)">{{item.isShow?'收起':'展开'}}</span>
+                </div>
+                <p class="datetime">
+                  <el-avatar :size="15" :src="item.avatar">
+                    <img src="/static/image/detault-avatar.jpg" alt="">
+                  </el-avatar>
+                  <span class="text nickname" v-text="item.nickname"
+                    @click="$refs.userBusinessCard.open(item.user_id)"></span>
+                  <span class="text">发表于 {{item.created_at}}</span>
+                </p>
+                <p class="content" :class="{'retract':!item.isShow}" v-text="item.content"></p>
+              </div>
+            </el-scrollbar>
+          </template>
         </el-main>
       </el-container>
     </div>
@@ -45,7 +72,8 @@
     data() {
       return {
         // 公告列表
-        items: []
+        items: [],
+        loadStatus: 0,
       }
     },
     created() {
@@ -54,6 +82,7 @@
     methods: {
       // 加载群组公告列表
       loadNotices() {
+        this.loadStatus = 0;
         getGroupNoticesServ({
           group_id: this.groupId,
         }).then(res => {
@@ -62,7 +91,13 @@
               item.isShow = false;
               return item;
             });
+
+            this.loadStatus = 1;
+          } else {
+            this.loadStatus = 2;
           }
+        }).catch(err => {
+          this.loadStatus = 2;
         });
       },
       // 展开/收起群公告详情
@@ -109,7 +144,7 @@
   }
 
   .container .main {
-    padding: 15px 0px;
+    overflow: hidden;
   }
 
   .notice-item {
@@ -201,6 +236,20 @@
   .notice-box h4 {
     margin-bottom: 20px;
     font-weight: 400;
+  }
+
+  .loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .loading p {
+    margin-top: 20px;
   }
 
 </style>

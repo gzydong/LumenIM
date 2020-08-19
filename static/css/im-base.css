@@ -32,6 +32,10 @@ img {
   -webkit-touch-callout: none
 }
 
+a {
+  text-decoration: none;
+}
+
 textarea {
   resize: none;
   outline: 0;
@@ -81,7 +85,6 @@ textarea {
   background-color: rgba(31, 35, 41, .3);
 }
 
-
 :focus {
   outline: none;
 }
@@ -97,30 +100,21 @@ textarea {
   clear: both;
 }
 
-.fl {
-  float: left;
-}
-
-.fr {
-  float: right;
-}
-
 .pointer {
   cursor: pointer;
 }
 
-.lumen-scrollbar::-webkit-scrollbar {
+.lm-scrollbar::-webkit-scrollbar {
   width: 3px;
   background-color: #E4E4E5;
 }
 
-.lumen-scrollbar::-webkit-scrollbar-thumb {
+.lm-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: #C0BEBC;
 }
 
-
-.lumen-icon-spin {
+.lm-icon-spin {
   -webkit-animation: loading-spinner 2s infinite linear;
   -moz-animation: loading-spinner 2s infinite linear;
   -o-animation: loading-spinner 2s infinite linear;

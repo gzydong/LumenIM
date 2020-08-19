@@ -4,7 +4,7 @@
       <el-container class="hv100">
         <el-header height="60px" class="header no-select">近 30 天删除的附件({{tableData.length}})
         </el-header>
-        <el-main class="main lumen-scrollbar">
+        <el-main class="main lm-scrollbar">
           <el-table :data="tableData" style="width: 100%;" header-cell-class-name="tab-header-row">
             <div slot="empty">暂无相关数据</div>
             <el-table-column prop="original_name" label="附件名称" width="180" :show-overflow-tooltip="true">

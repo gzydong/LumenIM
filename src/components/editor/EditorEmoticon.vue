@@ -5,7 +5,7 @@
         <span v-text="showTitle"></span>
         <div class="addbtn" @click="systemEmojiBox = true">系统表情</div>
       </el-header>
-      <el-main class="padding0 main lumen-scrollbar">
+      <el-main class="padding0 main lm-scrollbar">
         <input type="file" ref="fileCustomEmoji" accept="image/*" style="display: none;" @change="customUploadEmoji" />
 
         <div class="emoticon" v-show="showEmoticonId == -1">

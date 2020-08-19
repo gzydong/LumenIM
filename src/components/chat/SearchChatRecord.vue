@@ -54,7 +54,7 @@
           </div>
 
           <!-- 用户聊天记录 -->
-          <div class="im-message lumen-scrollbar" id="recordBox1">
+          <div class="im-message lm-scrollbar" id="recordBox1">
             <div v-show="records.isEmpty" class="empty-message no-select">
               <img src="/static/image/chat-search-no-message.png" />
               <p>未找到匹配结果</p>
@@ -66,7 +66,7 @@
               </div>
 
               <div v-else-if="records.loadStatus == 1" class="load-button">
-                <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i>
+                <i class="iconfont icon-jiazaizhong lm-icon-spin"></i>
                 <span>&nbsp;加载数据中...</span>
               </div>
             </div>
@@ -174,7 +174,7 @@
           </div>
 
           <!-- 用户聊天记录 -->
-          <div class="im-message lumen-scrollbar">
+          <div class="im-message lm-scrollbar">
             <div v-show="search.length" class="empty-message">
               <img src="/static/image/chat-search-no-message.png" />
               <p>未找到匹配结果</p>
@@ -265,14 +265,14 @@
         <!-- 聊天记录上下文查看 -->
         <el-main v-show="showBox == 2" class="im-container">
           <!-- 用户聊天记录 -->
-          <div class="im-message lumen-scrollbar" id="recordBox3">
+          <div class="im-message lm-scrollbar" id="recordBox3">
 
             <div class="message-group">
               <div v-if="query.beforeStatus == 0" class="load-button" @click="loadRecordContext(1)">
                 <span>加载更多...</span>
               </div>
               <div v-else-if="query.beforeStatus == 1" class="load-button">
-                <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i>
+                <i class="iconfont icon-jiazaizhong lm-icon-spin"></i>
                 <span>&nbsp;加载数据中...</span>
               </div>
               <div v-else class="load-button">
@@ -364,7 +364,7 @@
                 <span>加载更多...</span>
               </div>
               <div v-else-if="query.afterStatus == 1" class="load-button">
-                <i class="iconfont icon-jiazaizhong lumen-icon-spin"></i>
+                <i class="iconfont icon-jiazaizhong lm-icon-spin"></i>
                 <span>&nbsp;加载数据中...</span>
               </div>
               <div v-else class="load-button">

@@ -69,7 +69,7 @@
               </p>
             </template>
           </el-header>
-          <el-main class="panel-main lumen-scrollbar">
+          <el-main class="panel-main lm-scrollbar">
             <template v-if="activeIndex == 0">
               <template v-if="apply.status == 0">
                 <div class="preloading">
