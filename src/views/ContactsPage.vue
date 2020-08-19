@@ -148,10 +148,10 @@
                     </el-avatar>
                     <div class="card">
                       <div class="title">
-                        <span class="name">{{item.friend_remark?item.friend_remark:item.name}}</span>
+                        <span class="name">{{item.friend_remark?item.friend_remark:item.nickname}}</span>
                         <div class="larkc-tag agree" v-show="item.online == 1">在线</div>
                       </div>
-                      <div class="content">[签名] ~ {{item.motto}}</div>
+                      <div class="content">[个性签名] 「{{item.motto?item.motto:'未设置'}}」</div>
                     </div>
 
                     <div class="apply-from" @click.prevent.stop>
@@ -756,7 +756,7 @@
   }
 
   .data-item:hover .avatar {
-    border-radius: 0;
+    border-radius: 2px;
   }
 
   .data-item .card {
@@ -832,7 +832,8 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    z-index: 22;
+    z-index: 1;
+    background-color: white;
   }
 
   .data-item:hover .apply-from {

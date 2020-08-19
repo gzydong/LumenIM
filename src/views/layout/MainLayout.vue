@@ -126,18 +126,28 @@
     methods: {
       // 播放消息提示音
       play() {
+        this.lastRunTime = Date.now();
         let audio = document.querySelector("#audio");
         if (!this.isPlaying) {
           audio.play();
           this.isPlaying = true;
         }
-
-        setTimeout(() => {
+        let timeOut = setTimeout(() => {
+          this.stop(timeOut);
+        }, 1000);
+      },
+      // 停止消息提示音
+      stop(timeOut) {
+        this.currentTime = Date.now();
+        let audio = document.querySelector("#audio");
+        if (this.currentTime - this.lastRunTime < 1000) {} else {
           if (this.isPlaying) {
+            audio.currentTime = 0;
             audio.pause();
             this.isPlaying = false;
           }
-        }, 1000);
+        }
+        clearTimeout(timeOut);
       },
       logout() {
         this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
@@ -165,17 +175,20 @@
     margin: auto;
     overflow: hidden;
     transition: ease .5s;
+    border-radius: 5px;
   }
 
   .full-mode {
     width: 100%;
     height: 100%;
+    border-radius: 0;
   }
 
   @media screen and (max-width: 1000px) {
     .mian-layout {
       width: 100%;
       height: 100%;
+      border-radius: 0;
     }
 
     .copyright {

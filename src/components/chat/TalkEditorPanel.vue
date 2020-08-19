@@ -6,8 +6,9 @@
         <div class="title">
           <span class="badge badge-friend" v-if="params.source == 1">友</span>
           <span class="badge" v-else>群</span>
-          <span class="name">
-            <span>{{params.nickname}}</span>
+          <span class="name pointer">
+            <span v-if="params.source == 1" @click="catFriendDetail(params.receiveId)">{{params.nickname}}</span>
+            <span v-else @click="groupBoxShow = !groupBoxShow">{{params.nickname}}</span>
             <span class="num" v-show="groupNum && params.source == 2">({{groupNum}})</span>
           </span>
         </div>
@@ -19,13 +20,21 @@
           <p class="input" v-show="keyEvent.isShow">对方正在输入 ...</p>
         </div>
         <div class="means">
-          <p><i class="el-icon-time" @click="findChatRecord = true"></i></p>
-          <p v-show="params.source == 2">
-            <i class="iconfont icon-gonggao2" @click="isShowGroupNotice = true"></i>
-          </p>
-          <p v-show="params.source == 2">
-            <i class="el-icon-setting" @click="groupBoxShow = !groupBoxShow"></i>
-          </p>
+          <el-tooltip content="历史消息" placement="top">
+            <p>
+              <i class="el-icon-time" @click="findChatRecord = true"></i>
+            </p>
+          </el-tooltip>
+          <el-tooltip content="群公告" placement="top">
+            <p v-show="params.source == 2">
+              <i class="iconfont icon-gonggao2" @click="isShowGroupNotice = true"></i>
+            </p>
+          </el-tooltip>
+          <el-tooltip content="群设置" placement="top">
+            <p v-show="params.source == 2">
+              <i class="el-icon-setting" @click="groupBoxShow = !groupBoxShow"></i>
+            </p>
+          </el-tooltip>
         </div>
       </el-header>
 
@@ -53,10 +62,10 @@
             <span v-else-if="item.msg_type == 3 && (item.group_notify.type == 1 || item.group_notify.type == 2)"
               class="group-invite-tips">
               <a
-                @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
+                @click="catFriendDetail(item.group_notify.operate_user.id)">{{item.group_notify.operate_user.nickname}}</a>
               <span>{{item.group_notify.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.group_notify.users">
-                <a @click="catFriendDetail(user.id,2)">{{user.nickname}}</a>
+                <a @click="catFriendDetail(user.id)">{{user.nickname}}</a>
                 <em v-show="uidx < item.group_notify.users.length - 1">、</em>
               </template>
               <span>{{item.group_notify.type == 1?'加入了群聊':'踢出了群聊'}}</span>
@@ -64,7 +73,7 @@
 
             <span v-else-if="item.msg_type == 3 && item.group_notify.type == 3" class="group-invite-tips">
               <a
-                @click="catFriendDetail(item.group_notify.operate_user.id,2)">{{item.group_notify.operate_user.nickname}}</a>
+                @click="catFriendDetail(item.group_notify.operate_user.id)">{{item.group_notify.operate_user.nickname}}</a>
               <span style="background: none;">退出了群聊</span>
             </span>
           </div>
@@ -87,7 +96,7 @@
             </div>
 
             <div class="record-avatar no-select">
-              <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)" :onerror="$store.state.detaultAvatar" />
+              <img :src="item.avatar" @click="catFriendDetail(item.user_id)" :onerror="$store.state.detaultAvatar" />
             </div>
 
             <div class="talk-container">
@@ -756,7 +765,7 @@
       },
 
       //查看好友用户信息
-      catFriendDetail(value, type) {
+      catFriendDetail(value) {
         this.$refs.userBusinessCard.open(value);
       },
 

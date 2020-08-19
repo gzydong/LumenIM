@@ -59,7 +59,7 @@
             </span>
           </div>
 
-          <div class="article-container lm-scrollbar">
+          <div class="article-container">
             <template v-if="notes.length == 0">
               <div class="note-list-empty">
                 <svg-icon icon-class="note-book" class="svg-notebook" />
@@ -69,52 +69,55 @@
               </div>
             </template>
             <template v-else>
-              <div class="article-row" v-for="(note,i) in notes"
-                :class="{'article-row-active':note.id == markdown.editData.loadId}" :key="note.id"
-                @contextmenu.prevent="noteListMenu($event,i,note)">
-                <div class="article-title" @click="catNote(note)">
-                  <span v-text="note.title"></span>
-                </div>
-
-                <div class="article-items" @click="catNote(note)">
-                  <div class="article-item" :class="{'article-item-img':note.img != ''}">
-                    <div class="article-date">
-                      <span v-text="note.datetime"></span>
-                      <span v-text="note.classify"></span>
-                    </div>
-                    <div class="article-abstract" v-text="note.abstract"></div>
+              <el-scrollbar :native="false" tag="section" class="hv100">
+                <div class="article-row" v-for="(note,i) in notes"
+                  :class="{'article-row-active':note.id == markdown.editData.loadId}" :key="note.id"
+                  @contextmenu.prevent="noteListMenu($event,i,note)">
+                  <div class="article-title" @click="catNote(note)">
+                    <span v-text="note.title"></span>
                   </div>
-                  <div class="article-image" v-show="note.img">
-                    <el-image :src="note.img" fit="cover" style="width: 100%;height: 100%;">
-                    </el-image>
+
+                  <div class="article-items" @click="catNote(note)">
+                    <div class="article-item" :class="{'article-item-img':note.img != ''}">
+                      <div class="article-date">
+                        <span v-text="note.datetime"></span>
+                        <span v-text="note.classify"></span>
+                      </div>
+                      <div class="article-abstract" v-text="note.abstract"></div>
+                    </div>
+                    <div class="article-image" v-show="note.img">
+                      <el-image :src="note.img" fit="cover" style="width: 100%;height: 100%;">
+                      </el-image>
+                    </div>
+                  </div>
+
+                  <div class="article-tool">
+                    <i class="el-icon-edit-outline" @click="catNote(note,true)" v-show="note.status == 1"></i>
+                    <i class="recover-note el-icon-refresh-right" @click="recoverNote(note)"
+                      v-show="note.status == 2"></i>
+
+                    <el-popover v-if="note.status == 1" placement="bottom" :ref="`popover-${note.id}`">
+                      <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要放入回收站吗！<br /></p>
+                      <div style="text-align: right; margin: 0">
+                        <el-button size="mini" type="text" @click="closeTipBox(note.id)">
+                          取消</el-button>
+                        <el-button type="primary" size="mini" @click="deleteNote(note)">确定</el-button>
+                      </div>
+                      <i class="el-icon-delete" slot="reference"></i>
+                    </el-popover>
+                    <el-popover v-else placement="bottom" :ref="`popover-${note.id}`">
+                      <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要永久删除吗？此操作不可恢复！<br /></p>
+                      <div style="text-align: right; margin: 0">
+                        <el-button size="mini" type="text" @click="closeTipBox(note.id)">
+                          取消</el-button>
+                        <el-button type="primary" size="mini" @click="foreverdeleteNote(note)">确定</el-button>
+                      </div>
+                      <i class="el-icon-delete" slot="reference"></i>
+                    </el-popover>
                   </div>
                 </div>
+              </el-scrollbar>
 
-                <div class="article-tool">
-                  <i class="el-icon-edit-outline" @click="catNote(note,true)" v-show="note.status == 1"></i>
-                  <i class="recover-note el-icon-refresh-right" @click="recoverNote(note)"
-                    v-show="note.status == 2"></i>
-
-                  <el-popover v-if="note.status == 1" placement="bottom" :ref="`popover-${note.id}`">
-                    <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要放入回收站吗！<br /></p>
-                    <div style="text-align: right; margin: 0">
-                      <el-button size="mini" type="text" @click="closeTipBox(note.id)">
-                        取消</el-button>
-                      <el-button type="primary" size="mini" @click="deleteNote(note)">确定</el-button>
-                    </div>
-                    <i class="el-icon-delete" slot="reference"></i>
-                  </el-popover>
-                  <el-popover v-else placement="bottom" :ref="`popover-${note.id}`">
-                    <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要永久删除吗？此操作不可恢复！<br /></p>
-                    <div style="text-align: right; margin: 0">
-                      <el-button size="mini" type="text" @click="closeTipBox(note.id)">
-                        取消</el-button>
-                      <el-button type="primary" size="mini" @click="foreverdeleteNote(note)">确定</el-button>
-                    </div>
-                    <i class="el-icon-delete" slot="reference"></i>
-                  </el-popover>
-                </div>
-              </div>
             </template>
           </div>
         </el-aside>

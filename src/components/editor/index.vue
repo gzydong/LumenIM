@@ -58,6 +58,8 @@
 
     <!-- 图片查看器 -->
     <image-viewer v-model="imageViewer.isShow" :file="imageViewer.file" @success="successImageViewer" />
+    
+    <!-- <recorder v-model="recorder"  /> -->
 
     <!-- 代码块编辑器 -->
     <code-block v-if="codeBlock.isShow" :edit-mode="codeBlock.editMode" @close="codeBlock.isShow = false"
@@ -73,6 +75,7 @@
   import EditorEmoticon from "./EditorEmoticon";
   import FilesManager from "./FilesManager";
   import ImageViewer from "./ImageViewer";
+  import Recorder from "./Recorder";
   import CodeBlock from "@/components/chat/CodeBlock";
 
   import {
@@ -86,7 +89,8 @@
       EditorEmoticon,
       FilesManager,
       ImageViewer,
-      CodeBlock
+      CodeBlock,
+      Recorder
     },
     computed: {
       talkUser() {
@@ -116,7 +120,8 @@
 
         filesManager: {
           isShow: false
-        }
+        },
+        recorder:true,
       };
     },
     methods: {
@@ -304,6 +309,7 @@
     border-radius: 2px;
     white-space: pre;
     text-align: center;
+    user-select: none;
   }
 
   .editor-container .toolbar li:hover .tip-title {

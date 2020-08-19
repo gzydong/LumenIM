@@ -9,23 +9,7 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索聊天列表(开发中)"
-                  prefix-icon="el-icon-search" size="small" clearable>
-                  <template slot-scope="{ item }">
-                    <div class="search-item">
-                      <div class="avatar">
-                        <span v-show="!item.avatar">
-                          {{(item.remark_name?item.remark_name:item.name).substr(0,1)}}
-                        </span>
-                        <img v-show="item.avatar" :src="item.avatar" :onerror="$store.state.detaultAvatar" />
-                      </div>
-                      <div class="card">
-                        <div class="title">{{item.name}}</div>
-                        <div class="content">备注：{{item.remark_name}}</div>
-                      </div>
-                    </div>
-                  </template>
-                </el-autocomplete>
+                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索 / 好友 / 群组" size="small" ></el-input>
               </div>
 
               <!-- 工具栏 -->
@@ -78,7 +62,7 @@
                 </p>
 
                 <!-- 对话列表 -->
-                <div class="talk-item" v-show="loadStatus == 1" v-for="(item,idx) in $store.state.talks.items"
+                <div class="talk-item" v-show="loadStatus == 1" v-for="(item,idx) in talkItems"
                   :class="{'talk-item-border':index_name == item.index_name}" @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="talkItemsMenu(item,$event)" :key="item.index_name">
                   <div class="avatar">
@@ -241,18 +225,26 @@
       enterGroup() {
         return this.$store.state.notify.enterGroup;
       },
+      // 当前对话好友在线状态
       isFriendOnline() {
         let i = this.getIndex(this.index_name);
         if (i == -1) return 0;
         return this.$store.state.talks.items[i].online == 1;
       },
-
-      // 置顶列表
+      // 置顶的对话列表
       topItems() {
         return this.$store.state.talks.items.filter((item) => {
           return item.is_top == 1;
         })
       },
+      // 对话列表
+      talkItems() {
+        // 按未读消息数排序
+        return this.$store.state.talks.items.sort(function (a, b) {
+          return b.unread_num - a.unread_num;
+        });
+      },
+      // 对话列表数量
       talkNum() {
         return this.$store.state.talks.items.length;
       }
@@ -330,29 +322,11 @@
         }
       },
 
-      // 搜索框查询
-      querySearch(queryString, cb) {
-        let restaurants = this.$store.state.talks.items.map((item) => {
-          item.value = item.name + ' ' + item.remark_name;
-          return item;
-        });
-
-        let createFilter = (queryString) => {
-          return (restaurant) => {
-            return (restaurant.value.indexOf(queryString) === 0);
-          };
-        };
-
-        let results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
-
-        cb(results);
-      },
-
       // 获取用户对话列表
       loadChatList() {
         if (this.talkNum == 0) {
           this.loadStatus = 0;
-        }else{
+        } else {
           this.loadStatus = 1;
         }
 
@@ -681,11 +655,7 @@
     height: 40px;
   }
 
-  .aside-box .header .from>>>.el-autocomplete {
-    width: 245px;
-  }
-
-  .aside-box .header .from>>>.el-autocomplete .el-input__inner {
+  .aside-box .header .from>>>.el-input .el-input__inner {
     border-radius: 20px;
   }
 
