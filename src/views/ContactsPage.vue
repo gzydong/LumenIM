@@ -236,10 +236,10 @@
 
 <script>
   import MainLayout from "@/views/layout/MainLayout";
-  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+  import LaunchGroupChat from "@/components/group/LaunchGroupChat";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
   import SearchUsers from "@/components/user/SearchUsers";
-  import UserGroup from "@/components/chat/UserGroup";
+  import UserGroup from "@/components/group/UserGroup";
 
   import {
     friendsServ,

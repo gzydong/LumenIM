@@ -21,6 +21,9 @@
         <div class="means">
           <p><i class="el-icon-time" @click="findChatRecord = true"></i></p>
           <p v-show="params.source == 2">
+            <i class="iconfont icon-gonggao2" @click="isShowGroupNotice = true"></i>
+          </p>
+          <p v-show="params.source == 2">
             <i class="el-icon-setting" @click="groupBoxShow = !groupBoxShow"></i>
           </p>
         </div>
@@ -84,8 +87,7 @@
             </div>
 
             <div class="record-avatar no-select">
-              <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)"
-                :onerror="$store.state.detaultAvatar" />
+              <img :src="item.avatar" @click="catFriendDetail(item.user_id,2)" :onerror="$store.state.detaultAvatar" />
             </div>
 
             <div class="talk-container">
@@ -254,6 +256,9 @@
 
     <!-- 查看好友用户信息 -->
     <user-business-card ref="userBusinessCard" />
+
+    <!-- 群公告组件 -->
+    <group-notice v-if="isShowGroupNotice" :group-id="params.receiveId" @close="isShowGroupNotice = false" />
   </div>
 </template>
 
@@ -264,7 +269,8 @@
   import SearchChatRecord from "@/components/chat/SearchChatRecord";
   import ForwardRecords from "@/components/chat/ForwardRecords";
   import SelectContacts from "@/components/chat/SelectContacts";
-  import UserGroup from "@/components/chat/UserGroup";
+  import UserGroup from "@/components/group/UserGroup";
+  import GroupNotice from "@/components/group/GroupNotice";
   import CodeBlock from "@/components/chat/CodeBlock";
   import Editor from "@/components/editor";
 
@@ -308,7 +314,8 @@
       SelectContacts,
       UserGroup,
       SearchChatRecord,
-      UserBusinessCard
+      UserBusinessCard,
+      GroupNotice
     },
     props: {
       //对话相关参数
@@ -392,6 +399,8 @@
 
         // 置底按钮是否显示
         tipsBoard: false,
+
+        isShowGroupNotice: false,
       };
     },
     computed: {

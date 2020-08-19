@@ -64,7 +64,7 @@
 
       <div class="list-item list-item-flex">
         <span>群公告</span>
-        <span class="more" v-show="detail.group_notice">更多</span>
+        <span class="more" v-show="detail.group_notice" @click="isShowGroupNotice = true">更多</span>
       </div>
 
       <div class="list-item-tips group-notice">
@@ -149,7 +149,11 @@
     <launch-group-chat v-if="inviteFriendBox" :group-id="groupId" @close="inviteFriendBox = false"
       @invite-success="inviteSuccess" />
 
-    <group-manager v-if="isShowManager" :group-id="groupId" @close="isShowManager = false"></group-manager>
+    <!-- 群管理组件 -->
+    <group-manager v-if="isShowManager" :group-id="groupId" @close="isShowManager = false" />
+
+
+    <group-notice v-if="isShowGroupNotice" :group-id="groupId" @close="isShowGroupNotice = false" />
   </el-container>
 </template>
 
@@ -167,16 +171,18 @@
   } from "@/api/group";
 
   //创建群聊组件
-  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+  import LaunchGroupChat from "@/components/group/LaunchGroupChat";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
-  import GroupManager from "@/components/chat/GroupManager";
+  import GroupManager from "@/components/group/GroupManager";
+  import GroupNotice from "@/components/group/GroupNotice";
 
   export default {
     name: "user-group",
     components: {
       LaunchGroupChat,
       UserBusinessCard,
-      GroupManager
+      GroupManager,
+      GroupNotice
     },
     props: {
       groupId: {
@@ -212,7 +218,11 @@
 
         disturbDisabled: false,
 
+        // 是否显示群管理窗口
         isShowManager: false,
+
+        // 是否显示群公告窗口
+        isShowGroupNotice: false,
       };
     },
     watch: {

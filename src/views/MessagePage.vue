@@ -145,7 +145,7 @@
 <script>
   import Vue from "vue";
   import MainLayout from "@/views/layout/MainLayout";
-  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+  import LaunchGroupChat from "@/components/group/LaunchGroupChat";
   import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
   import UserBusinessCard from "@/components/user/UserBusinessCard";
   import SearchUsers from "@/components/user/SearchUsers";

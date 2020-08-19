@@ -167,7 +167,7 @@
 <script>
   import AvatarCropper from '@/components/layout/AvatarCropper';
   import UserBusinessCard from "@/components/user/UserBusinessCard";
-  import LaunchGroupChat from "@/components/chat/LaunchGroupChat";
+  import LaunchGroupChat from "@/components/group/LaunchGroupChat";
 
   import {
     getGroupMembersServ,
