@@ -35,6 +35,7 @@
   } from "@/api/chat";
   // https://www.jianshu.com/p/ecea87bd8d25
   // https://www.jianshu.com/p/f5637e838af0
+  // http://v.bootstrapmb.com/2019/1/9xrf3471/
   import Record from '@/plugins/recorder/record-sdk';
   export default {
     name: 'image-viewer',

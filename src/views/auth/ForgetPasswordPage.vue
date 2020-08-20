@@ -10,19 +10,12 @@
           <div class="main" style="width: 100%;">
             <el-form ref="form" :model="form" :rules="rules">
               <el-form-item prop="username">
-                <el-input v-model="form.username" placeholder="手机号" class="cuborder-radius" maxlength="11"
+                <el-input v-model="form.username" placeholder="我的手机号" class="cuborder-radius" maxlength="11"
                   @keyup.enter.native="onSubmit('form')" />
               </el-form-item>
-              <el-form-item prop="password">
-                <el-input v-model="form.password" type="password" placeholder="密码" class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')" />
-              </el-form-item>
-              <el-form-item prop="password2">
-                <el-input v-model="form.password2" type="password" placeholder="确认密码" class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')" />
-              </el-form-item>
+
               <el-form-item prop="sms_code">
-                <el-input v-model="form.sms_code" placeholder="验证码" class="cuborder-radius" maxlength="6"
+                <el-input v-model="form.sms_code" placeholder="短信验证码" class="cuborder-radius" maxlength="6"
                   @keyup.enter.native="onSubmit('form')" style="width: 205px;" />
 
                 <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
@@ -30,10 +23,19 @@
                 </div>
                 <div class="send-code-btn send-sms-disable" v-else>重新发送({{smsLockObj.time}}s)</div>
               </el-form-item>
+              <el-form-item prop="password">
+                <el-input v-model="form.password" type="password" placeholder="设置新密码" class="cuborder-radius"
+                  @keyup.enter.native="onSubmit('form')" />
+              </el-form-item>
+              <el-form-item prop="password2">
+                <el-input v-model="form.password2" type="password" placeholder="确认新密码" class="cuborder-radius"
+                  @keyup.enter.native="onSubmit('form')" />
+              </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="forgetLoading">立即找回
                 </el-button>
               </el-form-item>
+
               <el-form-item>
                 <div class="links">
                   <el-link type="primary" @click="toLink('/register')" :underline="false">注册账号</el-link>
@@ -46,6 +48,8 @@
         <div class="copyright" v-html="$store.state.copyright"></div>
       </el-main>
       <el-aside width="500px" class="login-broadside">
+        <p class="describe">{{$store.state.website_name}} 是一款使用vue开发的聊天项目，功能点包含单聊、群聊,
+          消息类型包含文字、图片、文件、自定义表情包及代码块。新增编辑笔记及笔记分享好友功能 ...</p>
       </el-aside>
     </el-container>
   </div>
@@ -191,17 +195,30 @@
 
         this.smsLock = true;
         sendVerifyCodeServ({
-          mobile: this.form.username
+          mobile: this.form.username,
+          type: 'forget_password'
         }).then(res => {
           if (res.code == 200) {
             this.smsLockObj.start();
             this.$notify({
-              duration: 15000,
-              showClose: false,
-              message: res.data.tips
+              title: '成功',
+              message: '验证码发送成功...',
+              type: 'success'
             });
+
+            if (res.data.is_debug) {
+              this.form.sms_code = res.data.sms_code;
+              setTimeout(() => {
+                this.$notify({
+                  title: '提示',
+                  message: '已自动填充验证码'
+                });
+                this.form.sms_code = res.data.sms_code;
+              }, 500);
+            }
           } else {
             this.$notify({
+              title: '提示',
               message: '验证码发送失败...'
             });
           }

@@ -51,6 +51,8 @@
         <div class="copyright" v-html="$store.state.copyright"></div>
       </el-main>
       <el-aside width="500px" class="login-broadside">
+        <p class="describe">{{$store.state.website_name}} 是一款使用vue开发的聊天项目，功能点包含单聊、群聊,
+          消息类型包含文字、图片、文件、自定义表情包及代码块。新增编辑笔记及笔记分享好友功能 ...</p>
       </el-aside>
     </el-container>
   </div>
@@ -182,7 +184,8 @@
               });
             }, 1500);
           } else {
-            this.$notify({
+            this.$notify.info({
+              title: "提示",
               message: res.msg
             });
           }
@@ -196,6 +199,7 @@
       },
 
       //点击发送验证码
+      //点击发送验证码
       sendSms() {
         if (this.smsLock) {
           return false;
@@ -206,7 +210,38 @@
           return false;
         }
 
-        this.smsLockObj.start();
+        this.smsLock = true;
+        sendVerifyCodeServ({
+          mobile: this.form.username,
+          type: 'user_register'
+        }).then(res => {
+          if (res.code == 200) {
+            this.$notify({
+              title: '成功',
+              message: '验证码发送成功...',
+              type: 'success'
+            });
+
+            this.smsLockObj.start();
+            if (res.data.is_debug) {
+              setTimeout(() => {
+                this.$notify({
+                  title: '提示',
+                  message: '已自动填充验证码'
+                });
+                this.form.sms_code = res.data.sms_code;
+              }, 500);
+            }
+          } else {
+            this.$notify({
+              title: '提示',
+              message: '验证码发送失败...'
+            });
+          }
+          this.smsLock = false;
+        }).catch(err => {
+          this.smsLock = false;
+        });
       }
     }
   };

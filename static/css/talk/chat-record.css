@@ -95,9 +95,9 @@
 .record-container .talk-container .record-nickname {
   height: 20px;
   font-size: 10px;
-  color: #cdcdcd;
+  color: #b5b2b2;
+  font-weight: 300;
 }
-
 
 .record-container .left-record .talk-container {
   float: left;

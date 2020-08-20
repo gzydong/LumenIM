@@ -373,15 +373,7 @@
     font-weight: 400;
   }
 
-
-
-
   /* 编辑器文档说明 --- start */
-  .editor-books {
-    width: 580px;
-    height: 270px;
-  }
-
   .editor-books .books-title {
     font-size: 16px;
     height: 30px;

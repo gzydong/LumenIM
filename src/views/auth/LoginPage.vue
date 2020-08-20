@@ -138,7 +138,10 @@
               path: "/"
             });
           } else {
-            this.$message('登录密码不正确或账号不存在...');
+            this.$notify.info({
+              title: "提示",
+              message: '登录密码不正确或账号不存在...'
+            });
           }
         }).catch(err => {
           this.loginLoading = false;
