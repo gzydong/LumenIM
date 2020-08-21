@@ -91,6 +91,10 @@
     width: 500px;
     height: 450px;
     background-color: white;
+
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .container .header {

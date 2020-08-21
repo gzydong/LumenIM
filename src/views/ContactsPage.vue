@@ -8,9 +8,7 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-autocomplete v-model="input" :fetch-suggestions="querySearch" placeholder="搜索(开发中)"
-                  prefix-icon="el-icon-search" size="small" clearable>
-                </el-autocomplete>
+                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索好友 / 群组" size="small"></el-input>
               </div>
 
               <!-- 工具栏 -->
@@ -200,8 +198,7 @@
                         <div class="larkc-tag wait" v-show="item.isGroupLeader">群主</div>
 
                       </div>
-                      <div class="content">[简介] ~ {{item.group_profile}}</div>
-
+                      <div class="content">[群介绍] ~ 「{{item.group_profile?item.group_profile:'未设置'}}」</div>
                       <div class="apply-from" @click.prevent.stop>
                         <el-button size="mini" type="primary" icon="el-icon-s-promotion"
                           @click="toTalk(2,`2_${item.id}`)">发送消息</el-button>
@@ -273,21 +270,6 @@
         // 查询关键词
         input: '',
 
-        // 搜索列表
-        restaurants: [{
-            "value": "测试数据（功能尚未完善）",
-            "address": "长宁区新渔路144号"
-          },
-          {
-            "value": "Hot honey 首尔炸鸡（仙霞路）",
-            "address": "上海市长宁区淞虹路661号"
-          },
-          {
-            "value": "南拳妈妈龙虾盖浇饭",
-            "address": "普陀区金沙江路1699号鑫乐惠美食广场A13"
-          }
-        ],
-
         // header 工具菜单
         subMenu: false,
 
@@ -326,12 +308,6 @@
       this.loadFriendApply();
     },
     methods: {
-      // 搜索框查询
-      querySearch(queryString, cb) {
-        let results = this.restaurants;
-        cb(results);
-      },
-
       // header 功能栏隐藏事件
       closeSubMenu() {
         this.subMenu = false;
@@ -599,11 +575,8 @@
     height: 40px;
   }
 
-  .aside-box .header .from>>>.el-autocomplete {
-    width: 170px;
-  }
 
-  .aside-box .header .from>>>.el-autocomplete .el-input__inner {
+  .aside-box .header .from>>>.el-input .el-input__inner {
     border-radius: 20px;
   }
 

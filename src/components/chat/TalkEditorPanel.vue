@@ -143,7 +143,7 @@
                 <!-- 文件消息 -->
                 <div class="file-record" v-else-if="item.msg_type == 2 && item.file_type == 3"
                   @contextmenu="onCopy(idx,item,$event)">
-                  <div class="filetitle">
+                  <div class="filetitle no-select">
                     <div class="lumen-files-icon">
                       <span>{{item.file_suffix.toUpperCase()}}</span>
                     </div>

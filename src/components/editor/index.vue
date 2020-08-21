@@ -11,6 +11,10 @@
             <i class="iconfont icon-daima"></i>
             <p class="tip-title">代码片段</p>
           </li>
+          <li @click="recorder = true">
+            <i class="el-icon-headset"></i>
+            <p class="tip-title">语音消息</p>
+          </li>
           <li @click="$refs.restFile.click()">
             <i class="el-icon-picture-outline-round"></i>
             <p class="tip-title">图片</p>
@@ -19,9 +23,9 @@
             <i class="el-icon-folder"></i>
             <p class="tip-title">附件</p>
           </li>
-          <li>
-            <i class="el-icon-microphone"></i>
-            <p class="tip-title">录音(开发中)</p>
+          <li @click="filesManager.isShow = true">
+            <i class="el-icon-folder-opened"></i>
+            <p class="tip-title">上传管理</p>
           </li>
 
           <p class="text-tips no-select">
@@ -58,8 +62,8 @@
 
     <!-- 图片查看器 -->
     <image-viewer v-model="imageViewer.isShow" :file="imageViewer.file" @success="successImageViewer" />
-    
-    <!-- <recorder v-model="recorder"  /> -->
+
+    <recorder v-if="recorder" @close="recorder = false" />
 
     <!-- 代码块编辑器 -->
     <code-block v-if="codeBlock.isShow" :edit-mode="codeBlock.editMode" @close="codeBlock.isShow = false"
@@ -121,7 +125,7 @@
         filesManager: {
           isShow: false
         },
-        recorder:true,
+        recorder: false,
       };
     },
     methods: {
@@ -154,6 +158,7 @@
 
         // 回车发送消息
         if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
+          // 后期做判断 1秒内只能发送一条消息
           this.$emit("send", {
             type: 1,
             text: this.editorText
@@ -204,9 +209,7 @@
       // 图片查看器上传图片成功回调事件
       successImageViewer(value) {
         this.imageViewer.isShow = false;
-        console.log(value);
         // 处理发送消息
-
         this.$emit("send", {
           type: 2,
           text: value

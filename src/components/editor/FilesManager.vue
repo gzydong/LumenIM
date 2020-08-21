@@ -3,14 +3,14 @@
     <div class="container animated bounceInUp" v-outside="closeBox" v-if="show">
       <el-container class="hv100">
         <el-header class="padding0 header" height="50px">
-          <span>文件上传 <span v-show="total">({{successNum}}/{{total}})</span></span>
+          <span>上传管理 <span v-show="total">({{successNum}}/{{total}})</span></span>
           <i class="close-btn el-icon-close" @click="closeBox"></i>
         </el-header>
 
         <el-main class="padding0 mian lm-scrollbar">
           <div class="empty-data" v-show="total == 0">
             <svg-icon icon-class="not-data" />
-            <p>没有数据</p>
+            <p>暂无上传文件</p>
           </div>
           <div class="file-item" v-for="file in items" v-show="!file.isDelete">
             <div class="file-header">
@@ -46,10 +46,10 @@
       </el-container>
     </div>
 
-    <div v-if="show == false && total > 0" class="floatBall" @click="$emit('close', true)">
+    <!-- <div v-if="show == false && total > 0" class="floatBall" @click="$emit('close', true)">
       <el-progress type="dashboard" :percentage="totalProgress" :width="45" :color="colors"></el-progress>
       <p>上传进度</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -372,7 +372,7 @@
   .file-item .file-means {
     width: 96.5%;
     height: 35px;
-    border-top: 1px solid rgb(234, 227, 227);
+    border-top: 1px dashed rgb(234, 227, 227);
     margin: 3px auto;
     padding-top: 5px;
     display: flex;

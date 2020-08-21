@@ -9,7 +9,7 @@
 
         <el-main class="padding0 mian lm-scrollbar">
           <ul>
-            <li v-for="(item,i) in items">
+            <li v-for="(item,i) in items" class="no-select">
               <div class="pkg-avatar">
                 <el-image :src="item.url" style="width: 50px;height: 50px;border-radius: 3px;" fit="cover" :lazy="true">
                 </el-image>
@@ -99,6 +99,10 @@
     width: 350px;
     height: 500px;
     background-color: white;
+
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .container .header {
@@ -127,7 +131,7 @@
     cursor: pointer;
     height: 68px;
     align-items: center;
-    border-bottom: 1px solid #e6e5e6;
+    border-bottom: 1px solid #fbf2fb;
     padding-left: 5px;
   }
 
@@ -163,7 +167,7 @@
     font-size: 12px;
     text-align: center;
     line-height: 28px;
-    border-radius: 4px;
+    border-radius: 20px;
     width: 50px;
     cursor: pointer;
   }

@@ -9,7 +9,7 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索 / 好友 / 群组" size="small" ></el-input>
+                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索聊天 / 好友 / 群组" size="small" ></el-input>
               </div>
 
               <!-- 工具栏 -->
