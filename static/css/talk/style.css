@@ -162,16 +162,6 @@
   border-top: 1px solid rgb(245, 245, 245);
 }
 
-.multi-select .multi-close {
-  width: 25px;
-  height: 23px;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  font-size: 22px;
-}
-
 .multi-select .multi-title {
   position: absolute;
   top: 15px;

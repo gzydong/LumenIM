@@ -403,8 +403,11 @@
 .container-checked {
   border: 1px solid #e4e8ef;
   padding-left: 50px;
-  border-radius: 3px;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1);
+}
+
+.container-checked:hover {
+  border-color: #409eff;
+  border-style: dashed;
 }
 
 .container-checked .checked-button {

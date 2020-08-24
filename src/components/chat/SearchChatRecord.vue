@@ -48,8 +48,11 @@
           <div class="subheader">
             <div class="type-items no-select">
               <span :class="{'color-blue':findType == 0}" @click="changeLoadType(0)">全部</span>
+              <span :class="{'color-blue':findType == 1}">代码块</span>
               <span :class="{'color-blue':findType == 1}">图片</span>
-              <span :class="{'color-blue':findType == 2}">文件</span>
+              <span :class="{'color-blue':findType == 2}">音频</span>
+              <span :class="{'color-blue':findType == 2}">视频</span>
+              <span :class="{'color-blue':findType == 2}">其它类型文件</span>
             </div>
           </div>
 
@@ -60,17 +63,6 @@
               <p>未找到匹配结果</p>
             </div>
 
-            <div class="message-group no-select" v-show="records.loadStatus == 0 || records.loadStatus == 1">
-              <div v-if="records.loadStatus == 0" class="load-button" @click="loadChatRecord">
-                <span>加载更多...</span>
-              </div>
-
-              <div v-else-if="records.loadStatus == 1" class="load-button">
-                <i class="iconfont icon-jiazaizhong lm-icon-spin"></i>
-                <span>&nbsp;加载数据中...</span>
-              </div>
-            </div>
-
             <div class="message-group" v-for="(item,i) in records.items" :key="item.id">
               <div class="avatar-box">
                 <img :src="item.avatar" :onerror="$store.state.detaultAvatar" />
@@ -78,25 +70,25 @@
               <div class="message-main">
                 <div class="nickname">
                   <span>{{item.nickname_remarks?item.nickname_remarks:item.nickname}}</span>
-                  <span>&nbsp;{{sendTime(item.send_time)}}</span>
+                  <span style="font-size: 10px;">&nbsp;/ {{item.created_at}}</span>
                 </div>
                 <div class="talk-content message-dashed">
                   <!-- 文字消息 -->
-                  <div class="text-record" v-if="item.msg_type == 1 && item.is_code == 0">
+                  <div class="text-record" v-if="item.msg_type == 1">
                     <pre v-html="item.content" v-hrefstyle></pre>
                   </div>
 
                   <!-- 代码块消息 -->
-                  <div class="codeblock-record" v-else-if="item.msg_type == 1 && item.is_code == 1">
+                  <div class="codeblock-record" v-else-if="item.msg_type == 5">
                     <i class="iconfont icon-tubiao_chakangongyi cat-code-block"
                       @click="catCodeBlock(item.content,item.code_lang)"></i>
-                    <prism-editor :readonly="true" :code="item.content" :language="item.code_lang"
+                    <prism-editor :readonly="true" :code="item.code_block.code" :language="item.code_block.code_lang"
                       :line-numbers="false">
                     </prism-editor>
                   </div>
 
                   <!-- 图片消息 -->
-                  <div class="images-record" v-else-if="item.msg_type == 2 && item.file_type == 1">
+                  <div class="images-record" v-else-if="item.msg_type == 2 && item.file.file_type == 1">
                     <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file_url)" :src="item.file_url"
                       :preview-src-list="images" :z-index="getImgIndex(item.file_url)">
                       <div slot="error" class="image-slot">
@@ -109,15 +101,15 @@
                   </div>
 
                   <!-- 文件消息 -->
-                  <div class="file-record" v-else-if="item.msg_type == 2 && item.file_type == 3">
+                  <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 4">
                     <div class="filetitle">
                       <div class="lumen-files-icon">
-                        <span>{{item.file_suffix.toUpperCase()}}</span>
+                        <span>{{item.file.file_suffix.toUpperCase()}}</span>
                       </div>
                       <div class="info">
                         <p>
-                          <span v-text="item.file_original_name"></span>
-                          <span class="size">({{renderSize(item.file_size)}})</span>
+                          <span v-text="item.file.original_name"></span>
+                          <span class="size">({{renderSize(item.file.file_size)}})</span>
                         </p>
                         <p>文件已成功发送, 文件助手永久保存</p>
                       </div>
@@ -129,23 +121,36 @@
                   </div>
 
                   <!-- 会话记录 -->
-                  <div class="dialogue-records" v-else-if="item.msg_type == 5" @click="catForwardRecords(item.id)">
+                  <div class="dialogue-records" v-else-if="item.msg_type == 4" @click="catForwardRecords(item.id)">
                     <p class="records-title">
-                      <span v-text="getForwardTitle(item.forward_info)"></span>
+                      <span v-text="getForwardTitle(item.forward.list)"></span>
                     </p>
                     <div class="records-list">
-                      <p v-for="info in item.forward_info">
+                      <p v-for="info in item.forward.list">
                         <span v-text="info.nickname"></span>
                         <span>:</span>
                         <span v-text="info.text"></span>
                       </p>
                     </div>
                     <p class="records-footer">
-                      <span>转发：会话记录 ({{item.forward_info.length}}条)</span>
+                      <span>转发：会话记录 ({{item.forward.num}}条)</span>
                     </p>
                   </div>
+
+
                   <div v-else>未知的消息类型</div>
                 </div>
+              </div>
+            </div>
+
+            <div class="message-group no-select" v-show="records.loadStatus == 0 || records.loadStatus == 1">
+              <div v-if="records.loadStatus == 0" class="load-button" @click="loadChatRecord">
+                <span>查看更多 ...</span>
+              </div>
+
+              <div v-else-if="records.loadStatus == 1" class="load-button">
+                <i class="iconfont icon-jiazaizhong lm-icon-spin"></i>
+                <span>&nbsp;加载数据中...</span>
               </div>
             </div>
           </div>
@@ -613,14 +618,11 @@
 
         this.records.loadStatus = 1;
 
-        let elBox = document.getElementById("recordBox1");
-
-        let scroll = elBox ? elBox.scrollHeight : 0;
         findChatRecordsServ(data).then(res => {
           if (res.code != 200) return;
 
           let records = data.record_id == 0 ? [] : this.records.items;
-          records.unshift(...res.data.rows.reverse());
+          records.unshift(...res.data.rows);
 
           this.records.items = records;
           this.records.loadStatus = res.data.rows.length < res.data.limit ? 2 : 0;
@@ -628,14 +630,9 @@
           if (this.records.items.length == 0) {
             this.records.isEmpty = true;
           } else {
-            this.records.recordId = this.records.items[0].id;
+            this.records.recordId = this.records.items[this.records.items.length - 1].id;
           }
 
-          //滚动条处理
-          let el = document.getElementById("recordBox1");
-          this.$nextTick(function () {
-            el.scrollTop = data.record_id == 0 ? el.scrollHeight : el.scrollHeight - scroll;
-          });
         }).catch(err => {
           this.records.loadStatus = 0;
         });
@@ -822,6 +819,7 @@
     margin: auto auto;
     overflow: hidden;
     border-radius: 3px;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .container>>>.el-scrollbar__wrap {
@@ -928,8 +926,7 @@
   }
 
   .im-container .subheader .type-items {
-    float: left;
-    width: 220px;
+    width: 100%;
     height: 100%;
     font-size: 12px;
     font-weight: 300;
@@ -937,9 +934,9 @@
 
   .im-container .subheader .type-items span {
     width: 45px;
-    display: inline-block;
     text-align: center;
     cursor: pointer;
+    margin: 0 10px;
   }
 
   .im-container .subheader .tools {

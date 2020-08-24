@@ -20,11 +20,11 @@
           <p class="input" v-show="keyEvent.isShow">对方正在输入 ...</p>
         </div>
         <div class="means">
-          <!-- <el-tooltip content="历史消息" placement="top">
+          <el-tooltip content="历史消息" placement="top">
             <p>
               <i class="el-icon-time" @click="findChatRecord = true"></i>
             </p>
-          </el-tooltip> -->
+          </el-tooltip>
           <el-tooltip content="群公告" placement="top">
             <p v-show="params.source == 2">
               <i class="iconfont icon-gonggao2" @click="isShowGroupNotice = true"></i>
@@ -199,15 +199,12 @@
         </template>
         <template v-else>
           <div class="multi-select">
-            <div class="multi-close" @click="closeMultiSelect">
-              <i class="el-icon-close"></i>
-            </div>
             <div class="multi-title" v-show="multiSelect.items.length > 0">
               <span>已选中：{{multiSelect.items.length}} 条消息</span>
             </div>
             <div class="multi-btn-group">
               <div class="multi-icon" @click="handleMultiMode(2)">
-                <i class="iconfont icon-zhuangfa"></i>
+                <i class="el-icon-position"></i>
               </div>
               <p>合并转发</p>
             </div>
@@ -656,59 +653,6 @@
           return true;
         }
         return false;
-      },
-
-      //美化时间格式
-      beautifyTime(datetime = "") {
-        if (datetime == null) {
-          return "";
-        }
-
-        datetime = datetime.replace(/-/g, "/");
-
-        //当前时间戳
-        let time = new Date();
-        let outTime = new Date(datetime);
-        if (/^[1-9]\d*$/.test(datetime)) {
-          outTime = new Date(parseInt(datetime) * 1000);
-        }
-
-        if (time.getTime() < outTime.getTime()) {
-          return parseTime(outTime, "{y}/{m}/{d}");
-        }
-
-        if (time.getFullYear() != outTime.getFullYear()) {
-          return parseTime(outTime, "{y}/{m}/{d}");
-        }
-
-        if (time.getMonth() != outTime.getMonth()) {
-          return parseTime(outTime, "{m}/{d}");
-        }
-
-        if (time.getDate() != outTime.getDate()) {
-          let day = outTime.getDate() - time.getDate();
-          if (day == -1) {
-            return parseTime(outTime, "昨天 {h}:{i}");
-          }
-
-          if (day == -2) {
-            return parseTime(outTime, "前天 {h}:{i}");
-          }
-
-          return parseTime(outTime, "{m}-{d}");
-        }
-
-        if (time.getHours() != outTime.getHours()) {
-          return parseTime(outTime, "{h}:{i}");
-        }
-
-        let minutes = outTime.getMinutes() - time.getMinutes();
-        if (minutes == 0) {
-          return "刚刚";
-        }
-
-        minutes = Math.abs(minutes);
-        return `${minutes}分钟前`;
       },
 
       //处理消息时间是否显示

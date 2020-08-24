@@ -1,0 +1,125 @@
+
+  .message-group {
+    min-height: 30px;
+    display: flex;
+    margin-bottom: 5px;
+    flex-direction: row;
+    padding: 3px 5px 3px 0;
+  }
+
+  .message-group .avatar-box {
+    width: 50px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    user-select: none;
+  }
+
+  .message-group .avatar-box img {
+    height: 30px;
+    width: 30px;
+    margin-top: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .message-group .contnet-box {
+    flex: auto;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ddd8d8;
+  }
+
+  .message-group .contnet-box .message-header {
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    color: #a09a9a;
+    position: relative;
+  }
+
+  .message-group .contnet-box .content-message .text-message {
+    background: #f5f5f5;
+    white-space: pre-wrap;
+    overflow: hidden;
+    word-break: break-word;
+    word-wrap: break-word;
+    font-size: 13px;
+    padding: 5px;
+    font-family: "微软雅黑";
+    line-height: 20px;
+    border-radius: 2px;
+  }
+
+  .message-group .contnet-box .img-message img {
+    max-width: 120px !important;
+    min-width: 20px !important;
+    border: 1px solid white;
+    cursor: pointer;
+  }
+
+  .message-group .contnet-box .img-message .el-image {
+    cursor: pointer;
+    border-radius: 3px;
+  }
+
+  .message-group .contnet-box .img-message img:hover {
+    border-color: #409eff;
+  }
+
+  .message-group .contnet-box .file-message {
+    width: 290px;
+    height: 50px;
+    display: flex;
+    padding: 5px;
+    background: white;
+    box-shadow: 0 0 7px 0px #e8e4e4;
+  }
+
+  .message-group .contnet-box .file-message .file-icon {
+    width: 50px;
+    height: 50px;
+    background: #49a4ff;
+    line-height: 50px;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    border-radius: 3px;
+    user-select: none;
+  }
+
+  .message-group .contnet-box .file-message .file-info {
+    width: 200px;
+  }
+
+  .message-group .contnet-box .file-message .file-info p {
+    padding-left: 5px;
+    font-size: 14px;
+    height: 25px;
+    line-height: 25px;
+  }
+
+  .message-group .contnet-box .file-message .file-info p:first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rebeccapurple;
+  }
+
+  .message-group .contnet-box .file-message .file-info p:last-child {
+    color: #9a9393;
+    font-size: 12px;
+  }
+
+  .message-group .contnet-box .file-message .file-tool {
+    width: 30px;
+    position: relative;
+  }
+
+  .message-group .contnet-box .file-message .file-tool i {
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #2196f3;
+  }
