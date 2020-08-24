@@ -1,8 +1,7 @@
 import AppMessageEvent from './app-message-event';
 
 import {
-  parseTime,
-  packTalkRecord
+  parseTime
 } from '@/utils/functions';
 
 import {
@@ -53,8 +52,14 @@ class TalkEvent extends AppMessageEvent {
    * @param {int} idx 聊天列表的索引 
    */
   updateTalkRecord(idx) {
-    this.vm.message.records.push(this.packTalkRecord(this.resource));
+    let record = this.resource.data;
+    if (record.user_id == 0) {
+      record.float = 'center';
+    } else {
+      record.float = record.user_id == this.getUserId ? 'right' : 'left';
+    }
 
+    this.vm.message.records.push(record);
     this.vm.$store.commit('setScrollHeight');
     this.vm.$store.commit({
       type: 'UPDATE_TALK_ITEM',
@@ -80,7 +85,7 @@ class TalkEvent extends AppMessageEvent {
   updateTalkItem(idx) {
     this.vm.$store.commit('incrUnreadNum');
     if (idx == -1) {
-      this.vm.$store.commit('TRIGGER_TALK_ITEMS_LOAD', true);
+      // 对话列表不存在需请求后端...
       return;
     }
 
@@ -99,12 +104,19 @@ class TalkEvent extends AppMessageEvent {
    */
   getTalkText() {
     let text = '';
-    if (this.resource.msg_type == 1) {
-      text = this.resource.data.content;
-    } else if (this.resource.msg_type == 2 && this.resource.data.file_type == 1) {
-      text = '[图片消息]';
-    } else if (this.resource.msg_type == 2 && this.resource.data.file_type == 3) {
-      text = '[文件消息]';
+    switch (this.resource.data.msg_type) {
+      case 1:
+        text = this.resource.data.content;
+        break;
+      case 2:
+        text = '[文件消息]';
+        break;
+      case 4:
+        text = '[会话记录]';
+        break;
+      case 5:
+        text = '[代码块]';
+        break;
     }
 
     return text;
@@ -138,45 +150,6 @@ class TalkEvent extends AppMessageEvent {
     }
 
     return `${message.source_type}_${message.send_user}`;
-  }
-
-  /**
-   * 通过接收消息包装谈话记录
-   *
-   * @param {Object} message 消息
-   */
-  packTalkRecord(message) {
-    let float = message.send_user == 0 ? 'center' : (message.send_user == this.getUserId ? 'right' : 'left');
-
-    return packTalkRecord({
-      id: message.data.id,
-      avatar: message.data.avatar,
-      float: float,
-      msg_type: message.data.msg_type,
-      nickname: message.data.nickname,
-      friend_remarks: message.data.friend_remarks,
-      receive_id: message.data.receive_id,
-      send_time: message.data.send_time,
-      source: message.source_type,
-      content: message.data.content,
-      user_id: message.data.user_id,
-
-      file_original_name: message.data.file_original_name,
-      file_size: message.data.file_size,
-      file_suffix: message.data.file_suffix,
-      file_type: message.data.file_type,
-      file_url: message.data.file_url,
-
-      is_code: message.data.is_code ? message.data.is_code : 0,
-      code_lang: message.data.code_lang ? message.data.code_lang : '',
-      is_revoke: message.data.is_revoke,
-
-      forward_id: message.data.forward_id,
-      forward_info: message.data.forward_info,
-
-      //群通知(1:入群通知  2:退群通知)
-      group_notify: message.data.group_notify,
-    });
   }
 }
 

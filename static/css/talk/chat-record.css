@@ -226,7 +226,7 @@
 
 /* 会话记录消息 */
 .talk-content .dialogue-records {
-  max-width: 230px;
+  width: 230px;
   min-height: 95px;
   max-height: 150px;
   border-radius: 3px;
@@ -277,7 +277,7 @@
 
 /* 文件信息消息 */
 .talk-content .file-record {
-  max-width: 300px;
+  width: 300px;
   height: 85px;
   background: white;
   box-shadow: 0 0 7px 0px #e8e4e4;

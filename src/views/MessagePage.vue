@@ -9,7 +9,8 @@
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
               <div class="from">
-                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索聊天 / 好友 / 群组" size="small" ></el-input>
+                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索聊天 / 好友 / 群组" size="small">
+                </el-input>
               </div>
 
               <!-- 工具栏 -->
@@ -102,9 +103,9 @@
         <!-- 聊天面板容器 -->
         <el-main class="padding0 hv100 ov-hidden">
           <template v-if="index_name == null">
-            <div class="reserve-box no-select">
-              <img src="/static/image/chat.png" width="300">
-              <p>Lumen IM 开源的在线聊天软件</p>
+            <div class="reserve-box no-select animated flipInY">
+              <img src="/static/image/chat.png" width="300" />
+              <p>Lumen IM 在线聊天</p>
             </div>
           </template>
           <template v-else>
@@ -211,32 +212,30 @@
         return `${len}px`;
       },
 
-      reloadDialogues() {
-        return this.$store.state.talks.heavyLoad;
-      },
       unreadNum() {
         return this.$store.state.talks.items.reduce(function (total, item) {
           return total + parseInt(item.unread_num);
         }, 0);
       },
+
       monitorUserStatus() {
         return this.$store.state.notify.friendStatus;
       },
-      enterGroup() {
-        return this.$store.state.notify.enterGroup;
-      },
+
       // 当前对话好友在线状态
       isFriendOnline() {
         let i = this.getIndex(this.index_name);
         if (i == -1) return 0;
         return this.$store.state.talks.items[i].online == 1;
       },
+
       // 置顶的对话列表
       topItems() {
         return this.$store.state.talks.items.filter((item) => {
           return item.is_top == 1;
         })
       },
+
       // 对话列表
       talkItems() {
         // 按未读消息数排序
@@ -244,6 +243,7 @@
           return b.unread_num - a.unread_num;
         });
       },
+
       // 对话列表数量
       talkNum() {
         return this.$store.state.talks.items.length;
@@ -265,19 +265,6 @@
           key,
           status
         });
-      },
-
-      // 监听入群通知消息
-      enterGroup(nval, oval) {
-        this.loadChatList();
-      },
-
-      // 监听是否刷新聊天菜单
-      reloadDialogues(n, o) {
-        if (n) {
-          this.loadChatList();
-          this.$store.commit("TRIGGER_TALK_ITEMS_LOAD", false);
-        }
       }
     },
     created() {
@@ -956,7 +943,6 @@
     font-size: 24px;
     color: #d8dae2;
     background-color: white;
-    text-shadow: rgb(239, 232, 232) 3px -2px 11px;
   }
 
   /* search-item */

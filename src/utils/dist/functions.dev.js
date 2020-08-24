@@ -21,7 +21,6 @@ exports.removeClass = removeClass;
 exports.imgZoom = imgZoom;
 exports.getSelection = getSelection;
 exports.hidePhone = hidePhone;
-exports.packTalkRecord = packTalkRecord;
 exports.packTalkItem = packTalkItem;
 exports.beautifyTime = beautifyTime;
 exports.copyTextToClipboard = void 0;
@@ -430,33 +429,6 @@ exports.copyTextToClipboard = copyTextToClipboard;
 
 function hidePhone(phone) {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-}
-/**
- * 包装聊天记录消息
- *
- * @param {Object} obj 聊天消息
- */
-
-
-function packTalkRecord(obj) {
-  return Object.assign({
-    "id": 0,
-    "source": 1,
-    "msg_type": 1,
-    "user_id": 0,
-    "receive_id": 0,
-    "content": '',
-    "is_revoke": 0,
-    // 发送消息人的信息
-    "nickname": "",
-    "avatar": "",
-    // 不同的消息类型
-    "file": [],
-    "code_block": [],
-    "forward": [],
-    "invite": [],
-    "created_at": ""
-  }, obj);
 }
 /**
  * 包装聊天对话列表数据

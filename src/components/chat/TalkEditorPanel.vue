@@ -20,11 +20,11 @@
           <p class="input" v-show="keyEvent.isShow">对方正在输入 ...</p>
         </div>
         <div class="means">
-          <el-tooltip content="历史消息" placement="top">
+          <!-- <el-tooltip content="历史消息" placement="top">
             <p>
               <i class="el-icon-time" @click="findChatRecord = true"></i>
             </p>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip content="群公告" placement="top">
             <p v-show="params.source == 2">
               <i class="iconfont icon-gonggao2" @click="isShowGroupNotice = true"></i>
@@ -55,12 +55,9 @@
         <div class="record-container" v-for="(item,idx) in records"
           :class="{'container-checked':multiSelect.isOpen === true}" :key="item.id">
 
-          <!-- 系统提示消息 -->
-          <div v-if="item.float =='center'" class="message-system no-select">
-            <span v-if="item.msg_type == 1" v-text="item.content"></span>
-
-            <span v-else-if="item.msg_type == 3 && (item.invite.type == 1 || item.invite.type == 2)"
-              class="group-invite-tips">
+          <!-- 入群系统提示消息 -->
+          <div v-if="item.msg_type == 3" class="message-system no-select">
+            <span v-if="item.invite.type == 1 || item.invite.type == 3" class="group-invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.invite.users">
@@ -69,8 +66,7 @@
               </template>
               <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
-
-            <span v-else-if="item.msg_type == 3 && item.invite.type == 3" class="group-invite-tips">
+            <span v-else-if="item.invite.type == 2" class="group-invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span style="background: none;">退出了群聊</span>
             </span>
@@ -86,7 +82,6 @@
 
           <!-- 用户聊天消息 -->
           <div v-else :class="{'left-record':item.float =='left','right-record':item.float =='right'}">
-
             <div class="checked-button"
               v-show="multiSelect.isOpen && (item.msg_type==1 || item.msg_type==2 || item.msg_type==5)"
               @click="triggerMultiSelect(item.id)">
@@ -200,7 +195,7 @@
       <!-- 页脚信息 -->
       <el-footer class="padding0 panel-footer" height="160">
         <template v-if="!multiSelect.isOpen">
-          <editor ref="talkEditor" @send="submitSendMesage" @input-event="inputEventPush" />
+          <editor ref="talkEditor" @send="submitSendMesage" @keyboard-event="keyboardEvent" />
         </template>
         <template v-else>
           <div class="multi-select">
@@ -209,12 +204,6 @@
             </div>
             <div class="multi-title" v-show="multiSelect.items.length > 0">
               <span>已选中：{{multiSelect.items.length}} 条消息</span>
-            </div>
-            <div class="multi-btn-group">
-              <div class="multi-icon" @click="handleMultiMode(1)">
-                <i class="iconfont icon-zhuanfa"></i>
-              </div>
-              <p>逐条转发</p>
             </div>
             <div class="multi-btn-group">
               <div class="multi-icon" @click="handleMultiMode(2)">
@@ -493,46 +482,26 @@
       //回车键发送消息回调事件
       submitSendMesage(content) {
         //调用父类Websocket组件发送消息
-        const source_type = this.params.source;
-        const send_user = this.$store.state.user.uid;
-        const receive_user = this.params.receiveId;
-        const msg_type = content.type;
-
-        let text_message = "";
-        let file_message = "";
-        let code = {
-          is_code: false,
-          code_lang: ""
-        };
-
-        //content.type  1:文本 2:文件 3:表情包 4:代码块
-        if (content.type == 1) {
-          text_message = content.text;
-        } else if (content.type == 4) {
-          text_message = content.code;
-          code = {
-            is_code: true,
-            code_lang: content.code_lang
-          };
-        } else {
-          file_message = content.text;
-        }
         this.sendSocket({
-          event: "event_chat_dialogue",
+          event: "event_talk",
           data: {
-            send_user, //发送消息的用户ID
-            receive_user, //接受者消息ID(用户ID或群ID)
-            source_type, //聊天类型  1:私聊     2:群聊
-            msg_type, //消息类型  1:文本消息 2:文件消息 3:表情包消息 4:代码块消息
-            text_message, //文本消息内容
-            file_message, //文件消息或表情包消息
-            code_lang: code.code_lang
+            // 发送消息的用户ID
+            send_user: this.$store.state.user.uid,
+
+            // 接受者消息ID(用户ID或群ID)
+            receive_user: this.params.receiveId,
+
+            // 聊天类型  1:私聊 2:群聊信息显示用户昵称
+            source_type: this.params.source,
+
+            // 消息文本
+            text_message: content,
           }
         });
       },
 
       //推送编辑事件消息
-      inputEventPush() {
+      keyboardEvent() {
         // 判断是否推送键盘输入事件消息
         if (!this.$store.state.settings.keyboardEventNotify) {
           return false;
@@ -552,7 +521,7 @@
 
         //调用父类Websocket组件发送消息
         this.sendSocket({
-          event: "event_chat_input_tip",
+          event: "event_keyboard",
           data: {
             send_user: this.$store.state.user.uid,
             receive_user: this.params.receiveId

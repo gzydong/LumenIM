@@ -152,17 +152,14 @@
         }
 
         if (e.keyCode !== 13) {
-          this.$emit("input-event");
+          this.$emit("keyboard-event");
           return;
         }
 
         // 回车发送消息
         if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
           // 后期做判断 1秒内只能发送一条消息
-          this.$emit("send", {
-            type: 1,
-            text: this.editorText
-          });
+          this.$emit("send", this.editorText);
 
           this.editorText = "";
           e.preventDefault();
@@ -210,10 +207,10 @@
       successImageViewer(value) {
         this.imageViewer.isShow = false;
         // 处理发送消息
-        this.$emit("send", {
-          type: 2,
-          text: value
-        });
+        // this.$emit("send", {
+        //   type: 2,
+        //   text: value
+        // });
       },
 
       // 代码块编辑器确认完成回调事件
@@ -221,19 +218,19 @@
         this.codeBlock.isShow = false;
 
         // 这里处理发送代码块信息逻辑
-        this.$emit("send", {
-          type: 4,
-          code_lang: data.language,
-          code: data.code
-        });
+        // this.$emit("send", {
+        //   type: 4,
+        //   code_lang: data.language,
+        //   code: data.code
+        // });
       },
 
       // 文件管理器文件上传成功回调事件
       fileUploadSuccess(fileInfo) {
-        this.$emit("send", {
-          type: 2,
-          text: fileInfo.fileid
-        });
+        // this.$emit("send", {
+        //   type: 2,
+        //   text: fileInfo.fileid
+        // });
       },
 
       // 选中表情包回调事件
