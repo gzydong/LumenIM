@@ -386,47 +386,25 @@ export function hidePhone(phone) {
  */
 export function packTalkRecord(obj) {
   return Object.assign({
-    id: null,
-    msg_type: 1, //消息类型 1:文本消息 2:文件消息  3:系统提示好友入群消息 4:系统提示好友退群消息  5:转发消息
-    source: 1, //聊天类型 1:私聊 2:群聊
-    user_id: 0, //发送消息的用户ID
-    receive_id: 0, //接收用户ID(或接收群的ID)
-    float: 'center', //消息浮动类型
-    avatar: '', //发送者用户头像
-    nickname: '', //发送者账号昵称
-    friend_remarks: '', //好友备注(或群聊昵称)
-    send_time: "", //消息发送时间
+    "id": 0,
+    "source": 1,
+    "msg_type": 1,
+    "user_id": 0,
+    "receive_id": 0,
+    "content": '',
+    "is_revoke": 0,
 
-    //文本消息
-    content: '',
+    // 发送消息人的信息
+    "nickname": "",
+    "avatar": "",
 
-    //文件消息信息
-    file_id: null,
-    file_original_name: "",
-    file_size: 0,
-    file_suffix: "",
-    file_type: 1,
-    file_url: "",
-    file_source: 1,
+    // 不同的消息类型
+    "file": [],
+    "code_block": [],
+    "forward": [],
+    "invite": [],
 
-    //代码块消息
-    is_code: 0,
-    code_lang: '',
-    is_revoke: 0,
-
-    //转发消息
-    forward_id: 0,
-    forward_info: {
-      list: [], // 前3条信息
-      num: 0 // 消息数量
-    },
-
-    //群通知(1:入群通知  2:退群通知)
-    group_notify: {
-      type: 1,
-      operate_user: null,
-      users: []
-    },
+    "created_at": ""
   }, obj);
 }
 

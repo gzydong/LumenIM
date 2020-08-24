@@ -31,13 +31,15 @@
                 <span> {{record.send_time}}</span>
               </div>
 
+              <!-- 文本消息 -->
               <div v-if="record.msg_type == 1" class="content-message">
                 <pre class="text-message" v-html="record.content"></pre>
               </div>
 
-              <div v-else-if="record.msg_type == 2 && record.file_type == 1" class="img-message">
-                <el-image :lazy="true" fit="cover" :style="getImgStyle(record.file_url)" :src="record.file_url"
-                  @click="catImages(record.file_url)">
+              <!-- 文件-图片消息 -->
+              <div v-else-if="record.msg_type == 2 && record.file.file_type == 1" class="img-message">
+                <el-image :lazy="true" fit="cover" :style="getImgStyle(record.file.file_url)"
+                  :src="record.file.file_url" @click="catImages(record.file.file_url)">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
@@ -48,19 +50,36 @@
                 </el-image>
               </div>
 
-              <div v-else-if="record.msg_type == 2 && record.file_type == 3" class="file-message">
-                <div class="file-icon">{{record.file_suffix.toUpperCase()}}</div>
+              <!-- 文件-音频消息 -->
+              <div v-else-if="record.msg_type == 2 && record.file.file_type == 2">
+                文件-音频消息
+              </div>
+
+              <!-- 文件-视频消息 -->
+              <div v-else-if="record.msg_type == 2 && record.file.file_type == 3">
+                文件-视频消息
+              </div>
+
+              <!-- 其它格式的文件消息 -->
+              <div v-else-if="record.msg_type == 2 && record.file.file_type == 4" class="file-message">
+                <div class="file-icon">{{record.file.file_suffix.toUpperCase()}}</div>
                 <div class="file-info">
-                  <p>{{record.file_original_name}}</p>
+                  <p>{{record.file.original_name}}</p>
                   <p>
-                    {{renderSize(record.file_size)}}
+                    {{renderSize(record.file.file_size)}}
                     <span>该文件永久保存</span>
                   </p>
                 </div>
                 <div class="file-tool">
-                  <i class="iconfont icon-download" @click="download(record.id)"></i>
+                  <i class="iconfont icon-download" @click="download(record.file.id)"></i>
                 </div>
               </div>
+
+              <!-- 代码块消息 -->
+              <div v-else-if="record.msg_type == 5" class="content-message">
+                <pre class="text-message" v-html="record.code_block.code"></pre>
+              </div>
+
               <div v-else class="other-message">未知消息类型</div>
             </div>
           </div>
@@ -161,6 +180,7 @@
     position: relative;
     text-indent: 20px;
     border-bottom: 1px solid #f5eeee;
+    user-select: none;
   }
 
   .container .header .close-btn {
@@ -191,7 +211,7 @@
   .message-group {
     min-height: 30px;
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     flex-direction: row;
     padding: 3px 5px 3px 0;
   }
@@ -201,6 +221,7 @@
     flex-shrink: 0;
     display: flex;
     justify-content: center;
+    user-select: none;
   }
 
   .message-group .avatar-box img {
@@ -213,6 +234,8 @@
 
   .message-group .contnet-box {
     flex: auto;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ddd8d8;
   }
 
   .message-group .contnet-box .message-header {
@@ -255,10 +278,10 @@
   .message-group .contnet-box .file-message {
     width: 290px;
     height: 50px;
-    box-shadow: 0 0 10px #e4e1e1;
     display: flex;
     padding: 5px;
     background: white;
+    box-shadow: 0 0 7px 0px #e8e4e4;
   }
 
   .message-group .contnet-box .file-message .file-icon {
@@ -270,6 +293,7 @@
     color: white;
     font-size: 12px;
     border-radius: 3px;
+    user-select: none;
   }
 
   .message-group .contnet-box .file-message .file-info {

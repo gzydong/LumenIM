@@ -226,7 +226,7 @@
 
 /* 会话记录消息 */
 .talk-content .dialogue-records {
-  width: 230px;
+  max-width: 230px;
   min-height: 95px;
   max-height: 150px;
   border-radius: 3px;
@@ -270,52 +270,64 @@
   font-size: 12px;
   margin-top: 6px;
   font-weight: 300;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
 
 /* 文件信息消息 */
 .talk-content .file-record {
-  width: 300px;
+  max-width: 300px;
   height: 85px;
   background: white;
   box-shadow: 0 0 7px 0px #e8e4e4;
   padding: 5px;
   border-radius: 3px;
+
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 }
 
-.talk-content .file-record .lumen-files-icon {
+.talk-content .file-record .filetitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  height: 45px;
+}
+
+.talk-content .file-record .files-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* flex-basis: 45px;
+  flex-shrink: 0; */
+
   width: 45px;
   height: 45px;
-  line-height: 45px;
-  text-align: center;
   color: #ffffff;
   background: #49a4ff;
-  margin-left: 3px;
-  float: left;
   border-radius: 3px;
   font-size: 12px;
 }
 
-.talk-content .file-record .lumen-files-icon i {
+.talk-content .file-record .files-icon i {
   font-size: 46px;
 }
 
-.talk-content .file-record .filetitle {
-  height: 50px;
-  border-bottom: 1px solid #eff7ef;
-  padding-top: 5px;
-}
 
 .talk-content .file-record .filetitle .info {
-  width: 245px;
+  flex: 1 1;
   height: 45px;
-  float: left;
+  margin-left: 5px;
+  overflow: hidden;
 }
+
 
 .talk-content .file-record .filetitle .info p:first-child {
   height: 25px;
   line-height: 25px;
-  padding-left: 5px;
   color: rgb(76, 76, 76);
   font-size: 14px;
   white-space: nowrap;
@@ -327,8 +339,10 @@
   height: 25px;
   line-height: 25px;
   font-size: 12px;
-  padding-left: 5px;
   color: #929191;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .talk-content .file-record .filetitle .info .size {
@@ -340,11 +354,15 @@
   height: 30px;
   background: white;
   text-align: right;
-  padding-right: 5px;
-  line-height: 30px;
+  line-height: 37px;
   color: #409eff;
   font-size: 12px;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-top: 1px solid #eff7ef;
+  margin-top: 10px;
 }
 
 .talk-content .file-record .filetools a {

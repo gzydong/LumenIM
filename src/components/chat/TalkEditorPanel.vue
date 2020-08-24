@@ -59,21 +59,19 @@
           <div v-if="item.float =='center'" class="message-system no-select">
             <span v-if="item.msg_type == 1" v-text="item.content"></span>
 
-            <span v-else-if="item.msg_type == 3 && (item.group_notify.type == 1 || item.group_notify.type == 2)"
+            <span v-else-if="item.msg_type == 3 && (item.invite.type == 1 || item.invite.type == 2)"
               class="group-invite-tips">
-              <a
-                @click="catFriendDetail(item.group_notify.operate_user.id)">{{item.group_notify.operate_user.nickname}}</a>
-              <span>{{item.group_notify.type == 1?'邀请了':'将'}}</span>
-              <template v-for="(user,uidx) in item.group_notify.users">
+              <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
+              <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
+              <template v-for="(user,uidx) in item.invite.users">
                 <a @click="catFriendDetail(user.id)">{{user.nickname}}</a>
-                <em v-show="uidx < item.group_notify.users.length - 1">、</em>
+                <em v-show="uidx < item.invite.users.length - 1">、</em>
               </template>
-              <span>{{item.group_notify.type == 1?'加入了群聊':'踢出了群聊'}}</span>
+              <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
 
-            <span v-else-if="item.msg_type == 3 && item.group_notify.type == 3" class="group-invite-tips">
-              <a
-                @click="catFriendDetail(item.group_notify.operate_user.id)">{{item.group_notify.operate_user.nickname}}</a>
+            <span v-else-if="item.msg_type == 3 && item.invite.type == 3" class="group-invite-tips">
+              <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span style="background: none;">退出了群聊</span>
             </span>
           </div>
@@ -81,9 +79,9 @@
           <!-- 撤回消息提示 -->
           <div v-else-if="item.is_revoke == 1" class="message-system no-select">
             <span v-if="$store.state.user.uid == item.user_id" class="recall">你撤回了一条消息 |
-              {{sendTime(item.send_time)}}</span>
-            <span v-else-if="params.source == 1" class="recall">对方撤回了一条消息 | {{sendTime(item.send_time)}}</span>
-            <span v-else class="recall">"{{item.nickname}}" 撤回了一条消息 | {{sendTime(item.send_time)}}</span>
+              {{sendTime(item.created_at)}}</span>
+            <span v-else-if="params.source == 1" class="recall">对方撤回了一条消息 | {{sendTime(item.created_at)}}</span>
+            <span v-else class="recall">"{{item.nickname}}" 撤回了一条消息 | {{sendTime(item.created_at)}}</span>
           </div>
 
           <!-- 用户聊天消息 -->
@@ -110,25 +108,15 @@
                 <div class="lumen-arrow" v-show="!isNoBackground(item)"></div>
 
                 <!-- 文字消息 -->
-                <div class="text-record" v-if="item.msg_type == 1 && item.is_code == 0"
-                  @contextmenu="onCopy(idx,item,$event)">
+                <div class="text-record" v-if="item.msg_type == 1" @contextmenu="onCopy(idx,item,$event)">
                   <pre v-html="item.content" :id="'copy_class_'+item.id" v-hrefstyle></pre>
                 </div>
 
-                <!-- 代码块消息 -->
-                <div class="codeblock-record" v-else-if="item.msg_type == 1 && item.is_code == 1"
-                  @contextmenu="onCopy(idx,item,$event)">
-                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"
-                    @click="catCodeBlock(item.content,item.code_lang)"></i>
-                  <prism-editor :readonly="true" :code="item.content" :language="item.code_lang"
-                    :line-numbers="false" />
-                </div>
-
                 <!-- 图片消息 -->
-                <div class="images-record" v-else-if="item.msg_type == 2 && item.file_type == 1"
+                <div class="images-record" v-else-if="item.msg_type == 2 && item.file.file_type == 1"
                   @contextmenu="onCopy(idx,item,$event)">
-                  <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file_url)" :src="item.file_url"
-                    :preview-src-list="images" :z-index="getImgIndex(item.file_url)">
+                  <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file.file_url)" :src="item.file.file_url"
+                    :preview-src-list="images" :z-index="getImgIndex(item.file.file_url)">
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline"></i>
                     </div>
@@ -140,17 +128,27 @@
                   <i class="el-icon-circle-plus enlarge"></i>
                 </div>
 
-                <!-- 文件消息 -->
-                <div class="file-record" v-else-if="item.msg_type == 2 && item.file_type == 3"
+                <!-- 音频文件 -->
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 2">
+
+                </div>
+
+                <!-- 视频文件 -->
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 3">
+
+                </div>
+
+                <!-- 其它格式的文件消息 -->
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 4"
                   @contextmenu="onCopy(idx,item,$event)">
-                  <div class="filetitle no-select">
-                    <div class="lumen-files-icon">
-                      <span>{{item.file_suffix.toUpperCase()}}</span>
+                  <div class="filetitle">
+                    <div class="files-icon">
+                      <span>{{item.file.file_suffix.toUpperCase()}}</span>
                     </div>
                     <div class="info">
                       <p>
-                        <span v-text="item.file_original_name"></span>
-                        <span class="size">({{renderSize(item.file_size)}})</span>
+                        <span v-text="item.file.original_name"></span>
+                        <span class="size">({{renderSize(item.file.file_size)}})</span>
                       </p>
                       <p>文件已成功发送, 文件助手永久保存</p>
                     </div>
@@ -165,18 +163,26 @@
                 <div class="dialogue-records" v-else-if="item.msg_type == 4" @contextmenu="onCopy(idx,item,$event)"
                   @click="catForwardRecords(item.id)">
                   <p class="records-title">
-                    <span v-text="getForwardTitle(item.forward_info.list)"></span>
+                    <span v-text="getForwardTitle(item.forward.list)"></span>
                   </p>
                   <div class="records-list">
-                    <p v-for="info in item.forward_info.list">
+                    <p v-for="info in item.forward.list">
                       <span v-text="info.nickname"></span>
                       <span>:</span>
                       <span v-text="info.text"></span>
                     </p>
                   </div>
                   <p class="records-footer">
-                    <span>转发：会话记录 ({{item.forward_info.num}}条)</span>
+                    <span>转发：会话记录 ({{item.forward.num}}条)</span>
                   </p>
+                </div>
+
+                <!-- 代码块消息 -->
+                <div class="codeblock-record" v-else-if="item.msg_type == 5" @contextmenu="onCopy(idx,item,$event)">
+                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"
+                    @click="catCodeBlock(item.code_block.code,item.code_block.code_lang)"></i>
+                  <prism-editor :readonly="true" :code="item.code_block.code" :language="item.code_block.code_lang"
+                    :line-numbers="false" />
                 </div>
 
                 <div v-else>未知的消息类型</div>
@@ -186,7 +192,7 @@
           </div>
 
           <!-- 消息发送时间 -->
-          <p class="record-time no-select" v-show="compareTime(idx,item.send_time)" v-text="sendTime(item.send_time)">
+          <p class="record-time no-select" v-show="compareTime(idx,item.created_at)" v-text="sendTime(item.created_at)">
           </p>
         </div>
       </el-main>
@@ -310,7 +316,7 @@
     getSelection,
     copyTextToClipboard,
     addClass,
-    removeClass,
+    removeClass
   } from "@/utils/functions";
 
   export default {
@@ -577,7 +583,12 @@
           this.loadRecord.minRecord =
             res.data.rows.length == res.data.limit ? res.data.record_id : 0;
 
-          this.$root.message.records = records;
+          let user_id = this.$store.state.user.uid;
+
+          this.$root.message.records = records.map((item) => {
+            item.float = (item.user_id == 0) ? 'center' : (item.user_id == user_id ? 'right' : 'left');
+            return item;
+          });
 
           this.loadRecord.status = res.data.rows.length >= res.data.limit ? 1 : 2;
 
@@ -753,7 +764,7 @@
           return true;
         }
 
-        let nextDate = this.$root.message.records[index + 1].send_time.replace(
+        let nextDate = this.$root.message.records[index + 1].created_at.replace(
           /-/g,
           "/"
         );
@@ -913,7 +924,7 @@
         }
 
         if (item.user_id == this.$store.state.user.uid) {
-          let time = (new Date()).getTime() - Date.parse(item.send_time.replace(/-/g, "/"));
+          let time = (new Date()).getTime() - Date.parse(item.created_at.replace(/-/g, "/"));
           if (Math.floor(time / 1000 / 60) < 2) {
             menus.push({
               label: "撤回",
