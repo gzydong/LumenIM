@@ -45,11 +45,6 @@
         </el-main>
       </el-container>
     </div>
-
-    <!-- <div v-if="show == false && total > 0" class="floatBall" @click="$emit('close', true)">
-      <el-progress type="dashboard" :percentage="totalProgress" :width="45" :color="colors"></el-progress>
-      <p>上传进度</p>
-    </div> -->
   </div>
 </template>
 
@@ -71,6 +66,10 @@
     getFileExt,
     parseTime
   } from "@/utils/functions";
+
+  import {
+    sendFileServ
+  } from "@/api/chat";
 
   export default {
     name: 'files-manager',
@@ -118,10 +117,6 @@
         return this.items.filter((item, index) => {
           return item.isDelete == false && item.status == 2;
         }).length;
-      },
-
-      totalProgress() {
-        return this.total == 0 ? 0 : Math.floor((this.successNum / this.total) * 100);
       }
     },
     methods: {
@@ -187,9 +182,13 @@
       // 触发上传文件
       triggerUpload(hashName) {
         let $index = this.getFileIndex(hashName);
-        if ($index < 0) return;
+        if ($index < 0) {
+          return;
+        }
 
-        if (this.items[$index].isDelte) return;
+        if (this.items[$index].isDelte) {
+          return;
+        }
 
         let i = this.items[$index].successNum;
         let form = this.items[$index].forms[i];
@@ -202,11 +201,11 @@
             this.items[$index].progress = Math.floor((this.items[$index].successNum / length) * 100);
             if (this.items[$index].successNum == length) {
               this.items[$index].status = 2;
-
               if (res.data.is_file_merge) {
-                this.$emit('success', {
-                  fileid: res.data.file_info,
-                  file: this.items[$index].originalFile
+                sendFileServ({
+                  hash_name: res.data.hash,
+                  receive_id: this.$root.message.receiveId,
+                  source: this.$root.message.source,
                 });
               }
             } else {
@@ -219,7 +218,6 @@
           $index = this.getFileIndex(hashName);
           this.items[$index].status = 3;
         });
-
       },
 
       //获取分片文件数组索引
@@ -417,23 +415,6 @@
     margin-top: 30px;
     color: #cccccc;
     font-size: 10px;
-  }
-
-  .floatBall {
-    position: fixed;
-    right: 15px;
-    bottom: 165px;
-    width: 70px;
-    height: 70px;
-    background-color: white;
-    border-radius: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-size: 10px;
-    box-shadow: 0 0 5px #dcd3d3;
-    cursor: pointer;
   }
 
 </style>

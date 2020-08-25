@@ -206,8 +206,6 @@
     color: #e2dfdf;
   }
 
-
-
   .message-group {
     min-height: 30px;
     display: flex;
@@ -269,6 +267,7 @@
   .message-group .contnet-box .img-message .el-image {
     cursor: pointer;
     border-radius: 3px;
+    box-shadow: 1px 1px 8px #eae4e4;
   }
 
   .message-group .contnet-box .img-message img:hover {

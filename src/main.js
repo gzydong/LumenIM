@@ -29,6 +29,7 @@ import {
 import {
   findUserSettingServ
 } from "@/api/user";
+import { parse } from 'semver';
 
 
 let VueApp = new Vue({

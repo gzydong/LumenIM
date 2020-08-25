@@ -195,7 +195,8 @@
       <!-- 页脚信息 -->
       <el-footer class="padding0 panel-footer" height="160">
         <template v-if="!multiSelect.isOpen">
-          <editor ref="talkEditor" @send="submitSendMesage" @keyboard-event="keyboardEvent" />
+          <editor ref="talkEditor" @send="submitSendMesage" @sendCodeBlock="sendCodeBlock"
+            @keyboard-event="keyboardEvent" />
         </template>
         <template v-else>
           <div class="multi-select">
@@ -436,7 +437,8 @@
       },
       //监听聊天记录变化
       records(records) {
-        this.images = records.filter(item => item.msg_type == 2 && item.file_type == 1).map(item => item.file_url);
+        this.images = records.filter(item => item.msg_type == 2 && item.file.file_type == 1).map(item => item.file
+          .file_url);
       },
       //监听好友键盘事件
       inputEvent(n, o) {
@@ -495,6 +497,10 @@
             text_message: content,
           }
         });
+      },
+      // 发送代码消息
+      sendCodeBlock() {
+
       },
 
       //推送编辑事件消息
@@ -582,7 +588,7 @@
 
         this.multiSelect.mode = type;
         if (type == 1) { //逐条转发
-          if (this.verifyMultiSelectType(5)) {
+          if (this.verifyMultiSelectType(4)) {
             this.$notify({
               title: '消息转发',
               message: '会话记录不支持合并转发'
@@ -592,7 +598,7 @@
 
           this.selectContacts.isShow = true;
         } else if (type == 2) { //合并转发
-          if (this.verifyMultiSelectType(5)) {
+          if (this.verifyMultiSelectType(4)) {
             this.$notify({
               title: '消息转发',
               message: '会话记录不支持合并转发'
@@ -812,14 +818,14 @@
           }
         }
 
-        if (item.msg_type == 1 && item.is_code == 1) {
+        if (item.msg_type == 5) {
           menus.push({
             label: "查看",
             icon: 'iconfont icon-daima',
             customClass: 'cus-contextmenu-item',
             onClick: () => {
-              if (item.msg_type == 1 && item.is_code == 1) {
-                this.catCodeBlock(item.content, item.code_lang);
+              if (item.msg_type == 5) {
+                this.catCodeBlock(item.code_block.code, item.code_block.code_lang);
               }
             }
           });
@@ -887,7 +893,7 @@
         });
 
         // 判断是否是图片消息
-        if (item.msg_type == 2 && item.file_type == 1) {
+        if (item.msg_type == 2 && item.file.file_type == 1) {
           menus.push({
             label: "收藏",
             icon: 'el-icon-picture',

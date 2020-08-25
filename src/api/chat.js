@@ -59,10 +59,7 @@ export const setNotDisturbServ = (data) => {
   return post('/api/talk/set-not-disturb', data);
 }
 
-//发送聊天图片服务接口
-export const sendChatImgServ = (data) => {
-  return upload('/api/talk/upload-talk-img', data);
-}
+
 
 //查找用户聊天记录服务接口
 export const findChatRecordsServ = (data) => {
@@ -76,4 +73,23 @@ export const searchChatRecordsServ = (data) => {
 
 export const getRecordsContextServ = (data) => {
   return get('/api/talk/get-records-context', data);
+}
+
+
+//发送代码块消息服务接口
+export const sendCodeBlockServ = (data) => {
+  return post('/api/talk/send-code-block', data);
+}
+
+export const sendFileServ = (data) => {
+  return post('/api/talk/send-file', data);
+}
+
+//发送聊天图片服务接口
+export const sendChatImgServ = (data) => {
+  return upload('/api/talk/send-image', data);
+}
+
+export const sendEmoticonServ = (data) => {
+  return post('/api/talk/send-emoticon', data);
 }

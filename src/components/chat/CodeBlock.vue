@@ -27,7 +27,7 @@
           </div>
 
           <div class="buttom-group">
-            <el-button size="small" @click="close"  plain>{{editMode?'取消编辑':'关闭预览'}}</el-button>
+            <el-button size="small" @click="close" plain>{{editMode?'取消编辑':'关闭预览'}}</el-button>
             <el-button type="primary" size="small" @click="submit" v-show="editMode">发送代码</el-button>
           </div>
         </el-footer>
@@ -200,20 +200,19 @@
   }
 
   .container {
-    background: #2d2d2d;
-    width: 800px;
+    width: 80%;
+    max-width: 800px;
     height: 600px;
     overflow: hidden;
     box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
     transition: .5s ease;
-    -moz-transition: .5s ease;
-    -webkit-transition: .5s ease;
-    -o-transition: .5s ease;
+    background: #2d2d2d;
   }
 
   .full-screen {
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
   }
 
   .header {

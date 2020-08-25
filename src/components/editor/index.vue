@@ -61,17 +61,17 @@
     </el-container>
 
     <!-- 图片查看器 -->
-    <image-viewer v-model="imageViewer.isShow" :file="imageViewer.file" @success="successImageViewer" />
+    <image-viewer v-model="imageViewer.isShow" :file="imageViewer.file" @confirm="confirmUploadImage"
+      ref="imageViewer" />
 
     <recorder v-if="recorder" @close="recorder = false" />
 
     <!-- 代码块编辑器 -->
     <code-block v-if="codeBlock.isShow" :edit-mode="codeBlock.editMode" @close="codeBlock.isShow = false"
-      @confirm="confirmCodeBlock">
-    </code-block>
+      @confirm="confirmCodeBlock" />
 
     <!-- 文件上传管理器 -->
-    <files-manager ref="filesManager" v-model="filesManager.isShow" @success="fileUploadSuccess"></files-manager>
+    <files-manager ref="filesManager" v-model="filesManager.isShow" />
   </div>
 </template>
 
@@ -86,6 +86,12 @@
     getPasteImgs,
     getDragPasteImg,
   } from "@/utils/editor";
+
+  import {
+    sendCodeBlockServ,
+    sendChatImgServ,
+    sendEmoticonServ
+  } from "@/api/chat";
 
   export default {
     name: 'editor',
@@ -125,6 +131,8 @@
         filesManager: {
           isShow: false
         },
+
+        // 录音器
         recorder: false,
       };
     },
@@ -160,8 +168,8 @@
         if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
           // 后期做判断 1秒内只能发送一条消息
           this.$emit("send", this.editorText);
-
           this.editorText = "";
+
           e.preventDefault();
         }
       },
@@ -171,24 +179,25 @@
         this.openImageViewer(e.target.files[0]);
         this.$refs.restFile.value = null;
       },
+
       // 选择文件回调事件
       uploadFileChange(e) {
-        let that = this;
-        var maxsize = 100 * 1024 * 1024;
-
-        let file = null;
+        let maxsize = 100 * 1024 * 1024;
         if (e.target.files.length == 0) {
           return false;
         }
 
-        file = e.target.files[0];
+        let file = e.target.files[0];
         if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
           this.openImageViewer(file);
           return;
         }
 
         if (file.size > maxsize) {
-          alert("上传文件不能大于100M");
+          this.$notify.info({
+            title: '消息',
+            message: '上传文件不能大于100M'
+          });
           return;
         }
 
@@ -203,34 +212,41 @@
         this.imageViewer.file = file;
       },
 
-      // 图片查看器上传图片成功回调事件
-      successImageViewer(value) {
-        this.imageViewer.isShow = false;
-        // 处理发送消息
-        // this.$emit("send", {
-        //   type: 2,
-        //   text: value
-        // });
-      },
-
       // 代码块编辑器确认完成回调事件
       confirmCodeBlock(data) {
-        this.codeBlock.isShow = false;
-
-        // 这里处理发送代码块信息逻辑
-        // this.$emit("send", {
-        //   type: 4,
-        //   code_lang: data.language,
-        //   code: data.code
-        // });
+        sendCodeBlockServ({
+          code: data.code,
+          lang: data.language,
+          receive_id: this.$root.message.receiveId,
+          source: this.$root.message.source,
+        }).then(res => {
+          if (res.code == 200) {
+            this.codeBlock.isShow = false;
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: '代码消息发送失败'
+            });
+          }
+        });
       },
 
-      // 文件管理器文件上传成功回调事件
-      fileUploadSuccess(fileInfo) {
-        // this.$emit("send", {
-        //   type: 2,
-        //   text: fileInfo.fileid
-        // });
+      // 确认上传图片消息回调事件
+      confirmUploadImage() {
+        let fileData = new FormData();
+        fileData.append("img", this.imageViewer.file);
+        fileData.append("receive_id", this.$root.message.receiveId);
+        fileData.append("source", this.$root.message.source);
+
+        let ref = this.$refs.imageViewer;
+        sendChatImgServ(fileData).then(res => {
+          ref.loading = false;
+          if (res.code == 200) {
+            ref.closeBox();
+          }
+        }).catch(err => {
+          ref.loading = false;
+        });
       },
 
       // 选中表情包回调事件
@@ -253,9 +269,10 @@
             }, 0);
           }
         } else {
-          this.$emit("send", {
-            type: 3,
-            text: data.value
+          sendEmoticonServ({
+            emoticon_id: data.value,
+            receive_id: this.$root.message.receiveId,
+            source: this.$root.message.source,
           });
         }
 

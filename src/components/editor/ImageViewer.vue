@@ -9,7 +9,10 @@
 
         <el-main class="padding0 mian">
           <img v-show="src" :src="src" />
-          <div v-show="src"><span class="filename">{{fileName}}</span><br /><span class="size">{{fileSize}} KB</span>
+          <div v-show="src" style="overflow: hidden;max-width: 80%;">
+            <span class="filename">{{fileName}}</span>
+            <br />
+            <span class="size">{{fileSize}} KB</span>
           </div>
         </el-main>
 
@@ -22,10 +25,6 @@
 </template>
 
 <script>
-  import {
-    sendChatImgServ
-  } from "@/api/chat";
-
   export default {
     name: 'image-viewer',
     model: {
@@ -51,6 +50,10 @@
     },
     methods: {
       closeBox() {
+        if (this.loading) {
+          return false;
+        }
+
         this.$emit('close', false);
       },
       loadFile(file) {
@@ -64,19 +67,10 @@
         reader.readAsDataURL(file);
       },
 
-      // 发送图片
+      // 确认按钮事件
       uploadImage() {
         this.loading = true;
-        let fileData = new FormData();
-        fileData.append("img", this.file);
-        sendChatImgServ(fileData).then(res => {
-          this.loading = false;
-          if (res.code == 200) {
-            this.$emit('success',res.data.file_info);
-          }
-        }).catch(err => {
-          this.loading = false;
-        });
+        this.$emit('confirm');
       }
     }
   };
