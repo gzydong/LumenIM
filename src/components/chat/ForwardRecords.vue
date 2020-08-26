@@ -7,8 +7,8 @@
           <i class="close-btn el-icon-close" @click="close"></i>
         </el-header>
 
-        <el-main class="padding0 mian lm-scrollbar">
-          <div v-if="loadStatus == 0" class="loading">
+        <el-main class="padding0 mian" v-if="loadStatus == 0">
+          <div class="loading">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
               <span class="ant-spin-dot ant-spin-dot-spin">
                 <i class="ant-spin-dot-item"></i>
@@ -19,70 +19,74 @@
             </div>
             <p>正在努力加载中 ...</p>
           </div>
-
-          <div v-else class="message-group" v-for="(record,i) in records" :key="record.id">
-            <div class="avatar-box">
-              <img :src="record.avatar" :onerror="$store.state.detaultAvatar" />
-            </div>
-            <div class="contnet-box">
-              <div class="message-header">
-                <span
-                  :class="{'color-blue':uid == record.user_id}">{{record.nickname_remarks?record.nickname_remarks:record.nickname}}</span>
-                <span> {{record.send_time}}</span>
+        </el-main>
+        <el-main class="padding0 mian" v-else>
+          <el-scrollbar :native="false" tag="section" class="hv100">
+            <div class="message-group" v-for="(record,i) in records" :key="record.id">
+              <div class="left-box">
+                <img :src="record.avatar" :onerror="$store.state.detaultAvatar" />
               </div>
 
-              <!-- 文本消息 -->
-              <div v-if="record.msg_type == 1" class="content-message">
-                <pre class="text-message" v-html="record.content"></pre>
-              </div>
-
-              <!-- 文件-图片消息 -->
-              <div v-else-if="record.msg_type == 2 && record.file.file_type == 1" class="img-message">
-                <el-image :lazy="true" fit="cover" :style="getImgStyle(record.file.file_url)"
-                  :src="record.file.file_url" @click="catImages(record.file.file_url)">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline"></i>
-                  </div>
-                  <div slot="placeholder" class="image-slot">
-                    图片加载中
-                    <span class="dot">...</span>
-                  </div>
-                </el-image>
-              </div>
-
-              <!-- 文件-音频消息 -->
-              <div v-else-if="record.msg_type == 2 && record.file.file_type == 2">
-                文件-音频消息
-              </div>
-
-              <!-- 文件-视频消息 -->
-              <div v-else-if="record.msg_type == 2 && record.file.file_type == 3">
-                文件-视频消息
-              </div>
-
-              <!-- 其它格式的文件消息 -->
-              <div v-else-if="record.msg_type == 2 && record.file.file_type == 4" class="file-message">
-                <div class="file-icon">{{record.file.file_suffix.toUpperCase()}}</div>
-                <div class="file-info">
-                  <p>{{record.file.original_name}}</p>
-                  <p>
-                    {{renderSize(record.file.file_size)}}
-                    <span>该文件永久保存</span>
-                  </p>
+              <div class="right-box">
+                <div class="msg-header">
+                  <span class="name">
+                    {{record.nickname_remarks?record.nickname_remarks:record.nickname}}
+                  </span>
+                  <span class="time">/ {{record.created_at}}</span>
                 </div>
-                <div class="file-tool">
-                  <i class="iconfont icon-download" @click="download(record.file.id)"></i>
+
+                <!-- 文本消息 -->
+                <div class="msg-text" v-if="record.msg_type == 1">
+                  <pre class="pre" v-html="record.content"></pre>
                 </div>
-              </div>
 
-              <!-- 代码块消息 -->
-              <div v-else-if="record.msg_type == 5" class="content-message">
-                <pre class="text-message" v-html="record.code_block.code"></pre>
-              </div>
+                <!-- 文件-图片消息 -->
+                <div class="msg-image" v-else-if="record.msg_type == 2 && record.file.file_type == 1">
+                  <el-image :lazy="true" fit="cover" :style="getImgStyle(record.file.file_url)"
+                    :src="record.file.file_url" @click="catImages(record.file.file_url)">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                    <div slot="placeholder" class="image-slot">
+                      图片加载中
+                    </div>
+                  </el-image>
+                </div>
 
-              <div v-else class="other-message">未知消息类型</div>
+                <!-- 文件-音频消息 -->
+                <div class="msg-audio" v-else-if="record.msg_type == 2 && record.file.file_type == 2">
+                  文件-音频消息
+                </div>
+
+                <!-- 文件-视频消息 -->
+                <div class="msg-video" v-else-if="record.msg_type == 2 && record.file.file_type == 3">
+                  文件-视频消息
+                </div>
+
+                <!-- 其它格式的文件消息 -->
+                <div class="msg-file" v-else-if="record.msg_type == 2 && record.file.file_type == 4">
+                  <div class="file-icon">{{record.file.file_suffix.toUpperCase()}}</div>
+                  <div class="file-info">
+                    <p>{{record.file.original_name}}</p>
+                    <p>
+                      {{renderSize(record.file.file_size)}}
+                      <span>该文件永久保存</span>
+                    </p>
+                  </div>
+                  <div class="file-tool">
+                    <i class="iconfont icon-download" @click="download(record.id)"></i>
+                  </div>
+                </div>
+
+                <!-- 代码块消息 -->
+                <div class="msg-text" v-else-if="record.msg_type == 5">
+                  <pre class="pre" v-text="record.code_block.code"></pre>
+                </div>
+
+                <div v-else class="other-message">未知消息类型</div>
+              </div>
             </div>
-          </div>
+          </el-scrollbar>
         </el-main>
       </el-container>
     </div>
@@ -206,142 +210,9 @@
     color: #e2dfdf;
   }
 
-  .message-group {
-    min-height: 30px;
-    display: flex;
-    margin-bottom: 5px;
-    flex-direction: row;
-    padding: 3px 5px 3px 0;
-  }
-
-  .message-group .avatar-box {
-    width: 50px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    user-select: none;
-  }
-
-  .message-group .avatar-box img {
-    height: 30px;
-    width: 30px;
-    margin-top: 10px;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-
-  .message-group .contnet-box {
-    flex: auto;
-    padding-bottom: 15px;
-    border-bottom: 1px dashed #ddd8d8;
-  }
-
-  .message-group .contnet-box .message-header {
-    height: 30px;
-    line-height: 30px;
-    font-size: 12px;
-    color: #a09a9a;
-    position: relative;
-  }
-
-  .message-group .contnet-box .content-message .text-message {
-    background: #f5f5f5;
-    white-space: pre-wrap;
-    overflow: hidden;
-    word-break: break-word;
-    word-wrap: break-word;
-    font-size: 13px;
-    padding: 5px;
-    font-family: "微软雅黑";
-    line-height: 20px;
-    border-radius: 2px;
-  }
-
-  .message-group .contnet-box .img-message img {
-    max-width: 120px !important;
-    min-width: 20px !important;
-    border: 1px solid white;
-    cursor: pointer;
-  }
-
-  .message-group .contnet-box .img-message .el-image {
-    cursor: pointer;
-    border-radius: 3px;
-    box-shadow: 1px 1px 8px #eae4e4;
-  }
-
-  .message-group .contnet-box .img-message img:hover {
-    border-color: #409eff;
-  }
-
-  .message-group .contnet-box .file-message {
-    width: 290px;
-    height: 50px;
-    display: flex;
-    padding: 5px;
-    background: white;
-    box-shadow: 0 0 7px 0px #e8e4e4;
-  }
-
-  .message-group .contnet-box .file-message .file-icon {
-    width: 50px;
-    height: 50px;
-    background: #49a4ff;
-    line-height: 50px;
-    text-align: center;
-    color: white;
-    font-size: 12px;
-    border-radius: 3px;
-    user-select: none;
-  }
-
-  .message-group .contnet-box .file-message .file-info {
-    width: 200px;
-  }
-
-  .message-group .contnet-box .file-message .file-info p {
-    padding-left: 5px;
-    font-size: 14px;
-    height: 25px;
-    line-height: 25px;
-  }
-
-  .message-group .contnet-box .file-message .file-info p:first-child {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: rebeccapurple;
-  }
-
-  .message-group .contnet-box .file-message .file-info p:last-child {
-    color: #9a9393;
-    font-size: 12px;
-  }
-
-  .message-group .contnet-box .file-message .file-tool {
-    width: 30px;
-    position: relative;
-  }
-
-  .message-group .contnet-box .file-message .file-tool i {
-    position: absolute;
-    top: 16px;
-    left: 12px;
-    cursor: pointer;
-    font-size: 22px;
-    color: #2196f3;
-  }
-
-  .image-slot {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    background: #f5f5f5;
-    color: #cccccc;
-    font-size: 12px;
-    font-weight: 100;
+  .container>>>.el-scrollbar__wrap {
+    overflow-x: hidden;
   }
 
 </style>
+<style scoped src="@static/css/talk/talk-records.css"></style>

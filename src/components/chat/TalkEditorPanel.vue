@@ -344,7 +344,7 @@
           let els = el.querySelectorAll('a');
           if (els) {
             els.forEach((item, i) => {
-              item.style = 'color: white;padding:0 2px';
+              item.style = 'color: white;padding:0 2px;border-bottom: 1px solid #fff;';
             });
           }
         }
