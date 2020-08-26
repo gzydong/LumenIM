@@ -1,11 +1,13 @@
 import AppMessageEvent from './app-message-event';
 
 import {
-  parseTime
+  parseTime,
+  packTalkItem
 } from '@/utils/functions';
 
 import {
-  clearChatUnreadNumServ
+  clearChatUnreadNumServ,
+  chatListCrateServ
 } from "@/api/chat";
 
 /**
@@ -39,6 +41,13 @@ class TalkEvent extends AppMessageEvent {
 
     let indexName = this.getIndexName();
     let idx = this.getIndex(indexName);
+
+    // 判断消息来源是否在对话列表中...
+    if (idx == -1) {
+      this.loadTalkItem();
+      return;
+    }
+
     if (this.isChatting(this.resource.source_type, this.resource.receive_user, this.resource.send_user)) {
       this.updateTalkRecord(idx);
     } else {
@@ -150,6 +159,32 @@ class TalkEvent extends AppMessageEvent {
     }
 
     return `${message.source_type}_${message.send_user}`;
+  }
+
+
+  /**
+   * 加载对接节点
+   */
+  loadTalkItem() {
+    let receive_id = 0;
+
+    if (this.resource.source_type == 2 || this.resource.send_user == this.getUserId) {
+      receive_id = this.resource.receive_user;
+    } else {
+      receive_id = this.resource.send_user;
+    }
+
+    chatListCrateServ({
+      type: this.resource.source_type,
+      receive_id: receive_id
+    }).then(res => {
+      if (res.code == 200) {
+        this.vm.$store.commit({
+          type: "INSERT_TALK_ITEM",
+          item: packTalkItem(res.data.talkItem)
+        });
+      }
+    });
   }
 }
 

@@ -409,8 +409,8 @@
       },
 
       // 群聊窗口点击发送群聊信息按钮回调事件
-      sendMessage(groupInfo) {
-        this.toTalk(2, `2_${groupInfo.groupId}`);
+      sendMessage(groupId) {
+        this.toTalk(2, `2_${groupId}`);
       },
 
       // 用户退出群聊回调事件

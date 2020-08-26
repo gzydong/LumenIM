@@ -32,7 +32,7 @@
                 <div v-for="(item,i) in contacts[contacts.show]" class="contacts-item" @click="triggerMenuItem(item)"
                   :class="{'contacts-item-selected':findSource == item.type && findReceiveId == item.id}">
                   <div class="avatar">
-                    <el-avatar :size="30" :src="item.avatar">
+                    <el-avatar :size="20" :src="item.avatar">
                       <img src="/static/image/detault-avatar.jpg" />
                     </el-avatar>
                   </div>

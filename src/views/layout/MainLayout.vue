@@ -127,11 +127,14 @@
       // 播放消息提示音
       play() {
         this.lastRunTime = Date.now();
-        let audio = document.querySelector("#audio");
-        if (!this.isPlaying) {
-          audio.play();
-          this.isPlaying = true;
-        }
+        try {
+          let audio = document.querySelector("#audio");
+          if (!this.isPlaying) {
+            audio.play();
+            this.isPlaying = true;
+          }
+        } catch (error) {}
+
         let timeOut = setTimeout(() => {
           this.stop(timeOut);
         }, 1000);
@@ -139,14 +142,18 @@
       // 停止消息提示音
       stop(timeOut) {
         this.currentTime = Date.now();
-        let audio = document.querySelector("#audio");
-        if (this.currentTime - this.lastRunTime < 1000) {} else {
-          if (this.isPlaying) {
-            audio.currentTime = 0;
-            audio.pause();
-            this.isPlaying = false;
+
+        try {
+          let audio = document.querySelector("#audio");
+          if (this.currentTime - this.lastRunTime < 1000) {} else {
+            if (this.isPlaying) {
+              audio.currentTime = 0;
+              audio.pause();
+              this.isPlaying = false;
+            }
           }
-        }
+        } catch (error) {}
+
         clearTimeout(timeOut);
       },
       logout() {

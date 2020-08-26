@@ -90,6 +90,10 @@
     friendApplyServ
   } from '@/api/user';
 
+  import {
+    packTalkItem
+  } from '@/utils/functions';
+
   export default {
     name: 'user-business-card',
     data() {

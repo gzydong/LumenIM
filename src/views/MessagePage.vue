@@ -187,9 +187,6 @@
         // 查询关键词
         input: '',
 
-        // 搜索列表
-        restaurants: [],
-
         // header 工具菜单
         subMenu: false,
 
@@ -283,6 +280,18 @@
       // header 功能栏隐藏事件
       closeSubMenu() {
         this.subMenu = false;
+      },
+
+      // 清除当前对话
+      clearTalk() {
+        this.index_name = null;
+        this.params = {
+          source: 0,
+          receiveId: 0,
+          nickname: '',
+        };
+
+        this.$root.updateMessage(0, 0);
       },
 
       // 工具栏事件
@@ -529,6 +538,7 @@
           list_id: item.id
         }).then(res => {
           if (res.code == 200) {
+            this.clearTalk();
             this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
           }
         });

@@ -159,7 +159,6 @@
 
 <script>
   import {
-    chatListCrateServ,
     setNotDisturbServ
   } from "@/api/chat";
 
@@ -349,20 +348,7 @@
 
       //发送群聊
       sendGroup() {
-        chatListCrateServ({
-          type: 2,
-          receive_id: this.detail.groupId
-        }).then(res => {
-          if (res.code !== 200) return;
-          this.$emit("send-group", {
-            list_id: res.data.list_id,
-            index_name: `2_${this.detail.groupId}`,
-            type: 2,
-            groupId: this.detail.groupId,
-            avatar: this.detail.groupAvatar,
-            groupName: this.detail.groupName
-          });
-        });
+        this.$emit("send-group", this.detail.groupId);
       },
 
       //退出群操操作

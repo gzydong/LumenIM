@@ -16,8 +16,13 @@ const Talks = {
     // 更新对话节点
     UPDATE_TALK_ITEM(state, payload) {
       if (state.items[payload.key]) {
-        state.items[payload.key] = Object.assign(state.items[payload.key], payload.item)
+        state.items[payload.key] = Object.assign(state.items[payload.key], payload.item);
       }
+    },
+
+    // 新增对话节点
+    INSERT_TALK_ITEM(state, payload) {
+      state.items.push(payload.item);
     },
 
     // 移除对话节点

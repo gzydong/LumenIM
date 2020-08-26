@@ -385,7 +385,7 @@ export function hidePhone(phone) {
  */
 export function packTalkItem(params) {
   let options = {
-    id: null,
+    id: 0,
     type: 1,
     index_name: "",
     name: "未设置昵称",
