@@ -33,12 +33,12 @@
             <el-popover placement="top-end" width="600" trigger="click">
               <div class="editor-books">
                 <div class="books-title">编辑说明:</div>
-                <p>1. 支持上传QQ及微信截图，在QQ或微信中截图后使用Ctrl+v上传图片</p>
-                <p>2. 支持浏览器及Word文档中的图片复制上传、复制后使用Ctrl+v上传图片</p>
-                <p>3. 支持图片拖拽上传</p>
-                <p>4. 支持文件上传 ( 文件小于100M ) </p>
-                <p>5. 按Enter发送 / Shift+Enter 换行</p>
-                <p>6. (注意) 当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败</p>
+                <p>1. 支持上传QQ及微信截图，在QQ或微信中截图后使用Ctrl+v上传图片。</p>
+                <p>2. 支持浏览器及Word文档中的图片复制上传、复制后使用Ctrl+v上传图片。</p>
+                <p>3. 支持图片拖拽上传。</p>
+                <p>4. 支持文件上传 ( 文件小于100M ) 。</p>
+                <p>5. 按Enter发送 / Shift+Enter 换行。</p>
+                <p>6. (注意) 当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败。</p>
               </div>
               <i class="el-icon-info" slot="reference"></i>
             </el-popover>
@@ -55,6 +55,8 @@
         </form>
       </el-header>
       <el-main class="padding0 textarea">
+        <!-- <div style="width: 80px;height: 35px;background-color: green;position: absolute;right: 10px;bottom: 10px;">发送
+        </div> -->
         <textarea ref="textarea" v-paste="pasteImage" v-drag="dragPasteImage" v-model.trim="editorText"
           @keydown="keydownEvent($event)" placeholder="你想要的聊点什么呢 ..." rows="6"></textarea>
       </el-main>
@@ -369,6 +371,7 @@
     overflow-y: auto;
     color: #464545;
     padding: 5px;
+    position: relative;
   }
 
   textarea::-webkit-scrollbar {

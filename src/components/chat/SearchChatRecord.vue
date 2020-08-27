@@ -81,8 +81,7 @@
 
                     <!-- 文件-图片消息 -->
                     <div class="msg-image" v-else-if="record.msg_type == 2 && record.file.file_type == 1">
-                      <el-image fit="cover" :style="getImgStyle(record.file.file_url)" :src="record.file.file_url"
-                        @click="catImages(record.file.file_url)">
+                      <el-image fit="cover" :style="getImgStyle(record.file.file_url)" :src="record.file.file_url">
                         <div slot="error" class="image-slot">
                           <i class="el-icon-picture-outline"></i>
                         </div>

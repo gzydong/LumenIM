@@ -307,7 +307,7 @@
       // 监听自定义滚动条事件
       scrollEvent(e) {
         let _self = this;
-        let scrollbarEl = this.$refs.myScrollbar.wrap
+        let scrollbarEl = this.$refs.myScrollbar.wrap;
         scrollbarEl.onscroll = function () {
           let el = document.getElementById('subheader');
           if (scrollbarEl.scrollTop == 0) {
@@ -654,6 +654,7 @@
 
   .aside-box .header .from>>>.el-input .el-input__inner {
     border-radius: 20px;
+    width: 240px;
   }
 
   .aside-box .header .tools {

@@ -15,7 +15,7 @@
                     size="small" />
                 </el-header>
                 <el-main class="padding0">
-                  <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
+                  <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar2">
                     <ul class="friend-items no-select">
                       <li v-for="(item,index) in search" :key="item.index_name" @click="triggerContacts(item)">
                         <el-avatar :size="30" :src="item.avatar" class="avatar">
@@ -75,6 +75,11 @@
     findUserGroupsServ
   } from "@/api/user";
 
+  import {
+    addClass,
+    removeClass
+  } from '@/utils/functions';
+
   export default {
     name: "select-contacts",
     data() {
@@ -106,6 +111,9 @@
           this.search = arr;
         }
       }
+    },
+    mounted() {
+      this.scrollEvent();
     },
     created() {
       this.loadFriends();
@@ -185,6 +193,20 @@
             }
           }
         });
+      },
+
+      // 监听自定义滚动条事件
+      scrollEvent(e) {
+        let _self = this;
+        let scrollbarEl = this.$refs.scrollbar2.wrap;
+        scrollbarEl.onscroll = function () {
+          let el = document.getElementById('search-header');
+          if (scrollbarEl.scrollTop == 0) {
+            removeClass(el, 'search-header-shadow');
+          } else {
+            addClass(el, 'search-header-shadow');
+          }
+        }
       },
     }
   };

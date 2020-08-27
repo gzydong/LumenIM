@@ -7,8 +7,8 @@
           <el-container class="hv100" direction="vertical">
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
-              <div class="from">
-                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索好友 / 群组" size="small"></el-input>
+              <div class="from" >
+                <el-input v-model="input" prefix-icon="el-icon-search" placeholder="搜索好友 / 群组" size="small" />
               </div>
 
               <!-- 工具栏 -->
@@ -578,6 +578,7 @@
 
   .aside-box .header .from>>>.el-input .el-input__inner {
     border-radius: 20px;
+    width: 170px;
   }
 
   .aside-box .header .tools {

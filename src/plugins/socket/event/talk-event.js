@@ -179,6 +179,7 @@ class TalkEvent extends AppMessageEvent {
       receive_id: receive_id
     }).then(res => {
       if (res.code == 200) {
+        res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1;
         this.vm.$store.commit({
           type: "INSERT_TALK_ITEM",
           item: packTalkItem(res.data.talkItem)
