@@ -409,6 +409,7 @@
     overflow: hidden;
     border-radius: 3px;
     box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
+    margin: 0 10px;
   }
 
   .container>>>.el-scrollbar__wrap {

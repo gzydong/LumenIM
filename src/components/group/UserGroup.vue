@@ -44,10 +44,11 @@
           @change="editDisturb" />
       </div>
 
-      <div class="list-item list-item-flex">
+      <!-- 预留 -->
+      <!-- <div class="list-item list-item-flex">
         <span>全员禁言：</span>
         <el-switch v-model="detail.no_message" inactive-color="#e0d6d6" />
-      </div>
+      </div> -->
 
       <div class="list-item">
         <span>群成员：</span>

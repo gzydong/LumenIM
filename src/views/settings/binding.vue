@@ -2,7 +2,6 @@
   <div>
     <div class="container">
       <h4>帐户绑定</h4>
-
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <div class="avatar">
