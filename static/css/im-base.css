@@ -23,6 +23,10 @@ textarea {
   outline: none;
 }
 
+
+.el-image-viewer__wrapper{
+  z-index: 999 !important;
+}
 img {
   border: 0;
 }
