@@ -770,8 +770,8 @@
 
 
 .note-editor-box>>>.markdown-body pre {
-  padding: 10px;
-  font-size: 15px;
+  /* padding: 10px; */
+  /* font-size: 15px; */
   position: relative;
 }
 
@@ -779,18 +779,20 @@
   position: absolute;
   right: 5px;
   top: 5px;
-  min-width: 30px;
-  padding: 0 5px;
+  min-width: 50px;
+  padding: 0 10px;
   height: 25px;
-  background: #dad8d8;
+  background: white;
   line-height: 28px;
   text-align: center;
-  border-radius: 3px;
-  color: #747474;
+  color: #000000;
   cursor: pointer;
   display: none;
   font-size: 12px;
   z-index: 2;
+  font-weight: 100;
+  border-radius: 3px;
+  
 }
 
 .note-editor-box>>>.markdown-body pre:hover .fz-btn {
@@ -822,16 +824,21 @@
   border-radius: 2px;
 }
 
+.note-editor-box>>>pre code{
+  padding-bottom: 15px;
+}
 .note-editor-box>>>pre code::-webkit-scrollbar {
   height: 8px;
   background-color: #d5cece;
   overflow-x: auto;
+  border-radius: 3px;
 }
 
 .note-editor-box>>>pre code::-webkit-scrollbar-thumb {
   height: 8px;
   background-color: #9f9898;
   overflow-x: auto;
+  border-radius: 3px;
 }
 
 .note-aside>>>.el-scrollbar__wrap {

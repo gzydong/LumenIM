@@ -172,9 +172,9 @@
             <div v-if="markdown.isEdit" style="height:100%;width:100%;">
               <mavon-editor ref="mavonEditor" v-if="markdown.isEdit" v-model="markdown.editData.content" fontSize="14px"
                 :toolbars-flag="markdown.toolbarsFlag" :default-open="markdown.defaultOpen"
-                :toolbars="markdown.toolbars" :subfield="false" :code-style="markdown.codeStyle" @change="$editorChange"
-                @imgAdd="$editorUploadImage" @save="$editorSave" previewBackground="#fff" placeholder="请输入您的笔记正文 ..."
-                class="editor" />
+                :toolbars="markdown.toolbars" :subfield="false" :ishljs="false" :code-style="markdown.codeStyle"
+                @change="$editorChange" @imgAdd="$editorUploadImage" @save="$editorSave" previewBackground="#fff"
+                placeholder="请输入您的笔记正文 ..." class="editor" :externalLink="false" />
             </div>
             <div v-else>
               <div class="note-header-tool">
@@ -256,8 +256,8 @@
                 </span>
 
               </div>
-              <div v-if="markdown.editData.html" @contextmenu.prevent="noteContextmenu"
-                class="markdown-body markdown-reply " id="markdown-reply" v-html="markdown.editData.html"></div>
+              <div v-if="markdown.editData.html" class="markdown-body markdown-reply " id="markdown-reply"
+                v-html="markdown.editData.html" v-code></div>
               <div v-else class="markdown-body" style="color:#bdb3b3;">您还未编辑笔记内容...</div>
 
               <el-tooltip class="item" effect="dark" content="分享笔记给我的朋友" placement="top">
@@ -293,6 +293,7 @@
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
 
+  import Prism from 'prismjs';
   import {
     copyTextToClipboard
   } from "@/utils/functions";
@@ -335,6 +336,24 @@
       mavonEditor,
       RecycleNoteAnnex,
       SelectContacts
+    },
+    directives: {
+      // 代码高亮指令
+      code: {
+        inserted: function (el) {
+          let codes = el.querySelectorAll('code');
+          codes.forEach((elCode, k) => {
+            let className = elCode.className;
+            let language = className.split('-')[1];
+            if (language != undefined) {
+              elCode.className = 'language-' + language;
+              if (Prism.languages[language]) {
+                elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
+              }
+            }
+          });
+        }
+      }
     },
     data() {
       return {
@@ -413,7 +432,7 @@
           isFull: false, //编辑模式
           defaultOpen: "preview",
           toolbarsFlag: false,
-          codeStyle: "github",
+          codeStyle: "okaidia",
           toolbars: {
             bold: true, // 粗体
             italic: true, // 斜体
@@ -433,7 +452,6 @@
             alignleft: true, // 左对齐
             aligncenter: true, // 居中
             alignright: true, // 右对齐
-            subfield: true // 单双栏模式
           }
         },
 
@@ -1278,33 +1296,6 @@
         }
 
         return [-1, -1];
-      },
-
-      //文章详情鼠标右键事件
-      noteContextmenu(e) {
-        let items = {
-          items: [{
-              label: "编辑笔记",
-              icon: "el-icon-edit-outline",
-              onClick: () => {
-                this.switchEditMode();
-              }
-            },
-            {
-              label: "删除笔记",
-              icon: "el-icon-delete",
-              onClick: () => {
-                alert('暂不支持此功能...');
-              }
-            }
-          ],
-          event,
-          zIndex: 3,
-          minWidth: 110
-        };
-
-        this.$contextmenu(items);
-        return false;
       },
 
       closeTipBox(index) {
