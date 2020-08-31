@@ -1030,7 +1030,7 @@
 
 .markdown-body :not(pre)>code[class*="language-"],
 .markdown-body pre {
-  background: #384548;
+  background-color: #282c34;
 }
 
 /* Inline code */
