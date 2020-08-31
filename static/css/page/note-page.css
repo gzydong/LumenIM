@@ -854,6 +854,6 @@
   /* border-radius: 3px; */
 }
 
-.note-aside>>>.el-scrollbar__wrap {
+.el-aside-two>>>.el-scrollbar__wrap {
   overflow-x: hidden;
 }
