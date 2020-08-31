@@ -256,13 +256,12 @@
                 </span>
 
               </div>
-              <div v-if="markdown.editData.html" class="markdown-body markdown-reply " id="markdown-reply"
-                v-html="markdown.editData.html" v-code></div>
+              <div v-if="markdown.editData.html" class="markdown-body" v-html="markdown.editData.html" v-code></div>
               <div v-else class="markdown-body" style="color:#bdb3b3;">您还未编辑笔记内容...</div>
 
-              <el-tooltip class="item" effect="dark" content="分享笔记给我的朋友" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="分享笔记给我的朋友" placement="top">
                 <div class="share-note" @click="shareNode"><i class="iconfont icon-fenxiang2"></i></div>
-              </el-tooltip>
+              </el-tooltip> -->
             </div>
           </div>
         </el-main>
@@ -288,7 +287,7 @@
   } from "mavon-editor";
 
   import "mavon-editor/dist/css/index.css";
-  import "@static/css/github-markdown.css";
+  // import "@static/css/github-markdown.css";
 
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
@@ -341,15 +340,46 @@
       // 代码高亮指令
       code: {
         inserted: function (el) {
-          let codes = el.querySelectorAll('code');
-          codes.forEach((elCode, k) => {
+          let preNodes = el.querySelectorAll('pre');
+
+          let copyFunc = (pre, text) => {
+            let el = document.createElement("p");
+            el.className = 'fz-btn';
+            el.innerText = "复制";
+            el.onclick = () => {
+              copyTextToClipboard(text.replace(/(^\s*)|(\s*$)/g, ''),
+                () => {
+                  el.innerText = '复制成功!';
+                  setTimeout(() => {
+                    el.innerText = '复制';
+                  }, 1000);
+                }
+              );
+            };
+
+            pre.appendChild(el);
+          };
+
+          let preNmae = (pre, lang) => {
+            let el = document.createElement("p");
+            el.className = 'lang-name';
+            el.innerText = lang;
+            pre.appendChild(el);
+          };
+
+          preNodes.forEach(elPre => {
+            let elCode = elPre.querySelector('code');
             let className = elCode.className;
             let language = className.split('-')[1];
+
+            copyFunc(elPre, elCode.innerText);
             if (language != undefined) {
               elCode.className = 'language-' + language;
               if (Prism.languages[language]) {
                 elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
               }
+
+              preNmae(elPre, language);
             }
           });
         }
@@ -714,37 +744,6 @@
           this.markdown.isEdit = false;
           this.markdown.defaultOpen = "preview";
           this.markdown.toolbarsFlag = false;
-          this.$nextTick(() => {
-            this.addProCodeCopy();
-          });
-        }
-      },
-
-      //给代码块添加复制按钮
-      addProCodeCopy() {
-        if (!document.getElementById("markdown-reply")) {
-          return false;
-        }
-
-        let els = document.getElementById("markdown-reply").querySelectorAll('pre');
-        let len = els.length;
-
-        if (len == 0) return;
-
-        for (let i = 0; i < len; i++) {
-          let el = document.createElement("p");
-          el.className = 'fz-btn';
-          el.innerText = "复制";
-          el.onclick = function () {
-            copyTextToClipboard(els[i].innerText.replace(/(复制$)/g, '').replace(/(^\s*)|(\s*$)/g, ''), function () {
-              el.innerText = '复制成功!';
-              setTimeout(() => {
-                el.innerText = '复制';
-              }, 1000);
-            });
-          };
-
-          els[i].appendChild(el);
         }
       },
 
@@ -1318,4 +1317,5 @@
   };
 
 </script>
+<style src="@static/css/github-markdown.css"></style>
 <style scoped src="@static/css/page/note-page.css"></style>

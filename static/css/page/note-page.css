@@ -100,7 +100,7 @@
   overflow-x: hidden;
 }
 
-.article-container .note-list-empty{
+.article-container .note-list-empty {
   height: 150px;
   display: flex;
   justify-content: center;
@@ -109,7 +109,7 @@
   margin-top: 30%;
 }
 
-.article-container .note-list-empty .svg-notebook{
+.article-container .note-list-empty .svg-notebook {
   width: 110px;
   height: 122px;
   font-size: 100px;
@@ -770,9 +770,8 @@
 
 
 .note-editor-box>>>.markdown-body pre {
-  /* padding: 10px; */
-  /* font-size: 15px; */
   position: relative;
+  padding-top: 25px;
 }
 
 .note-editor-box>>>.markdown-body pre .fz-btn {
@@ -781,26 +780,39 @@
   top: 5px;
   min-width: 50px;
   padding: 0 10px;
-  height: 25px;
-  background: white;
-  line-height: 28px;
+  height: 23px;
+  background: #7b7b7b;
+  line-height: 23px;
   text-align: center;
-  color: #000000;
+  color: #e8dfdf;
   cursor: pointer;
   display: none;
   font-size: 12px;
   z-index: 2;
   font-weight: 100;
-  border-radius: 3px;
-  
+  border-radius: 20px;
+  font-family: "Microsoft YaHei";
+}
+
+.note-editor-box>>>.markdown-body pre .lang-name {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  padding: 0 10px;
+  height: 25px;
+  line-height: 28px;
+  text-align: center;
+  color: #838383;
+  font-size: 12px;
+  z-index: 2;
 }
 
 .note-editor-box>>>.markdown-body pre:hover .fz-btn {
   display: block;
 }
 
-.note-editor-box>>>.markdown-body pre .fz-btn:active {
-  color: red;
+.note-editor-box>>>.markdown-body pre:hover .lang-name {
+  display: none;
 }
 
 .note-editor-box>>>.markdown-body pre code {
@@ -824,21 +836,22 @@
   border-radius: 2px;
 }
 
-.note-editor-box>>>pre code{
+.note-editor-box>>>pre code {
   padding-bottom: 15px;
 }
+
 .note-editor-box>>>pre code::-webkit-scrollbar {
   height: 8px;
   background-color: #d5cece;
   overflow-x: auto;
-  border-radius: 3px;
+  /* border-radius: 3px; */
 }
 
 .note-editor-box>>>pre code::-webkit-scrollbar-thumb {
   height: 8px;
   background-color: #9f9898;
   overflow-x: auto;
-  border-radius: 3px;
+  /* border-radius: 3px; */
 }
 
 .note-aside>>>.el-scrollbar__wrap {
