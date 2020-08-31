@@ -760,12 +760,9 @@
 /* markdown css 重写 */
 .note-editor-box>>>.markdown-body {
   box-sizing: border-box;
-  min-width: 200px;
   margin: 0 auto;
   padding: 30px 15px;
   font-size: 14px;
-  color: #666;
-  font-family: 'Microsoft YaHei', Helvetica, Arial, sans-serif;
 }
 
 
@@ -776,22 +773,23 @@
 
 .note-editor-box>>>.markdown-body pre .fz-btn {
   position: absolute;
-  right: 5px;
-  top: 5px;
+  right: 0px;
+  top: 0px;
   min-width: 50px;
   padding: 0 10px;
-  height: 23px;
-  background: #7b7b7b;
-  line-height: 23px;
+  height: 30px;
+  line-height: 30px;
   text-align: center;
+  background: #7b7b7b;
   color: #e8dfdf;
   cursor: pointer;
-  display: none;
   font-size: 12px;
   z-index: 2;
   font-weight: 100;
-  border-radius: 20px;
   font-family: "Microsoft YaHei";
+  opacity: 0;
+  visibility: hidden;
+  transition: ease 1s;
 }
 
 .note-editor-box>>>.markdown-body pre .lang-name {
@@ -808,7 +806,8 @@
 }
 
 .note-editor-box>>>.markdown-body pre:hover .fz-btn {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 
 .note-editor-box>>>.markdown-body pre:hover .lang-name {
