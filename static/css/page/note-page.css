@@ -838,17 +838,17 @@
 }
 
 .note-editor-box>>>pre code::-webkit-scrollbar {
-  height: 8px;
+  height: 3px;
   background-color: #d5cece;
   overflow-x: auto;
-  /* border-radius: 3px; */
+  border-radius: 3px;
 }
 
 .note-editor-box>>>pre code::-webkit-scrollbar-thumb {
-  height: 8px;
+  height: 3px;
   background-color: #9f9898;
   overflow-x: auto;
-  /* border-radius: 3px; */
+  border-radius: 3px;
 }
 
 .el-container-note>>>.el-scrollbar__wrap {

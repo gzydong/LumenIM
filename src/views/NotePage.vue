@@ -172,7 +172,7 @@
             <div v-if="markdown.isEdit" style="height:100%;width:100%;">
               <mavon-editor ref="mavonEditor" v-if="markdown.isEdit" v-model="markdown.editData.content" fontSize="14px"
                 :toolbars-flag="markdown.toolbarsFlag" :default-open="markdown.defaultOpen"
-                :toolbars="markdown.toolbars" :subfield="false" :ishljs="false" :code-style="markdown.codeStyle"
+                :toolbars="markdown.toolbars" :subfield="true" :ishljs="false" :code-style="markdown.codeStyle"
                 @change="$editorChange" @imgAdd="$editorUploadImage" @save="$editorSave" previewBackground="#fff"
                 placeholder="请输入您的笔记正文 ..." class="editor" :externalLink="false" />
             </div>
@@ -482,6 +482,9 @@
             alignleft: true, // 左对齐
             aligncenter: true, // 居中
             alignright: true, // 右对齐
+
+            subfield: true, // 单双栏模式
+            preview: true, // 预览
           }
         },
 
