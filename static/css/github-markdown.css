@@ -995,7 +995,7 @@
 
 .markdown-body code[class*="language-"],
 .markdown-body pre {
-  color: #e8e8e5;
+  color: #ccc;
   background: none;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;

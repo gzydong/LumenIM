@@ -784,7 +784,6 @@
   color: #e8dfdf;
   cursor: pointer;
   font-size: 12px;
-  z-index: 2;
   font-weight: 100;
   font-family: "Microsoft YaHei";
   opacity: 0;
@@ -795,14 +794,13 @@
 .note-editor-box>>>.markdown-body pre .lang-name {
   position: absolute;
   right: 0;
-  top: 5px;
+  top: 0;
   padding: 0 10px;
-  height: 25px;
-  line-height: 28px;
+  height: 30px;
+  line-height: 30px;
   text-align: center;
   color: #838383;
   font-size: 12px;
-  z-index: 2;
 }
 
 .note-editor-box>>>.markdown-body pre:hover .fz-btn {
