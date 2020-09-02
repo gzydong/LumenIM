@@ -149,7 +149,7 @@
             <!-- 编辑模块 -->
             <template v-if="markdown.isEdit">
               <el-container>
-                <el-header id="note-header" height="60px">
+                <el-header id="note-header" height="61px">
                   <i class="el-icon-edit" style="display: inline-block;"></i>
                   <input type="text" style="display: inline-block;" v-model="noteDetail.title"
                     placeholder="笔记标题不能为空..." />
@@ -166,7 +166,7 @@
             <!-- 阅读模块 -->
             <template v-else>
               <el-container>
-                <el-header id="note-header" height="60px" style="padding-left: 30px;">
+                <el-header id="note-header" height="61px" style="padding-left: 30px;">
                   {{noteDetail.title}}
                 </el-header>
                 <el-main class="padding0">
