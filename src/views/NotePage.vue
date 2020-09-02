@@ -144,7 +144,7 @@
           </div>
         </el-main>
 
-        <el-main class="el-main-content animated fadeIn" v-else :class="{'fullscreen-mode':markdown.isFull}">
+        <el-main class="el-main-content" v-else :class="{'fullscreen-mode':markdown.isFull}">
           <el-container class="hv100">
             <!-- 编辑模块 -->
             <template v-if="markdown.isEdit">
