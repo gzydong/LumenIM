@@ -596,7 +596,7 @@
       },
 
       //加载笔记详情信息
-      loadNoteDetail(id) {
+      loadNoteDetail(id, isEdit) {
         this.markdown.isEdit = false;
         findArticleDetailServ({
           article_id: id
@@ -629,6 +629,10 @@
             this.tagManager.tags.forEach((value, i) => {
               this.tagManager.tags[i].isSelectd = ids.includes(value.id);
             });
+
+            if (isEdit) {
+              this.markdown.isEdit = true;
+            }
           } else if (res.code !== 200 && this.noteDetail.loadId == id) {
             this.loadStatus = 2;
           }
@@ -776,10 +780,10 @@
       },
 
       //查看笔记详情
-      catNote(info, type = false) {
+      catNote(info, isEdit = false) {
         this.loadStatus = 0;
         this.noteDetail.loadId = info.id;
-        this.loadNoteDetail(info.id);
+        this.loadNoteDetail(info.id, isEdit);
       },
 
       //重新加载当前查看的笔记
