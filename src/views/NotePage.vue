@@ -71,7 +71,7 @@
             <template v-else>
               <el-scrollbar :native="false" tag="section" class="hv100">
                 <div class="article-row" v-for="(note,i) in notes"
-                  :class="{'article-row-active':note.id == markdown.editData.loadId}" :key="note.id"
+                  :class="{'article-row-active':note.id == noteDetail.loadId}" :key="note.id"
                   @contextmenu.prevent="noteListMenu($event,i,note)">
                   <div class="article-title" @click="catNote(note)">
                     <span v-text="note.title"></span>
@@ -117,12 +117,12 @@
                   </div>
                 </div>
               </el-scrollbar>
-
             </template>
           </div>
         </el-aside>
 
-        <el-main v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2" class="el-main-content note-flex">
+        <el-main class="el-main-content" v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2"
+          style="overflow: hidden;">
           <div v-if="loadStatus == -1" class="empty-note">
             <svg-icon icon-class="note" />
             <p v-show="notes.length == 0">你的笔记空空如也</p>
@@ -144,131 +144,163 @@
           </div>
         </el-main>
 
-        <el-main v-else class="el-main-content lm-scrollbar" :class="{'el-main-content-full':markdown.isFull}">
-          <div class="note-editor-header">
-            <div class="editor-title">
-              <input type="text" v-model="markdown.editData.title" :readonly="!markdown.isEdit"
-                :class="{'input-no-border':!markdown.isEdit}" placeholder="请填写笔记标题，易于笔记搜索" />
-            </div>
-            <div class="editor-tool">
-              <div class="fullscreen-button" @click="markdown.isFull = !markdown.isFull">
-                <i class="iconfont"
-                  :class="{'icon-tuichuquanping':markdown.isFull,'icon-quanping':!markdown.isFull}"></i>
+        <el-main class="el-main-content animated fadeIn" v-else :class="{'fullscreen-mode':markdown.isFull}">
+          <el-container class="hv100">
+            <!-- 编辑模块 -->
+            <template v-if="markdown.isEdit">
+              <el-container>
+                <el-header id="note-header" height="60px">
+                  <i class="el-icon-edit" style="display: inline-block;"></i>
+                  <input type="text" style="display: inline-block;" v-model="noteDetail.title"
+                    placeholder="笔记标题不能为空..." />
+                </el-header>
+                <el-main class="padding0 hv100 ov-hidden">
+                  <mavon-editor ref="mavonEditor" v-model="markdown.mdText" fontSize="14px"
+                    :toolbars="markdown.toolbars" :subfield="false" :ishljs="false" @change="$editorChange"
+                    @imgAdd="$editorUploadImage" @save="$editorSave" previewBackground="#fff" :boxShadow="false"
+                    placeholder="请输入您的笔记正文 ..." :externalLink="false" class="editor" style="height: 100%;" />
+                </el-main>
+              </el-container>
+            </template>
+
+            <!-- 阅读模块 -->
+            <template v-else>
+              <el-container>
+                <el-header id="note-header" height="60px" style="padding-left: 30px;">
+                  {{noteDetail.title}}
+                </el-header>
+                <el-main class="padding0">
+                  <div id="note-detail" style="height: 100%;">
+                    <el-scrollbar :native="false" tag="section" class="hv100">
+                      <!-- <div style="height: 50px;background-color: red;"></div> -->
+                      <div class="markdown-body" v-html="noteDetail.html" v-code></div>
+                    </el-scrollbar>
+                  </div>
+                </el-main>
+              </el-container>
+            </template>
+
+            <!-- 右侧工具栏 -->
+            <el-aside width="50px" id="note-tools">
+              <div class="item" @click="markdown.isFull = !markdown.isFull">
+                <i class="el-icon-full-screen"></i>
+                <p>{{markdown.isFull?'取消全屏':'全屏'}}</p>
               </div>
 
-              <div class="save-button" v-if="markdown.isEdit" @click="saveEditNote(1)">
-                <i class="iconfont icon-tubiao_chakangongyi"></i>
-                <span>保存</span>
+              <div class="item" v-if="editNoteStatus == 1">
+                <i class="el-icon-loading"></i>
+                <p>保存中..</p>
               </div>
-              <div class="save-button" v-if="!markdown.isEdit && markdown.editData.status == 1"
-                @click="switchEditMode(1)">
-                <i class="iconfont icon-bianji"></i>
-                <span>编辑</span>
+              <div class="item" v-else-if="markdown.isEdit" @click="saveEditNote(1)">
+                <i class="el-icon-edit-outline"></i>
+                <p>保存</p>
               </div>
-            </div>
-          </div>
+              <div class="item" v-else @click="openEditMode()">
+                <i class="el-icon-edit-outline"></i>
+                <p>编辑</p>
+              </div>
 
-          <div class="note-editor-box animated fadeIn lm-scrollbar">
-            <div v-if="markdown.isEdit" style="height:100%;width:100%;">
-              <mavon-editor ref="mavonEditor" v-if="markdown.isEdit" v-model="markdown.editData.content" fontSize="14px"
-                :toolbars-flag="markdown.toolbarsFlag" :default-open="markdown.defaultOpen"
-                :toolbars="markdown.toolbars" :subfield="true" :ishljs="false" :code-style="markdown.codeStyle"
-                @change="$editorChange" @imgAdd="$editorUploadImage" @save="$editorSave" previewBackground="#fff"
-                placeholder="请输入您的笔记正文 ..." class="editor" :externalLink="false" />
-            </div>
-            <div v-else>
-              <div class="note-header-tool">
-                <span class="tool-groups" v-popover:fileManager>
-                  <i class="el-icon-link"></i>
-                  <span class="no-select">笔记附件({{filesManager.files.length}})</span>
-                  <el-popover ref="fileManager" placement="bottom" trigger="click" :visible-arrow="false">
-                    <div class="note-files-manager lm-scrollbar">
-                      <input type="file" ref="uploadNoteFile" @change="uploadAnnex" />
-                      <div class="file-box">
-                        <p class="no-file" v-show="filesManager.files.length == 0">暂无附件</p>
-                        <div class="file-item" v-for="(file ,i) in filesManager.files">
-                          <div class="file-type">{{file.file_suffix}}</div>
-                          <div class="file-detail">
-                            <div class="filename">{{file.original_name}}</div>
-                            <div class="filetool">
-                              <span>{{formateTime(file.created_at)}}</span>
-                              <span style="color:#3a8ee6;">{{formateSize(file.file_size)}}</span>
-                              <div class="filetool-help">
-                                <i class="el-icon-download" @click="downloadAnnex(file.id)"></i>
-                                <i class="el-icon-delete" @click="deleteAnnex(file.id,i)"></i>
-                              </div>
-                            </div>
+              <div class="item" v-popover:tagManager v-show="noteDetail.id">
+                <i class="el-icon-collection-tag" :class="{'i-color':noteDetail.tags.length}"></i>
+                <p>标签</p>
+              </div>
+
+              <div class="item" @click="setAsterisk" v-show="noteDetail.id">
+                <i v-if="noteDetail.is_asterisk == 1" class="el-icon-star-on i-color"></i>
+                <i v-else class="el-icon-star-off"></i>
+                <p>星标</p>
+              </div>
+
+              <div class="item" v-popover:fileManager v-show="noteDetail.id">
+                <i class="el-icon-link" :class="{'i-color':filesManager.files.length}"></i>
+                <p>附件</p>
+              </div>
+
+              <el-tooltip effect="dark" content="分享笔记给我的朋友" placement="left">
+                <div class="item" v-show="noteDetail.id" @click="shareNode">
+                  <i class="el-icon-share"></i>
+                  <p>分享</p>
+                </div>
+              </el-tooltip>
+
+              <el-tooltip effect="dark" content="删除后30天内可在笔记回收站中恢复删除" placement="left">
+                <div class="item" v-show="noteDetail.id" @click="deleteNoteInfo">
+                  <i class="el-icon-delete"></i>
+                  <p>删除</p>
+                </div>
+              </el-tooltip>
+
+              <!-- 笔记附件弹出层 -->
+              <el-popover ref="fileManager" placement="left-start" trigger="click">
+                <p>笔记附件列表</p>
+                <div class="note-files-manager lm-scrollbar">
+                  <input type="file" ref="uploadNoteFile" @change="uploadAnnex" />
+                  <div class="file-box">
+                    <p class="no-file" v-show="filesManager.files.length == 0">暂无附件</p>
+                    <div class="file-item" v-for="(file ,i) in filesManager.files">
+                      <div class="file-type">{{file.file_suffix}}</div>
+                      <div class="file-detail">
+                        <div class="filename">{{file.original_name}}</div>
+                        <div class="filetool">
+                          <span>{{formateTime(file.created_at)}}</span>
+                          <span style="color:#3a8ee6;">{{formateSize(file.file_size)}}</span>
+                          <div class="filetool-help">
+                            <i class="el-icon-download" @click="downloadAnnex(file.id)"></i>
+                            <i class="el-icon-delete" @click="deleteAnnex(file.id,i)"></i>
                           </div>
-                          <div class="clearfix"></div>
                         </div>
                       </div>
-                      <div class="files-manager-footer">
-                        <p class="upload-tips">最多可支持上传10个附件</p>
-                        <el-button type="primary" size="small" :loading="filesManager.status" icon="el-icon-upload"
-                          @click="$refs.uploadNoteFile.click()">
-                          {{filesManager.status?'上传中...':'上传附件'}}</el-button>
-                      </div>
+                      <div class="clearfix"></div>
                     </div>
-                  </el-popover>
-                </span>
+                  </div>
+                  <div class="files-manager-footer">
+                    <p class="upload-tips">最多可支持上传10个附件</p>
+                    <el-button type="primary" size="small" :loading="filesManager.status" icon="el-icon-upload"
+                      @click="$refs.uploadNoteFile.click()">
+                      {{filesManager.status?'上传中...':'上传附件'}}</el-button>
+                  </div>
+                </div>
+              </el-popover>
 
-                <span class="tool-groups" @click="setAsterisk">
-                  <i v-if="markdown.editData.is_asterisk == 1" class="el-icon-star-on"></i>
-                  <i v-else class="el-icon-star-off"></i>
-                  <span class="no-select">{{markdown.editData.is_asterisk == 1?'取消星标':'星标笔记'}}</span>
-                </span>
+              <!-- 笔记标签弹出层 -->
+              <el-popover ref="tagManager" placement="left-start" width="300" trigger="click">
+                <div class="tag-manager">
+                  <div class="tag-manager-title">
+                    <span>已选择</span>
+                  </div>
+                  <div class="tag-manager-box">
+                    <span class="tag-item" v-for="(tag,i) in tagManager.tags" v-show="tag.isSelectd">
+                      <span v-text="tag.name"></span>
+                      <i class="el-icon-close" @click="setNoteTag(i,1)"></i>
+                    </span>
+                  </div>
+                  <div class="tag-manager-title">
+                    <span>标签栏</span>
+                  </div>
+                  <div class="tag-manager-box">
+                    <span v-for="(tag,i) in tagManager.tags" class="tag-item" :class="{'tag-item-active':tag.isSelectd}"
+                      @click="setNoteTag(i,2)">
+                      <span v-text="tag.name"></span>
+                    </span>
+                  </div>
 
-                <span class="tool-groups">
-                  <i class="el-icon-collection-tag"></i>
-                  <span v-for="tag in markdown.editData.tags">{{tag.tag_name}}&nbsp;|&nbsp;</span>
-                  <span class="add-tags no-select" v-popover:tagManager>编辑标签</span>
-                  <el-popover ref="tagManager" placement="bottom" width="300" trigger="click" :visible-arrow="false">
-                    <div class="tag-manager">
-                      <div class="tag-manager-title">
-                        <span>已选择</span>
-                      </div>
-                      <div class="tag-manager-box">
-                        <span class="tag-item" v-for="(tag,i) in tagManager.tags" v-show="tag.isSelectd">
-                          <span v-text="tag.name"></span>
-                          <i class="el-icon-close" @click="setNoteTag(i,1)"></i>
-                        </span>
-                      </div>
-                      <div class="tag-manager-title">
-                        <span>标签栏</span>
-                      </div>
-                      <div class="tag-manager-box">
-                        <span v-for="(tag,i) in tagManager.tags" class="tag-item"
-                          :class="{'tag-item-active':tag.isSelectd}" @click="setNoteTag(i,2)">
-                          <span v-text="tag.name"></span>
-                        </span>
-                      </div>
+                  <el-button v-show="!tagManager.isInput" type="primary" class="inster-tag"
+                    @click="tagManager.isInput = !tagManager.isInput" :disabled="noteDetail.status == 2">添加标签
+                  </el-button>
 
-                      <el-button v-show="!tagManager.isInput" type="primary" class="inster-tag"
-                        @click="tagManager.isInput = !tagManager.isInput" :disabled="markdown.editData.status == 2">添加标签
-                      </el-button>
-
-                      <div class="tag-manager-input" v-show="tagManager.isInput">
-                        <input type="text" placeholder="回车保存..." ref="editTaginput" @keyup.enter="saveTagEvent" />
-                        <el-button type="primary" size="small" @click="tagManager.isInput = false">取消编辑</el-button>
-                      </div>
-                    </div>
-                  </el-popover>
-                </span>
-
-              </div>
-              <div v-if="markdown.editData.html" class="markdown-body" v-html="markdown.editData.html" v-code></div>
-              <div v-else class="markdown-body" style="color:#bdb3b3;">您还未编辑笔记内容...</div>
-
-              <!-- <el-tooltip class="item" effect="dark" content="分享笔记给我的朋友" placement="top">
-                <div class="share-note" @click="shareNode"><i class="iconfont icon-fenxiang2"></i></div>
-              </el-tooltip> -->
-            </div>
-          </div>
+                  <div class="tag-manager-input" v-show="tagManager.isInput">
+                    <input type="text" placeholder="回车保存..." ref="editTaginput" @keyup.enter="saveTagEvent" />
+                    <el-button type="primary" size="small" @click="tagManager.isInput = false">取消编辑</el-button>
+                  </div>
+                </div>
+              </el-popover>
+            </el-aside>
+          </el-container>
         </el-main>
-
       </el-container>
     </main-layout>
 
+    <!-- 笔记附件回收站 -->
     <recycle-note-annex v-if="recycleAnnexBox" @close="recycleAnnexBox = false" />
 
     <!-- 选择联系人窗口 -->
@@ -287,7 +319,6 @@
   } from "mavon-editor";
 
   import "mavon-editor/dist/css/index.css";
-  // import "@static/css/github-markdown.css";
 
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
@@ -444,25 +475,27 @@
         loadNoteStatus: 0,
         notes: [],
 
-        //编辑笔记相关参数
+        // 笔记详情
         loadStatus: -1,
+        editNoteStatus: 0,
+        noteDetail: {
+          loadId: 0,
+          id: 0,
+          title: "",
+          tags: [],
+          class_id: 0,
+          content: "",
+          html: "",
+          is_asterisk: 0,
+          status: 1,
+        },
+
+        // 编辑器相关信息
         markdown: {
-          editData: {
-            loadId: 0,
-            id: 0,
-            title: "",
-            tags: [],
-            class_id: 0,
-            content: "",
-            html: "",
-            is_asterisk: 0,
-            status: 1,
-          },
+          mdText: '',
+          htmlText: '',
           isEdit: false,
-          isFull: false, //编辑模式
-          defaultOpen: "preview",
-          toolbarsFlag: false,
-          codeStyle: "okaidia",
+          isFull: false, //是否全屏模式
           toolbars: {
             bold: true, // 粗体
             italic: true, // 斜体
@@ -470,9 +503,6 @@
             underline: true, // 下划线
             strikethrough: true, // 中划线
             mark: true, // 标记
-            superscript: true, // 上角标
-            subscript: true, // 下角标
-            quote: true, // 引用
             ol: true, // 有序列表
             ul: true, // 无序列表
             link: true, // 链接
@@ -482,9 +512,8 @@
             alignleft: true, // 左对齐
             aligncenter: true, // 居中
             alignright: true, // 右对齐
-
-            subfield: true, // 单双栏模式
-            preview: true, // 预览
+            subfield: true,
+            // preview: true, // 预览
           }
         },
 
@@ -510,6 +539,7 @@
       this.loadNoteClass();
       this.loadNoteTags();
       this.loadNoteList();
+
     },
     methods: {
       //格式化文件大小
@@ -530,8 +560,7 @@
             this.closeTipBox(note.id);
             this.removeListNote(note.id);
             this.loadNoteClass();
-
-            if (note.id == this.markdown.editData.id) {
+            if (note.id == this.noteDetail.id) {
               this.loadStatus = -1;
             }
           }
@@ -559,8 +588,7 @@
             this.closeTipBox(note.id);
             this.removeListNote(note.id);
             this.loadNoteClass();
-
-            if (note.id == this.markdown.editData.id) {
+            if (note.id == this.noteDetail.id) {
               this.loadStatus = -1;
             }
           }
@@ -568,25 +596,26 @@
       },
 
       //加载笔记详情信息
-      loadNoteDetail(id, type) {
-        let that = this;
+      loadNoteDetail(id) {
+        this.markdown.isEdit = false;
         findArticleDetailServ({
           article_id: id
         }).then(res => {
-          if (res.code == 200 && this.markdown.editData.loadId == id) {
+          if (res.code == 200 && this.noteDetail.loadId == id) {
             this.loadStatus = 1;
-            this.switchEditMode(type == false ? 2 : 1);
-            this.markdown.editData.id = res.data.id;
-            this.markdown.editData.loadId = res.data.id;
-            this.markdown.editData.content = res.data.md_content;
-            this.markdown.editData.html = res.data.content;
-            this.markdown.editData.title = res.data.title;
-            this.markdown.editData.class_id = res.data.class_id;
-            this.markdown.editData.is_asterisk = res.data.is_asterisk;
-            this.markdown.editData.tags = res.data.tags;
-            this.markdown.editData.status = res.data.status;
-
+            this.noteDetail.id = res.data.id;
+            this.noteDetail.loadId = res.data.id;
+            this.noteDetail.content = res.data.md_content;
+            this.noteDetail.html = res.data.content;
+            this.noteDetail.title = res.data.title;
+            this.noteDetail.class_id = res.data.class_id;
+            this.noteDetail.is_asterisk = res.data.is_asterisk;
+            this.noteDetail.tags = res.data.tags;
+            this.noteDetail.status = res.data.status;
             this.filesManager.files = res.data.files;
+
+            // 赋值给编辑器
+            this.markdown.mdText = this.noteDetail.content;
 
             this.tagManager.tags = this.menus[3].submenus.map(item => {
               return {
@@ -600,11 +629,11 @@
             this.tagManager.tags.forEach((value, i) => {
               this.tagManager.tags[i].isSelectd = ids.includes(value.id);
             });
-          } else if (res.code !== 200 && this.markdown.editData.loadId == id) {
+          } else if (res.code !== 200 && this.noteDetail.loadId == id) {
             this.loadStatus = 2;
           }
         }).catch(err => {
-          if (this.markdown.editData.loadId == id) {
+          if (this.noteDetail.loadId == id) {
             this.loadStatus = 2;
           }
         });
@@ -699,7 +728,6 @@
       //添加或编辑笔记信息
       saveEditNote(type = 1) {
         let data = this.getEditData();
-
         if (data.title == "") {
           this.$message("笔记标题不能为空...");
           return false;
@@ -709,7 +737,7 @@
           this.$message("笔记内容不能为空...");
           return false;
         }
-
+        this.editNoteStatus = 1;
         editArticleServ(data).then(res => {
           if (res.code == 200) {
             if (data.article_id == 0) {
@@ -717,49 +745,46 @@
               this.loadNoteClass(data.class_id);
             }
 
-            this.markdown.editData.id = res.data.aid;
-            this.markdown.editData.loadId = res.data.aid;
+            this.noteDetail.id = res.data.aid;
+            this.noteDetail.loadId = res.data.aid;
+            this.noteDetail.content = data.md_content;
+            this.noteDetail.html = data.content;
+
             if (type == 1) {
-              this.switchEditMode(2);
+              this.markdown.isEdit = false;
             }
           }
+        }).finally(() => {
+          this.editNoteStatus = 0;
         });
       },
 
       //获取当前编辑笔记相关信息
       getEditData() {
         return {
-          article_id: this.markdown.editData.id,
-          class_id: this.markdown.editData.class_id,
-          title: this.markdown.editData.title,
-          md_content: this.markdown.editData.content,
-          content: this.markdown.editData.html
+          article_id: this.noteDetail.id,
+          class_id: this.noteDetail.class_id,
+          title: this.noteDetail.title,
+          md_content: this.markdown.mdText,
+          content: this.markdown.htmlText
         };
       },
 
       //切换当前编辑模式
-      switchEditMode(type = 1) {
-        if (type == 1) {
-          this.markdown.isEdit = true;
-          this.markdown.defaultOpen = "edit";
-          this.markdown.toolbarsFlag = true;
-        } else {
-          this.markdown.isEdit = false;
-          this.markdown.defaultOpen = "preview";
-          this.markdown.toolbarsFlag = false;
-        }
+      openEditMode() {
+        this.markdown.isEdit = true;
       },
 
       //查看笔记详情
       catNote(info, type = false) {
         this.loadStatus = 0;
-        this.markdown.editData.loadId = info.id;
-        this.loadNoteDetail(info.id, type);
+        this.noteDetail.loadId = info.id;
+        this.loadNoteDetail(info.id);
       },
 
       //重新加载当前查看的笔记
       reloadCatNote() {
-        this.loadNoteDetail(this.markdown.editData.loadId, false);
+        this.loadNoteDetail(this.noteDetail.loadId);
       },
 
       //文章列表移除指定的文章
@@ -769,8 +794,8 @@
 
       //编辑器修改信息触发事件
       $editorChange(value, render) {
-        this.markdown.editData.content = value;
-        this.markdown.editData.html = render;
+        this.markdown.mdText = value;
+        this.markdown.htmlText = render;
       },
       $editorSave(value, render) {
         this.saveEditNote(2);
@@ -821,22 +846,51 @@
         }
 
         this.loadStatus = 1;
-        this.switchEditMode(1);
+        this.openEditMode();
         this.resetNoteEmpty(i1, i2);
+      },
+
+      // 删除当前预览笔记
+      deleteNoteInfo() {
+        let name = this.noteDetail.title;
+        let id = this.noteDetail.id;
+        this.$alert(`您确定要删除【${name}】笔记吗？`, '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true,
+          customClass: 'border-radius0',
+          closeOnClickModal: true,
+          callback: action => {
+            if (action == 'confirm') {
+              deleteArticleServ({
+                article_id: id
+              }).then(res => {
+                if (res.code == 200) {
+                  this.removeListNote(id);
+                  this.loadNoteClass();
+                  this.loadStatus = -1;
+                }
+              });
+            }
+          }
+        });
       },
 
       //重置清空笔记信息
       resetNoteEmpty(i1, i2) {
-        this.markdown.editData.id = 0;
-        this.markdown.editData.loadId = 0;
-        this.markdown.editData.content = "";
-        this.markdown.editData.html = "";
-        this.markdown.editData.title = "";
-        this.markdown.editData.tags = [];
-        this.markdown.editData.is_asterisk = 0;
-        this.markdown.editData.class_id = this.menus[i1].submenus[i2].id;
+        this.noteDetail.id = 0;
+        this.noteDetail.loadId = 0;
+        this.noteDetail.content = "";
+        this.noteDetail.html = "";
+        this.noteDetail.title = "";
+        this.noteDetail.tags = [];
+        this.noteDetail.is_asterisk = 0;
+        this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
         this.filesManager.files = [];
         this.tagManager.tags = [];
+
+        this.markdown.mdText = '';
+        this.markdown.htmlText = '';
       },
 
       //回车修改分类名
@@ -1144,13 +1198,13 @@
 
       //设置笔记是否标记星号状态
       setAsterisk() {
-        let type = this.markdown.editData.is_asterisk == 1 ? 2 : 1;
+        let type = this.noteDetail.is_asterisk == 1 ? 2 : 1;
         setAsteriskArticleServ({
-          article_id: this.markdown.editData.id,
+          article_id: this.noteDetail.id,
           type: type
         }).then(res => {
           if (res.code == 200) {
-            this.markdown.editData.is_asterisk = type == 1 ? 1 : 0;
+            this.noteDetail.is_asterisk = type == 1 ? 1 : 0;
           }
         });
       },
@@ -1229,7 +1283,7 @@
 
       //获取当前查看的笔记ID
       getArticleId() {
-        return this.markdown.editData.loadId;
+        return this.noteDetail.loadId;
       },
 
       saveTagEvent() {

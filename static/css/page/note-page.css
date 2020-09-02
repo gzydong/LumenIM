@@ -162,8 +162,6 @@
   color: rgb(64, 158, 255);
 }
 
-
-
 .article-container .article-row .article-items {
   display: flex;
   align-items: center;
@@ -246,7 +244,6 @@
   color: #C0C4CC;
 }
 
-
 .el-container-note .note-headline {
   height: 40px;
   line-height: 40px;
@@ -300,7 +297,6 @@
   line-height: 40px;
   padding-left: 30px;
   cursor: pointer;
-
 }
 
 .note-aside .note-list-two i {
@@ -331,15 +327,16 @@
   background-color: #fff;
   padding: 0;
   width: 100%;
+  transition: ease 2s;
 }
 
-.el-main-content-full {
+.fullscreen-mode {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 99999999;
+  z-index: 99;
 }
 
 .el-main-content .empty-note {
@@ -382,193 +379,6 @@
   margin-top: 20px;
 }
 
-.note-editor-header {
-  height: 60px;
-}
-
-.note-editor-header .editor-title {
-  float: left;
-  width: calc(100% - 200px);
-  width: -moz-calc(100% - 200px);
-  width: -webkit-calc(100% - 200px);
-  height: 100%;
-}
-
-.note-editor-header .editor-title input {
-  width: 95%;
-  height: 45px;
-  margin-top: 8px;
-  margin-left: 16px;
-  font-size: 18px;
-  border-bottom: 1px dashed rgb(158, 150, 150);
-}
-
-.note-editor-header .editor-title .input-no-border {
-  border: none;
-}
-
-.note-editor-header .editor-title input::-webkit-input-placeholder {
-  color: rgb(158, 150, 150);
-  font-size: 14px;
-}
-
-.note-editor-header .editor-title input::-moz-placeholder {
-  color: rgb(158, 150, 150);
-  font-size: 14px;
-}
-
-.note-editor-header .editor-tool {
-  float: left;
-  width: 200px;
-  height: 100%;
-}
-
-.note-editor-header .editor-tool>div {
-  position: relative;
-  float: right;
-  padding: 4px;
-  cursor: pointer;
-  margin-top: 14px;
-  margin-right: 6px;
-  border-radius: 2px;
-  font-size: 14px;
-  padding: 5px 10px;
-  background: #ffaa5e;
-  color: white;
-}
-
-.note-editor-box {
-  height: calc(100% - 60px);
-  height: -webkit-calc(100% - 60px);
-  height: -moz-calc(100% - 60px);
-  overflow: auto;
-  width: 100%;
-}
-
-.note-editor-box .editor {
-  height: 100%;
-  width: 100%;
-}
-
-.note-editor-box>>>.v-note-wrapper .v-note-op {
-  border-radius: 0 !important;
-}
-
-.note-editor-box>>>.v-note-edit.divarea-wrapper .content-input-wrapper {
-  padding-left: 15px !important;
-}
-
-.note-editor-box .note-header-tool {
-  height: 20px;
-  line-height: 30px;
-  padding: 6px 15px 15px 15px;
-  border-bottom: 1px solid #ece4e4;
-  overflow: hidden;
-}
-
-.note-editor-box .note-header-tool .tool-groups i {
-  position: relative;
-  top: 2px;
-}
-
-.note-editor-box .note-header-tool .tool-groups {
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.note-editor-box .note-header-tool .tool-groups span {
-  font-size: 12px;
-  color: rgb(90, 88, 88);
-}
-
-.note-editor-box .note-header-tool .tool-groups .add-tags {
-  color: #409eff;
-}
-
-.note-header-tool .tool-groups .el-icon-link {
-  color: #4699ff;
-}
-
-.note-header-tool .tool-groups .el-icon-star-on {
-  color: rgb(255, 193, 82);
-}
-
-.note-header-tool .tool-groups .el-icon-star-off {
-  color: rgb(147, 147, 147);
-}
-
-.note-header-tool .tool-groups .el-icon-collection-tag {
-  color: #ffaa5e;
-}
-
-.note-editor-box .share-note {
-  width: 35px;
-  height: 35px;
-  background-color: #409eff;
-  border-radius: 50%;
-  position: absolute;
-  right: 20px;
-  bottom: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  cursor: pointer;
-
-  animation: shareNote 3s infinite;
-  -webkit-animation: shareNote 3s infinite;
-  box-shadow: 0 0 0 #409eff;
-}
-
-.note-editor-box .share-note i {
-  font-size: 22px;
-}
-
-@keyframes shareNote {
-  0% {
-    width: 35px;
-    height: 35px;
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-@-moz-keyframes shareNote {
-  0% {
-    width: 35px;
-    height: 35px;
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-@-webkit-keyframes shareNote {
-  0% {
-    width: 35px;
-    height: 35px;
-  }
-
-  50% {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-@-o-keyframes shareNote {
-  0% {
-    transform: scale(1.2);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-
 
 /* 文件管理弹出层 */
 .note-files-manager {
@@ -588,7 +398,8 @@
 
 .note-files-manager .file-box .no-file {
   color: #969292;
-  font-size: 14px;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
 .note-files-manager .file-box .file-item {
@@ -675,10 +486,6 @@
   float: right;
 }
 
-.note-flex {
-  display: flex;
-}
-
 
 /* 标签管理弹出层 */
 .tag-manager .tag-manager-title {
@@ -756,22 +563,59 @@
   border-radius: 1px;
 }
 
+.el-container-note>>>.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
 
-/* markdown css 重写 */
-.note-editor-box>>>.markdown-body {
-  box-sizing: border-box;
-  margin: 0 auto;
-  padding: 30px 15px;
+/* 笔记详细模块 */
+#note-header {
+  border-bottom: 1px solid #d4d4d4;
+  line-height: 60px;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+#note-header input {
+  width: 90%;
+  height: 40px;
+  margin-top: 8px;
+  margin-left: -8px;
+  font-size: 18px;
+  padding: 3px;
+  margin-left: 10px;
+}
+
+#note-header input::-webkit-input-placeholder {
+  color: rgb(158, 150, 150);
   font-size: 14px;
 }
 
+#note-header input::-moz-placeholder {
+  color: rgb(158, 150, 150);
+  font-size: 14px;
+}
 
-.note-editor-box>>>.markdown-body pre {
+#note-detail {
+  /* border: 1px solid #dee8ef; */
+  border-top: none;
+  border-bottom: none;
+  background: #fff;
+  margin: 0px 30px;
+  box-shadow: 0 0 10px 2px #f4f3f3;
+  min-height: 100%;
+}
+
+#note-detail .markdown-body {
+  padding: 10px 10px 20px 10px;
+}
+
+#note-detail>>>pre {
   position: relative;
   padding-top: 25px;
 }
 
-.note-editor-box>>>.markdown-body pre .fz-btn {
+#note-detail>>>pre .fz-btn {
   position: absolute;
   right: 0px;
   top: 0px;
@@ -791,7 +635,7 @@
   transition: ease 1s;
 }
 
-.note-editor-box>>>.markdown-body pre .lang-name {
+#note-detail>>>pre .lang-name {
   position: absolute;
   right: 0;
   top: 0;
@@ -803,16 +647,16 @@
   font-size: 12px;
 }
 
-.note-editor-box>>>.markdown-body pre:hover .fz-btn {
+#note-detail>>>pre:hover .fz-btn {
   opacity: 1;
   visibility: visible;
 }
 
-.note-editor-box>>>.markdown-body pre:hover .lang-name {
+#note-detail>>>pre:hover .lang-name {
   display: none;
 }
 
-.note-editor-box>>>.markdown-body pre code {
+#note-detail>>>pre code {
   display: block;
   max-width: auto;
   margin: 0;
@@ -824,7 +668,7 @@
   overflow-x: auto;
 }
 
-.note-editor-box>>>.markdown-body p code {
+#note-detail>>>p code {
   padding: 2px 4px;
   color: #c7254e;
   background-color: #ffe8e8;
@@ -833,24 +677,50 @@
   border-radius: 2px;
 }
 
-.note-editor-box>>>pre code {
+#note-detail>>>pre code {
   padding-bottom: 15px;
 }
 
-.note-editor-box>>>pre code::-webkit-scrollbar {
+#note-detail>>>pre code::-webkit-scrollbar {
   height: 3px;
   background-color: #d5cece;
   overflow-x: auto;
   border-radius: 3px;
 }
 
-.note-editor-box>>>pre code::-webkit-scrollbar-thumb {
+#note-detail>>>pre code::-webkit-scrollbar-thumb {
   height: 3px;
   background-color: #9f9898;
   overflow-x: auto;
   border-radius: 3px;
 }
 
-.el-container-note>>>.el-scrollbar__wrap {
-  overflow-x: hidden;
+#note-tools {
+  border-left: 1px solid rgb(255, 255, 255);
+  box-shadow: rgb(246, 245, 245) 0px 0px 6px 0px;
+  padding-top: 3px;
+}
+
+#note-tools .item {
+  width: 40px;
+  height: 50px;
+  margin: 5px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#note-tools .item .i-color {
+  color: red;
+}
+
+#note-tools .item p {
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+#note-tools .item:hover {
+  color: #409eff;
 }

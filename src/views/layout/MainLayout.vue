@@ -183,6 +183,7 @@
     overflow: hidden;
     transition: ease .5s;
     border-radius: 5px;
+    min-height: 500px;
   }
 
   .full-mode {

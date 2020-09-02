@@ -830,7 +830,6 @@
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #282c34;
 }
 
 .markdown-body pre code {
@@ -1027,7 +1026,8 @@
 
 .markdown-body :not(pre)>code[class*="language-"],
 .markdown-body pre {
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  background-color: #2d2d2d;
 }
 
 /* Inline code */
