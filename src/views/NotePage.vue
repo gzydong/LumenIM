@@ -172,7 +172,7 @@
                 <el-main class="padding0">
                   <div id="note-detail" style="height: 100%;">
                     <el-scrollbar :native="false" tag="section" class="hv100">
-                      <!-- <div style="height: 50px;background-color: red;"></div> -->
+                      <!-- <div class="subfield"></div> -->
                       <div class="markdown-body" v-html="noteDetail.html" v-code></div>
                     </el-scrollbar>
                   </div>

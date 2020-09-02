@@ -597,7 +597,6 @@
 }
 
 #note-detail {
-  /* border: 1px solid #dee8ef; */
   border-top: none;
   border-bottom: none;
   background: #fff;
@@ -606,8 +605,16 @@
   min-height: 100%;
 }
 
+#note-detail .subfield {
+  height: 50px;
+  background: #f7f7fc;
+  width: 95%;
+  margin: 10px auto;
+  border-radius: 3px;
+}
+
 #note-detail .markdown-body {
-  padding: 10px 10px 20px 10px;
+  padding: 20px 10px;
   font-size: 14px;
 }
 
@@ -700,10 +707,11 @@
   border-left: 1px solid rgb(255, 255, 255);
   box-shadow: rgb(246, 245, 245) 0px 0px 6px 0px;
   padding-top: 3px;
+  flex-shrink: 0;
 }
 
 #note-tools .item {
-  width: 40px;
+  width: 50px;
   height: 50px;
   margin: 5px auto;
   display: flex;
@@ -720,6 +728,7 @@
 #note-tools .item p {
   font-size: 10px;
   margin-top: 5px;
+  transform: scale(.85);
 }
 
 #note-tools .item:hover {
