@@ -5,7 +5,7 @@
         <el-aside width="230px" class="el-aside-one lm-scrollbar ov-hidden">
           <el-header>
             <el-dropdown split-button type="primary" @click="insterNote" @command="handleCommand"
-              class="btn-dropdown-menu">
+              class="btn-dropdown-menu" placement="bottom-end">
               <span>+ 添加笔记</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="a">新建笔记</el-dropdown-item>
@@ -107,7 +107,8 @@
           style="overflow: hidden;">
           <div v-if="loadStatus == -1" class="empty-note">
             <svg-icon icon-class="note" />
-            <p v-show="notes.length == 0">你的笔记空空如也</p>
+            <p v-if="notes.length == 0">你的笔记空空如也</p>
+            <p>这个社会，是赢家通吃，输者一无所有，社会，永远都是只以成败论英雄。</p>
           </div>
           <div v-else-if="loadStatus == 0" class="loading-note">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
@@ -195,6 +196,10 @@
               <div class="item" v-else-if="editNoteStatus == 1" @click="editNote(1)">
                 <i class="el-icon-loading"></i>
                 <p>保存中..</p>
+              </div>
+              <div class="item" v-else-if="markdown.isEdit && !isEdited" @click="cancelEdit">
+                <i class="el-icon-edit-outline"></i>
+                <p>取消</p>
               </div>
               <div class="item" v-else-if="markdown.isEdit" @click="editNote(1)">
                 <i class="el-icon-edit-outline"></i>
@@ -558,10 +563,17 @@
         selectContactsBox: false,
       };
     },
+    computed: {
+      isEdited() {
+        return this.markdown.mdText || this.noteDetail.title ? true : false;
+      }
+    },
     mounted() {
       this.loadNoteClass();
       this.loadNoteTags();
       this.loadNoteList();
+
+      this.isEdited;
     },
     methods: {
       //格式化文件大小
@@ -834,6 +846,11 @@
         this.openEditMode();
         this.resetNoteEmpty();
         this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
+      },
+
+      cancelEdit() {
+        this.loadStatus = -1;
+        this.resetNoteEmpty();
       },
 
       //重置清空笔记信息

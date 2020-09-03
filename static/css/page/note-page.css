@@ -247,10 +247,10 @@
 .el-container-note .note-headline {
   height: 40px;
   line-height: 40px;
-  color: #c3b9b9;
+  color: #353434;
   padding-left: 20px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .el-container-note .note-aside {

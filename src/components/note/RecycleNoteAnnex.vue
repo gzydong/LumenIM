@@ -136,6 +136,7 @@
     height: 80%;
     background-color: white;
     border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .header {
