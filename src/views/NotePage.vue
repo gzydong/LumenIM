@@ -14,8 +14,8 @@
               </el-dropdown-menu>
             </el-dropdown>
           </el-header>
-          <div class="note-headline">我的笔记</div>
 
+          <div class="note-headline">我的笔记</div>
           <el-scrollbar :native="false" tag="section" class="note-aside">
             <div v-for="(menu,i) in menus">
               <div class="note-list-first" @click="clickNoteMenu(1,i)" :class="{'note-list-active':menu.isActive}"
@@ -86,34 +86,16 @@
                       <div class="article-abstract" v-text="note.abstract"></div>
                     </div>
                     <div class="article-image" v-show="note.img">
-                      <el-image :src="note.img" fit="cover" style="width: 100%;height: 100%;">
-                      </el-image>
+                      <el-image :src="note.img" fit="cover" style="width: 100%;height: 100%;" />
                     </div>
                   </div>
 
                   <div class="article-tool">
                     <i class="el-icon-edit-outline" @click="catNote(note,true)" v-show="note.status == 1"></i>
-                    <i class="recover-note el-icon-refresh-right" @click="recoverNote(note)"
+                    <i class="recover-note el-icon-refresh-left" @click="noteRecover(note.id)"
                       v-show="note.status == 2"></i>
-
-                    <el-popover v-if="note.status == 1" placement="bottom" :ref="`popover-${note.id}`">
-                      <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要放入回收站吗！<br /></p>
-                      <div style="text-align: right; margin: 0">
-                        <el-button size="mini" type="text" @click="closeTipBox(note.id)">
-                          取消</el-button>
-                        <el-button type="primary" size="mini" @click="deleteNote(note)">确定</el-button>
-                      </div>
-                      <i class="el-icon-delete" slot="reference"></i>
-                    </el-popover>
-                    <el-popover v-else placement="bottom" :ref="`popover-${note.id}`">
-                      <p style="margin-bottom: 10px;">[{{note.title}}] 您确定要永久删除吗？此操作不可恢复！<br /></p>
-                      <div style="text-align: right; margin: 0">
-                        <el-button size="mini" type="text" @click="closeTipBox(note.id)">
-                          取消</el-button>
-                        <el-button type="primary" size="mini" @click="foreverdeleteNote(note)">确定</el-button>
-                      </div>
-                      <i class="el-icon-delete" slot="reference"></i>
-                    </el-popover>
+                    <i class="el-icon-delete" v-if="note.status == 1" @click="noteRecycle(note.id,note.title)"></i>
+                    <i class="el-icon-delete" v-else slot="reference" @click="noteDelete(note.id,note.title)"></i>
                   </div>
                 </div>
               </el-scrollbar>
@@ -206,11 +188,15 @@
                 <p>{{markdown.isFull?'取消全屏':'全屏'}}</p>
               </div>
 
-              <div class="item" v-if="editNoteStatus == 1">
+              <div class="item" v-if="noteDetail.status == 2" @click="noteRecover(noteDetail.id)">
+                <i class="el-icon-refresh-left"></i>
+                <p>恢复</p>
+              </div>
+              <div class="item" v-else-if="editNoteStatus == 1" @click="editNote(1)">
                 <i class="el-icon-loading"></i>
                 <p>保存中..</p>
               </div>
-              <div class="item" v-else-if="markdown.isEdit" @click="saveEditNote(1)">
+              <div class="item" v-else-if="markdown.isEdit" @click="editNote(1)">
                 <i class="el-icon-edit-outline"></i>
                 <p>保存</p>
               </div>
@@ -219,12 +205,12 @@
                 <p>编辑</p>
               </div>
 
-              <div class="item" v-popover:tagManager v-show="noteDetail.id">
+              <div class="item" v-popover:tagManager v-show="noteDetail.id && noteDetail.status == 1">
                 <i class="el-icon-collection-tag" :class="{'i-color':noteDetail.tags.length}"></i>
                 <p>标签</p>
               </div>
 
-              <div class="item" @click="setAsterisk" v-show="noteDetail.id">
+              <div class="item" @click="setAsterisk" v-show="noteDetail.id && noteDetail.status == 1">
                 <i v-if="noteDetail.is_asterisk == 1" class="el-icon-star-on i-color"></i>
                 <i v-else class="el-icon-star-off"></i>
                 <p>星标</p>
@@ -235,24 +221,35 @@
                 <p>附件</p>
               </div>
 
-              <el-tooltip effect="dark" content="分享笔记给我的朋友" placement="left">
-                <div class="item" v-show="noteDetail.id" @click="shareNode">
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="分享笔记给我的朋友"
+                placement="left">
+                <div class="item" @click="shareNode">
                   <i class="el-icon-share"></i>
                   <p>分享</p>
                 </div>
               </el-tooltip>
 
-              <el-tooltip effect="dark" content="删除后30天内可在笔记回收站中恢复删除" placement="left">
-                <div class="item" v-show="noteDetail.id" @click="deleteNoteInfo">
-                  <i class="el-icon-delete"></i>
-                  <p>删除</p>
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="下载笔记 (md格式)"
+                placement="left">
+                <div class="item" @click="noteDownload">
+                  <i class="el-icon-download"></i>
+                  <p>下载</p>
                 </div>
               </el-tooltip>
 
-              <el-tooltip effect="dark" content="下载笔记 (md格式)" placement="left">
-                <div class="item" v-show="noteDetail.id" @click="downloadNote">
-                  <i class="el-icon-download"></i>
-                  <p>下载</p>
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="删除后30天内可在笔记回收站中恢复删除"
+                placement="left">
+                <div class="item" @click="noteRecycle(noteDetail.id,noteDetail.title)">
+                  <i class="el-icon-delete"></i>
+                  <p>回收站</p>
+                </div>
+              </el-tooltip>
+
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 2" effect="dark" content="从回收站中永久删除,删除后无法恢复"
+                placement="left">
+                <div class="item" @click="noteDelete(noteDetail.id,noteDetail.title)">
+                  <i class="el-icon-delete"></i>
+                  <p>删除</p>
                 </div>
               </el-tooltip>
 
@@ -540,7 +537,6 @@
             aligncenter: true, // 居中
             alignright: true, // 右对齐
             subfield: true,
-            // preview: true, // 预览
           }
         },
 
@@ -576,50 +572,6 @@
 
       //下载笔记附件
       downloadAnnex: downloadAnnexServ,
-
-      //删除笔记
-      deleteNote(note) {
-        deleteArticleServ({
-          article_id: note.id
-        }).then(res => {
-          if (res.code == 200) {
-            this.closeTipBox(note.id);
-            this.removeListNote(note.id);
-            this.loadNoteClass();
-            if (note.id == this.noteDetail.id) {
-              this.loadStatus = -1;
-            }
-          }
-        });
-      },
-
-      //恢复已删除笔记
-      recoverNote(note) {
-        recoverArticleServ({
-          article_id: note.id
-        }).then(res => {
-          if (res.code == 200) {
-            this.removeListNote(note.id);
-            this.loadNoteClass();
-          }
-        });
-      },
-
-      //永久删除回收站笔记
-      foreverdeleteNote(note) {
-        foreverDeleteArticleServ({
-          article_id: note.id
-        }).then(res => {
-          if (res.code == 200) {
-            this.closeTipBox(note.id);
-            this.removeListNote(note.id);
-            this.loadNoteClass();
-            if (note.id == this.noteDetail.id) {
-              this.loadStatus = -1;
-            }
-          }
-        });
-      },
 
       //加载笔记详情信息
       loadNoteDetail(id, isEdit) {
@@ -757,7 +709,7 @@
       },
 
       //添加或编辑笔记信息
-      saveEditNote(type = 1) {
+      editNote(type = 1) {
         let data = this.getEditData();
         if (data.title == "") {
           this.$message("笔记标题不能为空...");
@@ -768,6 +720,7 @@
           this.$message("笔记内容不能为空...");
           return false;
         }
+
         this.editNoteStatus = 1;
         editArticleServ(data).then(res => {
           if (res.code == 200) {
@@ -828,8 +781,10 @@
         this.markdown.mdText = value;
         this.markdown.htmlText = render;
       },
+
+      //编辑器保存信息触发事件
       $editorSave(value, render) {
-        this.saveEditNote(2);
+        this.editNote(2);
       },
 
       //编辑器上传图片触发事件
@@ -865,7 +820,6 @@
         this.$refs.querykeywords.value = '';
       },
 
-
       //添加新的笔记
       insterNote() {
         let [i1, i2] = this.getSelectMenu();
@@ -882,32 +836,6 @@
         this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
       },
 
-      // 删除当前预览笔记
-      deleteNoteInfo() {
-        let name = this.noteDetail.title;
-        let id = this.noteDetail.id;
-        this.$alert(`您确定要删除【${name}】笔记吗？`, '温馨提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          showCancelButton: true,
-          customClass: 'border-radius0',
-          closeOnClickModal: true,
-          callback: action => {
-            if (action == 'confirm') {
-              deleteArticleServ({
-                article_id: id
-              }).then(res => {
-                if (res.code == 200) {
-                  this.removeListNote(id);
-                  this.loadNoteClass();
-                  this.loadStatus = -1;
-                }
-              });
-            }
-          }
-        });
-      },
-
       //重置清空笔记信息
       resetNoteEmpty() {
         this.noteDetail.id = 0;
@@ -918,6 +846,7 @@
         this.noteDetail.tags = [];
         this.noteDetail.is_asterisk = 0;
         this.noteDetail.class_id = 0;
+        this.noteDetail.status = 1;
         this.filesManager.files = [];
         this.tagManager.tags = [];
         this.markdown.mdText = '';
@@ -961,7 +890,9 @@
 
       //笔记分类的自定义右键菜单栏
       noteClassMenu(event, i, i2 = null) {
-        if (!(i == 2 || i == 3)) return;
+        if (!(i == 2 || i == 3)) {
+          return;
+        }
 
         let menu = [];
         if (i == 2 && i2 == null) {
@@ -1166,7 +1097,9 @@
               label: "删除笔记",
               icon: "el-icon-delete",
               divided: true,
-              onClick: () => {}
+              onClick: () => {
+                this.noteRecycle(note.id, note.title);
+              }
             },
             {
               label: "笔记移动至",
@@ -1263,23 +1196,21 @@
         fileData.append("annex", file);
         fileData.append("article_id", this.getArticleId());
         this.filesManager.status = true;
-        uploadArticleAnnexServ(fileData)
-          .then(res => {
-            if (res.code == 200) {
-              this.filesManager.files.push({
-                id: res.data.id,
-                original_name: res.data.original_name,
-                created_at: parseTime(new Date()),
-                file_size: res.data.file_size,
-                file_suffix: res.data.file_suffix
-              });
-            }
+        uploadArticleAnnexServ(fileData).then(res => {
+          if (res.code == 200) {
+            this.filesManager.files.push({
+              id: res.data.id,
+              original_name: res.data.original_name,
+              created_at: parseTime(new Date()),
+              file_size: res.data.file_size,
+              file_suffix: res.data.file_suffix
+            });
+          }
 
-            this.filesManager.status = false;
-          })
-          .catch(err => {
-            this.filesManager.status = false;
-          });
+          this.filesManager.status = false;
+        }).catch(err => {
+          this.filesManager.status = false;
+        });
       },
 
       //删除笔记附件
@@ -1317,6 +1248,7 @@
         return this.noteDetail.loadId;
       },
 
+      //保存标签事件
       saveTagEvent() {
         let tagName = this.$refs.editTaginput.value;
         editArticleTagServ({
@@ -1385,15 +1317,12 @@
         return [-1, -1];
       },
 
-      closeTipBox(index) {
-        this.$refs[`popover-${index}`][0].doClose();
-      },
-
       //分享笔记给我的朋友
       shareNode() {
         this.selectContactsBox = true;
       },
 
+      //分享好友确认按钮
       confirmSelectContacts(value) {
         this.selectContactsBox = false;
         this.$notify({
@@ -1401,7 +1330,7 @@
         });
       },
 
-      // 分类ID
+      //获取分类ID
       getNoteClassName(class_id) {
         let idx = this.menus[2].submenus.findIndex((item) => {
           return item.id == class_id;
@@ -1414,7 +1343,8 @@
         return this.menus[2].submenus[idx].name;
       },
 
-      downloadNote() {
+      //下载笔记（md格式）
+      noteDownload() {
         // var blob = this.noteDetail.content;
         var reader = new FileReader();
 
@@ -1434,6 +1364,88 @@
           a.click();
           document.body.removeChild(a);
         }
+      },
+
+      // 笔记移至回收站
+      noteRecycle(id, title) {
+        this.$alert(`您确定要删除【${title}】笔记至回收站吗？`, '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true,
+          customClass: 'border-radius0',
+          closeOnClickModal: true,
+          callback: action => {
+            if (action == 'confirm') {
+              deleteArticleServ({
+                article_id: id
+              }).then(res => {
+                if (res.code == 200) {
+                  this.removeListNote(id);
+                  this.loadNoteClass();
+                  if (id == this.noteDetail.id) {
+                    this.loadStatus = -1;
+                    this.resetNoteEmpty();
+                  }
+                }
+              });
+            }
+          }
+        });
+      },
+
+      //笔记从回收站中永久删除
+      noteDelete(id, title) {
+        this.$alert(`您确定要永久删除【${title}】笔记吗？删除后不可恢复！`, '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true,
+          customClass: 'border-radius0',
+          closeOnClickModal: true,
+          callback: action => {
+            if (action == 'confirm') {
+              foreverDeleteArticleServ({
+                article_id: id
+              }).then(res => {
+                if (res.code == 200) {
+                  this.removeListNote(id);
+
+                  if (id == this.noteDetail.id) {
+                    this.loadStatus = -1;
+                    this.resetNoteEmpty();
+                  }
+
+                  this.$notify({
+                    title: '删除成功',
+                    message: `笔记【${title}】已删除...`,
+                    type: 'success'
+                  });
+                }
+              });
+            }
+          }
+        });
+      },
+
+      //恢复回收站中的笔记
+      noteRecover(id) {
+        recoverArticleServ({
+          article_id: id
+        }).then(res => {
+          if (res.code == 200) {
+            this.removeListNote(id);
+            this.loadNoteClass();
+
+            if (id == this.noteDetail.id) {
+              this.noteDetail.status = 1;
+            }
+
+            this.$notify({
+              title: '成功',
+              message: '笔记已成功恢复...',
+              type: 'success'
+            });
+          }
+        });
       }
     }
   };
