@@ -249,6 +249,13 @@
                 </div>
               </el-tooltip>
 
+              <el-tooltip effect="dark" content="下载笔记 (md格式)" placement="left">
+                <div class="item" v-show="noteDetail.id" @click="downloadNote">
+                  <i class="el-icon-download"></i>
+                  <p>下载</p>
+                </div>
+              </el-tooltip>
+
               <!-- 笔记附件弹出层 -->
               <el-popover ref="fileManager" placement="left-start" trigger="click">
                 <p>笔记附件列表</p>
@@ -1405,6 +1412,28 @@
         }
 
         return this.menus[2].submenus[idx].name;
+      },
+
+      downloadNote() {
+        // var blob = this.noteDetail.content;
+        var reader = new FileReader();
+
+        var blob = new Blob([this.noteDetail.content], {
+          type: 'text/plain'
+        });
+
+        reader.readAsDataURL(blob);
+        // onload当读取操作成功完成时调用
+
+        let title = this.noteDetail.title + '.md';
+        reader.onload = function (e) {
+          var a = document.createElement('a');
+          a.download = title;
+          a.href = e.target.result;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
       }
     }
   };

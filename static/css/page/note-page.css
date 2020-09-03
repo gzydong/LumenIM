@@ -600,7 +600,8 @@
   border-bottom: none;
   background: #fff;
   margin: 0px 30px;
-  box-shadow: 0 0 10px 2px #f4f3f3;
+  /* box-shadow: 0 0 10px 2px #f4f3f3; */
+  box-shadow: 0 8px 16px 0 rgba(7, 17, 27, .05);
   height: 100%;
 }
 
