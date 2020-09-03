@@ -327,7 +327,6 @@
   background-color: #fff;
   padding: 0;
   width: 100%;
-  transition: ease 2s;
 }
 
 .fullscreen-mode {
@@ -602,16 +601,31 @@
   background: #fff;
   margin: 0px 30px;
   box-shadow: 0 0 10px 2px #f4f3f3;
-  min-height: 100%;
+  height: 100%;
 }
 
 #note-detail .subfield {
-  height: 50px;
+  min-height: 60px;
   background: #f7f7fc;
-  width: 95%;
-  margin: 10px auto;
+  margin: 10px 10;
   border-radius: 3px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px 15px;
 }
+
+#note-detail .subfield p>span {
+  margin-right: 10px;
+}
+
+#note-detail .subfield .larkc-tag {
+  background: #ffffff;
+  color: #2d2d2d;
+}
+
+
 
 #note-detail .markdown-body {
   padding: 20px 10px;
@@ -708,6 +722,7 @@
   box-shadow: rgb(246, 245, 245) 0px 0px 6px 0px;
   padding-top: 3px;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 #note-tools .item {

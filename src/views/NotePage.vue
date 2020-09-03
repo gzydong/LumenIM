@@ -170,9 +170,28 @@
                   {{noteDetail.title}}
                 </el-header>
                 <el-main class="padding0">
-                  <div id="note-detail" style="height: 100%;">
+                  <div id="note-detail">
                     <el-scrollbar :native="false" tag="section" class="hv100">
-                      <!-- <div class="subfield"></div> -->
+                      <div style="padding: 10px;">
+                        <div class="subfield">
+                          <p>
+                            <span>时间：{{noteDetail.created_at}}</span>
+                            <span>阅读量(1000)</span>
+                            <span class="pointer"
+                              v-show="filesManager.files.length">附件({{filesManager.files.length}})</span>
+                          </p>
+                          <p class="mt10">
+                            <span>
+                              分类：<span class="larkc-tag">{{getNoteClassName(noteDetail.class_id)}}</span>
+                            </span>
+                            <span>
+                              标签：<span class="larkc-tag" v-for="(tag, index) in noteDetail.tags"
+                                :key="index">{{tag.tag_name}}</span>
+                              <span class="larkc-tag" v-show="noteDetail.tags.length == 0">无</span>
+                            </span>
+                          </p>
+                        </div>
+                      </div>
                       <div class="markdown-body" v-html="noteDetail.html" v-code></div>
                     </el-scrollbar>
                   </div>
@@ -488,6 +507,7 @@
           html: "",
           is_asterisk: 0,
           status: 1,
+          created_at: ''
         },
 
         // 编辑器相关信息
@@ -539,7 +559,6 @@
       this.loadNoteClass();
       this.loadNoteTags();
       this.loadNoteList();
-
     },
     methods: {
       //格式化文件大小
@@ -608,6 +627,7 @@
             this.noteDetail.content = res.data.md_content;
             this.noteDetail.html = res.data.content;
             this.noteDetail.title = res.data.title;
+            this.noteDetail.created_at = res.data.created_at;
             this.noteDetail.class_id = res.data.class_id;
             this.noteDetail.is_asterisk = res.data.is_asterisk;
             this.noteDetail.tags = res.data.tags;
@@ -851,7 +871,8 @@
 
         this.loadStatus = 1;
         this.openEditMode();
-        this.resetNoteEmpty(i1, i2);
+        this.resetNoteEmpty();
+        this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
       },
 
       // 删除当前预览笔记
@@ -881,7 +902,7 @@
       },
 
       //重置清空笔记信息
-      resetNoteEmpty(i1, i2) {
+      resetNoteEmpty() {
         this.noteDetail.id = 0;
         this.noteDetail.loadId = 0;
         this.noteDetail.content = "";
@@ -889,10 +910,9 @@
         this.noteDetail.title = "";
         this.noteDetail.tags = [];
         this.noteDetail.is_asterisk = 0;
-        this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
+        this.noteDetail.class_id = 0;
         this.filesManager.files = [];
         this.tagManager.tags = [];
-
         this.markdown.mdText = '';
         this.markdown.htmlText = '';
       },
@@ -1368,11 +1388,23 @@
       },
 
       confirmSelectContacts(value) {
-        console.log(value);
         this.selectContactsBox = false;
         this.$notify({
           message: '功能研发中...'
         });
+      },
+
+      // 分类ID
+      getNoteClassName(class_id) {
+        let idx = this.menus[2].submenus.findIndex((item) => {
+          return item.id == class_id;
+        });
+
+        if (idx == -1) {
+          return '未知';
+        }
+
+        return this.menus[2].submenus[idx].name;
       }
     }
   };

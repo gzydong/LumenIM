@@ -472,9 +472,6 @@ textarea {
 /* ant-spin 加载动画 end */
 
 
-
-
-
 .larkc-tag {
   font-size: 12px;
   font-weight: 400;
@@ -490,4 +487,8 @@ textarea {
   transform: scale(.83);
   transform-origin: left;
   flex-shrink: 0;
+}
+
+.mt10{
+  margin-top: 10px;
 }
