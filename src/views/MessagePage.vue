@@ -105,7 +105,11 @@
           <template v-if="index_name == null">
             <div class="reserve-box no-select animated flipInY">
               <img src="/static/image/chat.png" width="300" />
-              <p>Lumen IM 在线聊天</p>
+              <div style="width: 100%;font-weight: 300;font-family: cursive;font-size: 18px;text-align: center;">
+                <em>不是井里没有水，而是你挖的不够深</em><br />
+                <em>不是成功来得慢，而是你努力的不够多</em><br />
+                <em>加油吧！ ......</em>
+              </div>
             </div>
           </template>
           <template v-else>
@@ -952,7 +956,6 @@
     flex-direction: column;
     height: 100%;
     font-size: 24px;
-    color: #d8dae2;
     background-color: white;
   }
 

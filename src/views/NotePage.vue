@@ -5,7 +5,7 @@
         <el-aside width="230px" class="el-aside-one lm-scrollbar ov-hidden">
           <el-header>
             <el-dropdown split-button type="primary" @click="insterNote" @command="handleCommand"
-              class="btn-dropdown-menu" placement="bottom-end">
+              class="btn-dropdown-menu">
               <span>+ 添加笔记</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="a">新建笔记</el-dropdown-item>
@@ -83,7 +83,7 @@
                         <span v-text="note.datetime"></span>
                         <span v-text="note.classify"></span>
                       </div>
-                      <div class="article-abstract" v-text="note.abstract"></div>
+                      <div class="article-abstract" v-text="note.abstract.replace(/[\r\n]/g,'')"></div>
                     </div>
                     <div class="article-image" v-show="note.img">
                       <el-image :src="note.img" fit="cover" style="width: 100%;height: 100%;" />
@@ -108,7 +108,7 @@
           <div v-if="loadStatus == -1" class="empty-note">
             <svg-icon icon-class="note" />
             <p v-if="notes.length == 0">你的笔记空空如也</p>
-            <p>这个社会，是赢家通吃，输者一无所有，社会，永远都是只以成败论英雄。</p>
+            <p style="line-height: 25px;">这个社会，是赢家通吃，输者一无所有，<br />社会，永远都是只以成败论英雄。</p>
           </div>
           <div v-else-if="loadStatus == 0" class="loading-note">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
@@ -175,7 +175,7 @@
                           </p>
                         </div>
                       </div>
-                      <div class="markdown-body" v-html="noteDetail.html" v-code></div>
+                      <div class="markdown-body" id="note-info" v-html="noteDetail.html" v-code></div>
                     </el-scrollbar>
                   </div>
                 </el-main>
@@ -226,7 +226,7 @@
                 <p>附件</p>
               </div>
 
-              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="分享笔记给我的朋友"
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="分享笔记给我的联系人"
                 placement="left">
                 <div class="item" @click="shareNode">
                   <i class="el-icon-share"></i>
@@ -234,7 +234,7 @@
                 </div>
               </el-tooltip>
 
-              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="下载笔记 (md格式)"
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="下载笔记，md格式"
                 placement="left">
                 <div class="item" @click="noteDownload">
                   <i class="el-icon-download"></i>
@@ -242,7 +242,7 @@
                 </div>
               </el-tooltip>
 
-              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="删除后30天内可在笔记回收站中恢复删除"
+              <el-tooltip v-show="noteDetail.id && noteDetail.status == 1" effect="dark" content="30天内可在笔记回收站中恢复"
                 placement="left">
                 <div class="item" @click="noteRecycle(noteDetail.id,noteDetail.title)">
                   <i class="el-icon-delete"></i>
@@ -1362,17 +1362,10 @@
 
       //下载笔记（md格式）
       noteDownload() {
-        // var blob = this.noteDetail.content;
-        var reader = new FileReader();
-
-        var blob = new Blob([this.noteDetail.content], {
-          type: 'text/plain'
-        });
-
-        reader.readAsDataURL(blob);
-        // onload当读取操作成功完成时调用
-
+        let reader = new FileReader();
+        let text = this.noteDetail.content;
         let title = this.noteDetail.title + '.md';
+        reader.readAsDataURL(blob);
         reader.onload = function (e) {
           var a = document.createElement('a');
           a.download = title;

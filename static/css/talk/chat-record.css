@@ -19,7 +19,6 @@
   margin-bottom: 20px;
 }
 
-
 /* 记录工具栏 */
 .record-container .toolbars {
   color: #409eff;
@@ -32,7 +31,6 @@
   color: #cec4c4;
   font-size: 13px;
 }
-
 
 /* 系统消息 */
 .record-container .message-system {
@@ -59,6 +57,7 @@
 .record-container .message-system .group-invite-tips a {
   color: #939596;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .record-container .message-system .group-invite-tips a:hover {
@@ -85,7 +84,6 @@
   border-radius: 3px;
   cursor: pointer;
 }
-
 
 .record-container .talk-container {
   max-width: calc(100% - 80px);
@@ -132,15 +130,13 @@
   right: -10px;
 }
 
-
 .record-container .talk-container .talk-content {
   background: white;
-  border-radius: 6px;
+  border-radius: 3px;
   position: relative;
   padding: 5px;
   min-height: 20px;
 }
-
 
 .record-container .right-record .talk-content {
   background: #1ebafc;
@@ -160,8 +156,6 @@
   float: right;
 }
 
-
-
 /* 文本信息消息 */
 .talk-content .text-record pre {
   white-space: pre-wrap;
@@ -178,7 +172,6 @@
   color: #daf3ff !important;
 }
 
-
 /* 图片信息消息 */
 .talk-content .images-record {
   position: relative;
@@ -192,18 +185,9 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  background: #d6d6d6;
-  color: #909399;
-  font-size: 14px;
-}
-
-.talk-content .images-record .image-slot {
-  font-size: 14px;
-  color: white;
-}
-
-.talk-content .images-record .image-slot i {
-  font-size: 22px;
+  font-size: 12px;
+  color: #908686;
+  background: #efeaea;
 }
 
 .talk-content .images-record>>>.el-image {
@@ -222,7 +206,6 @@
   display: block;
   color: white;
 }
-
 
 /* 会话记录消息 */
 .talk-content .dialogue-records {
@@ -293,7 +276,6 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
   height: 45px;
 }
 
@@ -301,9 +283,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* flex-basis: 45px;
-  flex-shrink: 0; */
-
   width: 45px;
   height: 45px;
   color: #ffffff;
@@ -316,14 +295,12 @@
   font-size: 46px;
 }
 
-
 .talk-content .file-record .filetitle .info {
   flex: 1 1;
   height: 45px;
   margin-left: 5px;
   overflow: hidden;
 }
-
 
 .talk-content .file-record .filetitle .info p:first-child {
   height: 25px;
@@ -368,7 +345,6 @@
 .talk-content .file-record .filetools a {
   margin-right: 15px;
 }
-
 
 /* 代码块信息消息 */
 .talk-content .codeblock-record i {

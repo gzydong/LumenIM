@@ -80,7 +80,7 @@
   position: absolute;
   right: 5px;
   display: inline-block;
-  margin-right: 15px;
+  margin-right: 10px;
   color: #6dabdc;
   font-size: 12px;
 }
@@ -119,7 +119,7 @@
 .article-container .article-row {
   min-height: 50px;
   border-bottom: 2px solid #ffffff;
-  padding: 10px 5px 5px 10px;
+  padding: 10px 10px 5px 10px;
   position: relative;
 }
 
@@ -194,9 +194,9 @@
   display: flex;
   align-items: center;
   padding-top: 4px;
-  font-size: 12px;
+  font-size: 10px;
   color: #a7afbc;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.6;
 }
 

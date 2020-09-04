@@ -334,6 +334,7 @@
     position: relative;
     cursor: pointer;
     overflow: hidden;
+    transition: ease-in 3s;
   }
 
   .userlogo img {
@@ -343,7 +344,6 @@
 
   .userlogo:hover {
     transform: rotate(360deg);
-    transition: ease-in 2s;
   }
 
   .user-status {

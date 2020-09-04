@@ -18,10 +18,10 @@
                   <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar2">
                     <ul class="friend-items no-select">
                       <li v-for="(item,index) in search" :key="item.index_name" @click="triggerContacts(item)">
-                        <el-avatar :size="30" :src="item.avatar" class="avatar">
-                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        <el-avatar :size="25" :src="item.avatar" class="avatar" style="margin-top: 5px;">
+                          <img src="/static/image/detault-avatar.jpg" />
                         </el-avatar>
-                        <span class="nickname">[{{item.type == 1?'友':'群'}}] ~ {{item.nickname}}</span>
+                        <span class="nickname">[{{item.type == 1?'友':'群'}}] {{item.nickname}}</span>
                         <span class="select-btn">
                           <i class="el-icon-success" :class="{'i-color-green':item.checked}"></i>
                         </span>
@@ -44,7 +44,7 @@
                     <div class="selectd-items">
                       <div class="selectd-item no-select" v-for="(item,index) in selected" :key="item.index_name">
                         <el-avatar :size="25" :src="item.avatar">
-                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                          <img src="/static/image/detault-avatar.jpg" />
                         </el-avatar>
                         <p>{{item.nickname}}</p>
                         <div class="triangle-topleft" :class="{'triangle-topleft-group':item.type == 2}"></div>
@@ -229,6 +229,7 @@
     border-radius: 3px;
     overflow: hidden;
     background-color: white;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .container .header {
@@ -277,7 +278,7 @@
   }
 
   .friend-items li:hover {
-    background: #fcfcfc;
+    background: #f5f5f5;
   }
 
   .friend-items li .avatar {

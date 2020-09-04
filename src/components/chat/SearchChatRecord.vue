@@ -76,7 +76,7 @@
 
                     <!-- 文本消息 -->
                     <div class="msg-text" v-if="record.msg_type == 1">
-                      <pre class="pre" v-html="record.content" v-hrefstyle></pre>
+                      <pre class="pre" v-html="record.content" v-href="'rgb(51, 51, 51)'"></pre>
                     </div>
 
                     <!-- 文件-图片消息 -->
@@ -186,18 +186,6 @@
     name: "search-chat-record",
     components: {
       ForwardRecords
-    },
-    directives: {
-      hrefstyle: {
-        inserted: function (el) {
-          let els = el.querySelectorAll('a');
-          if (els) {
-            els.forEach((item, i) => {
-              item.style = 'color: #333;padding: 0px 2px;border-bottom: 1px solid #333;';
-            });
-          }
-        }
-      }
     },
     props: {
       receiveId: {

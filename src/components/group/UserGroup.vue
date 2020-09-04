@@ -70,7 +70,7 @@
 
       <div class="list-item-tips group-notice">
         <span v-if="detail.group_notice.title">
-          <b>##{{detail.group_notice.title}}##</b> {{detail.group_notice.content}}
+          <b>#{{detail.group_notice.title}}#</b><br/> {{detail.group_notice.content}}
         </span>
         <span v-else>暂无群公告</span>
       </div>
@@ -496,6 +496,7 @@
     margin-top: 5px;
     padding-left: 16px;
     padding-right: 16px;
+    font-weight: 300;
   }
 
   .list-item .group-invite {

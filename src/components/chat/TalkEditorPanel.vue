@@ -9,7 +9,7 @@
           <span class="name pointer">
             <span v-if="params.source == 1" @click="catFriendDetail(params.receiveId)">{{params.nickname}}</span>
             <span v-else @click="groupBoxShow = !groupBoxShow">{{params.nickname}}</span>
-            <span class="num" v-show="groupNum && params.source == 2">({{groupNum}})</span>
+            <span class="num" v-show="groupNum && params.source == 2">({{groupNum}}人)</span>
           </span>
         </div>
         <div class="online" v-show="params.source == 1">
@@ -62,7 +62,7 @@
               <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.invite.users">
                 <a @click="catFriendDetail(user.id)">{{user.nickname}}</a>
-                <em v-show="uidx < item.invite.users.length - 1">、</em>
+                <em v-show="uidx > 0 && uidx < item.invite.users.length - 1">、</em>
               </template>
               <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
@@ -104,7 +104,7 @@
 
                 <!-- 文字消息 -->
                 <div class="text-record" v-if="item.msg_type == 1" @contextmenu="onCopy(idx,item,$event)">
-                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-hrefstyle></pre>
+                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-href></pre>
                 </div>
 
                 <!-- 图片消息 -->
@@ -113,22 +113,21 @@
                   <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file.file_url)" :src="item.file.file_url"
                     :preview-src-list="images" :z-index="getImgIndex(item.file.file_url)">
                     <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline"></i>
+                      加载失败...
                     </div>
                     <div slot="placeholder" class="image-slot">
                       图片加载中<span class="dot">...</span>
                     </div>
                   </el-image>
-
                   <i class="el-icon-circle-plus enlarge"></i>
                 </div>
 
-                <!-- 音频文件 -->
+                <!-- 音频文件预留 -->
                 <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 2">
 
                 </div>
 
-                <!-- 视频文件 -->
+                <!-- 视频文件预留 -->
                 <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 3">
 
                 </div>
@@ -337,18 +336,6 @@
         type: Boolean,
         default: false
       },
-    },
-    directives: {
-      hrefstyle: {
-        inserted: function (el) {
-          let els = el.querySelectorAll('a');
-          if (els) {
-            els.forEach((item, i) => {
-              item.style = 'color: white;padding:0 2px;border-bottom: 1px solid #fff;';
-            });
-          }
-        }
-      }
     },
     data() {
       return {

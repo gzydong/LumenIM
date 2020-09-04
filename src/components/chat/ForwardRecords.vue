@@ -37,7 +37,7 @@
 
                 <!-- 文本消息 -->
                 <div class="msg-text" v-if="record.msg_type == 1">
-                  <pre class="pre" v-html="record.content"></pre>
+                  <pre class="pre" v-html="record.content" v-href="'rgb(51, 51, 51)'"></pre>
                 </div>
 
                 <!-- 文件-图片消息 -->

@@ -248,6 +248,9 @@
     height: 600px;
     background-color: white;
     box-shadow: 0 0 5px #eae5e5;
+    border: 1px solid #eae5e5;
+    overflow: hidden;
+    border-radius: 3px 3px 0 0;
   }
 
   .container .header {

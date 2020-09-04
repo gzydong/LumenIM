@@ -24,18 +24,19 @@
 
 .panel-header .title .badge {
   display: inline-block;
-  background: rgb(255, 197, 106);
+  background: rgb(81 139 254);
   height: 18px;
   line-height: 18px;
   padding: 1px 3px;
-  font-size: 12px;
+  font-size: 10px;
   color: white;
   position: absolute;
   top: 5px;
+  border-radius: 3px;
 }
 
 .panel-header .title .badge-friend {
-  background: #66b1ff;
+  background: #f97348;
 }
 
 .panel-header .title .name {

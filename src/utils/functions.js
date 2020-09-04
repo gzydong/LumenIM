@@ -9,6 +9,10 @@ import {
  * @param {Object} datetime
  */
 export function formateTime(datetime) {
+  if (datetime == null) {
+    return ''
+  }
+
   datetime = datetime.replace(/-/g, "/");
 
   //当前时间戳

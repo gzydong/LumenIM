@@ -28,7 +28,8 @@
                       <el-input type="textarea" v-model="form.profile" rows="3" placeholder="请输入群描述" />
                     </el-form-item>
                     <el-form-item>
-                      <el-button type="primary" size="small" @click="editGroup" :loading="loading">修改</el-button>
+                      <el-button type="primary" icon="el-icon-edit" size="small" @click="editGroup" :loading="loading">
+                        修改信息</el-button>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -489,9 +490,7 @@
   .container {
     width: 80%;
     height: 500px;
-
     max-width: 800px;
-
     border-radius: 3px;
     overflow: hidden;
     background-color: white;
@@ -513,7 +512,6 @@
     cursor: pointer;
   }
 
-
   .container .aside-border {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -524,21 +522,20 @@
   }
 
   .container .aside-border .menu-list {
-    height: 30px;
-    line-height: 30px;
-    margin: 4px 2px;
-    text-align: center;
+    height: 25px;
+    line-height: 25px;
+    margin: 8px 2px;
     font-weight: 400;
     font-size: 13px;
     background-color: white;
     cursor: pointer;
+    border-left: 3px solid white;
+    padding-left: 10px;
   }
 
   .container .aside-border .menu-list-selectd {
-    background: #2196F3;
-    color: white !important;
-    border-radius: 20px;
-    font-weight: 200;
+    color: #2196f3;
+    border-color: #2196f3;
   }
 
   .avatar-col {
@@ -609,7 +606,6 @@
     display: flex;
   }
 
-
   /* 群成员相关 start */
   .members {
     display: flex;
@@ -627,6 +623,7 @@
     border: 1px dashed #e2dcdc;
     margin: 5px 0;
     padding: 3px;
+    transition: ease .5s;
   }
 
   .members .member:hover,
@@ -687,14 +684,10 @@
     margin: 3px 0;
   }
 
-
-
   /* 群成员相关 end */
 
 
-
   /* 公告相关 start */
-
   .notice-header {
     display: flex;
     justify-content: space-between;
@@ -712,6 +705,7 @@
 
   .empty-notice span {
     color: #cccccc;
+    font-size: 13px;
   }
 
   .notices .notice {
@@ -804,8 +798,6 @@
     margin-bottom: 20px;
     font-weight: 400;
   }
-
-
   /* 公告相关 end */
 
 </style>

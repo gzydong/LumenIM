@@ -21,8 +21,8 @@
                   <el-scrollbar :native="false" tag="section" class="hv100" ref="scrollbar">
                     <ul class="friend-items no-select">
                       <li v-for="(item,index) in search" :key="item.id" @click="triggerContacts(item)">
-                        <el-avatar :size="30" :src="item.avatar" class="avatar">
-                          <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                        <el-avatar :size="25" :src="item.avatar" class="avatar" style="margin-top: 5px;">
+                          <img src="/static/image/detault-avatar.jpg" />
                         </el-avatar>
                         <span class="nickname">{{item.nickname}}</span>
                         <span class="select-btn">
@@ -279,6 +279,7 @@
     border-radius: 3px;
     overflow: hidden;
     background-color: white;
+    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
   }
 
   .container .header {
@@ -327,7 +328,7 @@
   }
 
   .friend-items li:hover {
-    background: #fcfcfc;
+    background: #f5f5f5;
   }
 
   .friend-items li .avatar {
