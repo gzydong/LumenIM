@@ -689,6 +689,7 @@
   background-color: initial;
   border: 0;
   overflow-x: auto;
+  padding-bottom: 15px;
 }
 
 #note-detail>>>p code {
@@ -698,10 +699,6 @@
   margin: 0 3px;
   white-space: nowrap;
   border-radius: 2px;
-}
-
-#note-detail>>>pre code {
-  padding-bottom: 15px;
 }
 
 #note-detail>>>pre code::-webkit-scrollbar {

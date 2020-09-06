@@ -1021,13 +1021,13 @@
   padding: 1em;
   margin: .5em 0;
   overflow: auto;
-  border-radius: 2px;
+  border-radius: 5px;
 }
 
 .markdown-body :not(pre)>code[class*="language-"],
 .markdown-body pre {
-  /* background-color: #282c34; */
-  background-color: #2d2d2d;
+  background-color: #282c34;
+  /* background-color: #2d2d2d; */
 }
 
 /* Inline code */

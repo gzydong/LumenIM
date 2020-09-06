@@ -572,8 +572,6 @@
       this.loadNoteClass();
       this.loadNoteTags();
       this.loadNoteList();
-
-      this.isEdited;
     },
     methods: {
       //格式化文件大小

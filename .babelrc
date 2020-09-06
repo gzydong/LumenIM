@@ -25,8 +25,11 @@
         "languages": [
           "html",
           "css",
+          "less",
           "javascript",
+          "typescript",
           "json",
+          "xml",
           "bash",
           "nginx",
           "sql",
@@ -39,8 +42,16 @@
           "rust",
           "objectivec",
           "c",
+          "csharp",
+          "cpp",
           "lua",
-          "shell"
+          "shell",
+          "vim",
+          "yaml",
+          "yml",
+          "md",
+          "erlang",
+          "ini"
         ],
         "theme": "okaidia"
       }
