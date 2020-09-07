@@ -457,6 +457,11 @@
           }).then(res => {
             if (res.code == 200) {
               this.loadMembers();
+              this.$notify({
+                title: '删除成功',
+                message: `已成功将群成员移除群组...`,
+                type: 'success'
+              });
             }
           });
         }).catch(() => {
@@ -798,6 +803,7 @@
     margin-bottom: 20px;
     font-weight: 400;
   }
+
   /* 公告相关 end */
 
 </style>

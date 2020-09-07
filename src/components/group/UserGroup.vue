@@ -70,7 +70,7 @@
 
       <div class="list-item-tips group-notice">
         <span v-if="detail.group_notice.title">
-          <b>#{{detail.group_notice.title}}#</b><br/> {{detail.group_notice.content}}
+          <b>#{{detail.group_notice.title}}#</b><br /> {{detail.group_notice.content}}
         </span>
         <span v-else>暂无群公告</span>
       </div>
@@ -345,6 +345,12 @@
       inviteSuccess() {
         this.inviteFriendBox = false;
         this.loadMembers();
+
+        this.$notify({
+          title: '邀请成功',
+          message: `好友已成功加入群组...`,
+          type: 'success'
+        });
       },
 
       //发送群聊

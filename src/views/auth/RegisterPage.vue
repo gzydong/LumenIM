@@ -167,8 +167,7 @@
           nickname: this.form.nickname,
           mobile: this.form.username,
           password: this.form.password,
-          sms_code: this.form.sms_code,
-          invite_code: "000000"
+          sms_code: this.form.sms_code
         }).then(res => {
           if (res.code == 200) {
             this.$notify({
