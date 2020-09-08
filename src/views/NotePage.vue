@@ -1361,8 +1361,11 @@
       //下载笔记（md格式）
       noteDownload() {
         let reader = new FileReader();
-        let text = this.noteDetail.content;
         let title = this.noteDetail.title + '.md';
+        let blob = new Blob([this.noteDetail.content], {
+          type: 'text/plain'
+        });
+
         reader.readAsDataURL(blob);
         reader.onload = function (e) {
           var a = document.createElement('a');
