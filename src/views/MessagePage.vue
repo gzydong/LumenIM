@@ -105,10 +105,10 @@
           <template v-if="index_name == null">
             <div class="reserve-box no-select animated flipInY">
               <img src="/static/image/chat.png" width="300" />
-              <div style="width: 100%;font-weight: 300;font-family: cursive;font-size: 18px;text-align: center;">
-                <em>不是井里没有水，而是你挖的不够深</em><br />
-                <em>不是成功来得慢，而是你努力的不够多</em><br />
-                <em>加油吧！ ......</em>
+              <div style="width: 100%;font-weight: 300;text-align: center;font-size: 15px;color: #b9b4b4;margin-top: -30px;">
+                不是井里没有水，而是你挖的不够深<br />
+                不是成功来得慢，而是你努力的不够多<br />
+                加油吧！ ......
               </div>
             </div>
           </template>

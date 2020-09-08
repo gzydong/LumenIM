@@ -40,7 +40,7 @@
                 </router-link>
               </el-tooltip>
 
-              <el-tooltip class="item" content="个人设置" placement="right" :visible-arrow="false">
+              <el-tooltip class="item" content="我的设置" placement="right" :visible-arrow="false">
                 <router-link to="/settings">
                   <div class="menu-items" :class="{'menu-items-active':idx == 3}">
                     <i class="el-icon-setting"></i>
