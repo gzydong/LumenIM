@@ -105,7 +105,8 @@
           <template v-if="index_name == null">
             <div class="reserve-box no-select animated flipInY">
               <img src="/static/image/chat.png" width="300" />
-              <div style="width: 100%;font-weight: 300;text-align: center;font-size: 15px;color: #b9b4b4;margin-top: -30px;">
+              <div
+                style="width: 100%;font-weight: 300;text-align: center;font-size: 15px;color: #b9b4b4;margin-top: -30px;">
                 不是井里没有水，而是你挖的不够深<br />
                 不是成功来得慢，而是你努力的不够多<br />
                 加油吧！ ......
@@ -324,11 +325,7 @@
 
       // 获取用户对话列表
       loadChatList() {
-        if (this.talkNum == 0) {
-          this.loadStatus = 0;
-        } else {
-          this.loadStatus = 1;
-        }
+        this.loadStatus = this.talkNum == 0 ? 0 : 1;
 
         chatListsServ().then(res => {
           if (res.code == 200) {
@@ -369,7 +366,9 @@
       clickTab(type = 1, index_name) {
         let idx = this.getIndex(index_name);
 
-        if (idx == -1) return;
+        if (idx == -1) {
+          return;
+        }
 
         let item = this.$store.state.talks.items[idx];
         let [source, receive_id] = index_name.split("_");

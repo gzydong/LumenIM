@@ -81,7 +81,7 @@
           </div>
 
           <!-- 用户聊天消息 -->
-          <div v-else :class="{'left-record':item.float =='left','right-record':item.float =='right'}">
+          <div v-else class="record-box" :class="{'left-record':item.float =='left','right-record':item.float =='right'}" >
             <div class="checked-button"
               v-show="multiSelect.isOpen && (item.msg_type==1 || item.msg_type==2 || item.msg_type==5)"
               @click="triggerMultiSelect(item.id)">
@@ -93,6 +93,10 @@
             </div>
 
             <div class="talk-container">
+              <div class="record-time2">
+                <span v-text="parseTime(item.created_at,'{m}月{d}日 {h}:{i}')"></span>
+              </div>
+
               <!-- 判断是否是群聊信息(群聊信息显示用户昵称) -->
               <p v-show="item.source == 2 && item.float =='left'" class="record-nickname">
                 <span v-text="item.nickname"></span>
@@ -445,6 +449,8 @@
 
       //聊天时间人性化处理
       sendTime: formateTime,
+
+      parseTime:parseTime,
 
       //下载文件
       download,
