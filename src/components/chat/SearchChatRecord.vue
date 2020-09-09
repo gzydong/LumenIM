@@ -177,7 +177,8 @@
   import {
     formateSize,
     download,
-    imgZoom
+    imgZoom,
+    replaceEmoji
   } from "@/utils/functions";
 
   import ForwardRecords from "@/components/chat/ForwardRecords";
@@ -338,7 +339,13 @@
           if (res.code != 200) return;
 
           let records = data.record_id == 0 ? [] : this.records.items;
-          records.push(...res.data.rows);
+
+          records.push(...res.data.rows.map((item) => {
+            if (item.msg_type == 1) {
+              item.content = replaceEmoji(item.content);
+            }
+            return item;
+          }));
 
           this.records.items = records;
           this.records.loadStatus = res.data.rows.length < res.data.limit ? 2 : 0;

@@ -62,7 +62,7 @@
               <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.invite.users">
                 <a @click="catFriendDetail(user.id)">{{user.nickname}}</a>
-                <em v-show="uidx > 0 && uidx < item.invite.users.length - 1">、</em>
+                <em v-show="uidx < item.invite.users.length - 1">、</em>
               </template>
               <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
@@ -548,7 +548,7 @@
           this.$root.message.records = records.map((item) => {
             item.float = (item.user_id == 0) ? 'center' : (item.user_id == user_id ? 'right' : 'left');
 
-            if(item.msg_type == 1){
+            if (item.msg_type == 1) {
               item.content = replaceEmoji(item.content);
             }
 

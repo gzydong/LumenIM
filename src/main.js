@@ -25,12 +25,9 @@ import {
   getToken
 } from '@/utils/auth';
 
-
 import {
   findUserSettingServ
 } from "@/api/user";
-import { parse } from 'semver';
-
 
 let VueApp = new Vue({
   el: '#app',

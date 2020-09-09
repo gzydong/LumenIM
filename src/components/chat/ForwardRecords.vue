@@ -100,7 +100,8 @@
   import {
     formateSize,
     download,
-    imgZoom
+    imgZoom,
+    replaceEmoji
   } from "@/utils/functions";
 
   export default {
@@ -134,8 +135,14 @@
           records_id: this.records_id
         }).then(res => {
           if (res.code == 200) {
-            this.records = res.data.rows;
             this.loadStatus = 1;
+            this.records = res.data.rows.map((item) => {
+              if (item.msg_type == 1) {
+                item.content = replaceEmoji(item.content);
+              }
+
+              return item;
+            });
           }
         }).catch(err => {
           this.loadStatus = 0;

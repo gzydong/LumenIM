@@ -109,7 +109,6 @@ export function downloadIamge(imgsrc, name) { //下载图片地址和图片名
   image.src = imgsrc;
 }
 
-
 /**
  * 通过图片url获取图片大小
  * 
@@ -150,13 +149,12 @@ export function download(cr_id) {
   } catch (e) {}
 }
 
-
 /**
  * 时间格式化方法
  * 
  * @param {(Object|string|number)} time
- * @param {string} cFormat
- * @returns {string | null}
+ * @param {String} cFormat
+ * @returns {String | null}
  */
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
@@ -197,7 +195,6 @@ export function parseTime(time, cFormat) {
   return time_str;
 }
 
-
 /**
  * 去除字符串控制
  * 
@@ -213,12 +210,10 @@ export function trim(str, type = null) {
   }
 }
 
-
-
 /**
  * 解析url中参数
  * 
- * @param {string} url
+ * @param {String} url
  * @returns {Object}
  */
 export function param2Obj(url) {
@@ -236,7 +231,6 @@ export function param2Obj(url) {
     '"}'
   );
 }
-
 
 /**
  * @param {Object} json
@@ -266,10 +260,9 @@ export function cleanArray(actual) {
   return newArray;
 }
 
-
 /**
  * @param {HTMLElement} element
- * @param {string} className
+ * @param {String} className
  */
 export function toggleClass(element, className) {
   if (!element || !className) {
@@ -290,8 +283,8 @@ export function toggleClass(element, className) {
 /**
  * Check if an element has a class
  * @param {HTMLElement} elm
- * @param {string} cls
- * @returns {boolean}
+ * @param {String} cls
+ * @returns {Boolean}
  */
 export function hasClass(ele, cls) {
   return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
@@ -300,7 +293,7 @@ export function hasClass(ele, cls) {
 /**
  * Add class to element
  * @param {HTMLElement} elm
- * @param {string} cls
+ * @param {String} cls
  */
 export function addClass(ele, cls) {
   if (!hasClass(ele, cls)) ele.className += ' ' + cls;
@@ -309,7 +302,7 @@ export function addClass(ele, cls) {
 /**
  * Remove class from element
  * @param {HTMLElement} elm
- * @param {string} cls
+ * @param {String} cls
  */
 export function removeClass(ele, cls) {
   if (hasClass(ele, cls)) {
@@ -321,7 +314,7 @@ export function removeClass(ele, cls) {
 /**
  * 通过图片Url获取图片等比例缩放的宽度和高度信息
  * 
- * @param {string} src 
+ * @param {String} src 
  * @param {number} width 
  */
 export function imgZoom(src, width = 200) {
@@ -350,12 +343,11 @@ export function getSelection() {
   return window.getSelection ? window.getSelection().toString() : document.selection.createRange().text;
 }
 
-
 /**
  * 剪贴板复制功能
  * 
- * @param {*} value 复制内容
- * @param {*} callback 复制成功回调方法
+ * @param {String} value 复制内容
+ * @param  callback 复制成功回调方法
  */
 export const copyTextToClipboard = (value, callback) => {
   let textArea = document.createElement("textarea");
@@ -376,7 +368,7 @@ export const copyTextToClipboard = (value, callback) => {
 /**
  * 隐藏用户手机号中间四位
  * 
- * @param {string} phone  手机号
+ * @param {String} phone  手机号
  */
 export function hidePhone(phone) {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
@@ -586,4 +578,15 @@ export function replaceEmoji(content) {
     function ($0, $1) {
       return emojis[$1];
     });
+}
+
+
+/**
+ * 替换字符串中的url 为a标签
+ * 
+ * @param {String} text 
+ */
+export function replaceURLWithHTMLLinks(text) {
+  let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
+  return text.replace(exp, "<a href='$1'>$1</a>");
 }
