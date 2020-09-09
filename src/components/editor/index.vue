@@ -55,8 +55,6 @@
         </form>
       </el-header>
       <el-main class="padding0 textarea">
-        <!-- <div style="width: 80px;height: 35px;background-color: green;position: absolute;right: 10px;bottom: 10px;">发送
-        </div> -->
         <textarea ref="textarea" v-paste="pasteImage" v-drag="dragPasteImage" v-model.trim="editorText"
           @keydown="keydownEvent($event)" placeholder="你想要的聊点什么呢 ..." rows="6"></textarea>
       </el-main>
@@ -136,6 +134,12 @@
 
         // 录音器
         recorder: false,
+
+        // 上次发送消息的时间
+        sendtime: 0,
+
+        // 发送间隔时间（默认1秒）
+        interval: 1000,
       };
     },
     methods: {
@@ -168,10 +172,19 @@
 
         // 回车发送消息
         if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
-          // 后期做判断 1秒内只能发送一条消息
+          let currentTime = (new Date()).getTime();
+
+          if (this.sendtime > 0) {
+            // 判断 1秒内只能发送一条消息
+            if ((currentTime - this.sendtime) < this.interval) {
+              e.preventDefault();
+              return false;
+            }
+          }
+
           this.$emit("send", this.editorText);
           this.editorText = "";
-
+          this.sendtime = currentTime;
           e.preventDefault();
         }
       },
@@ -415,5 +428,4 @@
   }
 
   /* 编辑器文档说明 --- end */
-
 </style>
