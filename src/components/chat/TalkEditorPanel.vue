@@ -302,7 +302,8 @@
     getSelection,
     copyTextToClipboard,
     addClass,
-    removeClass
+    removeClass,
+    replaceEmoji
   } from "@/utils/functions";
 
   export default {
@@ -546,6 +547,11 @@
 
           this.$root.message.records = records.map((item) => {
             item.float = (item.user_id == 0) ? 'center' : (item.user_id == user_id ? 'right' : 'left');
+
+            if(item.msg_type == 1){
+              item.content = replaceEmoji(item.content);
+            }
+
             return item;
           });
 

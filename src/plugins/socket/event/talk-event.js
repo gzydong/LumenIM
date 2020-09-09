@@ -2,7 +2,8 @@ import AppMessageEvent from './app-message-event';
 
 import {
   parseTime,
-  packTalkItem
+  packTalkItem,
+  replaceEmoji
 } from '@/utils/functions';
 
 import {
@@ -66,6 +67,10 @@ class TalkEvent extends AppMessageEvent {
       record.float = 'center';
     } else {
       record.float = record.user_id == this.getUserId ? 'right' : 'left';
+    }
+
+    if (record.msg_type == 1) {
+      record.content = replaceEmoji(record.content);
     }
 
     this.vm.message.records.push(record);
@@ -160,7 +165,6 @@ class TalkEvent extends AppMessageEvent {
 
     return `${message.source_type}_${message.send_user}`;
   }
-
 
   /**
    * 加载对接节点

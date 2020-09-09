@@ -127,12 +127,27 @@
         sendMobileCodeServ({
           mobile: this.form.username
         }).then(res => {
-          if (res.code == 200) {
-            this.smsLockObj.start();
+          if (res.code !== 200) {
+            this.$notify({
+              title: '提示',
+              message: res.msg,
+            });
+            return;
           }
 
-          this.smsLock = false;
-        }).catch(err => {
+          this.smsLockObj.start();
+          if (res.data.is_debug) {
+            this.form.sms_code = res.data.sms_code;
+            setTimeout(() => {
+              this.$notify({
+                title: '提示',
+                message: '已自动填充验证码',
+                type: 'success'
+              });
+              this.form.sms_code = res.data.sms_code;
+            }, 500);
+          }
+        }).finally(() => {
           this.smsLock = false;
         });
       },
