@@ -51,13 +51,13 @@
   display: inline;
 }
 
-.record-container .message-system .group-invite-tips a {
+.record-container .message-system .invite-tips a {
   color: #939596;
   cursor: pointer;
   font-size: 12px;
 }
 
-.record-container .message-system .group-invite-tips a:hover {
+.record-container .message-system .invite-tips a:hover {
   color: black;
 }
 
@@ -69,7 +69,7 @@
 .record-container .record-time {
   text-align: center;
   color: #ccc9c9;
-  font-size: 12px;
+  font-size: 11px;
   margin-top: 5px;
 }
 
@@ -101,8 +101,9 @@
   top: -20px;
   height: 18px;
   width: 90px;
-  right: 4px;
+  right: 10px;
   line-height: 18px;
+  text-align: right;
   display: none;
 }
 
@@ -112,11 +113,12 @@
   transform: scale(0.5);
 }
 
-.record-container .left-record .talk-container .record-time2{
+.record-container .left-record .talk-container .record-time2 {
   left: 9px;
+  text-align: left;
 }
 
-.record-container:hover .record-time2{
+.record-container:hover .record-time2 {
   display: block;
 }
 
@@ -124,7 +126,7 @@
   height: 20px;
   font-size: 10px;
   color: #b5b2b2;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .record-container .left-record .talk-container {
@@ -166,6 +168,7 @@
   position: relative;
   padding: 5px;
   min-height: 20px;
+  min-width: 10px;
 }
 
 .record-container .right-record .talk-content {

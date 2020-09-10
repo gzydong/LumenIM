@@ -57,7 +57,7 @@
 
           <!-- 入群系统提示消息 -->
           <div v-if="item.msg_type == 3" class="message-system no-select">
-            <span v-if="item.invite.type == 1 || item.invite.type == 3" class="group-invite-tips">
+            <span v-if="item.invite.type == 1 || item.invite.type == 3" class="invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.invite.users">
@@ -66,7 +66,7 @@
               </template>
               <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
             </span>
-            <span v-else-if="item.invite.type == 2" class="group-invite-tips">
+            <span v-else-if="item.invite.type == 2" class="invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span style="background: none;">退出了群聊</span>
             </span>
@@ -81,7 +81,8 @@
           </div>
 
           <!-- 用户聊天消息 -->
-          <div v-else class="record-box" :class="{'left-record':item.float =='left','right-record':item.float =='right'}" >
+          <div v-else class="record-box"
+            :class="{'left-record':item.float =='left','right-record':item.float =='right'}">
             <div class="checked-button"
               v-show="multiSelect.isOpen && (item.msg_type==1 || item.msg_type==2 || item.msg_type==5)"
               @click="triggerMultiSelect(item.id)">
@@ -93,15 +94,15 @@
             </div>
 
             <div class="talk-container">
-              <div class="record-time2">
+              <div class="record-time2" v-if="!(item.source == 2 && item.float =='left')">
                 <span v-text="parseTime(item.created_at,'{m}月{d}日 {h}:{i}')"></span>
               </div>
 
               <!-- 判断是否是群聊信息(群聊信息显示用户昵称) -->
-              <p v-show="item.source == 2 && item.float =='left'" class="record-nickname">
+              <div v-if="item.source == 2 && item.float =='left'" class="record-nickname">
                 <span v-text="item.nickname"></span>
                 <span v-show="item.friend_remarks">({{item.friend_remarks}})</span>
-              </p>
+              </div>
 
               <div class="talk-content" :class="{'no-background':isNoBackground(item)}">
                 <div class="lumen-arrow" v-show="!isNoBackground(item)"></div>
@@ -186,6 +187,7 @@
                 <div v-else>未知的消息类型</div>
               </div>
             </div>
+
             <div class="clear"></div>
           </div>
 
@@ -450,7 +452,7 @@
       //聊天时间人性化处理
       sendTime: formateTime,
 
-      parseTime:parseTime,
+      parseTime: parseTime,
 
       //下载文件
       download,

@@ -128,6 +128,16 @@ const routes = [{
       needLogin: false
     }
   },
+
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import('@/views/TestPage'),
+    meta: {
+      title: '测试',
+      needLogin: false
+    }
+  },
 ];
 
 
