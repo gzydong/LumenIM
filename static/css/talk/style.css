@@ -1,4 +1,6 @@
-@import './chat-record.css';
+/* @import './chat-record.css'; */
+
+@import './panel-record';
 
 .vh100 {
   height: 100%;

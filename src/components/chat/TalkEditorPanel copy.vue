@@ -40,9 +40,8 @@
 
       <!-- 主体信息 -->
       <el-main class="padding0 panel-main lm-scrollbar" ref="lumenChatPanel" id="lumenChatPanel"
-        @scroll.native="talkPanelScroll($event)" style="padding-bottom: 30px;">
-
-        <div class="talk-container no-select">
+        @scroll.native="talkPanelScroll($event)">
+        <div class="record-container no-select">
           <div class="toolbars">
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
@@ -53,11 +52,12 @@
           </div>
         </div>
 
-        <!-- 遍历对话记录 -->
-        <template v-for="(item,idx) in records">
-          <!-- 群消息 -->
-          <div v-if="item.msg_type == 3" class="talk-container paddingt2">
-            <div v-if="item.invite.type == 1 || item.invite.type == 3" class="system-msg invite-tip">
+        <div class="record-container" v-for="(item,idx) in records"
+          :class="{'container-checked':multiSelect.isOpen === true}" :key="item.id">
+
+          <!-- 入群系统提示消息 -->
+          <div v-if="item.msg_type == 3" class="message-system no-select">
+            <span v-if="item.invite.type == 1 || item.invite.type == 3" class="invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
               <span>{{item.invite.type == 1?'邀请了':'将'}}</span>
               <template v-for="(user,uidx) in item.invite.users">
@@ -65,53 +65,55 @@
                 <em v-show="uidx < item.invite.users.length - 1">、</em>
               </template>
               <span>{{item.invite.type == 1?'加入了群聊':'踢出了群聊'}}</span>
-            </div>
-            <div v-else-if="item.invite.type == 2" class="system-msg">
+            </span>
+            <span v-else-if="item.invite.type == 2" class="invite-tips">
               <a @click="catFriendDetail(item.invite.operate_user.id)">{{item.invite.operate_user.nickname}}</a>
-              <span>退出了群聊</span>
-            </div>
+              <span style="background: none;">退出了群聊</span>
+            </span>
           </div>
 
-          <!-- 撤回消息 -->
-          <div v-else-if="item.is_revoke == 1" class="talk-container paddingt2">
-            <div class="system-msg">
-              <span v-if="$store.state.user.uid == item.user_id">你撤回了一条消息 |
-                {{sendTime(item.created_at)}}</span>
-              <span v-else-if="params.source == 1">对方撤回了一条消息 | {{sendTime(item.created_at)}}</span>
-              <span v-else>"{{item.nickname}}" 撤回了一条消息 | {{sendTime(item.created_at)}}</span>
-            </div>
+          <!-- 撤回消息提示 -->
+          <div v-else-if="item.is_revoke == 1" class="message-system no-select">
+            <span v-if="$store.state.user.uid == item.user_id" class="recall">你撤回了一条消息 |
+              {{sendTime(item.created_at)}}</span>
+            <span v-else-if="params.source == 1" class="recall">对方撤回了一条消息 | {{sendTime(item.created_at)}}</span>
+            <span v-else class="recall">"{{item.nickname}}" 撤回了一条消息 | {{sendTime(item.created_at)}}</span>
           </div>
 
-          <div v-else class="talk-container"
-            :class="{'direction-rt':item.float =='right','open-checkbox':multiSelect.isOpen === true}">
-            <aside class="checkbox-column">
-              <i class="el-icon-success" :class="{'selected':verifyMultiSelect(item.id)}"
-                @click="triggerMultiSelect(item.id)"></i>
-            </aside>
-            <aside class="avatar-column">
-              <div class="avatar">
-                <img :src="item.avatar" @click="catFriendDetail(item.user_id)" :onerror="$store.state.detaultAvatar"
-                  width="30" height="30" />
+          <!-- 用户聊天消息 -->
+          <div v-else class="record-box"
+            :class="{'left-record':item.float =='left','right-record':item.float =='right'}">
+            <div class="checked-button"
+              v-show="multiSelect.isOpen && (item.msg_type==1 || item.msg_type==2 || item.msg_type==5)"
+              @click="triggerMultiSelect(item.id)">
+              <i class="el-icon-success" :class="{'selected-record':verifyMultiSelect(item.id)}"></i>
+            </div>
+
+            <div class="record-avatar no-select">
+              <img :src="item.avatar" @click="catFriendDetail(item.user_id)" :onerror="$store.state.detaultAvatar" />
+            </div>
+
+            <div class="talk-container">
+              <div class="record-time2" v-if="!(item.source == 2 && item.float =='left')">
+                <span v-text="parseTime(item.created_at,'{m}月{d}日 {h}:{i}')"></span>
               </div>
-            </aside>
-            <div class="content-column">
-              <div class="talktime" v-show="!(item.source == 2 && item.float =='left')"
-                v-text="parseTime(item.created_at,'{m}月{d}日 {h}:{i}')"></div>
-              <div class="subtitle" v-if="item.source == 2 && item.float =='left'">
-                <span class="nickname" v-text="item.nickname"></span>
+
+              <!-- 判断是否是群聊信息(群聊信息显示用户昵称) -->
+              <div v-if="item.source == 2 && item.float =='left'" class="record-nickname">
+                <span v-text="item.nickname"></span>
                 <span v-show="item.friend_remarks">({{item.friend_remarks}})</span>
-                <span class="talktime2">{{parseTime(item.created_at,'{m}月{d}日 {h}:{i}')}}</span>
               </div>
-              <div class="talkbox">
-                <div class="arrow" v-show="item.msg_type == 1"></div>
 
-                <!-- 文本消息 -->
-                <div v-if="item.msg_type == 1" class="text-msg" @contextmenu="onCopy(idx,item,$event)">
+              <div class="talk-content" :class="{'no-background':isNoBackground(item)}">
+                <div class="lumen-arrow" v-show="!isNoBackground(item)"></div>
+
+                <!-- 文字消息 -->
+                <div class="text-record" v-if="item.msg_type == 1" @contextmenu="onCopy(idx,item,$event)">
                   <pre v-html="item.content" :id="'copy_class_'+item.id" v-href></pre>
                 </div>
 
                 <!-- 图片消息 -->
-                <div v-else-if="item.msg_type == 2 && item.file.file_type == 1" class="image-msg"
+                <div class="images-record" v-else-if="item.msg_type == 2 && item.file.file_type == 1"
                   @contextmenu="onCopy(idx,item,$event)">
                   <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file.file_url)" :src="item.file.file_url"
                     :preview-src-list="images" :z-index="getImgIndex(item.file.file_url)">
@@ -122,63 +124,77 @@
                       图片加载中<span class="dot">...</span>
                     </div>
                   </el-image>
+                  <i class="el-icon-circle-plus enlarge"></i>
                 </div>
 
                 <!-- 音频文件预留 -->
-                <div class="audio-msg" v-else-if="item.msg_type == 2 && item.file.file_type == 2"></div>
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 2">
+
+                </div>
 
                 <!-- 视频文件预留 -->
-                <div class="video-msg" v-else-if="item.msg_type == 2 && item.file.file_type == 3"></div>
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 3">
 
-                <!-- 文件消息 -->
-                <div v-else-if="item.msg_type == 2 && item.file.file_type == 4" class="file-msg"
+                </div>
+
+                <!-- 其它格式的文件消息 -->
+                <div class="file-record" v-else-if="item.msg_type == 2 && item.file.file_type == 4"
                   @contextmenu="onCopy(idx,item,$event)">
-                  <header>
-                    <div class="icon">{{item.file.file_suffix.toUpperCase()}}</div>
+                  <div class="filetitle">
+                    <div class="files-icon">
+                      <span>{{item.file.file_suffix.toUpperCase()}}</span>
+                    </div>
                     <div class="info">
                       <p>
                         <span v-text="item.file.original_name"></span>
-                        <span>({{renderSize(item.file.file_size)}})</span>
+                        <span class="size">({{renderSize(item.file.file_size)}})</span>
                       </p>
                       <p>文件已成功发送, 文件助手永久保存</p>
                     </div>
-                  </header>
-                  <footer>
+                  </div>
+                  <div class="filetools">
                     <a @click="download(item.id)">下载</a>
                     <a>在线预览</a>
-                  </footer>
+                  </div>
                 </div>
 
-                <!-- 会话记录消息 -->
-                <div v-else-if="item.msg_type == 4" class="records-msg" @contextmenu="onCopy(idx,item,$event)"
+                <!-- 会话记录 -->
+                <div class="dialogue-records" v-else-if="item.msg_type == 4" @contextmenu="onCopy(idx,item,$event)"
                   @click="catForwardRecords(item.id)">
-                  <div class="title" v-text="getForwardTitle(item.forward.list)"></div>
-                  <div class="lists">
+                  <p class="records-title">
+                    <span v-text="getForwardTitle(item.forward.list)"></span>
+                  </p>
+                  <div class="records-list">
                     <p v-for="info in item.forward.list">
                       <span v-text="info.nickname"></span>
                       <span>:</span>
                       <span v-text="info.text"></span>
                     </p>
                   </div>
-                  <div class="footer"><span>转发：会话记录 ({{item.forward.num}}条)</span></div>
+                  <p class="records-footer">
+                    <span>转发：会话记录 ({{item.forward.num}}条)</span>
+                  </p>
                 </div>
 
                 <!-- 代码块消息 -->
-                <div v-else-if="item.msg_type == 5" class="code-msg" @contextmenu="onCopy(idx,item,$event)">
-                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"  @click="catCodeBlock(item.code_block.code,item.code_block.code_lang)"></i>
-                  <pre v-html="formatCode(item.code_block.code,item.code_block.code_lang)"></pre>
+                <div class="codeblock-record" v-else-if="item.msg_type == 5" @contextmenu="onCopy(idx,item,$event)">
+                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"
+                    @click="catCodeBlock(item.code_block.code,item.code_block.code_lang)"></i>
+                  <prism-editor :readonly="true" :code="item.code_block.code" :language="item.code_block.code_lang"
+                    :line-numbers="false" />
                 </div>
 
-                <!-- 未知消息 -->
-                <div v-else class="text-msg">未知消息类型 {{item.msg_type}}</div>
+                <div v-else>未知的消息类型</div>
               </div>
             </div>
+
+            <div class="clear"></div>
           </div>
 
-          <div class="talk-container paddingt2" v-show="compareTime(idx,item.created_at)">
-            <div class="talk-time" v-text="sendTime(item.created_at)"></div>
-          </div>
-        </template>
+          <!-- 消息发送时间 -->
+          <p class="record-time no-select" v-show="compareTime(idx,item.created_at)" v-text="sendTime(item.created_at)">
+          </p>
+        </div>
       </el-main>
 
       <!-- 页脚信息 -->
@@ -267,6 +283,8 @@
 
   import Prism from "prismjs";
   import "prismjs/themes/prism-okaidia.css";
+  import PrismEditor from "vue-prism-editor";
+  import "vue-prism-editor/dist/VuePrismEditor.css";
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
 
@@ -300,6 +318,7 @@
       Editor,
       CodeBlock,
       ForwardRecords,
+      PrismEditor,
       SelectContacts,
       UserGroup,
       SearchChatRecord,
@@ -453,10 +472,6 @@
       //发送消息方法
       sendSocket(message) {
         this.$root.socket.send(message);
-      },
-
-      formatCode(code, lang) {
-        return Prism.highlight(code, Prism.languages[lang], lang);
       },
 
       //回车键发送消息回调事件
@@ -639,6 +654,14 @@
         });
       },
 
+      //判断消息是否需要背景
+      isNoBackground(item) {
+        if (item.msg_type != 1 || (item.msg_type == 1 && item.is_code == 1)) {
+          return true;
+        }
+        return false;
+      },
+
       //处理消息时间是否显示
       compareTime(index, datetime) {
         if (datetime == undefined) {
@@ -788,7 +811,14 @@
       //消息点击右键触发自定义菜单
       onCopy(idx, item, event) {
         let menus = [];
-        let content = document.getElementById('copy_class_' + item.id).innerText;
+        let content = this.getSelection();
+
+        if (!content) {
+          if (document.getElementById('copy_class_' + item.id)) {
+            content = document.getElementById('copy_class_' + item.id).innerText;
+          }
+        }
+
         if (item.msg_type == 5) {
           menus.push({
             label: "查看",
