@@ -1,10 +1,4 @@
-/* @import './chat-record.css'; */
-
 @import './panel-record';
-
-.vh100 {
-  height: 100%;
-}
 
 /* 面板头部 */
 .panel-header {

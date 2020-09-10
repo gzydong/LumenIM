@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container class="vh100" style="position: relative;background-color: white;">
+    <el-container class="hv100" style="position: relative;background-color: white;">
       <!-- 头部信息 -->
       <el-header class="padding0 panel-header no-select">
         <div class="title">
@@ -165,7 +165,8 @@
 
                 <!-- 代码块消息 -->
                 <div v-else-if="item.msg_type == 5" class="code-msg" @contextmenu="onCopy(idx,item,$event)">
-                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"  @click="catCodeBlock(item.code_block.code,item.code_block.code_lang)"></i>
+                  <i class="iconfont icon-tubiao_chakangongyi cat-code-block"
+                    @click="catCodeBlock(item.code_block.code,item.code_block.code_lang)"></i>
                   <pre v-html="formatCode(item.code_block.code,item.code_block.code_lang)"></pre>
                 </div>
 
@@ -787,8 +788,15 @@
 
       //消息点击右键触发自定义菜单
       onCopy(idx, item, event) {
+        console.log('asfa')
         let menus = [];
-        let content = document.getElementById('copy_class_' + item.id).innerText;
+
+        let content = '';
+
+        if (document.getElementById('copy_class_' + item.id)) {
+          content = document.getElementById('copy_class_' + item.id).innerText;
+        }
+
         if (item.msg_type == 5) {
           menus.push({
             label: "查看",

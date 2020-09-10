@@ -75,7 +75,7 @@
 
 .talk-container .content-column .talktime {
     position: absolute;
-    top: -15px;
+    top: -20px;
     left: 0;
     font-size: 10px;
     user-select: none;
@@ -97,9 +97,11 @@
 
 .talk-container .content-column .subtitle {
     height: 15px;
-    line-height: 15px;
+    line-height: 10px;
     font-size: 10px;
+    color: #a7a0a0;
 }
+
 
 .talk-container .content-column .talktime2 {
     color: #a7a0a0;
@@ -154,7 +156,7 @@
     word-wrap: break-word;
     font-size: 13px;
     padding: 0 5px 0px 5px;
-    font-family: "微软雅黑";
+    font-family: "Microsoft YaHei";
     line-height: 25px;
     padding-top: 2px;
 }
@@ -331,7 +333,7 @@
 
 .talkbox .code-msg {
     min-width: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     position: relative;
     overflow-x: auto;
     max-width: calc(100% - 50px);
@@ -344,6 +346,7 @@
     overflow-x: auto;
     background: #272822;
     color: #fff;
+    font-family: "Microsoft YaHei";
 }
 
 .talkbox .code-msg i {
