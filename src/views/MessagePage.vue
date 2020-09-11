@@ -166,6 +166,8 @@
     removeClass
   } from '@/utils/functions';
 
+  const title = document.title;
+
   export default {
     name: 'message-page',
     components: {
@@ -197,6 +199,8 @@
 
         // 对话消息列表加载状态
         loadStatus: 0, // 0:加载中 1:加载完成  2:加载失败
+
+        interval: null
       };
     },
     computed: {
@@ -253,6 +257,17 @@
     },
     watch: {
       unreadNum(nval, oval) {
+        console.log(nval)
+        if (nval) {
+          clearInterval(this.interval);
+          this.interval = setInterval(() => {
+              let newTitle = `【新消息】${title}`
+              document.title = document.title == title ? newTitle : title;
+            },2000);
+        } else {
+          document.title = title;
+          clearInterval(this.interval);
+        }
         this.$store.commit("setUnreadNum", nval);
       },
 
@@ -276,6 +291,8 @@
       this.scrollEvent();
     },
     destroyed() {
+      document.title = title;
+      clearInterval(this.interval);
       this.$root.updateMessage(0, 0);
     },
     methods: {

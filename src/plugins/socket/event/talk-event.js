@@ -69,12 +69,6 @@ class TalkEvent extends AppMessageEvent {
       record.float = record.user_id == this.getUserId ? 'right' : 'left';
     }
 
-    if (record.msg_type == 1) {
-      record.content = replaceEmoji(record.content);
-    }
-
-    this.vm.message.records.push(record);
-    this.vm.$store.commit('setScrollHeight');
     this.vm.$store.commit({
       type: 'UPDATE_TALK_ITEM',
       key: idx,
@@ -89,6 +83,13 @@ class TalkEvent extends AppMessageEvent {
       type: this.vm.message.source,
       receive: this.vm.message.receiveId
     });
+
+    if (record.msg_type == 1) {
+      record.content = replaceEmoji(record.content);
+    }
+
+    this.vm.message.records.push(record);
+    this.vm.$store.commit('setScrollHeight');
   }
 
   /**

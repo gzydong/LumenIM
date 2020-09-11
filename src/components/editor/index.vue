@@ -342,6 +342,7 @@
     white-space: pre;
     text-align: center;
     user-select: none;
+    z-index: 1;
   }
 
   .editor-container .toolbar li:hover .tip-title {

@@ -54,7 +54,7 @@
         </div>
 
         <!-- 遍历对话记录 -->
-        <template v-for="(item,idx) in records">
+        <div v-for="(item,idx) in records" :key="item.id">
           <!-- 群消息 -->
           <div v-if="item.msg_type == 3" class="talk-container paddingt2">
             <div v-if="item.invite.type == 1 || item.invite.type == 3" class="system-msg invite-tip">
@@ -107,7 +107,7 @@
 
                 <!-- 文本消息 -->
                 <div v-if="item.msg_type == 1" class="text-msg" @contextmenu="onCopy(idx,item,$event)">
-                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-href></pre>
+                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-href="item.float =='right'?'#ffffff':'rgb(9 149 208)'"></pre>
                 </div>
 
                 <!-- 图片消息 -->
@@ -179,7 +179,7 @@
           <div class="talk-container paddingt2" v-show="compareTime(idx,item.created_at)">
             <div class="talk-time" v-text="sendTime(item.created_at)"></div>
           </div>
-        </template>
+        </div>
       </el-main>
 
       <!-- 页脚信息 -->
@@ -788,11 +788,8 @@
 
       //消息点击右键触发自定义菜单
       onCopy(idx, item, event) {
-        console.log('asfa')
         let menus = [];
-
         let content = '';
-
         if (document.getElementById('copy_class_' + item.id)) {
           content = document.getElementById('copy_class_' + item.id).innerText;
         }
