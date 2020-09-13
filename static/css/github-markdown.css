@@ -998,7 +998,7 @@
   background: none;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  font-size: 1em;
+  font-size: 14px;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -1021,7 +1021,7 @@
   padding: 1em;
   margin: .5em 0;
   overflow: auto;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .markdown-body :not(pre)>code[class*="language-"],
@@ -1102,10 +1102,10 @@
   color: #fd971f;
 }
 
-.token.important,
+/* .token.important,
 .token.bold {
   font-weight: bold;
-}
+} */
 
 .token.italic {
   font-style: italic;
