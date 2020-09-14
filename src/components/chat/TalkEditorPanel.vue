@@ -107,7 +107,8 @@
 
                 <!-- 文本消息 -->
                 <div v-if="item.msg_type == 1" class="text-msg" @contextmenu="onCopy(idx,item,$event)">
-                  <pre v-html="item.content" :id="'copy_class_'+item.id" v-href="item.float =='right'?'#ffffff':'rgb(9 149 208)'"></pre>
+                  <pre v-html="item.content" :id="'copy_class_'+item.id"
+                    v-href="item.float =='right'?'#ffffff':'rgb(9 149 208)'"></pre>
                 </div>
 
                 <!-- 图片消息 -->

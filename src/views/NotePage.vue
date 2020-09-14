@@ -352,6 +352,7 @@
   Vue.use(Contextmenu);
 
   import Prism from 'prismjs';
+  import 'prismjs/themes/prism-okaidia.css';
   import {
     copyTextToClipboard
   } from "@/utils/functions";
@@ -427,6 +428,7 @@
           };
 
           preNodes.forEach(elPre => {
+            elPre.className = 'language-';
             let elCode = elPre.querySelector('code');
             let className = elCode.className;
             let language = className.split('-')[1];
