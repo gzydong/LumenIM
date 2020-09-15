@@ -278,10 +278,6 @@
     color: #9e9e9e;
   }
 
-  .fixed-sidebar .menu-items .logout:hover {
-    color: #ff5722;
-  }
-
   @keyframes notifymove {
     0% {
       background: #ff1e1e;

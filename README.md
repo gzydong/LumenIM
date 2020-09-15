@@ -12,7 +12,7 @@ Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + 
 
 ### 前端项目安装及部署
 #### 注意:项目需要与后端一起使用，有关后端部署及相关源码信息请移步至 [https://github.com/gzydong/LumenIM-Serve](https://github.com/gzydong/LumenIM-Serve)
-``` bash
+```bash
 # 克隆项目源码包
 git clone git@github.com:gzydong/LumenIM.git
 
@@ -36,7 +36,7 @@ npm run build --report
 ```
 
 ##### 关于Nginx的一些配置
-```
+```nginx
 server {
     listen       80;
     server_name  www.yourdomain.coom;

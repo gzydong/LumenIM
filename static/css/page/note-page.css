@@ -340,9 +340,11 @@
 
 .el-main-content .empty-note {
   width: 100%;
-  padding-top: 100px;
-  height: 450px;
-  margin: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .el-main-content .empty-note svg {
@@ -744,4 +746,10 @@
 
 #note-tools .item:hover {
   color: #409eff;
+}
+
+.editor>>>pre {
+  background-color: #f6f8fa;
+  color: #24292e;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }

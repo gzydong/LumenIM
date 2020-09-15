@@ -347,8 +347,9 @@
   line-height: 24px;
   overflow-x: auto;
   background: #272822;
-  color: #fff;
-  font-family: "Microsoft YaHei";
+  color: #d5d4d4;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 85%;
 }
 
 .talkbox .code-msg i {

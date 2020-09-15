@@ -108,7 +108,7 @@
           <div v-if="loadStatus == -1" class="empty-note">
             <svg-icon icon-class="note" />
             <p v-if="notes.length == 0">你的笔记空空如也</p>
-            <p style="line-height: 25px;">这个社会，是赢家通吃，输者一无所有，<br />社会，永远都是只以成败论英雄。</p>
+            <p v-else style="line-height: 25px;">这个社会，是赢家通吃，输者一无所有，<br />社会，永远都是只以成败论英雄。</p>
           </div>
           <div v-else-if="loadStatus == 0" class="loading-note">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
