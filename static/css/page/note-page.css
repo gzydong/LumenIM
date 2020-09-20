@@ -601,22 +601,19 @@
   border-top: none;
   border-bottom: none;
   background: #fff;
-  margin: 0px 30px;
-  /* box-shadow: 0 0 10px 2px #f4f3f3; */
-  box-shadow: 0 8px 16px 0 rgba(7, 17, 27, .05);
   height: 100%;
 }
 
 #note-detail .subfield {
   min-height: 60px;
   background: #f7f7fc;
-  margin: 10px 10;
+  margin: 10px;
   border-radius: 3px;
   font-size: 13px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5px 15px;
+  padding: 5px 20px;
 }
 
 #note-detail .subfield p>span {
@@ -629,7 +626,7 @@
 }
 
 #note-detail .markdown-body {
-  padding: 20px 10px;
+  padding: 20px;
   font-size: 16px;
 }
 
@@ -752,4 +749,8 @@
   background-color: #f6f8fa;
   color: #24292e;
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+#note-detail>>>.token.important, #note-detail>>>.token.bold {
+  font-weight: unset;
 }
