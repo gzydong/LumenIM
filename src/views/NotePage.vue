@@ -349,7 +349,7 @@
   import "mavon-editor/dist/css/index.css";
 
   import Contextmenu from "vue-contextmenujs";
-  
+
   Vue.use(Contextmenu);
 
   import {
@@ -429,16 +429,8 @@
           preNodes.forEach(elPre => {
             elPre.className = 'language-';
             let elCode = elPre.querySelector('code');
-            let className = elCode.className;
-            let language = className.split('-')[1];
-
             copyFunc(elPre, elCode.innerText);
             if (language != undefined) {
-              elCode.className = 'language-' + language;
-              // if (Prism.languages[language]) {
-              //   elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
-              // }
-
               preNmae(elPre, language);
             }
           });
