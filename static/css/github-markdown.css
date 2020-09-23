@@ -60,11 +60,12 @@
 .markdown-body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  line-height: 1.5;
-  color: #24292e;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   font-size: 16px;
   word-wrap: break-word;
+  font-family: Content-font, Roboto, sans-serif;
+  font-weight: 400;
+  color: #3B454E;
+  line-height: 1.625;
 }
 
 .markdown-body details {

@@ -351,8 +351,6 @@
   import Contextmenu from "vue-contextmenujs";
   Vue.use(Contextmenu);
 
-  import Prism from 'prismjs';
-  // import 'prismjs/themes/prism-okaidia.css';
   import {
     copyTextToClipboard
   } from "@/utils/functions";
@@ -440,7 +438,7 @@
               //   elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
               // }
 
-              // preNmae(elPre, language);
+              preNmae(elPre, language);
             }
           });
         }
