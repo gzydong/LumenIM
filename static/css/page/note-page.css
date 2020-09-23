@@ -636,6 +636,9 @@
 #note-detail>>>pre {
   position: relative;
   padding-top: 25px;
+
+  background-color: #f6f8fa;
+  padding-bottom: 5px;
 }
 
 #note-detail>>>pre .fz-btn {
@@ -647,8 +650,8 @@
   height: 30px;
   line-height: 30px;
   text-align: center;
-  background: #7b7b7b;
-  color: #e8dfdf;
+  background: #ecebeb;
+  color: #333131;
   cursor: pointer;
   font-size: 12px;
   font-weight: 100;
@@ -699,20 +702,6 @@
   margin: 0 3px;
   white-space: nowrap;
   border-radius: 2px;
-}
-
-#note-detail>>>pre code::-webkit-scrollbar {
-  height: 3px;
-  background-color: #d5cece;
-  overflow-x: auto;
-  border-radius: 3px;
-}
-
-#note-detail>>>pre code::-webkit-scrollbar-thumb {
-  height: 3px;
-  background-color: #9f9898;
-  overflow-x: auto;
-  border-radius: 3px;
 }
 
 #note-tools {

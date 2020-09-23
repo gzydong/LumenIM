@@ -352,7 +352,7 @@
   Vue.use(Contextmenu);
 
   import Prism from 'prismjs';
-  import 'prismjs/themes/prism-okaidia.css';
+  // import 'prismjs/themes/prism-okaidia.css';
   import {
     copyTextToClipboard
   } from "@/utils/functions";
@@ -436,11 +436,11 @@
             copyFunc(elPre, elCode.innerText);
             if (language != undefined) {
               elCode.className = 'language-' + language;
-              if (Prism.languages[language]) {
-                elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
-              }
+              // if (Prism.languages[language]) {
+              //   elCode.innerHTML = Prism.highlight(elCode.innerText, Prism.languages[language], language);
+              // }
 
-              preNmae(elPre, language);
+              // preNmae(elPre, language);
             }
           });
         }
