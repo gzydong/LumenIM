@@ -349,6 +349,7 @@
   import "mavon-editor/dist/css/index.css";
 
   import Contextmenu from "vue-contextmenujs";
+  
   Vue.use(Contextmenu);
 
   import {
