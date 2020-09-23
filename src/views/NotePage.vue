@@ -427,9 +427,10 @@
           };
 
           preNodes.forEach(elPre => {
-            elPre.className = 'language-';
             let elCode = elPre.querySelector('code');
+            let className = elCode.className;
             let language = className.split('-')[1];
+
             copyFunc(elPre, elCode.innerText);
             if (language != undefined) {
               preNmae(elPre, language);
