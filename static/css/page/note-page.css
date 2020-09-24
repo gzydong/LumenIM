@@ -632,8 +632,7 @@
 
 #note-detail>>>pre {
   position: relative;
-  padding-top: 25px;
-
+  padding-top: 15px;
   background-color: #f6f8fa;
   padding-bottom: 5px;
 }
