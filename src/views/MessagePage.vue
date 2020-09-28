@@ -257,7 +257,6 @@
     },
     watch: {
       unreadNum(nval, oval) {
-        console.log(nval)
         if (nval) {
           clearInterval(this.interval);
           this.interval = setInterval(() => {

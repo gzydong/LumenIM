@@ -4,14 +4,14 @@
       <div class="container" v-outside="close">
         <el-container class="hv100">
           <el-header class="padding0 header" height="50px">
-            <span><i class="iconfont icon-tianjialianxiren"></i> 添加好友</span>
+            <span>添加好友</span>
             <i class="close-btn el-icon-close" @click="close"></i>
           </el-header>
           <el-main class="main">
             <el-input prefix-icon="el-icon-search" placeholder="请输入对方手机号(精确查找)" v-model="input" clearable
               @keyup.enter.native="onSubmit" class="input" @input="isError = false"  style="text-align: center;"/>
             <p class="error" v-show="isError">无法找到该用户，请检查搜索内容并重试</p>
-            <el-button type="primary" size="small" @click="onSubmit" :loading="loading">查找</el-button>
+            <el-button type="primary" size="small" @click="onSubmit" :loading="loading">立即查找</el-button>
           </el-main>
         </el-container>
       </div>
@@ -55,6 +55,10 @@
       },
 
       onSubmit() {
+        if(this.input == ''){
+          return false;
+        }
+        
         this.loading = true;
         searchUserServ({
           mobile: this.input

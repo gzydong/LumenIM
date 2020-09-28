@@ -4,7 +4,6 @@
       <el-container class="hv100">
         <el-header class="padding0 header no-select" height="50px">
           <p>
-            <i class="iconfont icon-jurassic_add-users"></i>
             <span>{{from.groupId==0?'创建群组':'请选择需要邀请的好友'}}</span>
           </p>
           <i class="close-btn el-icon-close" @click="close"></i>
