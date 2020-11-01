@@ -55,14 +55,14 @@
             <template v-else-if="activeIndex == 1">
               <p>我的好友({{friends.items.length}})</p>
               <p @click="$refs.searchUsers.open()" class="pointer">
-                <i class="iconfont icon-tianjialianxiren"></i>
+                <i class="el-icon-plus"></i>
                 <span>添加好友</span>
               </p>
             </template>
             <template v-else-if="activeIndex == 2">
               <p>我的群组({{groups.items.length}})</p>
               <p class="pointer" @click="launchGroupShow = true">
-                <i class="iconfont icon-jurassic_add-users"></i>
+                <i class="el-icon-plus"></i>
                 <span>创建群组</span>
               </p>
             </template>

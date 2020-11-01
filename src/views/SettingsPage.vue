@@ -4,7 +4,7 @@
       <el-container slot="container" class="container hv100 ov-hidden">
         <el-header height="60px" class="header no-select">个人设置</el-header>
         <el-container class="hv100">
-          <el-aside width="200px" class="aside no-select">
+          <el-aside width="180px" class="aside no-select">
             <router-link to="/settings/base">
               <div class="menu-list" :class="{'menu-list-selectd':$route.path == '/settings/base'}">个人信息</div>
             </router-link>
@@ -74,12 +74,13 @@
     font-size: 13px;
     background-color: white;
     cursor: pointer;
-    transition: ease .2s;
+    transition: ease .5s;
+    border-left: 3px solid white;
   }
 
   .menu-list-selectd {
-    background: #2196F3;
-    color: white !important;
+    border-left-color: #2196f3;
+    color: #2196f3;
   }
 
   .menu-list:hover {

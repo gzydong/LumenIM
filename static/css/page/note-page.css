@@ -726,7 +726,7 @@
 #note-tools .item p {
   font-size: 10px;
   margin-top: 5px;
-  transform: scale(.85);
+  transform: scale(.9);
 }
 
 #note-tools .item:hover {
