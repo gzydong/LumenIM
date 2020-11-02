@@ -53,7 +53,6 @@
   }
 
   .container .aside {
-    border-right: 1px solid #f5f5f5;
     background-color: #f0f2f5;
     display: flex;
     flex-direction: column;
