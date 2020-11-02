@@ -55,6 +55,11 @@
           消息类型包含文字、图片、文件、自定义表情包及代码块。新增编辑笔记及笔记分享好友功能 ...</p>
       </el-aside>
     </el-container>
+    
+    <div class="fly bg-fly-circle1"></div>
+    <div class="fly bg-fly-circle2"></div>
+    <div class="fly bg-fly-circle3"></div>
+    <div class="fly bg-fly-circle4"></div>
   </div>
 </template>
 
