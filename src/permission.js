@@ -5,6 +5,10 @@ import {
   getToken
 } from '@/utils/auth';
 
+NProgress.configure({
+  showSpinner:false
+});
+
 const WEBSITE_NAME = process.env.WEBSITE_NAME;
 
 // 登录用户强制重定向页面
