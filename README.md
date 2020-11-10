@@ -72,7 +72,6 @@ server {
 
 ## Donate
 如果你觉得项目对你有帮助，可以请作者喝杯咖啡☕️！鼓励下
-<img src="https://cdn.learnku.com/uploads/images/202008/11/18206/e6qAAM8Bod.jpg!large">
-<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/KjuRxDqgId.png!large" width="250" height="250" />
+<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/KjuRxDqgId.png!large" width="250" height="250">
 
-<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/Lw3eeVUBdM.png!large" width="250" height="250" />
+<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/Lw3eeVUBdM.png!large" width="250" height="250">
