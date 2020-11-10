@@ -70,4 +70,9 @@ server {
 }
 ```
 
-非专业前端开发，项目中若有不足的地方，请多多指教。
+## Donate
+如果你觉得项目对你有帮助，可以请作者喝杯咖啡☕️！鼓励下
+
+<img src="http://im-img.gzydong.club/media/images/notes/20201110/5faa75095be23qkYK0oUoX0a1BRWveN5faa75095be33_720x716.png" alt="图片替换文本" width="250" height="250"  />
+
+<img src="http://im-img.gzydong.club/media/images/notes/20201110/5faa7547a819eluUBk2zdUvlNjsiIky5faa7547a81af_660x656.png" alt="图片替换文本" width="250" height="250"  />
