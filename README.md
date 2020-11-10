@@ -73,6 +73,6 @@ server {
 ## Donate
 如果你觉得项目对你有帮助，可以请作者喝杯咖啡☕️！鼓励下
 
-<img src="https://ymhydraulic.com/storage/earticle/C828F69CA5FFA865B0E3FA995CB8ED5D.png" alt="图片替换文本" width="250" height="250"  />
+<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/KjuRxDqgId.png!large" alt="图片替换文本" width="250" height="250"  />
 
-<img src="https://ymhydraulic.com/storage/earticle/D5B12F692F1C4A6E4B36FB4391B73F96.png" alt="图片替换文本" width="250" height="250"  />
+<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/Lw3eeVUBdM.png!large" alt="图片替换文本" width="250" height="250"  />
