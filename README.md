@@ -75,5 +75,5 @@ server {
 
 <img src="https://raw.githubusercontent.com/gzydong/LumenIM/master/static/image/RaJik9TWDi.png">
 
-
+<img src="https://cdn.learnku.com/uploads/images/202011/10/46424/RaJik9TWDi.png!large">
 
