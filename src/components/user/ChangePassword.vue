@@ -14,7 +14,7 @@
                 @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="new_password" label="新密码">
-              <el-input v-model="form.new_password" type="password" placeholder="请填写新的密码"" class=" cuborder-radius
+              <el-input v-model="form.new_password" type="password" placeholder="请填写新的密码" class=" cuborder-radius
                 border0" @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="new_password2" label="重复密码">
@@ -45,7 +45,7 @@
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.form.password) {
+        } else if (value !== this.form.new_password) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
