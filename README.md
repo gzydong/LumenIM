@@ -1,6 +1,6 @@
 # Lumen IM 即时聊天系统(前端)
 
-## 1. 项目介绍
+### 1. 项目介绍
 Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + Vue，后端采用了基于 Swoole 开发的 Hyperf 协程框架进行接口开发，并使用 WebSocket 服务进行消息实时推送。目前后端 WebSocket 已支持分布式集群部署。
 
 目前该项目是在 [旧版本](https://github.com/gzydong/LumenIM/tree/v1.0.0) 项目的基础上进行了后端重构，且前后端都有较大的改动。
