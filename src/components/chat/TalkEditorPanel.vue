@@ -117,10 +117,10 @@
                   <el-image :lazy="true" fit="cover" :style="getImgStyle(item.file.file_url)" :src="item.file.file_url"
                     :preview-src-list="images" :z-index="getImgIndex(item.file.file_url)">
                     <div slot="error" class="image-slot">
-                      加载失败...
+                      图片加载失败
                     </div>
                     <div slot="placeholder" class="image-slot">
-                      图片加载中<span class="dot">...</span>
+                      图片加载中...
                     </div>
                   </el-image>
                 </div>
@@ -186,7 +186,7 @@
       <!-- 页脚信息 -->
       <el-footer class="padding0 panel-footer" height="160">
         <template v-if="!multiSelect.isOpen">
-          <editor ref="talkEditor" @send="submitSendMesage" @sendCodeBlock="sendCodeBlock"
+          <me-editor ref="talkEditor" @send="submitSendMesage" @sendCodeBlock="sendCodeBlock"
             @keyboard-event="keyboardEvent" />
         </template>
         <template v-else>
@@ -218,7 +218,7 @@
 
       <!-- 群设置侧边栏 -->
       <div class="sidebar-box" :class="{'sidebar-box-show':groupBoxShow}" v-outside="hideChatGroup">
-        <user-group v-if="params.source == 2" :group-id="params.receiveId" @close="hideChatGroup"
+        <group-panel v-if="params.source == 2" :group-id="params.receiveId" @close="hideChatGroup"
           @send-group="hideChatGroup" @quit-group="quitGroupSuccess" @disturb-change="disturbChange"
           @group-info="syncGroupInfo" />
       </div>
@@ -226,25 +226,26 @@
       <!-- 置底按钮 -->
       <transition name="el-fade-in-linear">
         <div class="tips-board" v-show="tipsBoard" @click="talkPanelScrollBottom">
-          <svg-icon icon-class="mention-down" style="width: 10px;" />
+          <!-- <svg-icon icon-class="mention-down" style="width: 10px;" /> -->
+          <svg-mention-down style="width:10px;height:10px;color:black;" />
           <span>回到底部</span>
         </div>
       </transition>
     </el-container>
 
     <!-- 代码查看器 -->
-    <code-block v-show="codeBlock.isShow" :load-code="codeBlock.code" :load-lang="codeBlock.lang"
+    <talk-code-block v-show="codeBlock.isShow" :load-code="codeBlock.code" :load-lang="codeBlock.lang"
       @close="codeBlock.isShow = false" />
 
     <!-- 会话记录查看器 -->
-    <forward-records ref="forwardRecordsRef" />
+    <talk-forward-record ref="forwardRecordsRef" />
 
     <!-- 消息管理器 -->
-    <search-chat-record v-if="findChatRecord" @close="findChatRecord = false" :source="params.source"
+    <talk-search-record v-if="findChatRecord" @close="findChatRecord = false" :source="params.source"
       :receive-id="params.receiveId" :titleName="params.nickname" />
 
     <!-- 选择联系人窗口 -->
-    <select-contacts v-show="selectContacts.isShow" @close="selectContacts.isShow = false"
+    <user-contacts v-show="selectContacts.isShow" @close="selectContacts.isShow = false"
       @confirm="confirmSelectContacts" />
 
     <!-- 查看好友用户信息 -->
@@ -259,28 +260,26 @@
   import Vue from "vue";
 
   import UserBusinessCard from "@/components/user/UserBusinessCard";
-  import SearchChatRecord from "@/components/chat/SearchChatRecord";
-  import ForwardRecords from "@/components/chat/ForwardRecords";
-  import SelectContacts from "@/components/chat/SelectContacts";
-  import UserGroup from "@/components/group/UserGroup";
+  import TalkSearchRecord from "@/components/chat/TalkSearchRecord";
+  import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
+  import UserContacts from "@/components/chat/UserContacts";
+  import GroupPanel from "@/components/group/GroupPanel";
   import GroupNotice from "@/components/group/GroupNotice";
-  import CodeBlock from "@/components/chat/CodeBlock";
-  import Editor from "@/components/editor";
-
+  import TalkCodeBlock from "@/components/chat/TalkCodeBlock";
+  import MeEditor from "@/components/editor/MeEditor";
+  import {SvgMentionDown} from "@/core/icons";
   import Prism from "prismjs";
   import "prismjs/themes/prism-okaidia.css";
-  import Contextmenu from "vue-contextmenujs";
-  Vue.use(Contextmenu);
 
   import {
-    chatRecordsServ,
-    forwardRecordsServ,
-    removeRecordsServ,
-    revokeRecordsServ,
+    ServeTalkRecords,
+    ServeForwardRecords,
+    ServeRemoveRecords,
+    ServeRevokeRecords,
   } from "@/api/chat";
 
   import {
-    collectEmoticonServ
+    ServeCollectEmoticon
   } from "@/api/emoticon";
 
   import {
@@ -299,14 +298,15 @@
   export default {
     name: 'talk-editor-panel',
     components: {
-      Editor,
-      CodeBlock,
-      ForwardRecords,
-      SelectContacts,
-      UserGroup,
-      SearchChatRecord,
+      MeEditor,
+      TalkCodeBlock,
+      TalkForwardRecord,
+      UserContacts,
+      GroupPanel,
+      TalkSearchRecord,
       UserBusinessCard,
-      GroupNotice
+      GroupNotice,
+      SvgMentionDown
     },
     props: {
       //对话相关参数
@@ -458,7 +458,11 @@
       },
 
       formatCode(code, lang) {
-        return Prism.highlight(code, Prism.languages[lang], lang);
+        try {
+          return Prism.highlight(code, Prism.languages[lang], lang);
+        } catch (error) {
+          return code
+        }
       },
 
       //回车键发送消息回调事件
@@ -525,7 +529,7 @@
 
         this.loadRecord.status = 0;
         this.loadRecord.scrollHeight = document.getElementById("lumenChatPanel").scrollHeight;
-        chatRecordsServ(data).then(res => {
+        ServeTalkRecords(data).then(res => {
           //防止点击切换过快消息返回延迟，导致信息错误
           if (res.code != 200 || (data.receive_id != this.params.receiveId && data.source != this.params.source)) {
             return;
@@ -597,7 +601,7 @@
           this.selectContacts.isShow = true;
         } else { //批量删除
           let ids = this.multiSelect.items;
-          removeRecordsServ({
+          ServeRemoveRecords({
             source: this.params.source,
             receive_id: this.params.receiveId,
             record_id: ids.join(',')
@@ -622,7 +626,7 @@
         });
 
         this.selectContacts.isShow = false;
-        forwardRecordsServ({
+        ServeForwardRecords({
           forward_mode: this.multiSelect.mode,
           source: this.params.source,
           receive_id: this.params.receiveId,
@@ -688,7 +692,7 @@
 
       //撤回消息
       revokeRecords(idx, item) {
-        revokeRecordsServ({
+        ServeRevokeRecords({
           record_id: item.id
         }).then(res => {
           if (res.code == 200) {
@@ -705,7 +709,7 @@
           receive_id = item.user_id;
         }
 
-        removeRecordsServ({
+        ServeRemoveRecords({
           source: item.source,
           receive_id: receive_id,
           record_id: item.id
@@ -876,7 +880,7 @@
             icon: 'el-icon-picture',
             customClass: 'cus-contextmenu-item',
             onClick: () => {
-              collectEmoticonServ({
+              ServeCollectEmoticon({
                 record_id: item.id
               }).then(res => {
                 if (res.code == 200) {
@@ -951,4 +955,7 @@
   };
 
 </script>
-<style scoped src="@static/css/talk/style.css"></style>
+<style scoped>
+@import url(~@/assets/css/talk/panel-record.css);
+@import url(~@/assets/css/talk/style.css);
+</style>

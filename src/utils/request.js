@@ -1,6 +1,5 @@
 import axios from 'axios';
-// 引入qs模块，用来序列化post类型的数据，后面会提到
-import qs from 'qs';
+import config from '@/config/config'
 import {
   getToken,
   removeAll
@@ -11,51 +10,50 @@ import {
 } from 'element-ui';
 
 // 创建 axios 实例
-const instance = axios.create({
-  baseURL: process.env.API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-  }
-});
+const request = axios.create({
+  // API 请求的默认前缀
+  baseURL: config.api_url,
 
-// http request拦截器
-instance.interceptors.request.use(function (config) {
-  config.headers['Authorization'] = 'Bearer ' + getToken();
-  return config;
-}, function (error) {
-  return Promise.reject(error);
+  // 请求超时时间
+  timeout: 20000
 });
-
 
 /**
- * 定义公共请求方法
+ * 异常拦截处理器
  * 
- * @param {object} option 请求参数
+ * @param {*} error 
  */
-export const request = (option) => {
-  return new Promise((resolve, reject) => {
-    instance(option).then(response => {
-      if (response && response.status == 200) {
-        resolve(response.data);
-      } else {
-        reject(response);
-      }
-    }).catch(error => {
-      if (error.response && error.response.status == 401) {
-        removeAll()
-        location.reload();
-      } else {
-        Notification({
-          message: '网络异常,请稍后再试...',
-          position: 'top-right'
-        });
-      }
+const errorHandler = (error) => {
+  // 判断是否是响应错误信息
+  if (error.response) {
+    if (error.response.status == 401) {
+      removeAll()
+      location.reload();
+    } else {
+      Notification({
+        message: '网络异常,请稍后再试...',
+        position: 'top-right'
+      });
+    }
+  }
 
-      reject(error);
-    })
-  })
+  return Promise.reject(error);
 }
+
+// 请求拦截器
+request.interceptors.request.use(config => {
+  const token = getToken();
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return config
+}, errorHandler);
+
+// 响应拦截器
+request.interceptors.response.use((response) => {
+  return response.data;
+}, errorHandler);
 
 /**
  * 发送 get 请求
@@ -65,14 +63,12 @@ export const request = (option) => {
  * @returns {Promise<any>}
  */
 export const get = (url, data = {}, options = {}) => {
-  const params = {
+  return request({
     url,
     params: data,
     method: 'get',
     ...options
-  }
-
-  return request(params);
+  });
 }
 
 /**
@@ -83,31 +79,19 @@ export const get = (url, data = {}, options = {}) => {
  * @returns {Promise<any>}
  */
 export const post = (url, data = {}, options = {}) => {
-  data = qs.stringify(data);
-  const params = {
+  return request({
     url,
-    data,
     method: 'post',
+    data: data,
     ...options
-  }
-
-  return request(params);
+  });
 }
 
-/**
- * 发送上传文件 post 请求
- * @param {string} url
- * @param {object} data
- * @param {object} options
- * @returns {Promise<any>}
- */
 export const upload = (url, data = {}, options = {}) => {
-  const params = {
+  return request({
     url,
-    data,
     method: 'post',
+    data: data,
     ...options
-  }
-
-  return request(params);
+  });
 }

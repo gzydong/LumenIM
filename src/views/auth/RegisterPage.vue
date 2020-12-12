@@ -63,14 +63,14 @@
   </div>
 </template>
 
-<style scoped src="@static/css/page/login-auth.css"></style>
+<style scoped src="@/assets/css/page/login-auth.css"></style>
 <script>
   import {
-    registerServ,
-    sendVerifyCodeServ
+    ServeRegister,
+    ServeSendVerifyCode
   } from "@/api/user";
 
-  import validate from "@/utils/validate";
+  import {isMobile} from "@/utils/validate";
   import SmsLock from '@/plugins/sms-lock';
 
   export default {
@@ -80,7 +80,7 @@
         if (value === '') {
           callback(new Error('手机号不能为空！'));
         } else {
-          if (!validate.validatPhone(value)) {
+          if (!isMobile(value)) {
             callback(new Error('手机号格式不正确！'));
           } else {
             callback();
@@ -163,11 +163,12 @@
 
       register() {
         let _this = this;
-        registerServ({
+        ServeRegister({
           nickname: this.form.nickname,
           mobile: this.form.username,
           password: this.form.password,
-          sms_code: this.form.sms_code
+          sms_code: this.form.sms_code,
+          platform:'web'
         }).then(res => {
           if (res.code == 200) {
             this.$notify({
@@ -185,7 +186,7 @@
           } else {
             this.$notify.info({
               title: "提示",
-              message: res.msg
+              message: res.message
             });
           }
         }).catch(err => {
@@ -204,13 +205,13 @@
           return false;
         }
 
-        if (!validate.validatPhone(this.form.username)) {
+        if (!isMobile(this.form.username)) {
           this.$refs.form.validateField("username");
           return false;
         }
 
         this.smsLock = true;
-        sendVerifyCodeServ({
+        ServeSendVerifyCode({
           mobile: this.form.username,
           type: 'user_register'
         }).then(res => {
@@ -234,7 +235,8 @@
           } else {
             this.$notify({
               title: '提示',
-              message: '验证码发送失败...'
+              message: res.message,
+              customClass:'cus-notifyclass',
             });
           }
           this.smsLock = false;

@@ -1,14 +1,17 @@
-import 'babel-polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 import Vue from 'vue';
 import App from '@/App';
 import store from '@/store';
 import router from '@/router';
-import '@/icons';
-import '@/permission';
-import '@/directives/directives'; //引出全部指令
+import config from '@/config/config'
 
-// 全局引入按需引入UI库 Element UI
-import '@/plugins/element-ui';
+import './core/lazy_use';
+import './core/filter';
+import './core/directives';
+import '@/permission';
+import '@/icons';
 
 // 全局引入自定义的WebSocket 插件
 import WsSocket from '@/plugins/socket/ws-socket';
@@ -17,7 +20,8 @@ import WsSocket from '@/plugins/socket/ws-socket';
 import SocketResourceHandle from '@/plugins/socket/socket-resource-handle';
 
 // 引入自定义全局css
-import '@static/css/im-base.css';
+import '@/assets/css/im-base.css';
+import '@/global.less';
 
 Vue.config.productionTip = false;
 
@@ -26,17 +30,12 @@ import {
 } from '@/utils/auth';
 
 import {
-  findUserSettingServ
+  ServeFindUserSetting
 } from "@/api/user";
 
 let VueApp = new Vue({
-  el: '#app',
   router,
   store,
-  components: {
-    App
-  },
-  template: '<App ref="view" />',
   data: {
     // WsSocket对象 
     socket: null,
@@ -65,9 +64,8 @@ let VueApp = new Vue({
 
     // 连接websocket服务器
     loadWebsocket() {
-      let app = this,
-        store = this.$store;
-      this.socket = new WsSocket(process.env.WEB_SOCKET_URL, {
+      let store = this.$store;
+      this.socket = new WsSocket(config.ws_url, {
         // Websocket 连接失败回调方法
         onError: (evt) => {
           console.log('Websocket 连接失败回调方法')
@@ -103,7 +101,7 @@ let VueApp = new Vue({
 
     // 加载用户相关设置信息，更新本地缓存
     loadUserSetting() {
-      findUserSettingServ().then(res => {
+      ServeFindUserSetting().then(res => {
         if (res.code == 200) {
           let setting = res.data.setting;
           let userInfo = res.data.user_info;
@@ -124,16 +122,15 @@ let VueApp = new Vue({
       sessionStorage.setItem("send_message_index_name", index_name);
 
       if (this.$route.path == '/message') {
-        this.$refs.view.refreshView();
+        this.$root.$children[0].refreshView();
         return;
       }
 
-      this.$router.push({
-        path: "/message"
-      });
+      this.$router.push('/message');
     }
-  }
-});
+  },
+  render: h => h(App)
+}).$mount('#app');
 
 // 导出应用实例(其它js文件中可直接读取vue应用)
 export default VueApp;

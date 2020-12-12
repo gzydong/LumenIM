@@ -2,6 +2,7 @@
 import {
   getToken
 } from '@/utils/auth';
+import config from '@/config/config'
 
 /**
  * 人性化时间显示
@@ -140,11 +141,11 @@ export function getImageInfo(imgsrc) {
  * @param {number} cr_id 
  */
 export function download(cr_id) {
-  let api = process.env.API_URL;
+  let api = config.api_url;
   let token = getToken();
   try {
     let link = document.createElement('a');
-    link.href = `${api}/api/download/user-chat-file?cr_id=${cr_id}&token=${token}`
+    link.href = `${api}/api/v1/download/user-chat-file?cr_id=${cr_id}&token=${token}`
     link.click();
   } catch (e) {}
 }
@@ -589,4 +590,31 @@ export function replaceEmoji(content) {
 export function replaceURLWithHTMLLinks(text) {
   let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
   return text.replace(exp, "<a href='$1'>$1</a>");
+}
+
+
+export function getSort(fn) {
+  return function(a, b) {
+      var ret = 0;
+
+      if (fn.call(this, a, b)) {
+          ret = -1;
+      } else if (fn.call(this, b, a)) {
+          ret = 1;
+      }
+
+      return ret;
+  }
+}
+
+export function getMutipSort(arr) {
+  return function(a, b) {
+      var tmp, i = 0;
+
+      do {
+          tmp = arr[i++](a, b);
+      } while (tmp == 0 && i < arr.length);
+
+      return tmp;
+  }
 }

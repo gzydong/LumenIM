@@ -35,29 +35,29 @@
     </div>
 
     <!-- 修改密码组件 -->
-    <change-password ref="changePasswrodRef" />
+    <user-edit-password ref="changePasswrodRef" />
 
     <!-- 修改手机号组件 -->
-    <change-mobile ref="changeMobileRef" @success="getUserDetail" />
+    <user-edit-mobile ref="changeMobileRef" @success="getUserDetail" />
 
     <!-- 修改邮箱组件 -->
-    <change-email ref="changeEmailRef" @success="getUserDetail" />
+    <user-edit-email ref="changeEmailRef" @success="getUserDetail" />
   </div>
 </template>
 
 <script>
-  import ChangePassword from "@/components/user/ChangePassword";
-  import ChangeMobile from "@/components/user/ChangeMobile";
-  import ChangeEmail from "@/components/user/ChangeEmail";
+  import UserEditPassword from "@/components/user/UserEditPassword";
+  import UserEditMobile from "@/components/user/UserEditMobile";
+  import UserEditEmail from "@/components/user/UserEditEmail";
   import {
-    findUserDetailServ
+    ServeFindUserDetail
   } from '@/api/user';
   export default {
     name: 'security-page',
     components: {
-      ChangePassword,
-      ChangeMobile,
-      ChangeEmail
+      UserEditPassword,
+      UserEditMobile,
+      UserEditEmail
     },
     data() {
       return {
@@ -75,7 +75,7 @@
     methods: {
       // 获取登录用户信息
       getUserDetail() {
-        findUserDetailServ().then((res) => {
+        ServeFindUserDetail().then((res) => {
           if (res.code == 200) {
             this.bindMobile = res.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
             this.bindEmail = res.data.email;

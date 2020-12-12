@@ -6,7 +6,7 @@ import {
 } from '@/utils/auth';
 
 import {
-  logoutServ
+  ServeLogout
 } from '@/api/user';
 
 
@@ -19,10 +19,10 @@ let state = {
   sex: 0,
   // 个性签名
   signature: '',
-  // 个性头像
-  avatar: '/static/image/detault-avatar.jpg',
+  // 个性头像  
+  avatar: require("@/assets/image/detault-avatar.jpg"),
   // 名片背景
-  visitCardBag: '/static/image/default-user-banner.png',
+  visitCardBag: require("@/assets/image/default-user-banner.png"),
 
   // 当前登录状态
   loginStatus: false,
@@ -83,7 +83,7 @@ const user = {
       state
     }, $router) {
       commit('USER_LOGOUT');
-      logoutServ().finally(() => {
+      ServeLogout().finally(() => {
         removeAll();
         location.reload();
       });

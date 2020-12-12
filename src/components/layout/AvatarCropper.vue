@@ -48,7 +48,7 @@
     VueCropper
   } from 'vue-cropper'
   import {
-    uploadFileStreamServ
+    ServeUploadFileStream
   } from '@/api/upload';
 
   export default {
@@ -140,7 +140,7 @@
       // 上传图片到服务器
       uploadService() {
         if (this.cusPreviewsImg == '') return;
-        uploadFileStreamServ({
+        ServeUploadFileStream({
           fileStream: this.cusPreviewsImg
         }).then((res) => {
           if (res.code == 200) {

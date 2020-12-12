@@ -49,7 +49,7 @@ const routes = [{
     redirect: "/settings/base",
     component: () => import('@/views/SettingsPage'),
     children: [{
-        path: 'base',
+        path: '/settings/base',
         meta: {
           title: '个人信息',
           needLogin: true
@@ -57,7 +57,7 @@ const routes = [{
         component: () => import('@/views/settings/base'),
       },
       {
-        path: 'security',
+        path: '/settings/security',
         meta: {
           title: '安全设置',
           needLogin: true
@@ -65,7 +65,7 @@ const routes = [{
         component: () => import('@/views/settings/security'),
       },
       {
-        path: 'binding',
+        path: '/settings/binding',
         meta: {
           title: '账户绑定',
           needLogin: true
@@ -73,7 +73,7 @@ const routes = [{
         component: () => import('@/views/settings/binding'),
       },
       {
-        path: 'personalize',
+        path: '/settings/personalize',
         meta: {
           title: '个性化设置',
           needLogin: true
@@ -81,7 +81,7 @@ const routes = [{
         component: () => import('@/views/settings/personalize'),
       },
       {
-        path: 'notification',
+        path: '/settings/notification',
         meta: {
           title: '消息设置',
           needLogin: true

@@ -79,15 +79,14 @@
 </template>
 
 <script>
-  import validate from '@/utils/validate';
   import {
-    chatListCrateServ
+    ServeCreateTalkList
   } from '@/api/chat';
 
   import {
-    searchUserServ,
-    friendRemarkEditServ,
-    friendApplyServ
+    ServeSearchUser,
+    ServeFriendRemarkEdit,
+    ServeFriendApply
   } from '@/api/user';
 
   import {
@@ -112,7 +111,8 @@
           friendStatus: 0,
           friendApply: 0,
           nicknameRemark: '',
-          imgbag: '/static/image/default-user-banner.png',
+          
+          imgbag: require("@/assets/image/default-user-banner.png"),
           gender: 0, //(0:未知 1:男 2:女 默认0)
         },
 
@@ -155,7 +155,7 @@
 
       // 获取用户信息
       findUserDetail() {
-        searchUserServ({
+        ServeSearchUser({
           user_id: this.user_id
         }).then((res) => {
           if (res.code == 200) {
@@ -176,7 +176,7 @@
       // 发送添加好友申请
       sendApply() {
         if (this.applyFrom.text == '') return;
-        friendApplyServ({
+        ServeFriendApply({
           friend_id: this.userInfo.user_id,
           remarks: this.applyFrom.text
         }).then((res) => {
@@ -202,7 +202,7 @@
           return;
         }
 
-        friendRemarkEditServ(data).then(res => {
+        ServeFriendRemarkEdit(data).then(res => {
           if (res.code == 200) {
             this.editRemark.isShow = false;
             this.userInfo.nicknameRemark = data.remarks;
@@ -219,7 +219,7 @@
       // 发送好友消息
       sendMessage() {
         let userInfo = this.userInfo;
-        chatListCrateServ({
+        ServeCreateTalkList({
           type: 1,
           receive_id: this.user_id
         }).then(res => {
@@ -262,7 +262,7 @@
   .container .header .img-banner {
     width: 100%;
     height: 100%;
-    background-image: url(/static/image/default-user-banner.png);
+    background-image: url(~@/assets/image/default-user-banner.png);
     background-size: 100%;
     transition: all .2s linear;
     cursor: pointer;
@@ -313,6 +313,10 @@
     padding-top: 50px;
     font-size: 16px;
     font-weight: 400;
+  }
+
+  .user-header .nickname span{
+    margin-left: 5px;
   }
 
   .container .main {

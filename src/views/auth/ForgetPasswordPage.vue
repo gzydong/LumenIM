@@ -60,14 +60,14 @@
   </div>
 </template>
 
-<style scoped src="@static/css/page/login-auth.css"></style>
+<style scoped src="@/assets/css/page/login-auth.css"></style>
 <script>
   import {
-    forgetPasswordServ,
-    sendVerifyCodeServ
+    ServeForgetPassword,
+    ServeSendVerifyCode
   } from "@/api/user";
 
-  import validate from "@/utils/validate";
+  import {isMobile} from "@/utils/validate";
   import SmsLock from '@/plugins/sms-lock';
 
   export default {
@@ -77,7 +77,7 @@
         if (value === '') {
           callback(new Error('手机号不能为空！'));
         } else {
-          validate.validatPhone(value) ? callback() : callback(new Error('手机号格式不正确！'));
+          isMobile(value) ? callback() : callback(new Error('手机号格式不正确！'));
         }
       };
 
@@ -155,7 +155,7 @@
 
       forgetAccount() {
         let _this = this;
-        forgetPasswordServ({
+        ServeForgetPassword({
           mobile: this.form.username,
           password: this.form.password,
           sms_code: this.form.sms_code,
@@ -176,7 +176,7 @@
             }, 1500);
           } else {
             this.$notify({
-              message: res.msg
+              message: res.message
             });
           }
         }).catch(err => {
@@ -193,13 +193,13 @@
           return false;
         }
 
-        if (!validate.validatPhone(this.form.username)) {
+        if (!isMobile(this.form.username)) {
           this.$refs.form.validateField("username");
           return false;
         }
 
         this.smsLock = true;
-        sendVerifyCodeServ({
+        ServeSendVerifyCode({
           mobile: this.form.username,
           type: 'forget_password'
         }).then(res => {

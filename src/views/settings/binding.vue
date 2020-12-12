@@ -5,7 +5,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <div class="avatar">
-            <img src="/static/image/github-avatar.jpg" width="50" height="50">
+            <img src="~@/assets/image/github-avatar.jpg" width="50" height="50">
           </div>
           <div class="conent">
             <h4>绑定 github</h4>
@@ -20,7 +20,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <div class="avatar">
-            <img src="/static/image/gitee-avatar.jpg" width="50" height="50">
+            <img src="~@/assets/image/gitee-avatar.jpg" width="50" height="50">
           </div>
           <div class="conent">
             <h4>绑定 gitee</h4>

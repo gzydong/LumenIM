@@ -7,8 +7,8 @@ import {
 } from '@/utils/functions';
 
 import {
-  clearChatUnreadNumServ,
-  chatListCrateServ
+  ServeClearTalkUnreadNum,
+  ServeCreateTalkList
 } from "@/api/chat";
 
 /**
@@ -78,11 +78,13 @@ class TalkEvent extends AppMessageEvent {
       }
     });
 
-    // 更新未读消息
-    clearChatUnreadNumServ({
-      type: this.vm.message.source,
-      receive: this.vm.message.receiveId
-    });
+    if (this.resource.data.source == 1 && this.getUserId !== this.resource.data.user_id) {
+      // 更新未读消息
+      ServeClearTalkUnreadNum({
+        type: this.vm.message.source,
+        receive: this.vm.message.receiveId
+      });
+    }
 
     if (record.msg_type == 1) {
       record.content = replaceEmoji(record.content);
@@ -179,7 +181,7 @@ class TalkEvent extends AppMessageEvent {
       receive_id = this.resource.send_user;
     }
 
-    chatListCrateServ({
+    ServeCreateTalkList({
       type: this.resource.source_type,
       receive_id: receive_id
     }).then(res => {

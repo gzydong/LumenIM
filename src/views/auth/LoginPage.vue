@@ -86,13 +86,13 @@
   </div>
 </template>
 
-<style scoped src="@static/css/page/login-auth.css"></style>
+<style scoped src="@/assets/css/page/login-auth.css"></style>
 <script>
-import { loginServ } from "@/api/user";
+import { ServeLogin } from "@/api/user";
 
 import { setToken, setUserInfo } from "@/utils/auth";
 
-import validate from "@/utils/validate";
+import {isMobile} from "@/utils/validate";
 
 export default {
   name: "new-login-page",
@@ -101,7 +101,7 @@ export default {
       if (value === "") {
         callback(new Error("登录手机号不能为空！"));
       } else {
-        if (!validate.validatPhone(value)) {
+        if (!isMobile(value)) {
           callback(new Error("登录手机号格式不正确！"));
         } else {
           callback();
@@ -152,9 +152,10 @@ export default {
     },
 
     login() {
-      loginServ({
+      ServeLogin({
         mobile: this.form.username,
         password: this.form.password,
+        platform:'web'
       })
         .then((res) => {
           this.loginLoading = false;

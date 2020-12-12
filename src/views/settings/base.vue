@@ -28,7 +28,7 @@
               <el-input type="textarea" v-model="form.motto" rows="3" placeholder="编辑我的座右铭..." />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit" size="medium" :loading="loading">更新我的信息</el-button>
+              <el-button type="primary" @click="onSubmit" size="medium" :loading="loading">更新</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -50,8 +50,8 @@
 <script>
   import AvatarCropper from '@/components/layout/AvatarCropper';
   import {
-    editUserSetupServ,
-    findUserDetailServ
+    ServeEditUserSetup,
+    ServeFindUserDetail
   } from '@/api/user';
   export default {
     name: 'personal-page',
@@ -106,7 +106,7 @@
 
       // 获取用户信息
       getUserDetail() {
-        findUserDetailServ().then((res) => {
+        ServeFindUserDetail().then((res) => {
           if (res.code == 200) {
             this.form.mobile = res.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
             this.form.nickname = res.data.nickname;
@@ -122,7 +122,7 @@
       editUserDetail() {
         this.loading = true;
         let _this = this;
-        editUserSetupServ({
+        ServeEditUserSetup({
           nickname: this.form.nickname,
           avatar: this.form.avatar,
           motto: this.form.motto,
@@ -164,7 +164,7 @@
   }
 
   .container>>>.el-button {
-    border-radius: 0;
+    border-radius: 2px;
   }
 
   .action {

@@ -1,6 +1,7 @@
 import router from '@/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import config from '@/config/config';
 import {
   getToken
 } from '@/utils/auth';
@@ -9,7 +10,7 @@ NProgress.configure({
   showSpinner:false
 });
 
-const WEBSITE_NAME = process.env.WEBSITE_NAME;
+const WEBSITE_NAME = config.web_name;
 
 // 登录用户强制重定向页面
 const login_redirect = ['/login', '/register', '/forget'];

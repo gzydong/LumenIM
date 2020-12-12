@@ -16,12 +16,22 @@ class SocketResourceHandle {
   // 事件映射
   events = {
     // 消息事件名:映射的处理方法
-    'chat_message': 'talkEvent',
-    'login_notify': 'loginEvent',
+
+    // 聊天消息事件
+    'event_talk': 'talkEvent',
+
+    // 好友上线下线通知
+    'event_online_status': 'loginEvent',
+
+    // 好友键盘输入事件
+    'event_keyboard': 'keyboardEvent',
+
+    // 聊天消息撤回事件
+    'event_revoke_talk': 'revokeEvent',
+
+    'event_friend_apply':'friendApplyEvent',
+
     'join_group': 'groupJoinEvent',
-    'friend_apply': 'friendApplyEvent',
-    'input_tip': 'keyboardEvent',
-    'revoke_records': 'revokeEvent'
   };
 
   constructor(resuore) {

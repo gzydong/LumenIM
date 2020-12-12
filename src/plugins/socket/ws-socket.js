@@ -53,6 +53,8 @@ class WsSocket {
     let that = this;
     this.wsConnect = new WebSocket(`${this.config.wsUrl}?token=${this.tokenCallback()}`);
     this.wsConnect.onerror = function (evt) {
+
+      console.log(that.wsConnect)
       that.events.onError(evt);
     };
 
@@ -116,7 +118,7 @@ class WsSocket {
   heartbeat() {
     let that = this;
     that.config.heartbeat.setInterval = setInterval(function () {
-      that.wsConnect.send('heartbeat');
+      that.wsConnect.send('PING');
     }, that.config.heartbeat.time);
   }
 

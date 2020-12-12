@@ -6,31 +6,31 @@ import {
 
 
 //查询用户表情包服务接口
-export const findUserEmoticonServ = () => {
-  return get('/api/emoticon/user-emoticon');
+export const ServeFindUserEmoticon = () => {
+  return get('/api/v1/emoticon/user-emoticon');
 }
 
 //查询系统表情包服务接口
-export const findSysEmoticonServ = () => {
-  return get('/api/emoticon/system-emoticon');
+export const ServeFindSysEmoticon = () => {
+  return get('/api/v1/emoticon/system-emoticon');
 }
 
 //设置用户表情包服务接口
-export const setUserEmoticonServ = (data) => {
-  return post('/api/emoticon/set-user-emoticon', data);
+export const ServeSetUserEmoticon = (data) => {
+  return post('/api/v1/emoticon/set-user-emoticon', data);
 }
 
 //收藏表情包服务接口
-export const collectEmoticonServ = (data) => {
-  return post('/api/emoticon/collect-emoticon', data);
+export const ServeCollectEmoticon = (data) => {
+  return post('/api/v1/emoticon/collect-emoticon', data);
 }
 
 //移除收藏表情包服务接口
-export const delCollectEmoticonServ = (data) => {
-  return post('/api/emoticon/del-collect-emoticon', data);
+export const ServeDelCollectEmoticon = (data) => {
+  return post('/api/v1/emoticon/del-collect-emoticon', data);
 }
 
 //上传表情包服务接口
-export const uploadEmoticonServ = (data) => {
-  return upload('/api/emoticon/upload-emoticon', data);
+export const ServeUploadEmoticon = (data) => {
+  return upload('/api/v1/emoticon/upload-emoticon', data);
 }

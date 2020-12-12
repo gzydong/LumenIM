@@ -63,19 +63,19 @@
 
         bagItems: [{
             name: 'bag001',
-            src: '/static/image/background/001.jpg'
+            src: require('@/assets/image/background/001.jpg')
           },
           {
             name: 'bag002',
-            src: '/static/image/background/002.jpg'
+            src: require('@/assets/image/background/002.jpg')
           },
           {
             name: 'bag003',
-            src: '/static/image/background/003.jpg'
+            src: require('@/assets/image/background/003.jpg')
           },
           {
             name: 'bag004',
-            src: '/static/image/background/004.jpg'
+            src: require('@/assets/image/background/004.jpg')
           }
         ]
       }
