@@ -71,3 +71,7 @@ server {
 注意：项目需要与后端一起使用，目前后端源码还未开源，如有需要可联系 837215079@qq.com
 
 #### 如果你觉得还不错，请 Star , Fork 给作者鼓励一下。
+
+## License
+
+[LICENSE](LICENSE)
