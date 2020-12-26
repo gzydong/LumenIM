@@ -74,7 +74,7 @@
   import SmsLock from '@/plugins/sms-lock';
 
   export default {
-    name: "new-register-page",
+    name: "RegisterPage",
     data() {
       let validateMobile = (rule, value, callback) => {
         if (value === '') {

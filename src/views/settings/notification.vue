@@ -32,7 +32,7 @@
 
 <script>
   export default {
-    name: 'notification-page',
+    name: 'NotificationPage',
     data() {
       return {
         notifyCueTone: true,

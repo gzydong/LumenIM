@@ -249,13 +249,11 @@
 </template>
 
 <script>
-import Vue from "vue";
 import MainLayout from "@/views/layout/MainLayout";
 import GroupLaunch from "@/components/group/GroupLaunch";
 import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 import UserSearch from "@/components/user/UserSearch";
-
 
 import {
   ServeGetTalkList,
@@ -264,9 +262,7 @@ import {
   ServeTopTalkList,
   ServeSetNotDisturb,
 } from "@/api/chat";
-
 import { ServeRemoveFriend, ServeFriendRemarkEdit } from "@/api/user";
-
 import { ServeSecedeGroup } from "@/api/group";
 
 import {
@@ -281,7 +277,7 @@ import {
 const title = document.title;
 
 export default {
-  name: "message-page",
+  name: "MessagePage",
   components: {
     MainLayout,
     GroupLaunch,

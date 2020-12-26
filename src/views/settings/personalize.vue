@@ -56,7 +56,7 @@
 
 <script>
   export default {
-    name: 'personalize-page',
+    name: 'PersonalizePage',
     data() {
       return {
         themeMode: false,

@@ -22,7 +22,6 @@
             </router-link>
           </el-aside>
           <el-main>
-            <!-- 渲染子路由 -->
             <router-view></router-view>
           </el-main>
         </el-container>
@@ -34,12 +33,11 @@
 <script>
   import MainLayout from "@/views/layout/MainLayout";
   export default {
-    name: 'contacts-page',
+    name: 'SettingsPage',
     components: {
       MainLayout
     }
   };
-
 </script>
 <style scoped>
   .container {

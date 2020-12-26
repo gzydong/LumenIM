@@ -13,6 +13,7 @@ export const ServeGetArticleClass = (data) => {
   return get('/api/v1/article/article-class', data);
 }
 
+//获取笔记表标签服务接口
 export const ServeGetArticleTag = (data) => {
   return get('/api/v1/article/article-tags', data);
 }

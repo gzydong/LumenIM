@@ -88,14 +88,12 @@
 
 <style scoped src="@/assets/css/page/login-auth.css"></style>
 <script>
+import { setToken, setUserInfo } from "@/utils/auth";
+import {isMobile} from "@/utils/validate";
 import { ServeLogin } from "@/api/user";
 
-import { setToken, setUserInfo } from "@/utils/auth";
-
-import {isMobile} from "@/utils/validate";
-
 export default {
-  name: "new-login-page",
+  name: "LoginPage",
   data() {
     let validateMobile = (rule, value, callback) => {
       if (value === "") {

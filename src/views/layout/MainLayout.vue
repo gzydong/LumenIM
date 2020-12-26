@@ -2,94 +2,94 @@
   <div class="body-background" :class="themeBagImg">
     <el-container class="mian-layout" :class="{ 'full-mode': themeMode }">
       <el-aside width="70px" class="side-edge no-select">
-        <el-container class="hv100 ov-hidden">
-          <el-header height="100px" class="padding0">
-            <div class="userlogo" v-popover:usercard>
-              <img :src="userAvatar" :onerror="detaultAvatar" />
-            </div>
-            <p class="user-status">
-              <span class="online" v-if="socketStatus">在线</span>
-              <span v-else>连线中...</span>
-            </p>
-          </el-header>
-          <el-main class="padding0 ov-hidden">
-            <div class="sidebar-menu">
-              <el-tooltip
-                content="我的消息"
-                placement="right"
-                :visible-arrow="false"
-              >
-                <router-link to="/message">
-                  <div
-                    class="menu-items"
-                    :class="{ 'menu-items-active': idx == 0 }"
-                  >
-                    <i class="el-icon-chat-line-round"></i>
-                    <span v-show="unreadNum" class="message-notify"></span>
-                  </div>
-                </router-link>
-              </el-tooltip>
-
-              <el-tooltip
-                content="我的联系人"
-                placement="right"
-                :visible-arrow="false"
-              >
-                <router-link to="/contacts">
-                  <div
-                    class="menu-items"
-                    :class="{ 'menu-items-active': idx == 1 }"
-                  >
-                    <i class="el-icon-user-solid"></i>
-                    <span v-show="applyNum" class="message-notify"></span>
-                  </div>
-                </router-link>
-              </el-tooltip>
-
-              <el-tooltip
-                content="我的笔记"
-                placement="right"
-                :visible-arrow="false"
-              >
-                <router-link to="/notes">
-                  <div
-                    class="menu-items"
-                    :class="{ 'menu-items-active': idx == 2 }"
-                  >
-                    <i class="el-icon-notebook-1"></i>
-                  </div>
-                </router-link>
-              </el-tooltip>
-
-              <el-tooltip
-                content="我的设置"
-                placement="right"
-                :visible-arrow="false"
-              >
-                <router-link to="/settings">
-                  <div
-                    class="menu-items"
-                    :class="{ 'menu-items-active': idx == 3 }"
-                  >
-                    <i class="el-icon-setting"></i>
-                  </div>
-                </router-link>
-              </el-tooltip>
-            </div>
-          </el-main>
-          <el-footer height="60px" class="padding0">
-            <div class="fixed-sidebar">
-              <div class="menu-items" @click="logout">
-                <span class="logout">退出</span>
+          <el-container class="hv100 ov-hidden">
+            <el-header height="100px" class="padding0">
+              <div class="userlogo" v-popover:usercard>
+                <img :src="userAvatar" :onerror="detaultAvatar" />
               </div>
-            </div>
-          </el-footer>
-        </el-container>
-      </el-aside>
+              <p class="user-status">
+                <span class="online" v-if="socketStatus">在线</span>
+                <span v-else>连线中...</span>
+              </p>
+            </el-header>
+            <el-main class="padding0 ov-hidden">
+              <div class="sidebar-menu">
+                <el-tooltip
+                  content="我的消息"
+                  placement="right"
+                  :visible-arrow="false"
+                >
+                  <router-link to="/message">
+                    <div
+                      class="menu-items"
+                      :class="{ 'menu-items-active': idx == 0 }"
+                    >
+                      <i class="el-icon-chat-line-round"></i>
+                      <span v-show="unreadNum" class="message-notify"></span>
+                    </div>
+                  </router-link>
+                </el-tooltip>
 
-      <el-main class="padding0" style="background-color: white">
-        <slot name="container"></slot>
-      </el-main>
+                <el-tooltip
+                  content="我的联系人"
+                  placement="right"
+                  :visible-arrow="false"
+                >
+                  <router-link to="/contacts">
+                    <div
+                      class="menu-items"
+                      :class="{ 'menu-items-active': idx == 1 }"
+                    >
+                      <i class="el-icon-user-solid"></i>
+                      <span v-show="applyNum" class="message-notify"></span>
+                    </div>
+                  </router-link>
+                </el-tooltip>
+
+                <el-tooltip
+                  content="我的笔记"
+                  placement="right"
+                  :visible-arrow="false"
+                >
+                  <router-link to="/notes">
+                    <div
+                      class="menu-items"
+                      :class="{ 'menu-items-active': idx == 2 }"
+                    >
+                      <i class="el-icon-notebook-1"></i>
+                    </div>
+                  </router-link>
+                </el-tooltip>
+
+                <el-tooltip
+                  content="我的设置"
+                  placement="right"
+                  :visible-arrow="false"
+                >
+                  <router-link to="/settings">
+                    <div
+                      class="menu-items"
+                      :class="{ 'menu-items-active': idx == 3 }"
+                    >
+                      <i class="el-icon-setting"></i>
+                    </div>
+                  </router-link>
+                </el-tooltip>
+              </div>
+            </el-main>
+            <el-footer height="60px" class="padding0">
+              <div class="fixed-sidebar">
+                <div class="menu-items" @click="logout">
+                  <span class="logout">退出</span>
+                </div>
+              </div>
+            </el-footer>
+          </el-container>
+        </el-aside>
+
+        <el-main class="padding0 bag-white">
+          <slot name="container"></slot>
+        </el-main>
     </el-container>
 
     <!-- 消息提示 -->
@@ -198,6 +198,10 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 0;
+}
+
+.mian-layout .bag-white {
+  background: white;
 }
 
 @media screen and (max-width: 1000px) {

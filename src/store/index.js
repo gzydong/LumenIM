@@ -19,13 +19,8 @@ const store = new Vuex.Store({
     talks,
     settings
   },
-
-  // 根级别的 state
   state,
-
   getters,
-
-  // 根级别的 mutation
   mutations
 });
 

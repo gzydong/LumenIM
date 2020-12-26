@@ -4,7 +4,6 @@ import {
   upload
 } from '@/utils/request';
 
-
 //查询用户表情包服务接口
 export const ServeFindUserEmoticon = () => {
   return get('/api/v1/emoticon/user-emoticon');

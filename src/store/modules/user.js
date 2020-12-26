@@ -9,7 +9,6 @@ import {
   ServeLogout
 } from '@/api/user';
 
-
 let state = {
   // 用户ID
   uid: 0,
@@ -23,7 +22,6 @@ let state = {
   avatar: require("@/assets/image/detault-avatar.jpg"),
   // 名片背景
   visitCardBag: require("@/assets/image/default-user-banner.png"),
-
   // 当前登录状态
   loginStatus: false,
 };
@@ -39,10 +37,7 @@ if (getToken()) {
 }
 
 const user = {
-
-  // 用户数据
   state,
-
   mutations: {
     // 用户退出登录
     USER_LOGOUT(state) {

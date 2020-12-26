@@ -3,6 +3,11 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+const RouteView = {
+  name: 'RouteView',
+  render: (h) => h('router-view')
+}
+
 const routes = [{
     path: '/',
     name: 'home',
@@ -129,7 +134,6 @@ const routes = [{
     }
   },
 ];
-
 
 export default new Router({
   routes,

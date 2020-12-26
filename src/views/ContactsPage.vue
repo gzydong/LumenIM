@@ -393,7 +393,7 @@ import { ServeSecedeGroup } from "@/api/group";
 import { ServeCreateTalkList } from "@/api/chat";
 
 export default {
-  name: "contacts-page",
+  name: "ContactsPage",
   components: {
     MainLayout,
     GroupLaunch,

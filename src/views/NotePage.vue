@@ -575,16 +575,12 @@
 </template>
 
 <script>
-import Vue from "vue";
 import MainLayout from "@/views/layout/MainLayout";
 import NoteAnnexRecycle from "@/components/note/NoteAnnexRecycle";
 import UserContacts from "@/components/chat/UserContacts";
 import { SvgNoteBook, SvgNote } from "@/core/icons";
 import { mavonEditor } from "mavon-editor";
-
 import "mavon-editor/dist/css/index.css";
-
-import { copyTextToClipboard } from "@/utils/functions";
 
 import {
   ServeGetArticleClass,
@@ -610,10 +606,10 @@ import {
   ServeForeverDeleteArticle,
 } from "@/api/article";
 
-import { parseTime, trim, formateSize, formateTime } from "@/utils/functions";
+import { parseTime, trim, formateSize, formateTime,copyTextToClipboard } from "@/utils/functions";
 
 export default {
-  name: "note-page",
+  name: "NotePage",
   components: {
     MainLayout,
     mavonEditor,

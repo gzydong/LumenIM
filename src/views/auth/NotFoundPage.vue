@@ -22,7 +22,7 @@
 
 <script>
   export default {
-    name: 'not-found-page',
+    name: 'NotFoundPage',
     data() {
       return {
         second: 9,

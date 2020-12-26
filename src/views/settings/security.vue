@@ -52,8 +52,9 @@
   import {
     ServeFindUserDetail
   } from '@/api/user';
+
   export default {
-    name: 'security-page',
+    name: 'SecurityPage',
     components: {
       UserEditPassword,
       UserEditMobile,

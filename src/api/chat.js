@@ -88,6 +88,7 @@ export const ServeSendTalkImage = (data) => {
   return upload('/api/v1/talk/send-image', data);
 }
 
+//发送表情包服务接口
 export const ServeSendEmoticon = (data) => {
   return post('/api/v1/talk/send-emoticon', data);
 }

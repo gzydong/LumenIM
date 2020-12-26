@@ -8,18 +8,19 @@
         </el-header>
         <el-main class="main">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item prop="email" label="邮箱地址">
+            <el-form-item prop="email" label="邮箱">
               <el-input v-model="form.email" placeholder="请填写邮箱地址" class="cuborder-radius"
                 @keyup.enter.native="onSubmit('form')" size="medium" />
             </el-form-item>
             <el-form-item prop="sms_code" label="验证码">
               <el-input v-model="form.sms_code" placeholder="邮件验证码" class="cuborder-radius"
-                @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" />
+                @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" maxlength="6" />
 
               <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
               <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取验证码
               </div>
               <div class="send-code-btn send-sms-disable" v-else>重新发送({{smsLockObj.time}}s)</div>
+
             </el-form-item>
             <el-form-item prop="password" label="密码">
               <el-input v-model="form.password" type="password" placeholder="登录密码验证" class="cuborder-radius border0"
@@ -211,6 +212,7 @@
     color: #777373;
     cursor: pointer;
     user-select: none;
+    margin-left: 5px;
   }
 
   .send-code-btn:active {

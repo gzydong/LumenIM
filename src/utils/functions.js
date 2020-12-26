@@ -607,6 +607,11 @@ export function getSort(fn) {
   }
 }
 
+/**
+ * 批量排序
+ * 
+ * @param {*} arr 
+ */
 export function getMutipSort(arr) {
   return function(a, b) {
       var tmp, i = 0;

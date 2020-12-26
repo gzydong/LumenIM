@@ -37,9 +37,8 @@
 
 <script>
   export default {
-    name: 'binding-page'
+    name: 'BindingPage'
   };
-
 </script>
 <style scoped>
   .container h4 {

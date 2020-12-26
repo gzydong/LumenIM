@@ -47,7 +47,7 @@ VUE_APP_WEBSITE_NAME="Lumen IM"
 ```nginx
 server {
     listen       80;
-    server_name  www.yourdomain.coom;
+    server_name  www.yourdomain.com;
 
     root /project-path/dist;
     index  index.html
@@ -59,15 +59,15 @@ server {
 
     location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
         expires 30d;
-        access_log on;
     }
 
     location ~ .*\.(js|css)?$ {
         expires 7d;
-        access_log on;
     }
 }
 ```
+@link 后端源码 [https://github.com/gzydong/hyperf-chat](https://github.com/gzydong/hyperf-chat)
+
 注意：项目需要与后端一起使用，目前后端源码还未开源，如有需要可联系 837215079@qq.com
 
 #### 如果你觉得还不错，请 Star , Fork 给作者鼓励一下。

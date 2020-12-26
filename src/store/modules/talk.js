@@ -1,4 +1,4 @@
-const Talks = {
+const Talk = {
   state: {
     //用户对话列表
     items: [],
@@ -63,4 +63,4 @@ const Talks = {
   }
 }
 
-export default Talks;
+export default Talk;

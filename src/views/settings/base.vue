@@ -53,8 +53,9 @@
     ServeEditUserSetup,
     ServeFindUserDetail
   } from '@/api/user';
+  
   export default {
-    name: 'personal-page',
+    name: 'UsrBasePage',
     components: {
       AvatarCropper
     },

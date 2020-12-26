@@ -6,16 +6,14 @@ export default {
     '右哼哼', '哈欠', '鄙视', '委屈', '快哭了', '阴险', '亲亲', '吓', '可怜', '菜刀', '西瓜', '啤酒',
     '篮球', '乒乓', '咖啡', '饭', '猪头', '玫瑰', '凋谢', '示爱', '爱心', '心碎', '蛋糕', '闪电', '炸弹',
     '刀', '足球', '瓢虫', '便便', '月亮', '太阳', '礼物', '拥抱', '强', '弱', '握手', '胜利', '抱拳', '勾引',
-    '拳头', '差劲', '爱你', 'NO', 'OK', '爱情', '飞吻', '跳跳', '发抖', '怄火', '转圈', '磕头', '回头', '跳绳', '挥手',
-    '激动', '街舞', '献吻', '左太极',
+    '拳头', '差劲', '爱你', 'NO', 'OK'
   ],
   emoji2: [
     "😠", "😩", "😲", "😞", "😵", "😰", "😒", "😍", "😤", "😜", "😝", "😋", "😘", "😚", "😷",
     "😳", "😃", "😅", "😆", "😁", "😂", "😊", "☺", "😄", "😢",
     "😭", "😨", "😣", "😡", "😌", "😖", "😔", "😱", "😪", "😏", "😓", "😥", "😫", "😉",
     "✊", "✋", "✌", "👊", "👍", "☝", "👆", "👇", "👈", "👉",
-    "👋", "👏", "👌", "👎", "👐",
-    "❤", "💓", "💔", "💕", "💖", "💗", "💘", "💙", "💚", "💛", "💜", "💝",
+    "👋", "👏", "👌", "👎"
   ],
   emoji3: {
     "[微笑]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/0.gif'>",
@@ -108,20 +106,5 @@ export default {
     "[爱你]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/87.gif'>",
     "[NO]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/88.gif'>",
     "[OK]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/89.gif'>",
-    "[爱情]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/90.gif'>",
-    "[飞吻]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/91.gif'>",
-    "[跳跳]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/92.gif'>",
-    "[发抖]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/93.gif'>",
-    "[怄火]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/94.gif'>",
-    "[转圈]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/95.gif'>",
-    "[磕头]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/96.gif'>",
-    "[回头]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/97.gif'>",
-    "[跳绳]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/98.gif'>",
-    "[挥手]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/99.gif'>",
-    "[激动]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/100.gif'>",
-    "[街舞]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/101.gif'>",
-    "[献吻]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/102.gif'>",
-    "[左太极]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/103.gif'>",
-    "[右太极]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/104.gif'>"
   },
 }
