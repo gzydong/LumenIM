@@ -50,7 +50,7 @@ server {
     server_name  www.yourdomain.com;
 
     root /project-path/dist;
-    index  index.html
+    index  index.html;
 
     ## 解决 VueRouter History 模式下 页面刷新404问题
     location / {
@@ -75,3 +75,4 @@ server {
 ## License
 
 [LICENSE](LICENSE)
+
