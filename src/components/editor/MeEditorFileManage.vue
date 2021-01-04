@@ -14,6 +14,7 @@
             <svg-not-data />
             <p>暂无上传文件</p>
           </div>
+
           <div class="file-item" v-for="file in items" v-show="!file.isDelete">
             <div class="file-header">
               <div class="type-icon">{{ file.ext }}</div>
@@ -262,7 +263,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
 .container {
   position: fixed;
   right: 0;
@@ -274,22 +275,44 @@ export default {
   border: 1px solid #eae5e5;
   overflow: hidden;
   border-radius: 3px 3px 0 0;
-}
 
-.container .header {
-  height: 50px;
-  line-height: 50px;
-  position: relative;
-  text-indent: 20px;
-  border-bottom: 1px solid #f5eeee;
-}
+  .header {
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    text-indent: 20px;
+    border-bottom: 1px solid #f5eeee;
 
-.container .header .close-btn {
-  position: absolute;
-  right: 20px;
-  top: 15px;
-  font-size: 20px;
-  cursor: pointer;
+    i {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .mian {
+    .empty-data {
+      width: 100%;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 50%;
+
+      svg {
+        font-size: 70px;
+      }
+
+      p {
+        margin-top: 30px;
+        color: #cccccc;
+        font-size: 10px;
+      }
+    }
+  }
 }
 
 .file-item {
@@ -302,143 +325,122 @@ export default {
   margin: 15px auto;
   box-shadow: 0 0 5px #eae5e5;
   overflow: hidden;
-}
 
-.file-item .file-header {
-  height: 45px;
-  /* background-color: #66b1ff; */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-  border-bottom: 1px solid #f7f4f4;
-}
+  .file-header {
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid #f7f4f4;
 
-.file-item .file-header .type-icon {
-  height: 35px;
-  width: 35px;
-  background-color: #66b1ff;
-  border-radius: 50%;
-  margin-left: 5px;
-  font-size: 10px;
-  font-weight: 200;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  color: white;
-}
+    .type-icon {
+      height: 30px;
+      width: 30px;
+      background-color: #66b1ff;
+      border-radius: 50%;
+      margin-left: 5px;
+      font-size: 10px;
+      font-weight: 200;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: white;
+    }
 
-.file-item .file-header .filename {
-  margin-left: 10px;
-  font-size: 14px;
-  width: 65%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+    .filename {
+      margin-left: 10px;
+      font-size: 14px;
+      width: 65%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-.file-item .file-header .status {
-  position: absolute;
-  right: 14px;
-  top: 12px;
-  font-size: 13px;
-  color: #6b6868;
-  font-weight: 200;
-}
+    .status {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      font-size: 13px;
+      color: #6b6868;
+      font-weight: 200;
+    }
+  }
 
-.file-item .file-mian {
-  padding: 8px;
-  display: flex;
-  flex-direction: row;
-}
+  .file-mian {
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
 
-.file-item .file-mian .progress {
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-  background: #f9f6f6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-}
+    .progress {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+      background: #f9f6f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      cursor: pointer;
 
-.file-item .file-mian .progress .name {
-  font-size: 12px;
-  color: #ada8a8;
-  font-weight: 300;
-}
+      .name {
+        font-size: 12px;
+        color: #ada8a8;
+        font-weight: 300;
+      }
+    }
 
-.file-item .file-mian .detail {
-  flex: auto;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  padding-left: 20px;
-  justify-content: center;
-  align-items: flex-start;
-  font-size: 13px;
-}
+    .detail {
+      flex: auto;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding-left: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      font-size: 13px;
 
-.file-item .file-mian .detail p {
-  margin: 3px;
-  color: #ada8a8;
-}
+      p {
+        margin: 3px;
+        color: #ada8a8;
 
-.file-item .file-mian .detail p span {
-  color: #595a5a;
-  font-weight: 500;
-}
+        span {
+          color: #595a5a;
+          font-weight: 500;
+        }
+      }
+    }
+  }
 
-.file-item .file-means {
-  width: 96.5%;
-  height: 35px;
-  border-top: 1px dashed rgb(234, 227, 227);
-  margin: 3px auto;
-  padding-top: 5px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
+  .file-means {
+    width: 96.5%;
+    height: 35px;
+    border-top: 1px dashed rgb(234, 227, 227);
+    margin: 3px auto;
+    padding-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 
-.file-item .file-means .btns {
-  width: 80px;
-  height: 25px;
-  border: 1px solid #e6e1e1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 3px;
-  border-radius: 15px;
-  font-size: 12px;
-  color: #635f5f;
-  cursor: pointer;
-}
+    .btns {
+      width: 80px;
+      height: 25px;
+      border: 1px solid #e6e1e1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 3px;
+      border-radius: 15px;
+      font-size: 12px;
+      color: #635f5f;
+      cursor: pointer;
 
-.file-item .file-means .btns:active {
-  box-shadow: 0 0 5px #eae5e5;
-  font-size: 13px;
-}
-
-.empty-data {
-  width: 100%;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 50%;
-}
-
-.empty-data svg {
-  font-size: 50px;
-}
-
-.empty-data p {
-  margin-top: 30px;
-  color: #cccccc;
-  font-size: 10px;
+      &:active {
+        box-shadow: 0 0 5px #eae5e5;
+        font-size: 13px;
+      }
+    }
+  }
 }
 </style>

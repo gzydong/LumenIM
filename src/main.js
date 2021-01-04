@@ -21,7 +21,7 @@ import SocketResourceHandle from '@/plugins/socket/socket-resource-handle';
 
 // 引入自定义全局css
 import '@/assets/css/im-base.css';
-import '@/global.less';
+import './global.less';
 
 Vue.config.productionTip = false;
 

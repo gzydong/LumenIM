@@ -1,9 +1,9 @@
 <template>
   <div>
     <main-layout :idx="2">
-      <el-container slot="container" class="el-container-note">
-        <el-aside width="230px" class="el-aside-one lm-scrollbar ov-hidden">
-          <el-header>
+      <el-container slot="container" class="note-container">
+        <el-aside width="230px" class="el-aside-one lm-scrollbar">
+          <el-header class="btn-header">
             <el-dropdown
               split-button
               type="primary"
@@ -21,6 +21,7 @@
           </el-header>
 
           <div class="note-headline">我的笔记</div>
+
           <el-scrollbar :native="false" tag="section" class="note-aside">
             <div v-for="(menu, i) in menus">
               <div
@@ -31,7 +32,7 @@
               >
                 <i
                   class="iconfont"
-                  :style="'color:' + menu.color"
+                  :style="{ color: menu.color }"
                   :class="menu.icon"
                 ></i>
                 <span v-text="menu.name"></span>
@@ -83,7 +84,7 @@
               @keyup.enter="queryNote"
             />
           </div>
-          <div class="note-count-title no-select">
+          <div class="count-header">
             <span>{{ notes.length }} 篇笔记</span>
 
             <span v-if="loadNoteStatus == 0" class="load-span">
@@ -93,10 +94,9 @@
               <i class="iconfont icon-icon- sort-icon"></i>
             </span>
           </div>
-
-          <div class="article-container">
+          <div class="article-main">
             <template v-if="notes.length == 0">
-              <div class="note-list-empty">
+              <div class="note-empty">
                 <svg-note-book class="svg-notebook" />
                 <p style="font-size: 12px; text-align: center; color: #b6afaf">
                   笔记空空如也，赶快<el-button type="text" @click="insterNote"
@@ -111,7 +111,7 @@
                   class="article-row"
                   v-for="(note, i) in notes"
                   :class="{
-                    'article-row-active': note.id == noteDetail.loadId,
+                    'active-row': note.id == noteDetail.loadId,
                   }"
                   :key="note.id"
                   @contextmenu.prevent="noteListMenu($event, i, note)"
@@ -123,7 +123,7 @@
                   <div class="article-items" @click="catNote(note)">
                     <div
                       class="article-item"
-                      :class="{ 'article-item-img': note.img != '' }"
+                      :class="{ 'item-image': note.img != '' }"
                     >
                       <div class="article-date">
                         <span v-text="note.datetime"></span>
@@ -175,7 +175,6 @@
         <el-main
           class="el-main-content"
           v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2"
-          style="overflow: hidden"
         >
           <div v-if="loadStatus == -1" class="empty-note">
             <svg-note />
@@ -246,11 +245,7 @@
             <!-- 阅读模块 -->
             <template v-else>
               <el-container>
-                <el-header
-                  id="note-header"
-                  height="61px"
-                  style="padding-left: 30px"
-                >
+                <el-header id="note-header" height="61px">
                   {{ noteDetail.title }}
                 </el-header>
                 <el-main class="padding0">
@@ -573,7 +568,6 @@
     />
   </div>
 </template>
-
 <script>
 import MainLayout from "@/views/layout/MainLayout";
 import NoteAnnexRecycle from "@/components/note/NoteAnnexRecycle";
@@ -606,7 +600,13 @@ import {
   ServeForeverDeleteArticle,
 } from "@/api/article";
 
-import { parseTime, trim, formateSize, formateTime,copyTextToClipboard } from "@/utils/functions";
+import {
+  parseTime,
+  trim,
+  formateSize,
+  formateTime,
+  copyTextToClipboard,
+} from "@/utils/functions";
 
 export default {
   name: "NotePage",
@@ -1703,5 +1703,7 @@ export default {
   },
 };
 </script>
-<style src="@/assets/css/github-markdown.css"></style>
-<style scoped src="@/assets/css/page/note-page.css"></style>
+<style scoped lang="less">
+@import "~@/assets/css/github-markdown.css";
+@import "~@/assets/css/page/note-page.less";
+</style>

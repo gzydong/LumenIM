@@ -3,7 +3,7 @@
     <main-layout :idx="1">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
-        <el-aside width="250px" class="aside-box padding0">
+        <el-aside width="250px" class="aside-box">
           <el-container class="hv100" direction="vertical">
             <!-- 搜索栏 -->
             <el-header height="60px" class="padding0 header">
@@ -52,24 +52,24 @@
             </el-header>
 
             <!-- 对话列表栏 -->
-            <el-main class="padding0 main no-select">
+            <el-main class="main">
               <div
                 class="menu-item"
-                :class="{ 'menu-item-border': activeIndex == 0 }"
+                :class="{ 'active-border': activeIndex == 0 }"
                 @click="triggerMenu(0)"
               >
                 <span>新的联系人</span>
               </div>
               <div
                 class="menu-item"
-                :class="{ 'menu-item-border': activeIndex == 1 }"
+                :class="{ 'active-border': activeIndex == 1 }"
                 @click="triggerMenu(1)"
               >
                 <span>我的好友</span>
               </div>
               <div
                 class="menu-item"
-                :class="{ 'menu-item-border': activeIndex == 2 }"
+                :class="{ 'active-border': activeIndex == 2 }"
                 @click="triggerMenu(2)"
               >
                 <span>我的群组</span>
@@ -84,7 +84,7 @@
             <template v-if="activeIndex == 0">
               <p>新的联系人</p>
               <p>
-                <span class="wait-handle-btn" v-show="waitHandleNum">
+                <span class="wait-btn" v-show="waitHandleNum">
                   【{{ waitHandleNum }}】待处理
                   <i class="el-icon-warning"></i>
                 </span>
@@ -372,7 +372,6 @@
     <user-search ref="searchUsers" />
   </div>
 </template>
-
 <script>
 import MainLayout from "@/views/layout/MainLayout";
 import GroupLaunch from "@/components/group/GroupLaunch";
@@ -700,268 +699,268 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
 .aside-box {
   position: relative;
   background-color: white;
   border-right: 1px solid rgb(245, 245, 245);
   overflow: hidden;
+  padding: 0;
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 15px;
+
+    .from {
+      flex: 1 1;
+      flex-shrink: 0;
+      height: 40px;
+
+      /deep/.el-input .el-input__inner {
+        border-radius: 20px;
+        width: 170px;
+      }
+    }
+
+    .tools {
+      flex-basis: 32px;
+      flex-shrink: 0;
+      height: 32px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      line-height: 32px;
+      text-align: center;
+      position: relative;
+      user-select: none;
+
+      .tools-menu {
+        position: absolute;
+        right: 0;
+        top: 38px;
+        width: 100px;
+        min-height: 80px;
+        box-sizing: border-box;
+        background-color: rgba(31, 35, 41, 0.9);
+        border-radius: 5px;
+        z-index: 1;
+        padding: 3px 0;
+
+        .menu1-item {
+          height: 40px;
+          line-height: 40px;
+          color: white;
+          font-size: 14px;
+
+          &:hover {
+            background-color: rgba(70, 72, 73, 0.9);
+          }
+        }
+      }
+    }
+  }
+
+  .main {
+    padding: 0;
+    user-select: none;
+
+    .menu-item {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      cursor: pointer;
+      border-left: 3px solid white;
+      position: relative;
+      transition: 0.2s ease-in;
+
+      i:first-child {
+        margin-right: 10px;
+      }
+
+      span {
+        font-size: 14px;
+      }
+
+      &:hover {
+        background-color: #eff0f1;
+        border-color: #eff0f1;
+      }
+
+      &.active-border {
+        border-color: #3370ff !important;
+        background-color: #eff0f1;
+      }
+    }
+  }
 }
 
-/* header start */
-.aside-box .header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0 15px;
-}
-
-.aside-box .header .from {
-  flex: 1 1;
-  flex-shrink: 0;
-  height: 40px;
-}
-
-.aside-box .header .from >>> .el-input .el-input__inner {
-  border-radius: 20px;
-  width: 170px;
-}
-
-.aside-box .header .tools {
-  flex-basis: 32px;
-  flex-shrink: 0;
-  height: 32px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  line-height: 32px;
-  text-align: center;
-  position: relative;
-  user-select: none;
-}
-
-.aside-box .header .tools .tools-menu {
-  position: absolute;
-  right: 0;
-  top: 38px;
-  width: 100px;
-  min-height: 80px;
-  box-sizing: border-box;
-  background-color: rgba(31, 35, 41, 0.9);
-  border-radius: 5px;
-  z-index: 1;
-  padding: 3px 0;
-}
-
-.aside-box .header .tools .tools-menu .menu1-item {
-  height: 40px;
-  line-height: 40px;
-  color: white;
-  font-size: 14px;
-}
-
-.aside-box .header .tools .tools-menu .menu1-item:hover {
-  background-color: rgba(70, 72, 73, 0.9);
-}
-
-/* header end */
-
-/* 左侧菜单栏 */
-.menu-item {
-  height: 42px;
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  cursor: pointer;
-  border-left: 3px solid white;
-  position: relative;
-  transition: 0.2s ease-in;
-}
-
-.menu-item-border {
-  border-color: #3370ff !important;
-  background-color: #eff0f1;
-}
-
-.menu-item i:first-child {
-  margin-right: 10px;
-}
-
-.menu-item span {
-  font-size: 14px;
-}
-
-.menu-item:hover {
-  background-color: #eff0f1;
-  border-color: #eff0f1;
-}
-
-/* 右侧面板 */
 .panel {
   background-color: white;
   position: relative;
-}
 
-.panel .panel-header {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgb(245, 245, 245);
-  justify-content: space-between;
-}
+  .panel-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(245, 245, 245);
+    justify-content: space-between;
 
-.panel .panel-header .wait-handle-btn {
-  font-weight: 500;
-  padding: 3px 8px;
-  font-size: 14px;
-  border-radius: 1px;
-}
+    .wait-btn {
+      font-weight: 500;
+      padding: 3px 8px;
+      font-size: 14px;
+      border-radius: 1px;
 
-.panel .panel-header .wait-handle-btn i {
-  color: tomato;
-}
+      i {
+        color: tomato;
+      }
+    }
+  }
 
-.panel-main {
-  padding: 10px 0;
-}
+  .panel-main {
+    padding: 10px 0;
 
-.panel .preloading {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  user-select: none;
-}
+    .preloading {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      user-select: none;
 
-.panel .preloading p {
-  margin-top: 20px;
-  color: #afacac;
-  font-size: 14px;
-  font-weight: 300;
-}
+      p {
+        margin-top: 20px;
+        color: #afacac;
+        font-size: 14px;
+        font-weight: 300;
+      }
+    }
 
-.data-item {
-  height: 60px;
-  margin-bottom: 2px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 15px;
-  position: relative;
-  overflow-x: hidden;
-  border-bottom: 1px solid #f1ebeb;
-}
+    .data-item {
+      height: 60px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 5px 15px;
+      position: relative;
+      overflow-x: hidden;
+      border-bottom: 1px solid #f1ebeb;
 
-.data-item:hover {
-  box-shadow: 0 0 8px 4px #f1f1f1;
-}
+      .avatar {
+        height: 35px;
+        width: 35px;
+        flex-basis: 35px;
+        flex-shrink: 0;
+        background-color: #508afe;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: white;
+        user-select: none;
+        transition: ease 1s;
+        position: relative;
+      }
 
-.data-item .avatar {
-  height: 35px;
-  width: 35px;
-  flex-basis: 35px;
-  flex-shrink: 0;
-  background-color: #508afe;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: white;
-  user-select: none;
-  transition: ease 1s;
-  position: relative;
-}
+      .card {
+        height: 40px;
+        display: flex;
+        align-content: center;
+        flex-direction: column;
+        flex: 1 1;
+        margin-left: 10px;
+        overflow: hidden;
 
-.data-item:hover .avatar {
-  border-radius: 2px;
-}
+        .title {
+          width: 100%;
+          height: 20px;
+          display: flex;
+          align-items: center;
 
-.data-item .card {
-  height: 40px;
-  display: flex;
-  align-content: center;
-  flex-direction: column;
-  flex: 1 1;
-  margin-left: 10px;
-  overflow: hidden;
-}
+          .name {
+            margin-right: 15px;
+            color: #1f2329;
+          }
 
-.data-item .card .title {
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
+          .larkc-tag {
+            font-size: 12px;
+            font-weight: 400;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            height: 20px;
+            border-radius: 2px;
+            cursor: default;
+            user-select: none;
+            background-color: #dee0e3;
+            transform: scale(0.8);
+            transform-origin: left;
+            flex-shrink: 0;
+          }
 
-.data-item .card .title .name {
-  margin-right: 15px;
-  color: #1f2329;
-}
+          .wait {
+            background: #ffb445;
+            color: white;
+          }
 
-.data-item .card .title .larkc-tag {
-  font-size: 12px;
-  font-weight: 400;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  height: 20px;
-  border-radius: 2px;
-  cursor: default;
-  user-select: none;
-  background-color: #dee0e3;
-  transform: scale(0.8);
-  transform-origin: left;
-  flex-shrink: 0;
-}
+          .agree {
+            background: #53bd53;
+            color: white;
+          }
+        }
 
-.data-item .card .title .wait {
-  background: #ffb445;
-  color: white;
-}
+        .content {
+          font-size: 10px;
+          line-height: 18px;
+          color: #8f959e;
+          overflow: hidden;
+          margin-top: 3px;
+          font-weight: 300;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
 
-.data-item .card .title .agree {
-  background: #53bd53;
-  color: white;
-}
+      .apply-from {
+        position: absolute;
+        right: -120px;
+        top: 0px;
+        height: 100%;
+        width: 120px;
+        display: block;
+        transition: ease 0.5s 0.3s;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 1;
+        background-color: white;
+        button {
+          margin: 2px;
+        }
+      }
 
-.data-item .card .content {
-  font-size: 10px;
-  line-height: 18px;
-  color: #8f959e;
-  overflow: hidden;
-  margin-top: 3px;
-  font-weight: 300;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+      &:hover {
+        box-shadow: 0 0 8px 4px #f1f1f1;
 
-.data-item .apply-from {
-  position: absolute;
-  right: -120px;
-  top: 0px;
-  height: 100%;
-  width: 120px;
-  display: block;
-  transition: ease 0.5s 0.3s;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 1;
-  background-color: white;
-}
+        .avatar {
+          border-radius: 2px;
+        }
 
-.data-item:hover .apply-from {
-  right: 0px;
-}
-
-.data-item .apply-from button {
-  margin: 2px;
+        .apply-from {
+          right: 0px;
+        }
+      }
+    }
+  }
 }
 
 .broadside-box {

@@ -3,10 +3,10 @@
     <main-layout :idx="0">
       <el-container slot="container" class="hv100">
         <!-- 左侧侧边栏 -->
-        <el-aside width="320px" class="aside-box padding0">
+        <el-aside width="320px" class="aside-box">
           <el-container class="hv100" direction="vertical">
             <!-- 搜索栏 -->
-            <el-header height="60px" class="padding0 header">
+            <el-header height="60px" class="header">
               <div class="from">
                 <el-input
                   v-model="input"
@@ -57,7 +57,7 @@
               id="subheader"
               v-show="loadStatus == 1 && topItems.length > 0"
               :height="subHeaderPx"
-              class="padding0 subheader"
+              class="subheader"
             >
               <div
                 class="top-item"
@@ -104,13 +104,13 @@
               ref="myScrollbar"
               class="hv100"
             >
-              <el-main class="padding0 main">
-                <p class="talk-item-empty" v-if="loadStatus == 0" key="empty">
+              <el-main class="main">
+                <p class="empty-data" v-if="loadStatus == 0" key="empty">
                   <i class="el-icon-loading"></i> 正在加载数据中...
                 </p>
 
                 <p
-                  class="talk-item-empty"
+                  class="empty-data"
                   v-if="loadStatus == 1 && talkNum == 0"
                   key="empty"
                 >
@@ -130,7 +130,7 @@
                   class="talk-item"
                   v-show="loadStatus == 1"
                   v-for="(item, idx) in talkItems"
-                  :class="{ 'talk-item-border': index_name == item.index_name }"
+                  :class="{ 'active-border': index_name == item.index_name }"
                   @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="talkItemsMenu(item, $event)"
                   :key="item.index_name"
@@ -190,7 +190,10 @@
                         >[{{ item.online ? "在线" : "离线" }}]</span
                       >
                       <span v-else>[群消息]</span>
-                      <span v-text="item.msg_text" style="margin-left:5px;"></span>
+                      <span
+                        v-text="item.msg_text"
+                        style="margin-left: 5px"
+                      ></span>
                     </div>
                   </div>
                 </div>
@@ -200,24 +203,15 @@
         </el-aside>
 
         <!-- 聊天面板容器 -->
-        <el-main class="padding0 hv100 ov-hidden">
+        <el-main class="panel-box">
           <template v-if="index_name == null">
-            <div class="reserve-box no-select animated flipInY">
+            <div class="friendly-tips animated flipInY">
               <img src="~@/assets/image/chat.png" width="300" />
-              <div
-                style="
-                  width: 100%;
-                  font-weight: 300;
-                  text-align: center;
-                  font-size: 15px;
-                  color: #b9b4b4;
-                  margin-top: -30px;
-                "
-              >
+              <p>
                 不是井里没有水，而是你挖的不够深<br />
                 不是成功来得慢，而是你努力的不够多<br />
                 加油吧！ ......
-              </div>
+              </p>
             </div>
           </template>
           <template v-else>
@@ -247,14 +241,12 @@
     <user-search ref="searchUsers" />
   </div>
 </template>
-
 <script>
 import MainLayout from "@/views/layout/MainLayout";
 import GroupLaunch from "@/components/group/GroupLaunch";
 import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 import UserSearch from "@/components/user/UserSearch";
-
 import {
   ServeGetTalkList,
   ServeClearTalkUnreadNum,
@@ -264,7 +256,6 @@ import {
 } from "@/api/chat";
 import { ServeRemoveFriend, ServeFriendRemarkEdit } from "@/api/user";
 import { ServeSecedeGroup } from "@/api/group";
-
 import {
   packTalkItem,
   beautifyTime,
@@ -315,7 +306,7 @@ export default {
     // 计算置顶栏目的高度
     subHeaderPx() {
       let num = this.topItems.length,
-        len = 65,
+        len = 60,
         n = 7; // 一排能显示的用户数
 
       if (num > n) {
@@ -777,390 +768,333 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
+/deep/.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+
 .aside-box {
   position: relative;
   background-color: white;
   border-right: 1px solid rgb(245, 245, 245);
   overflow: hidden;
+  padding: 0;
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 15px;
+
+    .from {
+      flex: 1 1;
+      flex-shrink: 0;
+      height: 40px;
+
+      /deep/ .el-input .el-input__inner {
+        border-radius: 20px;
+        width: 240px;
+      }
+    }
+
+    .tools {
+      flex-basis: 32px;
+      flex-shrink: 0;
+      height: 32px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      line-height: 32px;
+      text-align: center;
+      position: relative;
+      user-select: none;
+
+      .tools-menu {
+        position: absolute;
+        right: 0;
+        top: 38px;
+        width: 100px;
+        min-height: 80px;
+        box-sizing: border-box;
+        background-color: rgba(31, 35, 41, 0.9);
+        border-radius: 5px;
+        z-index: 1;
+        padding: 3px 0;
+
+        .menu-item {
+          height: 40px;
+          line-height: 40px;
+          color: white;
+          font-size: 14px;
+
+          &:hover {
+            background-color: rgba(70, 72, 73, 0.9);
+          }
+        }
+      }
+    }
+  }
+
+  .subheader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 3px 8px 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    .top-item {
+      flex-basis: 41px;
+      flex-shrink: 0;
+      height: 50px;
+      margin: 0 1px 6px 1px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+
+      .avatar {
+        flex-basis: 32px;
+        width: 32px;
+        height: 32px;
+        background-color: #508afe;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+        color: white;
+        flex-shrink: 0;
+        overflow: hidden;
+        user-select: none;
+
+        img {
+          width: 100%;
+          height: 100%;
+          background-color: white;
+        }
+      }
+
+      .name {
+        font-size: 12px;
+        text-align: center;
+        color: #8f959e;
+        transform: scale(0.84);
+        text-align: center;
+        line-height: 20px;
+        word-break: break-all;
+        overflow: hidden;
+      }
+
+      .name-active {
+        color: #508afe;
+        font-weight: 600;
+      }
+    }
+
+    &.header-shadow {
+      box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
+    }
+  }
 }
 
-/* header start */
-.aside-box .header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0 15px;
-}
-
-.aside-box .header .from {
-  flex: 1 1;
-  flex-shrink: 0;
-  height: 40px;
-}
-
-.aside-box .header .from >>> .el-input .el-input__inner {
-  border-radius: 20px;
-  width: 240px;
-}
-
-.aside-box .header .tools {
-  flex-basis: 32px;
-  flex-shrink: 0;
-  height: 32px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  line-height: 32px;
-  text-align: center;
-  position: relative;
-  user-select: none;
-}
-
-.aside-box .header .tools .tools-menu {
-  position: absolute;
-  right: 0;
-  top: 38px;
-  width: 100px;
-  min-height: 80px;
-  box-sizing: border-box;
-  background-color: rgba(31, 35, 41, 0.9);
-  border-radius: 5px;
-  z-index: 1;
-  padding: 3px 0;
-}
-
-.aside-box .header .tools .tools-menu .menu-item {
-  height: 40px;
-  line-height: 40px;
-  color: white;
-  font-size: 14px;
-}
-
-.aside-box .header .tools .tools-menu .menu-item:hover {
-  background-color: rgba(70, 72, 73, 0.9);
-}
-
-/* header end */
-
-/* subheader start */
-
-.aside-box .header-shadow {
-  box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
-}
-
-.aside-box .subheader {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 3px 8px 10px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.aside-box .subheader .top-item {
-  flex-basis: 41px;
-  flex-shrink: 0;
-  height: 50px;
-  margin: 0 1px 6px 1px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.aside-box .subheader .top-item .avatar {
-  flex-basis: 32px;
-  width: 32px;
-  height: 32px;
-  background-color: #508afe;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 10px;
-  color: white;
-  flex-shrink: 0;
-  overflow: hidden;
-  user-select: none;
-}
-
-.aside-box .subheader .top-item .avatar img {
-  width: 100%;
-  height: 100%;
-  background-color: white;
-}
-
-.aside-box .subheader .top-item .name {
-  font-size: 12px;
-  text-align: center;
-  color: #8f959e;
-  transform: scale(0.84);
-  text-align: center;
-  line-height: 20px;
-  word-break: break-all;
-  overflow: hidden;
-}
-
-.aside-box .subheader .top-item .name-active {
-  color: #508afe;
-  font-weight: 600;
-}
-
-/* subheader end */
-
-/* aside main start */
 .aside-box .main {
   overflow: hidden;
+  padding: 0;
+
+  .empty-data {
+    text-align: center;
+    padding-top: 40px;
+    color: #ccc;
+  }
+
+  .main-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 3px 10px 3px 10px;
+    align-items: center;
+    user-select: none;
+
+    .title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1f2329;
+    }
+
+    .icon {
+      cursor: pointer;
+    }
+  }
+
+  .talk-item {
+    padding: 8px 10px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    border-left: 3px solid white;
+    transition: 0.2s ease-in;
+
+    .avatar {
+      height: 35px;
+      width: 35px;
+      flex-basis: 35px;
+      flex-shrink: 0;
+      background-color: #508afe;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      user-select: none;
+      transition: ease 1s;
+      position: relative;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 3px;
+      }
+
+      .top-mask {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(22, 25, 29, 0.6);
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: white;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      &:hover .top-mask {
+        display: flex;
+      }
+    }
+
+    .card {
+      height: 40px;
+      display: flex;
+      align-content: center;
+      flex-direction: column;
+      flex: 1 1;
+      margin-left: 10px;
+      overflow: hidden;
+
+      .title {
+        width: 100%;
+        height: 20px;
+        display: flex;
+        align-items: center;
+
+        .card-name {
+          color: #1f2329;
+          font-size: 14px;
+          line-height: 20px;
+          flex: 1 1;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+
+          .nickname {
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 3px;
+          }
+
+          .top {
+            color: #dc9b04 !important;
+            background-color: #faf1d1 !important;
+          }
+
+          .group {
+            color: #3370ff !important;
+            background-color: #e1eaff !important;
+            font-size: 13px;
+          }
+
+          .disturb {
+            color: #98999c !important;
+            background-color: #ecedf1 !important;
+            font-size: 12px;
+          }
+
+          .disturb i {
+            font-size: 12px;
+          }
+        }
+      }
+
+      .card-time {
+        color: #8f959e;
+        font-size: 12px;
+        margin-left: 10px;
+        user-select: none;
+      }
+
+      .content {
+        font-size: 10px;
+        line-height: 18px;
+        color: #8f959e;
+        overflow: hidden;
+        margin-top: 3px;
+        font-weight: 300;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        .online-color {
+          color: #4aa71c;
+          font-weight: 400;
+        }
+      }
+    }
+
+    &:hover {
+      background-color: #eff0f1;
+    }
+
+    &.active-border {
+      border-color: #3370ff;
+      background-color: #eff0f1;
+    }
+  }
 }
 
-.aside-box >>> .el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-
-.aside-box .main .main-menu {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 3px 10px 3px 10px;
-  align-items: center;
-  user-select: none;
-}
-
-.aside-box .main .main-menu .title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #1f2329;
-}
-
-.aside-box .main .main-menu .icon {
-  cursor: pointer;
-}
-
-.aside-box .talk-item-empty {
-  text-align: center;
-  padding-top: 40px;
-  color: #ccc;
-}
-
-.aside-box .talk-item {
-  padding: 8px 10px;
-  height: 50px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-  border-left: 3px solid white;
-  transition: 0.2s ease-in;
-}
-
-.aside-box .talk-item-border {
-  border-color: #3370ff;
-  background-color: #eff0f1;
-}
-
-.aside-box .talk-item:hover {
-  background-color: #eff0f1;
-}
-
-.talk-item .avatar {
-  height: 35px;
-  width: 35px;
-  flex-basis: 35px;
-  flex-shrink: 0;
-  background-color: #508afe;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: white;
-  user-select: none;
-  transition: ease 1s;
-  position: relative;
+.panel-box {
   overflow: hidden;
-}
-
-.talk-item .avatar img {
-  width: 100%;
   height: 100%;
-  background-color: white;
-  border-radius: 3px;
-}
+  padding: 0;
 
-.talk-item .avatar .top-mask {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(22, 25, 29, 0.6);
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: white;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-}
+  .friendly-tips {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    font-size: 24px;
+    background-color: white;
+    user-select: none;
 
-.talk-item .avatar:hover .top-mask {
-  display: flex;
-}
-
-.talk-item .card {
-  height: 40px;
-  display: flex;
-  align-content: center;
-  flex-direction: column;
-  flex: 1 1;
-  margin-left: 10px;
-  overflow: hidden;
-}
-
-.talk-item .card .title {
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.talk-item .card .title .card-name {
-  color: #1f2329;
-  font-size: 14px;
-  line-height: 20px;
-  flex: 1 1;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-
-.talk-item .card .title .card-name .nickname {
-  font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-right: 3px;
-}
-
-.talk-item .online-color {
-  color: #4aa71c;
-  font-weight: 400;
-}
-
-.top {
-  color: #dc9b04 !important;
-  background-color: #faf1d1 !important;
-}
-
-.group {
-  color: #3370ff !important;
-  background-color: #e1eaff !important;
-  font-size: 13px;
-}
-
-.disturb {
-  color: #98999c !important;
-  background-color: #ecedf1 !important;
-  font-size: 12px;
-}
-
-.disturb i {
-  font-size: 12px;
-}
-
-.aside-box .talk-item .card .title .card-time {
-  color: #8f959e;
-  font-size: 12px;
-  margin-left: 10px;
-  user-select: none;
-}
-
-.aside-box .talk-item .card .content {
-  font-size: 10px;
-  line-height: 18px;
-  color: #8f959e;
-  overflow: hidden;
-  margin-top: 3px;
-  font-weight: 300;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-/* aside main end */
-
-.reserve-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-  font-size: 24px;
-  background-color: white;
-}
-
-/* search-item */
-.search-item {
-  display: flex;
-  height: 50px;
-  /* background-color: red; */
-  margin-top: 2px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-  /* border-bottom: 1px solid #ece5e5; */
-}
-
-.search-item .avatar {
-  height: 35px;
-  width: 35px;
-  flex-basis: 35px;
-  flex-shrink: 0;
-  background-color: #508afe;
-  border-radius: 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: white;
-  user-select: none;
-  transition: ease 1s;
-  position: relative;
-  overflow: hidden;
-}
-
-.search-item .avatar img {
-  height: 100%;
-  width: 100%;
-  background-color: white;
-}
-
-.search-item .card {
-  height: 40px;
-  display: flex;
-  align-content: center;
-  flex-direction: column;
-  flex: 1 1;
-  margin-left: 10px;
-  overflow: hidden;
-}
-
-.search-item .card .title {
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.search-item .card .content {
-  font-size: 10px;
-  line-height: 18px;
-  color: #8f959e;
-  overflow: hidden;
-  margin-top: 3px;
-  font-weight: 300;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    p {
+      width: 100%;
+      font-weight: 300;
+      text-align: center;
+      font-size: 15px;
+      color: #b9b4b4;
+      margin-top: -30px;
+    }
+  }
 }
 </style>

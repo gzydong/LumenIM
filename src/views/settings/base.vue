@@ -1,22 +1,31 @@
 <template>
-  <div style="height: 100%;overflow-y: auto;">
+  <div class="box">
     <div class="container">
       <h4>设置个人信息</h4>
       <el-row>
-        <el-col :span="16">
+        <el-col :span="15">
           <el-form ref="form" :model="form" :rules="rules">
             <el-form-item label="登录账号:">
-              <p>{{form.mobile}}</p>
+              <p>{{ form.mobile }}</p>
             </el-form-item>
             <el-form-item label="电子邮箱:">
               <p>
-                <span>{{form.email?form.email:'未设置邮箱'}}</span>
-                <el-button type="text" icon="el-icon-edit-outline" style="margin-left: 20px;font-weight: 300;"
-                  @click="toEmail">{{form.email?'修改邮箱':'设置邮箱'}}</el-button>
+                <span>{{ form.email ? form.email : "未设置邮箱" }}</span>
+                <el-button
+                  type="text"
+                  icon="el-icon-edit-outline"
+                  style="margin-left: 20px; font-weight: 300"
+                  @click="toEmail"
+                  >{{ form.email ? "修改邮箱" : "设置邮箱" }}</el-button
+                >
               </p>
             </el-form-item>
             <el-form-item label="昵称:" prop="nickname">
-              <el-input v-model="form.nickname" size="medium" placeholder="给自己起个名字" />
+              <el-input
+                v-model="form.nickname"
+                size="medium"
+                placeholder="给自己起个名字"
+              />
             </el-form-item>
             <el-form-item label="性别:">
               <el-radio-group v-model="form.gender">
@@ -25,10 +34,21 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="座右铭:">
-              <el-input type="textarea" v-model="form.motto" rows="3" placeholder="编辑我的座右铭..." />
+              <el-input
+                type="textarea"
+                v-model="form.motto"
+                rows="3"
+                placeholder="编辑我的座右铭..."
+              />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit" size="medium" :loading="loading">更新</el-button>
+              <el-button
+                type="primary"
+                @click="onSubmit"
+                size="medium"
+                :loading="loading"
+                >立即修改</el-button
+              >
             </el-form-item>
           </el-form>
         </el-col>
@@ -36,9 +56,11 @@
           <div class="avatar-box">
             <img :src="form.avatar" v-show="form.avatar" />
             <div class="upload-icon"><i class="el-icon-upload"></i></div>
-            <div class="upload-mask" @click="isAvatarCropper = true"><i class="el-icon-plus"></i></div>
+            <div class="upload-mask" @click="isAvatarCropper = true">
+              <i class="el-icon-plus"></i>
+            </div>
           </div>
-          <p style="margin-top: 20px;">设置头像</p>
+          <p>设置头像</p>
         </el-col>
       </el-row>
     </div>
@@ -46,142 +68,140 @@
     <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
   </div>
 </template>
-
 <script>
-  import AvatarCropper from '@/components/layout/AvatarCropper';
-  import {
-    ServeEditUserSetup,
-    ServeFindUserDetail
-  } from '@/api/user';
-  
-  export default {
-    name: 'UsrBasePage',
-    components: {
-      AvatarCropper
-    },
-    data() {
-      return {
-        isAvatarCropper: false,
-        form: {
-          nickname: '',
-          gender: '',
-          avatar: '',
-          motto: '',
-          email: '',
-          mobile: '',
-        },
-        rules: {
-          nickname: [{
-            required: true,
-            message: '用户昵称不能为空!',
-            trigger: 'blur'
-          }]
-        },
+import AvatarCropper from "@/components/layout/AvatarCropper";
+import { ServeEditUserSetup, ServeFindUserDetail } from "@/api/user";
 
-        loading: false,
+export default {
+  name: "UsrBasePage",
+  components: {
+    AvatarCropper,
+  },
+  data() {
+    return {
+      isAvatarCropper: false,
+      form: {
+        nickname: "",
+        gender: "",
+        avatar: "",
+        motto: "",
+        email: "",
+        mobile: "",
+      },
+      rules: {
+        nickname: [
+          {
+            required: true,
+            message: "用户昵称不能为空!",
+            trigger: "blur",
+          },
+        ],
+      },
+
+      loading: false,
+    };
+  },
+  created() {
+    this.getUserDetail();
+  },
+  methods: {
+    toEmail() {
+      this.$router.push({
+        path: "/settings/security",
+      });
+    },
+    onSubmit() {
+      this.$refs["form"].validate((valid) => {
+        if (!valid) return false;
+        this.editUserDetail();
+      });
+    },
+
+    // 关闭头像裁剪弹出层
+    closeAvatarCropper(type, avatar = "") {
+      this.isAvatarCropper = false;
+      if (type == 1 && avatar != "") {
+        this.form.avatar = avatar;
       }
     },
-    created() {
-      this.getUserDetail();
-    },
-    methods: {
-      toEmail() {
-        this.$router.push({
-          path: '/settings/security'
-        })
-      },
-      onSubmit() {
-        this.$refs['form'].validate((valid) => {
-          if (!valid) return false;
-          this.editUserDetail();
-        });
-      },
 
-      // 关闭头像裁剪弹出层
-      closeAvatarCropper(type, avatar = '') {
-        this.isAvatarCropper = false;
-        if (type == 1 && avatar != '') {
-          this.form.avatar = avatar;
+    // 获取用户信息
+    getUserDetail() {
+      ServeFindUserDetail().then((res) => {
+        if (res.code == 200) {
+          this.form.mobile = res.data.mobile.replace(
+            /(\d{3})\d{4}(\d{4})/,
+            "$1****$2"
+          );
+          this.form.nickname = res.data.nickname;
+          this.form.avatar = res.data.avatar;
+          this.form.motto = res.data.motto;
+          this.form.email = res.data.email;
+          this.form.gender = res.data.gender;
         }
-      },
+      });
+    },
 
-      // 获取用户信息
-      getUserDetail() {
-        ServeFindUserDetail().then((res) => {
+    // 修改用户信息
+    editUserDetail() {
+      this.loading = true;
+      let _this = this;
+      ServeEditUserSetup({
+        nickname: this.form.nickname,
+        avatar: this.form.avatar,
+        motto: this.form.motto,
+        gender: this.form.gender,
+      })
+        .then((res) => {
           if (res.code == 200) {
-            this.form.mobile = res.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-            this.form.nickname = res.data.nickname;
-            this.form.avatar = res.data.avatar;
-            this.form.motto = res.data.motto;
-            this.form.email = res.data.email;
-            this.form.gender = res.data.gender;
-          }
-        });
-      },
-
-      // 修改用户信息
-      editUserDetail() {
-        this.loading = true;
-        let _this = this;
-        ServeEditUserSetup({
-          nickname: this.form.nickname,
-          avatar: this.form.avatar,
-          motto: this.form.motto,
-          gender: this.form.gender
-        }).then((res) => {
-          if (res.code == 200) {
-            this.$store.commit('UPDATE_USER_INFO', {
+            this.$store.commit("UPDATE_USER_INFO", {
               nickname: this.form.nickname,
               sex: this.form.gender,
               signature: this.form.motto,
-              avatar: this.form.avatar
+              avatar: this.form.avatar,
             });
 
             this.$message({
-              message: '信息修改成功...',
-              type: 'success'
+              message: "信息修改成功...",
+              type: "success",
             });
           }
-        }).finally(function () {
+        })
+        .finally(function () {
           _this.loading = false;
         });
-      },
     },
-  };
-
+  },
+};
 </script>
-<style scoped>
-  .container h4 {
-    color: rgba(0, 0, 0, .85);
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 28px;
-    margin-bottom: 12px;
-  }
+<style lang="less" scoped>
+.box {
+  height: 100%;
+  overflow-y: auto;
+}
 
-  .container>>>.el-input__inner,
-  .container>>>.el-textarea__inner {
-    border-radius: 0;
-  }
+.container h4 {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-bottom: 12px;
+}
 
-  .container>>>.el-button {
-    border-radius: 2px;
-  }
+.container /deep/ .el-input__inner,
+.container /deep/ .el-textarea__inner {
+  border-radius: 0;
+}
+.container /deep/ .el-button {
+  border-radius: 2px;
+  font-weight: 400;
+}
 
-  .action {
-    color: rgb(24, 144, 255);
-    font-size: 14px;
-    font-weight: 300;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .avatar-col {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-  }
+.avatar-col {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
   .avatar-box {
     width: 180px;
@@ -190,72 +210,76 @@
     border-radius: 50%;
     position: relative;
     cursor: pointer;
-    transition: ease .5s;
-  }
+    transition: ease 0.5s;
 
-  .avatar-box .upload-icon {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(184, 184, 197, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .upload-icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(184, 184, 197, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-  .avatar-box .upload-icon i {
-    font-size: 30px;
-    color: #1bb0f3;
-  }
+      i {
+        font-size: 30px;
+        color: #1bb0f3;
+      }
+    }
 
-  .avatar-box img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    z-index: 0;
-  }
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      z-index: 0;
+    }
 
-  .avatar-box .upload-mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: 3;
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
+    .upload-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
+      z-index: 3;
+      display: none;
+      justify-content: center;
+      align-items: center;
 
-  .avatar-box .upload-mask i {
-    font-size: 30px;
-    color: white;
-  }
+      i {
+        font-size: 30px;
+        color: white;
+      }
+    }
 
-  .avatar-box:hover .upload-mask {
-    display: flex;
-  }
-
-  @media screen and (max-width: 1150px) {
-    .avatar-box {
-      width: 130px;
-      height: 130px;
+    &:hover .upload-mask {
+      display: flex;
     }
   }
 
-  @media screen and (max-width: 750px) {
-    .avatar-box {
-      width: 100px;
-      height: 100px;
-    }
+  > p {
+    margin-top: 20px;
   }
+}
 
+@media screen and (max-width: 1150px) {
+  .avatar-box {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .avatar-box {
+    width: 100px;
+    height: 100px;
+  }
+}
 </style>

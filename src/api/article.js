@@ -7,6 +7,7 @@ import {
 import {
   getToken
 } from '@/utils/auth';
+import config from '@/config/config'
 
 //查询用户文集分类服务接口
 export const ServeGetArticleClass = (data) => {
@@ -120,7 +121,7 @@ export const ServeGetRecoverAnnexList = () => {
 
 //下载笔记附件服务接口
 export const ServeDownloadAnnex = (annex_id) => {
-  let api = process.env.API_URL;
+  let api = config.api_url;
   try {
     let link = document.createElement('a');
     link.href = `${api}/api/v1/download/article-annex?annex_id=${annex_id}&token=${getToken()}`

@@ -132,7 +132,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
 .base-mask {
   display: flex;
   justify-content: center;
@@ -145,139 +145,120 @@ export default {
   border-radius: 3px;
   overflow: hidden;
   background-color: white;
+
+  .header {
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    text-indent: 15px;
+    border-bottom: 1px solid #f5eeee;
+
+    i {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .main {
+    overflow: hidden;
+
+    .loading {
+      width: 100%;
+      height: 70%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+
+      p {
+        margin-top: 20px;
+      }
+
+      .svg-icon {
+        width: 80px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .notice-item {
+      cursor: pointer;
+      min-height: 76px;
+      overflow: hidden;
+      border-bottom: 1px dashed #e2dcdc;
+      padding-bottom: 5px;
+      margin: 2px 20px 15px 15px;
+
+      h6 {
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      .title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        height: 30px;
+
+        .left-title {
+          flex: 1 1;
+          height: 100%;
+          line-height: 30px;
+          font-size: 14px;
+        }
+
+        .right-tools {
+          flex-basis: 70px;
+          flex-shrink: 0;
+          height: 100%;
+          line-height: 30px;
+          text-align: right;
+          font-weight: 300;
+          font-size: 12px;
+          color: #2196f3;
+        }
+      }
+
+      .datetime {
+        font-size: 10px;
+        color: #a59696;
+        font-weight: 300;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 10px 0;
+
+        .text {
+          margin: 0 5px;
+        }
+
+        .nickname {
+          color: #2196f3;
+          font-weight: 400;
+        }
+      }
+
+      .retract {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .content {
+        font-size: 12px;
+        line-height: 28px;
+        font-weight: 500;
+        color: #7d7a7a;
+      }
+    }
+  }
 }
 
-.container .header {
-  height: 50px;
-  line-height: 50px;
-  position: relative;
-  text-indent: 15px;
-  border-bottom: 1px solid #f5eeee;
-}
-
-.container .header .close-btn {
-  position: absolute;
-  right: 20px;
-  top: 15px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.container >>> .el-scrollbar__wrap {
+/deep/.el-scrollbar__wrap {
   overflow-x: hidden;
-}
-
-.container .main {
-  overflow: hidden;
-}
-
-.notice-item {
-  cursor: pointer;
-  min-height: 76px;
-  overflow: hidden;
-  border-bottom: 1px dashed #e2dcdc;
-  margin-bottom: 15px;
-  margin-right: 15px;
-  padding-bottom: 5px;
-  margin: 2px 20px 15px 15px;
-}
-
-.notice-item h6 {
-  font-size: 15px;
-  font-weight: 300;
-}
-
-.notice-item .title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: 30px;
-}
-
-.notice-item .title .left-title {
-  flex: 1 1;
-  height: 100%;
-  line-height: 30px;
-  font-size: 14px;
-}
-
-.notice-item .title .right-tools {
-  flex-basis: 70px;
-  flex-shrink: 0;
-  height: 100%;
-  line-height: 30px;
-  text-align: right;
-  font-weight: 300;
-  font-size: 12px;
-  color: #2196f3;
-}
-
-.notice-item .datetime {
-  font-size: 10px;
-  color: #a59696;
-  font-weight: 300;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.notice-item .datetime .text {
-  margin: 0 5px;
-}
-
-.notice-item .datetime .nickname {
-  color: #2196f3;
-  font-weight: 400;
-}
-
-.notice-item .retract {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.notice-item .content {
-  font-size: 12px;
-  line-height: 28px;
-  font-weight: 500;
-  color: #7d7a7a;
-}
-
-.notice-box {
-  position: relative;
-  padding: 28px;
-  background: #fff;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  overflow: hidden;
-  box-sizing: border-box;
-  height: 415px;
-  width: 420px;
-}
-
-.notice-box h4 {
-  margin-bottom: 20px;
-  font-weight: 400;
-}
-
-.loading {
-  width: 100%;
-  height: 70%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.loading p {
-  margin-top: 20px;
-}
-
-.loading .svg-icon {
-  width: 80px;
-  margin-bottom: 10px;
 }
 </style>

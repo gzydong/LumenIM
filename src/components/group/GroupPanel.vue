@@ -5,7 +5,7 @@
       <el-tooltip content="发送消息" placement="top">
         <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
       </el-tooltip>
-      <i class="close-btn el-icon-close" @click="$emit('close')"></i>
+      <i class="el-icon-close" @click="$emit('close')"></i>
     </el-header>
 
     <el-main class="main lm-scrollbar">
@@ -67,10 +67,10 @@
       </div>
 
       <!-- 预留 -->
-      <!-- <div class="list-item list-item-flex">
+      <div class="list-item list-item-flex">
         <span>全员禁言：</span>
         <el-switch v-model="detail.no_message" inactive-color="#e0d6d6" />
-      </div> -->
+      </div>
 
       <div class="list-item">
         <span>群成员：</span>
@@ -206,7 +206,6 @@
     />
   </el-container>
 </template>
-
 <script>
 import { ServeSetNotDisturb } from "@/api/chat";
 
@@ -447,44 +446,43 @@ export default {
   },
 };
 </script>
-
-<style scoped>
+<style lang="less" scoped>
 .container {
   height: 100%;
-}
 
-.container .header {
-  height: 60px;
-  line-height: 60px;
-  padding: 0;
-  text-align: center;
-  box-shadow: -1px 0px 5px 0px #cccccc45;
-  position: relative;
-}
+  .header {
+    height: 60px;
+    line-height: 60px;
+    padding: 0;
+    text-align: center;
+    box-shadow: -1px 0px 5px 0px #cccccc45;
+    position: relative;
 
-.container .header span {
-  font-size: 16px;
-  font-weight: 400;
-}
+    span {
+      font-size: 16px;
+      font-weight: 400;
+    }
 
-.container .header .send-message {
-  position: absolute;
-  left: 15px;
-  top: 22px;
-  font-size: 18px;
-  cursor: pointer;
-}
+    .send-message {
+      position: absolute;
+      left: 15px;
+      top: 22px;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-.container .header .close-btn {
-  position: absolute;
-  right: 15px;
-  top: 22px;
-  font-size: 18px;
-  cursor: pointer;
-}
+    .el-icon-close {
+      position: absolute;
+      right: 15px;
+      top: 22px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  }
 
-.container .main {
-  padding: 0;
+  .main {
+    padding: 0;
+  }
 }
 
 .list-item {
@@ -492,67 +490,87 @@ export default {
   padding: 16px 16px 0;
   min-height: 18px;
   font-size: 14px;
+
+  .edit-visit-card {
+    position: initial;
+    color: #a29f9f;
+  }
+
+  .edit-remark-icon {
+    margin-left: 5px;
+    color: rgb(169, 184, 187);
+    position: absolute;
+    top: 20px;
+    cursor: pointer;
+  }
+
+  .edit-input {
+    width: 46%;
+    height: 25px;
+    line-height: 25px;
+    border: 1px solid #92cbff;
+    padding-left: 5px;
+    border-radius: 3px;
+  }
+
+  .input-submit {
+    width: 55px;
+    text-align: center;
+    height: 25px;
+    line-height: 25px;
+    background-color: #008cee;
+    border-radius: 2px;
+    display: inline-block;
+    color: #fff !important;
+    font-size: 12px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  .group-setting-title {
+    max-width: 250px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+
+  .group-boss-name {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    max-width: 180px;
+    position: relative;
+    top: 4px;
+  }
+
+  .group-invite {
+    height: 30px;
+    background: #fdf2f2;
+    line-height: 30px;
+    text-align: center;
+    color: #f3848e;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &:active {
+      background: #f7e5e5;
+    }
+  }
+
+  .more {
+    color: #409eff;
+    cursor: pointer;
+    font-size: 12px;
+  }
 }
 
 .list-item-flex {
   display: flex;
   justify-content: space-between;
-}
-
-.list-item .edit-visit-card {
-  position: initial;
-  color: #a29f9f;
-}
-
-.list-item .edit-remark-icon {
-  margin-left: 5px;
-  color: rgb(169, 184, 187);
-  position: absolute;
-  top: 20px;
-  cursor: pointer;
-}
-
-.list-item .edit-input {
-  width: 46%;
-  height: 25px;
-  line-height: 25px;
-  border: 1px solid #92cbff;
-  padding-left: 5px;
-  border-radius: 3px;
-}
-
-.list-item .input-submit {
-  width: 55px;
-  text-align: center;
-  height: 25px;
-  line-height: 25px;
-  background-color: #008cee;
-  border-radius: 2px;
-  display: inline-block;
-  color: #fff !important;
-  font-size: 12px;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.list-item .group-setting-title {
-  max-width: 250px;
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-.list-item .group-boss-name {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: normal;
-  max-width: 180px;
-  position: relative;
-  top: 4px;
 }
 
 .list-item-tips {
@@ -562,26 +580,6 @@ export default {
   padding-left: 16px;
   padding-right: 16px;
   font-weight: 300;
-}
-
-.list-item .group-invite {
-  height: 30px;
-  background: #fdf2f2;
-  line-height: 30px;
-  text-align: center;
-  color: #f3848e;
-  cursor: pointer;
-  border-radius: 2px;
-}
-
-.list-item .group-invite:active {
-  background: #f7e5e5;
-}
-
-.list-item .more {
-  color: #409eff;
-  cursor: pointer;
-  font-size: 12px;
 }
 
 .group-notice {
@@ -594,11 +592,17 @@ export default {
   box-shadow: -2px -3px 18px #eae4e4;
   padding: 10px;
   margin-bottom: 20px;
-}
 
-.member-view-box input::-webkit-input-placeholder {
-  color: #ccc9c9;
-  font-size: 13px;
+  .addGroupFired {
+    border: 1px dashed #c3bbbb;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0px 5px 5px 4px;
+    line-height: 40px;
+    color: #c3bbbb;
+  }
 }
 
 .member-view-box {
@@ -607,36 +611,41 @@ export default {
   margin-top: 20px;
   margin-bottom: 15px;
   position: relative;
-}
 
-.member-view-box .i-sousuo {
-  color: rgb(179, 176, 176);
-  position: absolute;
-  left: 10px;
-  top: 9px;
-}
+  input {
+    width: calc(100% - 40px);
+    height: 30px;
+    line-height: 28px;
+    border-radius: 3px;
+    border: 1px solid #f1e9e9;
+    color: #b3b0b0;
+    font-size: 13px;
+    padding: 0 10px 0 30px;
 
-.member-view-box input {
-  width: calc(100% - 40px);
-  height: 30px;
-  line-height: 28px;
-  border-radius: 3px;
-  border: 1px solid #f1e9e9;
-  color: #b3b0b0;
-  font-size: 13px;
-  padding: 0 10px 0 30px;
-}
+    &::-webkit-input-placeholder {
+      color: #ccc9c9;
+      font-size: 13px;
+    }
+  }
 
-.member-view-box span {
-  position: relative;
-}
+  .i-sousuo {
+    color: rgb(179, 176, 176);
+    position: absolute;
+    left: 10px;
+    top: 9px;
+  }
 
-.member-view-box span i {
-  font-size: 24px;
-  top: -3px;
-  left: 10px;
-  position: absolute;
-  color: #ccc;
+  span {
+    position: relative;
+
+    i {
+      font-size: 24px;
+      top: -3px;
+      left: 10px;
+      position: absolute;
+      color: #ccc;
+    }
+  }
 }
 
 .row-header {
@@ -644,19 +653,19 @@ export default {
   height: 30px;
   margin-bottom: 10px;
   border-bottom: 1px solid #e0dddd;
-}
 
-.row-header div {
-  height: 30px;
-  line-height: 30px;
-}
+  div {
+    height: 30px;
+    line-height: 30px;
 
-.row-header div:nth-child(2) {
-  text-align: center;
-}
+    &:nth-child(2) {
+      text-align: center;
+    }
 
-.row-header div:nth-child(3) {
-  text-align: right;
+    &:nth-child(3) {
+      text-align: right;
+    }
+  }
 }
 
 .row-items {
@@ -664,52 +673,40 @@ export default {
   height: 30px;
   margin-bottom: 3px;
   font-size: 12px;
-}
 
-.row-items:hover {
-  background: #f6f6f6;
-  padding: 0 5px;
-  font-size: 12px;
-  border-radius: 3px;
-}
+  &:hover {
+    background: #f6f6f6;
+    padding: 0 5px;
+    font-size: 12px;
+    border-radius: 3px;
+  }
 
-.row-items div {
-  height: 30px;
-  line-height: 30px;
-}
+  div {
+    height: 30px;
+    line-height: 30px;
 
-.row-items div:nth-child(2) {
-  text-align: center;
-}
+    &:nth-child(2) {
+      text-align: center;
+    }
 
-.row-items div:nth-child(3) {
-  text-align: right;
-}
+    &:nth-child(3) {
+      text-align: right;
+    }
+  }
 
-.row-items img {
-  display: inline-block;
-  border-radius: 50%;
-  position: relative;
-  top: 4px;
-}
+  img {
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    top: 4px;
+  }
 
-.row-items .nickname {
-  margin-left: 5px;
-}
-
-.row-items .nickname:hover {
-  color: #3685d6;
-}
-
-.member-box .addGroupFired {
-  border: 1px dashed #c3bbbb;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: block;
-  margin: 0px 5px 5px 4px;
-  line-height: 40px;
-  color: #c3bbbb;
+  .nickname {
+    margin-left: 5px;
+    &:hover {
+      color: #3685d6;
+    }
+  }
 }
 
 .signout-box {
@@ -723,42 +720,44 @@ export default {
   -webkit-animation: showFooter 0.35s ease-in-out;
   -moz-animation: showFooter 0.35s ease-in-out;
   animation: showFooter 0.35s ease-in-out;
-}
 
-.signout-box p:first-child {
-  text-align: center;
-  height: 35px;
-  line-height: 35px;
-}
+  p {
+    &:first-child {
+      text-align: center;
+      height: 35px;
+      line-height: 35px;
+    }
 
-.signout-box p:nth-child(2) {
-  text-align: center;
-  font-size: 12px;
-  color: #cccccc;
+    &:nth-child(2) {
+      text-align: center;
+      font-size: 12px;
+      color: #cccccc;
+    }
+  }
 }
 
 .signout-btn {
   text-align: center;
   margin-top: 10px;
-}
 
-.signout-box button {
-  height: 30px;
-  width: 90px;
-  line-height: 30px;
-  background: #007fbb;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 14px;
-}
+  button {
+    height: 30px;
+    width: 90px;
+    line-height: 30px;
+    background: #007fbb;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
 
-.signout-btn button:first-child {
-  background: #ff3333;
-  color: white;
-}
+    &:first-child {
+      background: #ff3333;
+      color: white;
+    }
 
-.signout-btn button:last-child {
-  background: #f1eded;
+    &:last-child {
+      background: #f1eded;
+    }
+  }
 }
 
 .container .footer {
@@ -767,22 +766,22 @@ export default {
   line-height: 60px;
   text-align: center;
   background-color: #f8f8f8;
-}
 
-.container .footer button {
-  width: 180px;
-  height: 35px;
-  line-height: 35px;
-  background: #ed3c3b;
-  border-radius: 3px;
-  color: white;
-  cursor: pointer;
-  font-size: 12px;
-  margin: auto auto;
-}
+  button {
+    width: 180px;
+    height: 35px;
+    line-height: 35px;
+    background: #ed3c3b;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    margin: auto auto;
 
-.container .footer button:active {
-  background: #f5b8b8;
+    &:active {
+      background: #f5b8b8;
+    }
+  }
 }
 
 @keyframes showFooter {

@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-container id="auth-container">
-      <el-main style="position: relative">
+      <el-main>
         <div id="logo-name" class="animated slideInLeft">
           {{ $store.state.website_name }}
         </div>
         <div id="login-box">
           <div class="header">快捷登录</div>
-          <div class="main" style="width: 100%">
+          <div class="main">
             <el-form ref="form" :model="form" :rules="rules">
               <el-form-item prop="username">
                 <el-input
@@ -69,27 +69,19 @@
         </div>
         <div class="copyright" v-html="$store.state.copyright"></div>
       </el-main>
-      <el-aside width="500px" class="login-broadside">
-        <p class="describe">
-          {{ $store.state.website_name }}
-          是一款使用vue开发的聊天项目，功能点包含单聊、群聊,
-          消息类型包含文字、图片、文件、自定义表情包及代码块。新增编辑笔记及笔记分享好友功能
-          ...
-        </p>
-      </el-aside>
     </el-container>
 
-    <div class="fly bg-fly-circle1"></div>
-    <div class="fly bg-fly-circle2"></div>
-    <div class="fly bg-fly-circle3"></div>
-    <div class="fly bg-fly-circle4"></div>
+    <div class="fly-box">
+      <div class="fly bg-fly-circle1"></div>
+      <div class="fly bg-fly-circle2"></div>
+      <div class="fly bg-fly-circle3"></div>
+      <div class="fly bg-fly-circle4"></div>
+    </div>
   </div>
 </template>
-
-<style scoped src="@/assets/css/page/login-auth.css"></style>
 <script>
 import { setToken, setUserInfo } from "@/utils/auth";
-import {isMobile} from "@/utils/validate";
+import { isMobile } from "@/utils/validate";
 import { ServeLogin } from "@/api/user";
 
 export default {
@@ -153,7 +145,7 @@ export default {
       ServeLogin({
         mobile: this.form.username,
         password: this.form.password,
-        platform:'web'
+        platform: "web",
       })
         .then((res) => {
           this.loginLoading = false;
@@ -181,7 +173,7 @@ export default {
                   "此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。",
                 duration: 0,
               });
-            },3000);
+            }, 3000);
           } else {
             this.$notify.info({
               title: "提示",
@@ -202,3 +194,6 @@ export default {
   },
 };
 </script>
+<style lang="less" scoped>
+@import "~@/assets/css/page/login-auth.less";
+</style>

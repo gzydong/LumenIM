@@ -4,30 +4,62 @@
       <el-container class="hv100">
         <el-header class="padding0 header" height="50px">
           <span>绑定邮箱</span>
-          <i class="close-btn el-icon-close" @click="close"></i>
+          <i class="el-icon-close" @click="close"></i>
         </el-header>
         <el-main class="main">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
             <el-form-item prop="email" label="邮箱">
-              <el-input v-model="form.email" placeholder="请填写邮箱地址" class="cuborder-radius"
-                @keyup.enter.native="onSubmit('form')" size="medium" />
+              <el-input
+                v-model="form.email"
+                placeholder="请填写邮箱地址"
+                class="cuborder-radius"
+                @keyup.enter.native="onSubmit('form')"
+                size="medium"
+              />
             </el-form-item>
             <el-form-item prop="sms_code" label="验证码">
-              <el-input v-model="form.sms_code" placeholder="邮件验证码" class="cuborder-radius"
-                @keyup.enter.native="onSubmit('form')" style="width: 185px;" size="medium" maxlength="6" />
+              <el-input
+                v-model="form.sms_code"
+                placeholder="邮件验证码"
+                class="cuborder-radius"
+                @keyup.enter.native="onSubmit('form')"
+                style="width: 185px"
+                size="medium"
+                maxlength="6"
+              />
 
-              <div class="send-code-btn send-sms-disable" v-if="smsLock">正在发送 ...</div>
-              <div class="send-code-btn" v-else-if="smsLock == false && smsLockObj.time == null" @click="sendSms">获取验证码
+              <div class="send-code-btn send-sms-disable" v-if="smsLock">
+                正在发送 ...
               </div>
-              <div class="send-code-btn send-sms-disable" v-else>重新发送({{smsLockObj.time}}s)</div>
-
+              <div
+                class="send-code-btn"
+                v-else-if="smsLock == false && smsLockObj.time == null"
+                @click="sendSms"
+              >
+                获取验证码
+              </div>
+              <div class="send-code-btn send-sms-disable" v-else>
+                重新发送({{ smsLockObj.time }}s)
+              </div>
             </el-form-item>
             <el-form-item prop="password" label="密码">
-              <el-input v-model="form.password" type="password" placeholder="登录密码验证" class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')" size="medium" />
+              <el-input
+                v-model="form.password"
+                type="password"
+                placeholder="登录密码验证"
+                class="cuborder-radius border0"
+                @keyup.enter.native="onSubmit('form')"
+                size="medium"
+              />
             </el-form-item>
-            <el-form-item style="margin-top: 40px;">
-              <el-button type="primary" @click="onSubmit('form')" class="submit-btn" :loading="loading" size="medium">
+            <el-form-item style="margin-top: 40px">
+              <el-button
+                type="primary"
+                @click="onSubmit('form')"
+                class="submit-btn"
+                :loading="loading"
+                size="medium"
+              >
                 立即修改
               </el-button>
             </el-form-item>
@@ -39,195 +71,201 @@
 </template>
 
 <script>
-  import SmsLock from '@/plugins/sms-lock';
-  import {
-    ServeSendEmailCode,
-    ServeEditEmail
-  } from '@/api/user';
+import SmsLock from "@/plugins/sms-lock";
+import { ServeSendEmailCode, ServeEditEmail } from "@/api/user";
 
-  export default {
-    name: 'user-edit-email',
-    data() {
-      return {
-        loading: false,
-        form: {
-          email: '',
-          password: '',
-          sms_code: ''
-        },
-        rules: {
-          email: [{
+export default {
+  name: "user-edit-email",
+  data() {
+    return {
+      loading: false,
+      form: {
+        email: "",
+        password: "",
+        sms_code: "",
+      },
+      rules: {
+        email: [
+          {
             required: true,
-            message: '请输入邮箱地址',
-            trigger: 'blur'
-          }, {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: 'blur'
-          }],
-          password: [{
+            message: "请输入邮箱地址",
+            trigger: "blur",
+          },
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
             required: true,
-            message: '登录密码不能为空!',
-            trigger: 'blur'
-          }],
-          sms_code: [{
+            message: "登录密码不能为空!",
+            trigger: "blur",
+          },
+        ],
+        sms_code: [
+          {
             required: true,
-            message: '验证码不能为空!',
-            trigger: 'blur'
-          }]
-        },
-
-        smsLock: false,
-        smsLockObj: null,
-        isShow: false,
-      };
-    },
-    created() {
-      this.smsLockObj = new SmsLock('CHANGE_EMAIL_SMS', 120);
-    },
-    destroyed() {
-      clearInterval(this.smsLockObj.timer);
-    },
-    methods: {
-      // 显示窗口
-      open() {
-        this.$refs['form'].resetFields();
-        this.isShow = true;
+            message: "验证码不能为空!",
+            trigger: "blur",
+          },
+        ],
       },
 
-      // 关闭窗口
-      close() {
-        this.isShow = false;
-      },
+      smsLock: false,
+      smsLockObj: null,
+      isShow: false,
+    };
+  },
+  created() {
+    this.smsLockObj = new SmsLock("CHANGE_EMAIL_SMS", 120);
+  },
+  destroyed() {
+    clearInterval(this.smsLockObj.timer);
+  },
+  methods: {
+    // 显示窗口
+    open() {
+      this.$refs["form"].resetFields();
+      this.isShow = true;
+    },
 
-      //点击发送邮件验证码
-      sendSms() {
-        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-        if (!mailReg.test(this.form.email)) {
-          this.$refs.form.validateField("email");
-          return false;
-        }
+    // 关闭窗口
+    close() {
+      this.isShow = false;
+    },
 
-        this.smsLock = true;
-        ServeSendEmailCode({
-          email: this.form.email
-        }).then(res => {
+    //点击发送邮件验证码
+    sendSms() {
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      if (!mailReg.test(this.form.email)) {
+        this.$refs.form.validateField("email");
+        return false;
+      }
+
+      this.smsLock = true;
+      ServeSendEmailCode({
+        email: this.form.email,
+      })
+        .then((res) => {
           if (res.code == 200) {
             this.smsLockObj.start();
           }
-        }).finally(() => {
+        })
+        .finally(() => {
           this.smsLock = false;
         });
-      },
+    },
 
-      // 表单验证
-      onSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (!valid) return false;
-          this.changeEmail();
-        });
-      },
+    // 表单验证
+    onSubmit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) return false;
+        this.changeEmail();
+      });
+    },
 
-      // 提交修改手机号
-      changeEmail() {
-        this.loading = true;
-        ServeEditEmail({
-          email: this.form.email,
-          email_code: this.form.sms_code,
-          password: this.form.password
-        }).then(res => {
+    // 提交修改手机号
+    changeEmail() {
+      this.loading = true;
+      ServeEditEmail({
+        email: this.form.email,
+        email_code: this.form.sms_code,
+        password: this.form.password,
+      })
+        .then((res) => {
           if (res.code == 200) {
-            this.$refs['form'].resetFields();
+            this.$refs["form"].resetFields();
             this.$notify({
-              title: '成功',
-              message: '修改邮箱成功...',
-              type: 'success'
+              title: "成功",
+              message: "修改邮箱成功...",
+              type: "success",
             });
 
-            this.$emit('success');
+            this.$emit("success");
             this.close();
           } else {
             this.$message(res.message);
           }
 
           this.loading = false;
-        }).catch(err => {
+        })
+        .catch((err) => {
           this.loading = false;
         });
-      }
     },
-  }
-
+  },
+};
 </script>
 
-<style scoped>
-  .base-mask {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+<style lang="less" scoped>
+.base-mask {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .container {
-    background-color: white;
-    width: 450px;
-    min-height: 340px;
-    border-radius: 3px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px 0 rgba(31, 35, 41, .2);
-  }
+.container {
+  width: 450px;
+  min-height: 340px;
+  background-color: white;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
 
-  .container .header {
+  .header {
     height: 50px;
     line-height: 50px;
     position: relative;
     text-indent: 20px;
     border-bottom: 1px solid #f5eeee;
+
+    i {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
   }
 
-  .container .header .close-btn {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-  .container .main {
+  .main {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
 
-  .cuborder-radius>>>.el-input__inner {
-    border-radius: 1px !important;
-  }
+    .send-code-btn {
+      width: 140px;
+      height: 36px;
+      line-height: 36px;
+      display: inline-block;
+      background: #f3ecec;
+      text-align: center;
+      color: #777373;
+      cursor: pointer;
+      user-select: none;
+      margin-left: 5px;
 
-  .send-code-btn {
-    width: 140px;
-    height: 36px;
-    line-height: 36px;
-    display: inline-block;
-    background: #f3ecec;
-    text-align: center;
-    color: #777373;
-    cursor: pointer;
-    user-select: none;
-    margin-left: 5px;
-  }
+      &:active {
+        background: #e4dbdb;
+      }
+    }
 
-  .send-code-btn:active {
-    background: #e4dbdb;
-  }
+    .send-sms-disable {
+      cursor: not-allowed !important;
+      background: #f7f7f7 !important;
+      color: silver !important;
+    }
 
-  .send-sms-disable {
-    cursor: not-allowed !important;
-    background: #f7f7f7 !important;
-    color: silver !important;
+    .submit-btn {
+      border-radius: 2px;
+      font-weight: 400;
+    }
   }
+}
 
-  .submit-btn {
-    border-radius: 0;
-    width: 150px;
-  }
-
+/deep/.el-input__inner {
+  border-radius: 1px !important;
+}
 </style>
