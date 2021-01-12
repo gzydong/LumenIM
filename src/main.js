@@ -15,7 +15,7 @@ import '@/icons';
 
 // 引入自定义全局css
 import '@/assets/css/im-base.css';
-import './global.less'; // 预留
+import './global.less';
 
 Vue.config.productionTip = false;
 

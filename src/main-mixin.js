@@ -6,14 +6,19 @@ import {
     getToken
 } from '@/utils/auth';
 
-// 加载配置文件
-import config from '@/config/config'
+// 加载配置信息
+import config from '@/config/config';
 
-// 全局引入自定义的WebSocket 插件
+// 全局引入自定义的 WebSocket 插件
 import WsSocket from '@/plugins/socket/ws-socket';
 
-// 引入WebSocket消息处理类
-import SocketResourceHandle from '@/plugins/socket/socket-resource-handle';
+// 引入消息处理类
+import TalkEvent from '@/plugins/socket/event/talk-event';
+import RevokeEvent from '@/plugins/socket/event/revoke-event';
+import LoginEvent from '@/plugins/socket/event/login-event';
+import KeyboardEvent from '@/plugins/socket/event/keyboard-event';
+import GroupJoinEvent from '@/plugins/socket/event/group-join-event';
+import FriendApplyEvent from '@/plugins/socket/event/friend-apply-event';
 
 export default {
     data() {
@@ -46,9 +51,11 @@ export default {
 
         // 连接websocket服务器
         loadWebsocket() {
-            let store = this.$store;
-            this.socket = new WsSocket(config.ws_url, {
-                // Websocket 连接失败回调方法
+            const store = this.$store;
+            const url = `${config.ws_url}?token=` + getToken();
+
+            // 实例化
+            let socket = new WsSocket(url, {
                 onError: (evt) => {
                     console.log('Websocket 连接失败回调方法')
                 },
@@ -60,16 +67,31 @@ export default {
                 onClose: (evt) => {
                     store.commit('UPDATE_SOCKET_STATUS', false);
                 },
-                // Websocket 接收消息回调方法
-                onMessage(evt, event, data) {
-                    new SocketResourceHandle({
-                        event,
-                        data
-                    });
-                }
-            }, getToken);
+            });
 
-            this.socket.initWebSocket();
+            // 绑定接收的事件
+            socket.on('event_talk', (data) => {
+                (new TalkEvent(data)).handle();
+            });
+            socket.on('event_online_status', (data) => {
+                (new LoginEvent(data)).handle();
+            });
+            socket.on('event_keyboard', (data) => {
+                (new KeyboardEvent(data)).handle();
+            });
+            socket.on('event_revoke_talk', (data) => {
+                (new RevokeEvent(data)).handle();
+            });
+            socket.on('event_friend_apply', (data) => {
+                (new FriendApplyEvent(data)).handle();
+            });
+            socket.on('join_group', (data) => {
+                (new GroupJoinEvent(data)).handle();
+            });
+
+            // 连接服务
+            socket.connection();
+            this.socket = socket;
         },
 
         // 更新当前正在对话的用户数据

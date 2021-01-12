@@ -251,7 +251,7 @@
                 <el-main class="padding0">
                   <div id="note-detail">
                     <el-scrollbar :native="false" tag="section" class="hv100">
-                      <div style="padding: 10px">
+                      <div style="padding: 10px;display: none;">
                         <div class="subfield">
                           <p>
                             <span>时间：{{ noteDetail.created_at }}</span>

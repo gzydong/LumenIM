@@ -160,7 +160,6 @@
                         {{ item.remarks }}
                       </div>
                     </div>
-
                     <div class="apply-from" @click.prevent.stop>
                       <el-button
                         size="mini"
@@ -322,22 +321,22 @@
                           item.group_profile ? item.group_profile : "未设置"
                         }}」
                       </div>
-                      <div class="apply-from" @click.prevent.stop>
-                        <el-button
-                          size="mini"
-                          type="primary"
-                          icon="el-icon-s-promotion"
-                          @click="toTalk(2, `2_${item.id}`)"
-                          >发送消息</el-button
-                        >
-                        <el-button
-                          size="mini"
-                          type="danger"
-                          icon="el-icon-delete"
-                          @click="deleteGroup(item)"
-                          >退出群聊
-                        </el-button>
-                      </div>
+                    </div>
+                    <div class="apply-from" @click.prevent.stop>
+                      <el-button
+                        size="mini"
+                        type="primary"
+                        icon="el-icon-s-promotion"
+                        @click="toTalk(2, `2_${item.id}`)"
+                        >发送消息</el-button
+                      >
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        icon="el-icon-delete"
+                        @click="deleteGroup(item)"
+                        >退出群聊
+                      </el-button>
                     </div>
                   </div>
                 </template>
@@ -803,8 +802,8 @@ export default {
   .panel-header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgb(245, 245, 245);
     justify-content: space-between;
+    border-bottom: 1px solid rgb(245, 245, 245);
 
     .wait-btn {
       font-weight: 500;
@@ -839,16 +838,16 @@ export default {
     }
 
     .data-item {
-      height: 60px;
-      margin-bottom: 2px;
-      cursor: pointer;
       display: flex;
       flex-direction: row;
       align-items: center;
+      height: 60px;
+      cursor: pointer;
       padding: 5px 15px;
       position: relative;
-      overflow-x: hidden;
+      overflow: hidden;
       border-bottom: 1px solid #f1ebeb;
+      margin-bottom: 2px;
 
       .avatar {
         height: 35px;
@@ -929,20 +928,18 @@ export default {
       }
 
       .apply-from {
-        position: absolute;
-        right: -120px;
-        top: 0px;
-        height: 100%;
-        width: 120px;
-        display: block;
-        transition: ease 0.5s 0.3s;
-        z-index: 1;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        z-index: 1;
+        position: relative;
+        right: -110px;
+        top: 0px;
+        height: 60px;
+        width: 100px;
+        transition: ease 0.5s 0.3s;
         background-color: white;
+        opacity: 0;
         button {
           margin: 2px;
         }
@@ -956,6 +953,7 @@ export default {
         }
 
         .apply-from {
+          opacity: 1;
           right: 0px;
         }
       }
