@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="theme-red">
     <router-view v-if="showView" />
   </div>
 </template>

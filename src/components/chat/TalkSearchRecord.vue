@@ -1,11 +1,15 @@
 <template>
-  <div class="base-mask">
-    <el-container class="container">
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box">
       <el-header height="60px" class="header">
-        <i class="el-icon-close" @click="close"></i>
-        <span>消息管理器</span>
-        <div class="title" v-if="findSource == 1">好友【{{ title }}】</div>
-        <div class="title" v-else>群【{{ title }}】</div>
+        <p>消息管理器</p>
+        <p class="title">
+          <span v-if="findSource == 1">好友【{{ title }}】</span>
+          <span v-else>群【{{ title }}】</span>
+        </p>
+        <p class="tools">
+          <i class="el-icon-close" @click="close"></i>
+        </p>
       </el-header>
 
       <el-header height="38px" class="header-tool">
@@ -260,22 +264,19 @@
   </div>
 </template>
 <script>
+import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
 import {
   ServeFindTalkRecords,
   ServeSearchTalkRecords,
   ServeGetRecordsContext,
 } from "@/api/chat";
-
 import { ServeFindUserGroups, friendsServ } from "@/api/user";
-
 import {
   formateSize,
   download,
   imgZoom,
   replaceEmoji,
 } from "@/utils/functions";
-
-import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
 
 export default {
   name: "talk-search-record",
@@ -494,61 +495,10 @@ export default {
   overflow-x: hidden;
 }
 
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 90%;
   height: 600px;
-  min-width: 500px;
   max-width: 800px;
-  background-color: white;
-  overflow: hidden;
-  border-radius: 3px;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-  margin: 0 10px;
-
-  .header {
-    padding: 0;
-    line-height: 60px;
-    text-align: left;
-    text-indent: 6px;
-    position: relative;
-    border-bottom: 1px solid #f6f1f1;
-    user-select: none;
-
-    span {
-      color: #000000;
-      font-size: 16px;
-      margin-left: 15px;
-    }
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 18px;
-      color: #4d4d4d;
-      cursor: pointer;
-      font-size: 22px;
-    }
-
-    .title {
-      width: 220px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
-      text-align: center;
-      font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
 
   .header-tool {
     height: 38px;
@@ -581,7 +531,7 @@ export default {
 
       input {
         position: absolute;
-        left: 30px;
+        left: 38px;
         top: 3px;
         height: 25px;
         width: 184px;

@@ -1,46 +1,46 @@
 <template>
-  <div class="base-mask">
-    <div class="container" v-outside="closeBox">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>系统表情</span>
-          <i class="el-icon-close" @click="closeBox"></i>
-        </el-header>
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box" v-outside="closeBox">
+      <el-header class="padding0 header" height="50px">
+        <p>系统表情</p>
+        <p class="tools">
+          <i class="el-icon-close" @click="closeBox" />
+        </p>
+      </el-header>
 
-        <el-main class="padding0 mian lm-scrollbar">
-          <ul>
-            <li v-for="(item, i) in items" class="no-select">
-              <div class="pkg-avatar">
-                <el-image :src="item.url" fit="cover" :lazy="true"> </el-image>
-              </div>
-              <div class="pkg-info" v-text="item.name"></div>
-              <div class="pkg-status">
-                <button
-                  class="add-emoji"
-                  v-if="item.status == 0"
-                  @click="useEmoticon(i, item)"
-                >
-                  添加
-                </button>
-                <button
-                  class="remove-emoji"
-                  v-else
-                  @click="removeEmoticon(i, item)"
-                >
-                  移除
-                </button>
-              </div>
-            </li>
-          </ul>
-        </el-main>
+      <el-main class="padding0 mian lm-scrollbar">
+        <ul>
+          <li v-for="(item, i) in items" class="no-select">
+            <div class="pkg-avatar">
+              <el-image :src="item.url" fit="cover" :lazy="true"> </el-image>
+            </div>
+            <div class="pkg-info" v-text="item.name"></div>
+            <div class="pkg-status">
+              <button
+                class="add-emoji"
+                v-if="item.status == 0"
+                @click="useEmoticon(i, item)"
+              >
+                添加
+              </button>
+              <button
+                class="remove-emoji"
+                v-else
+                @click="removeEmoticon(i, item)"
+              >
+                移除
+              </button>
+            </div>
+          </li>
+        </ul>
+      </el-main>
 
-        <el-footer class="footer" height="50px">
-          <el-button type="primary" size="medium" class="btn" @click="closeBox"
-            >关闭窗口</el-button
-          >
-        </el-footer>
-      </el-container>
-    </div>
+      <el-footer class="footer" height="50px">
+        <el-button type="primary" size="medium" class="btn" @click="closeBox"
+          >关闭窗口</el-button
+        >
+      </el-footer>
+    </el-container>
   </div>
 </template>
 
@@ -100,32 +100,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.lum-dialog-box {
   width: 350px;
+  max-width: 350px;
   height: 500px;
-  background-color: white;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 10px;
-    border-bottom: 1px solid #f5eeee;
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .mian {
     height: 480px;
@@ -161,6 +139,7 @@ export default {
         -webkit-line-clamp: 2;
         width: 200px;
         color: #615d5d;
+        font-size: 13px;
       }
 
       .pkg-status {

@@ -1,78 +1,75 @@
 <template>
-  <div>
-    <div class="container animated bounceInUp" v-outside="closeBox" v-if="show">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <p>
-            上传管理 <span v-show="total">({{ successNum }}/{{ total }})</span>
-          </p>
-          <i class="close-btn el-icon-close" @click="closeBox"></i>
-        </el-header>
+  <el-container
+    class="container animated bounceInUp"
+    v-outside="closeBox"
+    v-if="show"
+  >
+    <el-header class="padding0 header" height="50px">
+      <p>
+        上传管理 <span v-show="total">({{ successNum }}/{{ total }})</span>
+      </p>
+      <i class="close-btn el-icon-close" @click="closeBox"></i>
+    </el-header>
 
-        <el-main class="padding0 mian lm-scrollbar">
-          <div class="empty-data" v-show="total == 0">
-            <svg-not-data />
-            <p>暂无上传文件</p>
-          </div>
+    <el-main class="padding0 mian lm-scrollbar">
+      <div class="empty-data" v-show="total == 0">
+        <svg-not-data />
+        <p>暂无上传文件</p>
+      </div>
 
-          <div class="file-item" v-for="file in items" v-show="!file.isDelete">
-            <div class="file-header">
-              <div class="type-icon">{{ file.ext }}</div>
-              <el-tooltip :content="file.filename" placement="top-start">
-                <div class="filename">{{ file.filename }}</div>
-              </el-tooltip>
+      <div class="file-item" v-for="file in items" v-show="!file.isDelete">
+        <div class="file-header">
+          <div class="type-icon">{{ file.ext }}</div>
+          <el-tooltip :content="file.filename" placement="top-start">
+            <div class="filename">{{ file.filename }}</div>
+          </el-tooltip>
 
-              <div class="status">
-                <span v-if="file.status == 0">等待上传</span>
-                <span v-else-if="file.status == 1" style="color: #66b1ff"
-                  >正在上传...</span
-                >
-                <span v-else-if="file.status == 2" style="color: #67c23a"
-                  >已完成</span
-                >
-                <span v-else style="color: red">网络异常</span>
-              </div>
-            </div>
-            <div class="file-mian">
-              <div class="progress">
-                <el-progress
-                  type="dashboard"
-                  :percentage="file.progress"
-                  :width="50"
-                  :color="colors"
-                ></el-progress>
-                <span class="name">上传进度</span>
-              </div>
-              <div class="detail">
-                <p>
-                  文件类型：<span>{{ file.filetype }}</span>
-                </p>
-                <p>
-                  文件大小：<span>{{ file.filesize }}</span>
-                </p>
-                <p>
-                  上传时间：<span>{{ file.datetime }}</span>
-                </p>
-              </div>
-            </div>
-            <div
-              class="file-means"
-              v-show="file.status == 2 || file.status == 3"
+          <div class="status">
+            <span v-if="file.status == 0">等待上传</span>
+            <span v-else-if="file.status == 1" style="color: #66b1ff"
+              >正在上传...</span
             >
-              <div class="btns" @click="removeFile(file.hashName)">删除</div>
-              <div
-                class="btns"
-                v-show="file.status == 3"
-                @click="triggerUpload(file.hashName)"
-              >
-                继续上传
-              </div>
-            </div>
+            <span v-else-if="file.status == 2" style="color: #67c23a"
+              >已完成</span
+            >
+            <span v-else style="color: red">网络异常</span>
           </div>
-        </el-main>
-      </el-container>
-    </div>
-  </div>
+        </div>
+        <div class="file-mian">
+          <div class="progress">
+            <el-progress
+              type="dashboard"
+              :percentage="file.progress"
+              :width="50"
+              :color="colors"
+            ></el-progress>
+            <span class="name">上传进度</span>
+          </div>
+          <div class="detail">
+            <p>
+              文件类型：<span>{{ file.filetype }}</span>
+            </p>
+            <p>
+              文件大小：<span>{{ file.filesize }}</span>
+            </p>
+            <p>
+              上传时间：<span>{{ file.datetime }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="file-means" v-show="file.status == 2 || file.status == 3">
+          <div class="btns" @click="removeFile(file.hashName)">删除</div>
+          <div
+            class="btns"
+            v-show="file.status == 3"
+            @click="triggerUpload(file.hashName)"
+          >
+            继续上传
+          </div>
+        </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

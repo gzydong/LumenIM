@@ -123,16 +123,13 @@
     </el-container>
   </div>
 </template>
-
 <script>
 import { ServeCreateTalkList } from "@/api/chat";
-
 import {
   ServeSearchUser,
   ServeFriendRemarkEdit,
   ServeFriendApply,
 } from "@/api/user";
-
 import { packTalkItem } from "@/utils/functions";
 
 export default {
@@ -279,7 +276,6 @@ export default {
   },
 };
 </script>
-
 <style lang="less" scoped>
 .container {
   position: absolute;

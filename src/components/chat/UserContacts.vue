@@ -1,117 +1,112 @@
 <template>
-  <div class="base-mask">
-    <div class="container" v-outside="close">
-      <el-container class="hv100">
-        <el-header class="padding0 header no-select" height="50px">
-          <span>我的联系人</span>
-          <i class="close-btn el-icon-close" @click="close"></i>
-        </el-header>
-        <el-main class="main padding0">
-          <el-container class="hv100">
-            <el-aside width="250px" class="aside-border">
-              <el-container class="hv100 no-select">
-                <el-header
-                  class="padding0 search-header"
-                  height="50px"
-                  id="search-header"
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box" v-outside="close">
+      <el-header class="padding0 header no-select" height="60px">
+        <p>我的联系人</p>
+        <p class="tools"><i class="el-icon-close" @click="close" /></p>
+      </el-header>
+      <el-main class="main padding0">
+        <el-container class="hv100">
+          <el-aside width="250px" class="aside-border">
+            <el-container class="hv100 no-select">
+              <el-header
+                class="padding0 search-header"
+                height="50px"
+                id="search-header"
+              >
+                <el-input
+                  placeholder="搜索 | 好友 or 群组"
+                  prefix-icon="el-icon-search"
+                  v-model="keywords"
+                  clearable
+                  size="small"
+                />
+              </el-header>
+              <el-main class="padding0">
+                <el-scrollbar
+                  :native="false"
+                  tag="section"
+                  class="hv100"
+                  ref="scrollbar2"
                 >
-                  <el-input
-                    placeholder="搜索 | 好友 or 群组"
-                    prefix-icon="el-icon-search"
-                    v-model="keywords"
-                    clearable
-                    size="small"
-                  />
-                </el-header>
-                <el-main class="padding0">
-                  <el-scrollbar
-                    :native="false"
-                    tag="section"
-                    class="hv100"
-                    ref="scrollbar2"
-                  >
-                    <ul class="friend-items no-select">
-                      <li
-                        v-for="(item, index) in search"
-                        :key="item.index_name"
-                        @click="triggerContacts(item)"
-                      >
-                        <el-avatar
-                          :size="25"
-                          :src="item.avatar"
-                          class="avatar"
-                          style="margin-top: 5px"
-                        >
-                          <img src="~@/assets/image/detault-avatar.jpg" />
-                        </el-avatar>
-                        <span class="nickname"
-                          >[{{ item.type == 1 ? "友" : "群" }}]
-                          {{ item.nickname }}</span
-                        >
-                        <span class="select-btn">
-                          <i
-                            class="el-icon-success"
-                            :class="{ 'i-color-green': item.checked }"
-                          ></i>
-                        </span>
-                      </li>
-                    </ul>
-                  </el-scrollbar>
-                </el-main>
-              </el-container>
-            </el-aside>
-
-            <el-main class="padding0">
-              <el-container class="hv100">
-                <el-header height="40px">
-                  <el-divider content-position="left" class="no-select">
-                    <span style="color: #c4c5c7"
-                      >已选联系人 ({{ selected.length }})</span
+                  <ul class="friend-items no-select">
+                    <li
+                      v-for="(item, index) in search"
+                      :key="item.index_name"
+                      @click="triggerContacts(item)"
                     >
-                  </el-divider>
-                </el-header>
-                <el-main>
-                  <el-scrollbar :native="false" tag="section" class="hv100">
-                    <div class="selectd-items">
-                      <div
-                        class="selectd-item no-select"
-                        v-for="(item, index) in selected"
-                        :key="item.index_name"
+                      <el-avatar
+                        :size="25"
+                        :src="item.avatar"
+                        class="avatar"
+                        style="margin-top: 5px"
                       >
-                        <el-avatar :size="25" :src="item.avatar">
-                          <img src="~@/assets/image/detault-avatar.jpg" />
-                        </el-avatar>
-                        <p>{{ item.nickname }}</p>
-                        <div
-                          class="triangle-topleft"
-                          :class="{ 'triangle-topleft-group': item.type == 2 }"
-                        ></div>
-                        <div class="del-mask" @click="delContacts(item)">
-                          <i class="el-icon-delete"></i>
-                        </div>
+                        <img src="~@/assets/image/detault-avatar.jpg" />
+                      </el-avatar>
+                      <span class="nickname"
+                        >[{{ item.type == 1 ? "友" : "群" }}]
+                        {{ item.nickname }}</span
+                      >
+                      <span class="select-btn">
+                        <i
+                          class="el-icon-success"
+                          :class="{ 'i-color-green': item.checked }"
+                        ></i>
+                      </span>
+                    </li>
+                  </ul>
+                </el-scrollbar>
+              </el-main>
+            </el-container>
+          </el-aside>
+
+          <el-main class="padding0">
+            <el-container class="hv100">
+              <el-header height="40px">
+                <el-divider content-position="left" class="no-select">
+                  <span style="color: #c4c5c7"
+                    >已选联系人 ({{ selected.length }})</span
+                  >
+                </el-divider>
+              </el-header>
+              <el-main>
+                <el-scrollbar :native="false" tag="section" class="hv100">
+                  <div class="selectd-items">
+                    <div
+                      class="selectd-item no-select"
+                      v-for="(item, index) in selected"
+                      :key="item.index_name"
+                    >
+                      <el-avatar :size="25" :src="item.avatar">
+                        <img src="~@/assets/image/detault-avatar.jpg" />
+                      </el-avatar>
+                      <p>{{ item.nickname }}</p>
+                      <div
+                        class="triangle-topleft"
+                        :class="{ group: item.type == 2 }"
+                      ></div>
+                      <div class="del-mask" @click="delContacts(item)">
+                        <i class="el-icon-delete"></i>
                       </div>
                     </div>
-                  </el-scrollbar>
-                </el-main>
-              </el-container>
-            </el-main>
-          </el-container>
-        </el-main>
-        <el-footer height="50px" class="padding0 footer">
-          <el-button size="small" @click="close" plain>取消</el-button>
-          <el-button type="primary" size="small" @click="confirm">
-            确认选择<span v-show="selected.length"
-              >({{ selected.length }})</span
-            >
-          </el-button>
-        </el-footer>
-      </el-container>
-    </div>
+                  </div>
+                </el-scrollbar>
+              </el-main>
+            </el-container>
+          </el-main>
+        </el-container>
+      </el-main>
+      <el-footer height="50px" class="padding0 footer">
+        <el-button size="small" @click="close" plain>取消</el-button>
+        <el-button type="primary" size="small" @click="confirm">
+          确认选择<span v-show="selected.length">({{ selected.length }})</span>
+        </el-button>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 <script>
 import { friendsServ, ServeFindUserGroups } from "@/api/user";
-
 import { addClass, removeClass } from "@/utils/functions";
 
 export default {
@@ -236,9 +231,9 @@ export default {
       scrollbarEl.onscroll = function () {
         let el = document.getElementById("search-header");
         if (scrollbarEl.scrollTop == 0) {
-          removeClass(el, "search-header-shadow");
+          removeClass(el, "shadow");
         } else {
-          addClass(el, "search-header-shadow");
+          addClass(el, "shadow");
         }
       };
     },
@@ -250,35 +245,10 @@ export default {
   overflow-x: hidden;
 }
 
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 650px;
+  max-width: 650px;
   height: 550px;
-  border-radius: 3px;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 15px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .main {
     .aside-border {
@@ -300,10 +270,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.search-header-shadow {
-  box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
+  &.shadow {
+    box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
+  }
 }
 
 .friend-items {
@@ -401,10 +371,10 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-    }
 
-    .triangle-topleft-group {
-      border-top: 15px solid #ff9800;
+      &.group {
+        border-top: 15px solid #ff9800;
+      }
     }
 
     p {

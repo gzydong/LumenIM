@@ -1126,6 +1126,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+/deep/.el-image-viewer__wrapper {
+  z-index: 999 !important;
+}
 @import "~@/assets/css/talk/style.less";
 @import "~@/assets/css/talk/panel-record.less";
 </style>

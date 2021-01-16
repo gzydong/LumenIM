@@ -76,11 +76,8 @@ import Prism from "prismjs";
 import PrismEditor from "vue-prism-editor";
 import "vue-prism-editor/dist/VuePrismEditor.css";
 import "prismjs/themes/prism-okaidia.css";
-
 import Vue from "vue";
-
 import { Select, Option } from "element-ui";
-
 Vue.use(Select);
 Vue.use(Option);
 

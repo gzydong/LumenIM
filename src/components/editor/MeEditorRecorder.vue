@@ -1,157 +1,150 @@
 <template>
-  <div class="base-mask animated fadeIn" style="display: block">
-    <div class="container">
-      <el-container class="hv100">
-        <el-header class="padding0 header no-select" height="50px">
-          <span>语音消息</span>
-          <i class="close-btn el-icon-close" @click="closeBox"></i>
-        </el-header>
+  <div class="lum-dialog-mask animated fadeIn">
+    <el-container class="lum-dialog-box">
+      <el-header class="padding0 header no-select" height="50px">
+        <p>语音消息</p>
+        <p class="tools"><i class="el-icon-close" @click="closeBox" /></p>
+      </el-header>
 
-        <el-main class="padding0 mian">
-          <div class="music">
-            <span class="line line1" :class="{ 'line-ani': animation }"></span>
-            <span class="line line2" :class="{ 'line-ani': animation }"></span>
-            <span class="line line3" :class="{ 'line-ani': animation }"></span>
-            <span class="line line4" :class="{ 'line-ani': animation }"></span>
-            <span class="line line5" :class="{ 'line-ani': animation }"></span>
-          </div>
-          <div style="margin-top: 35px; color: #676262; font-weight: 300">
-            <template v-if="recorderStatus == 0">
-              <p style="font-size: 13px; margin-top: 5px">
-                <span>语音消息，让聊天更简单方便 ...</span>
-              </p>
-            </template>
-            <template
-              v-else-if="
-                recorderStatus == 1 ||
-                recorderStatus == 2 ||
-                recorderStatus == 3
-              "
-            >
-              <p>{{ datetime }}</p>
-              <p style="font-size: 13px; margin-top: 5px">
-                <span v-if="recorderStatus == 1">正在录音</span>
-                <span v-else-if="recorderStatus == 2">已暂停录音</span>
-                <span v-else-if="recorderStatus == 3">录音时长</span>
-              </p>
-            </template>
-            <template
-              v-else-if="
-                recorderStatus == 4 ||
-                recorderStatus == 5 ||
-                recorderStatus == 6
-              "
-            >
-              <p>{{ formatPlayTime }}</p>
-              <p style="font-size: 13px; margin-top: 5px">
-                <span v-if="recorderStatus == 4">正在播放</span>
-                <span v-else-if="recorderStatus == 5">已暂停播放</span>
-                <span v-else-if="recorderStatus == 6">播放已结束</span>
-              </p>
-            </template>
-          </div>
-        </el-main>
-
-        <el-footer class="footer" height="50px">
-          <!-- 0:未开始录音 1:正在录音 2:暂停录音 3:结束录音 4:播放录音 5:停止播放 -->
-          <el-button
-            type="primary"
-            icon="el-icon-microphone"
-            v-show="recorderStatus == 0"
-            size="mini"
-            round
-            @click="startRecorder"
-            >开始录音</el-button
+      <el-main class="padding0 mian">
+        <div class="music">
+          <span class="line line1" :class="{ 'line-ani': animation }"></span>
+          <span class="line line2" :class="{ 'line-ani': animation }"></span>
+          <span class="line line3" :class="{ 'line-ani': animation }"></span>
+          <span class="line line4" :class="{ 'line-ani': animation }"></span>
+          <span class="line line5" :class="{ 'line-ani': animation }"></span>
+        </div>
+        <div style="margin-top: 35px; color: #676262; font-weight: 300">
+          <template v-if="recorderStatus == 0">
+            <p style="font-size: 13px; margin-top: 5px">
+              <span>语音消息，让聊天更简单方便 ...</span>
+            </p>
+          </template>
+          <template
+            v-else-if="
+              recorderStatus == 1 || recorderStatus == 2 || recorderStatus == 3
+            "
           >
-          <el-button
-            type="primary"
-            icon="el-icon-video-pause"
-            v-show="recorderStatus == 1"
-            size="mini"
-            round
-            @click="pauseRecorder"
-            >暂停录音
-          </el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-microphone"
-            v-show="recorderStatus == 2"
-            size="mini"
-            round
-            @click="resumeRecorder"
-            >继续录音
-          </el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-microphone"
-            v-show="recorderStatus == 2"
-            size="mini"
-            round
-            @click="stopRecorder"
-            >结束录音
-          </el-button>
-
-          <el-button
-            type="primary"
-            icon="el-icon-video-play"
-            v-show="recorderStatus == 3 || recorderStatus == 6"
-            size="mini"
-            round
-            @click="playRecorder"
-            >播放录音
-          </el-button>
-
-          <el-button
-            type="primary"
-            icon="el-icon-video-play"
-            v-show="
-              recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
+            <p>{{ datetime }}</p>
+            <p style="font-size: 13px; margin-top: 5px">
+              <span v-if="recorderStatus == 1">正在录音</span>
+              <span v-else-if="recorderStatus == 2">已暂停录音</span>
+              <span v-else-if="recorderStatus == 3">录音时长</span>
+            </p>
+          </template>
+          <template
+            v-else-if="
+              recorderStatus == 4 || recorderStatus == 5 || recorderStatus == 6
             "
-            size="mini"
-            round
-            @click="startRecorder"
-            >重新录音
-          </el-button>
+          >
+            <p>{{ formatPlayTime }}</p>
+            <p style="font-size: 13px; margin-top: 5px">
+              <span v-if="recorderStatus == 4">正在播放</span>
+              <span v-else-if="recorderStatus == 5">已暂停播放</span>
+              <span v-else-if="recorderStatus == 6">播放已结束</span>
+            </p>
+          </template>
+        </div>
+      </el-main>
 
-          <el-button
-            type="primary"
-            icon="el-icon-video-pause"
-            v-show="recorderStatus == 4"
-            size="mini"
-            round
-            @click="pausePlayRecorder"
-            >暂停播放
-          </el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-video-play"
-            v-show="recorderStatus == 5"
-            size="mini"
-            round
-            @click="resumePlayRecorder"
-            >继续播放
-          </el-button>
+      <el-footer class="footer" height="50px">
+        <!-- 0:未开始录音 1:正在录音 2:暂停录音 3:结束录音 4:播放录音 5:停止播放 -->
+        <el-button
+          type="primary"
+          icon="el-icon-microphone"
+          v-show="recorderStatus == 0"
+          size="mini"
+          round
+          @click="startRecorder"
+          >开始录音</el-button
+        >
+        <el-button
+          type="primary"
+          icon="el-icon-video-pause"
+          v-show="recorderStatus == 1"
+          size="mini"
+          round
+          @click="pauseRecorder"
+          >暂停录音
+        </el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-microphone"
+          v-show="recorderStatus == 2"
+          size="mini"
+          round
+          @click="resumeRecorder"
+          >继续录音
+        </el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-microphone"
+          v-show="recorderStatus == 2"
+          size="mini"
+          round
+          @click="stopRecorder"
+          >结束录音
+        </el-button>
 
-          <el-button
-            type="primary"
-            v-show="
-              recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
-            "
-            size="mini"
-            round
-            @click="submit"
-            >立即发送
-          </el-button>
-        </el-footer>
-      </el-container>
-    </div>
+        <el-button
+          type="primary"
+          icon="el-icon-video-play"
+          v-show="recorderStatus == 3 || recorderStatus == 6"
+          size="mini"
+          round
+          @click="playRecorder"
+          >播放录音
+        </el-button>
+
+        <el-button
+          type="primary"
+          icon="el-icon-video-play"
+          v-show="
+            recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
+          "
+          size="mini"
+          round
+          @click="startRecorder"
+          >重新录音
+        </el-button>
+
+        <el-button
+          type="primary"
+          icon="el-icon-video-pause"
+          v-show="recorderStatus == 4"
+          size="mini"
+          round
+          @click="pausePlayRecorder"
+          >暂停播放
+        </el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-video-play"
+          v-show="recorderStatus == 5"
+          size="mini"
+          round
+          @click="resumePlayRecorder"
+          >继续播放
+        </el-button>
+
+        <el-button
+          type="primary"
+          v-show="
+            recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
+          "
+          size="mini"
+          round
+          @click="submit"
+          >立即发送
+        </el-button>
+      </el-footer>
+    </el-container>
   </div>
 </template>
-
 <script>
 import { ServeSendTalkImage } from "@/api/chat";
-
 import Recorder from "js-audio-recorder";
+
 export default {
   name: "me-editor-recorder",
   data() {
@@ -315,33 +308,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.lum-dialog-box {
   width: 500px;
+  max-width: 500px;
   height: 450px;
-  background-color: white;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 20px;
-    border-bottom: 1px solid #f5eeee;
-
-    .close-btn {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .mian {
     display: flex;

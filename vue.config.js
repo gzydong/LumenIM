@@ -90,7 +90,7 @@ const vueConfig = {
       preProcessor: "less",
       patterns: [
         //全局加载 less 变量
-        // path.resolve(__dirname, "./src/assets/css/variable.less")
+        path.resolve(__dirname, "./src/assets/css/variable.less")
       ]
     }
   },

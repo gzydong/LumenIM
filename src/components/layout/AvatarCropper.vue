@@ -1,95 +1,94 @@
 <template>
-  <div class="base-mask">
-    <div class="container">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>选择头像</span>
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box">
+      <el-header class="header" height="50px">
+        <span>选择头像</span>
+        <div class="tools">
           <i class="el-icon-close" @click="$emit('close', 0)" />
-        </el-header>
-        <el-main class="main">
-          <el-container class="hv100">
-            <el-aside width="400px">
-              <div class="cropper-box">
-                <vue-cropper
-                  ref="cropper"
-                  :img="option.img"
-                  :output-size="option.size"
-                  :output-type="option.outputType"
-                  :info="true"
-                  :full="option.full"
-                  :fixed="fixed"
-                  :fixed-number="fixedNumber"
-                  :can-move="option.canMove"
-                  :can-move-box="option.canMoveBox"
-                  :fixed-box="option.fixedBox"
-                  :original="option.original"
-                  :auto-crop="option.autoCrop"
-                  :auto-crop-width="option.autoCropWidth"
-                  :auto-crop-height="option.autoCropHeight"
-                  :center-box="option.centerBox"
-                  @real-time="realTime"
-                  :high="option.high"
-                  mode="cover"
-                />
-                <input
-                  type="file"
-                  id="uploads"
-                  ref="fileInput"
-                  accept="image/png, image/jpeg, image/jpg"
-                  style="display: none"
-                  @change="uploadImg($event, 1)"
-                />
+        </div>
+      </el-header>
+      <el-main class="main">
+        <el-container class="hv100">
+          <el-aside width="400px">
+            <div class="cropper-box">
+              <vue-cropper
+                ref="cropper"
+                :img="option.img"
+                :output-size="option.size"
+                :output-type="option.outputType"
+                :info="true"
+                :full="option.full"
+                :fixed="fixed"
+                :fixed-number="fixedNumber"
+                :can-move="option.canMove"
+                :can-move-box="option.canMoveBox"
+                :fixed-box="option.fixedBox"
+                :original="option.original"
+                :auto-crop="option.autoCrop"
+                :auto-crop-width="option.autoCropWidth"
+                :auto-crop-height="option.autoCropHeight"
+                :center-box="option.centerBox"
+                @real-time="realTime"
+                :high="option.high"
+                mode="cover"
+              />
+              <input
+                type="file"
+                id="uploads"
+                ref="fileInput"
+                accept="image/png, image/jpeg, image/jpg"
+                style="display: none"
+                @change="uploadImg($event, 1)"
+              />
+            </div>
+            <div class="tools tools-flex">
+              <el-button
+                size="small"
+                plain
+                icon="el-icon-upload"
+                @click="clickUpload"
+                >上传图片</el-button
+              >
+              <el-button
+                size="small"
+                plain
+                icon="el-icon-refresh"
+                @click="refreshCrop"
+                >刷新</el-button
+              >
+              <el-button
+                size="small"
+                plain
+                icon="el-icon-refresh-left"
+                @click="rotateLeft"
+                >左转</el-button
+              >
+              <el-button
+                size="small"
+                plain
+                icon="el-icon-refresh-right"
+                @click="rotateRight"
+                >右转</el-button
+              >
+            </div>
+          </el-aside>
+          <el-main class="padding0">
+            <div class="cropper-box">
+              <div class="preview-img">
+                <img v-if="cusPreviewsImg" :src="cusPreviewsImg" />
               </div>
-              <div class="tools tools-flex">
-                <el-button
-                  size="small"
-                  plain
-                  icon="el-icon-upload"
-                  @click="clickUpload"
-                  >上传图片</el-button
-                >
-                <el-button
-                  size="small"
-                  plain
-                  icon="el-icon-refresh"
-                  @click="refreshCrop"
-                  >刷新</el-button
-                >
-                <el-button
-                  size="small"
-                  plain
-                  icon="el-icon-refresh-left"
-                  @click="rotateLeft"
-                  >左转</el-button
-                >
-                <el-button
-                  size="small"
-                  plain
-                  icon="el-icon-refresh-right"
-                  @click="rotateRight"
-                  >右转</el-button
-                >
-              </div>
-            </el-aside>
-            <el-main class="padding0">
-              <div class="cropper-box">
-                <div class="preview-img">
-                  <img v-if="cusPreviewsImg" :src="cusPreviewsImg" />
-                </div>
-              </div>
-              <div class="tools">
-                <el-button type="primary" size="small" @click="uploadService"
-                  >保存图片</el-button
-                >
-              </div>
-            </el-main>
-          </el-container>
-        </el-main>
-      </el-container>
-    </div>
+            </div>
+            <div class="tools">
+              <el-button type="primary" size="small" @click="uploadService"
+                >保存图片</el-button
+              >
+            </div>
+          </el-main>
+        </el-container>
+      </el-main>
+    </el-container>
   </div>
 </template>
-
 <script>
 import { VueCropper } from "vue-cropper";
 import { ServeUploadFileStream } from "@/api/upload";
@@ -202,71 +201,47 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
-  background-color: white;
-  width: 800px;
+.lum-dialog-box {
   height: 550px;
-  border-radius: 2px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
+  max-width: 800px;
 
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 20px;
-    border-bottom: 1px solid #f5eeee;
+  .main {
+    .cropper-box {
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
+      .preview-img {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 4px #ccc;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .tools {
+      height: 40px;
+      margin-top: 20px;
+      text-align: center;
+
+      button {
+        border-radius: 1px;
+      }
+    }
+
+    .tools-flex {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
     }
   }
-}
-
-.cropper-box {
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .preview-img {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 0 4px #ccc;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-
-.tools {
-  height: 40px;
-  margin-top: 20px;
-  text-align: center;
-
-  button {
-    border-radius: 1px;
-  }
-}
-
-.tools-flex {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

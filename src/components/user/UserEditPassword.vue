@@ -1,62 +1,61 @@
 <template>
   <!-- 用户密码修改组件 -->
-  <div class="base-mask animated fadeIn" v-show="isShow">
-    <div class="container" v-outside="close">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>修改密码</span>
+  <div class="lum-dialog-mask animated fadeIn" v-show="isShow">
+    <el-container class="lum-dialog-box" v-outside="close">
+      <el-header class="header" height="50px">
+        <p>修改密码</p>
+        <p class="tools">
           <i class="el-icon-close" @click="close"></i>
-        </el-header>
-        <el-main class="main">
-          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item prop="old_password" label="旧密码">
-              <el-input
-                v-model="form.old_password"
-                type="password"
-                placeholder="请填写旧密码"
-                class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')"
-                size="medium"
-              />
-            </el-form-item>
-            <el-form-item prop="new_password" label="新密码">
-              <el-input
-                v-model="form.new_password"
-                type="password"
-                placeholder="请填写新的密码"
-                class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')"
-                size="medium"
-              />
-            </el-form-item>
-            <el-form-item prop="new_password2" label="重复密码">
-              <el-input
-                v-model="form.new_password2"
-                type="password"
-                placeholder="请再次填写新密码"
-                class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')"
-                size="medium"
-              />
-            </el-form-item>
-            <el-form-item style="margin-top: 40px">
-              <el-button
-                type="primary"
-                @click="onSubmit('form')"
-                class="submit-btn"
-                :loading="loading"
-                size="medium"
-              >
-                立即修改
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </el-main>
-      </el-container>
-    </div>
+        </p>
+      </el-header>
+      <el-main class="main">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item prop="old_password" label="旧密码">
+            <el-input
+              v-model="form.old_password"
+              type="password"
+              placeholder="请填写旧密码"
+              class="cuborder-radius border0"
+              @keyup.enter.native="onSubmit('form')"
+              size="medium"
+            />
+          </el-form-item>
+          <el-form-item prop="new_password" label="新密码">
+            <el-input
+              v-model="form.new_password"
+              type="password"
+              placeholder="请填写新的密码"
+              class="cuborder-radius border0"
+              @keyup.enter.native="onSubmit('form')"
+              size="medium"
+            />
+          </el-form-item>
+          <el-form-item prop="new_password2" label="重复密码">
+            <el-input
+              v-model="form.new_password2"
+              type="password"
+              placeholder="请再次填写新密码"
+              class="cuborder-radius border0"
+              @keyup.enter.native="onSubmit('form')"
+              size="medium"
+            />
+          </el-form-item>
+          <el-form-item style="margin-top: 40px">
+            <el-button
+              type="primary"
+              @click="onSubmit('form')"
+              class="submit-btn"
+              :loading="loading"
+              size="medium"
+            >
+              立即修改
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-main>
+    </el-container>
   </div>
 </template>
-
 <script>
 import { ServeEditPassword } from "@/api/user";
 
@@ -155,47 +154,9 @@ export default {
   },
 };
 </script>
-
 <style lang="less" scoped>
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 450px;
-  min-height: 340px;
-  background-color: white;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 20px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
-
-  .main {
-    .submit-btn {
-      border-radius: 2px;
-      font-weight: 400;
-    }
-  }
-}
-
-/deep/.el-input__inner {
-  border-radius: 1px !important;
+  max-width: 450px;
 }
 </style>

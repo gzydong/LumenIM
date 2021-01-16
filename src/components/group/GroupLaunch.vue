@@ -1,138 +1,126 @@
 <template>
-  <div class="base-mask">
-    <div class="container" v-outside="close">
-      <el-container class="hv100">
-        <el-header class="padding0 header no-select" height="50px">
-          <p>
-            <span>{{
-              from.groupId == 0 ? "创建群组" : "请选择需要邀请的好友"
-            }}</span>
-          </p>
-          <i class="close-btn el-icon-close" @click="close"></i>
-        </el-header>
-        <el-main class="main padding0">
-          <el-container class="hv100">
-            <el-aside width="250px" class="aside-border">
-              <el-container class="hv100 no-select">
-                <el-header
-                  class="padding0 search-header"
-                  height="50px"
-                  id="search-header"
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box" v-outside="close">
+      <el-header class="padding0 header no-select" height="60px">
+        <p>
+          {{ from.groupId == 0 ? "创建群组" : "请选择需要邀请的好友" }}
+        </p>
+        <p class="tools">
+          <i class="el-icon-close" @click="close" />
+        </p>
+      </el-header>
+      <el-main class="main padding0">
+        <el-container class="hv100">
+          <el-aside width="250px" class="aside-border">
+            <el-container class="hv100 no-select">
+              <el-header
+                class="padding0 search-header"
+                height="50px"
+                :class="{ shadow: searchHeaderShadow }"
+              >
+                <el-input
+                  placeholder="搜索 | 好友 or 群组"
+                  prefix-icon="el-icon-search"
+                  v-model="keywords"
+                  clearable
+                  size="small"
+                />
+              </el-header>
+              <el-main class="padding0">
+                <el-scrollbar
+                  :native="false"
+                  tag="section"
+                  class="hv100"
+                  ref="scrollbar"
                 >
-                  <el-input
-                    placeholder="搜索 | 好友 or 群组"
-                    prefix-icon="el-icon-search"
-                    v-model="keywords"
-                    clearable
-                    size="small"
-                  />
-                </el-header>
-                <el-main class="padding0">
-                  <el-scrollbar
-                    :native="false"
-                    tag="section"
-                    class="hv100"
-                    ref="scrollbar"
-                  >
-                    <ul class="friend-items no-select">
-                      <li
-                        v-for="(item, index) in search"
-                        :key="item.id"
-                        @click="triggerContacts(item)"
-                      >
-                        <el-avatar
-                          :size="25"
-                          :src="item.avatar"
-                          class="avatar"
-                          style="margin-top: 5px"
-                        >
-                          <img src="~@/assets/image/detault-avatar.jpg" />
-                        </el-avatar>
-                        <span class="nickname">{{ item.nickname }}</span>
-                        <span class="select-btn">
-                          <i
-                            class="el-icon-success"
-                            :class="{ 'i-color-green': item.checked }"
-                          ></i>
-                        </span>
-                      </li>
-                    </ul>
-                  </el-scrollbar>
-                </el-main>
-              </el-container>
-            </el-aside>
-
-            <el-main class="padding0">
-              <el-container class="hv100">
-                <el-header height="50px" v-show="!readonly">
-                  <div class="group-from no-select">
-                    <label>群名称</label>
-                    <p>
-                      <el-input
-                        v-model="from.groupName"
-                        placeholder="请输入群名称(必填)"
-                        size="small"
-                      />
-                    </p>
-                  </div>
-                </el-header>
-                <el-header height="40px" :class="{ mt40: !readonly }">
-                  <el-divider content-position="left" class="no-select">
-                    <span style="color: #c4c5c7"
-                      >邀请成员 ({{ selected.length }})</span
+                  <ul class="friend-items no-select">
+                    <li
+                      v-for="(item, index) in search"
+                      :key="item.id"
+                      @click="triggerContacts(item)"
                     >
-                  </el-divider>
-                </el-header>
-                <el-main>
-                  <el-scrollbar :native="false" tag="section" class="hv100">
-                    <div class="selectd-items">
-                      <div
-                        class="selectd-item no-select"
-                        v-for="(item, index) in selected"
-                        :key="item.id"
+                      <el-avatar
+                        :size="25"
+                        :src="item.avatar"
+                        class="avatar"
+                        style="margin-top: 5px"
                       >
-                        <el-avatar :size="25" :src="item.avatar">
-                          <img
-                            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                          />
-                        </el-avatar>
-                        <p>{{ item.nickname }}</p>
-                        <div
-                          class="triangle-topleft"
-                          :class="{ 'triangle-topleft-group': item.type == 2 }"
-                        ></div>
-                        <div class="del-mask" @click="delContacts(item)">
-                          <i class="el-icon-delete"></i>
-                        </div>
+                        <img src="~@/assets/image/detault-avatar.jpg" />
+                      </el-avatar>
+                      <span class="nickname">{{ item.nickname }}</span>
+                      <span class="select-btn">
+                        <i
+                          class="el-icon-success"
+                          :class="{ 'i-color-green': item.checked }"
+                        ></i>
+                      </span>
+                    </li>
+                  </ul>
+                </el-scrollbar>
+              </el-main>
+            </el-container>
+          </el-aside>
+
+          <el-main class="padding0">
+            <el-container class="hv100">
+              <el-header height="50px" v-show="!readonly">
+                <div class="group-from no-select">
+                  <label>群名称</label>
+                  <p>
+                    <el-input
+                      v-model="from.groupName"
+                      placeholder="请输入群名称(必填)"
+                      size="small"
+                    />
+                  </p>
+                </div>
+              </el-header>
+              <el-header height="40px" :class="{ mt40: !readonly }">
+                <el-divider content-position="left" class="no-select">
+                  <span style="color: #c4c5c7"
+                    >邀请成员 ({{ selected.length }})</span
+                  >
+                </el-divider>
+              </el-header>
+              <el-main>
+                <el-scrollbar :native="false" tag="section" class="hv100">
+                  <div class="selectd-items">
+                    <div
+                      class="selectd-item no-select"
+                      v-for="(item, index) in selected"
+                      :key="item.id"
+                    >
+                      <el-avatar :size="25" :src="item.avatar" />
+                      <p>{{ item.nickname }}</p>
+                      <div class="triangle-topleft"></div>
+                      <div class="del-mask" @click="delContacts(item)">
+                        <i class="el-icon-delete"></i>
                       </div>
                     </div>
-                  </el-scrollbar>
-                </el-main>
-              </el-container>
-            </el-main>
-          </el-container>
-        </el-main>
-        <el-footer height="50px" class="padding0 footer">
-          <el-button size="small" @click="close" plain>取消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            v-if="from.groupId == 0"
-            @click="createSubmit"
-          >
-            创建群组<span v-show="selected.length"
-              >({{ selected.length }})</span
-            >
-          </el-button>
-          <el-button type="primary" size="small" v-else @click="inviteSubmit">
-            立即邀请({{ selected.length }})
-          </el-button>
-        </el-footer>
-      </el-container>
-    </div>
+                  </div>
+                </el-scrollbar>
+              </el-main>
+            </el-container>
+          </el-main>
+        </el-container>
+      </el-main>
+      <el-footer height="50px" class="padding0 footer">
+        <el-button size="small" @click="close" plain>取消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          v-if="from.groupId == 0"
+          @click="createSubmit"
+        >
+          创建群组<span v-show="selected.length">({{ selected.length }})</span>
+        </el-button>
+        <el-button type="primary" size="small" v-else @click="inviteSubmit">
+          立即邀请({{ selected.length }})
+        </el-button>
+      </el-footer>
+    </el-container>
   </div>
 </template>
-
 <script>
 import {
   ServeCreateGroup,
@@ -140,7 +128,6 @@ import {
   ServeGetInviteFriends,
 } from "@/api/group";
 
-import { addClass, removeClass } from "@/utils/functions";
 export default {
   name: "group-launch",
   props: {
@@ -158,6 +145,7 @@ export default {
       },
       contacts: [],
       search: [],
+      searchHeaderShadow: false,
       keywords: "",
       isAvatarCropper: false,
     };
@@ -302,52 +290,21 @@ export default {
     handleScroll() {
       let scrollbarEl = this.$refs.scrollbar.wrap;
       scrollbarEl.onscroll = () => {
-        let el = document.getElementById("search-header");
-        if (scrollbarEl.scrollTop == 0) {
-          removeClass(el, "search-header-shadow");
-        } else {
-          addClass(el, "search-header-shadow");
-        }
+        this.searchHeaderShadow = scrollbarEl.scrollTop != 0;
       };
     },
   },
 };
 </script>
-
 <style lang="less" scoped>
 /deep/.el-scrollbar__wrap {
   overflow-x: hidden;
 }
 
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 650px;
+  max-width: 650px;
   height: 550px;
-  border-radius: 3px;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 15px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .main {
     .aside-border {
@@ -369,10 +326,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.search-header-shadow {
-  box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
+  &.shadow {
+    box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
+  }
 }
 
 .friend-items {
@@ -445,9 +402,8 @@ export default {
 
 .selectd-items {
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
   align-items: flex-start;
+  flex-wrap: wrap;
 
   .selectd-item {
     width: 23%;

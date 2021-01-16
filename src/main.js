@@ -14,8 +14,7 @@ import '@/permission';
 import '@/icons';
 
 // 引入自定义全局css
-import '@/assets/css/im-base.css';
-import './global.less';
+import '@/assets/css/global.less';
 
 Vue.config.productionTip = false;
 

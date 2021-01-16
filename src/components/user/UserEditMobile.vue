@@ -1,80 +1,76 @@
 <template>
-  <div class="base-mask animated fadeIn" v-show="isShow">
-    <div class="container" v-outside="close">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>绑定手机</span>
+  <div class="lum-dialog-mask animated fadeIn" v-show="isShow">
+    <el-container class="lum-dialog-box" v-outside="close">
+      <el-header class="header" height="50px">
+        <span>绑定手机</span>
+        <div class="tools">
           <i class="close-btn el-icon-close" @click="close"></i>
-        </el-header>
-        <el-main class="main">
-          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item prop="username" label="手机号">
-              <el-input
-                v-model="form.username"
-                placeholder="请填写新手机号"
-                class="cuborder-radius"
-                maxlength="11"
-                @keyup.enter.native="onSubmit('form')"
-                size="medium"
-              />
-            </el-form-item>
-            <el-form-item prop="sms_code" label="验证码">
-              <el-input
-                v-model="form.sms_code"
-                placeholder="验证码"
-                class="cuborder-radius"
-                maxlength="6"
-                @keyup.enter.native="onSubmit('form')"
-                style="width: 185px"
-                size="medium"
-              />
+        </div>
+      </el-header>
+      <el-main class="main">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item prop="username" label="手机号">
+            <el-input
+              v-model="form.username"
+              placeholder="请填写新手机号"
+              class="cuborder-radius"
+              maxlength="11"
+              @keyup.enter.native="onSubmit('form')"
+              size="medium"
+            />
+          </el-form-item>
+          <el-form-item prop="sms_code" label="验证码">
+            <el-input
+              v-model="form.sms_code"
+              placeholder="验证码"
+              class="cuborder-radius"
+              maxlength="6"
+              @keyup.enter.native="onSubmit('form')"
+              style="width: 185px"
+              size="medium"
+            />
 
-              <div class="send-code-btn send-sms-disable" v-if="smsLock">
-                正在发送 ...
-              </div>
-              <div
-                class="send-code-btn"
-                v-else-if="smsLock == false && smsLockObj.time == null"
-                @click="sendSms"
-              >
-                获取短信
-              </div>
-              <div class="send-code-btn send-sms-disable" v-else>
-                重新发送({{ smsLockObj.time }}s)
-              </div>
-            </el-form-item>
-            <el-form-item prop="password" label="密码">
-              <el-input
-                v-model="form.password"
-                type="password"
-                placeholder="登录密码验证"
-                class="cuborder-radius border0"
-                @keyup.enter.native="onSubmit('form')"
-                size="medium"
-              />
-            </el-form-item>
-            <el-form-item style="margin-top: 40px">
-              <el-button
-                type="primary"
-                @click="onSubmit('form')"
-                class="submit-btn"
-                :loading="loading"
-                size="medium"
-              >
-                立即修改
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </el-main>
-      </el-container>
-    </div>
+            <div class="send-code-btn disable" v-if="smsLock">正在发送 ...</div>
+            <div
+              class="send-code-btn"
+              v-else-if="smsLock == false && smsLockObj.time == null"
+              @click="sendSms"
+            >
+              获取短信
+            </div>
+            <div class="send-code-btn disable" v-else>
+              重新发送({{ smsLockObj.time }}s)
+            </div>
+          </el-form-item>
+          <el-form-item prop="password" label="密码">
+            <el-input
+              v-model="form.password"
+              type="password"
+              placeholder="登录密码验证"
+              class="cuborder-radius border0"
+              @keyup.enter.native="onSubmit('form')"
+              size="medium"
+            />
+          </el-form-item>
+          <el-form-item style="margin-top: 40px">
+            <el-button
+              type="primary"
+              @click="onSubmit('form')"
+              class="submit-btn"
+              :loading="loading"
+              size="medium"
+            >
+              立即修改
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-main>
+    </el-container>
   </div>
 </template>
-
 <script>
 import { isMobile } from "@/utils/validate";
 import SmsLock from "@/plugins/sms-lock";
-
 import { ServeSendMobileCode, ServeEditMobile } from "@/api/user";
 
 export default {
@@ -229,43 +225,12 @@ export default {
   },
 };
 </script>
-
 <style lang="less" scoped>
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 450px;
-  min-height: 340px;
-  background-color: white;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 20px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
+  max-width: 450px;
 
   .main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     .send-code-btn {
       width: 140px;
       height: 36px;
@@ -281,22 +246,13 @@ export default {
       &:active {
         background: #e4dbdb;
       }
-    }
 
-    .send-sms-disable {
-      cursor: not-allowed !important;
-      background: #f7f7f7 !important;
-      color: silver !important;
-    }
-
-    .submit-btn {
-      border-radius: 2px;
-      font-weight: 400;
+      &.disable {
+        cursor: not-allowed !important;
+        background: #f7f7f7 !important;
+        color: silver !important;
+      }
     }
   }
-}
-
-/deep/.el-input__inner {
-  border-radius: 1px !important;
 }
 </style>

@@ -1,36 +1,35 @@
 <template>
-  <div class="base-mask animated fadeIn" v-if="show">
-    <div class="container" v-outside="closeBox">
-      <el-container class="hv100">
-        <el-header class="padding0 header" height="50px">
-          <span>发送图片</span>
-          <i class="el-icon-close" @click="closeBox"></i>
-        </el-header>
+  <div class="lum-dialog-mask animated fadeIn" v-if="show">
+    <el-container class="lum-dialog-box" v-outside="closeBox">
+      <el-header class="padding0 header" height="50px">
+        <p>发送图片</p>
+        <p class="tools">
+          <i class="el-icon-close" @click="closeBox" />
+        </p>
+      </el-header>
 
-        <el-main class="padding0 mian">
-          <img v-show="src" :src="src" />
-          <div v-show="src">
-            <span class="filename">{{ fileName }}</span>
-            <br />
-            <span class="size">{{ fileSize }} KB</span>
-          </div>
-        </el-main>
+      <el-main class="padding0 mian">
+        <img v-show="src" :src="src" />
+        <div v-show="src">
+          <span class="filename">{{ fileName }}</span>
+          <br />
+          <span class="size">{{ fileSize }} KB</span>
+        </div>
+      </el-main>
 
-        <el-footer class="footer" height="50px">
-          <el-button
-            type="primary"
-            size="medium"
-            :loading="loading"
-            @click="uploadImage"
-            class="btn"
-            >立即发送</el-button
-          >
-        </el-footer>
-      </el-container>
-    </div>
+      <el-footer class="footer" height="50px">
+        <el-button
+          type="primary"
+          size="medium"
+          :loading="loading"
+          @click="uploadImage"
+          class="btn"
+          >立即发送</el-button
+        >
+      </el-footer>
+    </el-container>
   </div>
 </template>
-
 <script>
 export default {
   name: "me-editor-image-view",
@@ -83,33 +82,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.lum-dialog-box {
   width: 500px;
+  max-width: 500px;
   height: 450px;
-  background-color: white;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 20px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .mian {
     display: flex;

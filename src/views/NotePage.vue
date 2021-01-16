@@ -262,7 +262,7 @@
                               >附件({{ filesManager.files.length }})</span
                             >
                           </p>
-                          <p class="mt10">
+                          <p style="margin-top:10px;">
                             <span>
                               分类：<span class="larkc-tag">{{
                                 getNoteClassName(noteDetail.class_id)
@@ -1704,6 +1704,6 @@ export default {
 };
 </script>
 <style scoped lang="less">
-@import "~@/assets/css/github-markdown.css";
+@import "~@/assets/css/markdown.css";
 @import "~@/assets/css/page/note-page.less";
 </style>

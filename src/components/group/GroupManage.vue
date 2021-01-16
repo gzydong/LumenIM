@@ -1,42 +1,24 @@
 <template>
-  <div class="base-mask">
-    <div class="container">
-      <el-container class="hv100">
-        <el-header class="padding0 header no-select" height="50px">
-          <span>群管理【{{ detail.group_name }}】</span>
-          <i class="close-btn el-icon-close" @click="close"></i>
+  <div class="lum-dialog-mask">
+    <div class="lum-dialog-box">
+      <el-container class="container">
+        <el-header class="header no-select" height="60px">
+          <span>群管理 ({{ detail.group_name }})</span>
+          <div class="tools">
+            <i class="el-icon-close" @click="$emit('close')"></i>
+          </div>
         </el-header>
         <el-main class="main padding0">
           <el-container class="hv100">
             <el-aside width="100px" class="aside-border no-select">
               <div
+                v-for="(menu, index) in menus"
+                v-text="menu.name"
+                :key="menu.name"
                 class="menu-list"
-                :class="{ 'menu-list-selectd': tabIndex == 0 }"
-                @click="triggerTab(0)"
-              >
-                群信息
-              </div>
-              <div
-                class="menu-list"
-                :class="{ 'menu-list-selectd': tabIndex == 1 }"
-                @click="triggerTab(1)"
-              >
-                群成员
-              </div>
-              <div
-                class="menu-list"
-                :class="{ 'menu-list-selectd': tabIndex == 2 }"
-                @click="triggerTab(2)"
-              >
-                群公告
-              </div>
-              <div
-                class="menu-list"
-                :class="{ 'menu-list-selectd': tabIndex == 3 }"
-                @click="triggerTab(3)"
-              >
-                群设置
-              </div>
+                :class="{ selectd: tabIndex == index }"
+                @click="triggerTab(index)"
+              />
             </el-aside>
 
             <!-- 群介绍模块 -->
@@ -137,7 +119,7 @@
                         v-for="(member, i) in filterMembers"
                         class="member no-select"
                         :class="{
-                          'member-selectd': member.is_delete && batchDelMember,
+                          selectd: member.is_delete && batchDelMember,
                         }"
                         :key="member.user_id"
                       >
@@ -259,7 +241,7 @@
     </div>
 
     <!-- 编辑公告信息 -->
-    <div class="base-mask animated fadeIn" v-show="notice.isShowform">
+    <div class="lum-dialog-mask animated fadeIn" v-show="notice.isShowform">
       <div class="notice-box">
         <h4>编辑群公告</h4>
         <el-form ref="noticeForm" :model="notice.form" :rules="notice.rules">
@@ -297,7 +279,7 @@
       </div>
     </div>
 
-    <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
+    <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
 
     <!-- 查看好友用户信息 -->
     <user-business-card ref="userBusinessCard" />
@@ -315,7 +297,6 @@ import AvatarCropper from "@/components/layout/AvatarCropper";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 import GroupLaunch from "@/components/group/GroupLaunch";
 import { SvgNotData } from "@/core/icons";
-
 import {
   ServeGetGroupMembers,
   ServeGetGroupNotices,
@@ -343,6 +324,12 @@ export default {
     return {
       // 当前选中菜单
       tabIndex: 0,
+      menus: [
+        { name: "群信息" },
+        { name: "群成员" },
+        { name: "群公告" },
+        { name: "群设置" },
+      ],
 
       loading: false,
       form: {
@@ -500,11 +487,6 @@ export default {
       });
     },
 
-    // 关闭窗口
-    close() {
-      this.$emit("close");
-    },
-
     // 左侧菜单栏切换事件
     triggerTab(i) {
       this.tabIndex = i;
@@ -647,61 +629,30 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-/deep/.el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 80%;
   height: 500px;
   max-width: 800px;
-  border-radius: 3px;
-  overflow: hidden;
-  background-color: white;
+}
 
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 15px;
-    border-bottom: 1px solid #f5eeee;
+.aside-border {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  border-right: 1px solid #f5f5f5;
 
-    .close-btn {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
+  .menu-list {
+    height: 25px;
+    line-height: 25px;
+    margin: 8px 2px;
+    font-weight: 400;
+    font-size: 13px;
+    background-color: white;
+    cursor: pointer;
+    border-left: 3px solid white;
+    padding-left: 10px;
 
-  .aside-border {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    flex-direction: column;
-    padding: 8px;
-    border-right: 1px solid #f5f5f5;
-
-    .menu-list {
-      height: 25px;
-      line-height: 25px;
-      margin: 8px 2px;
-      font-weight: 400;
-      font-size: 13px;
-      background-color: white;
-      cursor: pointer;
-      border-left: 3px solid white;
-      padding-left: 10px;
-    }
-
-    .menu-list-selectd {
+    &.selectd {
       color: #2196f3;
       border-color: #2196f3;
     }
@@ -846,12 +797,12 @@ export default {
       white-space: nowrap;
       margin: 3px 0;
     }
-  }
-}
 
-.members .member:hover,
-.members .member-selectd {
-  border-color: #2196f3;
+    &:hover,
+    &.selectd {
+      border-color: #2196f3;
+    }
+  }
 }
 
 /* 群成员相关 end */
@@ -972,4 +923,8 @@ export default {
 }
 
 /* 公告相关 end */
+
+/deep/.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
 </style>

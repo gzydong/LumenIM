@@ -1,80 +1,80 @@
 <template>
-  <div class="base-mask">
-    <div class="container">
-      <el-container class="hv100">
-        <el-header class="padding0 header no-select" height="50px">
-          <span>群公告({{ items.length }})</span>
-          <i class="close-btn el-icon-close" @click="$emit('close')"></i>
-        </el-header>
-        <el-main class="main padding0">
-          <template v-if="loadStatus == 0">
-            <div class="loading">
-              <div class="ant-spin ant-spin-lg ant-spin-spinning">
-                <span class="ant-spin-dot ant-spin-dot-spin">
-                  <i class="ant-spin-dot-item"></i>
-                  <i class="ant-spin-dot-item"></i>
-                  <i class="ant-spin-dot-item"></i>
-                  <i class="ant-spin-dot-item"></i>
-                </span>
+  <div class="lum-dialog-mask">
+    <el-container class="lum-dialog-box">
+      <el-header class="header no-select" height="60px">
+        <span>群公告({{ items.length }})</span>
+        <div class="tools">
+          <i class="el-icon-close" @click="$emit('close')"></i>
+        </div>
+      </el-header>
+      <el-main class="main padding0">
+        <template v-if="loadStatus == 0">
+          <div class="loading">
+            <div class="ant-spin ant-spin-lg ant-spin-spinning">
+              <span class="ant-spin-dot ant-spin-dot-spin">
+                <i class="ant-spin-dot-item"></i>
+                <i class="ant-spin-dot-item"></i>
+                <i class="ant-spin-dot-item"></i>
+                <i class="ant-spin-dot-item"></i>
+              </span>
+            </div>
+            <p>正在努力加载中 ...</p>
+          </div>
+        </template>
+        <template v-if="loadStatus == 1 && items.length == 0">
+          <div class="loading">
+            <svg-not-data class="svg-icon" />
+            <p>暂无群公告</p>
+          </div>
+        </template>
+        <template v-if="loadStatus == 2">
+          <div class="loading">
+            <i
+              class="el-icon-warning"
+              style="font-size: 50px; color: #ff5151"
+            ></i>
+            <p>
+              加载失败，
+              <a @click="loadNotices" class="pointer">点击重试</a>...
+            </p>
+          </div>
+        </template>
+        <template v-else>
+          <el-scrollbar :native="false" tag="section" class="hv100">
+            <div
+              v-for="(item, index) in items"
+              :key="item.id"
+              class="notice-item"
+            >
+              <div class="title">
+                <span class="left-title" v-text="item.title"></span>
+                <span
+                  class="right-tools no-select"
+                  @click="catNoticeDetail(index)"
+                  >{{ item.isShow ? "收起" : "展开" }}</span
+                >
               </div>
-              <p>正在努力加载中 ...</p>
-            </div>
-          </template>
-          <template v-if="loadStatus == 1 && items.length == 0">
-            <div class="loading">
-              <svg-not-data class="svg-icon" />
-              <p>暂无群公告</p>
-            </div>
-          </template>
-          <template v-if="loadStatus == 2">
-            <div class="loading">
-              <i
-                class="el-icon-warning"
-                style="font-size: 50px; color: #ff5151"
-              ></i>
-              <p>
-                加载失败，
-                <a @click="loadNotices" class="pointer">点击重试</a>...
+              <p class="datetime">
+                <el-avatar :size="15" :src="item.avatar">
+                  <img src="~@/assets/image/detault-avatar.jpg" alt="" />
+                </el-avatar>
+                <span
+                  class="text nickname"
+                  v-text="item.nickname"
+                  @click="$refs.userBusinessCard.open(item.user_id)"
+                ></span>
+                <span class="text">发表于 {{ item.created_at }}</span>
               </p>
+              <p
+                class="content"
+                :class="{ retract: !item.isShow }"
+                v-text="item.content"
+              ></p>
             </div>
-          </template>
-          <template v-else>
-            <el-scrollbar :native="false" tag="section" class="hv100">
-              <div
-                v-for="(item, index) in items"
-                :key="item.id"
-                class="notice-item"
-              >
-                <div class="title">
-                  <span class="left-title" v-text="item.title"></span>
-                  <span
-                    class="right-tools no-select"
-                    @click="catNoticeDetail(index)"
-                    >{{ item.isShow ? "收起" : "展开" }}</span
-                  >
-                </div>
-                <p class="datetime">
-                  <el-avatar :size="15" :src="item.avatar">
-                    <img src="~@/assets/image/detault-avatar.jpg" alt="" />
-                  </el-avatar>
-                  <span
-                    class="text nickname"
-                    v-text="item.nickname"
-                    @click="$refs.userBusinessCard.open(item.user_id)"
-                  ></span>
-                  <span class="text">发表于 {{ item.created_at }}</span>
-                </p>
-                <p
-                  class="content"
-                  :class="{ retract: !item.isShow }"
-                  v-text="item.content"
-                ></p>
-              </div>
-            </el-scrollbar>
-          </template>
-        </el-main>
-      </el-container>
-    </div>
+          </el-scrollbar>
+        </template>
+      </el-main>
+    </el-container>
   </div>
 </template>
 <script>
@@ -133,45 +133,21 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
+.lum-dialog-box {
   width: 650px;
+  max-width: 650px;
   height: 550px;
-  border-radius: 3px;
-  overflow: hidden;
-  background-color: white;
-
-  .header {
-    height: 50px;
-    line-height: 50px;
-    position: relative;
-    text-indent: 15px;
-    border-bottom: 1px solid #f5eeee;
-
-    i {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
 
   .main {
     overflow: hidden;
 
     .loading {
-      width: 100%;
-      height: 70%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: 70%;
       font-size: 12px;
 
       p {
