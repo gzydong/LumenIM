@@ -1,5 +1,5 @@
 <template>
-  <div class="lum-dialog-mask animated fadeIn" v-show="isShow">
+  <div class="lum-dialog-mask" v-show="isShow">
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="header" height="50px">
         <span>绑定手机</span>

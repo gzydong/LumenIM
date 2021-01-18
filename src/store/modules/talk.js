@@ -7,7 +7,6 @@ const Talk = {
     heavyLoad: false,
   },
   mutations: {
-
     // 设置对话列表
     SET_TALK_ITEM(state, payload) {
       state.items = payload.items;
@@ -59,8 +58,13 @@ const Talk = {
     // 触发对话列表重新加载
     TRIGGER_TALK_ITEMS_LOAD(state, status = false) {
       state.heavyLoad = status;
+    },
+
+    // 更新消息数组的key 更新 duration 字段数据
+    UPDATA_MESSAGE_DURATION(state, data) {
+      state.list[data.index].duration = data.duration
     }
-  }
+  },
 }
 
 export default Talk;
