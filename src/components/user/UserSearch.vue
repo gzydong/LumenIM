@@ -3,10 +3,10 @@
     <div class="lum-dialog-mask" v-show="isShow">
       <el-container class="lum-dialog-box" v-outside="close">
         <el-header class="header" height="50px">
-          <span>添加好友</span>
-          <div class="tools">
+          <p>添加好友</p>
+          <p class="tools">
             <i class="el-icon-close" @click="close"></i>
-          </div>
+          </p>
         </el-header>
         <el-main class="main">
           <el-input
@@ -42,7 +42,7 @@ import { ServeSearchUser } from "@/api/user";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 
 export default {
-  name: "user-search",
+  name: "UserSearch",
   components: {
     UserBusinessCard,
   },

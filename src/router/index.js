@@ -125,6 +125,14 @@ const routes = [{
     }
   },
   {
+    path: '/test',
+    name: 'test',
+    component: () => import('@/views/TestPage'),
+    meta: {
+      title: '测试页面',
+    }
+  },
+  {
     path: '*',
     name: '404 NotFound',
     component: () => import('@/views/auth/NotFoundPage'),

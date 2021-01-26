@@ -2,10 +2,10 @@
   <div class="lum-dialog-mask" v-show="isShow">
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="header" height="50px">
-        <span>绑定手机</span>
-        <div class="tools">
+        <p>绑定手机</p>
+        <p class="tools">
           <i class="close-btn el-icon-close" @click="close"></i>
-        </div>
+        </p>
       </el-header>
       <el-main class="main">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -47,7 +47,7 @@
               v-model="form.password"
               type="password"
               placeholder="登录密码验证"
-              class="cuborder-radius border0"
+              class="cuborder-radius no-border"
               @keyup.enter.native="onSubmit('form')"
               size="medium"
             />
@@ -74,7 +74,7 @@ import SmsLock from "@/plugins/sms-lock";
 import { ServeSendMobileCode, ServeEditMobile } from "@/api/user";
 
 export default {
-  name: "user-edit-mobile",
+  name: "UserEditMobile",
   data() {
     var validateMobile = (rule, value, callback) => {
       if (value === "") {

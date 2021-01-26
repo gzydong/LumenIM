@@ -3,13 +3,13 @@
     <div class="lum-dialog-box">
       <el-container class="container">
         <el-header class="header no-select" height="60px">
-          <span>群管理 ({{ detail.group_name }})</span>
-          <div class="tools">
+          <p>群管理 ({{ detail.group_name }})</p>
+          <p class="tools">
             <i class="el-icon-close" @click="$emit('close')"></i>
-          </div>
+          </p>
         </el-header>
-        <el-main class="main padding0">
-          <el-container class="hv100">
+        <el-main class="main no-padding">
+          <el-container class="full-height">
             <el-aside width="100px" class="aside-border no-select">
               <div
                 v-for="(menu, index) in menus"
@@ -72,8 +72,8 @@
             </el-main>
 
             <!-- 群成员模块 -->
-            <el-main v-else-if="tabIndex == 1" class="padding0">
-              <el-container class="hv100">
+            <el-main v-else-if="tabIndex == 1" class="no-padding">
+              <el-container class="full-height">
                 <el-header height="50px" class="notice-header">
                   <el-input
                     :placeholder="`搜索群成员 ( 共${members.length}人 )`"
@@ -112,8 +112,12 @@
                     </el-button>
                   </p>
                 </el-header>
-                <el-main class="padding0">
-                  <el-scrollbar :native="false" tag="section" class="hv100">
+                <el-main class="no-padding">
+                  <el-scrollbar
+                    :native="false"
+                    tag="section"
+                    class="full-height"
+                  >
                     <div class="members">
                       <div
                         v-for="(member, i) in filterMembers"
@@ -161,8 +165,8 @@
             </el-main>
 
             <!-- 群公告模块 -->
-            <el-main v-else-if="tabIndex == 2" class="padding0">
-              <el-container class="hv100">
+            <el-main v-else-if="tabIndex == 2" class="no-padding">
+              <el-container class="full-height">
                 <el-header
                   height="50px"
                   class="notice-header"
@@ -179,8 +183,12 @@
                   </el-button>
                 </el-header>
 
-                <el-main class="padding0">
-                  <el-scrollbar :native="false" tag="section" class="hv100">
+                <el-main class="no-padding">
+                  <el-scrollbar
+                    :native="false"
+                    tag="section"
+                    class="full-height"
+                  >
                     <div v-if="notice.items.length == 0" class="empty-notice">
                       <svg-not-data style="width: 80px; margin-bottom: 10px" />
                       <span>暂无群公告</span>
@@ -234,7 +242,7 @@
               </el-container>
             </el-main>
 
-            <el-main v-else-if="tabIndex == 3" class="padding0"> </el-main>
+            <el-main v-else-if="tabIndex == 3" class="no-padding"> </el-main>
           </el-container>
         </el-main>
       </el-container>
@@ -279,17 +287,21 @@
       </div>
     </div>
 
-    <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
+    <transition name="el-fade-in-linear">
+      <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
+    </transition>
 
     <!-- 查看好友用户信息 -->
     <user-business-card ref="userBusinessCard" />
 
-    <group-launch
-      v-if="inviteFriendBox"
-      :group-id="groupId"
-      @close="inviteFriendBox = false"
-      @invite-success="inviteSuccess"
-    />
+    <transition name="el-fade-in-linear">
+      <group-launch
+        v-if="inviteFriendBox"
+        :group-id="groupId"
+        @close="inviteFriendBox = false"
+        @invite-success="inviteSuccess"
+      />
+    </transition>
   </div>
 </template>
 <script>
@@ -307,7 +319,7 @@ import {
 } from "@/api/group";
 
 export default {
-  name: "group-manage",
+  name: "GroupManage",
   props: {
     groupId: {
       type: [String, Number],

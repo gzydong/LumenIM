@@ -2,12 +2,12 @@
   <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box">
       <el-header class="header no-select" height="60px">
-        <span>群公告({{ items.length }})</span>
-        <div class="tools">
+        <p>群公告({{ items.length }})</p>
+        <p class="tools">
           <i class="el-icon-close" @click="$emit('close')"></i>
-        </div>
+        </p>
       </el-header>
-      <el-main class="main padding0">
+      <el-main class="main no-padding">
         <template v-if="loadStatus == 0">
           <div class="loading">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
@@ -40,7 +40,7 @@
           </div>
         </template>
         <template v-else>
-          <el-scrollbar :native="false" tag="section" class="hv100">
+          <el-scrollbar :native="false" tag="section" class="full-height">
             <div
               v-for="(item, index) in items"
               :key="item.id"
@@ -82,7 +82,7 @@ import { ServeGetGroupNotices } from "@/api/group";
 import { SvgNotData } from "@/core/icons";
 
 export default {
-  name: "group-notice",
+  name: "GroupNotice",
   props: {
     groupId: {
       type: [String, Number],
@@ -184,7 +184,7 @@ export default {
           flex: 1 1;
           height: 100%;
           line-height: 30px;
-          font-size: 14px;
+          font-size: 15px;
         }
 
         .right-tools {
@@ -225,10 +225,10 @@ export default {
       }
 
       .content {
-        font-size: 12px;
+        font-size: 13px;
         line-height: 28px;
-        font-weight: 500;
-        color: #7d7a7a;
+        font-weight: 400;
+        color: #706a6a;
       }
     }
   }

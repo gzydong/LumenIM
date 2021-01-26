@@ -1,7 +1,7 @@
 <template>
   <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box" v-outside="close">
-      <el-header class="padding0 header no-select" height="60px">
+      <el-header class="no-padding header no-select" height="60px">
         <p>
           {{ from.groupId == 0 ? "创建群组" : "请选择需要邀请的好友" }}
         </p>
@@ -9,12 +9,12 @@
           <i class="el-icon-close" @click="close" />
         </p>
       </el-header>
-      <el-main class="main padding0">
-        <el-container class="hv100">
+      <el-main class="main no-padding">
+        <el-container class="full-height">
           <el-aside width="250px" class="aside-border">
-            <el-container class="hv100 no-select">
+            <el-container class="full-height no-select">
               <el-header
-                class="padding0 search-header"
+                class="no-padding search-header"
                 height="50px"
                 :class="{ shadow: searchHeaderShadow }"
               >
@@ -26,11 +26,11 @@
                   size="small"
                 />
               </el-header>
-              <el-main class="padding0">
+              <el-main class="no-padding">
                 <el-scrollbar
                   :native="false"
                   tag="section"
-                  class="hv100"
+                  class="full-height"
                   ref="scrollbar"
                 >
                   <ul class="friend-items no-select">
@@ -61,8 +61,8 @@
             </el-container>
           </el-aside>
 
-          <el-main class="padding0">
-            <el-container class="hv100">
+          <el-main class="no-padding">
+            <el-container class="full-height">
               <el-header height="50px" v-show="!readonly">
                 <div class="group-from no-select">
                   <label>群名称</label>
@@ -83,7 +83,7 @@
                 </el-divider>
               </el-header>
               <el-main>
-                <el-scrollbar :native="false" tag="section" class="hv100">
+                <el-scrollbar :native="false" tag="section" class="full-height">
                   <div class="selectd-items">
                     <div
                       class="selectd-item no-select"
@@ -104,7 +104,7 @@
           </el-main>
         </el-container>
       </el-main>
-      <el-footer height="50px" class="padding0 footer">
+      <el-footer height="50px" class="no-padding footer">
         <el-button size="small" @click="close" plain>取消</el-button>
         <el-button
           type="primary"
@@ -129,7 +129,7 @@ import {
 } from "@/api/group";
 
 export default {
-  name: "group-launch",
+  name: "GroupLaunch",
   props: {
     groupId: {
       type: [String, Number],

@@ -15,7 +15,7 @@
               v-model="form.old_password"
               type="password"
               placeholder="请填写旧密码"
-              class="cuborder-radius border0"
+              class="cuborder-radius no-border"
               @keyup.enter.native="onSubmit('form')"
               size="medium"
             />
@@ -25,7 +25,7 @@
               v-model="form.new_password"
               type="password"
               placeholder="请填写新的密码"
-              class="cuborder-radius border0"
+              class="cuborder-radius no-border"
               @keyup.enter.native="onSubmit('form')"
               size="medium"
             />
@@ -35,7 +35,7 @@
               v-model="form.new_password2"
               type="password"
               placeholder="请再次填写新密码"
-              class="cuborder-radius border0"
+              class="cuborder-radius no-border"
               @keyup.enter.native="onSubmit('form')"
               size="medium"
             />
@@ -60,7 +60,7 @@
 import { ServeEditPassword } from "@/api/user";
 
 export default {
-  name: "user-edit-password",
+  name: "UserEditPassword",
   data() {
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {

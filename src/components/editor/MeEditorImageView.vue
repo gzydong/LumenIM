@@ -1,14 +1,14 @@
 <template>
   <div class="lum-dialog-mask animated fadeIn" v-if="show">
     <el-container class="lum-dialog-box" v-outside="closeBox">
-      <el-header class="padding0 header" height="50px">
+      <el-header class="no-padding header" height="50px">
         <p>发送图片</p>
         <p class="tools">
           <i class="el-icon-close" @click="closeBox" />
         </p>
       </el-header>
 
-      <el-main class="padding0 mian">
+      <el-main class="no-padding mian">
         <img v-show="src" :src="src" />
         <div v-show="src">
           <span class="filename">{{ fileName }}</span>
@@ -32,7 +32,7 @@
 </template>
 <script>
 export default {
-  name: "me-editor-image-view",
+  name: "MeEditorImageView",
   model: {
     prop: "show",
     event: "close",

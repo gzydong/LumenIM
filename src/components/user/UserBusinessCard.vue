@@ -1,7 +1,7 @@
 <template>
   <div class="base-mask animated fadeIn" v-show="isShow">
     <el-container class="container" v-outside="close">
-      <el-header class="padding0 header" height="180px">
+      <el-header class="no-padding header" height="180px">
         <i class="close el-icon-error" @click="close"></i>
         <div class="img-banner">
           <img :src="userInfo.imgbag" class="img-banner" />
@@ -22,7 +22,7 @@
           </div>
         </div>
       </el-header>
-      <el-main class="padding0 main">
+      <el-main class="no-padding main">
         <div class="user-sign">
           <div class="sign-arrow"></div>
           <i class="iconfont icon-bianji"></i>
@@ -70,7 +70,7 @@
         </div>
       </el-main>
       <el-footer
-        class="padding0 footer"
+        class="no-padding footer"
         height="50px"
         v-show="userInfo.friendStatus !== 0"
       >
@@ -133,7 +133,7 @@ import {
 import { packTalkItem } from "@/utils/functions";
 
 export default {
-  name: "user-business-card",
+  name: "UserBusinessCard",
   data() {
     return {
       isShow: false,

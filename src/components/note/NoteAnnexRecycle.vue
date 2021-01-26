@@ -10,7 +10,7 @@
           <i class="el-icon-close" @click="close"></i>
         </p>
       </el-header>
-      <el-main class="main lm-scrollbar">
+      <el-main class="main lum-scrollbar">
         <el-table :data="tableData" size="mini">
           <div slot="empty">暂无相关数据</div>
           <el-table-column
@@ -111,7 +111,7 @@ import {
 } from "@/api/article";
 
 export default {
-  name: "note-annex-recycle",
+  name: "NoteAnnexRecycle",
   data() {
     return {
       tableData: [],

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container class="editor-container">
-      <el-header class="padding0 toolbar" height="35px">
+      <el-header class="no-padding toolbar" height="35px">
         <ul>
           <li v-popover:popoverEmoticon>
             <i class="iconfont icon-icon_im_face" style="font-size: 15px;"></i>
@@ -45,7 +45,7 @@
           </p>
         </ul>
 
-        <el-popover ref="popoverEmoticon" placement="top-start" width="500" trigger="click" popper-class="padding0">
+        <el-popover ref="popoverEmoticon" placement="top-start" width="500" trigger="click" popper-class="no-padding">
           <me-editor-emoticon ref="editorEmoticon" @selected="selecteEmoticon" />
         </el-popover>
 
@@ -54,7 +54,7 @@
           <input type="file" ref="restFile2" @change="uploadFileChange" />
         </form>
       </el-header>
-      <el-main class="padding0 textarea">
+      <el-main class="no-padding textarea">
         <textarea ref="textarea" v-paste="pasteImage" v-drag="dragPasteImage" v-model.trim="editorText"
           @keydown="keydownEvent($event)" placeholder="你想要的聊点什么呢 ..." rows="6"></textarea>
       </el-main>
@@ -94,7 +94,7 @@
   } from "@/api/chat";
 
   export default {
-    name: 'me-editor',
+    name: 'MeEditor',
     components: {
       MeEditorEmoticon,
       MeEditorFileManage,

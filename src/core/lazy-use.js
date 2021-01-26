@@ -34,7 +34,9 @@ import {
   Scrollbar,
   Avatar,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Progress,
+  Dialog
 } from 'element-ui';
 
 Vue.use(Popover);
@@ -66,7 +68,8 @@ Vue.use(Scrollbar);
 Vue.use(Avatar);
 Vue.use(Radio);
 Vue.use(RadioGroup);
-
+Vue.use(Progress);
+Vue.use(Dialog);
 Vue.use(Loading.directive);
 
 Vue.prototype.$notify = Notification;

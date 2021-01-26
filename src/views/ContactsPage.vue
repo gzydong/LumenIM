@@ -1,12 +1,12 @@
 <template>
   <div>
     <main-layout :idx="1">
-      <el-container slot="container" class="hv100">
+      <el-container slot="container" class="full-height">
         <!-- 左侧侧边栏 -->
         <el-aside width="250px" class="aside-box">
-          <el-container class="hv100" direction="vertical">
+          <el-container class="full-height" direction="vertical">
             <!-- 搜索栏 -->
-            <el-header height="60px" class="padding0 header">
+            <el-header height="60px" class="no-padding header">
               <div class="from">
                 <el-input
                   v-model="input"
@@ -79,7 +79,7 @@
         </el-aside>
 
         <!-- 聊天面板容器 -->
-        <el-container class="padding0 hv100 ov-hidden panel">
+        <el-container class="no-padding full-height ov-hidden panel">
           <el-header height="60px" class="panel-header no-select">
             <template v-if="activeIndex == 0">
               <p>新的联系人</p>
@@ -105,7 +105,7 @@
               </p>
             </template>
           </el-header>
-          <el-main class="panel-main lm-scrollbar">
+          <el-main class="panel-main lum-scrollbar">
             <template v-if="activeIndex == 0">
               <template v-if="apply.status == 0">
                 <div class="preloading">

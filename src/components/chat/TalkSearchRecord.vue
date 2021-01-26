@@ -1,37 +1,43 @@
 <template>
   <div class="lum-dialog-mask">
-    <el-container class="lum-dialog-box">
+    <el-container class="lum-dialog-box" :class="{ 'full-screen': fullscreen }">
       <el-header height="60px" class="header">
         <p>消息管理器</p>
         <p class="title">
-          <span v-if="findSource == 1">好友【{{ title }}】</span>
-          <span v-else>群【{{ title }}】</span>
+          <span>{{ findSource == 1 ? "好友" : "群" }}【{{ title }}】</span>
         </p>
         <p class="tools">
-          <i class="el-icon-close" @click="close"></i>
+          <i
+            class="iconfont"
+            :class="fullscreen ? 'icon-tuichuquanping' : 'icon-quanping'"
+            @click="fullscreen = !fullscreen"
+            style="transform: scale(0.85)"
+          ></i>
+          <i class="el-icon-close" @click="$emit('close')"></i>
         </p>
       </el-header>
 
-      <el-header height="38px" class="header-tool">
+      <el-header height="38px" class="sub-header">
         <i
           class="iconfont pointer"
           :class="{ 'icon-shouqi2': broadside, 'icon-zhankai': !broadside }"
           @click="triggerBroadside"
         ></i>
         <div class="search-box no-select">
-          <i class="iconfont icon-sousuo"></i>
+          <i class="el-icon-search"></i>
           <input
             type="text"
             placeholder="关键字搜索"
             v-model="search.keyword"
+            maxlength="30"
             @keyup.enter="searchText($event)"
           />
         </div>
       </el-header>
 
-      <el-container class="hv100 ov-hidden">
+      <el-container class="full-height ov-hidden">
         <el-aside width="200px" class="broadside" v-show="broadside">
-          <el-container class="hv100">
+          <el-container class="full-height">
             <el-header height="40px" class="aside-header">
               <div
                 class="item"
@@ -49,11 +55,11 @@
                 我的群组({{ contacts.groups.length }})
               </div>
             </el-header>
-            <el-main class="padding0">
-              <el-scrollbar :native="false" tag="section" class="hv100">
+            <el-main class="no-padding">
+              <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
                   v-for="(item, i) in contacts[contacts.show]"
-                  class="contacts-item"
+                  class="contacts-item pointer"
                   @click="triggerMenuItem(item)"
                   :class="{
                     selected:
@@ -73,8 +79,8 @@
         </el-aside>
 
         <!-- 聊天记录阅览 -->
-        <el-main v-show="showBox == 0" class="padding0">
-          <el-container class="hv100">
+        <el-main v-show="showBox == 0" class="no-padding">
+          <el-container class="full-height">
             <el-header height="40px" class="type-items">
               <span
                 :class="{ active: records.msgType == 0 }"
@@ -107,17 +113,20 @@
                 <p>暂无聊天记录</p>
               </div>
             </el-main>
+
             <el-main class="history-record" v-else>
-              <el-scrollbar :native="false" tag="section" class="hv100">
+              <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
                   class="message-group"
                   v-for="(record, i) in records.items"
                   :key="record.id"
                 >
                   <div class="left-box">
-                    <img
+                    <el-avatar
+                      shape="square"
+                      :size="30"
+                      fit="contain"
                       :src="record.avatar"
-                      :onerror="$store.state.detaultAvatar"
                     />
                   </div>
 
@@ -130,125 +139,74 @@
                             : record.nickname
                         }}
                       </span>
-                      <span class="time"> / {{ record.created_at }}</span>
+                      <el-divider direction="vertical" />
+                      <span class="time">{{
+                        record.created_at.substr(0, 16)
+                      }}</span>
                     </div>
 
                     <!-- 文本消息 -->
-                    <div class="msg-text" v-if="record.msg_type == 1">
-                      <pre
-                        class="pre"
-                        v-html="record.content"
-                        v-href="'rgb(51, 51, 51)'"
-                      ></pre>
-                    </div>
+                    <text-message
+                      v-if="record.msg_type == 1"
+                      :content="record.content"
+                    />
 
-                    <!-- 文件-图片消息 -->
-                    <div
-                      class="msg-image"
+                    <!-- 文件 - 图片消息 -->
+                    <image-message
                       v-else-if="
                         record.msg_type == 2 && record.file.file_type == 1
                       "
-                    >
-                      <el-image
-                        fit="cover"
-                        :style="getImgStyle(record.file.file_url)"
-                        :src="record.file.file_url"
-                      >
-                        <div slot="error" class="image-slot">
-                          <i class="el-icon-picture-outline"></i>
-                        </div>
-                        <div slot="placeholder" class="image-slot">
-                          图片加载中
-                        </div>
-                      </el-image>
-                    </div>
+                      :src="record.file.file_url"
+                    />
 
-                    <!-- 文件-音频消息 -->
-                    <div
-                      class="msg-audio"
+                    <!-- 文件 - 音频消息 -->
+                    <audio-message
                       v-else-if="
                         record.msg_type == 2 && record.file.file_type == 2
                       "
-                    >
-                      文件-音频消息
-                    </div>
+                      :src="record.file.file_url"
+                    />
 
-                    <!-- 文件-视频消息 -->
-                    <div
-                      class="msg-video"
+                    <!-- 文件 - 视频消息 -->
+                    <video-message
                       v-else-if="
                         record.msg_type == 2 && record.file.file_type == 3
                       "
-                    >
-                      文件-视频消息
-                    </div>
+                    />
 
-                    <!-- 其它格式的文件消息 -->
-                    <div
-                      class="msg-file"
+                    <!-- 文件 - 其它格式文件 -->
+                    <file-message
                       v-else-if="
                         record.msg_type == 2 && record.file.file_type == 4
                       "
-                    >
-                      <div class="file-icon">
-                        {{ record.file.file_suffix.toUpperCase() }}
-                      </div>
-                      <div class="file-info">
-                        <p>{{ record.file.original_name }}</p>
-                        <p>
-                          {{ renderSize(record.file.file_size) }}
-                          <span>该文件永久保存</span>
-                        </p>
-                      </div>
-                      <div class="file-tool">
-                        <i
-                          class="iconfont icon-download"
-                          @click="download(record.id)"
-                        ></i>
-                      </div>
-                    </div>
-
-                    <!-- 代码块消息 -->
-                    <div class="msg-text" v-else-if="record.msg_type == 5">
-                      <pre class="pre" v-text="record.code_block.code"></pre>
-                    </div>
+                      :file="record.file"
+                      :record_id="record.id"
+                    />
 
                     <!-- 会话记录消息 -->
-                    <div
-                      class="msg-records"
+                    <forward-message
                       v-else-if="record.msg_type == 4"
-                      @click="catForwardRecords(record.id)"
-                    >
-                      <p class="records-title">
-                        <span
-                          v-text="getForwardTitle(record.forward.list)"
-                        ></span>
-                      </p>
-                      <div class="records-list">
-                        <p v-for="info in record.forward.list">
-                          <span v-text="info.nickname"></span>
-                          <span>:</span>
-                          <span v-text="info.text"></span>
-                        </p>
-                      </div>
-                      <p class="records-footer">
-                        <span>转发：会话记录 ({{ record.forward.num }}条)</span>
-                      </p>
-                    </div>
+                      :forward="record.forward"
+                      :record_id="record.id"
+                    />
+
+                    <!-- 代码块消息 -->
+                    <code-message
+                      v-else-if="record.msg_type == 5"
+                      :code="record.code_block.code"
+                      :lang="record.code_block.code_lang"
+                    />
+
                     <div v-else class="other-message">未知消息类型</div>
                   </div>
                 </div>
 
-                <div
-                  class="load-button"
-                  v-if="records.loadStatus == 1"
-                  style="color: #51b2ff"
-                >
+                <!-- 数据加载栏 -->
+                <div class="load-button blue" v-show="records.loadStatus == 1">
                   <i class="el-icon-loading"></i>
                   <span>加载数据中...</span>
                 </div>
-
-                <div class="load-button" v-if="records.loadStatus == 0">
+                <div class="load-button" v-show="records.loadStatus == 0">
                   <i class="el-icon-arrow-up"></i>
                   <span @click="loadChatRecord">加载更多...</span>
                 </div>
@@ -258,19 +216,15 @@
         </el-main>
       </el-container>
     </el-container>
-
-    <!-- 会话记录查看器 -->
-    <talk-forward-record ref="forwardRecordsRef" />
   </div>
 </template>
 <script>
-import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
+import { ServeFindUserGroups, friendsServ } from "@/api/user";
 import {
   ServeFindTalkRecords,
   ServeSearchTalkRecords,
   ServeGetRecordsContext,
 } from "@/api/chat";
-import { ServeFindUserGroups, friendsServ } from "@/api/user";
 import {
   formateSize,
   download,
@@ -279,10 +233,7 @@ import {
 } from "@/utils/functions";
 
 export default {
-  name: "talk-search-record",
-  components: {
-    TalkForwardRecord,
-  },
+  name: "TalkSearchRecord",
   props: {
     receiveId: {
       type: [Number, String],
@@ -299,6 +250,7 @@ export default {
   },
   data() {
     return {
+      fullscreen: false,
       // 侧边栏相关信息
       broadside: false,
       contacts: {
@@ -352,11 +304,6 @@ export default {
     //下载文件
     download: download,
 
-    //关闭窗口
-    close() {
-      this.$emit("close");
-    },
-
     //获取图片信息
     getImgStyle(url) {
       return imgZoom(url, 200);
@@ -366,11 +313,6 @@ export default {
     getForwardTitle(item) {
       let arr = [...new Set(item.map((v) => v.nickname))];
       return arr.join("、") + "的会话记录";
-    },
-
-    //查看会话记录列表
-    catForwardRecords(records_id) {
-      this.$refs.forwardRecordsRef.open(records_id);
     },
 
     //获取好友列表
@@ -495,12 +437,24 @@ export default {
   overflow-x: hidden;
 }
 
+.lum-dialog-mask {
+  z-index: 1;
+}
 .lum-dialog-box {
-  width: 90%;
+  width: 100%;
   height: 600px;
   max-width: 800px;
+  transition: 1s ease;
 
-  .header-tool {
+  &.full-screen {
+    width: 100%;
+    height: 100%;
+    max-width: unset;
+    margin: 0;
+    border-radius: 0px;
+  }
+
+  .sub-header {
     height: 38px;
     line-height: 38px;
     font-size: 12px;
@@ -517,7 +471,7 @@ export default {
     .search-box {
       position: absolute;
       width: 230px;
-      height: 30px;
+      height: 32px;
       top: 2px;
       right: 10px;
       background: #f9f4f4;
@@ -526,12 +480,13 @@ export default {
       i {
         position: absolute;
         left: 10px;
-        top: -3px;
+        top: 8px;
+        font-size: 16px;
       }
 
       input {
         position: absolute;
-        left: 38px;
+        left: 35px;
         top: 3px;
         height: 25px;
         width: 184px;
@@ -542,14 +497,16 @@ export default {
   }
 
   .broadside {
-    border-right: 1px solid #f9f9f9;
+    @border:1px solid #f9f9f9;
+    border-right: @border;
     user-select: none;
+    transition: 3s ease;
 
     .aside-header {
       display: flex;
       flex-direction: row;
       height: 100%;
-      border-bottom: 1px solid #f9f9f9;
+      border-bottom: @border;
       padding: 0;
 
       > div {
@@ -584,11 +541,6 @@ export default {
       justify-content: center;
       padding-left: 10px;
 
-      &:hover,
-      &.selected {
-        background-color: #f5f5f5;
-      }
-
       .avatar {
         flex-basis: 40px;
         flex-shrink: 0;
@@ -605,9 +557,13 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 12px;
+        font-size: 13px;
         padding-right: 10px;
-        cursor: pointer;
+      }
+
+      &:hover,
+      &.selected {
+        background-color: #f5f5f5;
       }
     }
   }
@@ -648,6 +604,10 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: row;
+
+  &.blue {
+    color: #51b2ff;
+  }
 
   span {
     margin-left: 5px;

@@ -1,16 +1,16 @@
 <template>
   <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box" v-outside="close">
-      <el-header class="padding0 header no-select" height="60px">
+      <el-header class="no-padding header no-select" height="60px">
         <p>我的联系人</p>
         <p class="tools"><i class="el-icon-close" @click="close" /></p>
       </el-header>
-      <el-main class="main padding0">
-        <el-container class="hv100">
+      <el-main class="main no-padding">
+        <el-container class="full-height">
           <el-aside width="250px" class="aside-border">
-            <el-container class="hv100 no-select">
+            <el-container class="full-height no-select">
               <el-header
-                class="padding0 search-header"
+                class="no-padding search-header"
                 height="50px"
                 id="search-header"
               >
@@ -22,11 +22,11 @@
                   size="small"
                 />
               </el-header>
-              <el-main class="padding0">
+              <el-main class="no-padding">
                 <el-scrollbar
                   :native="false"
                   tag="section"
-                  class="hv100"
+                  class="full-height"
                   ref="scrollbar2"
                 >
                   <ul class="friend-items no-select">
@@ -60,8 +60,8 @@
             </el-container>
           </el-aside>
 
-          <el-main class="padding0">
-            <el-container class="hv100">
+          <el-main class="no-padding">
+            <el-container class="full-height">
               <el-header height="40px">
                 <el-divider content-position="left" class="no-select">
                   <span style="color: #c4c5c7"
@@ -70,7 +70,7 @@
                 </el-divider>
               </el-header>
               <el-main>
-                <el-scrollbar :native="false" tag="section" class="hv100">
+                <el-scrollbar :native="false" tag="section" class="full-height">
                   <div class="selectd-items">
                     <div
                       class="selectd-item no-select"
@@ -96,7 +96,7 @@
           </el-main>
         </el-container>
       </el-main>
-      <el-footer height="50px" class="padding0 footer">
+      <el-footer height="50px" class="no-padding footer">
         <el-button size="small" @click="close" plain>取消</el-button>
         <el-button type="primary" size="small" @click="confirm">
           确认选择<span v-show="selected.length">({{ selected.length }})</span>
@@ -110,7 +110,7 @@ import { friendsServ, ServeFindUserGroups } from "@/api/user";
 import { addClass, removeClass } from "@/utils/functions";
 
 export default {
-  name: "user-contacts",
+  name: "UserContacts",
   data() {
     return {
       contacts: [],

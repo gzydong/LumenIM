@@ -1,14 +1,14 @@
 <template>
   <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box" v-outside="closeBox">
-      <el-header class="padding0 header" height="50px">
+      <el-header class="no-padding header" height="50px">
         <p>系统表情</p>
         <p class="tools">
           <i class="el-icon-close" @click="closeBox" />
         </p>
       </el-header>
 
-      <el-main class="padding0 mian lm-scrollbar">
+      <el-main class="no-padding mian lum-scrollbar">
         <ul>
           <li v-for="(item, i) in items" class="no-select">
             <div class="pkg-avatar">
@@ -48,7 +48,7 @@
 import { ServeFindSysEmoticon, ServeSetUserEmoticon } from "@/api/emoticon";
 
 export default {
-  name: "me-editor-system-emoticon",
+  name: "MeEditorSystemEmoticon",
   data() {
     return {
       items: [],

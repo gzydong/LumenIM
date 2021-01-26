@@ -2,7 +2,7 @@
   <div class="body-background" :class="themeBagImg">
     <el-container class="mian-layout" :class="{ 'full-mode': themeMode }">
       <el-aside width="70px" class="side-edge">
-        <el-container class="hv100">
+        <el-container class="full-height">
           <el-header height="100px" class="logo-header">
             <div class="userlogo" v-popover:usercard>
               <img :src="userAvatar" :onerror="detaultAvatar" />
@@ -62,15 +62,27 @@
                 </div>
               </router-link>
             </el-tooltip>
+
+            <el-tooltip
+              content="Gitub 源码"
+              placement="right"
+              :visible-arrow="false"
+            >
+              <a target="_blank" href="https://github.com/gzydong/LumenIM">
+                <div class="menu-items" :class="{ active: idx == 3 }">
+                  <i class="iconfont icon-github"></i>
+                </div>
+              </a>
+            </el-tooltip>
           </el-main>
-          <el-footer height="100px" class="fixed-sidebar">
-            <div class="menu-items">
+          <el-footer height="60px" class="fixed-sidebar">
+            <!-- <div class="menu-items">
               <el-popover
                 placement="right"
                 trigger="hover"
                 :visible-arrow="false"
                 popper-class="skin-popover"
-  :open-delay="0"
+                :open-delay="0"
               >
                 <div class="skin-box">
                   <p v-for="skin in skins">
@@ -83,7 +95,7 @@
                   class="iconfont icon-biaoqianA01_pifu-46"
                 ></i>
               </el-popover>
-            </div>
+            </div> -->
 
             <div class="menu-items" @click="logout">
               <span class="logout">退出</span>
@@ -92,7 +104,7 @@
         </el-container>
       </el-aside>
 
-      <el-main class="padding0 bag-white">
+      <el-main class="no-padding bag-white">
         <slot name="container"></slot>
       </el-main>
     </el-container>
@@ -103,7 +115,7 @@
       placement="right-start"
       trigger="hover"
       :visible-arrow="false"
-      popper-class="padding0"
+      popper-class="no-padding"
     >
       <user-card />
     </el-popover>

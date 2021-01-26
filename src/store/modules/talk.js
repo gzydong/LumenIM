@@ -15,7 +15,7 @@ const Talk = {
     // 更新对话节点
     UPDATE_TALK_ITEM(state, payload) {
       if (state.items[payload.key]) {
-        state.items[payload.key] = Object.assign(state.items[payload.key], payload.item);
+        Object.assign(state.items[payload.key], payload.item);
       }
     },
 

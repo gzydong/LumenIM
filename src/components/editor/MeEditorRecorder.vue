@@ -1,12 +1,12 @@
 <template>
   <div class="lum-dialog-mask animated fadeIn">
     <el-container class="lum-dialog-box">
-      <el-header class="padding0 header no-select" height="50px">
+      <el-header class="no-padding header no-select" height="50px">
         <p>语音消息</p>
         <p class="tools"><i class="el-icon-close" @click="closeBox" /></p>
       </el-header>
 
-      <el-main class="padding0 mian">
+      <el-main class="no-padding mian">
         <div class="music">
           <span class="line line1" :class="{ 'line-ani': animation }"></span>
           <span class="line line2" :class="{ 'line-ani': animation }"></span>
@@ -146,7 +146,7 @@ import { ServeSendTalkImage } from "@/api/chat";
 import Recorder from "js-audio-recorder";
 
 export default {
-  name: "me-editor-recorder",
+  name: "MeEditorRecorder",
   data() {
     return {
       // 录音实例

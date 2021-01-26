@@ -126,13 +126,18 @@ class TalkEvent extends AppMessageEvent {
         text = this.resource.data.content;
         break;
       case 2:
+        let file_type = this.resource.data.file.file_type
         text = '[文件消息]';
+        if (file_type == 1) {
+          text = '[图片消息]';
+        }
+
         break;
       case 4:
         text = '[会话记录]';
         break;
       case 5:
-        text = '[代码块]';
+        text = '[代码消息]';
         break;
     }
 

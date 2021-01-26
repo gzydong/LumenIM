@@ -4,14 +4,14 @@
     v-outside="closeBox"
     v-if="show"
   >
-    <el-header class="padding0 header" height="50px">
+    <el-header class="no-padding header" height="50px">
       <p>
         上传管理 <span v-show="total">({{ successNum }}/{{ total }})</span>
       </p>
       <i class="close-btn el-icon-close" @click="closeBox"></i>
     </el-header>
 
-    <el-main class="padding0 mian lm-scrollbar">
+    <el-main class="no-padding mian lum-scrollbar">
       <div class="empty-data" v-show="total == 0">
         <svg-not-data />
         <p>暂无上传文件</p>
@@ -86,7 +86,7 @@ import { formateSize, getFileExt, parseTime } from "@/utils/functions";
 import { ServeSendTalkFile } from "@/api/chat";
 
 export default {
-  name: "me-editor-file-manage",
+  name: "MeEditorFileManage",
   model: {
     prop: "show",
     event: "close",

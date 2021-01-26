@@ -57,12 +57,12 @@
 
       <!-- 主体信息 -->
       <el-main
-        class="padding0 panel-main lm-scrollbar"
+        class="no-padding panel-main lum-scrollbar"
         id="lumenChatPanel"
         @scroll.native="talkPanelScroll($event)"
       >
-        <div class="talk-container no-select">
-          <div class="toolbars">
+        <div class="talk-container">
+          <div class="toolbars no-select">
             <span v-show="loadRecord.status == 0">
               <i class="el-icon-loading"></i> 正在加载数据中...
             </span>
@@ -164,134 +164,72 @@
                 }}</span>
               </div>
               <div class="talkbox">
+                <!-- 文本消息角标 -->
                 <div class="arrow" v-show="item.msg_type == 1"></div>
+
                 <!-- 文本消息 -->
-                <div
-                  class="text-msg"
+                <text-message
                   v-if="item.msg_type == 1"
-                  @contextmenu="onCopy(idx, item, $event)"
-                >
-                  <pre
-                    v-html="item.content"
-                    :id="'copy_class_' + item.id"
-                    v-href="
-                      item.float == 'right' ? '#ffffff' : 'rgb(9 149 208)'
-                    "
-                  ></pre>
-                </div>
+                  :content="item.content"
+                  :float="item.float"
+                  :full-width="false"
+                  @contextmenu.native="onCopy(idx, item, $event)"
+                />
 
                 <!-- 图片消息 -->
-                <div
-                  class="image-msg"
+                <image-message
                   v-else-if="item.msg_type == 2 && item.file.file_type == 1"
-                  @contextmenu="onCopy(idx, item, $event)"
-                >
-                  <el-image
-                    :lazy="true"
-                    fit="cover"
-                    :style="getImgStyle(item.file.file_url)"
-                    :src="item.file.file_url"
-                    :preview-src-list="images"
-                    :z-index="getImgIndex(item.file.file_url)"
-                  >
-                    <div slot="error" class="image-slot">图片加载失败</div>
-                    <div slot="placeholder" class="image-slot">
-                      图片加载中...
-                    </div>
-                  </el-image>
-                </div>
+                  :src="item.file.file_url"
+                  @contextmenu.native="onCopy(idx, item, $event)"
+                />
 
                 <!-- 音频文件预留 -->
-                <div
-                  class="audio-msg"
+                <audio-message
                   v-else-if="item.msg_type == 2 && item.file.file_type == 2"
+                  :src="item.file.file_url"
+                  @contextmenu.native="onCopy(idx, item, $event)"
                 />
 
                 <!-- 视频文件预留 -->
-                <div
-                  class="video-msg"
+                <video-message
                   v-else-if="item.msg_type == 2 && item.file.file_type == 3"
+                  :src="item.file.file_url"
+                  @contextmenu.native="onCopy(idx, item, $event)"
                 />
 
                 <!-- 文件消息 -->
-                <div
+                <file-message
                   v-else-if="item.msg_type == 2 && item.file.file_type == 4"
-                  class="file-msg"
-                  @contextmenu="onCopy(idx, item, $event)"
-                >
-                  <header>
-                    <div class="icon">
-                      {{ item.file.file_suffix.toUpperCase() }}
-                    </div>
-                    <div class="info">
-                      <p>
-                        <span v-text="item.file.original_name"></span>
-                        <span>({{ renderSize(item.file.file_size) }})</span>
-                      </p>
-                      <p>文件已成功发送, 文件助手永久保存</p>
-                    </div>
-                  </header>
-                  <footer>
-                    <a @click="download(item.id)">下载</a>
-                    <a>在线预览</a>
-                  </footer>
-                </div>
+                  :file="item.file"
+                  :record_id="item.id"
+                  @contextmenu.native="onCopy(idx, item, $event)"
+                />
 
                 <!-- 会话记录消息 -->
-                <div
+                <forward-message
                   v-else-if="item.msg_type == 4"
-                  class="records-msg"
-                  @contextmenu="onCopy(idx, item, $event)"
-                  @click="catForwardRecords(item.id)"
-                >
-                  <div
-                    class="title"
-                    v-text="getForwardTitle(item.forward.list)"
-                  ></div>
-                  <div class="lists">
-                    <p v-for="info in item.forward.list">
-                      <span v-text="info.nickname"></span>
-                      <span>:</span>
-                      <span v-text="info.text"></span>
-                    </p>
-                  </div>
-                  <div class="footer">
-                    <span>转发：会话记录 ({{ item.forward.num }}条)</span>
-                  </div>
-                </div>
+                  :forward="item.forward"
+                  :record_id="item.id"
+                  @contextmenu.native="onCopy(idx, item, $event)"
+                />
 
                 <!-- 代码块消息 -->
-                <div
-                  v-else-if="item.msg_type == 5"
-                  class="code-msg"
-                  @contextmenu="onCopy(idx, item, $event)"
-                >
-                  <i
-                    class="iconfont icon-tubiao_chakangongyi cat-code-block"
-                    @click="
-                      catCodeBlock(
-                        item.code_block.code,
-                        item.code_block.code_lang
-                      )
-                    "
-                  ></i>
-                  <pre
-                    v-html="
-                      formatCode(
-                        item.code_block.code,
-                        item.code_block.code_lang
-                      )
-                    "
-                  ></pre>
+                <div v-else-if="item.msg_type == 5">
+                  <code-message
+                    :code="item.code_block.code"
+                    :lang="item.code_block.code_lang"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
                 </div>
 
                 <!-- 未知消息 -->
-                <div class="text-msg" v-else>
-                  未知消息类型 {{ item.msg_type }}
+                <div class="unknown-msg" v-else>
+                  未知消息类型[{{ item.msg_type }}]
                 </div>
               </div>
             </div>
           </div>
+
           <div
             class="talk-container pd-t5"
             v-show="compareTime(idx, item.created_at)"
@@ -368,57 +306,48 @@
       </transition>
     </el-container>
 
-    <!-- 代码查看器 -->
-    <talk-code-block
-      v-show="codeBlock.isShow"
-      :load-code="codeBlock.code"
-      :load-lang="codeBlock.lang"
-      @close="codeBlock.isShow = false"
-    />
-
-    <!-- 会话记录查看器 -->
-    <talk-forward-record ref="forwardRecordsRef" />
-
     <!-- 消息管理器 -->
-    <talk-search-record
-      v-if="findChatRecord"
-      @close="findChatRecord = false"
-      :source="params.source"
-      :receive-id="params.receiveId"
-      :titleName="params.nickname"
-    />
+    <transition name="el-fade-in-linear">
+      <talk-search-record
+        v-if="findChatRecord"
+        @close="findChatRecord = false"
+        :source="params.source"
+        :receive-id="params.receiveId"
+        :titleName="params.nickname"
+      />
+    </transition>
 
     <!-- 选择联系人窗口 -->
-    <user-contacts
-      v-show="selectContacts.isShow"
-      @close="selectContacts.isShow = false"
-      @confirm="confirmSelectContacts"
-    />
+    <transition name="el-fade-in-linear">
+      <user-contacts
+        v-if="selectContacts.isShow"
+        @close="selectContacts.isShow = false"
+        @confirm="confirmSelectContacts"
+      />
+    </transition>
 
     <!-- 查看好友用户信息 -->
     <user-business-card ref="userBusinessCard" />
 
     <!-- 群公告组件 -->
-    <group-notice
-      v-if="isShowGroupNotice"
-      :group-id="params.receiveId"
-      @close="isShowGroupNotice = false"
-    />
+    <transition name="el-fade-in-linear">
+      <group-notice
+        v-if="isShowGroupNotice"
+        :group-id="params.receiveId"
+        @close="isShowGroupNotice = false"
+      />
+    </transition>
   </div>
 </template>
 <script>
 import Vue from "vue";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 import TalkSearchRecord from "@/components/chat/TalkSearchRecord";
-import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
 import UserContacts from "@/components/chat/UserContacts";
 import GroupPanel from "@/components/group/GroupPanel";
 import GroupNotice from "@/components/group/GroupNotice";
-import TalkCodeBlock from "@/components/chat/TalkCodeBlock";
 import MeEditor from "@/components/editor/MeEditor";
 import { SvgMentionDown } from "@/core/icons";
-import Prism from "prismjs";
-import "prismjs/themes/prism-okaidia.css";
 import {
   ServeTalkRecords,
   ServeForwardRecords,
@@ -428,23 +357,15 @@ import {
 import { ServeCollectEmoticon } from "@/api/emoticon";
 import {
   formateTime,
-  formateSize,
-  download,
   parseTime,
-  imgZoom,
-  getSelection,
   copyTextToClipboard,
-  addClass,
-  removeClass,
   replaceEmoji,
 } from "@/utils/functions";
 
 export default {
-  name: "talk-editor-panel",
+  name: "TalkEditorPanel",
   components: {
     MeEditor,
-    TalkCodeBlock,
-    TalkForwardRecord,
     UserContacts,
     GroupPanel,
     TalkSearchRecord,
@@ -479,13 +400,6 @@ export default {
       forwardRecordBox: {
         isShow: false,
         records_id: 0,
-      },
-
-      //代码查看信息
-      codeBlock: {
-        isShow: false,
-        code: "",
-        lang: "",
       },
 
       //记录加载相关参数
@@ -556,12 +470,6 @@ export default {
         this.talkPanelScrollBottom();
       });
     },
-    //监听聊天记录变化
-    records(records) {
-      this.images = records
-        .filter((item) => item.msg_type == 2 && item.file.file_type == 1)
-        .map((item) => item.file.file_url);
-    },
     //监听好友键盘事件
     inputEvent(n, o) {
       this.keyEvent.isShow = true;
@@ -574,40 +482,13 @@ export default {
     this.loadChatRecords();
   },
   methods: {
-    //格式化文件大小
-    renderSize: formateSize,
-
     //聊天时间人性化处理
     sendTime: formateTime,
-
     parseTime: parseTime,
-
-    //下载文件
-    download,
-
-    //获取光标选中内容
-    getSelection,
-
-    //获取图片信息
-    getImgStyle(url) {
-      return imgZoom(url, 200);
-    },
-    //获取图片索引
-    getImgIndex(url) {
-      return this.images.findIndex((src) => src == url);
-    },
 
     //发送消息方法
     sendSocket(message) {
       this.$root.socket.send(message);
-    },
-
-    formatCode(code, lang) {
-      try {
-        return Prism.highlight(code, Prism.languages[lang], lang);
-      } catch (error) {
-        return code;
-      }
     },
 
     //回车键发送消息回调事件
@@ -843,13 +724,6 @@ export default {
       this.$refs.userBusinessCard.open(value);
     },
 
-    //查看代码显示窗口
-    catCodeBlock(code, lang) {
-      this.codeBlock.isShow = true;
-      this.codeBlock.code = code;
-      this.codeBlock.lang = lang;
-    },
-
     //撤回消息
     revokeRecords(idx, item) {
       ServeRevokeRecords({
@@ -897,17 +771,6 @@ export default {
       });
 
       return this;
-    },
-
-    //查看会话记录列表
-    catForwardRecords(records_id) {
-      this.$refs.forwardRecordsRef.open(records_id);
-    },
-
-    //获取会话记录消息名称
-    getForwardTitle(item) {
-      let arr = [...new Set(item.map((v) => v.nickname))];
-      return arr.join("、") + "的会话记录";
     },
 
     //开启多选模式
@@ -959,22 +822,6 @@ export default {
       let content = "";
       if (document.getElementById("copy_class_" + item.id)) {
         content = document.getElementById("copy_class_" + item.id).innerText;
-      }
-
-      if (item.msg_type == 5) {
-        menus.push({
-          label: "查看",
-          icon: "iconfont icon-daima",
-          customClass: "cus-contextmenu-item",
-          onClick: () => {
-            if (item.msg_type == 5) {
-              this.catCodeBlock(
-                item.code_block.code,
-                item.code_block.code_lang
-              );
-            }
-          },
-        });
       }
 
       if (content) {
@@ -1126,9 +973,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-/deep/.el-image-viewer__wrapper {
-  z-index: 999 !important;
-}
 @import "~@/assets/css/talk/style.less";
 @import "~@/assets/css/talk/panel-record.less";
 </style>

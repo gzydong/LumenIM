@@ -7,7 +7,8 @@ import store from '@/store';
 import router from '@/router';
 import mixin from './main-mixin'
 
-import './core/lazy_use';
+import './core/lazy-use';
+import './core/global-component';
 import './core/filter';
 import './core/directives';
 import '@/permission';
@@ -17,6 +18,7 @@ import '@/icons';
 import '@/assets/css/global.less';
 
 Vue.config.productionTip = false;
+
 
 let VueApp = new Vue({
   router,

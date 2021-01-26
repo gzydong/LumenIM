@@ -2,7 +2,7 @@
   <div>
     <main-layout :idx="2">
       <el-container slot="container" class="note-container">
-        <el-aside width="230px" class="el-aside-one lm-scrollbar">
+        <el-aside width="230px" class="el-aside-one lum-scrollbar">
           <el-header class="btn-header">
             <el-dropdown
               split-button
@@ -106,7 +106,7 @@
               </div>
             </template>
             <template v-else>
-              <el-scrollbar :native="false" tag="section" class="hv100">
+              <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
                   class="article-row"
                   v-for="(note, i) in notes"
@@ -207,7 +207,7 @@
           v-else
           :class="{ 'fullscreen-mode': markdown.isFull }"
         >
-          <el-container class="hv100">
+          <el-container class="full-height">
             <!-- 编辑模块 -->
             <template v-if="markdown.isEdit">
               <el-container>
@@ -220,7 +220,7 @@
                     placeholder="笔记标题不能为空..."
                   />
                 </el-header>
-                <el-main class="padding0 hv100 ov-hidden">
+                <el-main class="no-padding full-height ov-hidden">
                   <mavon-editor
                     ref="mavonEditor"
                     v-model="markdown.mdText"
@@ -248,9 +248,9 @@
                 <el-header id="note-header" height="61px">
                   {{ noteDetail.title }}
                 </el-header>
-                <el-main class="padding0">
+                <el-main class="no-padding">
                   <div id="note-detail">
-                    <el-scrollbar :native="false" tag="section" class="hv100">
+                    <el-scrollbar :native="false" tag="section" class="full-height">
                       <div style="padding: 10px;display: none;">
                         <div class="subfield">
                           <p>
@@ -434,7 +434,7 @@
                 trigger="click"
               >
                 <p>笔记附件列表</p>
-                <div class="note-files-manager lm-scrollbar">
+                <div class="note-files-manager lum-scrollbar">
                   <input
                     type="file"
                     ref="uploadNoteFile"

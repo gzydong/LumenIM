@@ -2,13 +2,13 @@
   <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box">
       <el-header class="header" height="50px">
-        <span>选择头像</span>
-        <div class="tools">
+        <p>选择头像</p>
+        <p class="tools">
           <i class="el-icon-close" @click="$emit('close', 0)" />
-        </div>
+        </p>
       </el-header>
       <el-main class="main">
-        <el-container class="hv100">
+        <el-container class="full-height">
           <el-aside width="400px">
             <div class="cropper-box">
               <vue-cropper
@@ -72,7 +72,7 @@
               >
             </div>
           </el-aside>
-          <el-main class="padding0">
+          <el-main class="no-padding">
             <div class="cropper-box">
               <div class="preview-img">
                 <img v-if="cusPreviewsImg" :src="cusPreviewsImg" />
@@ -94,7 +94,7 @@ import { VueCropper } from "vue-cropper";
 import { ServeUploadFileStream } from "@/api/upload";
 
 export default {
-  name: "avatar-cropper",
+  name: "AvatarCropper",
   components: {
     VueCropper,
   },

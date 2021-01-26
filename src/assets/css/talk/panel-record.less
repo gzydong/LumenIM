@@ -2,6 +2,8 @@
   padding-top: 5px !important;
 }
 
+@left-arrow-color: #e5f6fb;
+
 .talk-container {
   display: flex;
   min-height: 30px;
@@ -24,7 +26,7 @@
     .avatar {
       width: 30px;
       height: 30px;
-      border-radius: 3px;
+      border-radius: 5px;
       overflow: hidden;
       cursor: pointer;
 
@@ -106,7 +108,7 @@
         border: 5px solid;
         top: 5px;
         left: -10px;
-        border-color: hsla(0, 0%, 96.9%, 0) #f5f5f5 hsla(0, 0%, 96.9%, 0) hsla(0, 0%, 96.9%, 0);
+        border-color: hsla(0, 0%, 96.9%, 0) @left-arrow-color hsla(0, 0%, 96.9%, 0) hsla(0, 0%, 96.9%, 0);
       }
     }
   }
@@ -158,238 +160,16 @@
   }
 }
 
-/* 聊天消息 */
-.talk-container .text-msg {
-  min-width: 30px;
-  max-width: calc(100% - 50px);
-  min-height: 30px;
-  background: #f5f5f5;
-  color: #3a3a3a;
-  border-radius: 3px;
-
-  pre {
-    white-space: pre-wrap;
-    overflow: hidden;
-    word-break: break-word;
-    word-wrap: break-word;
-    font-size: 13px;
-    padding: 0 5px 0px 5px;
-    font-family: "Microsoft YaHei";
-    line-height: 25px;
-    padding-top: 2px;
-  }
-}
-
-.direction-rt .text-msg {
-  background: #1ebafc;
-  color: #fff;
-}
-
-/* 图片消息 */
-.talk-container .image-msg {
-  min-width: 30px;
-  max-width: 200px;
-  min-height: 30px;
-
-  .image-slot {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size: 12px;
-    color: #908686;
-    background: #efeaea;
-  }
-
-  .el-image {
-    border-radius: 5px;
-  }
-}
-
-/* 文件消息 */
-.talk-container .file-msg {
-  width: 270px;
-  height: 85px;
-  background: white;
-  box-shadow: 0 0 5px 0px #e8e4e4;
-  padding: 5px;
-  border-radius: 3px;
-
-  header {
-    height: 45px;
-    display: flex;
-    flex-direction: row;
-
-    .icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 45px;
-      height: 45px;
-      color: #ffffff;
-      background: #49a4ff;
-      border-radius: 3px;
-      font-size: 12px;
-    }
-
-    .info {
-      flex: 1 1;
-      height: 45px;
-      margin-left: 5px;
-      overflow: hidden;
-
-      p {
-        text-align: left;
-
-        &:first-child {
-          height: 24px;
-          line-height: 24px;
-          color: rgb(76, 76, 76);
-          font-size: 14px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        &:nth-child(2) {
-          height: 25px;
-          line-height: 25px;
-          font-size: 12px;
-          color: #929191;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-    }
-  }
-
-  footer {
-    height: 30px;
-    background: white;
-    text-align: right;
-    line-height: 37px;
-    color: #409eff;
-    font-size: 12px;
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-top: 1px solid #eff7ef;
-    margin-top: 10px;
-
-    a {
-      margin: 0 3px;
-      user-select: none;
-
-      &:hover {
-        color: royalblue;
-      }
-    }
-  }
-
-  &:hover {
-    box-shadow: 0 0 5px 0px #cfbdbd;
-  }
-}
-
-/* 会话记录消息 */
-.talk-container .records-msg {
-  width: 250px;
-  min-height: 95px;
-  max-height: 150px;
-  border-radius: 3px;
-  background-color: white;
-  padding: 3px 10px;
-  cursor: pointer;
-  box-shadow: 0 0 5px 0px #e8e4e4;
-  text-align: left;
-  user-select: none;
-
-  .title {
-    height: 30px;
-    line-height: 30px;
-    font-size: 14px;
-    color: #565353;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 400;
-  }
-
-  .lists p {
-    height: 18px;
-    line-height: 18px;
-    font-size: 10px;
-    color: #aaa9a9;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 100;
-  }
-
-  .footer {
-    height: 25px;
-    line-height: 25px;
-    color: #858282;
-    border-top: 1px solid #f1ebeb;
-    font-size: 12px;
-    margin-top: 6px;
-    font-weight: 300;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &:hover {
-    box-shadow: 0 0 5px 0px #cfbdbd;
-  }
-}
-
-/** 代码块消息 */
-.talk-container .code-msg {
-  min-width: 10px;
-  border-radius: 3px;
-  position: relative;
-  overflow-x: auto;
-  max-width: calc(100% - 50px);
-  display: inline-grid;
-
-  pre {
-    padding: 10px;
-    line-height: 24px;
-    overflow-x: auto;
-    background: #272822;
-    color: #d5d4d4;
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 85%;
-  }
-
-  i {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    font-size: 16px;
-    cursor: pointer;
-    color: white;
-    display: inline-block;
-    opacity: 0;
-    width: 50px;
-    height: 30px;
-    background: #171616;
-    text-align: center;
-    line-height: 30px;
-    border-radius: 0 0 0px 3px;
-    transition: ease .5;
-  }
-
-  &:hover i {
-    opacity: 1;
-  }
-}
-
 /* 系统消息 */
+.talk-container .unknown-msg {
+  background: #FF9800;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  border-radius: 5px;
+  color: white;
+}
+
 .talk-container .system-msg {
   margin: 0 auto;
   background-color: #f5f5f5;
@@ -417,10 +197,6 @@
     }
   }
 }
-
-/* 音频消息 -- 预留 */
-
-/* 视频消息 -- 预留 */
 
 .talk-container {
   .invite-tip {

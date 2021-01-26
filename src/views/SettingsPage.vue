@@ -3,7 +3,7 @@
     <main-layout :idx="3">
       <el-container slot="container" class="container">
         <el-header height="60px" class="header no-select">个人设置</el-header>
-        <el-container class="hv100">
+        <el-container class="full-height">
           <el-aside width="180px" class="aside no-select">
             <router-link
               v-for="(menu, index) in menus"
@@ -11,7 +11,7 @@
               :key="index"
             >
               <div
-                class="menu-list"
+                class="menu-list pointer"
                 :class="{
                   selectd: $route.path == menu.path,
                 }"
@@ -74,10 +74,10 @@ export default {
   }
 
   .aside {
-    background-color: #f0f2f5;
     display: flex;
     flex-direction: column;
     padding: 8px;
+    background-color: #f0f2f5;
 
     a {
       text-decoration: none;
@@ -87,14 +87,14 @@ export default {
     .menu-list {
       height: 35px;
       line-height: 35px;
-      margin: 4px 2px;
       padding-left: 25px;
       font-weight: 400;
       font-size: 13px;
       background-color: white;
-      cursor: pointer;
-      transition: ease 0.5s;
       border-left: 3px solid white;
+      border-radius: 5px;
+      margin: 4px 2px;
+      transition: ease 0.5s;
 
       &:hover {
         color: rgb(24, 144, 255);

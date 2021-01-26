@@ -4,10 +4,10 @@
       class="container animated bounceInDown"
       :class="{ 'full-screen': isFullScreen }"
     >
-      <el-container class="hv100">
-        <el-header class="header padding0" height="50px">
+      <el-container class="full-height">
+        <el-header class="header no-padding" height="50px">
           <div class="tools">
-            <span>选择编程语言:</span>
+            <span>选择编程语言:&nbsp;&nbsp;</span>
             <el-select
               size="mini"
               v-model="language"
@@ -35,7 +35,7 @@
           ></i>
         </el-header>
 
-        <el-main class="main padding0">
+        <el-main class="main no-padding">
           <prism-editor
             class="peditor"
             :code="code"
@@ -46,7 +46,7 @@
           ></prism-editor>
         </el-main>
 
-        <el-footer class="footer padding0" height="50px">
+        <el-footer class="footer no-padding" height="50px">
           <div class="code-num">
             <span>代码字数：{{ code.length }}字</span>
             <span class="code-warning" v-show="code.length > 10000 && editMode"
@@ -82,7 +82,7 @@ Vue.use(Select);
 Vue.use(Option);
 
 export default {
-  name: "code-block",
+  name: "TalkCodeBlock",
   components: {
     PrismEditor,
   },

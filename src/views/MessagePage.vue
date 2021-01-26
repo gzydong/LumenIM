@@ -1,10 +1,10 @@
 <template>
   <div>
     <main-layout :idx="0">
-      <el-container slot="container" class="hv100">
+      <el-container slot="container" class="full-height">
         <!-- 左侧侧边栏 -->
         <el-aside width="320px" class="aside-box">
-          <el-container class="hv100" direction="vertical">
+          <el-container class="full-height" direction="vertical">
             <!-- 搜索栏 -->
             <el-header height="60px" class="header">
               <div class="from">
@@ -90,7 +90,7 @@
 
                 <div
                   class="name"
-                  :class="{ 'name-active': index_name == item.index_name }"
+                  :class="{ active: index_name == item.index_name }"
                 >
                   {{ item.remark_name ? item.remark_name : item.name }}
                 </div>
@@ -102,7 +102,7 @@
               :native="false"
               tag="section"
               ref="myScrollbar"
-              class="hv100"
+              class="full-height"
             >
               <el-main class="main">
                 <p class="empty-data" v-if="loadStatus == 0" key="empty">
@@ -216,7 +216,7 @@
           </template>
           <template v-else>
             <talk-editor-panel
-              class="hv100"
+              class="full-height"
               :params="params"
               :is-online="isFriendOnline"
               @change-talk="changeTalk"
@@ -884,11 +884,10 @@ export default {
         line-height: 20px;
         word-break: break-all;
         overflow: hidden;
-      }
 
-      .name-active {
-        color: #508afe;
-        font-weight: 600;
+        &.active {
+          color: #508afe;
+        }
       }
     }
 

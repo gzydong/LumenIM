@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-container class="container">
-      <el-header height="30px" class="padding0 header">
+      <el-header height="30px" class="no-padding header">
         <span v-text="showTitle"></span>
         <div class="addbtn" @click="systemEmojiBox = true">系统表情</div>
       </el-header>
-      <el-main class="padding0 main lm-scrollbar">
+      <el-main class="no-padding main lum-scrollbar">
         <input
           type="file"
           ref="fileCustomEmoji"
@@ -64,7 +64,7 @@
           <div class="clear"></div>
         </div>
       </el-main>
-      <el-footer height="40px" class="padding0 footer">
+      <el-footer height="40px" class="no-padding footer">
         <div class="toolbar-items">
           <div
             class="toolbar-item prev-page"
@@ -107,7 +107,7 @@ import MeEditorSystemEmoticon from "@/components/editor/MeEditorSystemEmoticon";
 import { ServeFindUserEmoticon, ServeUploadEmoticon } from "@/api/emoticon";
 
 export default {
-  name: "me-editor-emoticon",
+  name: "MeEditorEmoticon",
   components: {
     MeEditorSystemEmoticon,
   },

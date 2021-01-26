@@ -8,7 +8,7 @@
       <i class="el-icon-close" @click="$emit('close')"></i>
     </el-header>
 
-    <el-main class="main lm-scrollbar">
+    <el-main class="main lum-scrollbar">
       <div class="list-item list-item-flex">
         <p>
           <span>群名称：</span>
@@ -167,7 +167,8 @@
 
       <p v-show="signoutStatus == 1" class="signout-btn mt38">
         <span style="color: rgb(123, 212, 255)">
-          <i class="iconfont icon-jiazaizhong lm-icon-spin"></i> 正在退出群聊...
+          <i class="iconfont icon-jiazaizhong lum-icon-spin"></i>
+          正在退出群聊...
         </span>
       </p>
 
@@ -185,25 +186,33 @@
     <!-- 查看好友用户信息 -->
     <user-business-card ref="userBusinessCard" />
 
-    <group-launch
-      v-if="inviteFriendBox"
-      :group-id="groupId"
-      @close="inviteFriendBox = false"
-      @invite-success="inviteSuccess"
-    />
+    <!-- 邀请好友组件 -->
+    <transition name="el-fade-in-linear">
+      <group-launch
+        v-if="inviteFriendBox"
+        :group-id="groupId"
+        @close="inviteFriendBox = false"
+        @invite-success="inviteSuccess"
+      />
+    </transition>
 
     <!-- 群管理组件 -->
-    <group-manage
-      v-if="isShowManager"
-      :group-id="groupId"
-      @close="isShowManager = false"
-    />
+    <transition name="el-fade-in-linear">
+      <group-manage
+        v-if="isShowManager"
+        :group-id="groupId"
+        @close="isShowManager = false"
+      />
+    </transition>
 
-    <group-notice
-      v-if="isShowGroupNotice"
-      :group-id="groupId"
-      @close="isShowGroupNotice = false"
-    />
+    <!-- 群公告组件 -->
+    <transition name="el-fade-in-linear">
+      <group-notice
+        v-if="isShowGroupNotice"
+        :group-id="groupId"
+        @close="isShowGroupNotice = false"
+      />
+    </transition>
   </el-container>
 </template>
 <script>
@@ -223,7 +232,7 @@ import GroupManage from "@/components/group/GroupManage";
 import GroupNotice from "@/components/group/GroupNotice";
 
 export default {
-  name: "group-panel",
+  name: "GroupPanel",
   components: {
     GroupLaunch,
     UserBusinessCard,
