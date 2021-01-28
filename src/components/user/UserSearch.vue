@@ -10,23 +10,23 @@
         </el-header>
         <el-main class="main">
           <el-input
+            class="input"
+            id="serach-mobile"
             prefix-icon="el-icon-search"
             placeholder="请输入对方手机号(精确查找)"
-            v-model="input"
             clearable
+            v-model="mobile"
             @keyup.enter.native="onSubmit"
-            class="input"
-            @input="isError = false"
-            style="text-align: center"
+            @input="error = false"
           />
-          <p class="error" v-show="isError">
+          <p class="error" v-show="error">
             无法找到该用户，请检查搜索内容并重试
           </p>
           <el-button
             type="primary"
             size="small"
-            @click="onSubmit"
             :loading="loading"
+            @click="onSubmit"
             >立即查找</el-button
           >
         </el-main>
@@ -38,7 +38,7 @@
   </div>
 </template>
 <script>
-import { ServeSearchUser } from "@/api/user";
+import { ServeSearchContact } from "@/api/contacts";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 
 export default {
@@ -50,15 +50,18 @@ export default {
     return {
       loading: false,
       isShow: false,
-      input: "",
-      isError: false,
+      mobile: "",
+      error: false,
     };
   },
-
   methods: {
     // 显示窗口
     open() {
+      this.mobile = ''
       this.isShow = true;
+      this.$nextTick(()=>{
+        document.getElementById('serach-mobile').focus()
+      })
     },
 
     // 关闭窗口
@@ -67,24 +70,22 @@ export default {
     },
 
     onSubmit() {
-      if (this.input == "") {
-        return false;
-      }
+      let { mobile } = this;
+      if (mobile == "") return false;
 
       this.loading = true;
-      ServeSearchUser({
-        mobile: this.input,
+      ServeSearchContact({
+        mobile,
       })
         .then((res) => {
           if (res.code == 200) {
             this.$refs.userBusinessCard.open(res.data.id);
             this.close();
           } else {
-            this.isError = true;
+            this.error = true;
           }
-          this.loading = false;
         })
-        .catch((err) => {
+        .finally(() => {
           this.loading = false;
         });
     },

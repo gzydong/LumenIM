@@ -102,7 +102,7 @@ const routes = [{
     name: 'login',
     component: () => import('@/views/auth/LoginPage'),
     meta: {
-      title: '登录',
+      title: '账号登录？',
       needLogin: false
     }
   },
@@ -111,7 +111,7 @@ const routes = [{
     name: 'register',
     component: () => import('@/views/auth/RegisterPage'),
     meta: {
-      title: '账号注册',
+      title: '账号注册？',
       needLogin: false
     }
   },
@@ -120,7 +120,7 @@ const routes = [{
     name: 'forget',
     component: () => import('@/views/auth/ForgetPasswordPage'),
     meta: {
-      title: '找回密码',
+      title: '找回密码？',
       needLogin: false
     }
   },

@@ -1,3 +1,8 @@
+import {
+  getSort,
+  getMutipSort,
+} from "@/utils/functions";
+
 const Talk = {
   state: {
     //用户对话列表
@@ -5,6 +10,35 @@ const Talk = {
 
     //对话列表重载状态
     heavyLoad: false,
+  },
+  getters: {
+    // 过滤所有置顶对话列表
+    topItems: state => {
+      return state.items.filter((item) => {
+        return item.is_top == 1;
+      });
+    },
+    talkItems: state => {
+      return state.items.sort(
+        getMutipSort([
+          getSort(function (a, b) {
+            return a.unread_num > b.unread_num;
+          }),
+          getSort(function (a, b) {
+            return a.updated_at > b.updated_at;
+          }),
+        ])
+      );
+    },
+    // 消息未读数总计
+    unreadNum: state => {
+      return state.items.reduce((total, item) => {
+        return total + parseInt(item.unread_num);
+      }, 0);
+    },
+    talkNum: state => {
+      return state.items.length;
+    },
   },
   mutations: {
     // 设置对话列表

@@ -220,7 +220,7 @@ import { ServeSetNotDisturb } from "@/api/chat";
 
 import {
   ServeGroupDetail,
-  ServeSetGroupCard,
+  ServeUpdateGroupCard,
   ServeSecedeGroup,
   ServeGetGroupMembers,
 } from "@/api/group";
@@ -385,7 +385,7 @@ export default {
         return;
       }
 
-      ServeSetGroupCard({
+      ServeUpdateGroupCard({
         group_id: this.groupId,
         visit_card: this.editRemarkText,
       }).then((res) => {

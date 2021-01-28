@@ -57,7 +57,7 @@
   </div>
 </template>
 <script>
-import { ServeEditPassword } from "@/api/user";
+import { ServeUpdatePassword } from "@/api/user";
 
 export default {
   name: "UserEditPassword",
@@ -129,7 +129,7 @@ export default {
     // 提交修改手机号
     changePassword() {
       this.loading = true;
-      ServeEditPassword({
+      ServeUpdatePassword({
         old_password: this.form.old_password,
         new_password: this.form.new_password,
       })

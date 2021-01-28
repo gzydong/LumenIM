@@ -1,11 +1,3 @@
-import {
-    ServeFindUserSetting
-} from "@/api/user";
-
-import {
-    getToken
-} from '@/utils/auth';
-
 // 加载配置信息
 import config from '@/config/config';
 
@@ -19,6 +11,14 @@ import LoginEvent from '@/plugins/socket/event/login-event';
 import KeyboardEvent from '@/plugins/socket/event/keyboard-event';
 import GroupJoinEvent from '@/plugins/socket/event/group-join-event';
 import FriendApplyEvent from '@/plugins/socket/event/friend-apply-event';
+
+import {
+    ServeGetUserSetting
+} from "@/api/user";
+
+import {
+    getToken
+} from '@/utils/auth';
 
 export default {
     data() {
@@ -105,7 +105,7 @@ export default {
 
         // 加载用户相关设置信息，更新本地缓存
         loadUserSetting() {
-            ServeFindUserSetting().then(res => {
+            ServeGetUserSetting().then(res => {
                 if (res.code == 200) {
                     let setting = res.data.setting;
                     let userInfo = res.data.user_info;

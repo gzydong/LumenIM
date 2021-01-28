@@ -69,7 +69,7 @@
 </template>
 <script>
 import SmsLock from "@/plugins/sms-lock";
-import { ServeSendEmailCode, ServeEditEmail } from "@/api/user";
+import { ServeSendEmailCode, ServeUpdateEmail } from "@/api/user";
 
 export default {
   name: "UserEditEmail",
@@ -166,7 +166,7 @@ export default {
     // 提交修改手机号
     changeEmail() {
       this.loading = true;
-      ServeEditEmail({
+      ServeUpdateEmail({
         email: this.form.email,
         email_code: this.form.sms_code,
         password: this.form.password,

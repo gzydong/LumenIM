@@ -71,7 +71,7 @@
 <script>
 import { isMobile } from "@/utils/validate";
 import SmsLock from "@/plugins/sms-lock";
-import { ServeSendMobileCode, ServeEditMobile } from "@/api/user";
+import { ServeSendMobileCode, ServeUpdateMobile } from "@/api/user";
 
 export default {
   name: "UserEditMobile",
@@ -197,7 +197,7 @@ export default {
     // 提交修改手机号
     changeMobile() {
       this.loading = true;
-      ServeEditMobile({
+      ServeUpdateMobile({
         mobile: this.form.username,
         sms_code: this.form.sms_code,
         password: this.form.password,

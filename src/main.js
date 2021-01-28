@@ -19,7 +19,6 @@ import '@/assets/css/global.less';
 
 Vue.config.productionTip = false;
 
-
 let VueApp = new Vue({
   router,
   store,

@@ -219,7 +219,9 @@
   </div>
 </template>
 <script>
-import { ServeFindUserGroups, friendsServ } from "@/api/user";
+import { ServeGetContacts } from "@/api/contacts";
+import { ServeGetGroups } from "@/api/group";
+
 import {
   ServeFindTalkRecords,
   ServeSearchTalkRecords,
@@ -317,7 +319,7 @@ export default {
 
     //获取好友列表
     loadFriends() {
-      friendsServ().then((res) => {
+      ServeGetContacts().then((res) => {
         if (res.code == 200) {
           this.contacts.friends = [];
           for (let friend of res.data) {
@@ -336,7 +338,7 @@ export default {
 
     //获取群聊列表
     loadGroups() {
-      ServeFindUserGroups().then((res) => {
+      ServeGetGroups().then((res) => {
         if (res.code == 200) {
           this.contacts.groups = [];
           for (let group of res.data) {
@@ -534,7 +536,6 @@ export default {
 
     .contacts-item {
       height: 35px;
-      margin: 5px 0;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -635,4 +636,3 @@ export default {
 
 @import "~@/assets/css/talk/talk-records.less";
 </style>
-

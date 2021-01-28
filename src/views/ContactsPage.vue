@@ -379,15 +379,13 @@ import UserSearch from "@/components/user/UserSearch";
 import GroupPanel from "@/components/group/GroupPanel";
 
 import {
-  friendsServ,
-  ServeFindFriendApply,
+  ServeGetContacts,
+  ServeGetContactApplyRecords,
   ServeHandleFriendApply,
-  ServeFindUserGroups,
-  ServeRemoveFriend,
-  ServeDeleteFriendApply,
-} from "@/api/user";
-
-import { ServeSecedeGroup } from "@/api/group";
+  ServeDeleteContact,
+  ServeDeleteContactApply,
+} from "@/api/contacts";
+import { ServeGetGroups, ServeSecedeGroup } from "@/api/group";
 import { ServeCreateTalkList } from "@/api/chat";
 
 export default {
@@ -477,7 +475,7 @@ export default {
 
     // 查看好友申请列表
     loadFriendApply() {
-      ServeFindFriendApply({
+      ServeGetContactApplyRecords({
         page: 1,
         page_size: 10000,
       }).then((res) => {
@@ -490,7 +488,7 @@ export default {
 
     // 加载好友列表
     loadFriends() {
-      friendsServ().then((res) => {
+      ServeGetContacts().then((res) => {
         if (res.code == 200) {
           this.friends.status = 1;
           this.friends.items = res.data;
@@ -500,7 +498,7 @@ export default {
 
     // 加载群聊列表接口
     loadUserGroups() {
-      ServeFindUserGroups().then((res) => {
+      ServeGetGroups().then((res) => {
         if (res.code == 200) {
           this.groups.status = 1;
           this.groups.items = res.data;
@@ -561,6 +559,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         customClass: "border-radius0",
+        inputValue:item.remarks,
         inputValidator(val) {
           return val == null || val == "" ? "好友备注不能为空" : true;
         },
@@ -595,7 +594,7 @@ export default {
     // 删除好友申请记录
     deleteFriendApply(item) {
       let apply_id = item.id;
-      ServeDeleteFriendApply({
+      ServeDeleteContactApply({
         apply_id,
       }).then((res) => {
         if (res.code == 200) {
@@ -621,7 +620,7 @@ export default {
         callback: (action) => {
           if (action == "confirm") {
             let friend_id = item.id;
-            ServeRemoveFriend({
+            ServeDeleteContact({
               friend_id,
             }).then((res) => {
               if (res.code == 200) {

@@ -19,13 +19,12 @@ class FriendApplyEvent extends AppMessageEvent {
   }
 
   handle() {
-    this.$notify({
+    this.vm.$notify({
       title:'好友申请',
       dangerouslyUseHTMLString:true,
       message: '<p style="color:red;margin-top:10px;">您有一条好友申请消息,请注意查收...</p>',
       duration: 0,
       type:'info',
-      customClass:'cus-notifyclass'
     });
 
     this.vm.$store.commit('incrApplyNum');

@@ -129,8 +129,7 @@
 <script>
 import { mapState } from "vuex";
 import UserCard from "@/components/user/UserCard";
-import { ServeFindFriendApplyNum } from "@/api/user";
-
+import { ServeFindFriendApplyNum } from "@/api/contacts";
 export default {
   name: "MainLayout",
   components: {
@@ -192,13 +191,15 @@ export default {
   },
   methods: {
     play() {
-      let audio = document.querySelector("#audio");
-      audio.play().catch((err) => {
-        console.log("提示音播放异常");
-      });
+      document
+        .querySelector("#audio")
+        .play()
+        .catch((err) => {
+          console.log("提示音播放异常");
+        });
     },
     logout() {
-      this.$store.dispatch("ACT_USER_LOGOUT", this.$router);
+      this.$store.dispatch("ACT_USER_LOGOUT");
     },
     setApplyNum() {
       ServeFindFriendApplyNum().then((res) => {

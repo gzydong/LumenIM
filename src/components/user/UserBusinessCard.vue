@@ -125,11 +125,8 @@
 </template>
 <script>
 import { ServeCreateTalkList } from "@/api/chat";
-import {
-  ServeSearchUser,
-  ServeFriendRemarkEdit,
-  ServeFriendApply,
-} from "@/api/user";
+import { ServeSearchUser } from "@/api/user";
+import { ServeCreateContact,ServeEditContactRemark } from "@/api/contacts";
 import { packTalkItem } from "@/utils/functions";
 
 export default {
@@ -221,7 +218,7 @@ export default {
     // 发送添加好友申请
     sendApply() {
       if (this.applyFrom.text == "") return;
-      ServeFriendApply({
+      ServeCreateContact({
         friend_id: this.userInfo.user_id,
         remarks: this.applyFrom.text,
       }).then((res) => {
@@ -247,7 +244,7 @@ export default {
         return;
       }
 
-      ServeFriendRemarkEdit(data).then((res) => {
+      ServeEditContactRemark(data).then((res) => {
         if (res.code == 200) {
           this.editRemark.isShow = false;
           this.userInfo.nicknameRemark = data.remarks;

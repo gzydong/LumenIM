@@ -3,6 +3,11 @@ import {
   get
 } from '@/utils/request';
 
+//查询用户群聊服务接口
+export const ServeGetGroups = () => {
+  return get('/api/v1/group/list');
+}
+
 //获取群信息服务接口
 export const ServeGroupDetail = (data) => {
   return get('/api/v1/group/detail', data);
@@ -38,8 +43,8 @@ export const ServeSecedeGroup = (data) => {
   return post('/api/v1/group/secede', data);
 }
 
-//设置群聊名片服务接口
-export const ServeSetGroupCard = (data) => {
+//修改群聊名片服务接口
+export const ServeUpdateGroupCard = (data) => {
   return post('/api/v1/group/set-group-card', data);
 }
 

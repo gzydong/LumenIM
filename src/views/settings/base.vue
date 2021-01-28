@@ -70,7 +70,7 @@
 </template>
 <script>
 import AvatarCropper from "@/components/layout/AvatarCropper";
-import { ServeEditUserSetup, ServeFindUserDetail } from "@/api/user";
+import { ServeUpdateUserDetail, ServeGetUserDetail } from "@/api/user";
 
 export default {
   name: "UsrBasePage",
@@ -127,7 +127,7 @@ export default {
 
     // 获取用户信息
     getUserDetail() {
-      ServeFindUserDetail().then((res) => {
+      ServeGetUserDetail().then((res) => {
         if (res.code == 200) {
           this.form.mobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,
@@ -146,7 +146,7 @@ export default {
     editUserDetail() {
       this.loading = true;
       let _this = this;
-      ServeEditUserSetup({
+      ServeUpdateUserDetail({
         nickname: this.form.nickname,
         avatar: this.form.avatar,
         motto: this.form.motto,

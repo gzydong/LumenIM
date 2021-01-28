@@ -50,7 +50,7 @@
 import UserEditPassword from "@/components/user/UserEditPassword";
 import UserEditMobile from "@/components/user/UserEditMobile";
 import UserEditEmail from "@/components/user/UserEditEmail";
-import { ServeFindUserDetail } from "@/api/user";
+import { ServeGetUserDetail } from "@/api/user";
 
 export default {
   name: "SecurityPage",
@@ -75,7 +75,7 @@ export default {
   methods: {
     // 获取登录用户信息
     getUserDetail() {
-      ServeFindUserDetail().then((res) => {
+      ServeGetUserDetail().then((res) => {
         if (res.code == 200) {
           this.bindMobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,

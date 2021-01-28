@@ -6,7 +6,7 @@
       "
       @click="fullscreen = !fullscreen"
     ></i>
-    <pre v-html="formatCode(code, lang)"></pre>
+    <pre v-html="formatCode(code, lang)" class="lum-scrollbar"></pre>
   </div>
 </template>
 <script>

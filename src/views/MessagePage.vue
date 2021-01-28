@@ -13,8 +13,7 @@
                   prefix-icon="el-icon-search"
                   placeholder="搜索聊天 / 好友 / 群组"
                   size="small"
-                >
-                </el-input>
+                />
               </div>
 
               <!-- 工具栏 -->
@@ -25,7 +24,7 @@
                   plain
                   size="small"
                   v-show="subMenu"
-                ></el-button>
+                />
                 <el-button
                   icon="el-icon-plus"
                   circle
@@ -33,8 +32,7 @@
                   size="small"
                   v-show="!subMenu"
                   @click="subMenu = true"
-                >
-                </el-button>
+                />
                 <transition name="el-zoom-in-top">
                   <div
                     class="tools-menu"
@@ -54,10 +52,10 @@
 
             <!-- 置顶栏 -->
             <el-header
-              id="subheader"
               v-show="loadStatus == 1 && topItems.length > 0"
               :height="subHeaderPx"
               class="subheader"
+              :class="{ shadow: subHeaderShadow }"
             >
               <div
                 class="top-item"
@@ -242,6 +240,7 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapState } from "vuex";
 import MainLayout from "@/views/layout/MainLayout";
 import GroupLaunch from "@/components/group/GroupLaunch";
 import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
@@ -254,16 +253,10 @@ import {
   ServeTopTalkList,
   ServeSetNotDisturb,
 } from "@/api/chat";
-import { ServeRemoveFriend, ServeFriendRemarkEdit } from "@/api/user";
+import { ServeDeleteContact } from "@/api/user";
+import { ServeEditContactRemark } from "@/api/contacts";
 import { ServeSecedeGroup } from "@/api/group";
-import {
-  packTalkItem,
-  beautifyTime,
-  addClass,
-  removeClass,
-  getSort,
-  getMutipSort,
-} from "@/utils/functions";
+import { packTalkItem, beautifyTime } from "@/utils/functions";
 
 const title = document.title;
 
@@ -278,6 +271,7 @@ export default {
   },
   data() {
     return {
+      subHeaderShadow: false,
       launchGroupShow: false,
 
       // 当前聊天的对话索引名称
@@ -303,6 +297,12 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["topItems", "talkItems", "unreadNum", "talkNum"]),
+    ...mapState({
+      talks: (state) => state.talks.items,
+      monitorUserStatus: (state) => state.notify.friendStatus,
+    }),
+
     // 计算置顶栏目的高度
     subHeaderPx() {
       let num = this.topItems.length,
@@ -317,48 +317,10 @@ export default {
       return `${len}px`;
     },
 
-    unreadNum() {
-      return this.$store.state.talks.items.reduce(function (total, item) {
-        return total + parseInt(item.unread_num);
-      }, 0);
-    },
-
-    monitorUserStatus() {
-      return this.$store.state.notify.friendStatus;
-    },
-
     // 当前对话好友在线状态
     isFriendOnline() {
       let i = this.getIndex(this.index_name);
-      if (i == -1) return 0;
-      return this.$store.state.talks.items[i].online == 1;
-    },
-
-    // 置顶的对话列表
-    topItems() {
-      return this.$store.state.talks.items.filter((item) => {
-        return item.is_top == 1;
-      });
-    },
-
-    // 对话列表
-    talkItems() {
-      let data = this.$store.state.talks.items;
-      return data.sort(
-        getMutipSort([
-          getSort(function (a, b) {
-            return a.unread_num > b.unread_num;
-          }),
-          getSort(function (a, b) {
-            return a.updated_at > b.updated_at;
-          }),
-        ])
-      );
-    },
-
-    // 对话列表数量
-    talkNum() {
-      return this.$store.state.talks.items.length;
+      return i >= 0 && this.talks[i].online == 1;
     },
   },
   watch: {
@@ -398,7 +360,7 @@ export default {
   destroyed() {
     document.title = title;
     clearInterval(this.interval);
-    this.$root.updateMessage(0, 0);
+    this.clearTalk();
   },
   methods: {
     // 美化时间格式
@@ -433,15 +395,9 @@ export default {
 
     // 监听自定义滚动条事件
     scrollEvent(e) {
-      let _self = this;
       let scrollbarEl = this.$refs.myScrollbar.wrap;
-      scrollbarEl.onscroll = function () {
-        let el = document.getElementById("subheader");
-        if (scrollbarEl.scrollTop == 0) {
-          removeClass(el, "header-shadow");
-        } else {
-          addClass(el, "header-shadow");
-        }
+      scrollbarEl.onscroll = () => {
+        this.subHeaderShadow = scrollbarEl.scrollTop > 0;
       };
     },
 
@@ -479,9 +435,7 @@ export default {
 
     // 根据用户对话索引获取对话数组对应的key
     getIndex(index_name) {
-      return this.$store.state.talks.items.findIndex(
-        (item) => item.index_name == index_name
-      );
+      return this.talks.findIndex((item) => item.index_name == index_name);
     },
 
     // 切换聊天栏目
@@ -492,7 +446,7 @@ export default {
         return;
       }
 
-      let item = this.$store.state.talks.items[idx];
+      let item = this.talks[idx];
       let [source, receive_id] = index_name.split("_");
       this.index_name = item.index_name;
       this.params = {
@@ -685,7 +639,7 @@ export default {
 
     // 解除好友关系
     removeFriend(item) {
-      ServeRemoveFriend({
+      ServeDeleteContact({
         friend_id: item.friend_id,
       }).then((res) => {
         if (res.code == 200) {
@@ -736,7 +690,7 @@ export default {
             return false;
           }
 
-          ServeFriendRemarkEdit({
+          ServeEditContactRemark({
             friend_id: item.friend_id,
             remarks: value,
           }).then((res) => {
@@ -891,7 +845,7 @@ export default {
       }
     }
 
-    &.header-shadow {
+    &.shadow {
       box-shadow: 0 2px 6px 0 rgba(31, 35, 41, 0.05);
     }
   }

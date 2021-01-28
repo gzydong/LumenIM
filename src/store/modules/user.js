@@ -18,7 +18,7 @@ let state = {
   sex: 0,
   // 个性签名
   signature: '',
-  // 个性头像  
+  // 个性头像
   avatar: require("@/assets/image/detault-avatar.jpg"),
   // 名片背景
   visitCardBag: require("@/assets/image/default-user-banner.png"),
@@ -76,11 +76,11 @@ const user = {
     ACT_USER_LOGOUT({
       commit,
       state
-    }, $router) {
+    }) {
       commit('USER_LOGOUT');
       ServeLogout().finally(() => {
         removeAll();
-        location.reload();
+        location.href = '/login'
       });
     }
   }

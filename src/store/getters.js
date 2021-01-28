@@ -3,7 +3,7 @@ const getters = {
   loginStatus: state => state.user.loginStatus,
 
   // socket 连接状态
-  socketStatus: state => state.socketStatus
+  socketStatus: state => state.socketStatus,
 }
 
 export default getters;

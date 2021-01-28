@@ -106,7 +106,8 @@
   </div>
 </template>
 <script>
-import { friendsServ, ServeFindUserGroups } from "@/api/user";
+import { ServeGetContacts } from "@/api/contacts";
+import { ServeGetGroups } from "@/api/group";
 import { addClass, removeClass } from "@/utils/functions";
 
 export default {
@@ -190,7 +191,7 @@ export default {
 
     //加载好友列表
     loadFriends() {
-      friendsServ().then((res) => {
+      ServeGetContacts().then((res) => {
         if (res.code == 200) {
           for (let o of res.data) {
             this.contacts.push({
@@ -208,7 +209,7 @@ export default {
 
     //加载群聊列表接口
     loadUserGroups() {
-      ServeFindUserGroups().then((res) => {
+      ServeGetGroups().then((res) => {
         if (res.code == 200) {
           for (let o of res.data) {
             this.contacts.push({
