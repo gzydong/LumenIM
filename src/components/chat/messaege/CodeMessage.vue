@@ -1,12 +1,15 @@
 <template>
-  <div class="code-message" :class="{ 'full-screen': fullscreen }">
+  <div
+    class="code-message"
+    :class="{ height: lineNumber > 6, 'full-screen': fullscreen }"
+  >
     <i
       :class="
         fullscreen ? 'el-icon-close' : 'iconfont icon-tubiao_chakangongyi'
       "
       @click="fullscreen = !fullscreen"
     ></i>
-    <pre v-html="formatCode(code, lang)" class="lum-scrollbar"></pre>
+    <pre class="lum-scrollbar" v-html="formatCode(code, lang)"></pre>
   </div>
 </template>
 <script>
@@ -28,12 +31,16 @@ export default {
   data() {
     return {
       fullscreen: false,
+      lineNumber: 0,
     };
+  },
+  created() {
+    this.lineNumber = this.code.split(/\n/).length;
   },
   methods: {
     formatCode(code, lang) {
       try {
-        return Prism.highlight(code, Prism.languages[lang], lang) + "<br/>";
+        return Prism.highlight(code, Prism.languages[lang], lang)+"<br/>";
       } catch (error) {
         return code;
       }
@@ -44,10 +51,13 @@ export default {
 <style lang="less" scoped>
 .code-message {
   position: relative;
-  height: 200px;
   overflow: hidden;
   border-radius: 5px;
   width: 100%;
+
+  &.height {
+    height: 208px;
+  }
 
   i {
     position: absolute;
@@ -75,6 +85,7 @@ export default {
 
   pre {
     height: 100%;
+    width: 100%;
     overflow: auto;
     padding: 10px;
     line-height: 24px;
@@ -83,14 +94,20 @@ export default {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     font-size: 85%;
+
+    &.lum-scrollbar {
+      &::-webkit-scrollbar {
+        background-color: black;
+      }
+    }
   }
 
   &.full-screen {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh;
-    width: 100vw;
+    height: 100vh !important;
+    width: 100vw !important;
     max-height: unset;
     border-radius: 0px;
     background: #272822;
@@ -112,7 +129,6 @@ export default {
         box-shadow: 0 0 5px 0px #ccc;
       }
     }
-    
   }
 }
 </style>
