@@ -1,12 +1,13 @@
 <template>
   <div>
-    <el-container class="panel-container">
+    <el-container class="ov-hidden full-height">
       <!-- 头部信息 -->
-      <el-header class="panel-header">
+      <el-header class="header-tools">
         <div class="title">
-          <span class="badge friend" v-if="params.source == 1">友</span>
-          <span class="badge" v-else>群</span>
-          <span class="name">
+          <p class="badge" :class="{ friend: params.source == 1 }">
+            {{ params.source == 1 ? "好友" : "群组" }}
+          </p>
+          <p class="pointer">
             <span
               v-if="params.source == 1"
               @click="catFriendDetail(params.receiveId)"
@@ -15,20 +16,19 @@
             <span v-else @click="groupBoxShow = !groupBoxShow">{{
               params.nickname
             }}</span>
-            <span class="num" v-show="groupNum && params.source == 2"
-              >({{ groupNum }}人)</span
-            >
-          </span>
+          </p>
+          <p class="num" v-show="groupNum && params.source == 2">
+            ({{ groupNum }}人)
+          </p>
         </div>
-        <div class="online" v-show="params.source == 1">
-          <p class="badge" :class="{ 'yes-badge': isOnline == true }">
-            <span
-              class="badge-status-dot badge-status-processing"
-              v-show="isOnline == true"
-            ></span>
+        <div class="online">
+          <p class="badge" :class="{ color: isOnline }">
+            <span class="online-status" v-show="isOnline"></span>
             <span>{{ isOnline ? "在线" : "离线" }}</span>
           </p>
-          <p class="input" v-show="keyEvent.isShow">对方正在输入 ...</p>
+          <p class="event-keyboard" v-show="keyEvent.isShow">
+            对方正在输入 ...
+          </p>
         </div>
         <div class="means">
           <el-tooltip content="历史消息" placement="top">
@@ -56,191 +56,167 @@
       </el-header>
 
       <!-- 主体信息 -->
-      <el-main
-        class="no-padding panel-main lum-scrollbar"
-        id="lumenChatPanel"
-        @scroll.native="talkPanelScroll($event)"
-      >
-        <div class="talk-container">
-          <div class="toolbars no-select">
-            <span v-show="loadRecord.status == 0">
-              <i class="el-icon-loading"></i> 正在加载数据中...
+      <el-main class="no-padding ov-hidden" style="position: relative">
+        <div
+          class="talks-container lum-scrollbar"
+          id="lumenChatPanel"
+          @scroll="talkPanelScroll($event)"
+        >
+          <!-- 数据加载状态栏 -->
+          <div class="loading-toolbar">
+            <span v-if="loadRecord.status == 0" class="color-blue">
+              <i class="el-icon-loading" /> 正在加载数据中...
             </span>
-            <span v-show="loadRecord.status == 1" @click="loadChatRecords"
-              ><i class="el-icon-bottom"></i> 查看更多消息...</span
+            <span
+              v-else-if="loadRecord.status == 1"
+              class="pointer color-blue"
+              @click="loadChatRecords"
             >
-            <span v-show="loadRecord.status == 2" class="not-have-msg"
-              >没有更多消息了...</span
-            >
+              <i class="el-icon-bottom" /> 查看更多消息...
+            </span>
+            <span v-else> 没有更多消息了... </span>
           </div>
-        </div>
 
-        <!-- 遍历对话记录 -->
-        <div v-for="(item, idx) in records" :key="item.id">
-          <!-- 群消息 -->
-          <div v-if="item.msg_type == 3" class="talk-container pd-t5">
+          <!-- 消息主体 -->
+          <div v-for="(item, idx) in records" :key="item.id">
+            <!-- 群消息 -->
+            <div v-if="item.msg_type == 3" class="message-box">
+              <invite-message @cat="catFriendDetail" :invite="item.invite" />
+            </div>
+
+            <!-- 消息测回消息 -->
+            <div v-else-if="item.is_revoke == 1" class="message-box">
+              <revoke-message :item="item" />
+            </div>
+
+            <!-- 其它对话消息 -->
             <div
-              v-if="item.invite.type == 1 || item.invite.type == 3"
-              class="system-msg invite-tip"
+              v-else
+              class="message-box record-box"
+              :class="{
+                'direction-rt': item.float == 'right',
+                'checkbox-border': multiSelect.isOpen === true,
+              }"
             >
-              <a @click="catFriendDetail(item.invite.operate_user.id)">{{
-                item.invite.operate_user.nickname
-              }}</a>
-              <span>{{ item.invite.type == 1 ? "邀请了" : "将" }}</span>
-              <template v-for="(user, uidx) in item.invite.users">
-                <a @click="catFriendDetail(user.id)">{{ user.nickname }}</a>
-                <em v-show="uidx < item.invite.users.length - 1">、</em>
-              </template>
-              <span>{{
-                item.invite.type == 1 ? "加入了群聊" : "踢出了群聊"
-              }}</span>
-            </div>
-            <div v-else-if="item.invite.type == 2" class="system-msg">
-              <a @click="catFriendDetail(item.invite.operate_user.id)">{{
-                item.invite.operate_user.nickname
-              }}</a>
-              <span>退出了群聊</span>
-            </div>
-          </div>
-
-          <!-- 撤回消息 -->
-          <div v-else-if="item.is_revoke == 1" class="talk-container pd-t5">
-            <div class="system-msg">
-              <span v-if="$store.state.user.uid == item.user_id"
-                >你撤回了一条消息 | {{ sendTime(item.created_at) }}</span
-              >
-              <span v-else-if="params.source == 1"
-                >对方撤回了一条消息 | {{ sendTime(item.created_at) }}</span
-              >
-              <span v-else
-                >"{{ item.nickname }}" 撤回了一条消息 |
-                {{ sendTime(item.created_at) }}</span
-              >
-            </div>
-          </div>
-
-          <div
-            v-else
-            class="talk-container"
-            :class="{
-              'direction-rt': item.float == 'right',
-              'open-checkbox': multiSelect.isOpen === true,
-            }"
-          >
-            <aside class="checkbox-column">
-              <i
-                class="el-icon-success"
-                :class="{ selected: verifyMultiSelect(item.id) }"
-                @click="triggerMultiSelect(item.id)"
-              ></i>
-            </aside>
-            <aside class="avatar-column">
-              <div class="avatar">
-                <img
+              <aside class="checkbox-column" v-show="multiSelect.isOpen">
+                <i
+                  class="el-icon-success"
+                  :class="{ selected: verifyMultiSelect(item.id) }"
+                  @click="triggerMultiSelect(item.id)"
+                />
+              </aside>
+              <aside class="avatar-column">
+                <el-avatar
+                  shape="square"
+                  :size="30"
+                  class="pointer"
                   :src="item.avatar"
-                  @click="catFriendDetail(item.user_id)"
-                  :onerror="$store.state.detaultAvatar"
-                  width="30"
-                  height="30"
                 />
-              </div>
-            </aside>
-            <div class="content-column">
-              <div
-                class="talktime"
-                v-show="!(item.source == 2 && item.float == 'left')"
-                v-text="parseTime(item.created_at, '{m}月{d}日 {h}:{i}')"
-              />
-              <div
-                class="subtitle"
-                v-if="item.source == 2 && item.float == 'left'"
-              >
-                <span class="nickname" v-text="item.nickname"></span>
-                <span v-show="item.friend_remarks"
-                  >({{ item.friend_remarks }})</span
-                >
-                <span class="talktime2">{{
-                  parseTime(item.created_at, "{m}月{d}日 {h}:{i}")
-                }}</span>
-              </div>
-              <div class="talkbox">
-                <!-- 文本消息角标 -->
-                <div class="arrow" v-show="item.msg_type == 1"></div>
+              </aside>
+              <main class="main-column">
+                <div class="talk-title">
+                  <span
+                    v-show="item.source == 2 && item.float == 'left'"
+                    class="nickname"
+                    v-text="item.nickname"
+                  ></span>
+                  <span v-show="item.friend_remarks"
+                    >({{ item.friend_remarks }})</span
+                  >
+                  <span class="time">{{
+                    parseTime(item.created_at, "{m}月{d}日 {h}:{i}")
+                  }}</span>
+                </div>
 
-                <!-- 文本消息 -->
-                <text-message
-                  v-if="item.msg_type == 1"
-                  :content="item.content"
-                  :float="item.float"
-                  :full-width="false"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 图片消息 -->
-                <image-message
-                  v-else-if="item.msg_type == 2 && item.file.file_type == 1"
-                  :src="item.file.file_url"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 音频文件预留 -->
-                <audio-message
-                  v-else-if="item.msg_type == 2 && item.file.file_type == 2"
-                  :src="item.file.file_url"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 视频文件预留 -->
-                <video-message
-                  v-else-if="item.msg_type == 2 && item.file.file_type == 3"
-                  :src="item.file.file_url"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 文件消息 -->
-                <file-message
-                  v-else-if="item.msg_type == 2 && item.file.file_type == 4"
-                  :file="item.file"
-                  :record_id="item.id"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 会话记录消息 -->
-                <forward-message
-                  v-else-if="item.msg_type == 4"
-                  :forward="item.forward"
-                  :record_id="item.id"
-                  @contextmenu.native="onCopy(idx, item, $event)"
-                />
-
-                <!-- 代码块消息 -->
-                <div v-else-if="item.msg_type == 5">
-                  <code-message
-                    :code="item.code_block.code"
-                    :lang="item.code_block.code_lang"
+                <div class="talk-content">
+                  <!-- 文本消息 -->
+                  <text-message
+                    v-if="item.msg_type == 1"
+                    :content="item.content"
+                    :float="item.float"
+                    :full-width="false"
+                    :arrow="true"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
-                </div>
 
-                <!-- 未知消息 -->
-                <div class="unknown-msg" v-else>
-                  未知消息类型[{{ item.msg_type }}]
+                  <!-- 图片消息 -->
+                  <image-message
+                    v-else-if="item.msg_type == 2 && item.file.file_type == 1"
+                    :src="item.file.file_url"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 音频文件预留 -->
+                  <audio-message
+                    v-else-if="item.msg_type == 2 && item.file.file_type == 2"
+                    :src="item.file.file_url"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 视频文件预留 -->
+                  <video-message
+                    v-else-if="item.msg_type == 2 && item.file.file_type == 3"
+                    :src="item.file.file_url"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 文件消息 -->
+                  <file-message
+                    v-else-if="item.msg_type == 2 && item.file.file_type == 4"
+                    :file="item.file"
+                    :record_id="item.id"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 会话记录消息 -->
+                  <forward-message
+                    v-else-if="item.msg_type == 4"
+                    :forward="item.forward"
+                    :record_id="item.id"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 代码块消息 -->
+                  <code-message
+                    v-else-if="item.msg_type == 5"
+                    :code="item.code_block.code"
+                    :lang="item.code_block.code_lang"
+                    :maxwidth="true"
+                    @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 未知消息 -->
+                  <div class="unknown-msg" v-else>
+                    未知消息类型[{{ item.msg_type }}]
+                  </div>
                 </div>
-              </div>
+              </main>
             </div>
-          </div>
 
-          <div
-            class="talk-container pd-t5"
-            v-show="compareTime(idx, item.created_at)"
-          >
-            <div class="talk-time" v-text="sendTime(item.created_at)"></div>
+            <!-- 消息时间 -->
+            <div
+              class="datetime"
+              v-show="compareTime(idx, item.created_at)"
+              v-text="sendTime(item.created_at)"
+            />
           </div>
         </div>
+
+        <!-- 置底按钮 -->
+        <transition name="el-fade-in-linear">
+          <div
+            class="tips-board pointer"
+            v-show="tipsBoard"
+            @click="talkPanelScrollBottom"
+          >
+            <svg-mention-down class="svg" />
+            <span>回到底部</span>
+          </div>
+        </transition>
       </el-main>
 
       <!-- 页脚信息 -->
-      <el-footer class="panel-footer" height="160">
+      <el-footer class="footer-box" height="160">
         <template v-if="!multiSelect.isOpen">
           <me-editor
             ref="talkEditor"
@@ -292,18 +268,6 @@
           @group-info="syncGroupInfo"
         />
       </div>
-
-      <!-- 置底按钮 -->
-      <transition name="el-fade-in-linear">
-        <div
-          class="tips-board"
-          v-show="tipsBoard"
-          @click="talkPanelScrollBottom"
-        >
-          <svg-mention-down style="width: 10px; height: 10px; color: black" />
-          <span>回到底部</span>
-        </div>
-      </transition>
     </el-container>
 
     <!-- 消息管理器 -->
@@ -958,6 +922,10 @@ export default {
 
     // 对话面板滚动事件
     talkPanelScroll(e) {
+      if (e.target.scrollTop == 0 && this.loadRecord.status == 1) {
+        this.loadChatRecords();
+      }
+
       this.tipsBoard = !(
         Math.ceil(e.target.scrollTop) + e.target.clientHeight >=
         e.target.scrollHeight
@@ -973,6 +941,394 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-@import "~@/assets/css/talk/style.less";
-@import "~@/assets/css/talk/panel-record.less";
+.header-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(245, 245, 245);
+
+  > div {
+    width: 100%/3;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    transition: 0.5s ease;
+
+    .badge {
+      background: rgb(81 139 254);
+      height: 18px;
+      line-height: 18px;
+      padding: 1px 3px;
+      font-size: 10px;
+      color: white;
+      border-radius: 3px;
+      margin-right: 8px;
+
+      &.friend {
+        background: #f97348;
+      }
+    }
+  }
+
+  .online {
+    position: relative;
+    text-align: center;
+
+    .badge {
+      color: #cccccc;
+      font-weight: 200;
+      &.color {
+        color: #1890ff;
+      }
+    }
+
+    .online-status {
+      position: relative;
+      top: -1px;
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      vertical-align: middle;
+      border-radius: 50%;
+      position: relative;
+      background-color: #1890ff;
+      margin-right: 5px;
+
+      &:after {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #1890ff;
+        border-radius: 50%;
+        -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
+        animation: antStatusProcessing 1.2s ease-in-out infinite;
+        content: "";
+      }
+    }
+
+    .event-keyboard {
+      position: absolute;
+      left: -22px;
+      width: 100px;
+      height: 20px;
+      line-height: 18px;
+      text-align: center;
+      font-size: 10px;
+      animation: inputfade 600ms infinite;
+      -webkit-animation: inputfade 600ms infinite;
+    }
+  }
+
+  .means {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    p {
+      cursor: pointer;
+      margin: 0 8px;
+      font-size: 20px;
+      color: #828f95;
+      &:active i {
+        font-size: 26px;
+        transform: scale(1.3);
+        transition: ease 0.5s;
+      }
+    }
+  }
+}
+
+/* 面板页脚 */
+.footer-box {
+  height: 160px !important;
+  padding: 0;
+
+  .multi-select {
+    height: 110px;
+    text-align: center;
+    position: relative;
+    padding-top: 50px;
+    border-top: 1px solid rgb(245, 245, 245);
+
+    .multi-title {
+      position: absolute;
+      top: 15px;
+      left: 0px;
+      right: 0px;
+      margin: 0px auto;
+      color: #878484;
+      font-weight: 300;
+      font-size: 14px;
+      width: 150px;
+    }
+
+    .multi-btn-group {
+      display: inline-block;
+      width: 70px;
+      height: 70px;
+      margin-right: 15px;
+
+      p {
+        font-size: 12px;
+        margin-top: 8px;
+        cursor: pointer;
+      }
+    }
+
+    .multi-icon {
+      width: 45px;
+      height: 45px;
+      line-height: 45px;
+      background-color: #f5f5f5;
+      border-radius: 50%;
+      cursor: pointer;
+      margin: 0 auto;
+
+      &:hover {
+        background-color: #ccc;
+      }
+    }
+  }
+}
+
+/* 侧边栏css */
+.sidebar-box {
+  position: absolute;
+  width: 350px;
+  height: 100%;
+  top: 0px;
+  right: -350px;
+  background: white;
+  transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+
+  &.show {
+    right: 0;
+    box-shadow: 0 0 14px #e2e1e1;
+  }
+}
+
+.tips-board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  bottom: 20px;
+  height: 30px;
+  width: 100px;
+  border-radius: 20px;
+  font-size: 12px;
+  background-color: #fff;
+  box-shadow: 0 2.5px 10px 0 rgba(31, 35, 41, 0.1);
+  color: #1f2329;
+
+  span {
+    margin-left: 5px;
+    margin-top: -2px;
+  }
+
+  .svg {
+    width: 10px;
+    height: 10px;
+    color: black;
+  }
+}
+
+.talks-container {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 10px 30px;
+  overflow-y: auto;
+
+  .message-box {
+    width: 100%;
+    min-height: 30px;
+    margin-bottom: 5px;
+  }
+
+  .loading-toolbar {
+    height: 30px;
+    line-height: 30px;
+    margin: 5px 0;
+    text-align: center;
+    user-select: none;
+    font-size: 13px;
+    color: #cec4c4;
+
+    .color-blue {
+      color: #409eff;
+    }
+  }
+
+  .datetime {
+    height: 30px;
+    line-height: 30px;
+    color: #ccc9c9;
+    font-size: 12px;
+    text-align: center;
+    margin: 5px 0;
+  }
+
+  .record-box {
+    display: flex;
+    flex-direction: row;
+    transition: 0.5s ease;
+
+    .checkbox-column {
+      display: flex;
+      justify-content: center;
+      flex-basis: 40px;
+      flex-shrink: 0;
+      order: 1;
+      user-select: none;
+      padding-top: 25px;
+
+      i {
+        color: #ccc;
+        cursor: pointer;
+        font-size: 22px;
+        &.selected {
+          color: #409eff !important;
+        }
+      }
+    }
+
+    .avatar-column {
+      width: 40px;
+      flex-basis: 40px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      order: 2;
+      user-select: none;
+      padding-top: 22px;
+    }
+
+    .main-column {
+      flex: 1 auto;
+      order: 3;
+      position: relative;
+      box-sizing: border-box;
+      padding: 5px;
+      overflow: hidden;
+
+      .talk-title {
+        display: flex;
+        align-items: center;
+        height: 15px;
+        margin-bottom: 2px;
+        font-size: 10px;
+        user-select: none;
+        color: #a7a0a0;
+        opacity: 0;
+        transition: 0.5s ease;
+
+        span {
+          transform: scale(0.9);
+        }
+      }
+
+      .talk-content {
+        display: flex;
+        box-sizing: border-box;
+        width: 100%;
+      }
+
+      &:hover {
+        .talk-title {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.direction-rt {
+      .avatar-column {
+        order: 3;
+      }
+
+      .main-column {
+        order: 2;
+
+        .talk-title,
+        .talk-content {
+          justify-content: flex-end;
+        }
+      }
+    }
+
+    &.checkbox-border {
+      border: 1px dashed #c4c4ec;
+      &:hover {
+        border-color: #409eff;
+      }
+    }
+  }
+}
+
+/* css 动画 */
+@keyframes inputfade {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes inputfade {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes antStatusProcessing {
+  0% {
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  to {
+    -webkit-transform: scale(2.4);
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes antStatusProcessing {
+  0% {
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  to {
+    -webkit-transform: scale(2.4);
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
 </style>

@@ -1,7 +1,11 @@
 <template>
   <div
     class="code-message"
-    :class="{ height: lineNumber > 6, 'full-screen': fullscreen }"
+    :class="{
+      'max-height': lineNumber > 6,
+      'max-width': maxwidth,
+      'full-screen': fullscreen,
+    }"
   >
     <i
       :class="
@@ -9,7 +13,7 @@
       "
       @click="fullscreen = !fullscreen"
     ></i>
-    <pre class="lum-scrollbar" v-html="formatCode(code, lang)"></pre>
+    <pre class="lum-scrollbar" v-html="formatCode(code, lang)" />
   </div>
 </template>
 <script>
@@ -27,6 +31,10 @@ export default {
       type: String,
       default: "",
     },
+    maxwidth: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -40,7 +48,7 @@ export default {
   methods: {
     formatCode(code, lang) {
       try {
-        return Prism.highlight(code, Prism.languages[lang], lang)+"<br/>";
+        return Prism.highlight(code, Prism.languages[lang], lang) + "<br/>";
       } catch (error) {
         return code;
       }
@@ -53,9 +61,12 @@ export default {
   position: relative;
   overflow: hidden;
   border-radius: 5px;
-  width: 100%;
 
-  &.height {
+  &.max-width {
+    max-width: 500px;
+  }
+
+  &.max-height {
     height: 208px;
   }
 
@@ -106,12 +117,13 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh !important;
-    width: 100vw !important;
+    height: 100%;
+    width: 100%;
+    max-width: unset;
     max-height: unset;
     border-radius: 0px;
     background: #272822;
-    z-index: 99999;
+    z-index: 99999999;
 
     i {
       position: fixed;

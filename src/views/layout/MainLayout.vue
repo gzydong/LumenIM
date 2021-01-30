@@ -124,16 +124,21 @@
     <audio id="audio" preload="auto">
       <source src="~@/assets/image/1701.mp3" type="audio/mp3" />
     </audio>
+
+    <reward />
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import UserCard from "@/components/user/UserCard";
 import { ServeFindFriendApplyNum } from "@/api/contacts";
+
+import Reward from "@/components/layout/Reward";
 export default {
   name: "MainLayout",
   components: {
     UserCard,
+    Reward,
   },
   props: {
     idx: {

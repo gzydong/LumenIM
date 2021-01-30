@@ -7,6 +7,8 @@ import VideoMessage from './VideoMessage.vue';
 import VoiceMessage from './VoiceMessage.vue';
 import SystemMessage from './SystemMessage.vue';
 import FileMessage from './FileMessage.vue';
+import InviteMessage from './InviteMessage.vue';
+import RevokeMessage from './RevokeMessage.vue';
 
 export {
     AudioMessage,
@@ -17,5 +19,7 @@ export {
     VideoMessage,
     VoiceMessage,
     SystemMessage,
-    FileMessage
+    FileMessage,
+    InviteMessage,
+    RevokeMessage
 }

@@ -9,6 +9,8 @@ import {
     VoiceMessage,
     SystemMessage,
     FileMessage,
+    InviteMessage,
+    RevokeMessage
 } from "@/components/chat/messaege";
 
 Vue.component(AudioMessage.name, AudioMessage);
@@ -20,3 +22,5 @@ Vue.component(VideoMessage.name, VideoMessage);
 Vue.component(VoiceMessage.name, VoiceMessage);
 Vue.component(SystemMessage.name, SystemMessage);
 Vue.component(FileMessage.name, FileMessage);
+Vue.component(InviteMessage.name, InviteMessage);
+Vue.component(RevokeMessage.name, RevokeMessage);

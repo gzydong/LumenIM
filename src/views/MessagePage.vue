@@ -125,7 +125,7 @@
 
                 <!-- 对话列表 -->
                 <div
-                  class="talk-item"
+                  class="talk-item pointer"
                   v-show="loadStatus == 1"
                   v-for="(item, idx) in talkItems"
                   :class="{ 'active-border': index_name == item.index_name }"
@@ -729,7 +729,6 @@ export default {
 
 .aside-box {
   position: relative;
-  background-color: white;
   border-right: 1px solid rgb(245, 245, 245);
   overflow: hidden;
   padding: 0;
@@ -886,8 +885,7 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
-    border-left: 3px solid white;
+    border-left: 3px solid transparent;
     transition: 0.2s ease-in;
 
     .avatar {

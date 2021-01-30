@@ -541,6 +541,7 @@ export default {
       align-items: center;
       justify-content: center;
       padding-left: 10px;
+      position: relative;
 
       .avatar {
         flex-basis: 40px;
