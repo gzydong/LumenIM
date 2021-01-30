@@ -22,10 +22,11 @@
           </p>
         </div>
         <div class="online">
-          <p class="badge" :class="{ color: isOnline }">
+          <p class="online-text" :class="{ color: isOnline }">
             <span class="online-status" v-show="isOnline"></span>
             <span>{{ isOnline ? "在线" : "离线" }}</span>
           </p>
+          <!--  -->
           <p class="event-keyboard" v-show="keyEvent.isShow">
             对方正在输入 ...
           </p>
@@ -976,47 +977,44 @@ export default {
     position: relative;
     text-align: center;
 
-    .badge {
+    .online-text {
       color: #cccccc;
       font-weight: 200;
+
       &.color {
         color: #1890ff;
       }
-    }
 
-    .online-status {
-      position: relative;
-      top: -1px;
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      vertical-align: middle;
-      border-radius: 50%;
-      position: relative;
-      background-color: #1890ff;
-      margin-right: 5px;
-
-      &:after {
-        position: absolute;
+      .online-status {
+        position: relative;
         top: -1px;
-        left: -1px;
-        width: 100%;
-        height: 100%;
-        border: 1px solid #1890ff;
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        vertical-align: middle;
         border-radius: 50%;
-        -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
-        animation: antStatusProcessing 1.2s ease-in-out infinite;
-        content: "";
+        position: relative;
+        background-color: #1890ff;
+        margin-right: 5px;
+
+        &:after {
+          position: absolute;
+          top: -1px;
+          left: -1px;
+          width: 100%;
+          height: 100%;
+          border: 1px solid #1890ff;
+          border-radius: 50%;
+          -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
+          animation: antStatusProcessing 1.2s ease-in-out infinite;
+          content: "";
+        }
       }
     }
 
     .event-keyboard {
-      position: absolute;
-      left: -22px;
-      width: 100px;
       height: 20px;
       line-height: 18px;
-      text-align: center;
       font-size: 10px;
       animation: inputfade 600ms infinite;
       -webkit-animation: inputfade 600ms infinite;
