@@ -253,8 +253,7 @@ import {
   ServeTopTalkList,
   ServeSetNotDisturb,
 } from "@/api/chat";
-import { ServeDeleteContact } from "@/api/user";
-import { ServeEditContactRemark } from "@/api/contacts";
+import { ServeDeleteContact,ServeEditContactRemark } from "@/api/contacts";
 import { ServeSecedeGroup } from "@/api/group";
 import { packTalkItem, beautifyTime } from "@/utils/functions";
 
