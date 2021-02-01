@@ -46,16 +46,3 @@ Vue.directive('drag', {
 
 //点击其他地方隐藏指令
 Vue.directive('outside', Clickoutside);
-
-//自定义处理a标签颜色指令 v-href="red"
-Vue.directive('href', {
-    inserted(el, binding) {
-        let color = binding.value ? binding.value : 'white';
-        let els = el.querySelectorAll('a');
-        if (els) {
-            els.forEach((item, i) => {
-                item.style = `color: ${color};padding:0 2px;border-bottom: 1px solid ${color};`;
-            });
-        }
-    }
-});

@@ -112,6 +112,7 @@
                   :size="30"
                   class="pointer"
                   :src="item.avatar"
+                  @click.native="catFriendDetail(item.user_id)"
                 />
               </aside>
               <main class="main-column">
@@ -196,7 +197,7 @@
 
             <!-- 消息时间 -->
             <div
-              class="datetime"
+              class="datetime no-select"
               v-show="compareTime(idx, item.created_at)"
               v-text="sendTime(item.created_at)"
             />
@@ -214,6 +215,15 @@
             <span>回到底部</span>
           </div>
         </transition>
+
+        <!-- 对话气泡 -->
+        <div
+          class="talk-bubble pointer no-select"
+          @click="talkPanelScrollBottom"
+        >
+          <i class="el-icon-chat-dot-round"></i> 新消息
+          @按手机看那三剑客反数据那就开始发你拿手机看
+        </div>
       </el-main>
 
       <!-- 页脚信息 -->
@@ -320,12 +330,7 @@ import {
   ServeRevokeRecords,
 } from "@/api/chat";
 import { ServeCollectEmoticon } from "@/api/emoticon";
-import {
-  formateTime,
-  parseTime,
-  copyTextToClipboard,
-  replaceEmoji,
-} from "@/utils/functions";
+import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
 
 export default {
   name: "TalkEditorPanel",
@@ -547,10 +552,6 @@ export default {
                 : item.user_id == user_id
                 ? "right"
                 : "left";
-
-            if (item.msg_type == 1) {
-              item.content = replaceEmoji(item.content);
-            }
 
             return item;
           });
@@ -971,6 +972,10 @@ export default {
         background: #f97348;
       }
     }
+
+    .num {
+      margin-left: 5px;
+    }
   }
 
   .online {
@@ -1141,6 +1146,23 @@ export default {
   }
 }
 
+.talk-bubble {
+  position: absolute;
+  left: 10px;
+  bottom: 20px;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: white;
+  padding: 0 10px;
+  background: linear-gradient(to right, #a8dff7, #0fb0f5);
+  animation: talkbubble 1s ease-in-out infinite;
+}
+
 .talks-container {
   height: 100%;
   width: 100%;
@@ -1270,6 +1292,20 @@ export default {
         border-color: #409eff;
       }
     }
+  }
+}
+
+@keyframes talkbubble {
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.015);
+  }
+
+  to {
+    transform: scale(1);
   }
 }
 

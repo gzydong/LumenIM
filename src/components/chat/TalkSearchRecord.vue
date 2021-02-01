@@ -141,7 +141,7 @@
                       </span>
                       <el-divider direction="vertical" />
                       <span class="time">{{
-                        record.created_at.substr(0, 16)
+                        record.created_at
                       }}</span>
                     </div>
 
@@ -230,8 +230,7 @@ import {
 import {
   formateSize,
   download,
-  imgZoom,
-  replaceEmoji,
+  imgZoom
 } from "@/utils/functions";
 
 export default {
@@ -381,14 +380,7 @@ export default {
 
           let records = data.record_id == 0 ? [] : this.records.items;
 
-          records.push(
-            ...res.data.rows.map((item) => {
-              if (item.msg_type == 1) {
-                item.content = replaceEmoji(item.content);
-              }
-              return item;
-            })
-          );
+          records.push(...res.data.rows);
 
           this.records.items = records;
           this.records.loadStatus =

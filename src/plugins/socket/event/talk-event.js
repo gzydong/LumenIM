@@ -2,8 +2,7 @@ import AppMessageEvent from './app-message-event';
 
 import {
   parseTime,
-  packTalkItem,
-  replaceEmoji
+  packTalkItem
 } from '@/utils/functions';
 
 import {
@@ -84,10 +83,6 @@ class TalkEvent extends AppMessageEvent {
         type: this.vm.message.source,
         receive: this.vm.message.receiveId
       });
-    }
-
-    if (record.msg_type == 1) {
-      record.content = replaceEmoji(record.content);
     }
 
     this.vm.message.records.push(record);

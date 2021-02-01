@@ -37,7 +37,7 @@ export default {
   justify-content: center;
 }
 .content {
-  margin: 0 auto;
+  margin: 10px auto;
   background-color: #f5f5f5;
   font-size: 11px;
   line-height: 30px;

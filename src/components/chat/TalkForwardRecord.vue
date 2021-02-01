@@ -33,7 +33,7 @@
                   }}
                 </span>
                 <el-divider direction="vertical" />
-                <span class="time">{{ record.created_at.substr(0, 16) }}</span>
+                <span class="time">{{ record.created_at }}</span>
               </div>
 
               <!-- 文本消息 -->
@@ -83,7 +83,6 @@
 </template>
 <script>
 import { ServeGetForwardRecords } from "@/api/chat";
-import { replaceEmoji } from "@/utils/functions";
 
 export default {
   name: "TalkForwardRecord",
@@ -108,13 +107,7 @@ export default {
       })
         .then((res) => {
           if (res.code == 200) {
-            this.records = res.data.rows.map((item) => {
-              if (item.msg_type == 1) {
-                item.content = replaceEmoji(item.content);
-              }
-
-              return item;
-            });
+            this.records = res.data.rows;
           }
         })
         .finally(() => {
@@ -141,7 +134,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.lum-dialog-mask{
+.lum-dialog-mask {
   z-index: 99999;
 }
 .lum-dialog-box {

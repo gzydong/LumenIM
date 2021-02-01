@@ -201,6 +201,19 @@ class WsSocket {
     send(mesage) {
         this.connect.send(JSON.stringify(mesage));
     }
+
+    /**
+     * 推送消息
+     * 
+     * @param {String} event 事件名
+     * @param {object} data 数据
+     */
+    emit(event, data) {
+        this.connect.send(JSON.stringify({
+            event,
+            data
+        }))
+    }
 }
 
 export default WsSocket;

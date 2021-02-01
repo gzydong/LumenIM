@@ -381,7 +381,7 @@ export function hidePhone(phone) {
  * @param {Object} params
  */
 export function packTalkItem(params) {
-  let options = {
+  let options = Object.assign({
     id: 0,
     type: 1,
     index_name: "",
@@ -396,9 +396,8 @@ export function packTalkItem(params) {
     unread_num: 0,
     content: "......",
     created_at: parseTime(new Date()),
-  };
+  }, params);
 
-  options = Object.assign(options, params);
   options.index_name = options.type == 1 ? `${options.type}_${options.friend_id}` : `${options.type}_${options.group_id}`;
 
   return options;
@@ -465,7 +464,7 @@ export function beautifyTime(datetime = '') {
  * 
  * @param {String} content  需要替换的字符串
  */
-export function replaceEmoji(content) {
+export function textReplaceEmoji(content) {
   let emojis = {
     "[微笑]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/0.gif'>",
     "[撇嘴]": "<img src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/1.gif'>",
@@ -581,29 +580,17 @@ export function replaceEmoji(content) {
     });
 }
 
-
-/**
- * 替换字符串中的url 为a标签
- * 
- * @param {String} text 
- */
-export function replaceURLWithHTMLLinks(text) {
-  let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
-  return text.replace(exp, "<a href='$1'>$1</a>");
-}
-
-
 export function getSort(fn) {
-  return function(a, b) {
-      var ret = 0;
+  return function (a, b) {
+    var ret = 0;
 
-      if (fn.call(this, a, b)) {
-          ret = -1;
-      } else if (fn.call(this, b, a)) {
-          ret = 1;
-      }
+    if (fn.call(this, a, b)) {
+      ret = -1;
+    } else if (fn.call(this, b, a)) {
+      ret = 1;
+    }
 
-      return ret;
+    return ret;
   }
 }
 
@@ -613,13 +600,24 @@ export function getSort(fn) {
  * @param {*} arr 
  */
 export function getMutipSort(arr) {
-  return function(a, b) {
-      var tmp, i = 0;
+  return function (a, b) {
+    var tmp, i = 0;
 
-      do {
-          tmp = arr[i++](a, b);
-      } while (tmp == 0 && i < arr.length);
+    do {
+      tmp = arr[i++](a, b);
+    } while (tmp == 0 && i < arr.length);
 
-      return tmp;
+    return tmp;
   }
+}
+
+/**
+ * Url 替换超链接
+ * 
+ * @param {String} text 文本
+ * @param {String} color 超链接颜色
+ */
+export function textReplaceLink(text, color = '#409eff') {
+  let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+  return text.replace(exp, `<a href='$1' target="_blank" style="color:${color};text-decoration: revert;">$1</a >`)
 }
