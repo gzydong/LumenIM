@@ -131,9 +131,9 @@
 <script>
 import { mapState } from "vuex";
 import UserCard from "@/components/user/UserCard";
+import Reward from "@/components/layout/Reward";
 import { ServeFindFriendApplyNum } from "@/api/contacts";
 
-import Reward from "@/components/layout/Reward";
 export default {
   name: "MainLayout",
   components: {

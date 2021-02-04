@@ -12,7 +12,7 @@
               <el-header
                 class="no-padding search-header"
                 height="50px"
-                id="search-header"
+                :class="{ shadow: headerShadow }"
               >
                 <el-input
                   placeholder="搜索 | 好友 or 群组"
@@ -108,7 +108,6 @@
 <script>
 import { ServeGetContacts } from "@/api/contacts";
 import { ServeGetGroups } from "@/api/group";
-import { addClass, removeClass } from "@/utils/functions";
 
 export default {
   name: "UserContacts",
@@ -117,6 +116,7 @@ export default {
       contacts: [],
       search: [],
       keywords: "",
+      headerShadow: false,
     };
   },
   computed: {
@@ -227,15 +227,9 @@ export default {
 
     // 监听自定义滚动条事件
     scrollEvent(e) {
-      let _self = this;
       let scrollbarEl = this.$refs.scrollbar2.wrap;
-      scrollbarEl.onscroll = function () {
-        let el = document.getElementById("search-header");
-        if (scrollbarEl.scrollTop == 0) {
-          removeClass(el, "shadow");
-        } else {
-          addClass(el, "shadow");
-        }
+      scrollbarEl.onscroll = () => {
+        this.headerShadow = scrollbarEl.scrollTop > 0;
       };
     },
   },

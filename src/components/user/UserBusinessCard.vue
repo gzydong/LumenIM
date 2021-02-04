@@ -2,7 +2,7 @@
   <div class="base-mask animated fadeIn" v-show="isShow">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
-        <i class="close el-icon-error" @click="close"></i>
+        <i class="close el-icon-error pointer" @click="close"></i>
         <div class="img-banner">
           <img :src="userInfo.imgbag" class="img-banner" />
         </div>
@@ -12,13 +12,15 @@
               <img
                 :src="userInfo.avatar"
                 :onerror="$store.state.detaultAvatar"
-                alt=""
               />
             </div>
           </div>
           <div class="nickname">
             <i class="iconfont icon-qianming"></i>
             <span>{{ userInfo.nickname || "未设置昵称" }}</span>
+            <div class="share no-select" @click="contacts = true">
+              <i class="iconfont icon-fenxiang3" /> <span>分享</span>
+            </div>
           </div>
         </div>
       </el-header>
@@ -32,7 +34,7 @@
         <div class="card-rows no-select">
           <div class="card-row">
             <label>手机</label>
-            <span>{{ mobile(userInfo.mobile) }} </span>
+            <span>{{ mobile(userInfo.mobile) }}</span>
           </div>
           <div class="card-row">
             <label>昵称</label>
@@ -121,16 +123,26 @@
         </div>
       </div>
     </el-container>
+
+    <user-contacts
+      v-if="contacts"
+      @confirm="confirmContact"
+      @close="contacts = false"
+    />
   </div>
 </template>
 <script>
+import UserContacts from "@/components/chat/UserContacts";
 import { ServeCreateTalkList } from "@/api/chat";
 import { ServeSearchUser } from "@/api/user";
-import { ServeCreateContact,ServeEditContactRemark } from "@/api/contacts";
+import { ServeCreateContact, ServeEditContactRemark } from "@/api/contacts";
 import { packTalkItem } from "@/utils/functions";
 
 export default {
   name: "UserBusinessCard",
+  components: {
+    UserContacts,
+  },
   data() {
     return {
       isShow: false,
@@ -163,6 +175,8 @@ export default {
         isShow: false,
         text: "",
       },
+
+      contacts: false,
     };
   },
   methods: {
@@ -175,6 +189,9 @@ export default {
 
     // 关闭窗口
     close() {
+      if (this.contacts) {
+        return false;
+      }
       this.isShow = false;
     },
 
@@ -270,6 +287,14 @@ export default {
         this.$root.dumpTalkPage(`1_${userInfo.user_id}`);
       });
     },
+
+    confirmContact(array) {
+      this.contacts = false;
+      this.$notify.info({
+        title: "消息",
+        message: "分享功能正在开发中...",
+      });
+    },
   },
 };
 </script>
@@ -283,18 +308,19 @@ export default {
   width: 350px;
   height: 600px;
   overflow: hidden;
+  border-radius: 3px;
 
   .header {
     position: relative;
 
     .close {
       position: absolute;
-      right: 5px;
-      top: 5px;
+      right: 10px;
+      top: 10px;
       color: white;
-      cursor: pointer;
       transition: all 1s;
       z-index: 1;
+      font-size: 20px;
     }
 
     .img-banner {
@@ -327,7 +353,7 @@ export default {
     border-top: 1px solid #f5eeee;
 
     button {
-      width: 80%;
+      width: 90%;
     }
   }
 }
@@ -371,6 +397,27 @@ export default {
 
     span {
       margin-left: 5px;
+    }
+
+    .share {
+      display: inline-flex;
+      width: 50px;
+      height: 22px;
+      background: #ff5722;
+      color: white;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 20px;
+      transform: scale(0.7);
+      cursor: pointer;
+      i {
+        margin-top: 2px;
+      }
+      span {
+        font-size: 14px;
+        margin-left: 4px;
+      }
     }
   }
 }

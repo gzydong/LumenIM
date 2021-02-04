@@ -99,7 +99,7 @@
             <el-scrollbar
               :native="false"
               tag="section"
-              ref="myScrollbar"
+              ref="menusScrollbar"
               class="full-height"
             >
               <el-main class="main">
@@ -128,10 +128,10 @@
                   class="talk-item pointer"
                   v-show="loadStatus == 1"
                   v-for="(item, idx) in talkItems"
-                  :class="{ 'active-border': index_name == item.index_name }"
+                  :key="item.index_name"
+                  :class="{ active: index_name == item.index_name }"
                   @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="talkItemsMenu(item, $event)"
-                  :key="item.index_name"
                 >
                   <div class="avatar">
                     <span v-show="!item.avatar">
@@ -203,7 +203,7 @@
         <!-- 聊天面板容器 -->
         <el-main class="panel-box">
           <template v-if="index_name == null">
-            <div class="friendly-tips animated flipInY">
+            <div class="famous-box">
               <img src="~@/assets/image/chat.png" width="300" />
               <p>
                 不是井里没有水，而是你挖的不够深<br />
@@ -253,7 +253,7 @@ import {
   ServeTopTalkList,
   ServeSetNotDisturb,
 } from "@/api/chat";
-import { ServeDeleteContact,ServeEditContactRemark } from "@/api/contacts";
+import { ServeDeleteContact, ServeEditContactRemark } from "@/api/contacts";
 import { ServeSecedeGroup } from "@/api/group";
 import { packTalkItem, beautifyTime } from "@/utils/functions";
 
@@ -394,7 +394,7 @@ export default {
 
     // 监听自定义滚动条事件
     scrollEvent(e) {
-      let scrollbarEl = this.$refs.myScrollbar.wrap;
+      let scrollbarEl = this.$refs.menusScrollbar.wrap;
       scrollbarEl.onscroll = () => {
         this.subHeaderShadow = scrollbarEl.scrollTop > 0;
       };
@@ -441,9 +441,7 @@ export default {
     clickTab(type = 1, index_name) {
       let idx = this.getIndex(index_name);
 
-      if (idx == -1) {
-        return;
-      }
+      if (idx == -1) return;
 
       let item = this.talks[idx];
       let [source, receive_id] = index_name.split("_");
@@ -587,7 +585,7 @@ export default {
       return false;
     },
 
-    // 会话列表置顶（重写）
+    // 会话列表置顶
     topChatItem(item) {
       ServeTopTalkList({
         list_id: item.id,
@@ -1015,7 +1013,7 @@ export default {
       background-color: #eff0f1;
     }
 
-    &.active-border {
+    &.active {
       border-color: #3370ff;
       background-color: #eff0f1;
     }
@@ -1027,14 +1025,13 @@ export default {
   height: 100%;
   padding: 0;
 
-  .friendly-tips {
+  .famous-box {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     height: 100%;
     font-size: 24px;
-    background-color: white;
     user-select: none;
 
     p {
