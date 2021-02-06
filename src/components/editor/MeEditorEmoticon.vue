@@ -18,7 +18,7 @@
           <div class="title">QQ表情</div>
           <div
             class="emoticon-item"
-            v-for="(item, i) in emoji.emoji1"
+            v-for="(item, i) in emoji.emojis"
             @click="clickEmoticon(item, 1)"
           >
             <img
@@ -33,7 +33,7 @@
           <div class="title">符号表情</div>
           <div
             class="emoticon-item symbol"
-            v-for="(item, i) in emoji.emoji2"
+            v-for="(item, i) in emoji.symbol"
             @click="clickEmoticon(item, 0)"
           >
             {{ item }}
@@ -102,9 +102,9 @@
 </template>
 
 <script>
-import emoji from "@/assets/js/emoji";
 import MeEditorSystemEmoticon from "@/components/editor/MeEditorSystemEmoticon";
 import { ServeFindUserEmoticon, ServeUploadEmoticon } from "@/api/emoticon";
+import { emojiList } from "@/utils/emojis";
 
 export default {
   name: "MeEditorEmoticon",
@@ -123,7 +123,7 @@ export default {
   },
   data() {
     return {
-      emoji: emoji,
+      emoji: emojiList,
 
       // 系统表情包套弹出窗
       systemEmojiBox: false,
@@ -202,10 +202,9 @@ export default {
 
     // 选中表情
     clickEmoticon(emoji, type) {
-      let text = type == 1 ? `[${emoji}]` : emoji;
       this.callback({
         type: 1,
-        value: text,
+        value: emoji,
       });
     },
 

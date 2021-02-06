@@ -22,7 +22,7 @@ let state = {
 };
 
 if (getToken()) {
-  state = Object.assign(state, getUserSettingCache());
+  Object.assign(state, getUserSettingCache());
 }
 
 /**

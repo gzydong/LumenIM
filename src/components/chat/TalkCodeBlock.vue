@@ -1,5 +1,5 @@
 <template>
-  <div class="base-mask">
+  <div class="lum-dialog-mask">
     <div
       class="container animated bounceInDown"
       :class="{ 'full-screen': isFullScreen }"
@@ -244,12 +244,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.base-mask {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .container {
   width: 80%;
   max-width: 800px;

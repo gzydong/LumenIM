@@ -12,7 +12,8 @@
   </div>
 </template>
 <script>
-import { textReplaceLink, textReplaceEmoji } from "@/utils/functions";
+import { textReplaceLink } from "@/utils/functions";
+import { textReplaceEmoji } from "@/utils/emojis";
 
 export default {
   name: "TextMessage",
@@ -40,12 +41,12 @@ export default {
     };
   },
   created() {
-    this.html = textReplaceEmoji(
-      textReplaceLink(
-        this.content,
-        this.float == "right" ? "#ffffff" : "rgb(9 149 208)"
-      )
+    const text = textReplaceLink(
+      this.content,
+      this.float == "right" ? "#ffffff" : "rgb(9 149 208)"
     );
+
+    this.html = textReplaceEmoji(text);
   },
 };
 </script>
@@ -65,7 +66,7 @@ export default {
     height: 0;
     font-size: 0;
     border: 5px solid;
-    top: 5px;
+    top: 10px;
     left: -10px;
   }
 

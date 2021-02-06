@@ -19,6 +19,14 @@ import '@/assets/css/global.less';
 
 Vue.config.productionTip = false;
 
+window.addEventListener('blur', () => {
+  // document.title = "亲，欢迎你回来"
+})
+
+window.addEventListener('focus', () => {
+  // document.title = "小伙不要走，我要和你对决"
+})
+
 let VueApp = new Vue({
   router,
   store,

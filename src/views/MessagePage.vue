@@ -152,7 +152,7 @@
                       v-show="item.is_top == 0"
                       @click.stop="topChatItem(item)"
                     >
-                      <i class="el-icon-top"></i>
+                      <i class="el-icon-top" />
                     </div>
                   </div>
                   <div class="card">

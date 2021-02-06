@@ -1,5 +1,5 @@
 <template>
-  <div class="base-mask animated fadeIn" v-show="isShow">
+  <div class="lum-dialog-mask animated fadeIn" v-show="isShow">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
         <i class="close el-icon-error pointer" @click="close"></i>

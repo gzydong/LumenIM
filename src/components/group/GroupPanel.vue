@@ -166,8 +166,8 @@
       </p>
 
       <p v-show="signoutStatus == 1" class="signout-btn mt38">
-        <span style="color: rgb(123, 212, 255)">
-          <i class="iconfont icon-jiazaizhong lum-icon-spin"></i>
+        <span style="color: #ccc">
+          <i class="el-icon-loading"></i>
           正在退出群聊...
         </span>
       </p>
@@ -742,6 +742,10 @@ export default {
       font-size: 12px;
       color: #cccccc;
     }
+  }
+
+  .mt38 {
+    margin-top: 38px;
   }
 }
 

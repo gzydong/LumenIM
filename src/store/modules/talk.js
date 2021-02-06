@@ -14,9 +14,7 @@ const Talk = {
   getters: {
     // 过滤所有置顶对话列表
     topItems: state => {
-      return state.items.filter((item) => {
-        return item.is_top == 1;
-      });
+      return state.items.filter((item) => item.is_top == 1);
     },
     talkItems: state => {
       return state.items.sort(

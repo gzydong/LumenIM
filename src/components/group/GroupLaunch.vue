@@ -71,6 +71,7 @@
                       v-model="from.groupName"
                       placeholder="请输入群名称(必填)"
                       size="small"
+                      :maxlength="20"
                     />
                   </p>
                 </div>

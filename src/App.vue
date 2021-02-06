@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="theme-red">
+  <div id="app">
     <router-view v-if="showView" />
   </div>
 </template>
@@ -8,7 +8,8 @@ export default {
   name: "App",
   data() {
     return {
-      showView: true, // 用于点击当前页的router时，刷新当前页
+      // 用于点击当前页的router时，刷新当前页
+      showView: true,
     };
   },
   methods: {
