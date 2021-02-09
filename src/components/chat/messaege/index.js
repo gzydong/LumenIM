@@ -9,6 +9,8 @@ import SystemMessage from './SystemMessage.vue';
 import FileMessage from './FileMessage.vue';
 import InviteMessage from './InviteMessage.vue';
 import RevokeMessage from './RevokeMessage.vue';
+import VisitCardMessage from './VisitCardMessage.vue';
+import ReplyMessage from './ReplyMessage.vue';
 
 export {
     AudioMessage,
@@ -21,5 +23,7 @@ export {
     SystemMessage,
     FileMessage,
     InviteMessage,
-    RevokeMessage
+    RevokeMessage,
+    VisitCardMessage,
+    ReplyMessage
 }

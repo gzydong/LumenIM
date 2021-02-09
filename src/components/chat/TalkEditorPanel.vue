@@ -191,6 +191,8 @@
                   <div class="unknown-msg" v-else>
                     未知消息类型[{{ item.msg_type }}]
                   </div>
+
+                  <!-- <reply-message /> -->
                 </div>
               </main>
             </div>
@@ -1251,6 +1253,8 @@ export default {
 
       .talk-content {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         box-sizing: border-box;
         width: 100%;
       }
@@ -1270,9 +1274,12 @@ export default {
       .main-column {
         order: 2;
 
-        .talk-title,
-        .talk-content {
+        .talk-title {
           justify-content: flex-end;
+        }
+
+        .talk-content {
+          align-items: flex-end;
         }
       }
     }

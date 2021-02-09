@@ -1,5 +1,7 @@
 <template >
-  <div></div>
+  <div class="test-page">
+    <visit-card-message />
+  </div>
 </template>
 
 <script>
@@ -13,4 +15,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.test-page{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

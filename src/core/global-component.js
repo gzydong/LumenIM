@@ -10,7 +10,9 @@ import {
     SystemMessage,
     FileMessage,
     InviteMessage,
-    RevokeMessage
+    RevokeMessage,
+    VisitCardMessage,
+    ReplyMessage
 } from "@/components/chat/messaege";
 
 Vue.component(AudioMessage.name, AudioMessage);
@@ -24,3 +26,5 @@ Vue.component(SystemMessage.name, SystemMessage);
 Vue.component(FileMessage.name, FileMessage);
 Vue.component(InviteMessage.name, InviteMessage);
 Vue.component(RevokeMessage.name, RevokeMessage);
+Vue.component(VisitCardMessage.name, VisitCardMessage);
+Vue.component(ReplyMessage.name, ReplyMessage);

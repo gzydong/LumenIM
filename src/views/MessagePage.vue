@@ -133,7 +133,7 @@
                   @click="clickTab(2, item.index_name)"
                   @contextmenu.prevent="talkItemsMenu(item, $event)"
                 >
-                  <div class="avatar">
+                  <div class="avatar-box">
                     <span v-show="!item.avatar">
                       {{
                         (item.remark_name
@@ -155,7 +155,7 @@
                       <i class="el-icon-top" />
                     </div>
                   </div>
-                  <div class="card">
+                  <div class="card-box">
                     <div class="title">
                       <div class="card-name">
                         <p class="nickname">
@@ -885,7 +885,7 @@ export default {
     border-left: 3px solid transparent;
     transition: 0.2s ease-in;
 
-    .avatar {
+    .avatar-box {
       height: 35px;
       width: 35px;
       flex-basis: 35px;
@@ -928,7 +928,7 @@ export default {
       }
     }
 
-    .card {
+    .card-box {
       height: 40px;
       display: flex;
       align-content: center;
