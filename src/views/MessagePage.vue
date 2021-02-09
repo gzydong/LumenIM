@@ -181,7 +181,19 @@
                         {{ beautifyTime(item.updated_at) }}
                       </div>
                     </div>
-                    <div class="content">
+
+                    <div
+                      v-if="index_name != item.index_name && item.draft_text"
+                      class="content"
+                    >
+                      <span style="color: red">[草稿内容]</span>
+                      <span
+                        v-text="item.draft_text"
+                        style="margin-left: 5px"
+                      ></span>
+                    </div>
+
+                    <div v-else class="content">
                       <span
                         v-if="item.type == 1"
                         :class="{ 'online-color': item.online }"

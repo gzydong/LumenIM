@@ -334,6 +334,7 @@ import {
 } from "@/api/chat";
 import { ServeCollectEmoticon } from "@/api/emoticon";
 import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
+import { findTalkIndex } from "@/utils/talk";
 
 export default {
   name: "TalkEditorPanel",
@@ -476,7 +477,15 @@ export default {
     },
 
     //推送编辑事件消息
-    keyboardEvent() {
+    keyboardEvent(text) {
+      this.$store.commit({
+        type: "UPDATE_TALK_ITEM",
+        key: findTalkIndex(this.$root.message.index_name),
+        item: {
+          draft_text: text,
+        },
+      });
+
       // 判断是否推送键盘输入事件消息
       if (!this.$store.state.settings.keyboardEventNotify) {
         return false;

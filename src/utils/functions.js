@@ -394,6 +394,9 @@ export function packTalkItem(params) {
     is_top: 0,
     unread_num: 0,
     content: "......",
+
+    // 草稿字段  这里后面从本地缓存中读取，防止页面刷新数据就消失了
+    draft_text: "",
     created_at: parseTime(new Date()),
   }, params);
 
