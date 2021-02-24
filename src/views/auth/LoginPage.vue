@@ -80,7 +80,7 @@
   </div>
 </template>
 <script>
-import { setToken, setUserInfo } from "@/utils/auth";
+import { setToken } from "@/utils/auth";
 import { isMobile } from "@/utils/validate";
 import { ServeLogin } from "@/api/user";
 

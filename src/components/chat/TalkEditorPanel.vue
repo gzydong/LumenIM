@@ -192,6 +192,7 @@
                     未知消息类型[{{ item.msg_type }}]
                   </div>
 
+                  <!-- 消息引用(预留) -->
                   <!-- <reply-message /> -->
                 </div>
               </main>
@@ -218,15 +219,15 @@
           </div>
         </transition>
 
-        <!-- 对话气泡 -->
+        <!-- 新消息气泡(预留) -->
         <!-- <div
           class="talk-bubble pointer no-select"
           v-show="tipsBoard"
           @click="talkPanelScrollBottom"
         >
           <i class="el-icon-chat-dot-round"></i>
-          <span>新消息</span>
-          <span>@按手机看那三剑客反数据那就开始发你拿手机看</span>
+          <span>新消息(12条)</span>
+          <span> #@按手机看# 那三剑客反数据那就开始发你拿手机看</span>
         </div> -->
       </el-main>
 
@@ -1150,19 +1151,21 @@ export default {
   position: absolute;
   left: 10px;
   bottom: 10px;
-  width: 300px;
+  max-width: 300px;
   height: 40px;
   line-height: 40px;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: white;
-  padding: 0 10px;
+  padding: 0 15px;
   font-size: 13px;
   background: linear-gradient(to right, #87cfef, #0fb0f5);
-  animation: talkbubble 1s ease-in-out infinite;
-  // display: none;
+
+  i {
+    margin-right: 3px;
+  }
 }
 
 .talks-container {
@@ -1299,20 +1302,6 @@ export default {
         border-color: #409eff;
       }
     }
-  }
-}
-
-@keyframes talkbubble {
-  from {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.01);
-  }
-
-  to {
-    transform: scale(1);
   }
 }
 

@@ -58,6 +58,7 @@ export default {
   user-select: none;
   font-weight: 300;
   display: inline-block;
+  border-radius: 3px;
 
   span {
     margin: 0 5px;

@@ -136,7 +136,6 @@ import UserContacts from "@/components/chat/UserContacts";
 import { ServeCreateTalkList } from "@/api/chat";
 import { ServeSearchUser } from "@/api/user";
 import { ServeCreateContact, ServeEditContactRemark } from "@/api/contacts";
-import { packTalkItem } from "@/utils/functions";
 
 export default {
   name: "UserBusinessCard",

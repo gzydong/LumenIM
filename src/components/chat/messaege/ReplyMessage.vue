@@ -15,10 +15,10 @@ export default {
 <style lang="less" scoped>
 .reply-message {
   margin-top: 5px;
-  min-height: 30px;
+  min-height: 28px;
   background: #f7f1f1;
-  line-height: 30px;
-  font-size: 13px;
+  line-height: 28px;
+  font-size: 12px;
   padding: 0 10px;
   border-radius: 3px;
   color: #a7a2a2;

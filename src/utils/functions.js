@@ -375,37 +375,6 @@ export function hidePhone(phone) {
 }
 
 /**
- * 包装聊天对话列表数据
- *
- * @param {Object} params
- */
-export function packTalkItem(params) {
-  let options = Object.assign({
-    id: 0,
-    type: 1,
-    index_name: "",
-    name: "未设置昵称",
-    remark_name: "",
-    avatar: "",
-    friend_id: 0,
-    group_id: 0,
-    group_members_num: 0,
-    not_disturb: 0,
-    is_top: 0,
-    unread_num: 0,
-    content: "......",
-
-    // 草稿字段  这里后面从本地缓存中读取，防止页面刷新数据就消失了
-    draft_text: "",
-    created_at: parseTime(new Date()),
-  }, params);
-
-  options.index_name = options.type == 1 ? `${options.type}_${options.friend_id}` : `${options.type}_${options.group_id}`;
-
-  return options;
-}
-
-/**
  * 人性化显示时间
  *
  * @param {Object} datetime

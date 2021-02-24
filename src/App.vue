@@ -16,9 +16,7 @@ export default {
     // 刷新当前路由方法
     refreshView() {
       this.showView = false;
-      this.$nextTick(() => {
-        this.showView = true;
-      });
+      this.$nextTick(() => (this.showView = true));
     },
   },
 };

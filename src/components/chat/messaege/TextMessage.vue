@@ -58,7 +58,7 @@ export default {
   position: relative;
   min-width: 30px;
   min-height: 30px;
-  border-radius: 5px;
+  border-radius: 8px;
 
   .arrow {
     position: absolute;
@@ -66,7 +66,7 @@ export default {
     height: 0;
     font-size: 0;
     border: 5px solid;
-    top: 10px;
+    top: 6px;
     left: -10px;
   }
 

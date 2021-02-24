@@ -36,6 +36,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .content {
   margin: 10px auto;
   background-color: #f5f5f5;
@@ -48,6 +49,7 @@ export default {
   user-select: none;
   font-weight: 300;
   display: inline-block;
+  border-radius: 3px;
 
   span {
     margin: 0 5px;

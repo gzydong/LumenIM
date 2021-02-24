@@ -181,29 +181,22 @@
                         {{ beautifyTime(item.updated_at) }}
                       </div>
                     </div>
-
-                    <div
-                      v-if="index_name != item.index_name && item.draft_text"
-                      class="content"
-                    >
-                      <span style="color: red">[草稿内容]</span>
-                      <span
-                        v-text="item.draft_text"
-                        style="margin-left: 5px"
-                      ></span>
-                    </div>
-
-                    <div v-else class="content">
-                      <span
-                        v-if="item.type == 1"
-                        :class="{ 'online-color': item.online }"
-                        >[{{ item.online ? "在线" : "离线" }}]</span
+                    <div class="content">
+                      <template
+                        v-if="index_name != item.index_name && item.draft_text"
                       >
-                      <span v-else>[群消息]</span>
-                      <span
-                        v-text="item.msg_text"
-                        style="margin-left: 5px"
-                      ></span>
+                        <span style="color: red">[草稿内容]</span>
+                        <span v-text="item.draft_text"></span>
+                      </template>
+                      <template v-else>
+                        <span
+                          v-if="item.type == 1"
+                          :class="{ 'online-color': item.online }"
+                          >[{{ item.online ? "在线" : "离线" }}]</span
+                        >
+                        <span v-else>[群消息]</span>
+                        <span v-text="item.msg_text"></span>
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -267,7 +260,8 @@ import {
 } from "@/api/chat";
 import { ServeDeleteContact, ServeEditContactRemark } from "@/api/contacts";
 import { ServeSecedeGroup } from "@/api/group";
-import { packTalkItem, beautifyTime } from "@/utils/functions";
+import { beautifyTime } from "@/utils/functions";
+import { formateTalkItem, findTalkIndex } from "@/utils/talk";
 
 const title = document.title;
 
@@ -330,7 +324,7 @@ export default {
 
     // 当前对话好友在线状态
     isFriendOnline() {
-      let i = this.getIndex(this.index_name);
+      let i = findTalkIndex(this.index_name);
       return i >= 0 && this.talks[i].online == 1;
     },
   },
@@ -352,7 +346,7 @@ export default {
     // 监听用户在线状态
     monitorUserStatus(nval, oval) {
       let [status, friend_id] = nval.split("_");
-      let key = this.getIndex(`1_${friend_id}`);
+      let key = findTalkIndex(`1_${friend_id}`);
       if (key == -1) return;
 
       this.$store.commit({
@@ -420,7 +414,7 @@ export default {
         if (res.code == 200) {
           this.$store.commit({
             type: "SET_TALK_ITEM",
-            items: res.data.map((item) => packTalkItem(item)),
+            items: res.data.map((item) => formateTalkItem(item)),
           });
 
           let index_name = sessionStorage.getItem("send_message_index_name");
@@ -444,14 +438,9 @@ export default {
       this.loadChatList();
     },
 
-    // 根据用户对话索引获取对话数组对应的key
-    getIndex(index_name) {
-      return this.talks.findIndex((item) => item.index_name == index_name);
-    },
-
     // 切换聊天栏目
     clickTab(type = 1, index_name) {
-      let idx = this.getIndex(index_name);
+      let idx = findTalkIndex(index_name);
 
       if (idx == -1) return;
 
@@ -606,7 +595,7 @@ export default {
         if (res.code == 200) {
           this.$store.commit({
             type: "UPDATE_TALK_ITEM",
-            key: this.getIndex(item.index_name),
+            key: findTalkIndex(item.index_name),
             item: {
               is_top: item.is_top == 0 ? 1 : 0,
             },
@@ -625,7 +614,7 @@ export default {
         if (res.code == 200) {
           this.$store.commit({
             type: "UPDATE_TALK_ITEM",
-            key: this.getIndex(item.index_name),
+            key: findTalkIndex(item.index_name),
             item: {
               not_disturb: item.not_disturb == 0 ? 1 : 0,
             },
@@ -706,7 +695,7 @@ export default {
             if (res.code == 200) {
               this.$store.commit({
                 type: "UPDATE_TALK_ITEM",
-                key: this.getIndex(item.index_name),
+                key: findTalkIndex(item.index_name),
                 item: {
                   remark_name: value,
                 },
@@ -1008,11 +997,15 @@ export default {
         font-size: 10px;
         line-height: 18px;
         color: #8f959e;
-        overflow: hidden;
         margin-top: 3px;
         font-weight: 300;
+        overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+
+        span:first-child {
+          margin-right: 5px;
+        }
 
         .online-color {
           color: #4aa71c;

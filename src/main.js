@@ -5,7 +5,7 @@ import Vue from 'vue';
 import App from '@/App';
 import store from '@/store';
 import router from '@/router';
-import mixin from './main-mixin'
+import mixin from './main-mixin';
 
 import './core/lazy-use';
 import './core/global-component';

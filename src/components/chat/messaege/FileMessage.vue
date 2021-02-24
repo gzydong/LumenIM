@@ -1,16 +1,19 @@
 <template>
   <div class="file-message">
     <div class="main">
-      <div class="ext">{{ ext.toUpperCase() }}</div>
+      <div class="ext">{{ ext }}</div>
       <div class="file-box">
         <p class="info">
-          <span class="filename" v-text="fileName"></span>
-          <span>({{ fileSize }})</span>
+          <span class="name" v-text="fileName"></span>
+          <span class="size">({{ fileSize }})</span>
         </p>
-        <p class="tip">文件已成功发送, 文件助手永久保存</p>
+        <p class="notice">文件已成功发送, 文件助手永久保存</p>
       </div>
     </div>
-    <div class="footer"><a @click="download">下载</a><a>在线预览</a></div>
+    <div class="footer">
+      <a @click="download(record_id)">下载</a>
+      <a>在线预览</a>
+    </div>
   </div>
 </template>
 <script>
@@ -39,14 +42,12 @@ export default {
   },
   created() {
     this.file_id = this.file.id;
-    this.ext = this.file.file_suffix;
+    this.ext = this.file.file_suffix.toUpperCase();
     this.fileName = this.file.original_name;
     this.fileSize = formateSize(this.file.file_size);
   },
   methods: {
-    download() {
-      download(this.record_id);
-    },
+    download,
   },
 };
 </script>
@@ -58,6 +59,7 @@ export default {
   box-shadow: 0 0 5px 0px #e8e4e4;
   padding: 10px;
   border-radius: 3px;
+  transition: all 0.5s;
 
   &:hover {
     box-shadow: 0 0 5px 0px #cac6c6;
@@ -96,15 +98,20 @@ export default {
         color: rgb(76, 76, 76);
         font-size: 14px;
 
-        .filename {
+        .name {
           flex: 1 auto;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
+
+        .size {
+          font-size: 12px;
+          color: #cac6c6;
+        }
       }
 
-      .tip {
+      .notice {
         height: 25px;
         line-height: 25px;
         font-size: 12px;

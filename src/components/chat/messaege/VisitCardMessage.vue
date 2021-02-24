@@ -8,12 +8,15 @@
         <p class="ellipsis">{{ nickname }}</p>
       </div>
       <div class="tools flex-center">
-        <span class="flex-center pointer">加好友</span>
+        <span class="flex-center pointer">
+          <i class="el-icon-plus"></i> 加好友
+        </span>
       </div>
     </div>
     <div class="sign"><span>个性签名 : </span>{{ sign }}</div>
     <div class="share no-select ellipsis">
-      <a class="pointer">你是谁?</a> 分享了用户名片，可点击添加好友 ...
+      <a class="pointer" @click="openVisitCard(friendId)">你是谁?</a>
+      分享了用户名片，可点击添加好友 ...
     </div>
   </div>
 </template>
@@ -22,7 +25,8 @@ export default {
   name: "VisitCardMessage",
   data() {
     return {
-      userid: 0,
+      userId: 0,
+      friendId: 0,
       avatar:
         "http://im-serve0.gzydong.club/static/image/sys-head/2019012107542668696.jpg",
       sign:
@@ -32,7 +36,11 @@ export default {
     };
   },
   created() {},
-  methods: {},
+  methods: {
+    openVisitCard(user_id) {
+      this.$emit("openVisitCard", user_id);
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -50,9 +58,11 @@ export default {
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid #ece5e5;
+  transition: all 0.5s;
 
   &:hover {
     box-shadow: 0 0 8px #e2d3d3;
+    transform: scale(1.01);
   }
 
   .user {
@@ -81,7 +91,7 @@ export default {
       flex-shrink: 0;
 
       span {
-        width: 50px;
+        width: 65px;
         height: 30px;
         background: #409eff;
         color: white;
@@ -101,7 +111,7 @@ export default {
   .sign {
     min-height: 22px;
     line-height: 22px;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 5px 8px;
     background: #f3f5f7;
     color: #7d7d7d;

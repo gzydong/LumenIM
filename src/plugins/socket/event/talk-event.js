@@ -1,10 +1,11 @@
 import AppMessageEvent from './app-message-event';
-
 import {
-  parseTime,
-  packTalkItem
+  parseTime
 } from '@/utils/functions';
-
+import {
+  formateTalkItem,
+  findTalkIndex
+} from '@/utils/talk';
 import {
   ServeClearTalkUnreadNum,
   ServeCreateTalkList
@@ -40,7 +41,7 @@ class TalkEvent extends AppMessageEvent {
     }
 
     let indexName = this.getIndexName();
-    let idx = this.getIndex(indexName);
+    let idx = findTalkIndex(indexName);
 
     // 判断消息来源是否在对话列表中...
     if (idx == -1) {
@@ -149,15 +150,6 @@ class TalkEvent extends AppMessageEvent {
   }
 
   /**
-   * 根据用户对话索引获取对话数组对应的key
-   * 
-   * @param {string} index_name 
-   */
-  getIndex(index_name) {
-    return this.vm.$store.state.talks.items.findIndex(item => item.index_name == index_name);
-  }
-
-  /**
    * 通过消息获取消息对应的对话索引
    */
   getIndexName() {
@@ -189,7 +181,7 @@ class TalkEvent extends AppMessageEvent {
         res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1;
         this.vm.$store.commit({
           type: "INSERT_TALK_ITEM",
-          item: packTalkItem(res.data.talkItem)
+          item: formateTalkItem(res.data.talkItem)
         });
       }
     });
