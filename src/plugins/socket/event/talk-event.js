@@ -10,6 +10,7 @@ import {
   ServeClearTalkUnreadNum,
   ServeCreateTalkList
 } from "@/api/chat";
+import Vue from 'vue';
 
 /**
  * 聊天消息处理
@@ -59,14 +60,32 @@ class TalkEvent extends AppMessageEvent {
   /**
    * 更新对话记录
    * 
-   * @param {int} idx 聊天列表的索引 
+   * @param {Number} idx 聊天列表的索引 
    */
   updateTalkRecord(idx) {
     let record = this.resource.data;
-    if (record.user_id == 0) {
-      record.float = 'center';
+    record.float = (record.user_id == 0) ? 'center' : (record.user_id == this.getUserId ? 'right' : 'left');
+    this.vm.message.records.push(record);
+
+    // 获取聊天面板元素节点
+    let elChatPanel = document.getElementById("lumenChatPanel");
+
+    // 判断的滚动条是否在底部
+    let isBottom = (
+      Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight >=
+      elChatPanel.scrollHeight
+    )
+
+    if (isBottom || record.user_id == this.getUserId) {
+      Vue.nextTick(() => {
+        // 更新聊天面板滚动条置底
+        elChatPanel.scrollTop = elChatPanel.scrollHeight;
+      });
     } else {
-      record.float = record.user_id == this.getUserId ? 'right' : 'left';
+      this.vm.$store.commit('SET_TLAK_UNREAD_MESSAGE', {
+        content: this.getTalkText(),
+        nickname: record.nickname
+      });
     }
 
     this.vm.$store.commit({
@@ -85,9 +104,6 @@ class TalkEvent extends AppMessageEvent {
         receive: this.vm.message.receiveId
       });
     }
-
-    this.vm.message.records.push(record);
-    this.vm.$store.commit('setScrollHeight');
   }
 
   /**

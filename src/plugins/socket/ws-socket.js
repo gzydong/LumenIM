@@ -59,6 +59,7 @@ class WsSocket {
      */
     on(event, callBack) {
         this.onCallBacks[event] = callBack
+        return this;
     }
 
     /**

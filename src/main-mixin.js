@@ -72,20 +72,15 @@ export default {
             // 绑定接收的事件
             socket.on('event_talk', (data) => {
                 (new TalkEvent(data)).handle();
-            });
-            socket.on('event_online_status', (data) => {
+            }).on('event_online_status', (data) => {
                 (new LoginEvent(data)).handle();
-            });
-            socket.on('event_keyboard', (data) => {
+            }).on('event_keyboard', (data) => {
                 (new KeyboardEvent(data)).handle();
-            });
-            socket.on('event_revoke_talk', (data) => {
+            }).on('event_revoke_talk', (data) => {
                 (new RevokeEvent(data)).handle();
-            });
-            socket.on('event_friend_apply', (data) => {
+            }).on('event_friend_apply', (data) => {
                 (new FriendApplyEvent(data)).handle();
-            });
-            socket.on('join_group', (data) => {
+            }).on('join_group', (data) => {
                 (new GroupJoinEvent(data)).handle();
             });
 

@@ -5,10 +5,17 @@ import {
 
 const Talk = {
   state: {
-    //用户对话列表
+    // 用户对话列表
     items: [],
 
-    //对话列表重载状态
+    // 最后一条消息
+    unreadMessage: {
+      num: 0,
+      nickname: "未知",
+      content: "...",
+    },
+
+    // 对话列表重载状态
     heavyLoad: false,
   },
   getters: {
@@ -77,7 +84,7 @@ const Talk = {
     UPDATE_TALK_MESSAGE(state, payload) {
       if (!state.items[payload.key]) return false;
 
-      state.items[payload.key].msg_text = payload.item.msg_text.replace(/<\/?.+?>/g, "") || '[表情]';
+      state.items[payload.key].msg_text = payload.item.msg_text;
       state.items[payload.key].unread_num++;
       state.items[payload.key].updated_at = payload.item.updated_at;
     },
@@ -95,7 +102,22 @@ const Talk = {
     // 更新消息数组的key 更新 duration 字段数据
     UPDATA_MESSAGE_DURATION(state, data) {
       state.list[data.index].duration = data.duration
-    }
+    },
+
+    SET_TLAK_UNREAD_MESSAGE(state, data) {
+      state.unreadMessage.num++;
+      state.unreadMessage.nickname = data.nickname;
+      state.unreadMessage.content = data.content;
+    },
+
+    // 清除最后一条未读消息
+    CLEAR_TLAK_UNREAD_MESSAGE(state) {
+      state.unreadMessage = {
+        num: 0,
+        nickname: "未知",
+        content: "...",
+      }
+    },
   },
 }
 

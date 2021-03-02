@@ -88,9 +88,10 @@
           v-drag="dragPasteImage"
           v-model.trim="editorText"
           @keydown="keydownEvent($event)"
+          @input="inputEvent($event)"
           placeholder="你想要的聊点什么呢 ..."
           rows="6"
-        ></textarea>
+        />
       </el-main>
     </el-container>
 
@@ -147,7 +148,7 @@ export default {
     },
   },
   watch: {
-    talkUser(n_index_name, o_index_name) {
+    talkUser(n_index_name) {
       this.$refs.filesManager.clear();
       this.editorText = this.getDraftText(n_index_name);
     },
@@ -200,19 +201,17 @@ export default {
     dragPasteImage(e) {
       let files = getDragPasteImg(e);
       if (files.length == 0) return;
-
       this.openImageViewer(files[0]);
     },
 
-    // 键盘监听事件
+    inputEvent(e) {
+      this.$emit("keyboard-event", e.target.value);
+    },
+
+    // 键盘按下监听事件
     keydownEvent(e) {
       if (e.keyCode == 13 && this.editorText == "") {
-        e.preventDefault(); // 阻止浏览器默认换行操作
-      }
-
-      if (e.keyCode !== 13) {
-        this.$emit("keyboard-event", this.editorText);
-        return;
+        e.preventDefault();
       }
 
       // 回车发送消息

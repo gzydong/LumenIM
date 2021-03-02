@@ -57,7 +57,7 @@
       </el-header>
 
       <!-- 主体信息 -->
-      <el-main class="no-padding ov-hidden" style="position: relative">
+      <el-main class="no-padding" style="position: relative">
         <div
           class="talks-container lum-scrollbar"
           id="lumenChatPanel"
@@ -220,15 +220,18 @@
         </transition>
 
         <!-- 新消息气泡(预留) -->
-        <!-- <div
+        <div
           class="talk-bubble pointer no-select"
-          v-show="tipsBoard"
+          v-show="tipsBoard && unreadMessage.num"
           @click="talkPanelScrollBottom"
         >
           <i class="el-icon-chat-dot-round"></i>
-          <span>新消息(12条)</span>
-          <span> #@按手机看# 那三剑客反数据那就开始发你拿手机看</span>
-        </div> -->
+          <span>新消息({{ unreadMessage.num }}条)</span>
+          <span
+            >&nbsp;#{{ unreadMessage.nickname }}#
+            {{ unreadMessage.content }}</span
+          >
+        </div>
       </el-main>
 
       <!-- 页脚信息 -->
@@ -417,8 +420,8 @@ export default {
   },
   computed: {
     ...mapState({
+      unreadMessage: (state) => state.talks.unreadMessage,
       inputEvent: (state) => state.notify.inputEvent,
-      scroll: (state) => state.notify.scroll,
       uid: (state) => state.user.uid,
     }),
     records() {
@@ -438,9 +441,6 @@ export default {
 
       this.loadChatRecords();
       this.tipsBoard = false;
-    },
-    scroll(n, o) {
-      this.$nextTick(() => this.talkPanelScrollBottom());
     },
     //监听好友键盘事件
     inputEvent(n, o) {
@@ -475,6 +475,14 @@ export default {
         // 消息文本
         text_message: content,
       });
+
+      this.$store.commit({
+        type: "UPDATE_TALK_ITEM",
+        key: findTalkIndex(this.$root.message.index_name),
+        item: {
+          draft_text: "",
+        },
+      });
     },
 
     //推送编辑事件消息
@@ -498,19 +506,14 @@ export default {
       if (this.params.source == 2 || !this.isOnline) return;
 
       //判断在两秒内是否已推送事件
-      if (this.keyEvent.time != 0 && time - this.keyEvent.time < 2000) {
-        return;
-      }
+      if (this.keyEvent.time != 0 && time - this.keyEvent.time < 2000) return;
 
-      this.keyEvent.time = new Date().getTime();
+      this.keyEvent.time = time;
 
       //调用父类Websocket组件发送消息
-      this.sendSocket({
-        event: "event_keyboard",
-        data: {
-          send_user: this.uid,
-          receive_user: this.params.receiveId,
-        },
+      this.$root.socket.emit("event_keyboard", {
+        send_user: this.uid,
+        receive_user: this.params.receiveId,
       });
     },
 
@@ -927,12 +930,17 @@ export default {
     talkPanelScroll(e) {
       if (e.target.scrollTop == 0 && this.loadRecord.status == 1) {
         this.loadChatRecords();
+        return;
       }
 
       this.tipsBoard = !(
         Math.ceil(e.target.scrollTop) + e.target.clientHeight >=
         e.target.scrollHeight
       );
+
+      if (this.tipsBoard == false && this.unreadMessage.num > 0) {
+        this.$store.commit("CLEAR_TLAK_UNREAD_MESSAGE");
+      }
     },
 
     // 聊天版本滚动到底部
@@ -1149,22 +1157,25 @@ export default {
 
 .talk-bubble {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
+  left: 0px;
+  bottom: 20px;
   max-width: 300px;
   height: 40px;
   line-height: 40px;
-  border-radius: 20px;
+  border-radius: 0 20px 20px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: white;
-  padding: 0 15px;
+  padding: 0 15px 0 30px;
   font-size: 13px;
-  background: linear-gradient(to right, #87cfef, #0fb0f5);
+  background: #409eff;
 
   i {
-    margin-right: 3px;
+    font-size: 22px;
+    position: absolute;
+    left: 5px;
+    top: 9px;
   }
 }
 

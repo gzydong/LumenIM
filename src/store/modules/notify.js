@@ -12,9 +12,6 @@ const notify = {
     //好友登录状态监听
     friendStatus: '',
 
-    //对话面板滚动条监听
-    scroll: 0,
-
     //用户入群通知
     enterGroup: 0,
   },
@@ -34,10 +31,6 @@ const notify = {
     //监听好友登录状态
     monitorFriendStatus(state, value) {
       state.friendStatus = value;
-    },
-    //更新滚动条更新事件
-    setScrollHeight(state) {
-      state.scroll++;
     },
     //用户入群通知
     incrEnterGroup(state, value = null) {

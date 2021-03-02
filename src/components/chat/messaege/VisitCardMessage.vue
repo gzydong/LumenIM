@@ -103,6 +103,7 @@ export default {
 
         &:active {
           background: #83b0f3;
+          transform: scale(0.83);
         }
       }
     }
