@@ -20,7 +20,10 @@ class LoginEvent extends AppMessageEvent {
   }
 
   handle() {
-    this.vm.$store.dispatch("updateFriendStatus", `${this.resource.status}_${this.resource.user_id}`);
+    this.vm.$store.dispatch("ACT_UPDATE_FRIEND_STATUS", {
+      status: this.resource.status,
+      friendId: parseInt(this.resource.user_id)
+    });
   }
 }
 

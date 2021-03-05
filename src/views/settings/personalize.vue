@@ -89,7 +89,7 @@ export default {
         },
         {
           name: "bag004",
-          src: require("@/assets/image/background/004.jpg"),
+          src: require("@/assets/image/background/005.png"),
         },
       ],
     };

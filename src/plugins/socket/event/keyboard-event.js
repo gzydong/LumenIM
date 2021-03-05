@@ -22,7 +22,7 @@ class KeyboardEvent extends AppMessageEvent {
     if (this.vm.message.index_name == '') return false;
 
     if (this.isShow()) {
-      this.vm.$store.commit('incrInputEvent');
+      this.vm.$store.commit('UPDATE_KEYBOARD_EVENT');
     }
   }
 

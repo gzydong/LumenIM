@@ -19,7 +19,6 @@ class GroupJoinEvent extends AppMessageEvent {
   }
 
   handle() {
-    this.vm.$store.commit('incrEnterGroup');
     this.vm.$notify({
       message: '您有一条入群消息通知,请注意查收...',
       duration: 5000

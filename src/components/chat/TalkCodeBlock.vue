@@ -72,7 +72,6 @@
   </div>
 </template>
 <script>
-import Prism from "prismjs";
 import PrismEditor from "vue-prism-editor";
 import "vue-prism-editor/dist/VuePrismEditor.css";
 import "prismjs/themes/prism-okaidia.css";

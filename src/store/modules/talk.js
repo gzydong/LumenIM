@@ -47,20 +47,20 @@ const Talk = {
   },
   mutations: {
     // 设置对话列表
-    SET_TALK_ITEM(state, payload) {
-      state.items = payload.items;
+    SET_TALK_ITEM(state, resource) {
+      state.items = resource.items;
     },
 
     // 更新对话节点
-    UPDATE_TALK_ITEM(state, payload) {
-      if (state.items[payload.key]) {
-        Object.assign(state.items[payload.key], payload.item);
+    UPDATE_TALK_ITEM(state, resource) {
+      if (state.items[resource.key]) {
+        Object.assign(state.items[resource.key], resource.item);
       }
     },
 
     // 新增对话节点
-    INSERT_TALK_ITEM(state, payload) {
-      state.items.push(payload.item);
+    INSERT_TALK_ITEM(state, resource) {
+      state.items.push(resource.item);
     },
 
     // 移除对话节点
@@ -81,12 +81,12 @@ const Talk = {
     },
 
     // 更新对话消息
-    UPDATE_TALK_MESSAGE(state, payload) {
-      if (!state.items[payload.key]) return false;
+    UPDATE_TALK_MESSAGE(state, resource) {
+      if (!state.items[resource.key]) return false;
 
-      state.items[payload.key].msg_text = payload.item.msg_text;
-      state.items[payload.key].unread_num++;
-      state.items[payload.key].updated_at = payload.item.updated_at;
+      state.items[resource.key].msg_text = resource.item.msg_text;
+      state.items[resource.key].unread_num++;
+      state.items[resource.key].updated_at = resource.item.updated_at;
     },
 
     // 清空对话的未读数

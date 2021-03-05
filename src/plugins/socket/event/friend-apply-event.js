@@ -27,7 +27,7 @@ class FriendApplyEvent extends AppMessageEvent {
       type:'info',
     });
 
-    this.vm.$store.commit('incrApplyNum');
+    this.vm.$store.commit('INCR_APPLY_NUM');
   }
 }
 

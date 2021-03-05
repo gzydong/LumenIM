@@ -185,7 +185,7 @@
                       <template
                         v-if="index_name != item.index_name && item.draft_text"
                       >
-                        <span style="color: red">[草稿内容]</span>
+                        <span class="draft-color">[草稿]</span>
                         <span v-text="item.draft_text"></span>
                       </template>
                       <template v-else>
@@ -340,20 +340,19 @@ export default {
         document.title = title;
         clearInterval(this.interval);
       }
-      this.$store.commit("setUnreadNum", nval);
+      this.$store.commit("SET_UNREAD_NUM", nval);
     },
 
     // 监听用户在线状态
     monitorUserStatus(nval, oval) {
-      let [status, friend_id] = nval.split("_");
-      let key = findTalkIndex(`1_${friend_id}`);
-      if (key == -1) return;
-
-      this.$store.commit({
-        type: "UPDATE_TALK_ONLINE_STATUS",
-        key,
-        status,
-      });
+      let key = findTalkIndex(`1_${nval.friendId}`);
+      if (key >= 0) {
+        this.$store.commit({
+          type: "UPDATE_TALK_ONLINE_STATUS",
+          key,
+          status: nval.status,
+        });
+      }
     },
   },
   created() {
@@ -994,7 +993,7 @@ export default {
       }
 
       .content {
-        font-size: 10px;
+        font-size: 13px;
         line-height: 18px;
         color: #8f959e;
         margin-top: 3px;
@@ -1009,7 +1008,12 @@ export default {
 
         .online-color {
           color: #4aa71c;
-          font-weight: 400;
+          font-weight: 300;
+        }
+
+        .draft-color {
+          color: red;
+          font-weight: 300;
         }
       }
     }

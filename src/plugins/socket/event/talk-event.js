@@ -37,7 +37,7 @@ class TalkEvent extends AppMessageEvent {
         duration: 3000
       })
 
-      this.vm.$store.commit('incrUnreadNum');
+      this.vm.$store.commit('INCR_UNREAD_NUM');
       return false;
     }
 
@@ -112,7 +112,7 @@ class TalkEvent extends AppMessageEvent {
    * @param {int} idx 聊天列表的索引 
    */
   updateTalkItem(idx) {
-    this.vm.$store.commit('incrUnreadNum');
+    this.vm.$store.commit('INCR_UNREAD_NUM');
     if (idx == -1) {
       // 对话列表不存在需请求后端...
       return;

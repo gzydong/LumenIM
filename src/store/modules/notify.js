@@ -10,48 +10,44 @@ const notify = {
     inputEvent: 0,
 
     //好友登录状态监听
-    friendStatus: '',
-
-    //用户入群通知
-    enterGroup: 0,
+    friendStatus: {
+      status: 0, // 登录状态 0:下线 1:在线
+      friendId: 0 // 好友ID
+    },
   },
   mutations: {
     //消息未读数自增
-    incrUnreadNum(state) {
+    INCR_UNREAD_NUM(state) {
       state.unreadNum++;
     },
+
+    //好友申请事件监听
+    INCR_APPLY_NUM(state) {
+      state.applyNum++;
+    },
+
     //设置消息未读数
-    setUnreadNum(state, num) {
+    SET_UNREAD_NUM(state, num) {
       state.unreadNum = num;
     },
+
     //自增好友键盘输入事件
-    incrInputEvent(state) {
+    UPDATE_KEYBOARD_EVENT(state) {
       state.inputEvent++;
     },
-    //监听好友登录状态
-    monitorFriendStatus(state, value) {
+    
+    //更新好友登录状态
+    UPDATE_FRIEND_STATUS(state, value) {
       state.friendStatus = value;
-    },
-    //用户入群通知
-    incrEnterGroup(state, value = null) {
-      if (value === null) {
-        state.enterGroup++;
-      } else {
-        state.enterGroup = value;
-      }
-    },
-    //好友申请事件监听
-    incrApplyNum(state) {
-      state.applyNum++;
     },
   },
   actions: {
-    updateFriendStatus({
+    ACT_UPDATE_FRIEND_STATUS({
       commit
     }, value) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
-          commit('monitorFriendStatus', value);
+          commit('UPDATE_FRIEND_STATUS', value);
           resolve();
         }, 0);
       })

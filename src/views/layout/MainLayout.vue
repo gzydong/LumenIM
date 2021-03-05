@@ -209,7 +209,7 @@ export default {
     setApplyNum() {
       ServeFindFriendApplyNum().then((res) => {
         if (res.code == 200 && res.data.unread_num > 0) {
-          this.$store.commit("incrApplyNum");
+          this.$store.commit("INCR_APPLY_NUM");
         }
       });
     },
@@ -219,7 +219,7 @@ export default {
 <style lang="less">
 .mian-layout {
   position: fixed;
-  width: 80%;
+  width: 75%;
   height: 80%;
   top: 0;
   right: 0;
@@ -386,7 +386,7 @@ export default {
 }
 
 .bag004 {
-  background: url(~@/assets/image/background/004.jpg);
+  background: url(~@/assets/image/background/005.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
