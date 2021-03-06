@@ -240,7 +240,7 @@
                         </div>
                       </div>
                       <div class="content">
-                        [个性签名] 「{{ item.motto ? item.motto : "未设置" }}」
+                        [个性签名] 「{{ item.motto ? item.motto : '未设置' }}」
                       </div>
                     </div>
 
@@ -318,7 +318,7 @@
                       </div>
                       <div class="content">
                         [群介绍] ~ 「{{
-                          item.group_profile ? item.group_profile : "未设置"
+                          item.group_profile ? item.group_profile : '未设置'
                         }}」
                       </div>
                     </div>
@@ -372,11 +372,11 @@
   </div>
 </template>
 <script>
-import MainLayout from "@/views/layout/MainLayout";
-import GroupLaunch from "@/components/group/GroupLaunch";
-import UserBusinessCard from "@/components/user/UserBusinessCard";
-import UserSearch from "@/components/user/UserSearch";
-import GroupPanel from "@/components/group/GroupPanel";
+import MainLayout from '@/views/layout/MainLayout'
+import GroupLaunch from '@/components/group/GroupLaunch'
+import UserBusinessCard from '@/components/user/UserBusinessCard'
+import UserSearch from '@/components/user/UserSearch'
+import GroupPanel from '@/components/group/GroupPanel'
 
 import {
   ServeGetContacts,
@@ -384,12 +384,12 @@ import {
   ServeHandleFriendApply,
   ServeDeleteContact,
   ServeDeleteContactApply,
-} from "@/api/contacts";
-import { ServeGetGroups, ServeSecedeGroup } from "@/api/group";
-import { ServeCreateTalkList } from "@/api/chat";
+} from '@/api/contacts'
+import { ServeGetGroups, ServeSecedeGroup } from '@/api/group'
+import { ServeCreateTalkList } from '@/api/chat'
 
 export default {
-  name: "ContactsPage",
+  name: 'ContactsPage',
   components: {
     MainLayout,
     GroupLaunch,
@@ -402,7 +402,7 @@ export default {
       launchGroupShow: false,
 
       // 查询关键词
-      input: "",
+      input: '',
 
       // header 工具菜单
       subMenu: false,
@@ -429,48 +429,48 @@ export default {
       },
 
       groupDetailId: 0,
-    };
+    }
   },
   computed: {
     waitHandleNum() {
       return this.apply.items.filter((item) => {
-        return item.status == 0;
-      }).length;
+        return item.status == 0
+      }).length
     },
   },
   created() {
-    this.loadFriendApply();
+    this.loadFriendApply()
   },
   methods: {
     // header 功能栏隐藏事件
     closeSubMenu() {
-      this.subMenu = false;
+      this.subMenu = false
     },
 
     // 工具栏事件
     triggerSubMenu(type) {
-      this.closeSubMenu();
+      this.closeSubMenu()
       if (type == 1) {
-        this.launchGroupShow = true;
+        this.launchGroupShow = true
       } else {
-        this.$refs.searchUsers.open();
+        this.$refs.searchUsers.open()
       }
     },
 
     // 左侧菜单栏点击事件
     triggerMenu(i) {
-      this.activeIndex = i;
+      this.activeIndex = i
       if (i == 1) {
         if (this.friends.status == 0) {
-          this.loadFriends();
+          this.loadFriends()
         }
       } else if (i == 2) {
         if (this.groups.status == 0) {
-          this.loadUserGroups();
+          this.loadUserGroups()
         }
       }
 
-      if (i != 2) this.groupDetailId = 0;
+      if (i != 2) this.groupDetailId = 0
     },
 
     // 查看好友申请列表
@@ -480,88 +480,88 @@ export default {
         page_size: 10000,
       }).then((res) => {
         if (res.code == 200) {
-          this.apply.status = 1;
-          this.apply.items = res.data.rows;
+          this.apply.status = 1
+          this.apply.items = res.data.rows
         }
-      });
+      })
     },
 
     // 加载好友列表
     loadFriends() {
       ServeGetContacts().then((res) => {
         if (res.code == 200) {
-          this.friends.status = 1;
-          this.friends.items = res.data;
+          this.friends.status = 1
+          this.friends.items = res.data
         }
-      });
+      })
     },
 
     // 加载群聊列表接口
     loadUserGroups() {
       ServeGetGroups().then((res) => {
         if (res.code == 200) {
-          this.groups.status = 1;
-          this.groups.items = res.data;
+          this.groups.status = 1
+          this.groups.items = res.data
         }
-      });
+      })
     },
 
     // 查看用户名片
     openUserDetail(user_id) {
-      this.$refs.userBusinessCard.open(user_id);
+      this.$refs.userBusinessCard.open(user_id)
     },
 
     // 跳转聊天页面
     toTalk(type, index_name) {
-      let receive_id = index_name.split("_")[1];
+      let receive_id = index_name.split('_')[1]
       ServeCreateTalkList({
         type,
         receive_id,
       }).then((res) => {
-        if (res.code !== 200) return;
-        this.$root.dumpTalkPage(index_name);
-      });
+        if (res.code !== 200) return
+        this.$root.dumpTalkPage(index_name)
+      })
     },
 
     // 发起群聊成功后回调方法
     groupChatSuccess(data) {
-      this.launchGroupShow = false;
-      this.loadUserGroups();
+      this.launchGroupShow = false
+      this.loadUserGroups()
     },
 
     // 修改群聊免打扰状态
     disturbChange(detail) {
-      let idx = this.getGroupIndex(detail.group_id);
-      this.groups.items[idx].not_disturb = detail.status;
+      let idx = this.getGroupIndex(detail.group_id)
+      this.groups.items[idx].not_disturb = detail.status
     },
 
     // 根据用户对话索引获取对话数组对应的key
     getGroupIndex(group_id) {
-      return this.groups.items.findIndex(function (item, index, arr) {
-        return item.id == group_id;
-      });
+      return this.groups.items.findIndex((item) => {
+        return item.id == group_id
+      })
     },
 
     // 群聊窗口点击发送群聊信息按钮回调事件
     sendMessage(groupId) {
-      this.toTalk(2, `2_${groupId}`);
+      this.toTalk(2, `2_${groupId}`)
     },
 
     // 用户退出群聊回调事件
     quitGroupSuccess() {
-      this.$delete(this.groups.items, this.getGroupIndex(this.groupDetailId));
-      this.groupDetailId = 0;
+      this.$delete(this.groups.items, this.getGroupIndex(this.groupDetailId))
+      this.groupDetailId = 0
     },
 
     // 处理好友申请信息
     handleFrom(item) {
-      this.$prompt(`请设置好友备注【${item.nickname}】`, "好友备注", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        customClass: "border-radius0",
-        inputValue:item.remarks,
+      this.$prompt(`请设置好友备注【${item.nickname}】`, '好友备注', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        customClass: 'border-radius0',
+        inputValue: item.remarks,
         inputValidator(val) {
-          return val == null || val == "" ? "好友备注不能为空" : true;
+          return val == null || val == '' ? '好友备注不能为空' : true
         },
       })
         .then((data) => {
@@ -570,30 +570,30 @@ export default {
             remarks: data.value,
           }).then((res) => {
             if (res.code == 200) {
-              let apply_id = item.id;
+              let apply_id = item.id
               let idx = this.apply.items.findIndex((item) => {
-                return item.id == apply_id;
-              });
+                return item.id == apply_id
+              })
 
-              this.apply.items[idx].status = 1;
+              this.apply.items[idx].status = 1
               this.$message({
-                message: "处理成功...",
-                type: "success",
-              });
+                message: '处理成功...',
+                type: 'success',
+              })
             } else {
               this.$message({
-                type: "info",
-                message: "提交失败",
-              });
+                type: 'info',
+                message: '提交失败',
+              })
             }
-          });
+          })
         })
-        .catch((action) => {});
+        .catch((action) => {})
     },
 
     // 删除好友申请记录
     deleteFriendApply(item) {
-      let apply_id = item.id;
+      let apply_id = item.id
       ServeDeleteContactApply({
         apply_id,
       }).then((res) => {
@@ -601,25 +601,25 @@ export default {
           this.$delete(
             this.apply.items,
             this.apply.items.findIndex((item) => {
-              return item.id == apply_id;
+              return item.id == apply_id
             })
-          );
+          )
         }
-      });
+      })
     },
 
     // 删除好友
     deleteFriend(item) {
-      let name = item.friend_remark ? item.friend_remark : item.name;
-      this.$alert(`您确定要删除【${name}】好友吗？`, "温馨提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      let name = item.friend_remark ? item.friend_remark : item.name
+      this.$alert(`您确定要删除【${name}】好友吗？`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         showCancelButton: true,
-        customClass: "border-radius0",
+        customClass: 'border-radius0',
         closeOnClickModal: true,
         callback: (action) => {
-          if (action == "confirm") {
-            let friend_id = item.id;
+          if (action == 'confirm') {
+            let friend_id = item.id
             ServeDeleteContact({
               friend_id,
             }).then((res) => {
@@ -627,37 +627,37 @@ export default {
                 this.$delete(
                   this.friends.items,
                   this.friends.items.findIndex((item) => {
-                    return item.id == friend_id;
+                    return item.id == friend_id
                   })
-                );
+                )
 
                 this.$message({
                   message: `好友 【${name}】已删除 ...`,
-                  type: "success",
-                });
+                  type: 'success',
+                })
               } else {
                 this.$message({
                   message: `好友 【${name}】删除失败 ...`,
-                  type: "info",
-                });
+                  type: 'info',
+                })
               }
-            });
+            })
           }
         },
-      });
+      })
     },
 
     // 退出群聊
     deleteGroup(item) {
-      this.$alert(`您确定要退出【${item.group_name}】群聊吗？`, "温馨提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$alert(`您确定要退出【${item.group_name}】群聊吗？`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         showCancelButton: true,
-        customClass: "border-radius0",
+        customClass: 'border-radius0',
         closeOnClickModal: true,
         callback: (action) => {
-          if (action == "confirm") {
-            let group_id = item.id;
+          if (action == 'confirm') {
+            let group_id = item.id
             ServeSecedeGroup({
               group_id,
             }).then((res) => {
@@ -665,37 +665,38 @@ export default {
                 this.$delete(
                   this.groups.items,
                   this.groups.items.findIndex((item) => {
-                    return item.id == group_id;
+                    return item.id == group_id
                   })
-                );
+                )
 
                 this.$message({
                   message: `您已成功退出【${item.group_name}】群聊 ...`,
-                  type: "success",
-                });
+                  type: 'success',
+                })
               } else {
                 this.$message({
                   message: `退出 【${item.group_name}】】群聊失败 ...`,
-                  type: "info",
-                });
+                  type: 'info',
+                })
               }
-            });
+            })
           }
         },
-      });
+      })
     },
 
     // 更新好友备注昵称
     changeRemark(firendInfo) {
       let index = this.friends.items.findIndex((item) => {
-        return item.id == firendInfo.friend_id;
-      });
+        return item.id == firendInfo.friend_id
+      })
 
-      if (index >= 0)
-        this.friends.items[index].friend_remark = firendInfo.remarks;
+      if (index >= 0) {
+        this.friends.items[index].friend_remark = firendInfo.remarks
+      }
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .aside-box {

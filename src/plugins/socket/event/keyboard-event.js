@@ -21,9 +21,7 @@ class KeyboardEvent extends AppMessageEvent {
   handle() {
     if (this.vm.message.index_name == '') return false;
 
-    if (this.isShow()) {
-      this.vm.$store.commit('UPDATE_KEYBOARD_EVENT');
-    }
+    this.isShow() && this.vm.$store.commit('UPDATE_KEYBOARD_EVENT');
   }
 
   isShow() {

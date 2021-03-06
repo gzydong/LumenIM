@@ -31,7 +31,7 @@ class TalkEvent extends AppMessageEvent {
   }
 
   handle() {
-    if (!this.inTalkPage()) {
+    if (!this.isTalkPage()) {
       this.vm.$notify({
         message: '您有一条新的消息,请注意查收...',
         duration: 3000
@@ -132,18 +132,11 @@ class TalkEvent extends AppMessageEvent {
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = '';
+    let text = this.resource.data.content;
     switch (this.resource.data.msg_type) {
-      case 1:
-        text = this.resource.data.content;
-        break;
       case 2:
         let file_type = this.resource.data.file.file_type
-        text = '[文件消息]';
-        if (file_type == 1) {
-          text = '[图片消息]';
-        }
-
+        text = file_type == 1 ? '[图片消息]' : '[文件消息]';
         break;
       case 4:
         text = '[会话记录]';
@@ -159,7 +152,7 @@ class TalkEvent extends AppMessageEvent {
   /**
    * 判断用户是否打开对话页
    */
-  inTalkPage() {
+  isTalkPage() {
     let path = this.vm.$route.path;
 
     return !(path != '/message' && path != '/');

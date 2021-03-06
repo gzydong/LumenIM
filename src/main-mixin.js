@@ -20,6 +20,15 @@ import {
     getToken
 } from '@/utils/auth';
 
+
+// 预留
+window.addEventListener('blur', () => {
+    // document.title = "亲，欢迎你回来"
+});
+window.addEventListener('focus', () => {
+    // document.title = "小伙不要走，我要和你对决"
+});
+
 export default {
     data() {
         return {
@@ -102,15 +111,16 @@ export default {
         loadUserSetting() {
             ServeGetUserSetting().then(res => {
                 if (res.code == 200) {
-                    let setting = res.data.setting;
-                    let userInfo = res.data.user_info;
+                    const {
+                        user_info
+                    } = res.data;
 
                     this.$store.commit('UPDATE_USER_INFO', {
-                        uid: userInfo.uid,
-                        nickname: userInfo.nickname,
-                        sex: userInfo.gender,
-                        signature: userInfo.motto,
-                        avatar: userInfo.avatar
+                        uid: user_info.uid,
+                        nickname: user_info.nickname,
+                        sex: user_info.gender,
+                        signature: user_info.motto,
+                        avatar: user_info.avatar
                     });
                 }
             });

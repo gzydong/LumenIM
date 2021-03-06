@@ -6,7 +6,7 @@ import {
 
 let state = {
   // 主题模式 true:全屏模式 false:居中模式
-  themeMode: false,
+  themeMode: true,
 
   // 主题模式为居中模式下，body 的背景图片
   themeBagImg: 'bag003',

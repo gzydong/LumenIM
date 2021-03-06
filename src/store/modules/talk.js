@@ -26,12 +26,8 @@ const Talk = {
     talkItems: state => {
       return state.items.sort(
         getMutipSort([
-          getSort(function (a, b) {
-            return a.unread_num > b.unread_num;
-          }),
-          getSort(function (a, b) {
-            return a.updated_at > b.updated_at;
-          }),
+          getSort((a, b) => a.unread_num > b.unread_num),
+          getSort((a, b) => a.updated_at > b.updated_at),
         ])
       );
     },
@@ -41,9 +37,7 @@ const Talk = {
         return total + parseInt(item.unread_num);
       }, 0);
     },
-    talkNum: state => {
-      return state.items.length;
-    },
+    talkNum: state => state.items.length
   },
   mutations: {
     // 设置对话列表
@@ -53,9 +47,7 @@ const Talk = {
 
     // 更新对话节点
     UPDATE_TALK_ITEM(state, resource) {
-      if (state.items[resource.key]) {
-        Object.assign(state.items[resource.key], resource.item);
-      }
+      Object.assign(state.items[resource.key], resource.item);
     },
 
     // 新增对话节点
@@ -74,16 +66,12 @@ const Talk = {
     },
 
     // 更新对话节点在线状态
-    UPDATE_TALK_ONLINE_STATUS(state, data) {
-      if (!state.items[data.key]) return false;
-
-      state.items[data.key].online = parseInt(data.status);
+    UPDATE_TALK_ONLINE_STATUS(state, resource) {
+      state.items[resource.key].online = parseInt(resource.status);
     },
 
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
-      if (!state.items[resource.key]) return false;
-
       state.items[resource.key].msg_text = resource.item.msg_text;
       state.items[resource.key].unread_num++;
       state.items[resource.key].updated_at = resource.item.updated_at;
@@ -100,14 +88,14 @@ const Talk = {
     },
 
     // 更新消息数组的key 更新 duration 字段数据
-    UPDATA_MESSAGE_DURATION(state, data) {
-      state.list[data.index].duration = data.duration
+    UPDATA_MESSAGE_DURATION(state, resource) {
+      state.list[resource.index].duration = resource.duration
     },
 
-    SET_TLAK_UNREAD_MESSAGE(state, data) {
+    SET_TLAK_UNREAD_MESSAGE(state, resource) {
       state.unreadMessage.num++;
-      state.unreadMessage.nickname = data.nickname;
-      state.unreadMessage.content = data.content;
+      state.unreadMessage.nickname = resource.nickname;
+      state.unreadMessage.content = resource.content;
     },
 
     // 清除最后一条未读消息

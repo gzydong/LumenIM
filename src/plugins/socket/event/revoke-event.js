@@ -23,10 +23,8 @@ class RevokeEvent extends AppMessageEvent {
       return false;
     }
 
-    let record_id = this.resource.record_id
-    let idx = this.vm.message.records.findIndex((item, index, arr) => {
-      return item.id == record_id;
-    });
+    let record_id = this.resource.record_id;
+    let idx = this.vm.message.records.findIndex((item) => item.id == record_id);
 
     this.vm.message.records[idx].is_revoke = 1;
   }
