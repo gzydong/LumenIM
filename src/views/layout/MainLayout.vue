@@ -69,7 +69,7 @@
               :visible-arrow="false"
             >
               <a target="_blank" href="https://github.com/gzydong/LumenIM">
-                <div class="menu-items" :class="{ active: idx == 3 }">
+                <div class="menu-items">
                   <i class="iconfont icon-github"></i>
                 </div>
               </a>

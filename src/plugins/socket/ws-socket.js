@@ -45,9 +45,9 @@ class WsSocket {
 
         // 定义 WebSocket 原生方法
         this.events = Object.assign({
-            onError: function (evt) {},
-            onOpen: function (evt) {},
-            onClose: function (evt) {}
+            onError: (evt) => {},
+            onOpen: (evt) => {},
+            onClose: (evt) => {},
         }, events);
     }
 
@@ -58,7 +58,7 @@ class WsSocket {
      * @param {Function} callBack 回调方法
      */
     on(event, callBack) {
-        this.onCallBacks[event] = callBack
+        this.onCallBacks[event] = callBack;
         return this;
     }
 
@@ -76,10 +76,10 @@ class WsSocket {
         this.connect = null;
 
         const connect = new WebSocket(this.config.url);
-        connect.onerror = (evt) => this.onError(evt);
-        connect.onopen = (evt) => this.onOpen(evt);
-        connect.onmessage = (evt) => this.onMessage(evt);
-        connect.onclose = (evt) => this.onClose(evt);
+        connect.onerror = this.onError.bind(this);
+        connect.onopen = this.onOpen.bind(this);
+        connect.onmessage = this.onMessage.bind(this);
+        connect.onclose = this.onClose.bind(this);
 
         this.connect = connect;
     }
@@ -88,7 +88,7 @@ class WsSocket {
      * 连接 Websocket
      */
     connection() {
-        this.loadSocket()
+        this.loadSocket();
     }
 
     /**
@@ -136,10 +136,10 @@ class WsSocket {
      * @param {Object} evt Websocket 消息 
      */
     onOpen(evt) {
-        this.events.onOpen(evt)
+        this.events.onOpen(evt);
 
         if (this.config.heartbeat.enabled) {
-            this.heartbeat()
+            this.heartbeat();
         }
     }
 
@@ -166,7 +166,7 @@ class WsSocket {
      * @param {Object} evt Websocket 消息 
      */
     onError(evt) {
-        this.events.onError(evt)
+        this.events.onError(evt);
     }
 
     /**
@@ -213,7 +213,7 @@ class WsSocket {
         this.connect.send(JSON.stringify({
             event,
             data
-        }))
+        }));
     }
 }
 
