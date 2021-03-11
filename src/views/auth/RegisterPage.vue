@@ -192,7 +192,7 @@ export default {
     this.smsLockObj = new SmsLock("REGISTER_SMS", 120);
   },
   destroyed() {
-    clearInterval(this.smsLockObj.timer);
+    this.smsLockObj.clearInterval()
   },
   methods: {
     toLink(url) {

@@ -1,7 +1,7 @@
 /**
  * 检测是否是字邮箱地址
  * 
- * @param {*} s 
+ * @param {String} s 
  */
 export const isEmail = (s) => {
   return /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(s)
@@ -10,7 +10,7 @@ export const isEmail = (s) => {
 /**
 * 检测是否是手机号
 * 
-* @param {*} s 
+* @param {String} s 
 */
 export const isMobile = (s) => {
   return /^1[0-9]{10}$/.test(s)
@@ -19,7 +19,7 @@ export const isMobile = (s) => {
 /**
 * 检测是否为url
 * 
-* @param {*} s 
+* @param {String} s 
 */
 export const isURL = (s) => {
   return /^http[s]?:\/\/.*/.test(s)

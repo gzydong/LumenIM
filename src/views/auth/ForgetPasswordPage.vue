@@ -103,190 +103,188 @@
   </div>
 </template>
 <script>
-import { ServeForgetPassword, ServeSendVerifyCode } from "@/api/user";
-import { isMobile } from "@/utils/validate";
-import SmsLock from "@/plugins/sms-lock";
+import { ServeForgetPassword, ServeSendVerifyCode } from '@/api/user'
+import { isMobile } from '@/utils/validate'
+import SmsLock from '@/plugins/sms-lock'
 
 export default {
-  name: "ForgetPasswordPage",
+  name: 'ForgetPasswordPage',
   data() {
     let validateMobile = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("手机号不能为空！"));
+      if (value === '') {
+        callback(new Error('手机号不能为空！'))
       } else {
-        isMobile(value)
-          ? callback()
-          : callback(new Error("手机号格式不正确！"));
+        isMobile(value) ? callback() : callback(new Error('手机号格式不正确！'))
       }
-    };
+    }
 
     let validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
     return {
       forgetLoading: false,
       form: {
-        username: "",
-        password: "",
-        password2: "",
-        sms_code: "",
+        username: '',
+        password: '',
+        password2: '',
+        sms_code: '',
       },
       rules: {
         username: [
           {
             validator: validateMobile,
-            trigger: "blur",
+            trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: "登录密码不能为空!",
-            trigger: "blur",
+            message: '登录密码不能为空!',
+            trigger: 'blur',
           },
         ],
         password2: [
           {
             validator: validatePass2,
-            trigger: "blur",
+            trigger: 'blur',
           },
         ],
         sms_code: [
           {
             required: true,
-            message: "验证码不能为空!",
-            trigger: "blur",
+            message: '验证码不能为空!',
+            trigger: 'blur',
           },
           {
             min: 6,
             max: 6,
-            message: "验证码格式不正确",
-            trigger: "blur",
+            message: '验证码格式不正确',
+            trigger: 'blur',
           },
         ],
       },
 
       smsLock: false,
       smsLockObj: null,
-    };
+    }
   },
   created() {
-    this.smsLockObj = new SmsLock("FORGET_SMS", 60);
+    this.smsLockObj = new SmsLock('FORGET_PSW_SMS', 60)
   },
   destroyed() {
-    clearInterval(this.smsLockObj.timer);
+    this.smsLockObj.clearInterval()
   },
   methods: {
     toLink(url) {
       this.$router.push({
         path: url,
-      });
+      })
     },
     onSubmit(formName) {
       if (this.forgetLoading) {
-        return false;
+        return false
       }
 
       this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.forgetLoading = true;
-        this.forgetAccount();
-      });
+        if (!valid) return false
+        this.forgetLoading = true
+        this.forgetAccount()
+      })
     },
 
     forgetAccount() {
-      let _this = this;
+      let _this = this
       ServeForgetPassword({
         mobile: this.form.username,
         password: this.form.password,
         sms_code: this.form.sms_code,
       })
         .then((res) => {
-          this.forgetLoading = false;
+          this.forgetLoading = false
           if (res.code == 200) {
             this.$notify({
-              title: "成功",
-              message: "密码修改成功,快去登录吧...",
-              type: "success",
-            });
+              title: '成功',
+              message: '密码修改成功,快去登录吧...',
+              type: 'success',
+            })
 
-            this.$refs.form.resetFields();
-            setTimeout(function () {
+            this.$refs.form.resetFields()
+            setTimeout(function() {
               _this.$router.push({
-                path: "/login",
-              });
-            }, 1500);
+                path: '/login',
+              })
+            }, 1500)
           } else {
             this.$notify({
               message: res.message,
-            });
+            })
           }
         })
         .catch((err) => {
-          this.forgetLoading = false;
+          this.forgetLoading = false
           this.$notify({
-            message: "网络错误,请稍后再试...",
-          });
-        });
+            message: '网络错误,请稍后再试...',
+          })
+        })
     },
 
     //点击发送验证码
     sendSms() {
       if (this.smsLock) {
-        return false;
+        return false
       }
 
       if (!isMobile(this.form.username)) {
-        this.$refs.form.validateField("username");
-        return false;
+        this.$refs.form.validateField('username')
+        return false
       }
 
-      this.smsLock = true;
+      this.smsLock = true
       ServeSendVerifyCode({
         mobile: this.form.username,
-        type: "forget_password",
+        type: 'forget_password',
       })
         .then((res) => {
           if (res.code == 200) {
-            this.smsLockObj.start();
+            this.smsLockObj.start()
             this.$notify({
-              title: "成功",
-              message: "验证码发送成功...",
-              type: "success",
-            });
+              title: '成功',
+              message: '验证码发送成功...',
+              type: 'success',
+            })
 
             if (res.data.is_debug) {
-              this.form.sms_code = res.data.sms_code;
+              this.form.sms_code = res.data.sms_code
               setTimeout(() => {
                 this.$notify({
-                  title: "提示",
-                  message: "已自动填充验证码",
-                });
-                this.form.sms_code = res.data.sms_code;
-              }, 500);
+                  title: '提示',
+                  message: '已自动填充验证码',
+                })
+                this.form.sms_code = res.data.sms_code
+              }, 500)
             }
           } else {
             this.$notify({
-              title: "提示",
-              message: "验证码发送失败...",
-            });
+              title: '提示',
+              message: '验证码发送失败...',
+            })
           }
-          this.smsLock = false;
+          this.smsLock = false
         })
         .catch((err) => {
-          this.smsLock = false;
-        });
+          this.smsLock = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
-@import "~@/assets/css/page/login-auth.less";
+@import '~@/assets/css/page/login-auth.less';
 </style>

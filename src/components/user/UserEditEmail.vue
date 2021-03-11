@@ -119,7 +119,7 @@ export default {
     this.smsLockObj = new SmsLock("CHANGE_EMAIL_SMS", 120);
   },
   destroyed() {
-    clearInterval(this.smsLockObj.timer);
+    this.smsLockObj.clearInterval()
   },
   methods: {
     // 显示窗口

@@ -10,9 +10,7 @@ import config from '@/config/config'
  * @param {Object} datetime
  */
 export function formateTime(datetime) {
-  if (datetime == null) {
-    return ''
-  }
+  if (datetime == null) return '';
 
   datetime = datetime.replace(/-/g, "/");
 

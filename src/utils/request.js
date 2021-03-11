@@ -56,10 +56,10 @@ request.interceptors.response.use((response) => {
 }, errorHandler);
 
 /**
- * 发送 get 请求
- * @param {string} url
- * @param {object} data
- * @param {object} options
+ * GET 请求
+ * @param {String} url
+ * @param {Object} data
+ * @param {Object} options
  * @returns {Promise<any>}
  */
 export const get = (url, data = {}, options = {}) => {
@@ -72,10 +72,10 @@ export const get = (url, data = {}, options = {}) => {
 }
 
 /**
- * 发送 post 请求
- * @param {string} url
- * @param {object} data
- * @param {object} options
+ * POST 请求
+ * @param {String} url
+ * @param {Object} data
+ * @param {Object} options
  * @returns {Promise<any>}
  */
 export const post = (url, data = {}, options = {}) => {
@@ -87,6 +87,13 @@ export const post = (url, data = {}, options = {}) => {
   });
 }
 
+/**
+ * 上传文件 POST 请求
+ * @param {String} url
+ * @param {Object} data
+ * @param {Object} options
+ * @returns {Promise<any>}
+ */
 export const upload = (url, data = {}, options = {}) => {
   return request({
     url,

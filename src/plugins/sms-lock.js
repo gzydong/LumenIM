@@ -1,5 +1,5 @@
 /**
- * 短信发送按钮锁
+ * 短信倒计时锁
  */
 class SmsLock {
 
@@ -18,30 +18,29 @@ class SmsLock {
   /**
    * 实例化构造方法
    * 
-   * @param {string} purpose 名称唯一
+   * @param {string} purpose 唯一标识
    * @param {int} time
    */
   constructor(purpose, lockTime = 60) {
     this.lockTime = lockTime;
-    this.lockName = `sms_lock_${purpose}`;
+    this.lockName = `SMSLOCK_${purpose}`;
+
     this.init();
   }
 
   // 开始计时
   start(time = null) {
-    if (time) {
-      this.time = time >= this.lockTime ? this.lockTime : time;
-    } else {
-      this.time = this.lockTime;
-    }
 
-    clearInterval(this.timer);
+    this.time = (time == null || time >= this.lockTime) ? this.lockTime : time;
+
+    this.clearInterval();
+
     this.timer = setInterval(() => {
       if (this.time == 0) {
-        clearInterval(this.timer);
+        this.clearInterval();
         this.time = null;
         localStorage.removeItem(this.lockName);
-        return false;
+        return;
       }
 
       this.time--;
@@ -54,14 +53,25 @@ class SmsLock {
   // 页面刷新初始化
   init() {
     let result = localStorage.getItem(this.lockName); // 读取本地缓存
-    if (result == null) return false;
 
-    let t = result - this.getTime();
-    if (t > 0) this.start(t);
+    if (result == null) return;
+
+    let time = result - this.getTime();
+    if (time > 0) {
+      this.start(time);
+    } else {
+      localStorage.removeItem(this.lockName);
+    }
   }
 
+  // 获取当前时间
   getTime() {
     return Math.floor((new Date()).getTime() / 1000);
+  }
+
+  // 清除计时器
+  clearInterval() {
+    clearInterval(this.timer);
   }
 }
 

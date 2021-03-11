@@ -69,58 +69,58 @@
   </div>
 </template>
 <script>
-import { isMobile } from "@/utils/validate";
-import SmsLock from "@/plugins/sms-lock";
-import { ServeSendMobileCode, ServeUpdateMobile } from "@/api/user";
+import { isMobile } from '@/utils/validate'
+import SmsLock from '@/plugins/sms-lock'
+import { ServeSendMobileCode, ServeUpdateMobile } from '@/api/user'
 
 export default {
-  name: "UserEditMobile",
+  name: 'UserEditMobile',
   data() {
     var validateMobile = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("登录手机号不能为空！"));
+      if (value === '') {
+        callback(new Error('登录手机号不能为空！'))
       } else {
         if (!isMobile(value)) {
-          callback(new Error("登录手机号格式不正确！"));
+          callback(new Error('登录手机号格式不正确！'))
         } else {
-          callback();
+          callback()
         }
       }
-    };
+    }
 
     return {
       loading: false,
       form: {
-        username: "",
-        password: "",
-        sms_code: "",
+        username: '',
+        password: '',
+        sms_code: '',
       },
       rules: {
         username: [
           {
             required: true,
             validator: validateMobile,
-            trigger: "blur",
+            trigger: 'blur',
           },
           {
             min: 11,
             max: 11,
-            message: "手机号格式不正确!",
-            trigger: "blur",
+            message: '手机号格式不正确!',
+            trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: "登录密码不能为空!",
-            trigger: "blur",
+            message: '登录密码不能为空!',
+            trigger: 'blur',
           },
         ],
         sms_code: [
           {
             required: true,
-            message: "验证码不能为空!",
-            trigger: "blur",
+            message: '验证码不能为空!',
+            trigger: 'blur',
           },
         ],
       },
@@ -128,75 +128,75 @@ export default {
       smsLock: false,
       smsLockObj: null,
       isShow: false,
-    };
+    }
   },
   created() {
-    this.smsLockObj = new SmsLock("FORGET_SMS", 120);
+    this.smsLockObj = new SmsLock('EDIT_MOBILE_SMS', 120)
   },
   destroyed() {
-    clearInterval(this.smsLockObj.timer);
+    this.smsLockObj.clearInterval()
   },
   methods: {
     // 显示窗口
     open() {
-      this.$refs["form"].resetFields();
-      this.isShow = true;
+      this.$refs['form'].resetFields()
+      this.isShow = true
     },
 
     // 关闭窗口
     close() {
-      this.isShow = false;
+      this.isShow = false
     },
 
     //点击发送验证码
     sendSms() {
       if (!isMobile(this.form.username)) {
-        this.$refs.form.validateField("username");
-        return false;
+        this.$refs.form.validateField('username')
+        return false
       }
 
-      this.smsLock = true;
+      this.smsLock = true
       ServeSendMobileCode({
         mobile: this.form.username,
       })
         .then((res) => {
           if (res.code !== 200) {
             this.$notify({
-              title: "提示",
+              title: '提示',
               message: res.message,
-            });
-            return;
+            })
+            return
           }
 
-          this.smsLockObj.start();
+          this.smsLockObj.start()
           if (res.data.is_debug) {
-            this.form.sms_code = res.data.sms_code;
+            this.form.sms_code = res.data.sms_code
             setTimeout(() => {
               this.$notify({
-                title: "提示",
-                message: "已自动填充验证码",
-                type: "success",
-              });
-              this.form.sms_code = res.data.sms_code;
-            }, 500);
+                title: '提示',
+                message: '已自动填充验证码',
+                type: 'success',
+              })
+              this.form.sms_code = res.data.sms_code
+            }, 500)
           }
         })
         .finally(() => {
-          this.smsLock = false;
-        });
+          this.smsLock = false
+        })
     },
 
     // 表单验证
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.changeMobile();
-      });
+        if (!valid) return false
+        this.changeMobile()
+      })
     },
 
     // 提交修改手机号
     changeMobile() {
-      this.loading = true;
+      this.loading = true
       ServeUpdateMobile({
         mobile: this.form.username,
         sms_code: this.form.sms_code,
@@ -204,26 +204,26 @@ export default {
       })
         .then((res) => {
           if (res.code == 200) {
-            this.$refs["form"].resetFields();
+            this.$refs['form'].resetFields()
             this.$notify({
-              title: "成功",
-              message: "更换手机号成功...",
-              type: "success",
-            });
-            this.$emit("success");
-            this.close();
+              title: '成功',
+              message: '更换手机号成功...',
+              type: 'success',
+            })
+            this.$emit('success')
+            this.close()
           } else {
-            this.$message(res.message);
+            this.$message(res.message)
           }
 
-          this.loading = false;
+          this.loading = false
         })
         .catch((err) => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {
