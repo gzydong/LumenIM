@@ -192,7 +192,7 @@
                         <span
                           v-if="item.type == 1"
                           :class="{ 'online-color': item.online }"
-                          >[{{ item.online ? '在线' : '离线' }}]</span
+                          >[{{ item.online ? "在线" : "离线" }}]</span
                         >
                         <span v-else>[群消息]</span>
                         <span v-text="item.msg_text"></span>
@@ -245,28 +245,28 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from 'vuex'
-import MainLayout from '@/views/layout/MainLayout'
-import GroupLaunch from '@/components/group/GroupLaunch'
-import TalkEditorPanel from '@/components/chat/TalkEditorPanel'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
-import UserSearch from '@/components/user/UserSearch'
+import { mapGetters, mapState } from "vuex";
+import MainLayout from "@/views/layout/MainLayout";
+import GroupLaunch from "@/components/group/GroupLaunch";
+import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
+import UserBusinessCard from "@/components/user/UserBusinessCard";
+import UserSearch from "@/components/user/UserSearch";
 import {
   ServeGetTalkList,
   ServeClearTalkUnreadNum,
   ServeDeleteTalkList,
   ServeTopTalkList,
   ServeSetNotDisturb,
-} from '@/api/chat'
-import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
-import { ServeSecedeGroup } from '@/api/group'
-import { beautifyTime } from '@/utils/functions'
-import { formateTalkItem, findTalkIndex } from '@/utils/talk'
+} from "@/api/chat";
+import { ServeDeleteContact, ServeEditContactRemark } from "@/api/contacts";
+import { ServeSecedeGroup } from "@/api/group";
+import { beautifyTime } from "@/utils/functions";
+import { formateTalkItem, findTalkIndex } from "@/utils/talk";
 
-const title = document.title
+const title = document.title;
 
 export default {
-  name: 'MessagePage',
+  name: "MessagePage",
   components: {
     MainLayout,
     GroupLaunch,
@@ -286,11 +286,11 @@ export default {
       params: {
         source: 0,
         receiveId: 0,
-        nickname: '',
+        nickname: "",
       },
 
       // 查询关键词
-      input: '',
+      input: "",
 
       // header 工具菜单
       subMenu: false,
@@ -299,10 +299,10 @@ export default {
       loadStatus: 0, // 0:加载中 1:加载完成  2:加载失败
 
       interval: null,
-    }
+    };
   },
   computed: {
-    ...mapGetters(['topItems', 'talkItems', 'unreadNum', 'talkNum']),
+    ...mapGetters(["topItems", "talkItems", "unreadNum", "talkNum"]),
     ...mapState({
       talks: (state) => state.talks.items,
       monitorUserStatus: (state) => state.notify.friendStatus,
@@ -312,59 +312,58 @@ export default {
     subHeaderPx() {
       let num = this.topItems.length,
         len = 60,
-        n = 7 // 一排能显示的用户数
+        n = 7; // 一排能显示的用户数
 
       if (num > n) {
-        let y = num % n > 0 ? 1 : 0
-        len = (Math.floor(num / n) + y) * len
+        len = (Math.floor(num / n) + (num % n > 0 ? 1 : 0)) * len;
       }
 
-      return `${len}px`
+      return `${len}px`;
     },
 
     // 当前对话好友在线状态
     isFriendOnline() {
-      let i = findTalkIndex(this.index_name)
-      return i >= 0 && this.talks[i].online == 1
+      let i = findTalkIndex(this.index_name);
+      return i >= 0 && this.talks[i].online == 1;
     },
   },
   watch: {
     unreadNum(nval, oval) {
       if (nval) {
-        clearInterval(this.interval)
+        clearInterval(this.interval);
         this.interval = setInterval(() => {
-          let newTitle = `【新消息】${title}`
-          document.title = document.title == title ? newTitle : title
-        }, 2000)
+          let newTitle = `【新消息】${title}`;
+          document.title = document.title == title ? newTitle : title;
+        }, 2000);
       } else {
-        document.title = title
-        clearInterval(this.interval)
+        document.title = title;
+        clearInterval(this.interval);
       }
-      this.$store.commit('SET_UNREAD_NUM', nval)
+      this.$store.commit("SET_UNREAD_NUM", nval);
     },
 
     // 监听用户在线状态
     monitorUserStatus(nval, oval) {
-      let key = findTalkIndex(`1_${nval.friendId}`)
+      let key = findTalkIndex(`1_${nval.friendId}`);
       if (key >= 0) {
         this.$store.commit({
-          type: 'UPDATE_TALK_ONLINE_STATUS',
+          type: "UPDATE_TALK_ONLINE_STATUS",
           key,
           status: nval.status,
-        })
+        });
       }
     },
   },
   created() {
-    this.loadChatList()
+    this.loadChatList();
   },
   mounted() {
-    this.scrollEvent()
+    this.scrollEvent();
   },
   destroyed() {
-    document.title = title
-    clearInterval(this.interval)
-    this.clearTalk()
+    document.title = title;
+    clearInterval(this.interval);
+    this.clearTalk();
   },
   methods: {
     // 美化时间格式
@@ -372,80 +371,80 @@ export default {
 
     // header 功能栏隐藏事件
     closeSubMenu() {
-      this.subMenu = false
+      this.subMenu = false;
     },
 
     // 清除当前对话
     clearTalk() {
-      this.index_name = null
+      this.index_name = null;
       this.params = {
         source: 0,
         receiveId: 0,
-        nickname: '',
-      }
+        nickname: "",
+      };
 
-      this.$root.updateMessage(0, 0)
+      this.$root.updateMessage(0, 0);
     },
 
     // 工具栏事件
     triggerSubMenu(type) {
-      this.closeSubMenu()
+      this.closeSubMenu();
       if (type == 1) {
-        this.launchGroupShow = true
+        this.launchGroupShow = true;
       } else {
-        this.$refs.searchUsers.open()
+        this.$refs.searchUsers.open();
       }
     },
 
     // 监听自定义滚动条事件
     scrollEvent(e) {
-      let scrollbarEl = this.$refs.menusScrollbar.wrap
+      let scrollbarEl = this.$refs.menusScrollbar.wrap;
       scrollbarEl.onscroll = () => {
-        this.subHeaderShadow = scrollbarEl.scrollTop > 0
-      }
+        this.subHeaderShadow = scrollbarEl.scrollTop > 0;
+      };
     },
 
     // 获取用户对话列表
     loadChatList() {
-      this.loadStatus = this.talkNum == 0 ? 0 : 1
+      this.loadStatus = this.talkNum == 0 ? 0 : 1;
 
       ServeGetTalkList().then((res) => {
         if (res.code == 200) {
           this.$store.commit({
-            type: 'SET_TALK_ITEM',
+            type: "SET_TALK_ITEM",
             items: res.data.map((item) => formateTalkItem(item)),
-          })
+          });
 
-          let index_name = sessionStorage.getItem('send_message_index_name')
+          let index_name = sessionStorage.getItem("send_message_index_name");
           if (index_name) {
             this.$nextTick(() => {
-              this.clickTab(2, index_name)
-            })
+              this.clickTab(2, index_name);
+            });
 
-            sessionStorage.removeItem('send_message_index_name')
+            sessionStorage.removeItem("send_message_index_name");
           }
         }
 
-        this.loadStatus = 1
-      })
+        this.loadStatus = 1;
+      });
     },
 
     // 发起群聊成功后回调方法
     groupChatSuccess(data) {
-      this.launchGroupShow = false
-      sessionStorage.setItem('send_message_index_name', `2_${data.group_id}`)
-      this.loadChatList()
+      this.launchGroupShow = false;
+      sessionStorage.setItem("send_message_index_name", `2_${data.group_id}`);
+      this.loadChatList();
     },
 
     // 切换聊天栏目
     clickTab(type = 1, index_name) {
-      let idx = findTalkIndex(index_name)
+      let idx = findTalkIndex(index_name);
 
-      if (idx == -1) return
+      if (idx == -1) return;
 
-      let item = this.talks[idx]
-      let [source, receive_id] = index_name.split('_')
-      this.index_name = item.index_name
+      let item = this.talks[idx];
+      let [source, receive_id] = index_name.split("_");
+      this.index_name = item.index_name;
       this.params = {
         source: source,
         receiveId: receive_id,
@@ -455,134 +454,134 @@ export default {
             : item.remark_name
             ? item.remark_name
             : item.name,
-      }
+      };
 
-      this.$root.updateMessage(source, receive_id, item.avatar)
+      this.$root.updateMessage(source, receive_id, item.avatar);
 
       this.$nextTick(() => {
         if (index_name == this.$root.message.index_name) {
           //清空对话的未读数
-          this.$store.commit('CLEAR_TLAK_UNREAD_NUM', idx)
+          this.$store.commit("CLEAR_TLAK_UNREAD_NUM", idx);
 
           //清空消息未读数(后期改成websocket发送消息)
           ServeClearTalkUnreadNum({
             type: source,
             receive: receive_id,
-          })
+          });
         }
-      })
+      });
     },
 
     // 修改当前对话
     changeTalk(index_name) {
-      sessionStorage.setItem('send_message_index_name', index_name)
-      this.loadChatList()
+      sessionStorage.setItem("send_message_index_name", index_name);
+      this.loadChatList();
     },
 
     // 关闭当前对话及刷新对话列表
     closeTalk() {
-      this.index_name = null
-      this.loadChatList()
+      this.index_name = null;
+      this.loadChatList();
     },
 
     // 对话列表的右键自定义菜单
     talkItemsMenu(data, event) {
-      let item = data
+      let item = data;
       let items = {
         items: [
           {
-            label: '好友信息',
-            icon: 'el-icon-user',
+            label: "好友信息",
+            icon: "el-icon-user",
             disabled: item.type == 2,
             onClick: () => {
-              this.$refs.userBusinessCard.open(item.friend_id)
+              this.$refs.userBusinessCard.open(item.friend_id);
             },
           },
           {
-            label: '修改备注',
-            icon: 'el-icon-edit-outline',
+            label: "修改备注",
+            icon: "el-icon-edit-outline",
             disabled: item.type == 2,
             onClick: () => {
-              this.editFriendRemarks(item)
+              this.editFriendRemarks(item);
             },
           },
           {
-            label: item.is_top == 0 ? '会话置顶' : '取消置顶',
-            icon: 'el-icon-top',
+            label: item.is_top == 0 ? "会话置顶" : "取消置顶",
+            icon: "el-icon-top",
             onClick: () => {
-              this.topChatItem(item)
+              this.topChatItem(item);
             },
           },
           {
-            label: item.not_disturb == 0 ? '消息免打扰' : '开启消息提示',
+            label: item.not_disturb == 0 ? "消息免打扰" : "开启消息提示",
             icon:
               item.not_disturb == 0
-                ? 'el-icon-close-notification'
-                : 'el-icon-bell',
+                ? "el-icon-close-notification"
+                : "el-icon-bell",
             onClick: () => {
-              this.setNotDisturb(item)
+              this.setNotDisturb(item);
             },
           },
           {
-            label: '移除会话',
-            icon: 'el-icon-remove-outline',
+            label: "移除会话",
+            icon: "el-icon-remove-outline",
             divided: true,
             onClick: () => {
-              this.delChatItem(item)
+              this.delChatItem(item);
             },
           },
           {
-            label: item.type == 1 ? '删除好友' : '退出群聊',
-            icon: 'el-icon-delete',
+            label: item.type == 1 ? "删除好友" : "退出群聊",
+            icon: "el-icon-delete",
             onClick: () => {
-              let title = item.type == 1 ? '删除好友' : '退出群聊'
+              let title = item.type == 1 ? "删除好友" : "退出群聊";
               this.$confirm(
                 `此操作将 <span style="color:red;font-size:16px;">${title}</span>, 是否继续?`,
-                '提示',
+                "提示",
                 {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning',
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning",
                   center: true,
                   dangerouslyUseHTMLString: true,
                 }
               ).then(() => {
                 if (item.type == 1) {
-                  this.removeFriend(item)
+                  this.removeFriend(item);
                 } else {
-                  this.removeGroup(item)
+                  this.removeGroup(item);
                 }
-              })
+              });
             },
           },
         ],
         event: event,
         zIndex: 3,
-      }
+      };
 
-      this.$contextmenu(items)
-      return false
+      this.$contextmenu(items);
+      return false;
     },
 
     // 置顶栏右键菜单栏
     topItemsMenu(data, event) {
-      let item = data
+      let item = data;
       let items = {
         items: [
           {
-            label: item.is_top == 0 ? '会话置顶' : '取消置顶',
-            icon: 'el-icon-top',
+            label: item.is_top == 0 ? "会话置顶" : "取消置顶",
+            icon: "el-icon-top",
             onClick: () => {
-              this.topChatItem(item)
+              this.topChatItem(item);
             },
           },
         ],
         event: event,
         zIndex: 3,
-      }
+      };
 
-      this.$contextmenu(items)
-      return false
+      this.$contextmenu(items);
+      return false;
     },
 
     // 会话列表置顶
@@ -593,14 +592,14 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           this.$store.commit({
-            type: 'UPDATE_TALK_ITEM',
+            type: "UPDATE_TALK_ITEM",
             key: findTalkIndex(item.index_name),
             item: {
               is_top: item.is_top == 0 ? 1 : 0,
             },
-          })
+          });
         }
-      })
+      });
     },
 
     // 设置消息免打扰
@@ -612,14 +611,14 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           this.$store.commit({
-            type: 'UPDATE_TALK_ITEM',
+            type: "UPDATE_TALK_ITEM",
             key: findTalkIndex(item.index_name),
             item: {
               not_disturb: item.not_disturb == 0 ? 1 : 0,
             },
-          })
+          });
         }
-      })
+      });
     },
 
     // 移除会话列表
@@ -628,10 +627,10 @@ export default {
         list_id: item.id,
       }).then((res) => {
         if (res.code == 200) {
-          this.clearTalk()
-          this.$store.commit('REMOVE_TALK_ITEM', item.index_name)
+          this.clearTalk();
+          this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
         }
-      })
+      });
     },
 
     // 解除好友关系
@@ -641,12 +640,12 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           if (this.index_name == item.index_name) {
-            this.index_name = null
+            this.index_name = null;
           }
 
-          this.$store.commit('REMOVE_TALK_ITEM', item.index_name)
+          this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
         }
-      })
+      });
     },
 
     // 退出群聊
@@ -656,35 +655,35 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           if (this.index_name == item.index_name) {
-            this.index_name = null
+            this.index_name = null;
           }
 
-          this.$store.commit('REMOVE_TALK_ITEM', item.index_name)
+          this.$store.commit("REMOVE_TALK_ITEM", item.index_name);
         }
-      })
+      });
     },
 
     // 修改好友备注信息
     editFriendRemarks(item) {
-      let title = `您正在设置【${item.name}】好友的备注信息`
+      let title = `您正在设置【${item.name}】好友的备注信息`;
 
       if (item.remark_name) {
-        title += `，当前备注为【${item.remark_name}】`
+        title += `，当前备注为【${item.remark_name}】`;
       }
 
-      this.$prompt(title, '修改备注', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        customClass: 'border-radius0',
-        inputPlaceholder: '请设置好友备注信息',
+      this.$prompt(title, "修改备注", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        customClass: "border-radius0",
+        inputPlaceholder: "请设置好友备注信息",
         inputValue: item.remark_name ? item.remark_name : item.name,
         inputValidator(val) {
-          return val == null || val == '' ? '好友备注不能为空' : true
+          return val == null || val == "" ? "好友备注不能为空" : true;
         },
       })
         .then(({ value }) => {
           if (value == item.remark_name) {
-            return false
+            return false;
           }
 
           ServeEditContactRemark({
@@ -693,31 +692,31 @@ export default {
           }).then((res) => {
             if (res.code == 200) {
               this.$store.commit({
-                type: 'UPDATE_TALK_ITEM',
+                type: "UPDATE_TALK_ITEM",
                 key: findTalkIndex(item.index_name),
                 item: {
                   remark_name: value,
                 },
-              })
+              });
 
               this.$notify({
-                title: '成功',
-                message: '好友备注修改成功...',
-                type: 'success',
-              })
+                title: "成功",
+                message: "好友备注修改成功...",
+                type: "success",
+              });
             } else {
               this.$notify({
-                title: '消息',
-                message: '好友备注修改失败，请稍后再试...',
-                type: 'warning',
-              })
+                title: "消息",
+                message: "好友备注修改失败，请稍后再试...",
+                type: "warning",
+              });
             }
-          })
+          });
         })
-        .catch(() => {})
+        .catch(() => {});
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 /deep/.el-scrollbar__wrap {

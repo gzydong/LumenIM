@@ -513,9 +513,10 @@ export default {
   input {
     height: 30px;
     line-height: 30px;
-    width: 230px;
+    width: 220px;
     border-radius: 3px;
     padding: 0 5px;
+    margin-right: 5px;
   }
 }
 

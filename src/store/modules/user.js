@@ -55,8 +55,7 @@ const user = {
     // 更新用户信息
     UPDATE_USER_INFO(state, data) {
       for (const key in data) {
-        if (!state.hasOwnProperty(key))
-          continue;
+        if (!state.hasOwnProperty(key)) continue;
 
         state[key] = data[key];
       }
