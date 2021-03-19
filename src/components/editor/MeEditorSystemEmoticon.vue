@@ -79,7 +79,7 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           this.items[idx].status = 1;
-          this.$emit("insert", res.data);
+          this.$store.commit("APPEND_SYS_EMOTICON", res.data);
         }
       });
     },
@@ -92,7 +92,9 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           this.items[i].status = 0;
-          this.$emit("remove", item.id);
+          this.$store.commit("REMOVE_SYS_EMOTICON", {
+            emoticon_id: item.id,
+          });
         }
       });
     },

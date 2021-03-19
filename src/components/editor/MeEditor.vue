@@ -339,10 +339,6 @@ export default {
 
       this.$refs.popoverEmoticon.doClose();
     },
-
-    reloadEmoticon() {
-      this.$refs.editorEmoticon.loadUserEmoji();
-    },
   },
 };
 </script>

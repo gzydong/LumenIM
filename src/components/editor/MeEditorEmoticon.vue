@@ -19,7 +19,7 @@
           <div
             class="emoticon-item"
             v-for="(item, i) in emoji.emojis"
-            @click="clickEmoticon(item, 1)"
+            @click="clickEmoticon(item)"
           >
             <img
               :src="
@@ -34,7 +34,7 @@
           <div
             class="emoticon-item symbol"
             v-for="(item, i) in emoji.symbol"
-            @click="clickEmoticon(item, 0)"
+            @click="clickEmoticon(item)"
           >
             {{ item }}
           </div>
@@ -95,16 +95,14 @@
     <me-editor-system-emoticon
       v-if="systemEmojiBox"
       @close="systemEmojiBox = false"
-      @insert="addSystemEmoji"
-      @remove="removeSystemEmoji"
     />
   </div>
 </template>
 
 <script>
 import MeEditorSystemEmoticon from "@/components/editor/MeEditorSystemEmoticon";
-import { ServeFindUserEmoticon, ServeUploadEmoticon } from "@/api/emoticon";
-import { emojiList } from "@/utils/emojis";
+import { emojiList as emoji } from "@/utils/emojis";
+import { mapState } from "vuex";
 
 export default {
   name: "MeEditorEmoticon",
@@ -112,6 +110,9 @@ export default {
     MeEditorSystemEmoticon,
   },
   computed: {
+    ...mapState({
+      emojiItem: (state) => state.emoticon.items,
+    }),
     showItems() {
       let start = (this.page - 1) * this.pageSize;
       let end = start + this.pageSize;
@@ -123,7 +124,7 @@ export default {
   },
   data() {
     return {
-      emoji: emojiList,
+      emoji,
 
       // 系统表情包套弹出窗
       systemEmojiBox: false,
@@ -133,26 +134,10 @@ export default {
 
       page: 1,
       pageSize: 13,
-
-      // 表情包列表
-      emojiItem: [
-        {
-          emoticon_id: -1,
-          name: "QQ表情/符号表情",
-          url: require("@/assets/image/icon_face.png"),
-          list: [],
-        },
-        {
-          emoticon_id: 0,
-          name: "我的收藏",
-          url: require("@/assets/image/icon_heart.png"),
-          list: [],
-        },
-      ],
     };
   },
   created() {
-    this.loadUserEmoji();
+    this.$store.commit("LOAD_USER_EMOTICON");
   },
   methods: {
     // 表情包导航翻页
@@ -166,42 +151,14 @@ export default {
       }
     },
 
-    //加载用户表情包
-    loadUserEmoji() {
-      ServeFindUserEmoticon().then((res) => {
-        if (res.code == 200) {
-          this.emojiItem = this.emojiItem.slice(0, 2);
-
-          this.emojiItem.push(...res.data.sys_emoticon);
-
-          this.emojiItem[1].list = [];
-          this.emojiItem[1].list.push(...res.data.collect_emoticon);
-        }
-      });
-    },
-
     // 点击表情包导航
     triggerItem(item) {
       this.showEmoticonId = item.emoticon_id;
       this.showTitle = item.name;
     },
 
-    // 添加系统表情回调方法
-    addSystemEmoji(data) {
-      this.emojiItem.push(data);
-    },
-    // 移除系统表情回调方法
-    removeSystemEmoji(value) {
-      this.$delete(
-        this.emojiItem,
-        this.emojiItem.findIndex(function (val, key) {
-          return val.emoticon_id == value;
-        })
-      );
-    },
-
     // 选中表情
-    clickEmoticon(emoji, type) {
+    clickEmoticon(emoji) {
       this.callback({
         type: 1,
         value: emoji,
@@ -226,21 +183,9 @@ export default {
         return false;
       }
 
-      let file = e.target.files[0];
-      let fileData = new FormData();
-      fileData.append("emoticon", file);
-      ServeUploadEmoticon(fileData)
-        .then((res) => {
-          if (res.code == 200) {
-            this.emojiItem[1].list.push(res.data);
-          }
-        })
-        .catch((err) => {
-          this.$notify.error({
-            message: "网络异常请稍后再试...",
-            duration: 3000,
-          });
-        });
+      this.$store.commit("UPLOAD_USER_EMOTICON", {
+        file: e.target.files[0],
+      });
     },
   },
 };

@@ -75,14 +75,11 @@
 <script>
 import Vue from "vue";
 import { SvgNotData } from "@/core/icons";
-
 import { Progress } from "element-ui";
 Vue.use(Progress);
 
 import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from "@/api/upload";
-
 import { formateSize, getFileExt, parseTime } from "@/utils/functions";
-
 import { ServeSendTalkFile } from "@/api/chat";
 
 export default {

@@ -21,7 +21,7 @@
             ({{ groupNum }}人)
           </p>
         </div>
-        <div class="online">
+        <div class="online" v-show="params.source == 1">
           <p class="online-text" :class="{ color: isOnline }">
             <span class="online-status" v-show="isOnline"></span>
             <span>{{ isOnline ? "在线" : "离线" }}</span>
@@ -116,18 +116,19 @@
                 />
               </aside>
               <main class="main-column">
-                <div class="talk-title">
+                <div
+                  class="talk-title"
+                  :class="{ show: item.source == 2 && item.float == 'left' }"
+                >
                   <span
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
-                    v-text="item.nickname"
+                    v-text="item.nickname || item.friend_remarks"
                   ></span>
-                  <span v-show="item.friend_remarks"
-                    >({{ item.friend_remarks }})</span
-                  >
-                  <span class="time">{{
-                    parseTime(item.created_at, "{m}月{d}日 {h}:{i}")
-                  }}</span>
+                  <span
+                    class="time"
+                    v-text="parseTime(item.created_at, '{m}月{d}日 {h}:{i}')"
+                  ></span>
                 </div>
 
                 <div class="talk-content">
@@ -237,11 +238,7 @@
       <!-- 页脚信息 -->
       <el-footer class="footer-box" height="160">
         <template v-if="!multiSelect.isOpen">
-          <me-editor
-            ref="talkEditor"
-            @send="submitSendMesage"
-            @keyboard-event="keyboardEvent"
-          />
+          <me-editor @send="submitSendMesage" @keyboard-event="keyboardEvent" />
         </template>
         <template v-else>
           <div class="multi-select">
@@ -336,7 +333,6 @@ import {
   ServeRemoveRecords,
   ServeRevokeRecords,
 } from "@/api/chat";
-import { ServeCollectEmoticon } from "@/api/emoticon";
 import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
 import { findTalkIndex } from "@/utils/talk";
 
@@ -778,12 +774,9 @@ export default {
 
     //验证是否存在选择的指定类型的消息
     verifyMultiSelectType(type) {
-      for (let o of this.$root.message.records) {
-        if (this.verifyMultiSelect(o.id) && o.msg_type == type) {
-          return true;
-        }
-      }
-      return false;
+      return this.$root.message.records.some((item) => {
+        return this.verifyMultiSelect(item.id) && item.msg_type == type;
+      });
     },
 
     //消息点击右键触发自定义菜单
@@ -861,27 +854,9 @@ export default {
           icon: "el-icon-picture",
           customClass: "cus-contextmenu-item",
           onClick: () => {
-            ServeCollectEmoticon({
+            this.$store.commit("SAVE_USER_EMOTICON", {
               record_id: item.id,
-            })
-              .then((res) => {
-                if (res.code == 200) {
-                  this.$notify({
-                    title: "收藏提示",
-                    message: "表情包收藏成功...",
-                    type: "success",
-                  });
-
-                  this.$refs.talkEditor.reloadEmoticon();
-                }
-              })
-              .catch((err) => {
-                this.$notify({
-                  title: "收藏提示",
-                  message: "表情包收藏失败...",
-                  type: "warning",
-                });
-              });
+            });
           },
         });
       }
@@ -1269,8 +1244,19 @@ export default {
         opacity: 0;
         transition: 0.5s ease;
 
+        &.show {
+          opacity: 1 !important;
+        }
+
         span {
           transform: scale(0.9);
+        }
+
+        .nickname {
+          margin-right: 3px;
+          &:after {
+            content: " | ";
+          }
         }
       }
 
