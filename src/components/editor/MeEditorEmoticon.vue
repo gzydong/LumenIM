@@ -59,7 +59,7 @@
             v-for="subitem in item.list"
             @click="clickImageEmoticon(subitem)"
           >
-            <el-image :src="subitem.src" fit="cover"> </el-image>
+            <el-image :src="subitem.src" fit="cover" />
           </div>
           <div class="clear"></div>
         </div>

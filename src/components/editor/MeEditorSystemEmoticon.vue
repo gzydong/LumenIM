@@ -12,23 +12,18 @@
         <ul>
           <li v-for="(item, i) in items" class="no-select">
             <div class="pkg-avatar">
-              <el-image :src="item.url" fit="cover" :lazy="true"> </el-image>
+              <el-image :src="item.url" fit="cover" :lazy="true" />
             </div>
             <div class="pkg-info" v-text="item.name"></div>
             <div class="pkg-status">
               <button
-                class="add-emoji"
-                v-if="item.status == 0"
-                @click="useEmoticon(i, item)"
+                @click="setEmoticon(i, item, item.status == 0 ? 1 : 2)"
+                :class="{
+                  'add-emoji': item.status == 0,
+                  'remove-emoji': item.status != 0,
+                }"
               >
-                添加
-              </button>
-              <button
-                class="remove-emoji"
-                v-else
-                @click="removeEmoticon(i, item)"
-              >
-                移除
+                {{ item.status == 0 ? "添加" : "移除" }}
               </button>
             </div>
           </li>
@@ -71,30 +66,21 @@ export default {
       });
     },
 
-    // 添加表情包
-    useEmoticon(idx, item) {
+    setEmoticon(index, item, type) {
       ServeSetUserEmoticon({
         emoticon_id: item.id,
-        type: 1,
+        type: type,
       }).then((res) => {
         if (res.code == 200) {
-          this.items[idx].status = 1;
-          this.$store.commit("APPEND_SYS_EMOTICON", res.data);
-        }
-      });
-    },
-
-    // 移出表情包
-    removeEmoticon(i, item) {
-      ServeSetUserEmoticon({
-        emoticon_id: item.id,
-        type: 2,
-      }).then((res) => {
-        if (res.code == 200) {
-          this.items[i].status = 0;
-          this.$store.commit("REMOVE_SYS_EMOTICON", {
-            emoticon_id: item.id,
-          });
+          if (type == 1) {
+            this.items[index].status = 1;
+            this.$store.commit("APPEND_SYS_EMOTICON", res.data);
+          } else {
+            this.items[index].status = 0;
+            this.$store.commit("REMOVE_SYS_EMOTICON", {
+              emoticon_id: item.id,
+            });
+          }
         }
       });
     },
@@ -116,7 +102,7 @@ export default {
       cursor: pointer;
       height: 68px;
       align-items: center;
-      border-bottom: 1px solid #fbf2fb;
+      border-bottom: 3px solid #fbf2fb;
       padding-left: 5px;
 
       .pkg-avatar {
@@ -154,21 +140,15 @@ export default {
           border-radius: 20px;
           width: 50px;
           cursor: pointer;
+          color: white;
         }
 
         .add-emoji {
           background-color: #38adff;
-          color: white;
-
-          &:active {
-            font-size: 14px;
-            background-color: #18a0ff;
-          }
         }
 
         .remove-emoji {
-          background-color: #d1d1d1;
-          color: white;
+          background-color: #ff5722;
         }
       }
     }

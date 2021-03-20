@@ -192,7 +192,7 @@ export default {
     this.smsLockObj = new SmsLock("REGISTER_SMS", 120);
   },
   destroyed() {
-    this.smsLockObj.clearInterval()
+    this.smsLockObj.clearInterval();
   },
   methods: {
     toLink(url) {
@@ -213,7 +213,6 @@ export default {
     },
 
     register() {
-      let _this = this;
       ServeRegister({
         nickname: this.form.nickname,
         mobile: this.form.username,
@@ -230,8 +229,8 @@ export default {
             });
 
             this.$refs.form.resetFields();
-            setTimeout(function () {
-              _this.$router.push({
+            setTimeout(() => {
+              this.$router.push({
                 path: "/login",
               });
             }, 1500);
@@ -294,9 +293,8 @@ export default {
               customClass: "cus-notifyclass",
             });
           }
-          this.smsLock = false;
         })
-        .catch((err) => {
+        .finally((err) => {
           this.smsLock = false;
         });
     },

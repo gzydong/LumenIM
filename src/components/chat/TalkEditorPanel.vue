@@ -26,7 +26,6 @@
             <span class="online-status" v-show="isOnline"></span>
             <span>{{ isOnline ? "在线" : "离线" }}</span>
           </p>
-          <!--  -->
           <p class="event-keyboard" v-show="keyEvent.isShow">
             对方正在输入 ...
           </p>
@@ -194,7 +193,7 @@
                   </div>
 
                   <!-- 消息引用(预留) -->
-                  <!-- <reply-message /> -->
+                  <!-- <reply-message />   -->
                 </div>
               </main>
             </div>

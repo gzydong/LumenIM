@@ -179,12 +179,10 @@ export default {
     },
     //确认按钮点击事件
     confirm() {
-      let arr = this.selected.map((item) => {
-        return {
-          id: item.id,
-          type: item.type,
-        };
-      });
+      const arr = this.selected.map((item) => ({
+        id: item.id,
+        type: item.type,
+      }));
 
       this.$emit("confirm", arr);
     },

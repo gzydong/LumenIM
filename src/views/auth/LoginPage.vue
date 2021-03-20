@@ -148,7 +148,6 @@ export default {
         platform: "web",
       })
         .then((res) => {
-          this.loginLoading = false;
           if (res.code == 200) {
             let result = res.data;
 
@@ -181,7 +180,7 @@ export default {
             });
           }
         })
-        .catch((err) => {
+        .finally((err) => {
           this.loginLoading = false;
         });
     },
