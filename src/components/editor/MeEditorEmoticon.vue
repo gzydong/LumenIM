@@ -18,26 +18,18 @@
           <div class="title">QQ表情</div>
           <div
             class="emoticon-item"
-            v-for="(item, i) in emoji.emojis"
-            @click="clickEmoticon(item)"
-          >
-            <img
-              :src="
-                'https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/' +
-                i +
-                '.gif'
-              "
-            />
-          </div>
+            v-for="(elImg, text) in emoji.emojis"
+            v-html="elImg"
+            @click="clickEmoticon(text)"
+          ></div>
           <div class="clear"></div>
           <div class="title">符号表情</div>
           <div
             class="emoticon-item symbol"
             v-for="(item, i) in emoji.symbol"
+            v-text="item"
             @click="clickEmoticon(item)"
-          >
-            {{ item }}
-          </div>
+          ></div>
           <div class="clear"></div>
         </div>
 

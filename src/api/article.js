@@ -3,7 +3,6 @@ import {
   get,
   upload
 } from '@/utils/request';
-
 import {
   getToken
 } from '@/utils/auth';

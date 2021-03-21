@@ -124,7 +124,7 @@ const emojisKeys = Object.keys(emojis);
 
 export const emojiList = {
     symbol,
-    emojis: emojisKeys
+    emojis
 }
 
 const regEmoji = emojisKeys.map((value) => '|\\' + value).join('').replace('|', '')

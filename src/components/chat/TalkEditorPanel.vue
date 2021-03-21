@@ -727,12 +727,10 @@ export default {
     //从列表中删除记录
     delRecords(arr) {
       arr.forEach((record_id) => {
-        let i = this.$root.message.records.findIndex(
-          (item) => item.id == record_id
+        this.$delete(
+          this.$root.message.records,
+          this.$root.message.records.findIndex((item) => item.id == record_id)
         );
-        if (i >= 0) {
-          this.$delete(this.$root.message.records, i);
-        }
       });
 
       return this;
@@ -907,11 +905,8 @@ export default {
         return;
       }
 
-      this.tipsBoard = !(
-        Math.ceil(e.target.scrollTop) + e.target.clientHeight >=
-        e.target.scrollHeight
-      );
-
+      const height = e.target.scrollTop + e.target.clientHeight + 5;
+      this.tipsBoard = height < e.target.scrollHeight;
       if (this.tipsBoard == false && this.unreadMessage.num > 0) {
         this.$store.commit("CLEAR_TLAK_UNREAD_MESSAGE");
       }
