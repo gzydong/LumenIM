@@ -36,7 +36,7 @@ class TalkEvent extends AppMessageEvent {
       this.$notify({
         message: '您有一条新的消息,请注意查收...',
         duration: 3000
-      })
+      });
 
       store.commit('INCR_UNREAD_NUM');
       return false;
@@ -100,7 +100,7 @@ class TalkEvent extends AppMessageEvent {
       // 更新未读消息
       ServeClearTalkUnreadNum({
         type: store.state.dialogue.source,
-        receive: store.state.dialogue.receiveId
+        receive: store.state.dialogue.receive_id
       });
     }
   }
