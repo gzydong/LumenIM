@@ -1,5 +1,9 @@
-import WsSocket from '@/plugins/socket/ws-socket';
 import store from '@/store';
+import config from '@/config/config';
+import WsSocket from '@/plugins/socket/ws-socket';
+import {
+    getToken
+} from '@/utils/auth';
 
 // 引入消息处理类
 import TalkEvent from '@/plugins/socket/event/talk-event';
@@ -10,7 +14,7 @@ import GroupJoinEvent from '@/plugins/socket/event/group-join-event';
 import FriendApplyEvent from '@/plugins/socket/event/friend-apply-event';
 
 /**
- * SocketInstance 连接实例(待完善)
+ * SocketInstance 连接实例
  * 
  * 注释: 所有 WebSocket 消息接收处理在此实例中处理
  */
@@ -18,18 +22,16 @@ class SocketInstance {
 
     /**
      * WsSocket 实例
-     * @class WsSocket
      */
     socket = null;
-
-    // WebSocket 连接地址
-    url = 'ws://47.105.180.123:9504/socket.io?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkZWZhdWx0XzYwNTg5ODFjNzcxNTI4LjcyMDg0MzU0IiwiaWF0IjoxNjE2NDE4ODQ0LCJuYmYiOjE2MTY0MTg4NDQsImV4cCI6MTYxNjUwNTI0NCwidXNlcl9pZCI6MjA1NSwicGxhdGZvcm0iOiJ3ZWIiLCJqd3Rfc2NlbmUiOiJkZWZhdWx0In0.lHgkfYtAbIWTOG0xPztGEax9Z40DSUmuRDadyDliZVk';
 
     /**
      * SocketInstance 初始化实例
      */
     constructor() {
-        this.socket = new WsSocket(this.url, {
+        this.socket = new WsSocket(() => {
+            return `${config.ws_url}?token=` + getToken();
+        }, {
             onError: (evt) => {
                 console.log('Websocket 连接失败回调方法')
             },
@@ -41,19 +43,23 @@ class SocketInstance {
             onClose: (evt) => {
                 this.updateSocketStatus(false);
             },
+            urlCallBack: () => {
+                return `${config.ws_url}?token=` + getToken();
+            }
         });
 
-        this.registerEvent()
+        this.registerEvents()
     }
 
+    // 连接 WebSocket 服务
     connect() {
         this.socket.connection()
     }
 
     /**
-     * 注册回调处理事件
+     * 注册回调消息处理事件
      */
-    registerEvent() {
+    registerEvents() {
         this.socket.on('event_talk', (data) => {
             (new TalkEvent(data)).handle();
         }).on('event_online_status', (data) => {
@@ -76,6 +82,15 @@ class SocketInstance {
      */
     updateSocketStatus(status) {
         store.commit('UPDATE_SOCKET_STATUS', status);
+    }
+
+    /**
+     * 聊天发送数据
+     * 
+     * @param {Object} mesage
+     */
+    send(mesage) {
+        this.socket.send(mesage);
     }
 
     /**

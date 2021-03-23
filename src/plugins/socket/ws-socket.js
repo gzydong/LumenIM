@@ -8,12 +8,16 @@ class WsSocket {
     connect;
 
     /**
+     * 服务器连接地址
+     */
+    url;
+
+    /**
      * 配置信息
      *
      * @var Object
      */
     config = {
-        url: null,
         heartbeat: {
             enabled: true, //是否发送心跳包
             time: 10000, //心跳包发送间隔时长
@@ -28,20 +32,19 @@ class WsSocket {
     }
 
     /**
-     * 自定义绑定事件
+     * 自定义绑定消息事件
      *
-     * @var Object
+     * @var Array
      */
     onCallBacks = []
 
     /**
      * 创建 WsSocket 的实例
-     * 
-     * @param {String} url WebSocket 连接
+     * @param {Function} urlCallBack url闭包函数
      * @param {Object} events 原生 WebSocket 绑定事件
      */
-    constructor(url, events) {
-        this.config.url = url;
+    constructor(urlCallBack, events) {
+        this.urlCallBack = urlCallBack
 
         // 定义 WebSocket 原生方法
         this.events = Object.assign({
@@ -71,11 +74,11 @@ class WsSocket {
         // 判断当前是否已经连接
         if (this.connect) {
             this.connect.close();
+            this.connect = null;
         }
 
-        this.connect = null;
-
-        const connect = new WebSocket(this.config.url);
+        this.url = this.urlCallBack()
+        const connect = new WebSocket(this.url);
         connect.onerror = this.onError.bind(this);
         connect.onopen = this.onOpen.bind(this);
         connect.onmessage = this.onMessage.bind(this);
@@ -210,10 +213,14 @@ class WsSocket {
      * @param {object} data 数据
      */
     emit(event, data) {
-        this.connect.send(JSON.stringify({
-            event,
-            data
-        }));
+        if (this.connect && this.connect.readyState === 1) {
+            this.connect.send(JSON.stringify({
+                event,
+                data
+            }));
+        } else {
+            console.error('websocket is close', this.connect)
+        }
     }
 }
 

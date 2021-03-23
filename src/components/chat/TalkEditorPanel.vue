@@ -334,6 +334,7 @@ import {
 } from "@/api/chat";
 import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
 import { findTalkIndex } from "@/utils/talk";
+import SocketInstance from '@/socket-instance';
 
 export default {
   name: "TalkEditorPanel",
@@ -452,15 +453,10 @@ export default {
     parseTime,
     sendTime: formateTime,
 
-    //发送消息方法
-    sendSocket(message) {
-      this.$root.socket.send(message);
-    },
-
     //回车键发送消息回调事件
     submitSendMesage(content) {
       //调用父类Websocket组件发送消息
-      this.$root.socket.emit("event_talk", {
+      SocketInstance.emit("event_talk", {
         // 发送消息的用户ID
         send_user: this.uid,
         // 接受者消息ID(用户ID或群ID)
@@ -506,7 +502,7 @@ export default {
       this.keyEvent.time = time;
 
       //调用父类Websocket组件发送消息
-      this.$root.socket.emit("event_keyboard", {
+      SocketInstance.emit("event_keyboard", {
         send_user: this.uid,
         receive_user: this.params.receiveId,
       });
@@ -945,6 +941,7 @@ export default {
       color: white;
       border-radius: 3px;
       margin-right: 8px;
+      flex-shrink: 0;
 
       &.friend {
         background: #f97348;
