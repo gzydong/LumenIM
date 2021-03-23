@@ -4,18 +4,6 @@ import {
 } from "@/api/user";
 
 export default {
-    data() {
-        return {
-            //当前正在对话的用户数据
-            message: {
-                avatar: '',
-                source: 0,
-                receiveId: 0,
-                records: [],
-                index_name: '',
-            },
-        }
-    },
     created() {
         // 判断用户是否登录
         if (this.$store.getters.loginStatus) {
@@ -27,15 +15,6 @@ export default {
         initialize() {
             SocketInstance.connect();
             this.loadUserSetting();
-        },
-
-        // 更新当前正在对话的用户数据
-        updateMessage(source, receive_id, avatar = '') {
-            this.message.source = parseInt(source);
-            this.message.receiveId = parseInt(receive_id);
-            this.message.avatar = avatar;
-            this.message.records = [];
-            this.message.index_name = source + '_' + receive_id;
         },
 
         // 加载用户相关设置信息，更新本地缓存

@@ -144,7 +144,7 @@ export default {
   },
   computed: {
     talkUser() {
-      return this.$root.message.index_name;
+      return this.$store.state.dialogue.index_name;
     },
   },
   watch: {
@@ -276,8 +276,8 @@ export default {
       ServeSendTalkCodeBlock({
         code: data.code,
         lang: data.language,
-        receive_id: this.$root.message.receiveId,
-        source: this.$root.message.source,
+        receive_id: this.$store.state.dialogue.receive_id,
+        source: this.$store.state.dialogue.source,
       }).then((res) => {
         if (res.code == 200) {
           this.codeBlock.isShow = false;
@@ -294,8 +294,8 @@ export default {
     confirmUploadImage() {
       let fileData = new FormData();
       fileData.append("img", this.imageViewer.file);
-      fileData.append("receive_id", this.$root.message.receiveId);
-      fileData.append("source", this.$root.message.source);
+      fileData.append("receive_id", this.$store.state.dialogue.receive_id);
+      fileData.append("source", this.$store.state.dialogue.source);
 
       let ref = this.$refs.imageViewer;
       ServeSendTalkImage(fileData)
@@ -332,8 +332,8 @@ export default {
       } else {
         ServeSendEmoticon({
           emoticon_id: data.value,
-          receive_id: this.$root.message.receiveId,
-          source: this.$root.message.source,
+          receive_id: this.$store.state.dialogue.receive_id,
+          source: this.$store.state.dialogue.source,
         });
       }
 

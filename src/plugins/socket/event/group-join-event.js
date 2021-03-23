@@ -10,7 +10,7 @@ class GroupJoinEvent extends AppMessageEvent {
   /**
    * 初始化构造方法
    * 
-   * @param {object} resource Socket消息
+   * @param {Object} resource Socket消息
    */
   constructor(resource) {
     super();
@@ -19,7 +19,7 @@ class GroupJoinEvent extends AppMessageEvent {
   }
 
   handle() {
-    this.vm.$notify({
+    this.$notify({
       message: '您有一条入群消息通知,请注意查收...',
       duration: 5000
     });

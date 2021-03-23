@@ -1,4 +1,5 @@
 import AppMessageEvent from './app-message-event';
+import store from '@/store';
 
 /**
  * 好友邀请消息处理
@@ -10,7 +11,7 @@ class RevokeEvent extends AppMessageEvent {
   /**
    * 初始化构造方法
    * 
-   * @param {object} resource Socket消息
+   * @param {Object} resource Socket消息
    */
   constructor(resource) {
     super();
@@ -24,9 +25,14 @@ class RevokeEvent extends AppMessageEvent {
     }
 
     let record_id = this.resource.record_id;
-    let idx = this.vm.message.records.findIndex((item) => item.id == record_id);
+    let index = store.state.dialogue.records.findIndex((item) => item.id === record_id);
 
-    this.vm.message.records[idx].is_revoke = 1;
+    store.commit('UPDATE_DIALOGUE', {
+      index,
+      item: {
+        is_revoke: 1
+      },
+    });
   }
 }
 
