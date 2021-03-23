@@ -61,6 +61,7 @@ export default {
   position: relative;
   overflow: hidden;
   border-radius: 5px;
+  box-sizing: border-box;
 
   &.max-width {
     max-width: 500px;
@@ -95,6 +96,7 @@ export default {
   }
 
   pre {
+    box-sizing: border-box;
     height: 100%;
     width: 100%;
     overflow: auto;

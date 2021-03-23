@@ -1,4 +1,5 @@
 import AppMessageEvent from './app-message-event';
+import store from '@/store';
 
 /**
  * 好友邀请消息处理
@@ -10,7 +11,7 @@ class KeyboardEvent extends AppMessageEvent {
   /**
    * 初始化构造方法
    * 
-   * @param {object} resource Socket消息
+   * @param {Object} resource Socket消息
    */
   constructor(resource) {
     super();
@@ -19,13 +20,13 @@ class KeyboardEvent extends AppMessageEvent {
   }
 
   handle() {
-    if (this.vm.message.index_name == '') return false;
+    if (store.state.dialogue.index_name == '') return false;
 
-    this.isShow() && this.vm.$store.commit('UPDATE_KEYBOARD_EVENT');
+    this.isShow() && store.commit('UPDATE_KEYBOARD_EVENT');
   }
 
   isShow() {
-    let [source, receive_id] = this.vm.message.index_name.split("_");
+    let [source, receive_id] = store.state.dialogue.index_name.split("_");
 
     return !(source == 2 || receive_id != this.resource.send_user);
   }

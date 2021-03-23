@@ -334,7 +334,7 @@ import {
 } from "@/api/chat";
 import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
 import { findTalkIndex } from "@/utils/talk";
-import SocketInstance from '@/socket-instance';
+import SocketInstance from "@/socket-instance";
 
 export default {
   name: "TalkEditorPanel",
@@ -380,7 +380,6 @@ export default {
       loadRecord: {
         status: 0,
         minRecord: 0,
-        scrollHeight: 0,
       },
 
       //多选相关操作
@@ -419,16 +418,14 @@ export default {
       unreadMessage: (state) => state.talks.unreadMessage,
       inputEvent: (state) => state.notify.inputEvent,
       uid: (state) => state.user.uid,
+      records: (state) => state.dialogue.records,
+      index_name: (state) => state.dialogue.index_name,
     }),
-    records() {
-      return this.$root.message.records;
-    },
   },
   watch: {
     // 监听面板传递参数
     params(val) {
       this.loadRecord.minRecord = 0;
-      this.$root.message.records = [];
       this.multiSelect = {
         isOpen: false,
         items: [],
@@ -455,7 +452,7 @@ export default {
 
     //回车键发送消息回调事件
     submitSendMesage(content) {
-      //调用父类Websocket组件发送消息
+      //调用组件发送消息
       SocketInstance.emit("event_talk", {
         // 发送消息的用户ID
         send_user: this.uid,
@@ -469,7 +466,7 @@ export default {
 
       this.$store.commit({
         type: "UPDATE_TALK_ITEM",
-        key: findTalkIndex(this.$root.message.index_name),
+        key: findTalkIndex(this.index_name),
         item: {
           draft_text: "",
         },
@@ -480,7 +477,7 @@ export default {
     keyboardEvent(text) {
       this.$store.commit({
         type: "UPDATE_TALK_ITEM",
-        key: findTalkIndex(this.$root.message.index_name),
+        key: findTalkIndex(this.index_name),
         item: {
           draft_text: text,
         },
@@ -517,9 +514,8 @@ export default {
       };
 
       this.loadRecord.status = 0;
-      this.loadRecord.scrollHeight = document.getElementById(
-        "lumenChatPanel"
-      ).scrollHeight;
+      let scrollHeight = document.getElementById("lumenChatPanel").scrollHeight;
+
       ServeTalkRecords(data)
         .then((res) => {
           //防止点击切换过快消息返回延迟，导致信息错误
@@ -531,38 +527,29 @@ export default {
             return;
           }
 
-          let records = data.record_id == 0 ? [] : this.$root.message.records;
-
-          records.unshift(...res.data.rows.reverse());
-
-          this.loadRecord.minRecord =
-            res.data.rows.length == res.data.limit ? res.data.record_id : 0;
-
-          let user_id = this.uid;
-
-          this.$root.message.records = records.map((item) => {
-            item.float =
-              item.user_id == 0
-                ? "center"
-                : item.user_id == user_id
-                ? "right"
-                : "left";
+          let records = data.record_id == 0 ? [] : this.records;
+          let rows = res.data.rows.map((item) => {
+            item.float = "center";
+            if (item.user_id > 0) {
+              item.float = item.user_id == this.uid ? "right" : "left";
+            }
 
             return item;
           });
 
-          this.loadRecord.status =
-            res.data.rows.length >= res.data.limit ? 1 : 2;
+          records.unshift(...rows.reverse());
+          this.$store.commit("SET_DIALOGUE", records);
+          this.loadRecord.status = rows.length >= res.data.limit ? 1 : 2;
+          this.loadRecord.minRecord =
+            rows.length == res.data.limit ? res.data.record_id : 0;
 
-          //滚动条处理
-          let el = document.getElementById("lumenChatPanel");
-          this.$nextTick(function () {
+          this.$nextTick(() => {
+            //滚动条处理
+            let el = document.getElementById("lumenChatPanel");
             if (data.record_id == 0) {
-              //首页加载数据滚动条置底
               el.scrollTop = el.scrollHeight;
             } else {
-              //加载数据完成之后将滚动条重置到加载之前的位置
-              el.scrollTop = el.scrollHeight - this.loadRecord.scrollHeight;
+              el.scrollTop = el.scrollHeight - scrollHeight;
             }
           });
         })
@@ -653,7 +640,7 @@ export default {
         return false;
       }
 
-      if (this.$root.message.records[index].is_revoke == 1) {
+      if (this.records[index].is_revoke == 1) {
         return false;
       }
 
@@ -665,14 +652,11 @@ export default {
       if (currTime - time < 300) return false;
 
       //判断是否是最后一条消息,最后一条消息默认显示时间
-      if (index == this.$root.message.records.length - 1) {
+      if (index == this.records.length - 1) {
         return true;
       }
 
-      let nextDate = this.$root.message.records[index + 1].created_at.replace(
-        /-/g,
-        "/"
-      );
+      let nextDate = this.records[index + 1].created_at.replace(/-/g, "/");
 
       return !(
         parseTime(new Date(datetime), "{y}-{m}-{d} {h}:{i}") ==
@@ -686,18 +670,21 @@ export default {
     },
 
     //撤回消息
-    revokeRecords(idx, item) {
+    revokeRecords(index, item) {
       ServeRevokeRecords({
         record_id: item.id,
       }).then((res) => {
         if (res.code == 200) {
-          this.$root.message.records[idx].is_revoke = 1;
+          this.$store.commit("UPDATE_DIALOGUE", {
+            index,
+            item: { is_revoke: 1 },
+          });
         }
       });
     },
 
     //删除消息
-    removeRecords(idx, item) {
+    removeRecords(index, item) {
       let user_id = this.uid;
       let receive_id = item.receive_id;
       if (item.source == 1 && item.user_id != user_id) {
@@ -710,7 +697,7 @@ export default {
         record_id: item.id,
       }).then((res) => {
         if (res.code == 200) {
-          this.$delete(this.$root.message.records, idx);
+          this.$store.commit("DELETE_DIALOGUE", index);
         }
       });
     },
@@ -722,13 +709,7 @@ export default {
 
     //从列表中删除记录
     delRecords(arr) {
-      arr.forEach((record_id) => {
-        this.$delete(
-          this.$root.message.records,
-          this.$root.message.records.findIndex((item) => item.id == record_id)
-        );
-      });
-
+      this.$store.commit("BATCH_DELETE_DIALOGUE", arr);
       return this;
     },
 
@@ -767,7 +748,7 @@ export default {
 
     //验证是否存在选择的指定类型的消息
     verifyMultiSelectType(type) {
-      return this.$root.message.records.some((item) => {
+      return this.records.some((item) => {
         return this.verifyMultiSelect(item.id) && item.msg_type == type;
       });
     },

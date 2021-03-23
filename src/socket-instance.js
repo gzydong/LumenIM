@@ -23,7 +23,7 @@ class SocketInstance {
     /**
      * WsSocket 实例
      */
-    socket = null;
+    socket;
 
     /**
      * SocketInstance 初始化实例
@@ -48,12 +48,12 @@ class SocketInstance {
             }
         });
 
-        this.registerEvents()
+        this.registerEvents();
     }
 
     // 连接 WebSocket 服务
     connect() {
-        this.socket.connection()
+        this.socket.connection();
     }
 
     /**

@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import store from '@/store';
 import AppMessageEvent from './app-message-event';
 import {
   parseTime
@@ -10,7 +12,6 @@ import {
   ServeClearTalkUnreadNum,
   ServeCreateTalkList
 } from "@/api/chat";
-import Vue from 'vue';
 
 /**
  * 聊天消息处理
@@ -22,7 +23,7 @@ class TalkEvent extends AppMessageEvent {
   /**
    * 初始化构造方法
    * 
-   * @param {object} resource Socket消息
+   * @param {Object} resource Socket消息
    */
   constructor(resource) {
     super();
@@ -32,12 +33,12 @@ class TalkEvent extends AppMessageEvent {
 
   handle() {
     if (!this.isTalkPage()) {
-      this.vm.$notify({
+      this.$notify({
         message: '您有一条新的消息,请注意查收...',
         duration: 3000
-      })
+      });
 
-      this.vm.$store.commit('INCR_UNREAD_NUM');
+      store.commit('INCR_UNREAD_NUM');
       return false;
     }
 
@@ -64,31 +65,29 @@ class TalkEvent extends AppMessageEvent {
    */
   updateTalkRecord(idx) {
     let record = this.resource.data;
-    record.float = (record.user_id == 0) ? 'center' : (record.user_id == this.getUserId ? 'right' : 'left');
-    this.vm.message.records.push(record);
+    record.float = (record.user_id == 0) ? 'center' : (record.user_id == this.UserId ? 'right' : 'left');
+
+    store.commit("PUSH_DIALOGUE", record);
 
     // 获取聊天面板元素节点
     let elChatPanel = document.getElementById("lumenChatPanel");
 
     // 判断的滚动条是否在底部
-    let isBottom = (
-      Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight >=
-      elChatPanel.scrollHeight
-    )
+    let isBottom = (Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight) >= elChatPanel.scrollHeight
 
-    if (isBottom || record.user_id == this.getUserId) {
+    if (isBottom || record.user_id == this.UserId) {
       Vue.nextTick(() => {
         // 更新聊天面板滚动条置底
         elChatPanel.scrollTop = elChatPanel.scrollHeight;
       });
     } else {
-      this.vm.$store.commit('SET_TLAK_UNREAD_MESSAGE', {
+      store.commit('SET_TLAK_UNREAD_MESSAGE', {
         content: this.getTalkText(),
         nickname: record.nickname
       });
     }
 
-    this.vm.$store.commit({
+    store.commit({
       type: 'UPDATE_TALK_ITEM',
       key: idx,
       item: {
@@ -97,11 +96,11 @@ class TalkEvent extends AppMessageEvent {
       }
     });
 
-    if (this.resource.data.source == 1 && this.getUserId !== this.resource.data.user_id) {
+    if (this.resource.data.source == 1 && this.UserId !== this.resource.data.user_id) {
       // 更新未读消息
       ServeClearTalkUnreadNum({
-        type: this.vm.message.source,
-        receive: this.vm.message.receiveId
+        type: store.state.dialogue.source,
+        receive: store.state.dialogue.receive_id
       });
     }
   }
@@ -112,13 +111,13 @@ class TalkEvent extends AppMessageEvent {
    * @param {int} idx 聊天列表的索引 
    */
   updateTalkItem(idx) {
-    this.vm.$store.commit('INCR_UNREAD_NUM');
+    store.commit('INCR_UNREAD_NUM');
     if (idx == -1) {
       // 对话列表不存在需请求后端...
       return;
     }
 
-    this.vm.$store.commit({
+    store.commit({
       type: 'UPDATE_TALK_MESSAGE',
       key: idx,
       item: {
@@ -153,8 +152,7 @@ class TalkEvent extends AppMessageEvent {
    * 判断用户是否打开对话页
    */
   isTalkPage() {
-    let path = this.vm.$route.path;
-
+    let path = window.location.pathname
     return !(path != '/message' && path != '/');
   }
 
@@ -163,7 +161,7 @@ class TalkEvent extends AppMessageEvent {
    */
   getIndexName() {
     let message = this.resource;
-    if (message.source_type == 2 || (message.source_type == 1 && message.send_user == this.getUserId)) {
+    if (message.source_type == 2 || (message.source_type == 1 && message.send_user == this.UserId)) {
       return `${message.source_type}_${message.receive_user}`;
     }
 
@@ -176,7 +174,7 @@ class TalkEvent extends AppMessageEvent {
   loadTalkItem() {
     let receive_id = 0;
 
-    if (this.resource.source_type == 2 || this.resource.send_user == this.getUserId) {
+    if (this.resource.source_type == 2 || this.resource.send_user == this.UserId) {
       receive_id = this.resource.receive_user;
     } else {
       receive_id = this.resource.send_user;
@@ -188,7 +186,7 @@ class TalkEvent extends AppMessageEvent {
     }).then(res => {
       if (res.code == 200) {
         res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1;
-        this.vm.$store.commit({
+        store.commit({
           type: "INSERT_TALK_ITEM",
           item: formateTalkItem(res.data.talkItem)
         });

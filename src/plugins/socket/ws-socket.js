@@ -66,13 +66,11 @@ class WsSocket {
     }
 
     /**
-     * 加载 Websoket
-     *
-     * @memberof WsSocket
+     * 加载 WebSocket
      */
     loadSocket() {
         // 判断当前是否已经连接
-        if (this.connect) {
+        if (this.connect != null) {
             this.connect.close();
             this.connect = null;
         }
@@ -210,7 +208,7 @@ class WsSocket {
      * 推送消息
      * 
      * @param {String} event 事件名
-     * @param {object} data 数据
+     * @param {Object} data 数据
      */
     emit(event, data) {
         if (this.connect && this.connect.readyState === 1) {
@@ -219,7 +217,7 @@ class WsSocket {
                 data
             }));
         } else {
-            console.error('websocket is close', this.connect)
+            console.error('WebSocket 连接已关闭...', this.connect)
         }
     }
 }
