@@ -87,9 +87,8 @@ class TalkEvent extends AppMessageEvent {
       });
     }
 
-    store.commit({
-      type: 'UPDATE_TALK_ITEM',
-      key: idx,
+    store.commit('UPDATE_TALK_ITEM', {
+      index: idx,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date())
@@ -117,9 +116,8 @@ class TalkEvent extends AppMessageEvent {
       return;
     }
 
-    store.commit({
-      type: 'UPDATE_TALK_MESSAGE',
-      key: idx,
+    store.commit('UPDATE_TALK_MESSAGE', {
+      index: idx,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date())
@@ -173,23 +171,20 @@ class TalkEvent extends AppMessageEvent {
    */
   loadTalkItem() {
     let receive_id = 0;
-
-    if (this.resource.source_type == 2 || this.resource.send_user == this.UserId) {
+    let type = this.resource.source_type;
+    if (type == 2 || this.resource.send_user == this.UserId) {
       receive_id = this.resource.receive_user;
     } else {
       receive_id = this.resource.send_user;
     }
 
     ServeCreateTalkList({
-      type: this.resource.source_type,
-      receive_id: receive_id
+      type,
+      receive_id
     }).then(res => {
       if (res.code == 200) {
         res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1;
-        store.commit({
-          type: "INSERT_TALK_ITEM",
-          item: formateTalkItem(res.data.talkItem)
-        });
+        store.commit('INSERT_TALK_ITEM', formateTalkItem(res.data.talkItem));
       }
     });
   }

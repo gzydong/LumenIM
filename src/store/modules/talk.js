@@ -47,12 +47,12 @@ const Talk = {
 
     // 更新对话节点
     UPDATE_TALK_ITEM(state, resource) {
-      Object.assign(state.items[resource.key], resource.item);
+      Object.assign(state.items[resource.index], resource.item);
     },
 
     // 新增对话节点
     INSERT_TALK_ITEM(state, resource) {
-      state.items.push(resource.item);
+      state.items.push(resource);
     },
 
     // 移除对话节点
@@ -67,14 +67,14 @@ const Talk = {
 
     // 更新对话节点在线状态
     UPDATE_TALK_ONLINE_STATUS(state, resource) {
-      state.items[resource.key].online = parseInt(resource.status);
+      state.items[resource.index].online = parseInt(resource.status);
     },
 
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
-      state.items[resource.key].msg_text = resource.item.msg_text;
-      state.items[resource.key].unread_num++;
-      state.items[resource.key].updated_at = resource.item.updated_at;
+      state.items[resource.index].msg_text = resource.item.msg_text;
+      state.items[resource.index].unread_num++;
+      state.items[resource.index].updated_at = resource.item.updated_at;
     },
 
     // 清空对话的未读数

@@ -10,7 +10,7 @@
           <p class="pointer">
             <span
               v-if="params.source == 1"
-              @click="catFriendDetail(params.receiveId)"
+              @click="catFriendDetail(params.receive_id)"
               >{{ params.nickname }}</span
             >
             <span v-else @click="group.panel = !group.panel">{{
@@ -84,7 +84,7 @@
               <invite-message @cat="catFriendDetail" :invite="item.invite" />
             </div>
 
-            <!-- 消息测回消息 -->
+            <!-- 撤回消息 -->
             <div v-else-if="item.is_revoke == 1" class="message-box">
               <revoke-message :item="item" />
             </div>
@@ -115,10 +115,7 @@
                 />
               </aside>
               <main class="main-column">
-                <div
-                  class="talk-title"
-                  :class="{ show: item.source == 2 && item.float == 'left' }"
-                >
+                <div class="talk-title">
                   <span
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
@@ -274,7 +271,7 @@
       >
         <group-panel
           v-if="params.source == 2"
-          :group-id="params.receiveId"
+          :group-id="params.receive_id"
           @close="hideChatGroup"
           @send-group="hideChatGroup"
           @quit-group="quitGroupSuccess"
@@ -290,7 +287,7 @@
         v-if="findChatRecord"
         @close="findChatRecord = false"
         :source="params.source"
-        :receive-id="params.receiveId"
+        :receive-id="params.receive_id"
         :titleName="params.nickname"
       />
     </transition>
@@ -311,7 +308,7 @@
     <transition name="el-fade-in-linear">
       <group-notice
         v-if="group.notice"
-        :group-id="params.receiveId"
+        :group-id="params.receive_id"
         @close="group.notice = false"
       />
     </transition>
@@ -348,19 +345,19 @@ export default {
     SvgMentionDown,
   },
   props: {
-    //对话相关参数
+    // 对话相关参数
     params: {
       type: Object,
       default: {
-        //消息来源（1：好友私信 2:群聊）
+        // 消息来源（1：好友私信 2:群聊）
         source: 0,
-        //消息接收者ID（好友ID或者群聊ID）
-        receiveId: 0,
+        // 消息接收者ID（好友ID或者群聊ID）
+        receive_id: 0,
         nickname: "",
       },
     },
 
-    //用户是否在线
+    // 用户是否在线
     isOnline: {
       type: Boolean,
       default: false,
@@ -370,43 +367,37 @@ export default {
     return {
       groupNum: 0,
 
-      //查看聊天记录信息
-      forwardRecordBox: {
-        isShow: false,
-        records_id: 0,
-      },
-
-      //记录加载相关参数
+      // 记录加载相关参数
       loadRecord: {
         status: 0,
         minRecord: 0,
       },
 
-      //多选相关操作
+      // 多选相关操作
       multiSelect: {
         isOpen: false,
         items: [],
         mode: 0,
       },
 
-      //选择联系人窗口
+      // 选择联系人窗口
       selectContacts: {
         isShow: false,
       },
 
-      //群box
+      // 群box
       group: {
         panel: false,
         notice: false,
       },
 
-      //键盘输入事件
+      // 键盘输入事件
       keyEvent: {
         isShow: false,
         time: 0,
       },
 
-      //聊天记录管理器数据
+      // 聊天记录管理器数据
       findChatRecord: false,
 
       // 置底按钮是否显示
@@ -435,7 +426,7 @@ export default {
       this.loadChatRecords();
       this.tipsBoard = false;
     },
-    //监听好友键盘事件
+    // 监听好友键盘事件
     inputEvent(n, o) {
       this.keyEvent.isShow = true;
       setTimeout(() => {
@@ -450,34 +441,32 @@ export default {
     parseTime,
     sendTime: formateTime,
 
-    //回车键发送消息回调事件
+    // 回车键发送消息回调事件
     submitSendMesage(content) {
-      //调用组件发送消息
+      // 调用组件发送消息
       SocketInstance.emit("event_talk", {
         // 发送消息的用户ID
         send_user: this.uid,
         // 接受者消息ID(用户ID或群ID)
-        receive_user: this.params.receiveId,
-        // 聊天类型  1:私聊 2:群聊信息显示用户昵称
+        receive_user: this.params.receive_id,
+        // 聊天类型[1:私聊;2:群聊信息显示用户昵称;]
         source_type: this.params.source,
         // 消息文本
         text_message: content,
       });
 
-      this.$store.commit({
-        type: "UPDATE_TALK_ITEM",
-        key: findTalkIndex(this.index_name),
+      this.$store.commit("UPDATE_TALK_ITEM", {
+        index: findTalkIndex(this.index_name),
         item: {
           draft_text: "",
         },
       });
     },
 
-    //推送编辑事件消息
+    // 推送编辑事件消息
     keyboardEvent(text) {
-      this.$store.commit({
-        type: "UPDATE_TALK_ITEM",
-        key: findTalkIndex(this.index_name),
+      this.$store.commit("UPDATE_TALK_ITEM", {
+        index: findTalkIndex(this.index_name),
         item: {
           draft_text: text,
         },
@@ -490,26 +479,27 @@ export default {
 
       let time = new Date().getTime();
 
-      //判断当前对话是否属于私聊信息
+      // 判断当前对话是否属于私聊信息
       if (this.params.source == 2 || !this.isOnline) return;
 
-      //判断在两秒内是否已推送事件
+      // 判断在两秒内是否已推送事件
       if (this.keyEvent.time != 0 && time - this.keyEvent.time < 2000) return;
 
       this.keyEvent.time = time;
 
-      //调用父类Websocket组件发送消息
+      // 调用父类Websocket组件发送消息
       SocketInstance.emit("event_keyboard", {
         send_user: this.uid,
-        receive_user: this.params.receiveId,
+        receive_user: this.params.receive_id,
       });
     },
 
-    //加载用户聊天详情信息
+    // 加载用户聊天详情信息
     loadChatRecords() {
+      const user_id = this.uid;
       let data = {
         record_id: this.loadRecord.minRecord,
-        receive_id: this.params.receiveId,
+        receive_id: this.params.receive_id,
         source: this.params.source,
       };
 
@@ -518,10 +508,10 @@ export default {
 
       ServeTalkRecords(data)
         .then((res) => {
-          //防止点击切换过快消息返回延迟，导致信息错误
+          // 防止点击切换过快消息返回延迟，导致信息错误
           if (
             res.code != 200 ||
-            (data.receive_id != this.params.receiveId &&
+            (data.receive_id != this.params.receive_id &&
               data.source != this.params.source)
           ) {
             return;
@@ -531,7 +521,7 @@ export default {
           let rows = res.data.rows.map((item) => {
             item.float = "center";
             if (item.user_id > 0) {
-              item.float = item.user_id == this.uid ? "right" : "left";
+              item.float = item.user_id == user_id ? "right" : "left";
             }
 
             return item;
@@ -539,12 +529,13 @@ export default {
 
           records.unshift(...rows.reverse());
           this.$store.commit("SET_DIALOGUE", records);
+
           this.loadRecord.status = rows.length >= res.data.limit ? 1 : 2;
           this.loadRecord.minRecord =
             rows.length == res.data.limit ? res.data.record_id : 0;
 
           this.$nextTick(() => {
-            //滚动条处理
+            // 滚动条处理
             let el = document.getElementById("lumenChatPanel");
             if (data.record_id == 0) {
               el.scrollTop = el.scrollHeight;
@@ -558,7 +549,7 @@ export default {
         });
     },
 
-    //多选处理方式
+    // 多选处理方式
     handleMultiMode(type) {
       if (this.multiSelect.items.length <= 1) {
         return false;
@@ -566,7 +557,7 @@ export default {
 
       this.multiSelect.mode = type;
       if (type == 1) {
-        //逐条转发
+        // 逐条转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
             title: "消息转发",
@@ -577,7 +568,7 @@ export default {
 
         this.selectContacts.isShow = true;
       } else if (type == 2) {
-        //合并转发
+        // 合并转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
             title: "消息转发",
@@ -588,11 +579,11 @@ export default {
 
         this.selectContacts.isShow = true;
       } else {
-        //批量删除
+        // 批量删除
         let ids = this.multiSelect.items;
         ServeRemoveRecords({
           source: this.params.source,
-          receive_id: this.params.receiveId,
+          receive_id: this.params.receive_id,
           record_id: ids.join(","),
         }).then((res) => {
           if (res.code == 200) {
@@ -602,10 +593,10 @@ export default {
       }
     },
 
-    //确认消息转发联系人事件
+    // 确认消息转发联系人事件
     confirmSelectContacts(arr) {
-      let user_ids = [],
-        group_ids = [];
+      let user_ids = [];
+      let group_ids = [];
       arr.forEach((item) => {
         if (item.type == 1) {
           user_ids.push(item.id);
@@ -618,7 +609,7 @@ export default {
       ServeForwardRecords({
         forward_mode: this.multiSelect.mode,
         source: this.params.source,
-        receive_id: this.params.receiveId,
+        receive_id: this.params.receive_id,
         records_ids: this.multiSelect.items,
         receive_user_ids: user_ids,
         receive_group_ids: group_ids,
@@ -634,7 +625,7 @@ export default {
       });
     },
 
-    //处理消息时间是否显示
+    // 处理消息时间是否显示
     compareTime(index, datetime) {
       if (datetime == undefined) {
         return false;
@@ -648,10 +639,10 @@ export default {
       let time = Math.floor(Date.parse(datetime) / 1000);
       let currTime = Math.floor(new Date().getTime() / 1000);
 
-      //当前时间5分钟内时间不显示
+      // 当前时间5分钟内时间不显示
       if (currTime - time < 300) return false;
 
-      //判断是否是最后一条消息,最后一条消息默认显示时间
+      // 判断是否是最后一条消息,最后一条消息默认显示时间
       if (index == this.records.length - 1) {
         return true;
       }
@@ -664,12 +655,12 @@ export default {
       );
     },
 
-    //查看好友用户信息
+    // 查看好友用户信息
     catFriendDetail(value) {
       this.$refs.userBusinessCard.open(value);
     },
 
-    //撤回消息
+    // 撤回消息
     revokeRecords(index, item) {
       ServeRevokeRecords({
         record_id: item.id,
@@ -683,11 +674,10 @@ export default {
       });
     },
 
-    //删除消息
+    // 删除消息
     removeRecords(index, item) {
-      let user_id = this.uid;
       let receive_id = item.receive_id;
-      if (item.source == 1 && item.user_id != user_id) {
+      if (item.source == 1 && item.user_id != this.uid) {
         receive_id = item.user_id;
       }
 
@@ -702,34 +692,37 @@ export default {
       });
     },
 
-    //转发消息
+    // 转发消息
     forwardRecords(idx, item) {
-      alert("单条记录转发开发中...");
+      this.$notify({
+        title: "温馨提示",
+        message: "单条记录转发开发中...",
+      });
     },
 
-    //从列表中删除记录
+    // 从列表中删除记录
     delRecords(arr) {
       this.$store.commit("BATCH_DELETE_DIALOGUE", arr);
       return this;
     },
 
-    //开启多选模式
+    // 开启多选模式
     openMultiSelect() {
       this.multiSelect.isOpen = true;
     },
 
-    //关闭多选模式
+    // 关闭多选模式
     closeMultiSelect() {
       this.multiSelect.isOpen = false;
       this.multiSelect.items = [];
     },
 
-    //判断记录是否选中
+    // 判断记录是否选中
     verifyMultiSelect(records_id) {
       return this.multiSelect.items.indexOf(records_id) >= 0;
     },
 
-    //触发多选事件
+    // 触发多选事件
     triggerMultiSelect(records_id) {
       let i = this.multiSelect.items.indexOf(records_id);
       if (i >= 0) {
@@ -746,14 +739,14 @@ export default {
       }
     },
 
-    //验证是否存在选择的指定类型的消息
+    // 验证是否存在选择的指定类型的消息
     verifyMultiSelectType(type) {
       return this.records.some((item) => {
         return this.verifyMultiSelect(item.id) && item.msg_type == type;
       });
     },
 
-    //消息点击右键触发自定义菜单
+    // 消息点击右键触发自定义菜单
     onCopy(idx, item, event) {
       let menus = [];
       let content = "";
@@ -846,31 +839,27 @@ export default {
       this.closeMultiSelect();
       event.preventDefault();
     },
+
     hideChatGroup() {
       this.group.panel = false;
     },
 
-    //修改群聊免打扰状态
+    // 修改群聊免打扰状态
     disturbChange(detail) {
-      let key = this.$store.state.talks.items.findIndex(
-        (item) => item.index_name == `2_${this.params.receiveId}`
-      );
-      if (key == -1) return false;
-      this.$store.commit({
-        type: "UPDATE_TALK_ITEM",
-        key: key,
+      this.$store.commit("UPDATE_TALK_ITEM", {
+        index: findTalkIndex(`2_${this.params.receive_id}`),
         item: {
           not_disturb: parseInt(detail.status),
         },
       });
     },
 
-    //退出群聊回调事件
+    // 退出群聊回调事件
     quitGroupSuccess() {
       this.$emit("close-talk");
     },
 
-    //同步群信息
+    // 同步群信息
     syncGroupInfo(groupInfo) {
       this.groupNum = groupInfo.members_num;
     },
