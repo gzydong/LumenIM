@@ -19,15 +19,15 @@ class WsSocket {
      */
     config = {
         heartbeat: {
-            enabled: true, //是否发送心跳包
-            time: 10000, //心跳包发送间隔时长
-            setInterval: null //心跳包计时器
+            enabled: true, // 是否发送心跳包
+            time: 10000, // 心跳包发送间隔时长
+            setInterval: null // 心跳包计时器
         },
         reconnect: {
             lockReconnect: false,
-            setTimeout: null, //计时器对象
-            time: 5000, //重连间隔时间
-            number: 50 //重连次数
+            setTimeout: null, // 计时器对象
+            time: 5000, // 重连间隔时间
+            number: 50 // 重连次数
         }
     }
 
@@ -40,6 +40,7 @@ class WsSocket {
 
     /**
      * 创建 WsSocket 的实例
+     * 
      * @param {Function} urlCallBack url闭包函数
      * @param {Object} events 原生 WebSocket 绑定事件
      */

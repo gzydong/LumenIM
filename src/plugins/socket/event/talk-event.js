@@ -43,27 +43,27 @@ class TalkEvent extends AppMessageEvent {
     }
 
     let indexName = this.getIndexName();
-    let idx = findTalkIndex(indexName);
+    let index = findTalkIndex(indexName);
 
     // 判断消息来源是否在对话列表中...
-    if (idx == -1) {
+    if (index == -1) {
       this.loadTalkItem();
       return;
     }
 
     if (this.isChatting(this.resource.source_type, this.resource.receive_user, this.resource.send_user)) {
-      this.updateTalkRecord(idx);
+      this.updateTalkRecord(index);
     } else {
-      this.updateTalkItem(idx);
+      this.updateTalkItem(index);
     }
   }
 
   /**
    * 更新对话记录
    * 
-   * @param {Number} idx 聊天列表的索引 
+   * @param {Number} index 聊天列表的索引 
    */
-  updateTalkRecord(idx) {
+  updateTalkRecord(index) {
     let record = this.resource.data;
     record.float = (record.user_id == 0) ? 'center' : (record.user_id == this.UserId ? 'right' : 'left');
 
@@ -73,7 +73,7 @@ class TalkEvent extends AppMessageEvent {
     let elChatPanel = document.getElementById("lumenChatPanel");
 
     // 判断的滚动条是否在底部
-    let isBottom = (Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight) >= elChatPanel.scrollHeight
+    let isBottom = (Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight) >= elChatPanel.scrollHeight;
 
     if (isBottom || record.user_id == this.UserId) {
       Vue.nextTick(() => {
@@ -88,7 +88,7 @@ class TalkEvent extends AppMessageEvent {
     }
 
     store.commit('UPDATE_TALK_ITEM', {
-      index: idx,
+      index,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date())
@@ -107,17 +107,17 @@ class TalkEvent extends AppMessageEvent {
   /**
    * 更新对话列表记录
    * 
-   * @param {int} idx 聊天列表的索引 
+   * @param {Number} index 聊天列表的索引 
    */
-  updateTalkItem(idx) {
+  updateTalkItem(index) {
     store.commit('INCR_UNREAD_NUM');
-    if (idx == -1) {
+    if (index == -1) {
       // 对话列表不存在需请求后端...
       return;
     }
 
     store.commit('UPDATE_TALK_MESSAGE', {
-      index: idx,
+      index,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date())

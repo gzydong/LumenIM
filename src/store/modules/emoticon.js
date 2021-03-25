@@ -7,7 +7,7 @@ import {
     Notification
 } from 'element-ui';
 
-const Emoticon = {
+export default {
     state: {
         items: [{
                 emoticon_id: -1,
@@ -35,7 +35,7 @@ const Emoticon = {
 
                     state.items = state.items.slice(0, 2);
 
-                    //用户收藏的系统表情包
+                    // 用户收藏的系统表情包
                     state.items[1].list = collect_emoticon;
 
                     // 用户添加的系统表情包
@@ -43,6 +43,7 @@ const Emoticon = {
                 }
             });
         },
+
         // 收藏用户表情包
         SAVE_USER_EMOTICON(state, resoure) {
             ServeCollectEmoticon({
@@ -67,6 +68,7 @@ const Emoticon = {
                     });
                 });
         },
+
         // 自定义上传用户表情包
         UPLOAD_USER_EMOTICON(state, resoure) {
             let fileData = new FormData();
@@ -85,10 +87,12 @@ const Emoticon = {
                     });
                 });
         },
-        //添加系统表情包
+
+        // 添加系统表情包
         APPEND_SYS_EMOTICON(state, resoure) {
             state.items.push(resoure);
         },
+
         // 移除系统表情包
         REMOVE_SYS_EMOTICON(state, resoure) {
             for (let i in state.items) {
@@ -100,5 +104,3 @@ const Emoticon = {
         },
     }
 }
-
-export default Emoticon;

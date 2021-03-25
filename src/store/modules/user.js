@@ -70,7 +70,7 @@ const user = {
     }
   },
   actions: {
-    //退出登录处理操作
+    // 退出登录处理操作
     ACT_USER_LOGOUT({
       commit
     }) {
