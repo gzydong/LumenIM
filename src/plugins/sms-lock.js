@@ -18,8 +18,8 @@ class SmsLock {
   /**
    * 实例化构造方法
    * 
-   * @param {string} purpose 唯一标识
-   * @param {int} time
+   * @param {String} purpose 唯一标识
+   * @param {Number} time
    */
   constructor(purpose, lockTime = 60) {
     this.lockTime = lockTime;
@@ -52,7 +52,7 @@ class SmsLock {
 
   // 页面刷新初始化
   init() {
-    let result = localStorage.getItem(this.lockName); // 读取本地缓存
+    let result = localStorage.getItem(this.lockName);
 
     if (result == null) return;
 

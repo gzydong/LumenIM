@@ -57,6 +57,7 @@ request.interceptors.response.use((response) => {
 
 /**
  * GET 请求
+ * 
  * @param {String} url
  * @param {Object} data
  * @param {Object} options
@@ -73,6 +74,7 @@ export const get = (url, data = {}, options = {}) => {
 
 /**
  * POST 请求
+ * 
  * @param {String} url
  * @param {Object} data
  * @param {Object} options
@@ -89,6 +91,7 @@ export const post = (url, data = {}, options = {}) => {
 
 /**
  * 上传文件 POST 请求
+ * 
  * @param {String} url
  * @param {Object} data
  * @param {Object} options

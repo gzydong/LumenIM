@@ -14,7 +14,6 @@ export function formateTime(datetime) {
 
   datetime = datetime.replace(/-/g, "/");
 
-  //当前时间戳
   let time = new Date();
   let outTime = new Date(datetime);
   if (/^[1-9]\d*$/.test(datetime)) {
@@ -280,6 +279,7 @@ export function toggleClass(element, className) {
 
 /**
  * Check if an element has a class
+ * 
  * @param {HTMLElement} elm
  * @param {String} cls
  * @returns {Boolean}
@@ -290,6 +290,7 @@ export function hasClass(ele, cls) {
 
 /**
  * Add class to element
+ * 
  * @param {HTMLElement} elm
  * @param {String} cls
  */
@@ -299,6 +300,7 @@ export function addClass(ele, cls) {
 
 /**
  * Remove class from element
+ * 
  * @param {HTMLElement} elm
  * @param {String} cls
  */
@@ -345,7 +347,7 @@ export function getSelection() {
  * 剪贴板复制功能
  * 
  * @param {String} value 复制内容
- * @param  callback 复制成功回调方法
+ * @param {Function} callback 复制成功回调方法
  */
 export const copyTextToClipboard = (value, callback) => {
   let textArea = document.createElement("textarea");
@@ -381,9 +383,9 @@ export function beautifyTime(datetime = '') {
   if (datetime == null) {
     return ''
   }
+
   datetime = datetime.replace(/-/g, "/");
 
-  //当前时间戳
   let time = new Date();
   let outTime = new Date(datetime);
   if (/^[1-9]\d*$/.test(datetime)) {

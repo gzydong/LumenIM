@@ -87,11 +87,6 @@ const Talk = {
       state.heavyLoad = status;
     },
 
-    // 更新消息数组的key 更新 duration 字段数据
-    UPDATA_MESSAGE_DURATION(state, resource) {
-      state.list[resource.index].duration = resource.duration
-    },
-
     SET_TLAK_UNREAD_MESSAGE(state, resource) {
       state.unreadMessage.num++;
       state.unreadMessage.nickname = resource.nickname;

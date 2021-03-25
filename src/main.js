@@ -19,7 +19,7 @@ import '@/assets/css/global.less';
 
 Vue.config.productionTip = false;
 
-let Instance = new Vue({
+const Instance = new Vue({
   router,
   store,
   mixins: [mixin],

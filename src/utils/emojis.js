@@ -132,7 +132,7 @@ const regEmoji = emojisKeys.map((value) => '|\\' + value).join('').replace('|', 
 /**
  * 替换表情文字
  * 
- * @param {String} content  需要替换的字符串
+ * @param {String} content 需要替换的字符串
  */
 export function textReplaceEmoji(content) {
     return content.replace(new RegExp(`(${regEmoji})`, 'gi'), ($0, $1) => {

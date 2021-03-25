@@ -8,8 +8,8 @@ const USER_SETTING_KEY = 'LUMENIM_USER_SETTING';
 /**
  * 设置用户授权token
  * 
- * @param {string} token 
- * @param {number} expires 
+ * @param {String} token 
+ * @param {Number} expires 
  */
 export function setToken(token, expires) {
   return Cookies.set(USER_TOKEN_KEY, token, {
@@ -27,7 +27,7 @@ export function getToken() {
 /**
  * 设置用户信息
  * 
- * @param {object} data 
+ * @param {Object} data 
  */
 export function setUserInfo(data) {
   localStorage.setItem(USER_INFO_KEY, JsBase64.Base64.encode(JSON.stringify(data)));
