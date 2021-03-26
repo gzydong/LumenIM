@@ -139,13 +139,13 @@
                               class="nickname"
                               v-text="member.nickname"
                             ></span>
-                            <span class="larkc-tag" v-show="member.is_manager"
+                            <span class="larkc-tag" v-show="member.leader == 2"
                               >群主</span
                             >
                           </div>
                           <div
                             class="tools"
-                            v-show="batchDelMember && !member.is_manager"
+                            v-show="batchDelMember && member.leader != 2"
                           >
                             <i
                               class="el-icon-success"
@@ -476,7 +476,7 @@ export default {
         ServeEditGroup({
           group_id: this.groupId,
           group_name: this.form.group_name,
-          group_profile: this.form.profile,
+          profile: this.form.profile,
           avatar: this.form.avatar,
         })
           .then((res) => {
@@ -531,6 +531,8 @@ export default {
           group_id: this.groupId,
           title: this.notice.form.title,
           content: this.notice.form.content,
+          is_top: 0,
+          is_confirm: 0,
         })
           .then((res) => {
             if (res.code == 200) {
@@ -612,7 +614,7 @@ export default {
         .then(() => {
           ServeRemoveMembersGroup({
             group_id: this.groupId,
-            members_ids: ids,
+            members_ids: ids.join(','),
           }).then((res) => {
             if (res.code == 200) {
               this.loadMembers();
