@@ -2,7 +2,7 @@
   <div>
     <el-container class="ov-hidden full-height">
       <!-- 头部信息 -->
-      <el-header class="header-tools">
+      <el-header class="header-box">
         <div class="title">
           <p class="badge" :class="{ friend: params.source == 1 }">
             {{ params.source == 1 ? "好友" : "群组" }}
@@ -26,7 +26,7 @@
             <span class="online-status" v-show="isOnline"></span>
             <span>{{ isOnline ? "在线" : "离线" }}</span>
           </p>
-          <p class="event-keyboard" v-show="keyEvent.isShow">
+          <p class="event-keyboard" v-show="keyboardEvent.isShow">
             对方正在输入 ...
           </p>
         </div>
@@ -56,7 +56,7 @@
       </el-header>
 
       <!-- 主体信息 -->
-      <el-main class="no-padding" style="position: relative">
+      <el-main class="main-box no-padding">
         <div
           class="talks-container lum-scrollbar"
           id="lumenChatPanel"
@@ -116,18 +116,19 @@
               </aside>
               <main class="main-column">
                 <div class="talk-title">
+                  <span class="time">
+                    <i class="el-icon-time"></i>
+                    {{ parseTime(item.created_at, "{m}月{d}日 {h}:{i}") }}
+                  </span>
+                </div>
+
+                <div class="talk-content">
                   <span
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
                     v-text="item.nickname || item.friend_remarks"
                   ></span>
-                  <span
-                    class="time"
-                    v-text="parseTime(item.created_at, '{m}月{d}日 {h}:{i}')"
-                  ></span>
-                </div>
 
-                <div class="talk-content">
                   <!-- 文本消息 -->
                   <text-message
                     v-if="item.msg_type == 1"
@@ -233,33 +234,17 @@
 
       <!-- 页脚信息 -->
       <el-footer class="footer-box" height="160">
-        <template v-if="!multiSelect.isOpen">
-          <me-editor @send="submitSendMesage" @keyboard-event="keyboardEvent" />
+        <template v-if="multiSelect.isOpen === false">
+          <MeEditor
+            @send="submitSendMesage"
+            @keyboard-event="onKeyboardEvent"
+          />
         </template>
         <template v-else>
-          <div class="multi-select">
-            <div class="multi-title" v-show="multiSelect.items.length > 0">
-              <span>已选中：{{ multiSelect.items.length }} 条消息</span>
-            </div>
-            <div class="multi-btn-group">
-              <div class="multi-icon" @click="handleMultiMode(2)">
-                <i class="el-icon-position"></i>
-              </div>
-              <p>合并转发</p>
-            </div>
-            <div class="multi-btn-group">
-              <div class="multi-icon" @click="handleMultiMode(3)">
-                <i class="el-icon-delete"></i>
-              </div>
-              <p>批量删除</p>
-            </div>
-            <div class="multi-btn-group">
-              <div class="multi-icon" @click="closeMultiSelect">
-                <i class="el-icon-close"></i>
-              </div>
-              <p>关闭</p>
-            </div>
-          </div>
+          <MultiToolbar
+            v-model="multiSelect.items.length"
+            @event="handleMultiMode"
+          ></MultiToolbar>
         </template>
       </el-footer>
 
@@ -269,7 +254,7 @@
         :class="{ show: group.panel }"
         v-outside="hideChatGroup"
       >
-        <group-panel
+        <GroupPanel
           v-if="params.source == 2"
           :group-id="params.receive_id"
           @close="hideChatGroup"
@@ -283,7 +268,7 @@
 
     <!-- 消息管理器 -->
     <transition name="el-fade-in-linear">
-      <talk-search-record
+      <TalkSearchRecord
         v-if="findChatRecord"
         @close="findChatRecord = false"
         :source="params.source"
@@ -294,7 +279,7 @@
 
     <!-- 选择联系人窗口 -->
     <transition name="el-fade-in-linear">
-      <user-contacts
+      <UserContacts
         v-if="selectContacts.isShow"
         @close="selectContacts.isShow = false"
         @confirm="confirmSelectContacts"
@@ -302,11 +287,11 @@
     </transition>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <UserBusinessCard ref="userBusinessCard" />
 
     <!-- 群公告组件 -->
     <transition name="el-fade-in-linear">
-      <group-notice
+      <GroupNotice
         v-if="group.notice"
         :group-id="params.receive_id"
         @close="group.notice = false"
@@ -322,16 +307,17 @@ import UserContacts from "@/components/chat/UserContacts";
 import GroupPanel from "@/components/group/GroupPanel";
 import GroupNotice from "@/components/group/GroupNotice";
 import MeEditor from "@/components/editor/MeEditor";
+import MultiToolbar from "./MultiToolbar";
+import SocketInstance from "@/socket-instance";
 import { SvgMentionDown } from "@/core/icons";
+import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
+import { findTalkIndex } from "@/utils/talk";
 import {
   ServeTalkRecords,
   ServeForwardRecords,
   ServeRemoveRecords,
   ServeRevokeRecords,
 } from "@/api/chat";
-import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
-import { findTalkIndex } from "@/utils/talk";
-import SocketInstance from "@/socket-instance";
 
 export default {
   name: "TalkEditorPanel",
@@ -343,6 +329,7 @@ export default {
     UserBusinessCard,
     GroupNotice,
     SvgMentionDown,
+    MultiToolbar,
   },
   props: {
     // 对话相关参数
@@ -385,14 +372,14 @@ export default {
         isShow: false,
       },
 
-      // 群box
+      // 群组Box
       group: {
         panel: false,
         notice: false,
       },
 
       // 键盘输入事件
-      keyEvent: {
+      keyboardEvent: {
         isShow: false,
         time: 0,
       },
@@ -428,9 +415,9 @@ export default {
     },
     // 监听好友键盘事件
     inputEvent(n, o) {
-      this.keyEvent.isShow = true;
+      this.keyboardEvent.isShow = true;
       setTimeout(() => {
-        this.keyEvent.isShow = false;
+        this.keyboardEvent.isShow = false;
       }, 2000);
     },
   },
@@ -464,7 +451,7 @@ export default {
     },
 
     // 推送编辑事件消息
-    keyboardEvent(text) {
+    onKeyboardEvent(text) {
       this.$store.commit("UPDATE_TALK_ITEM", {
         index: findTalkIndex(this.index_name),
         item: {
@@ -483,9 +470,10 @@ export default {
       if (this.params.source == 2 || !this.isOnline) return;
 
       // 判断在两秒内是否已推送事件
-      if (this.keyEvent.time != 0 && time - this.keyEvent.time < 2000) return;
+      if (this.keyboardEvent.time != 0 && time - this.keyboardEvent.time < 2000)
+        return;
 
-      this.keyEvent.time = time;
+      this.keyboardEvent.time = time;
 
       // 调用父类Websocket组件发送消息
       SocketInstance.emit("event_keyboard", {
@@ -550,13 +538,19 @@ export default {
     },
 
     // 多选处理方式
-    handleMultiMode(type) {
+    handleMultiMode(value) {
+      if (value == "close") {
+        this.closeMultiSelect();
+        return false;
+      }
+
       if (this.multiSelect.items.length <= 1) {
         return false;
       }
 
-      this.multiSelect.mode = type;
-      if (type == 1) {
+      if (value == "forward") {
+        this.multiSelect.mode = 1;
+        this.selectContacts.isShow = true;
         // 逐条转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
@@ -565,9 +559,9 @@ export default {
           });
           return false;
         }
-
+      } else if (value == "merge_forward") {
+        this.multiSelect.mode = 2;
         this.selectContacts.isShow = true;
-      } else if (type == 2) {
         // 合并转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
@@ -576,9 +570,9 @@ export default {
           });
           return false;
         }
+      } else if (value == "delete") {
+        this.multiSelect.mode = 3;
 
-        this.selectContacts.isShow = true;
-      } else {
         // 批量删除
         let ids = this.multiSelect.items;
         ServeRemoveRecords({
@@ -887,7 +881,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.header-tools {
+.header-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -990,57 +984,15 @@ export default {
   }
 }
 
+.main-box {
+  position: relative;
+}
+
 /* 面板页脚 */
 .footer-box {
   height: 160px !important;
   padding: 0;
-
-  .multi-select {
-    height: 110px;
-    text-align: center;
-    position: relative;
-    padding-top: 50px;
-    border-top: 1px solid rgb(245, 245, 245);
-
-    .multi-title {
-      position: absolute;
-      top: 15px;
-      left: 0px;
-      right: 0px;
-      margin: 0px auto;
-      color: #878484;
-      font-weight: 300;
-      font-size: 14px;
-      width: 150px;
-    }
-
-    .multi-btn-group {
-      display: inline-block;
-      width: 70px;
-      height: 70px;
-      margin-right: 15px;
-
-      p {
-        font-size: 12px;
-        margin-top: 8px;
-        cursor: pointer;
-      }
-    }
-
-    .multi-icon {
-      width: 45px;
-      height: 45px;
-      line-height: 45px;
-      background-color: #f5f5f5;
-      border-radius: 50%;
-      cursor: pointer;
-      margin: 0 auto;
-
-      &:hover {
-        background-color: #ccc;
-      }
-    }
-  }
+  border-top: 1px solid #f5f5f5;
 }
 
 /* 侧边栏css */
@@ -1212,13 +1164,6 @@ export default {
         span {
           transform: scale(0.9);
         }
-
-        .nickname {
-          margin-right: 3px;
-          &:after {
-            content: " | ";
-          }
-        }
       }
 
       .talk-content {
@@ -1227,6 +1172,14 @@ export default {
         align-items: flex-start;
         box-sizing: border-box;
         width: 100%;
+
+        .nickname {
+          font-size: 12px;
+          color: #a7a0a0;
+          margin-top: -4px;
+          margin-bottom: 2px;
+          transform: scale(0.9);
+        }
       }
 
       &:hover {
