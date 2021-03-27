@@ -9,7 +9,7 @@
     </el-header>
 
     <el-main class="main lum-scrollbar">
-      <div class="list-item list-item-flex">
+      <div class="list-item flex">
         <p>
           <span>群名称：</span>
           <span class="group-setting-title">{{ detail.groupName }}</span>
@@ -39,8 +39,8 @@
           <i
             class="el-icon-edit-outline edit-remark-icon"
             @click="
-              isEditRemark = true;
-              editRemarkText = detail.visitCard;
+              isEditRemark = true
+              editRemarkText = detail.visitCard
             "
           ></i>
         </span>
@@ -56,7 +56,7 @@
         </span>
       </div>
 
-      <div class="list-item list-item-flex">
+      <div class="list-item flex">
         <span>消息免打扰：</span>
         <el-switch
           v-model="detail.disturb"
@@ -67,7 +67,7 @@
       </div>
 
       <!-- 预留 -->
-      <div class="list-item list-item-flex">
+      <div class="list-item flex">
         <span>全员禁言：</span>
         <el-switch v-model="detail.no_message" inactive-color="#e0d6d6" />
       </div>
@@ -80,14 +80,14 @@
       <div class="list-item-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
 
       <div class="list-item">
-        <span>群简介</span>
+        群简介
       </div>
 
       <div class="list-item-tips">
-        {{ detail.groupProfile ? detail.groupProfile : "暂无群简介" }}
+        {{ detail.groupProfile ? detail.groupProfile : '暂无群简介' }}
       </div>
 
-      <div class="list-item list-item-flex">
+      <div class="list-item flex">
         <span>群公告</span>
         <span
           class="more"
@@ -105,16 +105,16 @@
         <span v-else>暂无群公告</span>
       </div>
 
-      <div class="list-item no-select">
+      <div class="list-item">
         <p class="group-invite" @click="addGroupMembers">
           <i class="el-icon-plus"></i>
-          <span>邀请好友</span>
+          <span>&nbsp;邀请好友</span>
         </p>
       </div>
 
       <div class="list-item">
         <div class="member-box">
-          <div class="member-view-box">
+          <div class="view-box">
             <i class="iconfont icon-sousuo i-sousuo"></i>
             <input type="text" placeholder="搜索群成员" v-model="keywords" />
           </div>
@@ -125,29 +125,38 @@
             <el-col :span="5">性别</el-col>
           </el-row>
 
-          <el-row
-            class="row-items"
-            v-for="(member, i) in searchs"
-            :key="member.user_id"
-            @click.native="openUserDetail(member.user_id)"
-          >
-            <el-col :span="11">
-              <img
-                :src="member.avatar"
-                :onerror="$store.state.detaultAvatar"
-                width="20px"
-              />
-              <span class="nickname">{{ member.nickname }}</span>
-            </el-col>
-            <el-col :span="8">
-              <span>{{ member.visit_card ? member.visit_card : "-" }}</span>
-            </el-col>
-            <el-col :span="5">
-              <span v-if="member.gender == 1">男</span>
-              <span v-else-if="member.gender == 2">女</span>
-              <span v-else>未知</span>
-            </el-col>
-          </el-row>
+          <template v-if="searchs.length == 0">
+            <el-row class="row-items">
+              <el-col :span="24">
+                <p style="text-align:center;">无数据</p>
+              </el-col>
+            </el-row>
+          </template>
+          <template v-else>
+            <el-row
+              class="row-items"
+              v-for="(member, i) in searchs"
+              :key="member.user_id"
+              @click.native="openUserDetail(member.user_id)"
+            >
+              <el-col :span="11">
+                <img
+                  :src="member.avatar"
+                  :onerror="$store.state.detaultAvatar"
+                  width="20px"
+                />
+                <span class="nickname">{{ member.nickname }}</span>
+              </el-col>
+              <el-col :span="8">
+                <span>{{ member.visit_card ? member.visit_card : '-' }}</span>
+              </el-col>
+              <el-col :span="5">
+                <span v-if="member.gender == 1">男</span>
+                <span v-else-if="member.gender == 2">女</span>
+                <span v-else>未知</span>
+              </el-col>
+            </el-row>
+          </template>
         </div>
       </div>
     </el-main>
@@ -216,23 +225,22 @@
   </el-container>
 </template>
 <script>
-import { ServeSetNotDisturb } from "@/api/chat";
-
+import { ServeSetNotDisturb } from '@/api/chat'
 import {
   ServeGroupDetail,
   ServeUpdateGroupCard,
   ServeSecedeGroup,
   ServeGetGroupMembers,
-} from "@/api/group";
+} from '@/api/group'
 
 //创建群聊组件
-import GroupLaunch from "@/components/group/GroupLaunch";
-import UserBusinessCard from "@/components/user/UserBusinessCard";
-import GroupManage from "@/components/group/GroupManage";
-import GroupNotice from "@/components/group/GroupNotice";
+import GroupLaunch from '@/components/group/GroupLaunch'
+import UserBusinessCard from '@/components/user/UserBusinessCard'
+import GroupManage from '@/components/group/GroupManage'
+import GroupNotice from '@/components/group/GroupNotice'
 
 export default {
-  name: "GroupPanel",
+  name: 'GroupPanel',
   components: {
     GroupLaunch,
     UserBusinessCard,
@@ -248,23 +256,23 @@ export default {
   data() {
     return {
       detail: {
-        groupAvatar: "",
+        groupAvatar: '',
         groupId: 0,
-        groupName: "",
-        groupOwner: "",
-        groupProfile: "",
+        groupName: '',
+        groupOwner: '',
+        groupProfile: '',
         disturb: 0,
         no_message: false,
-        visitCard: "",
+        visitCard: '',
         is_manager: false,
         group_notice: [],
       },
 
-      keywords: "",
+      keywords: '',
       members: [],
 
       isEditRemark: false,
-      editRemarkText: "",
+      editRemarkText: '',
 
       inviteFriendBox: false,
       isShowSignout: false,
@@ -278,32 +286,32 @@ export default {
 
       // 是否显示群公告窗口
       isShowGroupNotice: false,
-    };
+    }
   },
   watch: {
-    groupId: function (newval, oldval) {
+    groupId: function(newval, oldval) {
       if (newval > 0) {
-        this.loadGroupDetail();
-        this.loadMembers();
+        this.loadGroupDetail()
+        this.loadMembers()
       }
     },
   },
   computed: {
     searchs() {
-      return this.keywords == ""
+      return this.keywords == ''
         ? this.members
         : this.members.filter((item, index) => {
             return (
               item.nickname.match(this.keywords) != null ||
-              item.visit_card.match(this.keywords) != null
-            );
-          });
+              item.user_card.match(this.keywords) != null
+            )
+          })
     },
   },
   created() {
     if (parseInt(this.groupId) > 0) {
-      this.loadGroupDetail();
-      this.loadMembers();
+      this.loadGroupDetail()
+      this.loadMembers()
     }
   },
   methods: {
@@ -313,43 +321,43 @@ export default {
         group_id: this.groupId,
       }).then((res) => {
         if (res.code == 200) {
-          this.members = res.data;
-          this.$emit("group-info", {
+          this.members = res.data
+          this.$emit('group-info', {
             group_id: this.members.groupId,
             members_num: this.members.length,
-          });
+          })
         }
-      });
+      })
     },
 
     // 加载群信息
     loadGroupDetail() {
-      this.isEditRemark = false;
+      this.isEditRemark = false
       ServeGroupDetail({
         group_id: this.groupId,
       }).then((res) => {
         if (res.code == 200) {
-          let result = res.data;
-          this.detail.groupAvatar = result.avatar;
-          this.detail.groupId = result.group_id;
-          this.detail.userId = res.data.user_id;
-          this.detail.groupName = result.group_name;
-          this.detail.groupOwner = result.manager_nickname;
-          this.detail.groupProfile = result.group_profile;
-          this.detail.disturb = result.not_disturb == 1 ? true : false;
-          this.detail.visitCard = result.visit_card;
-          this.detail.is_manager = result.is_manager;
+          let result = res.data
+          this.detail.groupAvatar = result.avatar
+          this.detail.groupId = result.group_id
+          this.detail.userId = res.data.user_id
+          this.detail.groupName = result.group_name
+          this.detail.groupOwner = result.manager_nickname
+          this.detail.groupProfile = result.group_profile
+          this.detail.disturb = result.not_disturb == 1 ? true : false
+          this.detail.visitCard = result.visit_card
+          this.detail.is_manager = result.is_manager
 
           if (result.notice) {
-            this.detail.group_notice = result.notice;
+            this.detail.group_notice = result.notice
           }
         }
-      });
+      })
     },
 
     // 设置群免打扰状态
     editDisturb(value) {
-      this.disturbDisabled = true;
+      this.disturbDisabled = true
       ServeSetNotDisturb({
         type: 2,
         receive_id: this.groupId,
@@ -357,32 +365,32 @@ export default {
       })
         .then((res) => {
           if (res.code == 200) {
-            this.$emit("disturb-change", {
+            this.$emit('disturb-change', {
               group_id: this.groupId,
               status: value ? 1 : 0,
-            });
+            })
           } else {
-            this.detail.disturb = value ? 0 : 1;
+            this.detail.disturb = value ? 0 : 1
           }
         })
         .catch((err) => {
-          this.detail.disturb = value ? 0 : 1;
+          this.detail.disturb = value ? 0 : 1
         })
         .finally(() => {
-          this.disturbDisabled = false;
-        });
+          this.disturbDisabled = false
+        })
     },
 
     // 设置用户群名片
     editRemark() {
-      if (this.editRemarkText == "") {
-        this.isEditRemark = false;
-        return;
+      if (this.editRemarkText == '') {
+        this.isEditRemark = false
+        return
       }
 
       if (this.detail.visitCard == this.editRemarkText) {
-        this.isEditRemark = false;
-        return;
+        this.isEditRemark = false
+        return
       }
 
       ServeUpdateGroupCard({
@@ -390,70 +398,70 @@ export default {
         visit_card: this.editRemarkText,
       }).then((res) => {
         if (res.code == 200) {
-          this.isEditRemark = false;
-          this.detail.visitCard = this.editRemarkText;
+          this.isEditRemark = false
+          this.detail.visitCard = this.editRemarkText
         }
-      });
+      })
     },
 
     // 查看用户信息
     openUserDetail(user_id) {
-      this.$refs.userBusinessCard.open(user_id);
+      this.$refs.userBusinessCard.open(user_id)
     },
 
     // 邀请好友加入群聊
     addGroupMembers() {
-      sessionStorage.setItem("invite_group_id", this.detail.groupId);
-      this.inviteFriendBox = true;
+      sessionStorage.setItem('invite_group_id', this.detail.groupId)
+      this.inviteFriendBox = true
     },
 
-    //邀请好友成功之后的回调事件
+    // 邀请好友成功之后的回调事件
     inviteSuccess() {
-      this.inviteFriendBox = false;
-      this.loadMembers();
+      this.inviteFriendBox = false
+      this.loadMembers()
 
       this.$notify({
-        title: "邀请成功",
+        title: '邀请成功',
         message: `好友已成功加入群组...`,
-        type: "success",
-      });
+        type: 'success',
+      })
     },
 
-    //发送群聊
+    // 发送群聊
     sendGroup() {
-      this.$emit("send-group", this.detail.groupId);
+      this.$emit('send-group', this.detail.groupId)
     },
 
-    //退出群操操作
+    // 退出群操操作
     signout() {
-      this.signoutStatus = 1;
+      this.signoutStatus = 1
       ServeSecedeGroup({
         group_id: this.detail.groupId,
       })
         .then((res) => {
           if (res.code == 200) {
-            this.signoutStatus = 3;
+            this.signoutStatus = 3
             setTimeout(() => {
-              this.signoutStatus = 0;
-              this.isShowSignout = false;
-              this.$emit("quit-group");
-            }, 1500);
+              this.signoutStatus = 0
+              this.isShowSignout = false
+              this.$emit('quit-group')
+            }, 1500)
           } else {
-            this.signoutStatus = 2;
+            this.signoutStatus = 2
             setTimeout(() => {
-              this.signoutStatus = 0;
-            }, 3000);
+              this.signoutStatus = 0
+            }, 3000)
           }
         })
         .catch((err) => {
-          this.signoutStatus = 2;
+          this.signoutStatus = 2
           setTimeout(() => {
-            this.signoutStatus = 0;
-          }, 3000);
-        });
+            this.signoutStatus = 0
+          }, 3000)
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {
@@ -499,6 +507,11 @@ export default {
   padding: 16px 16px 0;
   min-height: 18px;
   font-size: 14px;
+
+  &.flex {
+    display: flex;
+    justify-content: space-between;
+  }
 
   .edit-visit-card {
     position: initial;
@@ -558,15 +571,17 @@ export default {
 
   .group-invite {
     height: 30px;
-    background: #fdf2f2;
     line-height: 30px;
     text-align: center;
-    color: #f3848e;
+    color: #877272;
     cursor: pointer;
     border-radius: 2px;
-
-    &:active {
-      background: #f7e5e5;
+    border: 1px dashed #d9bbbb;
+    font-size: 13px;
+    transition: all 0.5s ease-in-out;
+    &:hover {
+      color: #ff5722;
+      border-color: #ff5722;
     }
   }
 
@@ -575,11 +590,6 @@ export default {
     cursor: pointer;
     font-size: 12px;
   }
-}
-
-.list-item-flex {
-  display: flex;
-  justify-content: space-between;
 }
 
 .list-item-tips {
@@ -596,124 +606,111 @@ export default {
 }
 
 .member-box {
-  cursor: pointer;
   min-height: 180px;
-  box-shadow: -2px -3px 18px #eae4e4;
   padding: 10px;
   margin-bottom: 20px;
+  border: 1px solid #ecebeb;
+  border-radius: 3px;
 
-  .addGroupFired {
-    border: 1px dashed #c3bbbb;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: block;
-    margin: 0px 5px 5px 4px;
-    line-height: 40px;
-    color: #c3bbbb;
-  }
-}
-
-.member-view-box {
-  width: 100%;
-  height: 30px;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  position: relative;
-
-  input {
-    width: calc(100% - 40px);
+  .view-box {
+    width: 100%;
     height: 30px;
-    line-height: 28px;
-    border-radius: 3px;
-    border: 1px solid #f1e9e9;
-    color: #b3b0b0;
-    font-size: 13px;
-    padding: 0 10px 0 30px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    position: relative;
 
-    &::-webkit-input-placeholder {
-      color: #ccc9c9;
+    input {
+      width: calc(100% - 40px);
+      height: 30px;
+      line-height: 28px;
+      border-radius: 3px;
+      border: 1px solid #f1e9e9;
+      color: #b3b0b0;
       font-size: 13px;
+      padding: 0 10px 0 30px;
+
+      &::-webkit-input-placeholder {
+        color: #ccc9c9;
+        font-size: 13px;
+      }
     }
-  }
 
-  .i-sousuo {
-    color: rgb(179, 176, 176);
-    position: absolute;
-    left: 10px;
-    top: 9px;
-  }
-
-  span {
-    position: relative;
-
-    i {
-      font-size: 24px;
-      top: -3px;
-      left: 10px;
+    .i-sousuo {
+      color: rgb(179, 176, 176);
       position: absolute;
-      color: #ccc;
+      left: 10px;
+      top: 9px;
+    }
+
+    span {
+      position: relative;
+
+      i {
+        font-size: 24px;
+        top: -3px;
+        left: 10px;
+        position: absolute;
+        color: #ccc;
+      }
     }
   }
-}
 
-.row-header {
-  width: 100%;
-  height: 30px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #e0dddd;
-
-  div {
+  .row-header {
+    width: 100%;
     height: 30px;
-    line-height: 30px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0dddd;
 
-    &:nth-child(2) {
-      text-align: center;
-    }
+    div {
+      height: 30px;
+      line-height: 30px;
 
-    &:nth-child(3) {
-      text-align: right;
+      &:nth-child(2) {
+        text-align: center;
+      }
+
+      &:nth-child(3) {
+        text-align: right;
+      }
     }
   }
-}
 
-.row-items {
-  width: 100%;
-  height: 30px;
-  margin-bottom: 3px;
-  font-size: 12px;
-
-  &:hover {
-    background: #f6f6f6;
-    padding: 0 5px;
+  .row-items {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 3px;
     font-size: 12px;
-    border-radius: 3px;
-  }
+    cursor: pointer;
 
-  div {
-    height: 30px;
-    line-height: 30px;
-
-    &:nth-child(2) {
-      text-align: center;
-    }
-
-    &:nth-child(3) {
-      text-align: right;
-    }
-  }
-
-  img {
-    display: inline-block;
-    border-radius: 50%;
-    position: relative;
-    top: 4px;
-  }
-
-  .nickname {
-    margin-left: 5px;
     &:hover {
-      color: #3685d6;
+      background: #f6f6f6;
+    }
+
+    div {
+      height: 30px;
+      line-height: 30px;
+
+      &:nth-child(2) {
+        text-align: center;
+      }
+
+      &:nth-child(3) {
+        text-align: right;
+      }
+    }
+
+    img {
+      display: inline-block;
+      border-radius: 50%;
+      position: relative;
+      top: 4px;
+    }
+
+    .nickname {
+      margin-left: 5px;
+      &:hover {
+        color: #3685d6;
+      }
     }
   }
 }
