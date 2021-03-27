@@ -312,7 +312,7 @@
                             style="font-size: 10px; color: #7d7a7a"
                           ></i>
                         </div>
-                        <div class="larkc-tag wait" v-show="item.isGroupLeader">
+                        <div class="larkc-tag wait" v-show="item.leader == 2">
                           群主
                         </div>
                       </div>
