@@ -217,7 +217,7 @@
           </div>
         </transition>
 
-        <!-- 新消息气泡(预留) -->
+        <!-- 新消息气泡 -->
         <div
           class="talk-bubble pointer no-select"
           v-show="tipsBoard && unreadMessage.num"
@@ -277,7 +277,7 @@
       />
     </transition>
 
-    <!-- 选择联系人窗口 -->
+    <!-- 选择联系人 -->
     <transition name="el-fade-in-linear">
       <UserContacts
         v-if="selectContacts.isShow"
@@ -286,7 +286,7 @@
       />
     </transition>
 
-    <!-- 查看好友用户信息 -->
+    <!-- 好友用户信息 -->
     <UserBusinessCard ref="userBusinessCard" />
 
     <!-- 群公告组件 -->
