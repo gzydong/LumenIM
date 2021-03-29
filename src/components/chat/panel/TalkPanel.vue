@@ -81,7 +81,7 @@
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
                     v-text="item.nickname || item.friend_remarks"
-                  ></span>
+                  />
 
                   <!-- 文本消息 -->
                   <text-message
@@ -454,7 +454,9 @@ export default {
       };
 
       this.loadRecord.status = 0;
-      let scrollHeight = document.getElementById("lumenChatPanel").scrollHeight;
+
+      let el = document.getElementById("lumenChatPanel");
+      let scrollHeight = el.scrollHeight;
 
       ServeTalkRecords(data)
         .then((res) => {
@@ -467,8 +469,7 @@ export default {
             return;
           }
 
-          let records = data.record_id == 0 ? [] : this.records;
-          let rows = res.data.rows.map((item) => {
+          const records = res.data.rows.map((item) => {
             item.float = "center";
             if (item.user_id > 0) {
               item.float = item.user_id == user_id ? "right" : "left";
@@ -477,16 +478,18 @@ export default {
             return item;
           });
 
-          records.unshift(...rows.reverse());
-          this.$store.commit("SET_DIALOGUE", records);
+          // 判断是否是初次加载
+          if (data.record_id == 0) {
+            this.$store.commit("SET_DIALOGUE", []);
+          }
 
-          this.loadRecord.status = rows.length >= res.data.limit ? 1 : 2;
+          this.$store.commit("UNSHIFT_DIALOGUE", records.reverse());
+
+          this.loadRecord.status = records.length >= res.data.limit ? 1 : 2;
           this.loadRecord.minRecord =
-            rows.length == res.data.limit ? res.data.record_id : 0;
+            records.length == res.data.limit ? res.data.record_id : 0;
 
           this.$nextTick(() => {
-            // 滚动条处理
-            let el = document.getElementById("lumenChatPanel");
             if (data.record_id == 0) {
               el.scrollTop = el.scrollHeight;
             } else {
