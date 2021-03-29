@@ -1,59 +1,13 @@
 <template>
   <div>
     <el-container class="ov-hidden full-height">
-      <!-- 头部信息 -->
-      <el-header class="header-box">
-        <div class="title">
-          <p class="badge" :class="{ friend: params.source == 1 }">
-            {{ params.source == 1 ? "好友" : "群组" }}
-          </p>
-          <p class="pointer">
-            <span
-              v-if="params.source == 1"
-              @click="catFriendDetail(params.receive_id)"
-              >{{ params.nickname }}</span
-            >
-            <span v-else @click="group.panel = !group.panel">{{
-              params.nickname
-            }}</span>
-          </p>
-          <p class="num" v-show="groupNum && params.source == 2">
-            ({{ groupNum }}人)
-          </p>
-        </div>
-        <div class="online" v-show="params.source == 1">
-          <p class="online-text" :class="{ color: isOnline }">
-            <span class="online-status" v-show="isOnline"></span>
-            <span>{{ isOnline ? "在线" : "离线" }}</span>
-          </p>
-          <p class="event-keyboard" v-show="keyboardEvent.isShow">
-            对方正在输入 ...
-          </p>
-        </div>
-        <div class="means">
-          <el-tooltip content="历史消息" placement="top">
-            <p>
-              <i class="el-icon-time" @click="findChatRecord = true"></i>
-            </p>
-          </el-tooltip>
-          <el-tooltip content="群公告" placement="top">
-            <p v-show="params.source == 2">
-              <i
-                class="iconfont icon-gonggao2"
-                @click="group.notice = true"
-              ></i>
-            </p>
-          </el-tooltip>
-          <el-tooltip content="群设置" placement="top">
-            <p v-show="params.source == 2">
-              <i
-                class="el-icon-setting"
-                @click="group.panel = !group.panel"
-              ></i>
-            </p>
-          </el-tooltip>
-        </div>
-      </el-header>
+      <PanelHeader
+        ref="panelHeader"
+        :data="params"
+        :online="isOnline"
+        :keyboard="inputEvent"
+        @event="handleHeaderEvent"
+      />
 
       <!-- 主体信息 -->
       <el-main class="main-box no-padding">
@@ -241,10 +195,10 @@
           />
         </template>
         <template v-else>
-          <MultiToolbar
+          <PanelToolbar
             v-model="multiSelect.items.length"
             @event="handleMultiMode"
-          ></MultiToolbar>
+          ></PanelToolbar>
         </template>
       </el-footer>
 
@@ -307,7 +261,8 @@ import UserContacts from "@/components/chat/UserContacts";
 import GroupPanel from "@/components/group/GroupPanel";
 import GroupNotice from "@/components/group/GroupNotice";
 import MeEditor from "@/components/editor/MeEditor";
-import MultiToolbar from "./MultiToolbar";
+import PanelHeader from "./PanelHeader";
+import PanelToolbar from "./PanelToolbar";
 import SocketInstance from "@/socket-instance";
 import { SvgMentionDown } from "@/core/icons";
 import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
@@ -329,7 +284,8 @@ export default {
     UserBusinessCard,
     GroupNotice,
     SvgMentionDown,
-    MultiToolbar,
+    PanelToolbar,
+    PanelHeader,
   },
   props: {
     // 对话相关参数
@@ -352,8 +308,6 @@ export default {
   },
   data() {
     return {
-      groupNum: 0,
-
       // 记录加载相关参数
       loadRecord: {
         status: 0,
@@ -402,8 +356,9 @@ export default {
   },
   watch: {
     // 监听面板传递参数
-    params(val) {
+    params() {
       this.loadRecord.minRecord = 0;
+      this.tipsBoard = false;
       this.multiSelect = {
         isOpen: false,
         items: [],
@@ -411,14 +366,6 @@ export default {
       };
 
       this.loadChatRecords();
-      this.tipsBoard = false;
-    },
-    // 监听好友键盘事件
-    inputEvent(n, o) {
-      this.keyboardEvent.isShow = true;
-      setTimeout(() => {
-        this.keyboardEvent.isShow = false;
-      }, 2000);
     },
   },
   mounted() {
@@ -427,6 +374,21 @@ export default {
   methods: {
     parseTime,
     sendTime: formateTime,
+
+    // 处理 Header 组件事件
+    handleHeaderEvent(event_name) {
+      switch (event_name) {
+        case "history":
+          this.findChatRecord = true;
+          break;
+        case "notice":
+          this.group.notice = true;
+          break;
+        case "setting":
+          this.group.panel = true;
+          break;
+      }
+    },
 
     // 回车键发送消息回调事件
     submitSendMesage(content) {
@@ -485,7 +447,7 @@ export default {
     // 加载用户聊天详情信息
     loadChatRecords() {
       const user_id = this.uid;
-      let data = {
+      const data = {
         record_id: this.loadRecord.minRecord,
         receive_id: this.params.receive_id,
         source: this.params.source,
@@ -855,7 +817,7 @@ export default {
 
     // 同步群信息
     syncGroupInfo(groupInfo) {
-      this.groupNum = groupInfo.members_num;
+      this.$refs.panelHeader.setGroupNum(groupInfo.members_num);
     },
 
     // 对话面板滚动事件
@@ -881,109 +843,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.header-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgb(245, 245, 245);
-
-  > div {
-    width: 100%/3;
-  }
-
-  .title {
-    display: flex;
-    align-items: center;
-    transition: 0.5s ease;
-
-    .badge {
-      background: rgb(81 139 254);
-      height: 18px;
-      line-height: 18px;
-      padding: 1px 3px;
-      font-size: 10px;
-      color: white;
-      border-radius: 3px;
-      margin-right: 8px;
-      flex-shrink: 0;
-
-      &.friend {
-        background: #f97348;
-      }
-    }
-
-    .num {
-      margin-left: 5px;
-    }
-  }
-
-  .online {
-    position: relative;
-    text-align: center;
-
-    .online-text {
-      color: #cccccc;
-      font-weight: 200;
-
-      &.color {
-        color: #1890ff;
-      }
-
-      .online-status {
-        position: relative;
-        top: -1px;
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        vertical-align: middle;
-        border-radius: 50%;
-        position: relative;
-        background-color: #1890ff;
-        margin-right: 5px;
-
-        &:after {
-          position: absolute;
-          top: -1px;
-          left: -1px;
-          width: 100%;
-          height: 100%;
-          border: 1px solid #1890ff;
-          border-radius: 50%;
-          -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
-          animation: antStatusProcessing 1.2s ease-in-out infinite;
-          content: "";
-        }
-      }
-    }
-
-    .event-keyboard {
-      height: 20px;
-      line-height: 18px;
-      font-size: 10px;
-      animation: inputfade 600ms infinite;
-      -webkit-animation: inputfade 600ms infinite;
-    }
-  }
-
-  .means {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    p {
-      cursor: pointer;
-      margin: 0 8px;
-      font-size: 20px;
-      color: #828f95;
-      &:active i {
-        font-size: 26px;
-        transform: scale(1.3);
-        transition: ease 0.5s;
-      }
-    }
-  }
-}
-
 .main-box {
   position: relative;
 }
@@ -1213,63 +1072,6 @@ export default {
         border-color: #409eff;
       }
     }
-  }
-}
-
-/* css 动画 */
-@keyframes inputfade {
-  from {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.4;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@-webkit-keyframes inputfade {
-  from {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.4;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@-webkit-keyframes antStatusProcessing {
-  0% {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-
-  to {
-    -webkit-transform: scale(2.4);
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
-
-@keyframes antStatusProcessing {
-  0% {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-
-  to {
-    -webkit-transform: scale(2.4);
-    transform: scale(2.4);
-    opacity: 0;
   }
 }
 </style>
