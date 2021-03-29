@@ -218,7 +218,7 @@
             </div>
           </template>
           <template v-else>
-            <talk-editor-panel
+            <TalkPanel
               class="full-height"
               :params="params"
               :is-online="isFriendOnline"
@@ -248,7 +248,7 @@
 import { mapGetters, mapState } from "vuex";
 import MainLayout from "@/views/layout/MainLayout";
 import GroupLaunch from "@/components/group/GroupLaunch";
-import TalkEditorPanel from "@/components/chat/TalkEditorPanel";
+import TalkPanel from "@/components/chat/panel/TalkPanel";
 import UserBusinessCard from "@/components/user/UserBusinessCard";
 import UserSearch from "@/components/user/UserSearch";
 import {
@@ -270,7 +270,7 @@ export default {
   components: {
     MainLayout,
     GroupLaunch,
-    TalkEditorPanel,
+    TalkPanel,
     UserBusinessCard,
     UserSearch,
   },

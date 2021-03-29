@@ -3,7 +3,7 @@
     <el-header class="header">
       <span>群信息</span>
       <el-tooltip content="发送消息" placement="top">
-        <i class="send-message el-icon-chat-dot-square" @click="sendGroup"></i>
+        <i class="icon-send el-icon-chat-line-square" @click="sendGroup"></i>
       </el-tooltip>
       <i class="el-icon-close" @click="$emit('close')"></i>
     </el-header>
@@ -480,7 +480,7 @@ export default {
       font-weight: 400;
     }
 
-    .send-message {
+    .icon-send {
       position: absolute;
       left: 15px;
       top: 22px;
@@ -582,6 +582,7 @@ export default {
     &:hover {
       color: #ff5722;
       border-color: #ff5722;
+      transform: scale(1.01);
     }
   }
 
