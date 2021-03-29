@@ -107,6 +107,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  border-bottom: 1px solid #f5eeee;
 
   .module {
     width: 100%/3;
