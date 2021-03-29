@@ -61,7 +61,6 @@
               </aside>
               <aside class="avatar-column">
                 <el-avatar
-                  shape="square"
                   :size="30"
                   class="pointer"
                   :src="item.avatar"
