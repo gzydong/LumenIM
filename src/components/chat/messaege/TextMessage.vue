@@ -58,7 +58,8 @@ export default {
   position: relative;
   min-width: 30px;
   min-height: 30px;
-  border-radius: 8px;
+  border-radius: 5px;
+  padding: 5px;
 
   .arrow {
     position: absolute;
