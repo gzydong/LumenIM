@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import store from '@/store';
+import router from '@/router';
 import AppMessageEvent from './app-message-event';
 import {
   parseTime
@@ -32,21 +33,15 @@ class TalkEvent extends AppMessageEvent {
   }
 
   handle() {
+    const indexName = this.getIndexName();
     if (!this.isTalkPage()) {
-      this.$notify({
-        message: '您有一条新的消息,请注意查收...',
-        duration: 3000
-      });
-
-      store.commit('INCR_UNREAD_NUM');
+      this.showMessageNocice(indexName)
       return false;
     }
 
-    let indexName = this.getIndexName();
-    let index = findTalkIndex(indexName);
-
-    // 判断消息来源是否在对话列表中...
+    const index = findTalkIndex(indexName);
     if (index == -1) {
+      // 判断消息来源是否在对话列表中...
       this.loadTalkItem();
       return;
     }
@@ -56,6 +51,38 @@ class TalkEvent extends AppMessageEvent {
     } else {
       this.updateTalkItem(index);
     }
+  }
+
+  /**
+   * 显示消息提示
+   * 
+   * @param {String} index_name 
+   * @returns 
+   */
+  showMessageNocice(index_name) {
+    let newMsgTitle = "";
+    let newMsgConten = "";
+
+    if (this.resource.data.source == 1) {
+      newMsgTitle = this.resource.data.nickname;
+      newMsgConten = this.resource.data.content
+    } else {
+      newMsgTitle = this.resource.data.group_name;
+      newMsgConten = this.resource.data.nickname + ': ' + this.resource.data.content;
+    }
+
+    store.commit('INCR_UNREAD_NUM');
+
+    this.$notify({
+      title: newMsgTitle,
+      message: newMsgConten,
+      duration: 300000,
+      onClick: () => {
+        sessionStorage.setItem("send_message_index_name", index_name);
+        router.push('/')
+      },
+      position: 'bottom-right'
+    });
   }
 
   /**
