@@ -35,12 +35,12 @@
 .lum-scrollbar {
   &::-webkit-scrollbar {
     width: 3px;
-    background-color: #E4E4E5;
+    background-color: #e4e4e5;
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: #C0BEBC;
+    background-color: #c0bebc;
   }
 }
 
@@ -56,7 +56,7 @@
   cursor: default;
   user-select: none;
   background-color: #dee0e3;
-  transform: scale(.83);
+  transform: scale(0.83);
   transform-origin: left;
   flex-shrink: 0;
 }
@@ -102,7 +102,7 @@
       justify-content: space-between;
       border-bottom: 1px solid #f5eeee;
 
-      >p:first-child {
+      > p:first-child {
         text-indent: 20px;
       }
 
@@ -136,3 +136,22 @@
 }
 
 // lum-dialog -- end
+
+.talk-notify {
+  .el-notification__title {
+    font-weight: 300;
+    font-size: 16px;
+    color: #f44336;
+  }
+
+  p {
+    max-height: 65px;
+    overflow: hidden;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-indent: -7px;
+  }
+}

@@ -20,7 +20,7 @@ class KeyboardEvent extends AppMessageEvent {
   }
 
   handle() {
-    if (store.state.dialogue.index_name == '') return false;
+    if (store.state.dialogue.index_name == null) return false;
 
     this.isShow() && store.commit('UPDATE_KEYBOARD_EVENT');
   }

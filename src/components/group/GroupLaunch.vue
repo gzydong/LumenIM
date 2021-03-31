@@ -3,7 +3,7 @@
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="no-padding header no-select" height="60px">
         <p>
-          {{ from.groupId == 0 ? "创建群组" : "请选择需要邀请的好友" }}
+          {{ from.groupId == 0 ? '创建群组' : '请选择需要邀请的好友' }}
         </p>
         <p class="tools">
           <i class="el-icon-close" @click="close" />
@@ -51,7 +51,7 @@
                       <span class="select-btn">
                         <i
                           class="el-icon-success"
-                          :class="{ 'i-color-green': item.checked }"
+                          :class="{ 'icon-active': item.checked }"
                         ></i>
                       </span>
                     </li>
@@ -127,10 +127,10 @@ import {
   ServeCreateGroup,
   ServeInviteGroup,
   ServeGetInviteFriends,
-} from "@/api/group";
+} from '@/api/group'
 
 export default {
-  name: "GroupLaunch",
+  name: 'GroupLaunch',
   props: {
     groupId: {
       type: [String, Number],
@@ -142,83 +142,83 @@ export default {
       readonly: false,
       from: {
         groupId: 0,
-        groupName: "",
+        groupName: '',
       },
       contacts: [],
       search: [],
       searchHeaderShadow: false,
-      keywords: "",
+      keywords: '',
       isAvatarCropper: false,
-    };
+    }
   },
   computed: {
     selected() {
       return this.contacts.filter((item, index) => {
-        return item.checked;
-      });
+        return item.checked
+      })
     },
   },
   watch: {
     keywords(val) {
       this.search =
-        val == ""
+        val == ''
           ? this.contacts
           : this.contacts.filter((item, index) => {
-              return item.nickname.match(this.keywords) != null;
-            });
+              return item.nickname.match(this.keywords) != null
+            })
     },
     contacts(arr) {
-      if (this.keywords == "") {
-        this.search = arr;
+      if (this.keywords == '') {
+        this.search = arr
       }
     },
   },
   created() {
     if (this.groupId > 0) {
-      this.readonly = true;
-      this.from.groupId = this.groupId;
+      this.readonly = true
+      this.from.groupId = this.groupId
     }
-    this.friendsApi();
+    this.friendsApi()
   },
   mounted() {
-    this.handleScroll();
+    this.handleScroll()
   },
   methods: {
     //触发选择联系人事件
     triggerContacts(item) {
       let index = this.contacts.findIndex((val) => {
-        return val.id == item.id;
-      });
+        return val.id == item.id
+      })
 
-      this.contacts[index].checked = !this.contacts[index].checked;
+      this.contacts[index].checked = !this.contacts[index].checked
     },
 
     //取消选中的联系人
     delContacts(item) {
       let index = this.contacts.findIndex((val) => {
-        return val.id == item.id;
-      });
+        return val.id == item.id
+      })
 
-      this.contacts[index].checked = false;
+      this.contacts[index].checked = false
     },
 
     //移除所有选中选项
     delAll() {
       this.contacts.forEach((item, i) => {
-        this.contacts[i].checked = false;
-      });
+        this.contacts[i].checked = false
+      })
     },
 
     // 关闭窗口
     close() {
-      this.$emit("close");
+      this.$emit('close')
     },
 
     // 获取选中的ID列表
     getIds() {
       return this.selected.map((item) => {
-        return item.id;
-      });
+        return item.id
+      })
     },
 
     // 加载好友列表
@@ -228,74 +228,74 @@ export default {
       })
         .then((res) => {
           if (res.code == 200 && res.data) {
-            this.contacts = [];
+            this.contacts = []
             let data = res.data.map((item) => {
               return Object.assign(item, {
                 nickname: item.friend_remark
                   ? item.friend_remark
                   : item.nickname,
                 checked: false,
-              });
-            });
-            this.contacts.push(...data);
+              })
+            })
+            this.contacts.push(...data)
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
 
     //创建聊天群
     createSubmit() {
       let data = {
-        group_avatar: "",
+        group_avatar: '',
         group_name: this.from.groupName,
-        group_profile: "",
-        uids: this.getIds().join(","),
-      };
+        group_profile: '',
+        uids: this.getIds().join(','),
+      }
 
-      if (data.group_name == "") {
-        this.$message("群聊名称不能为空");
-        return;
+      if (data.group_name == '') {
+        this.$message('群聊名称不能为空')
+        return
       }
 
       if (this.getIds().length < 2) {
-        this.$message("群聊人数必须大于俩人");
-        return;
+        this.$message('群聊人数必须大于俩人')
+        return
       }
 
       ServeCreateGroup(data).then((res) => {
         if (res.code == 200) {
-          this.$emit("create-success", res.data);
+          this.$emit('create-success', res.data)
         } else {
-          this.$message("创建群聊失败");
+          this.$message('创建群聊失败')
         }
-      });
+      })
     },
 
     //好友邀请提交
     inviteSubmit() {
       ServeInviteGroup({
         group_id: this.from.groupId,
-        uids: this.getIds().join(","),
+        uids: this.getIds().join(','),
       }).then((res) => {
         if (res.code == 200) {
-          this.$emit("invite-success");
+          this.$emit('invite-success')
         } else {
-          this.$message("邀请好友失败");
+          this.$message('邀请好友失败')
         }
-      });
+      })
     },
 
     // 滚动条监听
     handleScroll() {
-      let scrollbarEl = this.$refs.scrollbar.wrap;
+      let scrollbarEl = this.$refs.scrollbar.wrap
       scrollbarEl.onscroll = () => {
-        this.searchHeaderShadow = scrollbarEl.scrollTop != 0;
-      };
+        this.searchHeaderShadow = scrollbarEl.scrollTop != 0
+      }
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 /deep/.el-scrollbar__wrap {
@@ -374,7 +374,7 @@ export default {
         color: #ccc;
       }
 
-      .i-color-green {
+      .icon-active {
         color: #26bcfe !important;
       }
     }

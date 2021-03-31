@@ -76,27 +76,6 @@
             </el-tooltip>
           </el-main>
           <el-footer height="60px" class="fixed-sidebar">
-            <!-- <div class="menu-items">
-              <el-popover
-                placement="right"
-                trigger="hover"
-                :visible-arrow="false"
-                popper-class="skin-popover"
-                :open-delay="0"
-              >
-                <div class="skin-box">
-                  <p v-for="skin in skins">
-                    <span class="circle-dot" :class="skin.class"></span>
-                    <span class="text" v-text="skin.text"></span>
-                  </p>
-                </div>
-                <i
-                  slot="reference"
-                  class="iconfont icon-biaoqianA01_pifu-46"
-                ></i>
-              </el-popover>
-            </div> -->
-
             <div class="menu-items" @click="logout">
               <span class="logout">退出</span>
             </div>
@@ -104,7 +83,7 @@
         </el-container>
       </el-aside>
 
-      <el-main class="no-padding bag-white">
+      <el-main class="no-padding" style="background: white;">
         <slot name="container"></slot>
       </el-main>
     </el-container>
@@ -117,28 +96,29 @@
       :visible-arrow="false"
       popper-class="no-padding"
     >
-      <user-card />
+      <UserCard />
     </el-popover>
 
-    <!-- 消息提示 -->
+    <!-- 语音消息提示 -->
     <audio id="audio" preload="auto">
       <source src="~@/assets/image/1701.mp3" type="audio/mp3" />
     </audio>
 
-    <reward />
+    <!-- 打赏组件(自行删除) -->
+    <RewardModule />
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
-import UserCard from "@/components/user/UserCard";
-import Reward from "@/components/layout/Reward";
-import { ServeFindFriendApplyNum } from "@/api/contacts";
+import { mapState } from 'vuex'
+import UserCard from '@/components/user/UserCard'
+import RewardModule from '@/components/layout/RewardModule'
+import { ServeFindFriendApplyNum } from '@/api/contacts'
 
 export default {
-  name: "MainLayout",
+  name: 'MainLayout',
   components: {
     UserCard,
-    Reward,
+    RewardModule,
   },
   props: {
     idx: {
@@ -147,30 +127,7 @@ export default {
     },
   },
   data() {
-    return {
-      skins: [
-        {
-          theme: "",
-          class: "default",
-          text: "默认",
-        },
-        {
-          theme: "",
-          class: "red",
-          text: "红色",
-        },
-        {
-          theme: "",
-          class: "dark",
-          text: "暗黑",
-        },
-        {
-          theme: "",
-          class: "blue",
-          text: "浅蓝",
-        },
-      ],
-    };
+    return {}
   },
   computed: {
     ...mapState({
@@ -187,34 +144,34 @@ export default {
   watch: {
     unreadNum(n, o) {
       if (n > 0 && n > o && this.notifyCueTone) {
-        this.play();
+        this.play()
       }
     },
   },
   created() {
-    this.setApplyNum();
+    this.setApplyNum()
   },
   methods: {
     play() {
       document
-        .querySelector("#audio")
+        .querySelector('#audio')
         .play()
         .catch((err) => {
-          console.log("提示音播放异常");
-        });
+          console.error('消息提示音播放异常')
+        })
     },
     logout() {
-      this.$store.dispatch("ACT_USER_LOGOUT");
+      this.$store.dispatch('ACT_USER_LOGOUT')
     },
     setApplyNum() {
       ServeFindFriendApplyNum().then((res) => {
         if (res.code == 200 && res.data.unread_num > 0) {
-          this.$store.commit("INCR_APPLY_NUM");
+          this.$store.commit('INCR_APPLY_NUM')
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 <style lang="less">
 .mian-layout {
@@ -230,8 +187,10 @@ export default {
   transition: ease 0.5s;
   border-radius: 5px;
 
-  .bag-white {
-    background: white;
+  &.full-mode {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
   }
 
   .side-edge {
@@ -322,12 +281,6 @@ export default {
   }
 }
 
-.full-mode {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
-
 .fixed-sidebar {
   padding: 0;
   .menu-items {
@@ -389,61 +342,6 @@ export default {
   background: url(~@/assets/image/background/005.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
-}
-
-.skin-popover {
-  padding: 0;
-  box-shadow: none !important;
-  border: none;
-  border-radius: 5px;
-  .skin-box {
-    width: 210px;
-    height: 70px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 0 3px 0px #d0c8c8;
-    padding: 0 10px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    p {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-
-      .circle-dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: white;
-        margin-bottom: 8px;
-
-        &.default {
-          box-shadow: 0 0 4px #ccc;
-        }
-
-        &.red {
-          background: red;
-        }
-
-        &.dark {
-          background: black;
-        }
-
-        &.blue {
-          background: #2196f3;
-        }
-      }
-
-      .text {
-        font-size: 12px;
-      }
-    }
-  }
 }
 
 @keyframes notifymove {

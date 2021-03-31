@@ -40,7 +40,6 @@ export function formateTalkItem(params) {
         avatar: "",
         friend_id: 0,
         group_id: 0,
-        group_members_num: 0,
         not_disturb: 0,
         is_top: 0,
         unread_num: 0,
