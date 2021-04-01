@@ -69,7 +69,13 @@
               </aside>
               <main class="main-column">
                 <div class="talk-title">
-                  <span class="time">
+                  <span
+                    class="time"
+                    v-show="
+                      item.source == 1 ||
+                      (item.source == 2 && item.float == 'right')
+                    "
+                  >
                     <i class="el-icon-time"></i>
                     {{ parseTime(item.created_at, "{m}月{d}日 {h}:{i}") }}
                   </span>
@@ -79,8 +85,9 @@
                   <span
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
-                    v-text="item.nickname || item.friend_remarks"
-                  />
+                    >{{ item.nickname || item.friend_remarks }} |
+                    {{ parseTime(item.created_at, "{m}月{d}日 {h}:{i}") }}</span
+                  >
 
                   <!-- 文本消息 -->
                   <text-message

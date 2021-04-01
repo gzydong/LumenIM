@@ -409,6 +409,7 @@ export default {
 
       ServeGetTalkList().then((res) => {
         if (res.code == 200) {
+          this.$store.commit('SET_UNREAD_NUM', 0)
           this.$store.commit('SET_TALK_ITEM', {
             items: res.data.map((item) => formateTalkItem(item)),
           })
