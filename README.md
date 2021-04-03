@@ -18,6 +18,14 @@ Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + 
 - 密码： admin123
 
 ### 项目安装(部署)
+###### 设置 npm 镜像源
+```language
+npm config set registry https://registry.npm.taobao.org
+npm config set electron_mirror https://npm.taobao.org/mirrors/electron/
+npm config set electron-builder-binaries_mirror https://npm.taobao.org/mirrors/electron-builder-binaries/
+```
+
+###### 下载安装
 ```bash
 ## 克隆项目源码包
 git clone git@github.com:gzydong/LumenIM.git
@@ -74,6 +82,7 @@ server {
 |-|-|-|
 |Github|https://github.com/gzydong/LumenIM|https://github.com/gzydong/hyperf-chat|
 |码云|https://gitee.com/gzydong/LumenIM||
+
 
 #### 联系方式  
 QQ : 837215079
