@@ -127,7 +127,7 @@
                 <div
                   class="talk-item pointer"
                   v-show="loadStatus == 1"
-                  v-for="(item, idx) in talkItems"
+                  v-for="item in talkItems"
                   :key="item.index_name"
                   :class="{ active: index_name == item.index_name }"
                   @click="clickTab(item.index_name)"

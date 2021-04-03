@@ -14,7 +14,6 @@
     "element-ui": "^2.14.1",
     "js-audio-recorder": "^1.0.6",
     "js-base64": "^2.5.1",
-    "js-cookie": "^2.2.1",
     "mavon-editor": "^2.9.0",
     "nprogress": "^0.2.0",
     "prismjs": "^1.22.0",

@@ -77,7 +77,7 @@ const user = {
       commit('USER_LOGOUT');
       ServeLogout().finally(() => {
         removeAll();
-        location.href = '/login'
+        location.reload();
       });
     }
   }
