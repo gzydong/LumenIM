@@ -180,7 +180,7 @@ class TalkEvent extends AppMessageEvent {
    * 判断用户是否打开对话页
    */
   isTalkPage() {
-    let path = window.location.pathname;
+    let path = router.currentRoute.fullPath;
     return !(path != "/message" && path != "/");
   }
 

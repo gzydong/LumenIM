@@ -8,13 +8,13 @@
       <div class="main">
         <div class="pay-box">
           <img
-            src="//cdn.learnku.com/uploads/images/202101/30/46424/PPYHOUhCb4.jpg"
+            src="https://cdn.learnku.com/uploads/images/202101/30/46424/PPYHOUhCb4.jpg"
           />
           <p>支付宝</p>
         </div>
         <div class="pay-box">
           <img
-            src="//cdn.learnku.com/uploads/images/202101/30/46424/XLmCJjbvlQ.png"
+            src="https://cdn.learnku.com/uploads/images/202101/30/46424/XLmCJjbvlQ.png"
           />
           <p>微信</p>
         </div>
@@ -30,25 +30,25 @@ export default {
   data() {
     return {
       isShow: false,
-    };
+    }
   },
   created() {
     if (this.getNum() <= 3) {
       setTimeout(() => {
-        this.isShow = true;
-      }, 1000 * 30);
+        this.isShow = true
+      }, 1000 * 30)
     }
   },
   methods: {
     getNum() {
-      return parseInt(localStorage.getItem("reward-box")) || 0;
+      return parseInt(localStorage.getItem('REWARD_BOX')) || 0
     },
     close() {
-      localStorage.setItem("reward-box", this.getNum() + 1);
-      this.isShow = false;
+      localStorage.setItem('REWARD_BOX', this.getNum() + 1)
+      this.isShow = false
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .reward {
