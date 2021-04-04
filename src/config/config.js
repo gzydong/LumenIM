@@ -1,5 +1,5 @@
 export default {
-    web_name: process.env.VUE_APP_WEBSITE_NAME || 'Lumen IM',
-    api_url: process.env.VUE_APP_API_BASE_URL || '',
-    ws_url: process.env.VUE_APP_WEB_SOCKET_URL || ''
+    WEBSITE_NAME: process.env.VUE_APP_WEBSITE_NAME || 'Lumen IM',
+    BASE_API_URL: process.env.VUE_APP_API_BASE_URL || '',
+    BASE_WS_URL: process.env.VUE_APP_WEB_SOCKET_URL || ''
 }

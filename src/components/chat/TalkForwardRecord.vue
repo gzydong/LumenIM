@@ -11,7 +11,7 @@
         <el-scrollbar :native="false" tag="section" class="full-height">
           <div
             class="message-group"
-            v-for="(record, i) in records"
+            v-for="record in records"
             :key="record.id"
           >
             <div class="left-box">

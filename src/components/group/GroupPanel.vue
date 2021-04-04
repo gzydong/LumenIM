@@ -135,7 +135,7 @@
           <template v-else>
             <el-row
               class="row-items"
-              v-for="(member, i) in searchs"
+              v-for="member in searchs"
               :key="member.user_id"
               @click.native="openUserDetail(member.user_id)"
             >
@@ -289,8 +289,8 @@ export default {
     }
   },
   watch: {
-    groupId: function(newval, oldval) {
-      if (newval > 0) {
+    groupId: function(value) {
+      if (value > 0) {
         this.loadGroupDetail()
         this.loadMembers()
       }
@@ -300,7 +300,7 @@ export default {
     searchs() {
       return this.keywords == ''
         ? this.members
-        : this.members.filter((item, index) => {
+        : this.members.filter((item) => {
             return (
               item.nickname.match(this.keywords) != null ||
               item.user_card.match(this.keywords) != null

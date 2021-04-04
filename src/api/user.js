@@ -19,7 +19,7 @@ export const ServeLogout = (data) => {
 }
 
 //刷新登录Token服务接口
-export const ServeRefreshToken = (data) => {
+export const ServeRefreshToken = () => {
   return post('/api/v1/auth/refresh-token');
 }
 

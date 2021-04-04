@@ -17,29 +17,17 @@
               </div>
 
               <!-- 工具栏 -->
-              <div class="tools">
+              <div class="tools" v-outside="closeSubMenu">
                 <el-button
                   icon="el-icon-plus"
                   circle
                   plain
                   size="small"
-                  v-show="subMenu"
-                ></el-button>
-                <el-button
-                  icon="el-icon-plus"
-                  circle
-                  plain
-                  size="small"
-                  v-show="!subMenu"
-                  @click="subMenu = true"
-                >
-                </el-button>
+                  @click="subMenu = !subMenu"
+                />
+
                 <transition name="el-zoom-in-top">
-                  <div
-                    class="tools-menu"
-                    v-show="subMenu"
-                    v-outside="closeSubMenu"
-                  >
+                  <div class="tools-menu" v-show="subMenu">
                     <div class="menu1-item" @click="triggerSubMenu(1)">
                       创建群组
                     </div>
@@ -133,7 +121,7 @@
                 <template>
                   <div
                     class="data-item"
-                    v-for="(item, i) in apply.items"
+                    v-for="item in apply.items"
                     @click="openUserDetail(item.user_id)"
                     :key="item.id"
                   >
@@ -216,7 +204,7 @@
                 <template>
                   <div
                     class="data-item"
-                    v-for="(item, i) in friends.items"
+                    v-for="item in friends.items"
                     @click="openUserDetail(item.id)"
                     :key="item.id"
                   >
@@ -291,7 +279,7 @@
                 <template>
                   <div
                     class="data-item"
-                    v-for="(item, i) in groups.items"
+                    v-for="item in groups.items"
                     @click="groupDetailId = item.id"
                     :key="item.id"
                   >

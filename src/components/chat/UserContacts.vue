@@ -31,7 +31,7 @@
                 >
                   <ul class="friend-items no-select">
                     <li
-                      v-for="(item, index) in search"
+                      v-for="item in search"
                       :key="item.index_name"
                       @click="triggerContacts(item)"
                     >
@@ -74,7 +74,7 @@
                   <div class="selectd-items">
                     <div
                       class="selectd-item no-select"
-                      v-for="(item, index) in selected"
+                      v-for="item in selected"
                       :key="item.index_name"
                     >
                       <el-avatar :size="25" :src="item.avatar">
@@ -121,7 +121,7 @@ export default {
   },
   computed: {
     selected() {
-      return this.contacts.filter((item, index) => {
+      return this.contacts.filter((item) => {
         return item.checked;
       });
     },
@@ -131,7 +131,7 @@ export default {
       if (val == "") {
         this.search = this.contacts;
       } else {
-        this.search = this.contacts.filter((item, index) => {
+        this.search = this.contacts.filter((item) => {
           return item.nickname.match(this.keywords) != null;
         });
       }
@@ -224,7 +224,7 @@ export default {
     },
 
     // 监听自定义滚动条事件
-    scrollEvent(e) {
+    scrollEvent() {
       let scrollbarEl = this.$refs.scrollbar2.wrap;
       scrollbarEl.onscroll = () => {
         this.headerShadow = scrollbarEl.scrollTop > 0;

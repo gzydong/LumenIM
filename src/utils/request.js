@@ -12,7 +12,7 @@ import {
 // 创建 axios 实例
 const request = axios.create({
   // API 请求的默认前缀
-  baseURL: config.api_url,
+  baseURL: config.BASE_API_URL,
 
   // 请求超时时间
   timeout: 20000

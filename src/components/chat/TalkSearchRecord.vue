@@ -58,13 +58,14 @@
             <el-main class="no-padding">
               <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
-                  v-for="(item, i) in contacts[contacts.show]"
+                  v-for="item in contacts[contacts.show]"
                   class="contacts-item pointer"
                   @click="triggerMenuItem(item)"
                   :class="{
                     selected:
                       findSource == item.type && findReceiveId == item.id,
                   }"
+                  :key="item.id"
                 >
                   <div class="avatar">
                     <el-avatar :size="20" :src="item.avatar">
@@ -118,7 +119,7 @@
               <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
                   class="message-group"
-                  v-for="(record, i) in records.items"
+                  v-for="record in records.items"
                   :key="record.id"
                 >
                   <div class="left-box">
@@ -224,8 +225,6 @@ import { ServeGetGroups } from "@/api/group";
 
 import {
   ServeFindTalkRecords,
-  ServeSearchTalkRecords,
-  ServeGetRecordsContext,
 } from "@/api/chat";
 import {
   formateSize,
