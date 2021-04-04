@@ -137,7 +137,7 @@ export function getImageInfo(imgsrc) {
  * @param {Number} cr_id 
  */
 export function download(cr_id) {
-  let api = config.api_url;
+  let api = config.BASE_API_URL;
   let token = getToken();
   try {
     let link = document.createElement('a');

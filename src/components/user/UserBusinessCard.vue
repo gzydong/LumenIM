@@ -94,7 +94,7 @@
           type="primary"
           size="small"
           icon="el-icon-s-promotion"
-          v-else="userInfo.friendStatus == 2"
+          v-else-if="userInfo.friendStatus == 2"
           @click="sendMessage(userInfo)"
           >发消息
         </el-button>

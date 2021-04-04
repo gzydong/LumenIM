@@ -120,7 +120,7 @@ export const ServeGetRecoverAnnexList = () => {
 
 //下载笔记附件服务接口
 export const ServeDownloadAnnex = (annex_id) => {
-  let api = config.api_url;
+  let api = config.BASE_API_URL;
   try {
     let link = document.createElement('a');
     link.href = `${api}/api/v1/download/article-annex?annex_id=${annex_id}&token=${getToken()}`

@@ -1,6 +1,7 @@
 import {
     ServeFindUserEmoticon,
-    ServeUploadEmoticon
+    ServeUploadEmoticon,
+    ServeCollectEmoticon
 } from "@/api/emoticon";
 
 import {

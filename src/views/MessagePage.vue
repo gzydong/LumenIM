@@ -1,13 +1,13 @@
 <template>
   <div>
-    <main-layout :idx="0">
+    <MainLayout :idx="0">
       <el-container slot="container" class="full-height">
         <!-- 左侧侧边栏 -->
         <el-aside width="320px" class="aside-box">
           <el-container class="full-height" direction="vertical">
             <!-- 搜索栏 -->
             <el-header height="60px" class="header">
-              <div class="from">
+              <div class="from-search">
                 <el-input
                   v-model="input"
                   prefix-icon="el-icon-search"
@@ -17,28 +17,17 @@
               </div>
 
               <!-- 工具栏 -->
-              <div class="tools">
+              <div class="tools" v-outside="closeSubMenu">
                 <el-button
                   icon="el-icon-plus"
                   circle
                   plain
                   size="small"
-                  v-show="subMenu"
+                  @click="subMenu = !subMenu"
                 />
-                <el-button
-                  icon="el-icon-plus"
-                  circle
-                  plain
-                  size="small"
-                  v-show="!subMenu"
-                  @click="subMenu = true"
-                />
+
                 <transition name="el-zoom-in-top">
-                  <div
-                    class="tools-menu"
-                    v-show="subMenu"
-                    v-outside="closeSubMenu"
-                  >
+                  <div class="tools-menu" v-show="subMenu">
                     <div class="menu-item" @click="triggerSubMenu(1)">
                       创建群组
                     </div>
@@ -59,9 +48,9 @@
             >
               <div
                 class="top-item"
-                v-for="(item, idx) in topItems"
-                @click="clickTab(item.index_name)"
+                v-for="item in topItems"
                 :key="item.index_name"
+                @click="clickTab(item.index_name)"
                 @contextmenu.prevent="topItemsMenu(item, $event)"
               >
                 <el-tooltip
@@ -228,20 +217,20 @@
           </template>
         </el-main>
       </el-container>
-    </main-layout>
+    </MainLayout>
 
     <!-- 创建群聊组件 -->
-    <group-launch
+    <GroupLaunch
       v-if="launchGroupShow"
       @close="launchGroupShow = false"
       @create-success="groupChatSuccess"
     />
 
-    <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <!-- 查看用户组件 -->
+    <UserBusinessCard ref="userBusinessCard" />
 
-    <!-- 用户查询 -->
-    <user-search ref="searchUsers" />
+    <!-- 用户查询组件 -->
+    <UserSearch ref="searchUsers" />
   </div>
 </template>
 <script>
@@ -292,9 +281,10 @@ export default {
       // header 工具菜单
       subMenu: false,
 
-      // 对话消息列表加载状态
-      loadStatus: 0, // 0:加载中 1:加载完成  2:加载失败
+      // 对话消息列表加载状态[0:加载中;1:加载完成;2:加载失败;]
+      loadStatus: 0,
 
+      // 消息未读数计时器
       interval: null,
     }
   },
@@ -388,6 +378,7 @@ export default {
     // 工具栏事件
     triggerSubMenu(type) {
       this.closeSubMenu()
+
       if (type == 1) {
         this.launchGroupShow = true
       } else {
@@ -396,7 +387,7 @@ export default {
     },
 
     // 监听自定义滚动条事件
-    scrollEvent(e) {
+    scrollEvent() {
       let scrollbarEl = this.$refs.menusScrollbar.wrap
       scrollbarEl.onscroll = () => {
         this.subHeaderShadow = scrollbarEl.scrollTop > 0
@@ -725,6 +716,7 @@ export default {
   border-right: 1px solid rgb(245, 245, 245);
   overflow: hidden;
   padding: 0;
+  transition: width 0.3s;
 
   .header {
     display: flex;
@@ -732,14 +724,13 @@ export default {
     align-items: center;
     padding: 0 15px;
 
-    .from {
+    .from-search {
       flex: 1 1;
       flex-shrink: 0;
       height: 40px;
 
       /deep/ .el-input .el-input__inner {
         border-radius: 20px;
-        width: 240px;
       }
     }
 
@@ -748,6 +739,7 @@ export default {
       flex-shrink: 0;
       height: 32px;
       margin-bottom: 8px;
+      margin-left: 15px;
       cursor: pointer;
       line-height: 32px;
       text-align: center;
@@ -1046,6 +1038,20 @@ export default {
       font-size: 15px;
       color: #b9b4b4;
       margin-top: -30px;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .aside-box {
+    width: 220px !important;
+
+    .subheader {
+      display: none;
+    }
+
+    .card-box .larkc-tag {
+      display: none;
     }
   }
 }

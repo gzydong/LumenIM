@@ -28,6 +28,7 @@
             class="emoticon-item symbol"
             v-for="(item, i) in emoji.symbol"
             v-text="item"
+            :key="i"
             @click="clickEmoticon(item)"
           ></div>
           <div class="clear"></div>
@@ -37,6 +38,7 @@
           class="emoji-box"
           v-for="item in emojiItem.slice(1)"
           v-show="item.emoticon_id == showEmoticonId"
+          :key="item.emoticon_id"
         >
           <div
             class="emoji-item custom-emoji"
@@ -49,6 +51,7 @@
           <div
             class="emoji-item"
             v-for="subitem in item.list"
+            :key="subitem.src"
             @click="clickImageEmoticon(subitem)"
           >
             <el-image :src="subitem.src" fit="cover" />

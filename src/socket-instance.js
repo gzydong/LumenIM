@@ -30,7 +30,7 @@ class SocketInstance {
      */
     constructor() {
         this.socket = new WsSocket(() => {
-            return `${config.ws_url}?token=` + getToken();
+            return `${config.BASE_WS_URL}?token=` + getToken();
         }, {
             onError: (evt) => {
                 console.log('Websocket 连接失败回调方法')
@@ -42,9 +42,6 @@ class SocketInstance {
             // Websocket 断开连接回调方法
             onClose: (evt) => {
                 this.updateSocketStatus(false);
-            },
-            urlCallBack: () => {
-                return `${config.ws_url}?token=` + getToken();
             }
         });
 

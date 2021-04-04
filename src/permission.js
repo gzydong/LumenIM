@@ -10,7 +10,7 @@ NProgress.configure({
   showSpinner:false
 });
 
-const WEBSITE_NAME = config.web_name;
+const WEBSITE_NAME = config.WEBSITE_NAME;
 
 // 登录用户强制重定向页面
 const login_redirect = ['/login', '/register', '/forget'];
