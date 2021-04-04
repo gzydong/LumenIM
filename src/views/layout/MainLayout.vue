@@ -237,6 +237,7 @@ export default {
     margin: 0 auto;
     text-align: center;
     padding: 0;
+    overflow: hidden;
 
     a {
       text-decoration: none;
