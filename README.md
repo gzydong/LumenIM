@@ -21,8 +21,6 @@ Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + 
 ###### 设置 npm 镜像源
 ```language
 npm config set registry https://registry.npm.taobao.org
-npm config set electron_mirror https://npm.taobao.org/mirrors/electron/
-npm config set electron-builder-binaries_mirror https://npm.taobao.org/mirrors/electron-builder-binaries/
 ```
 
 ###### 下载安装
