@@ -1044,8 +1044,7 @@ export default {
         .nickname {
           font-size: 12px;
           color: #a7a0a0;
-          margin-top: -4px;
-          margin-bottom: 2px;
+          margin: -4px 0 4px -8px;
           transform: scale(0.9);
         }
       }
