@@ -649,7 +649,7 @@ export default {
       ServeRemoveRecords({
         source: item.source,
         receive_id: receive_id,
-        record_id: item.id,
+        record_id: item.id.toString(),
       }).then((res) => {
         if (res.code == 200) {
           this.$store.commit("DELETE_DIALOGUE", index);
