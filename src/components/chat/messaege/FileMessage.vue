@@ -24,7 +24,6 @@ export default {
     file: {
       type: Object,
       required: true,
-      default: {},
     },
     record_id: {
       type: Number,

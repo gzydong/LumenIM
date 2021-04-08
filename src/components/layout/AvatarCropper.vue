@@ -143,10 +143,9 @@ export default {
       this.$refs.cropper.rotateRight()
     },
     // 实时预览函数
-    realTime(data) {
-      let that = this
+    realTime() {
       this.$refs.cropper.getCropData(img => {
-        that.cusPreviewsImg = img
+        this.cusPreviewsImg = img
       })
     },
 

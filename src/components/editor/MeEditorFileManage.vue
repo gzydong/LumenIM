@@ -17,7 +17,12 @@
         <p>暂无上传文件</p>
       </div>
 
-      <div class="file-item" v-for="file in items" v-show="!file.isDelete">
+      <div
+        v-for="file in items"
+        v-show="!file.isDelete"
+        :key="file.hashName"
+        class="file-item"
+      >
         <div class="file-header">
           <div class="type-icon">{{ file.ext }}</div>
           <el-tooltip :content="file.filename" placement="top-start">

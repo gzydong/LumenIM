@@ -30,7 +30,7 @@ export default {
     // 邀请方式
     invite: {
       type: Object,
-      default: {},
+      required: true,
     },
   },
   methods: {

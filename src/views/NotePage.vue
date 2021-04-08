@@ -23,7 +23,7 @@
           <div class="note-headline">我的笔记</div>
 
           <el-scrollbar :native="false" tag="section" class="note-aside">
-            <div v-for="(menu, i) in menus">
+            <div v-for="(menu, i) in menus" :key="i">
               <div
                 class="note-list-first"
                 :class="{ 'note-list-active': menu.isActive }"
@@ -49,6 +49,7 @@
               <div
                 v-for="(submenu, i2) in menu.submenus"
                 v-if="menu.isShowSub"
+                :key="i2"
                 class="note-list-two"
                 :class="{ 'note-list-active': submenu.isActive }"
                 @click="clickNoteMenu(2, i, i2)"
@@ -450,6 +451,7 @@
                     </p>
                     <div
                       v-for="(file, i) in filesManager.files"
+                      :key="file.id"
                       class="file-item"
                     >
                       <div class="file-type">{{ file.file_suffix }}</div>
@@ -507,6 +509,7 @@
                     <span
                       v-for="(tag, i) in tagManager.tags"
                       v-show="tag.isSelectd"
+                      :key="i"
                       class="tag-item"
                     >
                       <span v-text="tag.name"></span>
@@ -519,6 +522,7 @@
                   <div class="tag-manager-box">
                     <span
                       v-for="(tag, i) in tagManager.tags"
+                      :key="i"
                       class="tag-item"
                       :class="{ 'tag-item-active': tag.isSelectd }"
                       @click="setNoteTag(i, 2)"

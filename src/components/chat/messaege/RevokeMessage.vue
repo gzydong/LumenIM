@@ -22,8 +22,7 @@ export default {
   props: {
     // 邀请方式
     item: {
-      type: Object,
-      default: {},
+      type: Object
     },
   },
   methods: {

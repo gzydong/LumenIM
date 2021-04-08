@@ -555,7 +555,7 @@ export default {
               })
             }
           })
-          .catch(err => {
+          .catch(() => {
             this.$notify({
               title: '消息提示',
               message: '网络异常，请稍后再试...',

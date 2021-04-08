@@ -453,7 +453,7 @@ export default {
             }, 3000)
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.signoutStatus = 2
           setTimeout(() => {
             this.signoutStatus = 0

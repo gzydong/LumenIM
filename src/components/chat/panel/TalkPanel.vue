@@ -297,12 +297,14 @@ export default {
     // 对话相关参数
     params: {
       type: Object,
-      default: {
-        // 消息来源（1：好友私信 2:群聊）
-        source: 0,
-        // 消息接收者ID（好友ID或者群聊ID）
-        receive_id: 0,
-        nickname: '',
+      default: function() {
+        return {
+          // 消息来源（1：好友私信 2:群聊）
+          source: 0,
+          // 消息接收者ID（好友ID或者群聊ID）
+          receive_id: 0,
+          nickname: '',
+        }
       },
     },
 
@@ -503,7 +505,7 @@ export default {
             }
           })
         })
-        .catch(e => {
+        .catch(() => {
           this.loadRecord.status = 1
         })
     },

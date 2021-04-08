@@ -19,7 +19,7 @@ export default {
   name: 'TextMessage',
   props: {
     content: {
-      type: String | Number,
+      type: [String, Number],
       default: '',
     },
     float: {
