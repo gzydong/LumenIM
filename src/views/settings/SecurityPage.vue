@@ -8,9 +8,9 @@
           <p>当前密码强度 ：中</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action" @click="$refs.changePasswrodRef.open()"
-            >修改</span
-          >
+          <span class="action" @click="$refs.changePasswrodRef.open()">
+            修改
+          </span>
         </el-col>
       </el-row>
 
