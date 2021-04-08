@@ -147,7 +147,7 @@ export default {
 
           this.loading = false
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false
         })
     },

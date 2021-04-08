@@ -10,7 +10,7 @@
 
       <el-main class="no-padding mian lum-scrollbar">
         <ul>
-          <li v-for="(item, i) in items" class="no-select">
+          <li v-for="(item, i) in items" :key="item.id" class="no-select">
             <div class="pkg-avatar">
               <el-image :src="item.url" fit="cover" :lazy="true" />
             </div>

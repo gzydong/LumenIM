@@ -17,41 +17,41 @@
         <div class="emoticon" v-show="showEmoticonId == -1">
           <div class="title">QQ表情</div>
           <div
-            class="emoticon-item"
             v-for="(elImg, text) in emoji.emojis"
             v-html="elImg"
+            class="emoticon-item"
             @click="clickEmoticon(text)"
           ></div>
           <div class="clear"></div>
           <div class="title">符号表情</div>
           <div
-            class="emoticon-item symbol"
             v-for="(item, i) in emoji.symbol"
             v-text="item"
             :key="i"
+            class="emoticon-item symbol"
             @click="clickEmoticon(item)"
           ></div>
           <div class="clear"></div>
         </div>
 
         <div
-          class="emoji-box"
           v-for="item in emojiItem.slice(1)"
           v-show="item.emoticon_id == showEmoticonId"
           :key="item.emoticon_id"
+          class="emoji-box"
         >
           <div
-            class="emoji-item custom-emoji"
             v-if="item.emoticon_id == 0"
+            class="emoji-item custom-emoji"
             @click="$refs.fileCustomEmoji.click()"
           >
             <i class="el-icon-picture"></i>
             <span>自定义</span>
           </div>
           <div
-            class="emoji-item"
             v-for="subitem in item.list"
             :key="subitem.src"
+            class="emoji-item"
             @click="clickImageEmoticon(subitem)"
           >
             <el-image :src="subitem.src" fit="cover" />
@@ -62,23 +62,24 @@
       <el-footer height="40px" class="no-padding footer">
         <div class="toolbar-items">
           <div
-            class="toolbar-item prev-page"
             v-show="emojiItem.length > 13"
+            class="toolbar-item prev-page"
             @click="turnPage(1)"
           >
             <i class="el-icon-caret-left"></i>
           </div>
           <div
+            v-for="(item, index) in showItems"
+            :key="index"
             class="toolbar-item"
             @click="triggerItem(item)"
-            v-for="item in showItems"
           >
             <img :src="item.url" />
             <p class="title">{{ item.name }}</p>
           </div>
           <div
-            class="toolbar-item next-page"
             v-show="emojiItem.length > 13 && showItems.length == 13"
+            class="toolbar-item next-page"
             @click="turnPage(2)"
           >
             <i class="el-icon-caret-right"></i>

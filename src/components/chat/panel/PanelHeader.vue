@@ -40,10 +40,12 @@ export default {
   props: {
     data: {
       type: Object,
-      default: {
-        source: 0,
-        receive_id: 0,
-        nickname: '',
+      default: function() {
+        return {
+          source: 0,
+          receive_id: 0,
+          nickname: '',
+        }
       },
     },
     online: {

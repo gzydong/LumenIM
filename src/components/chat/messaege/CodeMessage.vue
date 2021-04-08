@@ -24,7 +24,7 @@ export default {
   name: 'CodeMessage',
   props: {
     code: {
-      type: String | Number,
+      type: [String, Number],
       default: '',
     },
     lang: {
