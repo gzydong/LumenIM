@@ -1,24 +1,21 @@
 <template>
   <div class="invite-message">
     <div v-if="invite.type == 1 || invite.type == 3" class="system-msg">
-      <a @click="cat(invite.operate_user.id)">{{
-        invite.operate_user.nickname
-      }}</a>
-
+      <a @click="user(invite.operate_user.id)">
+        {{ invite.operate_user.nickname }}
+      </a>
       <span>{{ invite.type == 1 ? '邀请了' : '将' }}</span>
-
       <template v-for="(user, uidx) in invite.users">
-        <a @click="cat(user.id)">{{ user.nickname }}</a>
+        <a @click="user(user.id)">{{ user.nickname }}</a>
         <em v-show="uidx < invite.users.length - 1">、</em>
       </template>
-
       <span>{{ invite.type == 1 ? '加入了群聊' : '踢出了群聊' }}</span>
     </div>
-    <div v-else-if="invite.type == 2" class="system-msg">
-      <a @click="cat(invite.operate_user.id)">{{
-        invite.operate_user.nickname
-      }}</a>
 
+    <div v-else-if="invite.type == 2" class="system-msg">
+      <a @click="user(invite.operate_user.id)">
+        {{ invite.operate_user.nickname }}
+      </a>
       <span>退出了群聊</span>
     </div>
   </div>
@@ -27,15 +24,14 @@
 export default {
   name: 'InviteMessage',
   props: {
-    // 邀请方式
     invite: {
       type: Object,
       required: true,
     },
   },
   methods: {
-    cat(id) {
-      this.$emit('cat', id)
+    user(user_id) {
+      this.$emit('cat', user_id)
     },
   },
 }

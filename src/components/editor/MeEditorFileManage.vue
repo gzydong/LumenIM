@@ -31,12 +31,12 @@
 
           <div class="status">
             <span v-if="file.status == 0">等待上传</span>
-            <span v-else-if="file.status == 1" style="color: #66b1ff"
-              >正在上传...</span
-            >
-            <span v-else-if="file.status == 2" style="color: #67c23a"
-              >已完成</span
-            >
+            <span v-else-if="file.status == 1" style="color: #66b1ff">
+              正在上传...
+            </span>
+            <span v-else-if="file.status == 2" style="color: #67c23a">
+              已完成
+            </span>
             <span v-else style="color: red">网络异常</span>
           </div>
         </div>
@@ -47,7 +47,7 @@
               :percentage="file.progress"
               :width="50"
               :color="colors"
-            ></el-progress>
+            />
             <span class="name">上传进度</span>
           </div>
           <div class="detail">
@@ -62,11 +62,11 @@
             </p>
           </div>
         </div>
-        <div class="file-means" v-show="file.status == 2 || file.status == 3">
+        <div v-show="file.status == 2 || file.status == 3" class="file-means">
           <div class="btns" @click="removeFile(file.hashName)">删除</div>
           <div
-            class="btns"
             v-show="file.status == 3"
+            class="btns"
             @click="triggerUpload(file.hashName)"
           >
             继续上传

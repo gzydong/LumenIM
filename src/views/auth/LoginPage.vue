@@ -30,9 +30,9 @@
               <el-form-item>
                 <el-button
                   type="primary"
-                  @click="onSubmit('form')"
                   class="submit-btn"
                   :loading="loginLoading"
+                  @click="onSubmit('form')"
                   >立即登录
                 </el-button>
               </el-form-item>
@@ -40,24 +40,24 @@
                 <div class="links">
                   <el-link
                     type="primary"
-                    @click="toLink('/forget')"
                     :underline="false"
-                    >找回密码</el-link
-                  >
+                    @click="toLink('/forget')"
+                    >找回密码
+                  </el-link>
                   <el-link
                     type="primary"
-                    @click="toLink('/register')"
                     :underline="false"
-                    >还没有账号？立即注册</el-link
-                  >
+                    @click="toLink('/register')"
+                    >还没有账号？立即注册
+                  </el-link>
                 </div>
               </el-form-item>
 
               <p style="margin-top: 50px">
                 <el-divider>
                   <span style="color: rgb(181, 176, 176); font-weight: 200">
-                    <i class="el-icon-mobile-phone"></i> 预览账号</span
-                  >
+                    <i class="el-icon-mobile-phone"></i> 预览账号
+                  </span>
                 </el-divider>
               </p>
               <el-form-item class="preview-account">

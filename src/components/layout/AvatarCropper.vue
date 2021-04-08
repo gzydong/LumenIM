@@ -13,6 +13,7 @@
             <div class="cropper-box">
               <vue-cropper
                 ref="cropper"
+                mode="cover"
                 :img="option.img"
                 :output-size="option.size"
                 :output-type="option.outputType"
@@ -28,9 +29,8 @@
                 :auto-crop-width="option.autoCropWidth"
                 :auto-crop-height="option.autoCropHeight"
                 :center-box="option.centerBox"
-                @real-time="realTime"
                 :high="option.high"
-                mode="cover"
+                @real-time="realTime"
               />
               <input
                 type="file"
@@ -47,29 +47,29 @@
                 plain
                 icon="el-icon-upload"
                 @click="clickUpload"
-                >上传图片</el-button
-              >
+                >上传图片
+              </el-button>
               <el-button
                 size="small"
                 plain
                 icon="el-icon-refresh"
                 @click="refreshCrop"
-                >刷新</el-button
-              >
+                >刷新
+              </el-button>
               <el-button
                 size="small"
                 plain
                 icon="el-icon-refresh-left"
                 @click="rotateLeft"
-                >左转</el-button
-              >
+                >左转
+              </el-button>
               <el-button
                 size="small"
                 plain
                 icon="el-icon-refresh-right"
                 @click="rotateRight"
-                >右转</el-button
-              >
+                >右转
+              </el-button>
             </div>
           </el-aside>
           <el-main class="no-padding">
@@ -79,9 +79,9 @@
               </div>
             </div>
             <div class="tools">
-              <el-button type="primary" size="small" @click="uploadService"
-                >保存图片</el-button
-              >
+              <el-button type="primary" size="small" @click="uploadService">
+                保存图片
+              </el-button>
             </div>
           </el-main>
         </el-container>

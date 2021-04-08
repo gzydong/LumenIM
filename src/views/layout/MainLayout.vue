@@ -8,7 +8,7 @@
               <img :src="userAvatar" :onerror="detaultAvatar" />
             </div>
             <p class="user-status">
-              <span class="online" v-if="socketStatus">在线</span>
+              <span v-if="socketStatus" class="online">在线</span>
               <span v-else>连接中...</span>
             </p>
           </el-header>
@@ -83,7 +83,7 @@
         </el-container>
       </el-aside>
 
-      <el-main class="no-padding" style="background: white;">
+      <el-main class="no-padding" style="background: white">
         <slot name="container"></slot>
       </el-main>
     </el-container>
@@ -91,10 +91,10 @@
     <!-- 用户卡片 -->
     <el-popover
       ref="usercard"
-      placement="right-start"
       trigger="hover"
-      :visible-arrow="false"
+      placement="right-start"
       popper-class="no-padding"
+      :visible-arrow="false"
     >
       <UserCard />
     </el-popover>

@@ -84,20 +84,20 @@
           v-paste="pasteImage"
           v-drag="dragPasteImage"
           v-model.trim="editorText"
+          rows="6"
+          placeholder="你想要的聊点什么呢 ..."
           @keydown="keydownEvent($event)"
           @input="inputEvent($event)"
-          placeholder="你想要的聊点什么呢 ..."
-          rows="6"
         />
       </el-main>
     </el-container>
 
     <!-- 图片查看器 -->
     <MeEditorImageView
+      ref="imageViewer"
       v-model="imageViewer.isShow"
       :file="imageViewer.file"
       @confirm="confirmUploadImage"
-      ref="imageViewer"
     />
 
     <MeEditorRecorder v-if="recorder" @close="recorder = false" />

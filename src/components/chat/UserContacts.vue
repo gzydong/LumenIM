@@ -11,23 +11,23 @@
             <el-container class="full-height no-select">
               <el-header
                 class="no-padding search-header"
-                height="50px"
                 :class="{ shadow: headerShadow }"
+                height="50px"
               >
                 <el-input
-                  placeholder="搜索 | 好友 or 群组"
-                  prefix-icon="el-icon-search"
                   v-model="keywords"
                   clearable
                   size="small"
+                  placeholder="搜索 | 好友 or 群组"
+                  prefix-icon="el-icon-search"
                 />
               </el-header>
               <el-main class="no-padding">
                 <el-scrollbar
-                  :native="false"
-                  tag="section"
-                  class="full-height"
                   ref="scrollbar2"
+                  class="full-height"
+                  tag="section"
+                  :native="false"
                 >
                   <ul class="friend-items no-select">
                     <li
@@ -36,17 +36,16 @@
                       @click="triggerContacts(item)"
                     >
                       <el-avatar
-                        :size="25"
-                        :src="item.avatar"
                         class="avatar"
                         style="margin-top: 5px"
+                        :size="25"
+                        :src="item.avatar"
                       >
                         <img src="~@/assets/image/detault-avatar.jpg" />
                       </el-avatar>
-                      <span class="nickname"
-                        >[{{ item.type == 1 ? '友' : '群' }}]
-                        {{ item.nickname }}</span
-                      >
+                      <span class="nickname">
+                        [{{ item.type == 1 ? '友' : '群' }}] {{ item.nickname }}
+                      </span>
                       <span class="select-btn">
                         <i
                           class="el-icon-success"
@@ -63,19 +62,19 @@
           <el-main class="no-padding">
             <el-container class="full-height">
               <el-header height="40px">
-                <el-divider content-position="left" class="no-select">
-                  <span style="color: #c4c5c7"
-                    >已选联系人 ({{ selected.length }})</span
-                  >
+                <el-divider class="no-select" content-position="left">
+                  <span style="color: #c4c5c7">
+                    已选联系人 ({{ selected.length }})
+                  </span>
                 </el-divider>
               </el-header>
               <el-main>
                 <el-scrollbar :native="false" tag="section" class="full-height">
                   <div class="selectd-items">
                     <div
-                      class="selectd-item no-select"
                       v-for="item in selected"
                       :key="item.index_name"
+                      class="selectd-item no-select"
                     >
                       <el-avatar :size="25" :src="item.avatar">
                         <img src="~@/assets/image/detault-avatar.jpg" />
@@ -97,7 +96,7 @@
         </el-container>
       </el-main>
       <el-footer height="50px" class="no-padding footer">
-        <el-button size="small" @click="close" plain>取消</el-button>
+        <el-button size="small" plain @click="close">取消</el-button>
         <el-button type="primary" size="small" @click="confirm">
           确认选择<span v-show="selected.length">({{ selected.length }})</span>
         </el-button>

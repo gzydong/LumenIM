@@ -9,18 +9,18 @@
           <div class="tools">
             <span>选择编程语言:&nbsp;&nbsp;</span>
             <el-select
-              size="mini"
               v-model="language"
-              :disabled="!editMode"
+              size="mini"
               filterable
               placeholder="语言类型"
+              :disabled="!editMode"
             >
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-              ></el-option>
+              />
             </el-select>
           </div>
           <i class="el-icon-close close-btn" @click="close"></i>
@@ -38,34 +38,34 @@
         <el-main class="main no-padding">
           <PrismEditor
             class="peditor"
+            style="border-radius: 0"
             :code="code"
             :language="language"
             :line-numbers="true"
             @change="codeChanged"
-            style="border-radius: 0"
-          ></PrismEditor>
+          />
         </el-main>
 
         <el-footer class="footer no-padding" height="50px">
           <div class="code-num">
             <span>代码字数：{{ code.length }}字</span>
-            <span class="code-warning" v-show="code.length > 10000 && editMode"
-              >(字数不能超过10000字)</span
-            >
+            <span v-show="code.length > 10000 && editMode" class="code-warning">
+              (字数不能超过10000字)
+            </span>
           </div>
 
           <div class="buttom-group">
-            <el-button size="small" @click="close" plain>{{
-              editMode ? '取消编辑' : '关闭预览'
-            }}</el-button>
+            <el-button size="small" plain @click="close">
+              {{ editMode ? '取消编辑' : '关闭预览' }}
+            </el-button>
 
             <el-button
+              v-show="editMode"
               type="primary"
               size="small"
               @click="submit"
-              v-show="editMode"
-              >发送代码</el-button
-            >
+              >发送代码
+            </el-button>
           </div>
         </el-footer>
       </el-container>

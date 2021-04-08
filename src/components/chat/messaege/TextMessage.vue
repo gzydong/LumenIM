@@ -7,7 +7,7 @@
       'max-width': !fullWidth,
     }"
   >
-    <div class="arrow" v-if="arrow"></div>
+    <div v-if="arrow" class="arrow"></div>
     <pre v-html="html" />
   </div>
 </template>

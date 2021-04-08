@@ -17,11 +17,11 @@
             <div class="pkg-info" v-text="item.name"></div>
             <div class="pkg-status">
               <button
-                @click="setEmoticon(i, item, item.status == 0 ? 1 : 2)"
                 :class="{
                   'add-emoji': item.status == 0,
                   'remove-emoji': item.status != 0,
                 }"
+                @click="setEmoticon(i, item, item.status == 0 ? 1 : 2)"
               >
                 {{ item.status == 0 ? '添加' : '移除' }}
               </button>
@@ -31,9 +31,9 @@
       </el-main>
 
       <el-footer class="footer" height="50px">
-        <el-button type="primary" size="medium" class="btn" @click="closeBox"
-          >关闭窗口</el-button
-        >
+        <el-button type="primary" size="medium" class="btn" @click="closeBox">
+          关闭窗口
+        </el-button>
       </el-footer>
     </el-container>
   </div>

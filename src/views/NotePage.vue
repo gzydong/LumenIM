@@ -85,9 +85,9 @@
               @keyup.enter="queryNote"
             />
           </div>
+
           <div class="count-header">
             <span>{{ notes.length }} 篇笔记</span>
-
             <span v-if="loadNoteStatus == 0" class="load-span">
               <i class="el-icon-loading"></i> 加载中 ...
             </span>
@@ -95,6 +95,7 @@
               <i class="iconfont icon-icon- sort-icon"></i>
             </span>
           </div>
+
           <div class="article-main">
             <template v-if="notes.length == 0">
               <div class="note-empty">
@@ -109,8 +110,8 @@
             <template v-else>
               <el-scrollbar :native="false" tag="section" class="full-height">
                 <div
-                  class="article-row"
                   v-for="(note, i) in notes"
+                  class="article-row"
                   :class="{
                     'active-row': note.id == noteDetail.loadId,
                   }"
@@ -131,15 +132,15 @@
                         <span v-text="note.classify"></span>
                       </div>
                       <div
-                        class="article-abstract"
                         v-text="note.abstract.replace(/[\r\n]/g, '')"
+                        class="article-abstract"
                       ></div>
                     </div>
-                    <div class="article-image" v-show="note.img">
+                    <div v-show="note.img" class="article-image">
                       <el-image
-                        :src="note.img"
                         fit="cover"
                         style="width: 100%; height: 100%"
+                        :src="note.img"
                       />
                     </div>
                   </div>
@@ -251,11 +252,11 @@
                 <el-main class="no-padding">
                   <div id="note-detail">
                     <el-scrollbar
-                      :native="false"
-                      tag="section"
                       class="full-height"
+                      tag="section"
+                      :native="false"
                     >
-                      <div style="padding: 10px;display: none;">
+                      <div style="padding: 10px; display: none">
                         <div class="subfield">
                           <p>
                             <span>时间：{{ noteDetail.created_at }}</span>
@@ -266,7 +267,7 @@
                               >附件({{ filesManager.files.length }})</span
                             >
                           </p>
-                          <p style="margin-top:10px;">
+                          <p style="margin-top: 10px">
                             <span>
                               分类：<span class="larkc-tag">{{
                                 getNoteClassName(noteDetail.class_id)
@@ -370,7 +371,7 @@
                 <p>星标</p>
               </div>
 
-              <div class="item" v-popover:fileManager v-show="noteDetail.id">
+              <div v-show="noteDetail.id" v-popover:fileManager class="item">
                 <i
                   class="el-icon-link"
                   :class="{ 'i-color': filesManager.files.length }"
@@ -459,9 +460,9 @@
                         <div class="filename">{{ file.original_name }}</div>
                         <div class="filetool">
                           <span>{{ formateTime(file.created_at) }}</span>
-                          <span style="color: #3a8ee6">{{
-                            formateSize(file.file_size)
-                          }}</span>
+                          <span style="color: #3a8ee6">
+                            {{ formateSize(file.file_size) }}
+                          </span>
                           <div class="filetool-help">
                             <i
                               class="el-icon-download"
@@ -485,11 +486,8 @@
                       icon="el-icon-upload"
                       :loading="filesManager.status"
                       @click="$refs.uploadNoteFile.click()"
-                    >
-                      {{
-                        filesManager.status ? '上传中...' : '上传附件'
-                      }}</el-button
-                    >
+                      >{{ filesManager.status ? '上传中...' : '上传附件' }}
+                    </el-button>
                   </div>
                 </div>
               </el-popover>
@@ -542,17 +540,17 @@
 
                   <div class="tag-manager-input" v-show="tagManager.isInput">
                     <input
+                      ref="editTaginput"
                       type="text"
                       placeholder="回车保存..."
-                      ref="editTaginput"
                       @keyup.enter="saveTagEvent"
                     />
                     <el-button
                       type="primary"
                       size="small"
                       @click="tagManager.isInput = false"
-                      >取消编辑</el-button
-                    >
+                      >取消编辑
+                    </el-button>
                   </div>
                 </div>
               </el-popover>

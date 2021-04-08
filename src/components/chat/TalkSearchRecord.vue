@@ -9,9 +9,9 @@
         <p class="tools">
           <i
             class="iconfont"
+            style="transform: scale(0.85)"
             :class="fullscreen ? 'icon-tuichuquanping' : 'icon-quanping'"
             @click="fullscreen = !fullscreen"
-            style="transform: scale(0.85)"
           ></i>
           <i class="el-icon-close" @click="$emit('close')"></i>
         </p>
@@ -26,10 +26,10 @@
         <div class="search-box no-select">
           <i class="el-icon-search"></i>
           <input
-            type="text"
-            placeholder="关键字搜索"
             v-model="search.keyword"
+            type="text"
             maxlength="30"
+            placeholder="关键字搜索"
             @keyup.enter="searchText($event)"
           />
         </div>
@@ -56,16 +56,16 @@
               </div>
             </el-header>
             <el-main class="no-padding">
-              <el-scrollbar :native="false" tag="section" class="full-height">
+              <el-scrollbar class="full-height" tag="section" :native="false">
                 <div
                   v-for="item in contacts[contacts.show]"
                   class="contacts-item pointer"
-                  @click="triggerMenuItem(item)"
                   :class="{
                     selected:
                       findSource == item.type && findReceiveId == item.id,
                   }"
                   :key="item.id"
+                  @click="triggerMenuItem(item)"
                 >
                   <div class="avatar">
                     <el-avatar :size="20" :src="item.avatar">
@@ -86,28 +86,28 @@
               <span
                 :class="{ active: records.msgType == 0 }"
                 @click="triggerLoadType(0)"
-                >全部</span
-              >
+                >全部
+              </span>
               <span
                 :class="{ active: records.msgType == 5 }"
                 @click="triggerLoadType(5)"
-                >代码块</span
-              >
+                >代码块
+              </span>
               <span
                 :class="{ active: records.msgType == 2 }"
                 @click="triggerLoadType(2)"
-                >文件</span
-              >
+                >文件
+              </span>
               <span
                 :class="{ active: records.msgType == 4 }"
                 @click="triggerLoadType(4)"
-                >会话记录</span
-              >
+                >会话记录
+              </span>
             </el-header>
 
             <el-main
-              class="history-record animated fadeIn"
               v-if="records.isEmpty"
+              class="history-record animated fadeIn"
             >
               <div class="empty-records">
                 <img src="~@/assets/image/chat-search-no-message.png" />
@@ -115,18 +115,18 @@
               </div>
             </el-main>
 
-            <el-main class="history-record" v-else>
-              <el-scrollbar :native="false" tag="section" class="full-height">
+            <el-main v-else class="history-record">
+              <el-scrollbar class="full-height" tag="section" :native="false">
                 <div
-                  class="message-group"
                   v-for="record in records.items"
                   :key="record.id"
+                  class="message-group"
                 >
                   <div class="left-box">
                     <el-avatar
                       shape="square"
-                      :size="30"
                       fit="contain"
+                      :size="30"
                       :src="record.avatar"
                     />
                   </div>
@@ -201,11 +201,11 @@
                 </div>
 
                 <!-- 数据加载栏 -->
-                <div class="load-button blue" v-show="records.loadStatus == 1">
+                <div v-show="records.loadStatus == 1" class="load-button blue">
                   <i class="el-icon-loading"></i>
                   <span>加载数据中...</span>
                 </div>
-                <div class="load-button" v-show="records.loadStatus == 0">
+                <div v-show="records.loadStatus == 0" class="load-button">
                   <i class="el-icon-arrow-up"></i>
                   <span @click="loadChatRecord">加载更多...</span>
                 </div>

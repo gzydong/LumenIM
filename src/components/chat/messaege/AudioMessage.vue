@@ -2,17 +2,16 @@
   <div class="audio-message">
     <div class="videodisc">
       <div class="disc" :class="{ play: isPlay }" @click="toPlay">
-        <i class="el-icon-loading" v-if="loading" />
-        <i class="el-icon-video-pause" v-else-if="isPlay" />
-        <i class="el-icon-video-play" v-else />
-
+        <i v-if="loading" class="el-icon-loading" />
+        <i v-else-if="isPlay" class="el-icon-video-pause" />
+        <i v-else class="el-icon-video-play" />
         <audio
-          :src="src"
+          ref="audio"
           type="audio/mp3"
+          :src="src"
           @timeupdate="timeupdate"
           @ended="ended"
           @canplay="canplay"
-          ref="audio"
         ></audio>
       </div>
     </div>
@@ -110,13 +109,13 @@ export default {
       this.progress = (audio.currentTime / audio.duration) * 100
     },
 
-    //当浏览器可以播放音频/视频时
+    // 当浏览器可以播放音频/视频时
     canplay() {
       this.duration = this.$refs.audio.duration
       this.loading = false
     },
 
-    //当目前的播放列表已结束时
+    // 当目前的播放列表已结束时
     ended() {
       this.isPlay = false
     },

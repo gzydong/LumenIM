@@ -14,7 +14,7 @@
           @change="customUploadEmoji"
         />
 
-        <div class="emoticon" v-show="showEmoticonId == -1">
+        <div v-show="showEmoticonId == -1" class="emoticon">
           <div class="title">QQ表情</div>
           <div
             v-for="(elImg, text) in emoji.emojis"
@@ -26,11 +26,12 @@
           <div class="title">符号表情</div>
           <div
             v-for="(item, i) in emoji.symbol"
-            v-text="item"
             :key="i"
             class="emoticon-item symbol"
             @click="clickEmoticon(item)"
-          ></div>
+          >
+            {{ item }}
+          </div>
           <div class="clear"></div>
         </div>
 

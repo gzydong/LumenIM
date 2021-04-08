@@ -12,8 +12,8 @@
       <!-- 主体信息 -->
       <el-main class="main-box no-padding">
         <div
-          class="talks-container lum-scrollbar"
           id="lumenChatPanel"
+          class="talks-container lum-scrollbar"
           @scroll="talkPanelScroll($event)"
         >
           <!-- 数据加载状态栏 -->
@@ -52,7 +52,7 @@
                 'checkbox-border': multiSelect.isOpen === true,
               }"
             >
-              <aside class="checkbox-column" v-show="multiSelect.isOpen">
+              <aside v-show="multiSelect.isOpen" class="checkbox-column">
                 <i
                   class="el-icon-success"
                   :class="{ selected: verifyMultiSelect(item.id) }"
@@ -61,8 +61,8 @@
               </aside>
               <aside class="avatar-column">
                 <el-avatar
-                  :size="30"
                   class="pointer"
+                  :size="30"
                   :src="item.avatar"
                   @click.native="catFriendDetail(item.user_id)"
                 />
@@ -70,11 +70,11 @@
               <main class="main-column">
                 <div class="talk-title">
                   <span
-                    class="time"
                     v-show="
                       item.source == 1 ||
                         (item.source == 2 && item.float == 'right')
                     "
+                    class="time"
                   >
                     <i class="el-icon-time"></i>
                     {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
@@ -83,11 +83,12 @@
 
                 <div class="talk-content">
                   <span
-                    class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
-                    >{{ item.nickname || item.friend_remarks }} |
-                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}</span
+                    class="nickname"
                   >
+                    {{ item.nickname || item.friend_remarks }} |
+                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
+                  </span>
 
                   <!-- 文本消息 -->
                   <text-message
@@ -158,8 +159,8 @@
 
             <!-- 消息时间 -->
             <div
-              class="datetime no-select"
               v-show="compareTime(idx, item.created_at)"
+              class="datetime no-select"
               v-text="sendTime(item.created_at)"
             />
           </div>
@@ -168,27 +169,27 @@
         <!-- 置底按钮 -->
         <transition name="el-fade-in-linear">
           <div
-            class="tips-board pointer"
             v-show="tipsBoard"
+            class="tips-board pointer"
             @click="talkPanelScrollBottom"
           >
-            <svg-mention-down class="svg" />
+            <SvgMentionDown class="svg" />
             <span>回到底部</span>
           </div>
         </transition>
 
         <!-- 新消息气泡 -->
         <div
-          class="talk-bubble pointer no-select"
           v-show="tipsBoard && unreadMessage.num"
+          class="talk-bubble pointer no-select"
           @click="talkPanelScrollBottom"
         >
           <i class="el-icon-chat-dot-round"></i>
           <span>新消息({{ unreadMessage.num }}条)</span>
-          <span
-            >&nbsp;#{{ unreadMessage.nickname }}#
-            {{ unreadMessage.content }}</span
-          >
+          <span>
+            &nbsp;#{{ unreadMessage.nickname }}#
+            {{ unreadMessage.content }}
+          </span>
         </div>
       </el-main>
 
@@ -230,10 +231,10 @@
     <transition name="el-fade-in-linear">
       <TalkSearchRecord
         v-if="findChatRecord"
-        @close="findChatRecord = false"
         :source="params.source"
         :receive-id="params.receive_id"
         :titleName="params.nickname"
+        @close="findChatRecord = false"
       />
     </transition>
 

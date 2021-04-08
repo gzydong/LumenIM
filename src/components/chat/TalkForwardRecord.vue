@@ -8,13 +8,13 @@
         </p>
       </el-header>
       <el-main class="no-padding main" v-loading="loading">
-        <el-scrollbar :native="false" tag="section" class="full-height">
-          <div class="message-group" v-for="record in records" :key="record.id">
+        <el-scrollbar class="full-height" tag="section" :native="false">
+          <div v-for="record in records" :key="record.id" class="message-group">
             <div class="left-box">
               <el-avatar
+                fit="contain"
                 shape="square"
                 :size="30"
-                fit="contain"
                 :src="record.avatar"
               />
             </div>

@@ -51,16 +51,16 @@
                   placeholder="验证码(随意填写)"
                   class="cuborder-radius"
                   maxlength="6"
-                  @keyup.enter.native="onSubmit('form')"
                   style="width: 205px"
+                  @keyup.enter.native="onSubmit('form')"
                 />
 
-                <div class="send-code-btn send-sms-disable" v-if="smsLock">
+                <div v-if="smsLock" class="send-code-btn send-sms-disable">
                   正在发送 ...
                 </div>
                 <div
-                  class="send-code-btn"
                   v-else-if="smsLock == false && smsLockObj.time == null"
+                  class="send-code-btn"
                   @click="sendSms"
                 >
                   获取短信
@@ -72,26 +72,29 @@
               <el-form-item>
                 <el-button
                   type="primary"
-                  @click="onSubmit('form')"
                   class="submit-btn"
                   :loading="registerLoading"
-                  >立即注册
+                  @click="onSubmit('form')"
+                >
+                  立即注册
                 </el-button>
               </el-form-item>
               <el-form-item>
                 <div class="links">
                   <el-link
                     type="primary"
-                    @click="toLink('/forget')"
                     :underline="false"
-                    >找回密码</el-link
+                    @click="toLink('/forget')"
                   >
+                    找回密码
+                  </el-link>
                   <el-link
                     type="primary"
-                    @click="toLink('/login')"
                     :underline="false"
-                    >已有账号，立即登录?</el-link
+                    @click="toLink('/login')"
                   >
+                    已有账号，立即登录?
+                  </el-link>
                 </div>
               </el-form-item>
             </el-form>
