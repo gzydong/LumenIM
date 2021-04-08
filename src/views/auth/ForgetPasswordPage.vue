@@ -193,7 +193,7 @@ export default {
     onSubmit(formName) {
       if (this.forgetLoading) return false
 
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (!valid) return false
         this.forgetLoading = true
         this.forgetAccount()
@@ -206,7 +206,7 @@ export default {
         password: this.form.password,
         sms_code: this.form.sms_code,
       })
-        .then((res) => {
+        .then(res => {
           this.forgetLoading = false
           if (res.code == 200) {
             this.$notify({
@@ -249,7 +249,7 @@ export default {
         mobile: this.form.username,
         type: 'forget_password',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.smsLockObj.start()
             this.$notify({

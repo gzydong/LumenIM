@@ -291,9 +291,9 @@ export default {
   computed: {
     ...mapGetters(['topItems', 'talkItems', 'unreadNum', 'talkNum']),
     ...mapState({
-      talks: (state) => state.talks.items,
-      index_name: (state) => state.dialogue.index_name,
-      monitorUserStatus: (state) => state.notify.friendStatus,
+      talks: state => state.talks.items,
+      index_name: state => state.dialogue.index_name,
+      monitorUserStatus: state => state.notify.friendStatus,
     }),
 
     // 计算置顶栏目的高度
@@ -398,11 +398,11 @@ export default {
     loadChatList() {
       this.loadStatus = this.talkNum == 0 ? 0 : 1
 
-      ServeGetTalkList().then((res) => {
+      ServeGetTalkList().then(res => {
         if (res.code == 200) {
           this.$store.commit('SET_UNREAD_NUM', 0)
           this.$store.commit('SET_TALK_ITEM', {
-            items: res.data.map((item) => formateTalkItem(item)),
+            items: res.data.map(item => formateTalkItem(item)),
           })
 
           let index_name = sessionStorage.getItem('send_message_index_name')
@@ -580,7 +580,7 @@ export default {
       ServeTopTalkList({
         list_id: item.id,
         type: item.is_top == 0 ? 1 : 2,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
             index: findTalkIndex(item.index_name),
@@ -598,7 +598,7 @@ export default {
         type: item.type,
         receive_id: item.type == 1 ? item.friend_id : item.group_id,
         not_disturb: item.not_disturb == 0 ? 1 : 0,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
             index: findTalkIndex(item.index_name),
@@ -614,7 +614,7 @@ export default {
     delChatItem(item) {
       ServeDeleteTalkList({
         list_id: item.id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.clearTalk()
           this.$store.commit('REMOVE_TALK_ITEM', item.index_name)
@@ -626,7 +626,7 @@ export default {
     removeFriend(item) {
       ServeDeleteContact({
         friend_id: item.friend_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           if (this.index_name == item.index_name) {
             this.clearTalk()
@@ -641,7 +641,7 @@ export default {
     removeGroup(item) {
       ServeSecedeGroup({
         group_id: item.group_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           if (this.index_name == item.index_name) {
             this.clearTalk()
@@ -678,7 +678,7 @@ export default {
           ServeEditContactRemark({
             friend_id: item.friend_id,
             remarks: value,
-          }).then((res) => {
+          }).then(res => {
             if (res.code == 200) {
               this.$store.commit('UPDATE_TALK_ITEM', {
                 index: findTalkIndex(item.index_name),

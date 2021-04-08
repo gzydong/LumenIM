@@ -60,7 +60,7 @@
           class="image-item"
           v-for="(item, index) in bagItems"
           :key="index"
-          @click="changeThemeBag(item)"
+          @click="changeThemeBag(item.name)"
         >
           <img :src="item.src" />
         </div>
@@ -104,15 +104,8 @@ export default {
     },
 
     // 修改主题背景
-    changeThemeBag(item) {
-      let bagName = item.name
-      if (this.$store.state.settings.themeBagImg == item.name) {
-        bagName = ''
-      } else {
-        bagName = item.name
-      }
-
-      this.$store.commit('SET_THEME_BAGIMG', bagName)
+    changeThemeBag(value) {
+      this.$store.commit('SET_THEME_BAGIMG', value)
     },
   },
 }

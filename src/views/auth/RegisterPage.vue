@@ -205,7 +205,7 @@ export default {
     onSubmit(formName) {
       if (this.registerLoading) return false
 
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (!valid) return false
         this.registerLoading = true
         this.register()
@@ -220,7 +220,7 @@ export default {
         sms_code: this.form.sms_code,
         platform: 'web',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$notify({
               title: '成功',
@@ -263,7 +263,7 @@ export default {
         mobile: this.form.username,
         type: 'user_register',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$notify({
               title: '成功',

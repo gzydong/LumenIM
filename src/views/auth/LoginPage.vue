@@ -130,7 +130,7 @@ export default {
     onSubmit(formName) {
       if (this.loginLoading) return false
 
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (!valid) return false
         this.loginLoading = true
         this.login()
@@ -143,7 +143,7 @@ export default {
         password: this.form.password,
         platform: 'web',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             let result = res.data
 

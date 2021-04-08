@@ -65,7 +65,7 @@
       </el-row>
     </div>
 
-    <AvatarCropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
+    <AvatarCropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
   </div>
 </template>
 <script>
@@ -113,7 +113,7 @@ export default {
       })
     },
     onSubmit() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (!valid) return false
         this.editUserDetail()
       })
@@ -129,7 +129,7 @@ export default {
 
     // 获取用户信息
     getUserDetail() {
-      ServeGetUserDetail().then((res) => {
+      ServeGetUserDetail().then(res => {
         if (res.code == 200) {
           this.form.mobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,
@@ -154,7 +154,7 @@ export default {
         motto: this.form.motto,
         gender: this.form.gender,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$store.commit('UPDATE_USER_INFO', {
               nickname: this.form.nickname,

@@ -128,14 +128,14 @@ export default {
   },
   computed: {
     ...mapState({
-      userAvatar: (state) => state.user.avatar,
-      detaultAvatar: (state) => state.detaultAvatar,
-      socketStatus: (state) => state.socketStatus,
-      unreadNum: (state) => state.notify.unreadNum,
-      applyNum: (state) => state.notify.applyNum,
-      notifyCueTone: (state) => state.settings.notifyCueTone,
-      themeMode: (state) => state.settings.themeMode,
-      themeBagImg: (state) => state.settings.themeBagImg,
+      userAvatar: state => state.user.avatar,
+      detaultAvatar: state => state.detaultAvatar,
+      socketStatus: state => state.socketStatus,
+      unreadNum: state => state.notify.unreadNum,
+      applyNum: state => state.notify.applyNum,
+      notifyCueTone: state => state.settings.notifyCueTone,
+      themeMode: state => state.settings.themeMode,
+      themeBagImg: state => state.settings.themeBagImg,
     }),
   },
   watch: {
@@ -161,7 +161,7 @@ export default {
       this.$store.dispatch('ACT_USER_LOGOUT')
     },
     setApplyNum() {
-      ServeFindFriendApplyNum().then((res) => {
+      ServeFindFriendApplyNum().then(res => {
         if (res.code == 200 && res.data.unread_num > 0) {
           this.$store.commit('INCR_APPLY_NUM')
         }

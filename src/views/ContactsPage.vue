@@ -421,7 +421,7 @@ export default {
   },
   computed: {
     waitHandleNum() {
-      return this.apply.items.filter((item) => {
+      return this.apply.items.filter(item => {
         return item.status == 0
       }).length
     },
@@ -466,7 +466,7 @@ export default {
       ServeGetContactApplyRecords({
         page: 1,
         page_size: 10000,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.apply.status = 1
           this.apply.items = res.data.rows
@@ -476,7 +476,7 @@ export default {
 
     // 加载好友列表
     loadFriends() {
-      ServeGetContacts().then((res) => {
+      ServeGetContacts().then(res => {
         if (res.code == 200) {
           this.friends.status = 1
           this.friends.items = res.data
@@ -486,7 +486,7 @@ export default {
 
     // 加载群聊列表接口
     loadUserGroups() {
-      ServeGetGroups().then((res) => {
+      ServeGetGroups().then(res => {
         if (res.code == 200) {
           this.groups.status = 1
           this.groups.items = res.data
@@ -505,7 +505,7 @@ export default {
       ServeCreateTalkList({
         type,
         receive_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code !== 200) return
         this.$root.dumpTalkPage(index_name)
       })
@@ -525,7 +525,7 @@ export default {
 
     // 根据用户对话索引获取对话数组对应的key
     getGroupIndex(group_id) {
-      return this.groups.items.findIndex((item) => {
+      return this.groups.items.findIndex(item => {
         return item.id == group_id
       })
     },
@@ -552,14 +552,14 @@ export default {
           return val == null || val == '' ? '好友备注不能为空' : true
         },
       })
-        .then((data) => {
+        .then(data => {
           ServeHandleFriendApply({
             apply_id: item.id,
             remarks: data.value,
-          }).then((res) => {
+          }).then(res => {
             if (res.code == 200) {
               let apply_id = item.id
-              let idx = this.apply.items.findIndex((item) => {
+              let idx = this.apply.items.findIndex(item => {
                 return item.id == apply_id
               })
 
@@ -576,7 +576,7 @@ export default {
             }
           })
         })
-        .catch((action) => {})
+        .catch(action => {})
     },
 
     // 删除好友申请记录
@@ -584,11 +584,11 @@ export default {
       let apply_id = item.id
       ServeDeleteContactApply({
         apply_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.$delete(
             this.apply.items,
-            this.apply.items.findIndex((item) => {
+            this.apply.items.findIndex(item => {
               return item.id == apply_id
             })
           )
@@ -605,16 +605,16 @@ export default {
         showCancelButton: true,
         customClass: 'border-radius0',
         closeOnClickModal: true,
-        callback: (action) => {
+        callback: action => {
           if (action == 'confirm') {
             let friend_id = item.id
             ServeDeleteContact({
               friend_id,
-            }).then((res) => {
+            }).then(res => {
               if (res.code == 200) {
                 this.$delete(
                   this.friends.items,
-                  this.friends.items.findIndex((item) => {
+                  this.friends.items.findIndex(item => {
                     return item.id == friend_id
                   })
                 )
@@ -643,16 +643,16 @@ export default {
         showCancelButton: true,
         customClass: 'border-radius0',
         closeOnClickModal: true,
-        callback: (action) => {
+        callback: action => {
           if (action == 'confirm') {
             let group_id = item.id
             ServeSecedeGroup({
               group_id,
-            }).then((res) => {
+            }).then(res => {
               if (res.code == 200) {
                 this.$delete(
                   this.groups.items,
-                  this.groups.items.findIndex((item) => {
+                  this.groups.items.findIndex(item => {
                     return item.id == group_id
                   })
                 )
@@ -675,7 +675,7 @@ export default {
 
     // 更新好友备注昵称
     changeRemark(firendInfo) {
-      let index = this.friends.items.findIndex((item) => {
+      let index = this.friends.items.findIndex(item => {
         return item.id == firendInfo.friend_id
       })
 

@@ -71,7 +71,7 @@ export default {
   methods: {
     // 获取登录用户信息
     getUserDetail() {
-      ServeGetUserDetail().then((res) => {
+      ServeGetUserDetail().then(res => {
         if (res.code == 200) {
           this.mobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,
