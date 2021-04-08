@@ -5,7 +5,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <h4>主题模式</h4>
-          <p>当前主题模式 ：{{ themeMode ? "全屏模式" : "窗口居中模式" }}</p>
+          <p>当前主题模式 ：{{ themeMode ? '全屏模式' : '窗口居中模式' }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <div class="action">
@@ -70,52 +70,52 @@
 </template>
 <script>
 export default {
-  name: "PersonalizePage",
+  name: 'PersonalizePage',
   data() {
     return {
       themeMode: false,
       bagItems: [
         {
-          name: "bag001",
-          src: require("@/assets/image/background/001.jpg"),
+          name: 'bag001',
+          src: require('@/assets/image/background/001.jpg'),
         },
         {
-          name: "bag002",
-          src: require("@/assets/image/background/002.jpg"),
+          name: 'bag002',
+          src: require('@/assets/image/background/002.jpg'),
         },
         {
-          name: "bag003",
-          src: require("@/assets/image/background/003.jpg"),
+          name: 'bag003',
+          src: require('@/assets/image/background/003.jpg'),
         },
         {
-          name: "bag004",
-          src: require("@/assets/image/background/005.png"),
+          name: 'bag004',
+          src: require('@/assets/image/background/005.png'),
         },
       ],
-    };
+    }
   },
   created() {
-    this.themeMode = this.$store.state.settings.themeMode;
+    this.themeMode = this.$store.state.settings.themeMode
   },
   methods: {
     // 触发修改主题模式
     changeThemeMode(value) {
-      this.$store.commit("SET_THEME_MODE", value);
+      this.$store.commit('SET_THEME_MODE', value)
     },
 
     // 修改主题背景
     changeThemeBag(item) {
-      let bagName = item.name;
+      let bagName = item.name
       if (this.$store.state.settings.themeBagImg == item.name) {
-        bagName = "";
+        bagName = ''
       } else {
-        bagName = item.name;
+        bagName = item.name
       }
 
-      this.$store.commit("SET_THEME_BAGIMG", bagName);
+      this.$store.commit('SET_THEME_BAGIMG', bagName)
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container h4 {

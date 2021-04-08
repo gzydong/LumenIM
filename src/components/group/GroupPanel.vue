@@ -193,11 +193,11 @@
     </div>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <UserBusinessCard ref="userBusinessCard" />
 
     <!-- 邀请好友组件 -->
     <transition name="el-fade-in-linear">
-      <group-launch
+      <GroupLaunch
         v-if="inviteFriendBox"
         :group-id="groupId"
         @close="inviteFriendBox = false"
@@ -207,7 +207,7 @@
 
     <!-- 群管理组件 -->
     <transition name="el-fade-in-linear">
-      <group-manage
+      <GroupManage
         v-if="isShowManager"
         :group-id="groupId"
         @close="isShowManager = false"
@@ -216,7 +216,7 @@
 
     <!-- 群公告组件 -->
     <transition name="el-fade-in-linear">
-      <group-notice
+      <GroupNotice
         v-if="isShowGroupNotice"
         :group-id="groupId"
         @close="isShowGroupNotice = false"
@@ -300,7 +300,7 @@ export default {
     searchs() {
       return this.keywords == ''
         ? this.members
-        : this.members.filter((item) => {
+        : this.members.filter(item => {
             return (
               item.nickname.match(this.keywords) != null ||
               item.user_card.match(this.keywords) != null
@@ -319,7 +319,7 @@ export default {
     loadMembers() {
       ServeGetGroupMembers({
         group_id: this.groupId,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.members = res.data
           this.$emit('group-info', {
@@ -335,7 +335,7 @@ export default {
       this.isEditRemark = false
       ServeGroupDetail({
         group_id: this.groupId,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           let result = res.data
           this.detail.groupAvatar = result.avatar
@@ -363,7 +363,7 @@ export default {
         receive_id: this.groupId,
         not_disturb: value ? 1 : 0,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$emit('disturb-change', {
               group_id: this.groupId,
@@ -373,7 +373,7 @@ export default {
             this.detail.disturb = value ? 0 : 1
           }
         })
-        .catch((err) => {
+        .catch(() => {
           this.detail.disturb = value ? 0 : 1
         })
         .finally(() => {
@@ -396,7 +396,7 @@ export default {
       ServeUpdateGroupCard({
         group_id: this.groupId,
         visit_card: this.editRemarkText,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.isEditRemark = false
           this.detail.visitCard = this.editRemarkText
@@ -438,7 +438,7 @@ export default {
       ServeSecedeGroup({
         group_id: this.detail.groupId,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.signoutStatus = 3
             setTimeout(() => {
@@ -453,7 +453,7 @@ export default {
             }, 3000)
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.signoutStatus = 2
           setTimeout(() => {
             this.signoutStatus = 0

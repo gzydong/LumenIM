@@ -155,7 +155,7 @@
                           </div>
                         </div>
                         <div class="profile">
-                          签名 | {{ member.motto ? member.motto : "未设置" }}
+                          签名 | {{ member.motto ? member.motto : '未设置' }}
                         </div>
                       </div>
                     </div>
@@ -190,7 +190,7 @@
                     class="full-height"
                   >
                     <div v-if="notice.items.length == 0" class="empty-notice">
-                      <svg-not-data style="width: 80px; margin-bottom: 10px" />
+                      <SvgNotData style="width: 80px; margin-bottom: 10px" />
                       <span>暂无群公告</span>
                     </div>
 
@@ -211,7 +211,7 @@
                           <span
                             class="right-tools no-select"
                             @click="catNoticeDetail(index)"
-                            >{{ item.isShow ? "收起" : "展开" }}</span
+                            >{{ item.isShow ? '收起' : '展开' }}</span
                           >
                         </div>
                         <p class="datetime">
@@ -288,14 +288,14 @@
     </div>
 
     <transition name="el-fade-in-linear">
-      <avatar-cropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
+      <AvatarCropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
     </transition>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <UserBusinessCard ref="userBusinessCard" />
 
     <transition name="el-fade-in-linear">
-      <group-launch
+      <GroupLaunch
         v-if="inviteFriendBox"
         :group-id="groupId"
         @close="inviteFriendBox = false"
@@ -305,10 +305,10 @@
   </div>
 </template>
 <script>
-import AvatarCropper from "@/components/layout/AvatarCropper";
-import UserBusinessCard from "@/components/user/UserBusinessCard";
-import GroupLaunch from "@/components/group/GroupLaunch";
-import { SvgNotData } from "@/core/icons";
+import AvatarCropper from '@/components/layout/AvatarCropper'
+import UserBusinessCard from '@/components/user/UserBusinessCard'
+import GroupLaunch from '@/components/group/GroupLaunch'
+import { SvgNotData } from '@/core/icons'
 import {
   ServeGetGroupMembers,
   ServeGetGroupNotices,
@@ -316,10 +316,10 @@ import {
   ServeRemoveMembersGroup,
   ServeGroupDetail,
   ServeEditGroup,
-} from "@/api/group";
+} from '@/api/group'
 
 export default {
-  name: "GroupManage",
+  name: 'GroupManage',
   props: {
     groupId: {
       type: [String, Number],
@@ -337,36 +337,36 @@ export default {
       // 当前选中菜单
       tabIndex: 0,
       menus: [
-        { name: "群信息" },
-        { name: "群成员" },
-        { name: "群公告" },
-        { name: "群设置" },
+        { name: '群信息' },
+        { name: '群成员' },
+        { name: '群公告' },
+        { name: '群设置' },
       ],
 
       loading: false,
       form: {
-        group_name: "",
-        profile: "",
-        avatar: "",
+        group_name: '',
+        profile: '',
+        avatar: '',
       },
       rules: {
         group_name: [
           {
             required: true,
-            message: "用户昵称不能为空!",
-            trigger: "blur",
+            message: '用户昵称不能为空!',
+            trigger: 'blur',
           },
         ],
       },
 
       detail: {
-        group_name: "",
-        profile: "",
-        avatar: "",
+        group_name: '',
+        profile: '',
+        avatar: '',
       },
 
       // 群成员列表
-      searchMembers: "",
+      searchMembers: '',
       batchDelMember: false,
       members: [],
 
@@ -376,22 +376,22 @@ export default {
         loading: false,
         form: {
           id: 0,
-          title: "",
-          content: "",
+          title: '',
+          content: '',
         },
         rules: {
           title: [
             {
               required: true,
-              message: "标题不能为空!",
-              trigger: "blur",
+              message: '标题不能为空!',
+              trigger: 'blur',
             },
           ],
           content: [
             {
               required: true,
-              message: "详情不能为空",
-              trigger: "blur",
+              message: '详情不能为空',
+              trigger: 'blur',
             },
           ],
         },
@@ -400,132 +400,132 @@ export default {
 
       inviteFriendBox: false,
       isAvatarCropper: false,
-    };
+    }
   },
   computed: {
     filterMembers() {
-      return this.searchMembers == ""
+      return this.searchMembers == ''
         ? this.members
-        : this.members.filter((item) => {
+        : this.members.filter(item => {
             return (
               item.nickname.match(this.searchMembers) != null ||
               item.visit_card.match(this.searchMembers) != null
-            );
-          });
+            )
+          })
     },
   },
   created() {
-    this.loadGroupDetail();
-    this.loadMembers();
-    this.loadNotices();
+    this.loadGroupDetail()
+    this.loadMembers()
+    this.loadNotices()
   },
   methods: {
     // 加载群信息
     loadGroupDetail() {
       ServeGroupDetail({
         group_id: this.groupId,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          let result = res.data;
-          this.form.group_name = result.group_name;
-          this.form.profile = result.group_profile;
-          this.form.avatar = result.avatar;
+          let result = res.data
+          this.form.group_name = result.group_name
+          this.form.profile = result.group_profile
+          this.form.avatar = result.avatar
 
           this.detail = {
             group_name: result.group_name,
             profile: result.profile,
             avatar: result.avatar,
-          };
+          }
         }
-      });
+      })
     },
 
     // 加载群组成员列表
     loadMembers() {
       ServeGetGroupMembers({
         group_id: this.groupId,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.members = res.data.map((item) => {
-            item.is_delete = false;
-            return item;
-          });
+          this.members = res.data.map(item => {
+            item.is_delete = false
+            return item
+          })
         }
-      });
+      })
     },
 
     // 加载群组公告列表
     loadNotices() {
       ServeGetGroupNotices({
         group_id: this.groupId,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.notice.items = res.data.map((item) => {
-            item.isShow = false;
-            return item;
-          });
+          this.notice.items = res.data.map(item => {
+            item.isShow = false
+            return item
+          })
         }
-      });
+      })
     },
 
     // 修改群信息
     editGroup() {
-      this.$refs.groupForm.validate((valid) => {
-        if (!valid) return false;
-        this.loading = true;
+      this.$refs.groupForm.validate(valid => {
+        if (!valid) return false
+        this.loading = true
         ServeEditGroup({
           group_id: this.groupId,
           group_name: this.form.group_name,
           profile: this.form.profile,
           avatar: this.form.avatar,
         })
-          .then((res) => {
+          .then(res => {
             if (res.code == 200) {
-              this.detail.group_name = this.form.group_name;
-              this.detail.profile = this.form.profile;
-              this.detail.avatar = this.form.avatar;
+              this.detail.group_name = this.form.group_name
+              this.detail.profile = this.form.profile
+              this.detail.avatar = this.form.avatar
 
               this.$message({
-                message: "信息修改成功...",
-                type: "success",
-              });
+                message: '信息修改成功...',
+                type: 'success',
+              })
             } else {
-              this.$message("信息修改失败...");
+              this.$message('信息修改失败...')
             }
           })
           .finally(() => {
-            this.loading = false;
-          });
-      });
+            this.loading = false
+          })
+      })
     },
 
     // 左侧菜单栏切换事件
     triggerTab(i) {
-      this.tabIndex = i;
+      this.tabIndex = i
     },
 
     // 关闭头像裁剪弹出层
-    closeAvatarCropper(type, avatar = "") {
-      this.isAvatarCropper = false;
-      if (type == 1 && avatar != "") {
-        this.form.avatar = avatar;
+    closeAvatarCropper(type, avatar = '') {
+      this.isAvatarCropper = false
+      if (type == 1 && avatar != '') {
+        this.form.avatar = avatar
       }
     },
 
     // 显示编辑公告窗口
-    showNoticeBox(id = 0, title = "", content = "") {
-      this.notice.isShowform = true;
-      this.notice.form.id = id;
-      this.notice.form.title = title;
-      this.notice.form.content = content;
+    showNoticeBox(id = 0, title = '', content = '') {
+      this.notice.isShowform = true
+      this.notice.form.id = id
+      this.notice.form.title = title
+      this.notice.form.content = content
     },
 
     // 编辑公告提交事件
     onSubmitNotice() {
-      this.$refs.noticeForm.validate((valid) => {
-        if (!valid) return false;
+      this.$refs.noticeForm.validate(valid => {
+        if (!valid) return false
 
-        this.notice.loading = true;
+        this.notice.loading = true
         ServeEditGroupNotice({
           notice_id: this.notice.form.id,
           group_id: this.groupId,
@@ -534,113 +534,113 @@ export default {
           is_top: 0,
           is_confirm: 0,
         })
-          .then((res) => {
+          .then(res => {
             if (res.code == 200) {
-              this.notice.isShowform = false;
-              this.loadNotices();
+              this.notice.isShowform = false
+              this.loadNotices()
               this.$notify({
-                title: "消息提示",
+                title: '消息提示',
                 message: this.notice.form.id
-                  ? "群公告修改成功..."
-                  : "群公告添加成功...",
-                type: "success",
-              });
+                  ? '群公告修改成功...'
+                  : '群公告添加成功...',
+                type: 'success',
+              })
             } else {
               this.$notify({
-                title: "消息提示",
+                title: '消息提示',
                 message: this.notice.form.id
-                  ? "群公告修改失败..."
-                  : "群公告添加失败...",
-                type: "success",
-              });
+                  ? '群公告修改失败...'
+                  : '群公告添加失败...',
+                type: 'success',
+              })
             }
           })
-          .catch((err) => {
+          .catch(err => {
             this.$notify({
-              title: "消息提示",
-              message: "网络异常，请稍后再试...",
-              position: "bottom-right",
-              type: "warning",
-            });
+              title: '消息提示',
+              message: '网络异常，请稍后再试...',
+              position: 'bottom-right',
+              type: 'warning',
+            })
           })
           .finally(() => {
-            this.notice.loading = false;
-          });
-      });
+            this.notice.loading = false
+          })
+      })
     },
 
     // 展开/收起群公告详情
     catNoticeDetail(index) {
-      this.notice.items[index].isShow = !this.notice.items[index].isShow;
+      this.notice.items[index].isShow = !this.notice.items[index].isShow
     },
 
     // 查看群成员信息事件
     catUserDetail(item) {
-      this.$refs.userBusinessCard.open(item.user_id);
+      this.$refs.userBusinessCard.open(item.user_id)
     },
 
     // 选中删除成员事件
     triggerDelBtn(member) {
-      let i = this.members.findIndex((item) => {
-        return item.id == member.id;
-      });
+      let i = this.members.findIndex(item => {
+        return item.id === member.id
+      })
 
-      this.members[i].is_delete = !this.members[i].is_delete;
+      this.members[i].is_delete = !this.members[i].is_delete
     },
 
     // 批量删除群成员
     deleteMembers() {
       let ids = [],
-        names = [];
+        names = []
 
-      this.members.forEach((item) => {
+      this.members.forEach(item => {
         if (item.is_delete) {
-          ids.push(item.user_id);
-          names.push(item.nickname);
+          ids.push(item.user_id)
+          names.push(item.nickname)
         }
-      });
+      })
 
       if (ids.length == 0) {
-        this.batchDelMember = false;
-        return;
+        this.batchDelMember = false
+        return
       }
 
-      this.$confirm(`您确定要将【 ${names.join("、")}】移出群聊?`, "温馨提示", {
-        confirmButtonText: "确定删除",
-        cancelButtonText: "取消",
+      this.$confirm(`您确定要将【 ${names.join('、')}】移出群聊?`, '温馨提示', {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
         dangerouslyUseHTMLString: true,
-        customClass: "border-radius0",
+        customClass: 'border-radius0',
       })
         .then(() => {
           ServeRemoveMembersGroup({
             group_id: this.groupId,
             members_ids: ids.join(','),
-          }).then((res) => {
+          }).then(res => {
             if (res.code == 200) {
-              this.loadMembers();
+              this.loadMembers()
               this.$notify({
-                title: "删除成功",
+                title: '删除成功',
                 message: `已成功将群成员移除群组...`,
-                type: "success",
-              });
+                type: 'success',
+              })
             }
-          });
+          })
         })
         .catch(() => {
-          this.members.map((item) => {
-            return (item.is_delete = false);
-          });
-          this.batchDelMember = false;
-        });
+          this.members.map(item => {
+            return (item.is_delete = false)
+          })
+          this.batchDelMember = false
+        })
     },
 
     // 好友邀请成功回调方法
     inviteSuccess() {
-      this.inviteFriendBox = false;
-      this.loadMembers();
+      this.inviteFriendBox = false
+      this.loadMembers()
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

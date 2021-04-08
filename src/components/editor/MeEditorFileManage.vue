@@ -13,7 +13,7 @@
 
     <el-main class="no-padding mian lum-scrollbar">
       <div class="empty-data" v-show="total == 0">
-        <svg-not-data />
+        <SvgNotData />
         <p>暂无上传文件</p>
       </div>
 
@@ -73,20 +73,20 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { SvgNotData } from "@/core/icons";
-import { Progress } from "element-ui";
-Vue.use(Progress);
+import Vue from 'vue'
+import { SvgNotData } from '@/core/icons'
+import { Progress } from 'element-ui'
+Vue.use(Progress)
 
-import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from "@/api/upload";
-import { formateSize, getFileExt, parseTime } from "@/utils/functions";
-import { ServeSendTalkFile } from "@/api/chat";
+import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from '@/api/upload'
+import { formateSize, getFileExt, parseTime } from '@/utils/functions'
+import { ServeSendTalkFile } from '@/api/chat'
 
 export default {
-  name: "MeEditorFileManage",
+  name: 'MeEditorFileManage',
   model: {
-    prop: "show",
-    event: "close",
+    prop: 'show',
+    event: 'close',
   },
   props: {
     show: Boolean,
@@ -98,164 +98,159 @@ export default {
     return {
       colors: [
         {
-          color: "#f56c6c",
+          color: '#f56c6c',
           percentage: 20,
         },
         {
-          color: "#e6a23c",
+          color: '#e6a23c',
           percentage: 40,
         },
         {
-          color: "#5cb87a",
+          color: '#5cb87a',
           percentage: 60,
         },
         {
-          color: "#1989fa",
+          color: '#1989fa',
           percentage: 80,
         },
         {
-          color: "#11ce65",
+          color: '#11ce65',
           percentage: 100,
         },
       ],
 
       items: [],
-    };
+    }
   },
   computed: {
     total() {
-      return this.items.filter((item, index) => {
-        return item.isDelete == false;
-      }).length;
+      return this.items.filter(item => {
+        return item.isDelete === false
+      }).length
     },
     successNum() {
-      return this.items.filter((item, index) => {
-        return item.isDelete == false && item.status == 2;
-      }).length;
+      return this.items.filter(item => {
+        return item.isDelete === false && item.status == 2
+      }).length
     },
   },
   methods: {
     closeBox() {
-      this.$emit("close", false);
+      this.$emit('close', false)
     },
 
     upload(file) {
       ServeFindFileSplitInfo({
         file_name: file.name,
         file_size: file.size,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          let hashName = res.data.hash_name;
-          let splitSize = res.data.split_size;
+          const { hash_name, split_size } = res.data
 
           this.items.unshift({
-            hashName: hashName,
+            hashName: hash_name,
             originalFile: file,
             filename: file.name,
             status: 0, // 文件上传状态 0:等待上传 1:上传中 2:上传完成 3:网络异常
             progress: 0,
             filesize: formateSize(file.size),
-            filetype: file.type || "未知",
-            datetime: parseTime(new Date(), "{m}-{d} {h}:{i}"),
+            filetype: file.type || '未知',
+            datetime: parseTime(new Date(), '{m}-{d} {h}:{i}'),
             ext: getFileExt(file.name),
-            forms: this.fileSlice(file, hashName, splitSize),
+            forms: this.fileSlice(file, hash_name, split_size),
             successNum: 0,
             isDelete: false,
-          });
+          })
 
-          this.triggerUpload(hashName);
+          this.triggerUpload(hash_name)
         }
-      });
+      })
     },
 
     // 处理拆分上传文件
     fileSlice(file, hash, eachSize) {
-      const ext = getFileExt(file.name);
-      const splitNum = Math.ceil(file.size / eachSize); // 分片总数
-      const forms = [];
+      const ext = getFileExt(file.name)
+      const splitNum = Math.ceil(file.size / eachSize) // 分片总数
+      const forms = []
 
       // 处理每个分片的上传操作
       for (let i = 0; i < splitNum; i++) {
-        let start = i * eachSize;
-        let end = Math.min(file.size, start + eachSize);
+        let start = i * eachSize
+        let end = Math.min(file.size, start + eachSize)
 
         // 构建表单
-        const form = new FormData();
-        form.append("file", file.slice(start, end));
-        form.append("name", file.name);
-        form.append("hash", hash);
-        form.append("ext", ext);
-        form.append("size", file.size);
-        form.append("split_index", i);
-        form.append("split_num", splitNum);
-        forms.push(form);
+        const form = new FormData()
+        form.append('file', file.slice(start, end))
+        form.append('name', file.name)
+        form.append('hash', hash)
+        form.append('ext', ext)
+        form.append('size', file.size)
+        form.append('split_index', i)
+        form.append('split_num', splitNum)
+        forms.push(form)
       }
 
-      return forms;
+      return forms
     },
 
     // 触发上传文件
     triggerUpload(hashName) {
-      let $index = this.getFileIndex(hashName);
-      if ($index < 0) {
-        return;
+      let $index = this.getFileIndex(hashName)
+      if ($index < 0 || this.items[$index].isDelte) {
+        return
       }
 
-      if (this.items[$index].isDelte) {
-        return;
-      }
-
-      let i = this.items[$index].successNum;
-      let form = this.items[$index].forms[i];
-      let length = this.items[$index].forms.length;
-      this.items[$index].status = 1;
+      let i = this.items[$index].successNum
+      let form = this.items[$index].forms[i]
+      let length = this.items[$index].forms.length
+      this.items[$index].status = 1
       ServeFileSubareaUpload(form)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            $index = this.getFileIndex(hashName);
-            this.items[$index].successNum++;
+            $index = this.getFileIndex(hashName)
+            this.items[$index].successNum++
             this.items[$index].progress = Math.floor(
               (this.items[$index].successNum / length) * 100
-            );
+            )
             if (this.items[$index].successNum == length) {
-              this.items[$index].status = 2;
+              this.items[$index].status = 2
               if (res.data.is_file_merge) {
                 ServeSendTalkFile({
                   hash_name: res.data.hash,
                   receive_id: this.$store.state.dialogue.receive_id,
                   source: this.$store.state.dialogue.source,
-                });
+                })
               }
             } else {
-              this.triggerUpload(hashName);
+              this.triggerUpload(hashName)
             }
           } else {
-            this.items[$index].status = 3;
+            this.items[$index].status = 3
           }
         })
-        .catch((err) => {
-          $index = this.getFileIndex(hashName);
-          this.items[$index].status = 3;
-        });
+        .catch(() => {
+          $index = this.getFileIndex(hashName)
+          this.items[$index].status = 3
+        })
     },
 
-    //获取分片文件数组索引
+    // 获取分片文件数组索引
     getFileIndex(hashName) {
-      return this.items.findIndex((item) => {
-        return item.hashName == hashName;
-      });
+      return this.items.findIndex(item => {
+        return item.hashName === hashName
+      })
     },
 
     removeFile(hashName) {
-      let index = this.getFileIndex(hashName);
-      this.items[index].isDelete = true;
+      let index = this.getFileIndex(hashName)
+      this.items[index].isDelete = true
     },
 
     clear() {
-      this.items = [];
+      this.items = []
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {

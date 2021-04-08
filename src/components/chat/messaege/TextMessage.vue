@@ -12,19 +12,19 @@
   </div>
 </template>
 <script>
-import { textReplaceLink } from "@/utils/functions";
-import { textReplaceEmoji } from "@/utils/emojis";
+import { textReplaceLink } from '@/utils/functions'
+import { textReplaceEmoji } from '@/utils/emojis'
 
 export default {
-  name: "TextMessage",
+  name: 'TextMessage',
   props: {
     content: {
       type: String | Number,
-      default: "",
+      default: '',
     },
     float: {
       type: String,
-      default: "left",
+      default: 'left',
     },
     fullWidth: {
       type: Boolean,
@@ -37,18 +37,18 @@ export default {
   },
   data() {
     return {
-      html: "",
-    };
+      html: '',
+    }
   },
   created() {
     const text = textReplaceLink(
       this.content,
-      this.float == "right" ? "#ffffff" : "rgb(9 149 208)"
-    );
+      this.float == 'right' ? '#ffffff' : 'rgb(9 149 208)'
+    )
 
-    this.html = textReplaceEmoji(text);
+    this.html = textReplaceEmoji(text)
   },
-};
+}
 </script>
 <style lang="less" scoped>
 @bg-left-color: #f5f5f5;
@@ -102,7 +102,7 @@ export default {
     word-wrap: break-word;
     font-size: 15px;
     padding: 3px 10px;
-    font-family: "Microsoft YaHei";
+    font-family: 'Microsoft YaHei';
     line-height: 25px;
   }
 }

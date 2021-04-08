@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="2">
+    <MainLayout :idx="2">
       <el-container slot="container" class="note-container">
         <el-aside width="230px" class="el-aside-one lum-scrollbar">
           <el-header class="btn-header">
@@ -552,16 +552,16 @@
           </el-container>
         </el-main>
       </el-container>
-    </main-layout>
+    </MainLayout>
 
     <!-- 笔记附件回收站 -->
-    <note-annex-recycle
+    <NoteAnnexRecycle
       v-if="recycleAnnexBox"
       @close="recycleAnnexBox = false"
     />
 
     <!-- 选择联系人窗口 -->
-    <user-contacts
+    <UserContacts
       v-show="selectContactsBox"
       @close="selectContactsBox = false"
       @confirm="confirmSelectContacts"

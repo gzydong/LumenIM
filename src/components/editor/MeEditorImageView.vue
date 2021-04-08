@@ -32,54 +32,54 @@
 </template>
 <script>
 export default {
-  name: "MeEditorImageView",
+  name: 'MeEditorImageView',
   model: {
-    prop: "show",
-    event: "close",
+    prop: 'show',
+    event: 'close',
   },
   props: {
     show: Boolean,
     file: File,
   },
   watch: {
-    file(nfile, ofile) {
-      this.loadFile(nfile);
+    file(file) {
+      this.loadFile(file)
     },
   },
   data() {
     return {
-      src: "",
-      fileSize: "",
-      fileName: "",
+      src: '',
+      fileSize: '',
+      fileName: '',
       loading: false,
-    };
+    }
   },
   methods: {
     closeBox() {
       if (this.loading) {
-        return false;
+        return false
       }
 
-      this.$emit("close", false);
+      this.$emit('close', false)
     },
     loadFile(file) {
-      let reader = new FileReader();
-      this.fileSize = Math.ceil(file.size / 1024);
-      this.fileName = file.name;
+      let reader = new FileReader()
+      this.fileSize = Math.ceil(file.size / 1024)
+      this.fileName = file.name
       reader.onload = () => {
-        this.src = reader.result;
-      };
+        this.src = reader.result
+      }
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     },
 
     // 确认按钮事件
     uploadImage() {
-      this.loading = true;
-      this.$emit("confirm");
+      this.loading = true
+      this.$emit('confirm')
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

@@ -34,15 +34,15 @@
     </div>
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" />
+    <UserBusinessCard ref="userBusinessCard" />
   </div>
 </template>
 <script>
-import { ServeSearchContact } from "@/api/contacts";
-import UserBusinessCard from "@/components/user/UserBusinessCard";
+import { ServeSearchContact } from '@/api/contacts'
+import UserBusinessCard from '@/components/user/UserBusinessCard'
 
 export default {
-  name: "UserSearch",
+  name: 'UserSearch',
   components: {
     UserBusinessCard,
   },
@@ -50,47 +50,48 @@ export default {
     return {
       loading: false,
       isShow: false,
-      mobile: "",
+      mobile: '',
       error: false,
-    };
+    }
   },
   methods: {
     // 显示窗口
     open() {
       this.mobile = ''
-      this.isShow = true;
-      this.$nextTick(()=>{
+      this.isShow = true
+      this.$nextTick(() => {
         document.getElementById('serach-mobile').focus()
       })
     },
 
     // 关闭窗口
     close() {
-      this.isShow = false;
+      this.isShow = false
     },
 
     onSubmit() {
-      let { mobile } = this;
-      if (mobile == "") return false;
+      let { mobile } = this
 
-      this.loading = true;
+      if (mobile == '') return false
+
+      this.loading = true
       ServeSearchContact({
         mobile,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$refs.userBusinessCard.open(res.data.id);
-            this.close();
+            this.$refs.userBusinessCard.open(res.data.id)
+            this.close()
           } else {
-            this.error = true;
+            this.error = true
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

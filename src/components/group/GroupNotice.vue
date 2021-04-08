@@ -23,7 +23,7 @@
         </template>
         <template v-if="loadStatus == 1 && items.length == 0">
           <div class="loading">
-            <svg-not-data class="svg-icon" />
+            <SvgNotData class="svg-icon" />
             <p>暂无群公告</p>
           </div>
         </template>
@@ -51,7 +51,7 @@
                 <span
                   class="right-tools no-select"
                   @click="catNoticeDetail(index)"
-                  >{{ item.isShow ? "收起" : "展开" }}</span
+                  >{{ item.isShow ? '收起' : '展开' }}</span
                 >
               </div>
               <p class="datetime">
@@ -78,11 +78,11 @@
   </div>
 </template>
 <script>
-import { ServeGetGroupNotices } from "@/api/group";
-import { SvgNotData } from "@/core/icons";
+import { ServeGetGroupNotices } from '@/api/group'
+import { SvgNotData } from '@/core/icons'
 
 export default {
-  name: "GroupNotice",
+  name: 'GroupNotice',
   props: {
     groupId: {
       type: [String, Number],
@@ -97,40 +97,40 @@ export default {
       // 公告列表
       items: [],
       loadStatus: 0,
-    };
+    }
   },
   created() {
-    this.loadNotices();
+    this.loadNotices()
   },
   methods: {
     // 加载群组公告列表
     loadNotices() {
-      this.loadStatus = 0;
+      this.loadStatus = 0
       ServeGetGroupNotices({
         group_id: this.groupId,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.items = res.data.map((item) => {
-              item.isShow = false;
-              return item;
-            });
+            this.items = res.data.map(item => {
+              item.isShow = false
+              return item
+            })
 
-            this.loadStatus = 1;
+            this.loadStatus = 1
           } else {
-            this.loadStatus = 2;
+            this.loadStatus = 2
           }
         })
-        .catch((err) => {
-          this.loadStatus = 2;
-        });
+        .catch(() => {
+          this.loadStatus = 2
+        })
     },
     // 展开/收起群公告详情
     catNoticeDetail(index) {
-      this.items[index].isShow = !this.items[index].isShow;
+      this.items[index].isShow = !this.items[index].isShow
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

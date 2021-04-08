@@ -15,12 +15,12 @@
   </div>
 </template>
 <script>
-import { formateTime as sendTime } from "@/utils/functions";
+import { formateTime as sendTime } from '@/utils/functions'
 
 export default {
-  name: "RevokeMessage",
+  name: 'RevokeMessage',
   props: {
-    //邀请方式
+    // 邀请方式
     item: {
       type: Object,
       default: {},
@@ -29,7 +29,7 @@ export default {
   methods: {
     sendTime,
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .revoke-message {

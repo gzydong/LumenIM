@@ -153,7 +153,7 @@ export default {
   },
   computed: {
     selected() {
-      return this.contacts.filter((item) => {
+      return this.contacts.filter(item => {
         return item.checked
       })
     },
@@ -163,7 +163,7 @@ export default {
       this.search =
         val == ''
           ? this.contacts
-          : this.contacts.filter((item) => {
+          : this.contacts.filter(item => {
               return item.nickname.match(this.keywords) != null
             })
     },
@@ -184,25 +184,25 @@ export default {
     this.handleScroll()
   },
   methods: {
-    //触发选择联系人事件
+    // 触发选择联系人事件
     triggerContacts(item) {
-      let index = this.contacts.findIndex((val) => {
-        return val.id == item.id
+      let index = this.contacts.findIndex(val => {
+        return val.id === item.id
       })
 
       this.contacts[index].checked = !this.contacts[index].checked
     },
 
-    //取消选中的联系人
+    // 取消选中的联系人
     delContacts(item) {
-      let index = this.contacts.findIndex((val) => {
-        return val.id == item.id
+      let index = this.contacts.findIndex(val => {
+        return val.id === item.id
       })
 
       this.contacts[index].checked = false
     },
 
-    //移除所有选中选项
+    // 移除所有选中选项
     delAll() {
       this.contacts.forEach((item, i) => {
         this.contacts[i].checked = false
@@ -216,33 +216,27 @@ export default {
 
     // 获取选中的ID列表
     getIds() {
-      return this.selected.map((item) => {
-        return item.id
-      })
+      return this.selected.map(item => item.id)
     },
 
     // 加载好友列表
     friendsApi() {
       ServeGetInviteFriends({
         group_id: this.from.groupId,
-      })
-        .then((res) => {
-          if (res.code == 200 && res.data) {
-            this.contacts = []
-            let data = res.data.map((item) => {
-              return Object.assign(item, {
-                nickname: item.friend_remark
-                  ? item.friend_remark
-                  : item.nickname,
-                checked: false,
-              })
+      }).then(res => {
+        if (res.code == 200 && res.data) {
+          this.contacts = []
+
+          let data = res.data.map(item => {
+            return Object.assign(item, {
+              nickname: item.friend_remark ? item.friend_remark : item.nickname,
+              checked: false,
             })
-            this.contacts.push(...data)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+          })
+
+          this.contacts.push(...data)
+        }
+      })
     },
 
     //创建聊天群
@@ -264,7 +258,7 @@ export default {
         return
       }
 
-      ServeCreateGroup(data).then((res) => {
+      ServeCreateGroup(data).then(res => {
         if (res.code == 200) {
           this.$emit('create-success', res.data)
         } else {
@@ -278,7 +272,7 @@ export default {
       ServeInviteGroup({
         group_id: this.from.groupId,
         uids: this.getIds().join(','),
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.$emit('invite-success')
         } else {
@@ -372,10 +366,10 @@ export default {
 
       i {
         color: #ccc;
-      }
 
-      .icon-active {
-        color: #26bcfe !important;
+        &.icon-active {
+          color: #26bcfe !important;
+        }
       }
     }
   }

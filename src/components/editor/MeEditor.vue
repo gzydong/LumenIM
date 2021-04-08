@@ -61,10 +61,7 @@
           trigger="click"
           popper-class="no-padding"
         >
-          <me-editor-emoticon
-            ref="editorEmoticon"
-            @selected="selecteEmoticon"
-          />
+          <MeEditorEmoticon ref="editorEmoticon" @selected="selecteEmoticon" />
         </el-popover>
 
         <form
@@ -96,17 +93,17 @@
     </el-container>
 
     <!-- 图片查看器 -->
-    <me-editor-image-view
+    <MeEditorImageView
       v-model="imageViewer.isShow"
       :file="imageViewer.file"
       @confirm="confirmUploadImage"
       ref="imageViewer"
     />
 
-    <me-editor-recorder v-if="recorder" @close="recorder = false" />
+    <MeEditorRecorder v-if="recorder" @close="recorder = false" />
 
     <!-- 代码块编辑器 -->
-    <talk-code-block
+    <TalkCodeBlock
       v-if="codeBlock.isShow"
       :edit-mode="codeBlock.editMode"
       @close="codeBlock.isShow = false"
@@ -114,27 +111,27 @@
     />
 
     <!-- 文件上传管理器 -->
-    <me-editor-file-manage ref="filesManager" v-model="filesManager.isShow" />
+    <MeEditorFileManage ref="filesManager" v-model="filesManager.isShow" />
   </div>
 </template>
 
 <script>
-import MeEditorEmoticon from "./MeEditorEmoticon";
-import MeEditorFileManage from "./MeEditorFileManage";
-import MeEditorImageView from "./MeEditorImageView";
-import MeEditorRecorder from "./MeEditorRecorder";
-import TalkCodeBlock from "@/components/chat/TalkCodeBlock";
-import { getPasteImgs, getDragPasteImg } from "@/utils/editor";
-import { findTalk } from "@/utils/talk";
+import MeEditorEmoticon from './MeEditorEmoticon'
+import MeEditorFileManage from './MeEditorFileManage'
+import MeEditorImageView from './MeEditorImageView'
+import MeEditorRecorder from './MeEditorRecorder'
+import TalkCodeBlock from '@/components/chat/TalkCodeBlock'
+import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
+import { findTalk } from '@/utils/talk'
 
 import {
   ServeSendTalkCodeBlock,
   ServeSendTalkImage,
   ServeSendEmoticon,
-} from "@/api/chat";
+} from '@/api/chat'
 
 export default {
-  name: "MeEditor",
+  name: 'MeEditor',
   components: {
     MeEditorEmoticon,
     MeEditorFileManage,
@@ -144,19 +141,19 @@ export default {
   },
   computed: {
     talkUser() {
-      return this.$store.state.dialogue.index_name;
+      return this.$store.state.dialogue.index_name
     },
   },
   watch: {
     talkUser(n_index_name) {
-      this.$refs.filesManager.clear();
-      this.editorText = this.getDraftText(n_index_name);
+      this.$refs.filesManager.clear()
+      this.editorText = this.getDraftText(n_index_name)
     },
   },
   data() {
     return {
       // 当前编辑的内容
-      editorText: "",
+      editorText: '',
 
       // 图片查看器相关信息
       imageViewer: {
@@ -181,166 +178,171 @@ export default {
 
       // 发送间隔时间（默认1秒）
       interval: 1000,
-    };
+    }
   },
   methods: {
     // 读取对话编辑草稿信息
     getDraftText(index_name) {
-      return findTalk(index_name).draft_text || "";
+      return findTalk(index_name).draft_text || ''
     },
 
     //复制粘贴图片回调方法
     pasteImage(e) {
-      let files = getPasteImgs(e);
-      if (files.length == 0) return;
+      let files = getPasteImgs(e)
+      if (files.length == 0) return
 
-      this.openImageViewer(files[0]);
+      this.openImageViewer(files[0])
     },
 
     //拖拽上传图片回调方法
     dragPasteImage(e) {
-      let files = getDragPasteImg(e);
-      if (files.length == 0) return;
-      this.openImageViewer(files[0]);
+      let files = getDragPasteImg(e)
+      if (files.length == 0) return
+
+      this.openImageViewer(files[0])
     },
 
     inputEvent(e) {
-      this.$emit("keyboard-event", e.target.value);
+      this.$emit('keyboard-event', e.target.value)
     },
 
     // 键盘按下监听事件
     keydownEvent(e) {
-      if (e.keyCode == 13 && this.editorText == "") {
-        e.preventDefault();
+      if (e.keyCode == 13 && this.editorText == '') {
+        e.preventDefault()
       }
 
       // 回车发送消息
-      if (e.keyCode == 13 && e.shiftKey == false && this.editorText != "") {
-        let currentTime = new Date().getTime();
+      if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
+        let currentTime = new Date().getTime()
 
         if (this.sendtime > 0) {
           // 判断 1秒内只能发送一条消息
           if (currentTime - this.sendtime < this.interval) {
-            e.preventDefault();
-            return false;
+            e.preventDefault()
+            return false
           }
         }
 
-        this.$emit("send", this.editorText);
-        this.editorText = "";
-        this.sendtime = currentTime;
-        e.preventDefault();
+        this.$emit('send', this.editorText)
+        this.editorText = ''
+        this.sendtime = currentTime
+        e.preventDefault()
       }
     },
 
     // 选择图片文件后回调方法
     uploadImageChange(e) {
-      this.openImageViewer(e.target.files[0]);
-      this.$refs.restFile.value = null;
+      this.openImageViewer(e.target.files[0])
+      this.$refs.restFile.value = null
     },
 
     // 选择文件回调事件
     uploadFileChange(e) {
-      let maxsize = 100 * 1024 * 1024;
+      let maxsize = 100 * 1024 * 1024
       if (e.target.files.length == 0) {
-        return false;
+        return false
       }
 
-      let file = e.target.files[0];
+      let file = e.target.files[0]
       if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
-        this.openImageViewer(file);
-        return;
+        this.openImageViewer(file)
+        return
       }
 
       if (file.size > maxsize) {
         this.$notify.info({
-          title: "消息",
-          message: "上传文件不能大于100M",
-        });
-        return;
+          title: '消息',
+          message: '上传文件不能大于100M',
+        })
+        return
       }
 
-      this.filesManager.isShow = true;
-      this.$refs.restFile2.value = null;
-      this.$refs.filesManager.upload(file);
+      this.filesManager.isShow = true
+      this.$refs.restFile2.value = null
+      this.$refs.filesManager.upload(file)
     },
 
     // 打开图片查看器
     openImageViewer(file) {
-      this.imageViewer.isShow = true;
-      this.imageViewer.file = file;
+      this.imageViewer.isShow = true
+      this.imageViewer.file = file
     },
 
     // 代码块编辑器确认完成回调事件
     confirmCodeBlock(data) {
+      const { source, receive_id } = this.$store.state.dialogue
       ServeSendTalkCodeBlock({
+        source,
+        receive_id,
         code: data.code,
         lang: data.language,
-        receive_id: this.$store.state.dialogue.receive_id,
-        source: this.$store.state.dialogue.source,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.codeBlock.isShow = false;
+          this.codeBlock.isShow = false
         } else {
           this.$notify.error({
-            title: "错误",
-            message: "代码消息发送失败",
-          });
+            title: '错误',
+            message: '代码消息发送失败',
+          })
         }
-      });
+      })
     },
 
     // 确认上传图片消息回调事件
     confirmUploadImage() {
-      let fileData = new FormData();
-      fileData.append("img", this.imageViewer.file);
-      fileData.append("receive_id", this.$store.state.dialogue.receive_id);
-      fileData.append("source", this.$store.state.dialogue.source);
+      const { source, receive_id } = this.$store.state.dialogue
 
-      let ref = this.$refs.imageViewer;
+      let fileData = new FormData()
+      fileData.append('source', source)
+      fileData.append('receive_id', receive_id)
+      fileData.append('img', this.imageViewer.file)
+
+      let ref = this.$refs.imageViewer
+
       ServeSendTalkImage(fileData)
-        .then((res) => {
-          ref.loading = false;
-          if (res.code == 200) {
-            ref.closeBox();
-          }
+        .then(res => {
+          if (res.code == 200) ref.closeBox()
         })
-        .catch((err) => {
-          ref.loading = false;
-        });
+        .finally(() => {
+          ref.loading = false
+        })
     },
 
     // 选中表情包回调事件
     selecteEmoticon(data) {
       if (data.type == 1) {
-        let value = this.editorText;
-        let el = this.$refs.textarea;
-        let startPos = el.selectionStart;
-        let endPos = el.selectionEnd;
+        let value = this.editorText
+        let el = this.$refs.textarea
+        let startPos = el.selectionStart
+        let endPos = el.selectionEnd
         let newValue =
           value.substring(0, startPos) +
           data.value +
-          value.substring(endPos, value.length);
-        this.editorText = newValue;
+          value.substring(endPos, value.length)
+
+        this.editorText = newValue
+
         if (el.setSelectionRange) {
           setTimeout(() => {
-            let index = startPos + data.value.length;
-            el.setSelectionRange(index, index);
-            el.focus();
-          }, 0);
+            let index = startPos + data.value.length
+            el.setSelectionRange(index, index)
+            el.focus()
+          }, 0)
         }
       } else {
+        const { source, receive_id } = this.$store.state.dialogue
         ServeSendEmoticon({
+          source,
+          receive_id,
           emoticon_id: data.value,
-          receive_id: this.$store.state.dialogue.receive_id,
-          source: this.$store.state.dialogue.source,
-        });
+        })
       }
 
-      this.$refs.popoverEmoticon.doClose();
+      this.$refs.popoverEmoticon.doClose()
     },
   },
-};
+}
 </script>
 <style scoped>
 .editor-container {

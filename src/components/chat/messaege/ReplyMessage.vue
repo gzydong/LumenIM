@@ -4,13 +4,13 @@
 
 <script>
 export default {
-  name: "ReplyMessage",
+  name: 'ReplyMessage',
   data() {
-    return {};
+    return {}
   },
   created() {},
   methods: {},
-};
+}
 </script>
 <style lang="less" scoped>
 .reply-message {

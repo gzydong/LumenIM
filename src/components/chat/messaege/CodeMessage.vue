@@ -17,19 +17,19 @@
   </div>
 </template>
 <script>
-import Prism from "prismjs";
-import "prismjs/themes/prism-okaidia.css";
+import Prism from 'prismjs'
+import 'prismjs/themes/prism-okaidia.css'
 
 export default {
-  name: "CodeMessage",
+  name: 'CodeMessage',
   props: {
     code: {
       type: String | Number,
-      default: "",
+      default: '',
     },
     lang: {
       type: String,
-      default: "",
+      default: '',
     },
     maxwidth: {
       type: Boolean,
@@ -40,21 +40,21 @@ export default {
     return {
       fullscreen: false,
       lineNumber: 0,
-    };
+    }
   },
   created() {
-    this.lineNumber = this.code.split(/\n/).length;
+    this.lineNumber = this.code.split(/\n/).length
   },
   methods: {
     formatCode(code, lang) {
       try {
-        return Prism.highlight(code, Prism.languages[lang], lang) + "<br/>";
+        return Prism.highlight(code, Prism.languages[lang], lang) + '<br/>'
       } catch (error) {
-        return code;
+        return code
       }
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .code-message {
@@ -104,8 +104,8 @@ export default {
     line-height: 24px;
     background: #272822;
     color: #d5d4d4;
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+      'Courier New', monospace;
     font-size: 85%;
 
     &.lum-scrollbar {

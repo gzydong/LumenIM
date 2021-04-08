@@ -142,11 +142,10 @@
   </div>
 </template>
 <script>
-import { ServeSendTalkImage } from "@/api/chat";
-import Recorder from "js-audio-recorder";
+import Recorder from 'js-audio-recorder'
 
 export default {
-  name: "MeEditorRecorder",
+  name: 'MeEditorRecorder',
   data() {
     return {
       // 录音实例
@@ -164,148 +163,148 @@ export default {
       recorderStatus: 0, //0:未开始录音 1:正在录音 2:暂停录音 3:结束录音 4:播放录音 5:停止播放 6:播放结束
 
       playTimeout: null,
-    };
+    }
   },
   computed: {
     datetime() {
-      let hour = parseInt((this.duration / 60 / 60) % 24); //小时
-      let minute = parseInt((this.duration / 60) % 60); //分钟
-      let seconds = parseInt(this.duration % 60); //秒
+      let hour = parseInt((this.duration / 60 / 60) % 24) //小时
+      let minute = parseInt((this.duration / 60) % 60) //分钟
+      let seconds = parseInt(this.duration % 60) //秒
 
-      if (hour < 10) hour = `0${hour}`;
-      if (minute < 10) minute = `0${minute}`;
-      if (seconds < 10) seconds = `0${seconds}`;
+      if (hour < 10) hour = `0${hour}`
+      if (minute < 10) minute = `0${minute}`
+      if (seconds < 10) seconds = `0${seconds}`
 
-      return `${hour}:${minute}:${seconds}`;
+      return `${hour}:${minute}:${seconds}`
     },
     formatPlayTime() {
-      let hour = parseInt((this.playTime / 60 / 60) % 24); //小时
-      let minute = parseInt((this.playTime / 60) % 60); //分钟
-      let seconds = parseInt(this.playTime % 60); //秒
+      let hour = parseInt((this.playTime / 60 / 60) % 24) //小时
+      let minute = parseInt((this.playTime / 60) % 60) //分钟
+      let seconds = parseInt(this.playTime % 60) //秒
 
-      if (hour < 10) hour = `0${hour}`;
-      if (minute < 10) minute = `0${minute}`;
-      if (seconds < 10) seconds = `0${seconds}`;
+      if (hour < 10) hour = `0${hour}`
+      if (minute < 10) minute = `0${minute}`
+      if (seconds < 10) seconds = `0${seconds}`
 
-      return `${hour}:${minute}:${seconds}`;
+      return `${hour}:${minute}:${seconds}`
     },
   },
   destroyed() {
     if (this.recorder) {
-      this.destroyRecorder();
+      this.destroyRecorder()
     }
   },
   methods: {
     closeBox() {
       if (this.recorder == null) {
-        this.$emit("close", false);
-        return;
+        this.$emit('close', false)
+        return
       }
 
       if (this.recorderStatus == 1) {
-        this.stopRecorder();
+        this.stopRecorder()
       } else if (this.recorderStatus == 4) {
-        this.pausePlayRecorder();
+        this.pausePlayRecorder()
       }
 
       // 销毁录音后关闭窗口
       this.destroyRecorder(() => {
-        this.$emit("close", false);
-      });
+        this.$emit('close', false)
+      })
     },
 
     // 开始录音
     startRecorder() {
-      let _this = this;
+      let _this = this
       // http://recorder.api.zhuyuntao.cn/Recorder/event.html
       // https://blog.csdn.net/qq_41619796/article/details/107865602
-      this.recorder = new Recorder();
-      this.recorder.onprocess = (duration) => {
-        duration = parseInt(duration);
-        _this.duration = duration;
-      };
+      this.recorder = new Recorder()
+      this.recorder.onprocess = duration => {
+        duration = parseInt(duration)
+        _this.duration = duration
+      }
 
       this.recorder.start().then(
         () => {
-          this.recorderStatus = 1;
-          this.animation = true;
+          this.recorderStatus = 1
+          this.animation = true
         },
-        (error) => {
-          console.log(`${error.name} : ${error.message}`);
+        error => {
+          console.log(`${error.name} : ${error.message}`)
         }
-      );
+      )
     },
     // 暂停录音
     pauseRecorder() {
-      this.recorder.pause();
-      this.recorderStatus = 2;
-      this.animation = false;
+      this.recorder.pause()
+      this.recorderStatus = 2
+      this.animation = false
     },
     // 继续录音
     resumeRecorder() {
-      this.recorderStatus = 1;
-      this.recorder.resume();
-      this.animation = true;
+      this.recorderStatus = 1
+      this.recorder.resume()
+      this.animation = true
     },
     // 结束录音
     stopRecorder() {
-      this.recorderStatus = 3;
-      this.recorder.stop();
-      this.animation = false;
+      this.recorderStatus = 3
+      this.recorder.stop()
+      this.animation = false
     },
     // 录音播放
     playRecorder() {
-      this.recorderStatus = 4;
-      this.recorder.play();
-      this.playTimeouts();
-      this.animation = true;
+      this.recorderStatus = 4
+      this.recorder.play()
+      this.playTimeouts()
+      this.animation = true
     },
     // 暂停录音播放
     pausePlayRecorder() {
-      this.recorderStatus = 5;
-      this.recorder.pausePlay();
-      clearInterval(this.playTimeout);
-      this.animation = false;
+      this.recorderStatus = 5
+      this.recorder.pausePlay()
+      clearInterval(this.playTimeout)
+      this.animation = false
     },
     // 恢复录音播放
     resumePlayRecorder() {
-      this.recorderStatus = 4;
-      this.recorder.resumePlay();
-      this.playTimeouts();
-      this.animation = true;
+      this.recorderStatus = 4
+      this.recorder.resumePlay()
+      this.playTimeouts()
+      this.animation = true
     },
     // 销毁录音
     destroyRecorder(callBack) {
       this.recorder.destroy().then(() => {
-        this.recorder = null;
-        console.log("销毁了...");
+        this.recorder = null
+        console.log('销毁了...')
         if (callBack) {
-          callBack();
+          callBack()
         }
-      });
+      })
     },
     // 获取录音文件大小（单位：字节）
     recorderSize() {
-      return this.recorder.fileSize;
+      return this.recorder.fileSize
     },
 
     playTimeouts() {
       this.playTimeout = setInterval(() => {
-        let time = parseInt(this.recorder.getPlayTime());
-        this.playTime = time;
+        let time = parseInt(this.recorder.getPlayTime())
+        this.playTime = time
         if (time == this.duration) {
-          clearInterval(this.playTimeout);
-          this.animation = false;
-          this.recorderStatus = 6;
+          clearInterval(this.playTimeout)
+          this.animation = false
+          this.recorderStatus = 6
         }
-      }, 100);
+      }, 100)
     },
 
     submit() {
-      alert("功能研发中,敬请期待...");
+      alert('功能研发中,敬请期待...')
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {
@@ -340,7 +339,7 @@ export default {
 
 .music:before,
 .music:after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -20px;
   width: 40px;

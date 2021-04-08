@@ -36,14 +36,14 @@
         </el-header>
 
         <el-main class="main no-padding">
-          <prism-editor
+          <PrismEditor
             class="peditor"
             :code="code"
             :language="language"
             :line-numbers="true"
             @change="codeChanged"
             style="border-radius: 0"
-          ></prism-editor>
+          ></PrismEditor>
         </el-main>
 
         <el-footer class="footer no-padding" height="50px">
@@ -56,8 +56,9 @@
 
           <div class="buttom-group">
             <el-button size="small" @click="close" plain>{{
-              editMode ? "取消编辑" : "关闭预览"
+              editMode ? '取消编辑' : '关闭预览'
             }}</el-button>
+
             <el-button
               type="primary"
               size="small"
@@ -72,27 +73,27 @@
   </div>
 </template>
 <script>
-import PrismEditor from "vue-prism-editor";
-import "vue-prism-editor/dist/VuePrismEditor.css";
-import "prismjs/themes/prism-okaidia.css";
-import Vue from "vue";
-import { Select, Option } from "element-ui";
-Vue.use(Select);
-Vue.use(Option);
+import PrismEditor from 'vue-prism-editor'
+import 'vue-prism-editor/dist/VuePrismEditor.css'
+import 'prismjs/themes/prism-okaidia.css'
+import Vue from 'vue'
+import { Select, Option } from 'element-ui'
+Vue.use(Select)
+Vue.use(Option)
 
 export default {
-  name: "TalkCodeBlock",
+  name: 'TalkCodeBlock',
   components: {
     PrismEditor,
   },
   props: {
     loadCode: {
       type: String,
-      default: "",
+      default: '',
     },
     loadLang: {
       type: String,
-      default: "",
+      default: '',
     },
     editMode: {
       type: Boolean,
@@ -101,146 +102,146 @@ export default {
   },
   data() {
     return {
-      language: "",
-      code: "",
+      language: '',
+      code: '',
       options: [
         {
-          value: "css",
-          label: "css",
+          value: 'css',
+          label: 'css',
         },
         {
-          value: "less",
-          label: "less",
+          value: 'less',
+          label: 'less',
         },
         {
-          value: "javascript",
-          label: "javascript",
+          value: 'javascript',
+          label: 'javascript',
         },
         {
-          value: "json",
-          label: "json",
+          value: 'json',
+          label: 'json',
         },
         {
-          value: "bash",
-          label: "bash",
+          value: 'bash',
+          label: 'bash',
         },
         {
-          value: "c",
-          label: "c",
+          value: 'c',
+          label: 'c',
         },
         {
-          value: "cil",
-          label: "cil",
+          value: 'cil',
+          label: 'cil',
         },
         {
-          value: "docker",
-          label: "docker",
+          value: 'docker',
+          label: 'docker',
         },
         {
-          value: "git",
-          label: "git",
+          value: 'git',
+          label: 'git',
         },
         {
-          value: "go",
-          label: "go",
+          value: 'go',
+          label: 'go',
         },
         {
-          value: "java",
-          label: "java",
+          value: 'java',
+          label: 'java',
         },
         {
-          value: "lua",
-          label: "lua",
+          value: 'lua',
+          label: 'lua',
         },
         {
-          value: "nginx",
-          label: "nginx",
+          value: 'nginx',
+          label: 'nginx',
         },
         {
-          value: "objectivec",
-          label: "objectivec",
+          value: 'objectivec',
+          label: 'objectivec',
         },
         {
-          value: "php",
-          label: "php",
+          value: 'php',
+          label: 'php',
         },
         {
-          value: "python",
-          label: "python",
+          value: 'python',
+          label: 'python',
         },
         {
-          value: "ruby",
-          label: "ruby",
+          value: 'ruby',
+          label: 'ruby',
         },
         {
-          value: "rust",
-          label: "rust",
+          value: 'rust',
+          label: 'rust',
         },
         {
-          value: "sql",
-          label: "sql",
+          value: 'sql',
+          label: 'sql',
         },
         {
-          value: "swift",
-          label: "swift",
+          value: 'swift',
+          label: 'swift',
         },
         {
-          value: "vim",
-          label: "vim",
+          value: 'vim',
+          label: 'vim',
         },
         {
-          value: "visual-basic",
-          label: "visual-basic",
+          value: 'visual-basic',
+          label: 'visual-basic',
         },
         {
-          value: "shell",
-          label: "shell",
+          value: 'shell',
+          label: 'shell',
         },
       ],
       isFullScreen: false,
-    };
+    }
   },
   watch: {
     loadCode(value) {
-      this.code = value;
+      this.code = value
     },
     loadLang(value) {
-      this.language = value;
+      this.language = value
     },
   },
   created() {
-    this.code = this.loadCode;
-    this.language = this.loadLang;
+    this.code = this.loadCode
+    this.language = this.loadLang
   },
   methods: {
     submit() {
       if (!this.code) {
-        alert("代码块不能为空...");
-        return false;
+        alert('代码块不能为空...')
+        return false
       }
 
-      if (this.language == "") {
-        alert("请选择语言类型...");
-        return false;
+      if (this.language == '') {
+        alert('请选择语言类型...')
+        return false
       }
 
       if (this.code.length > 10000) {
-        alert("代码字数不能超过10000字！！！");
-        return false;
+        alert('代码字数不能超过10000字！！！')
+        return false
       }
-      this.$emit("confirm", {
+      this.$emit('confirm', {
         language: this.language,
         code: this.code,
-      });
+      })
     },
     close() {
-      this.$emit("close");
+      this.$emit('close')
     },
     codeChanged(code) {
-      this.code = code;
+      this.code = code
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {

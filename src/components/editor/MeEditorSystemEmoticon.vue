@@ -23,7 +23,7 @@
                   'remove-emoji': item.status != 0,
                 }"
               >
-                {{ item.status == 0 ? "添加" : "移除" }}
+                {{ item.status == 0 ? '添加' : '移除' }}
               </button>
             </div>
           </li>
@@ -40,52 +40,52 @@
 </template>
 
 <script>
-import { ServeFindSysEmoticon, ServeSetUserEmoticon } from "@/api/emoticon";
+import { ServeFindSysEmoticon, ServeSetUserEmoticon } from '@/api/emoticon'
 
 export default {
-  name: "MeEditorSystemEmoticon",
+  name: 'MeEditorSystemEmoticon',
   data() {
     return {
       items: [],
-    };
+    }
   },
   created() {
-    this.loadSysEmoticon();
+    this.loadSysEmoticon()
   },
   methods: {
     closeBox() {
-      this.$emit("close");
+      this.$emit('close')
     },
 
     // 获取系统表情包列表
     loadSysEmoticon() {
-      ServeFindSysEmoticon().then((res) => {
+      ServeFindSysEmoticon().then(res => {
         if (res.code == 200) {
-          this.items = res.data;
+          this.items = res.data
         }
-      });
+      })
     },
 
     setEmoticon(index, item, type) {
       ServeSetUserEmoticon({
         emoticon_id: item.id,
         type: type,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           if (type == 1) {
-            this.items[index].status = 1;
-            this.$store.commit("APPEND_SYS_EMOTICON", res.data);
+            this.items[index].status = 1
+            this.$store.commit('APPEND_SYS_EMOTICON', res.data)
           } else {
-            this.items[index].status = 0;
-            this.$store.commit("REMOVE_SYS_EMOTICON", {
+            this.items[index].status = 0
+            this.$store.commit('REMOVE_SYS_EMOTICON', {
               emoticon_id: item.id,
-            });
+            })
           }
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

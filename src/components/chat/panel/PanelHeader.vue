@@ -2,7 +2,7 @@
   <el-header id="panel-header">
     <div class="module left-module">
       <span class="icon-badge" :class="{ 'red-color': params.source == 1 }">
-        {{ params.source == 1 ? "好友" : "群组" }}
+        {{ params.source == 1 ? '好友' : '群组' }}
       </span>
       <span class="nickname">{{ params.nickname }}</span>
       <span class="num" v-show="params.source == 2">({{ groupNum }})</span>
@@ -11,7 +11,7 @@
     <div class="module center-module" v-show="params.source == 1">
       <p class="online">
         <span class="online-status" v-show="isOnline"></span>
-        <span>{{ isOnline ? "在线" : "离线" }}</span>
+        <span>{{ isOnline ? '在线' : '离线' }}</span>
       </p>
       <p class="keyboard-status" v-show="isKeyboard">对方正在输入 ...</p>
     </div>
@@ -43,7 +43,7 @@ export default {
       default: {
         source: 0,
         receive_id: 0,
-        nickname: "",
+        nickname: '',
       },
     },
     online: {
@@ -60,46 +60,46 @@ export default {
       params: {
         source: 1,
         receive_id: 0,
-        nickname: "",
+        nickname: '',
       },
       isOnline: false,
       isKeyboard: false,
       groupNum: 0,
-    };
+    }
   },
   created() {
-    this.setParamsData(this.data);
-    this.setOnlineStatus(this.online);
+    this.setParamsData(this.data)
+    this.setOnlineStatus(this.online)
   },
   watch: {
     data(value) {
-      this.setParamsData(value);
+      this.setParamsData(value)
     },
     online(value) {
-      this.setOnlineStatus(value);
+      this.setOnlineStatus(value)
     },
     keyboard(value) {
-      this.isKeyboard = value;
+      this.isKeyboard = value
       setTimeout(() => {
-        this.isKeyboard = false;
-      }, 2000);
+        this.isKeyboard = false
+      }, 2000)
     },
   },
   methods: {
     setOnlineStatus(value) {
-      this.isOnline = value;
+      this.isOnline = value
     },
     setParamsData(object) {
-      Object.assign(this.params, object);
+      Object.assign(this.params, object)
     },
     setGroupNum(value) {
-      this.groupNum = value;
+      this.groupNum = value
     },
     triggerEvent(event_name) {
-      this.$emit("event", event_name);
+      this.$emit('event', event_name)
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 #panel-header {
@@ -177,7 +177,7 @@ export default {
           border-radius: 50%;
           -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
           animation: antStatusProcessing 1.2s ease-in-out infinite;
-          content: "";
+          content: '';
         }
       }
     }

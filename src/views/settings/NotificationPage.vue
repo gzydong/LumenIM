@@ -1,42 +1,28 @@
 <template>
   <div>
     <div class="container">
-      <h4>帐户绑定</h4>
+      <h4>消息通知设置</h4>
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
-          <div class="avatar">
-            <img
-              src="~@/assets/image/github-avatar.jpg"
-              width="50"
-              height="50"
-            />
-          </div>
-          <div class="conent">
-            <h4>绑定 github</h4>
-            <p>当前未绑定github账号</p>
-          </div>
+          <h4>新消息提示音</h4>
+          <p>{{ notifyCueTone ? '已开启' : '已关闭' }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action">立即绑定</span>
+          <span class="action">
+            <el-switch v-model="notifyCueTone" @change="changeNotifyCueTone" />
+          </span>
         </el-col>
       </el-row>
 
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
-          <div class="avatar">
-            <img
-              src="~@/assets/image/gitee-avatar.jpg"
-              width="50"
-              height="50"
-            />
-          </div>
-          <div class="conent">
-            <h4>绑定 gitee</h4>
-            <p>当前未绑定gitee账号</p>
-          </div>
+          <h4>推送键盘输入消息</h4>
+          <p>{{ keyboardEvent ? '已开启' : '已关闭' }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action">立即绑定</span>
+          <span class="action">
+            <el-switch v-model="keyboardEvent" @change="changeKeyboardEvent" />
+          </span>
         </el-col>
       </el-row>
     </div>
@@ -44,8 +30,31 @@
 </template>
 <script>
 export default {
-  name: "BindingPage",
-};
+  name: 'NotificationPage',
+  data() {
+    return {
+      notifyCueTone: true,
+      keyboardEvent: true,
+    }
+  },
+  created() {
+    const { notifyCueTone, keyboardEventNotify } = this.$store.state.settings
+
+    this.notifyCueTone = notifyCueTone
+    this.keyboardEvent = keyboardEventNotify
+  },
+  methods: {
+    // 触发修改消息提示音状态
+    changeNotifyCueTone(value) {
+      this.$store.commit('SET_NOTIFY_CUE_TONE', value)
+    },
+
+    // 修改键盘消息推送状态
+    changeKeyboardEvent(value) {
+      this.$store.commit('SET_KEYBOARD_EVENT_NOTIFY', value)
+    },
+  },
+}
 </script>
 <style lang="less" scoped>
 .container h4 {
@@ -54,28 +63,17 @@ export default {
   font-weight: 500;
   line-height: 28px;
   margin-bottom: 12px;
-  margin-bottom: 30px;
 }
 
 .container .list-item {
   height: 70px;
   margin: 5px 25px 5px 0px;
   border-bottom: 1px solid #e8e8e8;
-  margin-bottom: 20px;
 
   .left-col {
     display: flex;
-    flex-direction: row;
-
-    .avatar {
-      flex-basis: 50px;
-      flex-shrink: 0;
-    }
-
-    .conent {
-      flex: 1 1;
-      margin-left: 30px;
-    }
+    flex-direction: column;
+    justify-content: center;
 
     h4 {
       margin-bottom: 4px;

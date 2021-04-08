@@ -6,14 +6,13 @@
 
 <script>
 export default {
-  name: "VideoMessage",
+  name: 'VideoMessage',
   components: {},
   data() {
-    return {};
+    return {}
   },
   methods: {},
   created() {},
-};
+}
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

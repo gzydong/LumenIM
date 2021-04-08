@@ -42,7 +42,7 @@ export default {
       default: 0,
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .multi-select {

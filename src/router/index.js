@@ -52,14 +52,14 @@ const routes = [{
       needLogin: true
     },
     redirect: "/settings/base",
-    component: () => import('@/views/SettingsPage'),
+    component: () => import('@/views/settings/Layout'),
     children: [{
         path: '/settings/base',
         meta: {
           title: '个人信息',
           needLogin: true
         },
-        component: () => import('@/views/settings/base'),
+        component: () => import('@/views/settings/BasePage'),
       },
       {
         path: '/settings/security',
@@ -67,7 +67,7 @@ const routes = [{
           title: '安全设置',
           needLogin: true
         },
-        component: () => import('@/views/settings/security'),
+        component: () => import('@/views/settings/SecurityPage'),
       },
       {
         path: '/settings/binding',
@@ -75,7 +75,7 @@ const routes = [{
           title: '账户绑定',
           needLogin: true
         },
-        component: () => import('@/views/settings/binding'),
+        component: () => import('@/views/settings/BindPage'),
       },
       {
         path: '/settings/personalize',
@@ -83,7 +83,7 @@ const routes = [{
           title: '个性化设置',
           needLogin: true
         },
-        component: () => import('@/views/settings/personalize'),
+        component: () => import('@/views/settings/PersonalizePage'),
       },
       {
         path: '/settings/notification',
@@ -91,7 +91,7 @@ const routes = [{
           title: '消息设置',
           needLogin: true
         },
-        component: () => import('@/views/settings/notification'),
+        component: () => import('@/views/settings/NotificationPage'),
       }
     ]
   },
@@ -122,14 +122,6 @@ const routes = [{
     meta: {
       title: '找回密码？',
       needLogin: false
-    }
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/views/TestPage'),
-    meta: {
-      title: '测试页面',
     }
   },
   {

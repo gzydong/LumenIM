@@ -1,6 +1,6 @@
 <template>
-  <div class="body-background" :class="themeBagImg">
-    <el-container class="mian-layout" :class="{ 'full-mode': themeMode }">
+  <div class="body-bag" :class="themeBagImg">
+    <el-container class="main-layout" :class="{ 'full-mode': themeMode }">
       <el-aside width="70px" class="side-edge">
         <el-container class="full-height">
           <el-header height="100px" class="logo-header">
@@ -9,7 +9,7 @@
             </div>
             <p class="user-status">
               <span class="online" v-if="socketStatus">在线</span>
-              <span v-else>连线中...</span>
+              <span v-else>连接中...</span>
             </p>
           </el-header>
           <el-main class="sidebar-menu">
@@ -126,9 +126,6 @@ export default {
       default: 0,
     },
   },
-  data() {
-    return {}
-  },
   computed: {
     ...mapState({
       userAvatar: (state) => state.user.avatar,
@@ -156,7 +153,7 @@ export default {
       document
         .querySelector('#audio')
         .play()
-        .catch((err) => {
+        .catch(() => {
           console.error('消息提示音播放异常')
         })
     },
@@ -174,7 +171,7 @@ export default {
 }
 </script>
 <style lang="less">
-.mian-layout {
+.main-layout {
   position: fixed;
   width: 75%;
   height: 80%;
@@ -310,7 +307,7 @@ export default {
 }
 
 /* 主题背景图片 */
-.body-background {
+.body-bag {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -319,30 +316,30 @@ export default {
   left: 0;
   background-color: #121212;
   transition: ease-in 0.5s;
-}
 
-.bag001 {
-  background: url(~@/assets/image/background/001.jpg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
+  &.bag001 {
+    background: url(~@/assets/image/background/001.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 
-.bag002 {
-  background: url(~@/assets/image/background/002.jpg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
+  &.bag002 {
+    background: url(~@/assets/image/background/002.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 
-.bag003 {
-  background: url(~@/assets/image/background/003.jpg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
+  &.bag003 {
+    background: url(~@/assets/image/background/003.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 
-.bag004 {
-  background: url(~@/assets/image/background/005.png);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  &.bag004 {
+    background: url(~@/assets/image/background/005.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 }
 
 @keyframes notifymove {
@@ -390,7 +387,7 @@ export default {
 }
 
 @media screen and (max-width: 1000px) {
-  .mian-layout {
+  .main-layout {
     width: 100%;
     height: 100%;
     border-radius: 0;

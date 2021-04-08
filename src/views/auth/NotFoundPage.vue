@@ -2,53 +2,54 @@
   <div>
     <div class="not-found">
       <div class="not-found-left">
-        <svg-not-fount class="svg-notfount" />
+        <SvgNotFount class="svg-notfount" />
       </div>
       <div class="not-found-right">
         <h1>404</h1>
         <p>抱歉，你访问的页面不存在或仍在开发中...</p>
         <div>
-          <el-button type="primary" size="small" @click="toHome"
-            >返回首页 ({{ second }}S)</el-button
-          >
+          <el-button type="primary" size="small" @click="toHome">
+            返回首页 ({{ second }}S)
+          </el-button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { SvgNotFount } from "@/core/icons";
+import { SvgNotFount } from '@/core/icons'
+
 export default {
-  name: "NotFoundPage",
+  name: 'NotFoundPage',
   components: {
     SvgNotFount,
   },
   data() {
     return {
-      second: 9,
+      second: 10,
       setInterval: null,
-    };
+    }
   },
   created() {
     this.setInterval = setInterval(() => {
-      this.second--;
+      this.second--
       if (this.second == 0) {
-        clearInterval(this.setInterval);
-        this.toHome();
+        clearInterval(this.setInterval)
+        this.toHome()
       }
-    }, 1000);
+    }, 1000)
   },
   destroyed() {
-    clearInterval(this.setInterval);
+    clearInterval(this.setInterval)
   },
   methods: {
     toHome() {
       this.$router.push({
-        path: "/",
-      });
+        path: '/',
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .not-found {

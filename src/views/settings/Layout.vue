@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="3">
+    <MainLayout :idx="3">
       <el-container slot="container" class="container">
         <el-header height="60px" class="header no-select">个人设置</el-header>
         <el-container class="full-height">
@@ -24,13 +24,13 @@
           </el-main>
         </el-container>
       </el-container>
-    </main-layout>
+    </MainLayout>
   </div>
 </template>
 <script>
-import MainLayout from "@/views/layout/MainLayout";
+import MainLayout from '@/views/layout/MainLayout'
 export default {
-  name: "SettingsPage",
+  name: 'SettingsPage',
   components: {
     MainLayout,
   },
@@ -38,29 +38,29 @@ export default {
     return {
       menus: [
         {
-          name: "个人信息",
-          path: "/settings/base",
+          name: '个人信息',
+          path: '/settings/base',
         },
         {
-          name: "安全设置",
-          path: "/settings/security",
+          name: '安全设置',
+          path: '/settings/security',
         },
         {
-          name: "个性化",
-          path: "/settings/personalize",
+          name: '个性化',
+          path: '/settings/personalize',
         },
         {
-          name: "账户绑定",
-          path: "/settings/binding",
+          name: '账户绑定',
+          path: '/settings/binding',
         },
         {
-          name: "消息通知",
-          path: "/settings/notification",
+          name: '消息通知',
+          path: '/settings/notification',
         },
       ],
-    };
+    }
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {

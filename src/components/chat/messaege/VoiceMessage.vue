@@ -4,14 +4,13 @@
 
 <script>
 export default {
-  name: "VoiceMessage",
+  name: 'VoiceMessage',
   components: {},
   data() {
-    return {};
+    return {}
   },
   methods: {},
   created() {},
-};
+}
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

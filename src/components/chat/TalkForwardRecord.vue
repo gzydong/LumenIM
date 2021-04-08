@@ -9,11 +9,7 @@
       </el-header>
       <el-main class="no-padding main" v-loading="loading">
         <el-scrollbar :native="false" tag="section" class="full-height">
-          <div
-            class="message-group"
-            v-for="record in records"
-            :key="record.id"
-          >
+          <div class="message-group" v-for="record in records" :key="record.id">
             <div class="left-box">
               <el-avatar
                 shape="square"
@@ -82,10 +78,10 @@
   </div>
 </template>
 <script>
-import { ServeGetForwardRecords } from "@/api/chat";
+import { ServeGetForwardRecords } from '@/api/chat'
 
 export default {
-  name: "TalkForwardRecord",
+  name: 'TalkForwardRecord',
   data() {
     return {
       // 记录列表
@@ -96,47 +92,48 @@ export default {
 
       // 窗口是否显示
       isShow: false,
-    };
+    }
   },
   methods: {
     // 加载数据列表
     loadRecords() {
-      this.loading = true;
+      this.loading = true
       ServeGetForwardRecords({
         records_id: this.records_id,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.records = res.data.rows;
+            this.records = res.data.rows
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
 
     // 显示窗口
     open(records_id) {
       if (records_id != this.records_id) {
-        this.records = [];
+        this.records = []
       }
 
-      this.records_id = records_id;
-      this.isShow = true;
-      this.loadRecords();
+      this.records_id = records_id
+      this.isShow = true
+      this.loadRecords()
     },
 
     // 关闭窗口
     close() {
-      this.isShow = false;
+      this.isShow = false
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-mask {
   z-index: 99999;
 }
+
 .lum-dialog-box {
   width: 500px;
   max-width: 500px;
@@ -147,5 +144,5 @@ export default {
   overflow-x: hidden;
 }
 
-@import "~@/assets/css/talk/talk-records.less";
+@import '~@/assets/css/talk/talk-records.less';
 </style>

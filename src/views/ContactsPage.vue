@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="1">
+    <MainLayout :idx="1">
       <el-container slot="container" class="full-height">
         <!-- 左侧侧边栏 -->
         <el-aside width="250px" class="aside-box">
@@ -343,20 +343,20 @@
           </div>
         </el-container>
       </el-container>
-    </main-layout>
+    </MainLayout>
 
     <!-- 创建群聊组件 -->
-    <group-launch
+    <GroupLaunch
       v-if="launchGroupShow"
       @close="launchGroupShow = false"
       @create-success="groupChatSuccess"
     />
 
     <!-- 查看好友用户信息 -->
-    <user-business-card ref="userBusinessCard" @changeRemark="changeRemark" />
+    <UserBusinessCard ref="userBusinessCard" @changeRemark="changeRemark" />
 
     <!-- 用户查询 -->
-    <user-search ref="searchUsers" />
+    <UserSearch ref="searchUsers" />
   </div>
 </template>
 <script>
