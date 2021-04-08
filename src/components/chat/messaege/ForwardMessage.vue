@@ -2,7 +2,7 @@
   <div>
     <div class="forward-message" @click="catForwardRecords">
       <div class="title">{{ title }}</div>
-      <div class="lists" v-for="(record, index) in records" :key="index">
+      <div v-for="(record, index) in records" :key="index" class="lists">
         <p>
           <span>{{ record.nickname }}：</span>
           <span>{{ record.text }}</span>

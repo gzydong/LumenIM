@@ -17,10 +17,10 @@
       <div class="card-main">
         <div class="usersign">
           <div class="arrow"></div>
-          <span v-if="$store.state.user.signature"
-            ><span style="font-weight: 600">个性签名</span> ：
-            {{ $store.state.user.signature }}</span
-          >
+          <span v-if="$store.state.user.signature">
+            <span style="font-weight: 600">个性签名</span> ：
+            {{ $store.state.user.signature }}
+          </span>
           <span v-else>
             <i class="iconfont icon-bianji"></i>
             <span>编辑个签，展示我的独特态度。</span>

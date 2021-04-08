@@ -1,5 +1,5 @@
 <template>
-  <div class="lum-dialog-mask animated fadeIn" v-show="isShow">
+  <div v-show="isShow" class="lum-dialog-mask animated fadeIn">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
         <i class="close el-icon-error pointer" @click="close"></i>
@@ -46,23 +46,26 @@
             <span v-else-if="userInfo.gender == 2">女</span>
             <span v-else>未知</span>
           </div>
-          <div class="card-row" v-show="userInfo.friendStatus == 2">
+          <div v-show="userInfo.friendStatus == 2" class="card-row">
             <label>备注</label>
-            <span v-if="!editRemark.isShow">{{
-              userInfo.nicknameRemark ? userInfo.nicknameRemark : '暂无备注'
-            }}</span>
-            <span v-else
-              ><input
-                class="friend-remark"
-                v-focus
+            <span v-if="!editRemark.isShow">
+              {{
+                userInfo.nicknameRemark ? userInfo.nicknameRemark : '暂无备注'
+              }}
+            </span>
+            <span v-else>
+              <input
                 v-model="editRemark.text"
-                @keyup.enter="editRemarkSubmit"
+                v-focus
+                class="friend-remark"
                 type="text"
-            /></span>
+                @keyup.enter="editRemarkSubmit"
+              />
+            </span>
             <i
               v-show="!editRemark.isShow"
-              @click="clickEditRemark"
               class="el-icon-edit-outline"
+              @click="clickEditRemark"
             ></i>
           </div>
           <div class="card-row">
@@ -72,29 +75,29 @@
         </div>
       </el-main>
       <el-footer
+        v-show="userInfo.friendStatus !== 0"
         class="no-padding footer"
         height="50px"
-        v-show="userInfo.friendStatus !== 0"
       >
         <el-button
-          type="primary"
-          size="small"
           v-if="userInfo.friendStatus == 1 && userInfo.friendApply == 0"
-          @click="applyFrom.isShow = true"
-          icon="el-icon-circle-plus-outline"
-          >添加好友</el-button
-        >
-        <el-button
           type="primary"
           size="small"
-          v-else-if="userInfo.friendApply == 1"
-          >已发送好友申请，请耐心等待...</el-button
-        >
+          icon="el-icon-circle-plus-outline"
+          @click="applyFrom.isShow = true"
+          >添加好友
+        </el-button>
         <el-button
+          v-else-if="userInfo.friendApply == 1"
+          type="primary"
+          size="small"
+          >已发送好友申请，请耐心等待...
+        </el-button>
+        <el-button
+          v-else-if="userInfo.friendStatus == 2"
           type="primary"
           size="small"
           icon="el-icon-s-promotion"
-          v-else-if="userInfo.friendStatus == 2"
           @click="sendMessage(userInfo)"
           >发消息
         </el-button>
@@ -102,9 +105,9 @@
 
       <!-- 添加好友申请表单 -->
       <div
+        v-outside="closeApplyFrom"
         class="friend-from"
         :class="{ 'friend-from-show': applyFrom.isShow }"
-        v-outside="closeApplyFrom"
       >
         <p>
           <span>请填写好友申请备注：</span>
@@ -112,14 +115,14 @@
         </p>
         <div>
           <input
+            v-model="applyFrom.text"
             type="text"
             placeholder="(必填项)"
-            v-model="applyFrom.text"
             @keyup.enter="sendApply"
           />
-          <el-button type="primary" size="small" @click="sendApply"
-            >立即提交</el-button
-          >
+          <el-button type="primary" size="small" @click="sendApply">
+            立即提交
+          </el-button>
         </div>
       </div>
     </el-container>

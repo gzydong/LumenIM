@@ -1,5 +1,5 @@
 <template>
-  <div class="lum-dialog-mask animated fadeIn" v-if="show">
+  <div v-if="show" class="lum-dialog-mask animated fadeIn">
     <el-container class="lum-dialog-box" v-outside="closeBox">
       <el-header class="no-padding header" height="50px">
         <p>发送图片</p>
@@ -19,13 +19,13 @@
 
       <el-footer class="footer" height="50px">
         <el-button
+          class="btn"
           type="primary"
           size="medium"
           :loading="loading"
           @click="uploadImage"
-          class="btn"
-          >立即发送</el-button
-        >
+          >立即发送
+        </el-button>
       </el-footer>
     </el-container>
   </div>

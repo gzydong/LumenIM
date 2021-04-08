@@ -19,10 +19,10 @@
               <!-- 工具栏 -->
               <div class="tools" v-outside="closeSubMenu">
                 <el-button
-                  icon="el-icon-plus"
                   circle
                   plain
                   size="small"
+                  icon="el-icon-plus"
                   @click="subMenu = !subMenu"
                 />
 
@@ -42,21 +42,21 @@
             <!-- 置顶栏 -->
             <el-header
               v-show="loadStatus == 1 && topItems.length > 0"
-              :height="subHeaderPx"
               class="subheader"
               :class="{ shadow: subHeaderShadow }"
+              :height="subHeaderPx"
             >
               <div
-                class="top-item"
                 v-for="item in topItems"
                 :key="item.index_name"
+                class="top-item"
                 @click="clickTab(item.index_name)"
                 @contextmenu.prevent="topItemsMenu(item, $event)"
               >
                 <el-tooltip
                   effect="dark"
-                  :content="item.remark_name ? item.remark_name : item.name"
                   placement="top-start"
+                  :content="item.remark_name ? item.remark_name : item.name"
                 >
                   <div class="avatar">
                     <span v-show="!item.avatar">
@@ -86,38 +86,30 @@
 
             <!-- 对话列表栏 -->
             <el-scrollbar
-              :native="false"
               tag="section"
               ref="menusScrollbar"
               class="full-height"
+              :native="false"
             >
               <el-main class="main">
-                <p class="empty-data" v-if="loadStatus == 0" key="empty">
+                <p v-show="loadStatus == 0" class="empty-data">
                   <i class="el-icon-loading"></i> 正在加载数据中...
                 </p>
 
-                <p
-                  class="empty-data"
-                  v-if="loadStatus == 1 && talkNum == 0"
-                  key="empty"
-                >
+                <p v-show="loadStatus == 1 && talkNum == 0" class="empty-data">
                   暂无聊天消息
                 </p>
 
-                <p
-                  class="main-menu"
-                  v-show="loadStatus == 1 && talkNum > 0"
-                  key="no-empty"
-                >
+                <p v-show="loadStatus == 1 && talkNum > 0" class="main-menu">
                   <span class="title">消息记录 ({{ talkNum }})</span>
                 </p>
 
                 <!-- 对话列表 -->
                 <div
-                  class="talk-item pointer"
                   v-show="loadStatus == 1"
                   v-for="item in talkItems"
                   :key="item.index_name"
+                  class="talk-item pointer"
                   :class="{ active: index_name == item.index_name }"
                   @click="clickTab(item.index_name)"
                   @contextmenu.prevent="talkItemsMenu(item, $event)"
@@ -137,8 +129,8 @@
                       :onerror="$store.state.detaultAvatar"
                     />
                     <div
-                      class="top-mask"
                       v-show="item.is_top == 0"
+                      class="top-mask"
                       @click.stop="topChatItem(item)"
                     >
                       <i class="el-icon-top" />
@@ -150,18 +142,18 @@
                         <p class="nickname">
                           {{ item.remark_name ? item.remark_name : item.name }}
                         </p>
-                        <div class="larkc-tag" v-show="item.unread_num">
+                        <div v-show="item.unread_num" class="larkc-tag">
                           {{ item.unread_num }}条未读
                         </div>
-                        <div class="larkc-tag top" v-show="item.is_top">
+                        <div v-show="item.is_top" class="larkc-tag top">
                           TOP
                         </div>
-                        <div class="larkc-tag group" v-show="item.group_id">
+                        <div v-show="item.group_id" class="larkc-tag group">
                           群组
                         </div>
                         <div
-                          class="larkc-tag disturb"
                           v-show="item.not_disturb"
+                          class="larkc-tag disturb"
                         >
                           <i class="iconfont icon-xiaoximiandarao"></i>
                         </div>

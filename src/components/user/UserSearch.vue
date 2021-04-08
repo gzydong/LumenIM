@@ -10,16 +10,16 @@
         </el-header>
         <el-main class="main">
           <el-input
-            class="input"
+            v-model="mobile"
             id="serach-mobile"
+            class="input"
             prefix-icon="el-icon-search"
             placeholder="请输入对方手机号(精确查找)"
             clearable
-            v-model="mobile"
             @keyup.enter.native="onSubmit"
             @input="error = false"
           />
-          <p class="error" v-show="error">
+          <p v-show="error" class="error">
             无法找到该用户，请检查搜索内容并重试
           </p>
           <el-button
@@ -27,8 +27,8 @@
             size="small"
             :loading="loading"
             @click="onSubmit"
-            >立即查找</el-button
-          >
+            >立即查找
+          </el-button>
         </el-main>
       </el-container>
     </div>

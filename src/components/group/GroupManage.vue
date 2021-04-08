@@ -13,10 +13,10 @@
             <el-aside width="100px" class="aside-border no-select">
               <div
                 v-for="(menu, index) in menus"
-                v-text="menu.name"
                 :key="menu.name"
                 class="menu-list"
                 :class="{ selectd: tabIndex == index }"
+                v-text="menu.name"
                 @click="triggerTab(index)"
               />
             </el-aside>
@@ -37,8 +37,8 @@
                     </el-form-item>
                     <el-form-item label="群描述:">
                       <el-input
-                        type="textarea"
                         v-model="form.profile"
+                        type="textarea"
                         rows="3"
                         placeholder="请输入群描述"
                       />
@@ -48,17 +48,16 @@
                         type="primary"
                         icon="el-icon-edit"
                         size="small"
-                        @click="editGroup"
                         :loading="loading"
-                      >
-                        修改信息</el-button
-                      >
+                        @click="editGroup"
+                        >修改信息
+                      </el-button>
                     </el-form-item>
                   </el-form>
                 </el-col>
                 <el-col :span="10" class="avatar-col">
                   <div class="avatar-box">
-                    <img :src="form.avatar" v-show="form.avatar" />
+                    <img v-show="form.avatar" :src="form.avatar" />
                     <div class="upload-icon">
                       <i class="el-icon-upload"></i>
                     </div>
@@ -76,12 +75,12 @@
               <el-container class="full-height">
                 <el-header height="50px" class="notice-header">
                   <el-input
-                    :placeholder="`搜索群成员 ( 共${members.length}人 )`"
                     v-model="searchMembers"
-                    clearable
                     style="width: 200px"
                     size="small"
+                    clearable
                     prefix-icon="el-icon-search"
+                    :placeholder="`搜索群成员 ( 共${members.length}人 )`"
                   />
                   <p>
                     <el-button
@@ -89,34 +88,31 @@
                       size="small"
                       icon="el-icon-plus"
                       @click="inviteFriendBox = true"
-                    >
-                      邀请好友
+                      >邀请好友
                     </el-button>
                     <el-button
+                      v-if="batchDelMember"
+                      type="danger"
                       size="small"
                       icon="el-icon-delete"
-                      type="danger"
-                      v-if="batchDelMember"
                       @click="deleteMembers"
-                    >
-                      确认删除
+                      >确认删除
                     </el-button>
                     <el-button
+                      v-else
                       plain
                       size="small"
                       icon="el-icon-finished"
-                      v-else
                       @click="batchDelMember = true"
-                    >
-                      批量操作
+                      >批量操作
                     </el-button>
                   </p>
                 </el-header>
                 <el-main class="no-padding">
                   <el-scrollbar
-                    :native="false"
-                    tag="section"
                     class="full-height"
+                    tag="section"
+                    :native="false"
                   >
                     <div class="members">
                       <div
@@ -130,28 +126,22 @@
                         <div class="item-header">
                           <div class="avatar" @click="catUserDetail(member)">
                             <el-avatar :size="30" :src="member.avatar">
-                              <img
-                                src="~@/assets/image/detault-avatar.jpg"
-                                alt=""
-                              />
+                              <img src="~@/assets/image/detault-avatar.jpg" />
                             </el-avatar>
-                            <span
-                              class="nickname"
-                              v-text="member.nickname"
-                            ></span>
-                            <span class="larkc-tag" v-show="member.leader == 2"
-                              >群主</span
-                            >
+                            <span class="nickname" v-text="member.nickname" />
+                            <span class="larkc-tag" v-show="member.leader == 2">
+                              群主
+                            </span>
                           </div>
                           <div
-                            class="tools"
                             v-show="batchDelMember && member.leader != 2"
+                            class="tools"
                           >
                             <i
                               class="el-icon-success"
-                              @click.stop="triggerDelBtn(member)"
                               :class="{ 'is-delete': member.is_delete }"
-                            ></i>
+                              @click.stop="triggerDelBtn(member)"
+                            />
                           </div>
                         </div>
                         <div class="profile">
@@ -168,8 +158,8 @@
             <el-main v-else-if="tabIndex == 2" class="no-padding">
               <el-container class="full-height">
                 <el-header
-                  height="50px"
                   class="notice-header"
+                  height="50px"
                   style="padding-left: 14px"
                 >
                   <span>群公告 ({{ notice.items.length }})</span>
@@ -185,9 +175,9 @@
 
                 <el-main class="no-padding">
                   <el-scrollbar
-                    :native="false"
-                    tag="section"
                     class="full-height"
+                    tag="section"
+                    :native="false"
                   >
                     <div v-if="notice.items.length == 0" class="empty-notice">
                       <SvgNotData style="width: 80px; margin-bottom: 10px" />
@@ -216,19 +206,16 @@
                         </div>
                         <p class="datetime">
                           <el-avatar :size="15" :src="item.avatar">
-                            <img
-                              src="~@/assets/image/detault-avatar.jpg"
-                              alt=""
-                            />
+                            <img src="~@/assets/image/detault-avatar.jpg" />
                           </el-avatar>
                           <span
                             class="text nickname"
                             v-text="item.nickname"
                             @click="$refs.userBusinessCard.open(item.user_id)"
                           ></span>
-                          <span class="text"
-                            >发表于 {{ item.created_at.substr(0, 16) }}</span
-                          >
+                          <span class="text">
+                            发表于 {{ item.created_at.substr(0, 16) }}
+                          </span>
                         </p>
                         <p
                           class="content"
@@ -264,24 +251,24 @@
           </el-form-item>
           <el-form-item label="详情" prop="content">
             <el-input
-              type="textarea"
               v-model="notice.form.content"
+              type="textarea"
               rows="5"
               placeholder="请输入公告详情..."
               maxlength="500"
             />
           </el-form-item>
           <el-form-item style="text-align: right">
-            <el-button plain size="small" @click="notice.isShowform = false"
-              >取消</el-button
-            >
+            <el-button plain size="small" @click="notice.isShowform = false">
+              取消
+            </el-button>
             <el-button
               type="primary"
               size="small"
-              @click="onSubmitNotice"
               :loading="notice.loading"
-              >提交</el-button
-            >
+              @click="onSubmitNotice"
+              >提交
+            </el-button>
           </el-form-item>
         </el-form>
       </div>

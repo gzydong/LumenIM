@@ -1,5 +1,5 @@
 <template>
-  <div class="lum-dialog-mask" v-show="isShow">
+  <div v-show="isShow" class="lum-dialog-mask">
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="header" height="50px">
         <p>绑定手机</p>
@@ -12,28 +12,27 @@
           <el-form-item prop="username" label="手机号">
             <el-input
               v-model="form.username"
-              placeholder="请填写新手机号"
               class="cuborder-radius"
               maxlength="11"
-              @keyup.enter.native="onSubmit('form')"
               size="medium"
+              placeholder="请填写新手机号"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item prop="sms_code" label="验证码">
             <el-input
               v-model="form.sms_code"
-              placeholder="验证码"
               class="cuborder-radius"
-              maxlength="6"
-              @keyup.enter.native="onSubmit('form')"
               style="width: 185px"
+              maxlength="6"
               size="medium"
+              placeholder="验证码"
+              @keyup.enter.native="onSubmit('form')"
             />
-
-            <div class="send-code-btn disable" v-if="smsLock">正在发送 ...</div>
+            <div v-if="smsLock" class="send-code-btn disable">正在发送 ...</div>
             <div
-              class="send-code-btn"
               v-else-if="smsLock == false && smsLockObj.time == null"
+              class="send-code-btn"
               @click="sendSms"
             >
               获取短信
@@ -45,22 +44,21 @@
           <el-form-item prop="password" label="密码">
             <el-input
               v-model="form.password"
-              type="password"
-              placeholder="登录密码验证"
               class="cuborder-radius no-border"
-              @keyup.enter.native="onSubmit('form')"
+              type="password"
               size="medium"
+              placeholder="登录密码验证"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item style="margin-top: 40px">
             <el-button
-              type="primary"
-              @click="onSubmit('form')"
               class="submit-btn"
-              :loading="loading"
+              type="primary"
               size="medium"
-            >
-              立即修改
+              :loading="loading"
+              @click="onSubmit('form')"
+              >立即修改
             </el-button>
           </el-form-item>
         </el-form>

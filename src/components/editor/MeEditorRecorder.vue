@@ -50,88 +50,87 @@
       <el-footer class="footer" height="50px">
         <!-- 0:未开始录音 1:正在录音 2:暂停录音 3:结束录音 4:播放录音 5:停止播放 -->
         <el-button
-          type="primary"
-          icon="el-icon-microphone"
           v-show="recorderStatus == 0"
-          size="mini"
-          round
-          @click="startRecorder"
-          >开始录音</el-button
-        >
-        <el-button
           type="primary"
-          icon="el-icon-video-pause"
-          v-show="recorderStatus == 1"
           size="mini"
           round
+          icon="el-icon-microphone"
+          @click="startRecorder"
+          >开始录音
+        </el-button>
+        <el-button
+          v-show="recorderStatus == 1"
+          type="primary"
+          size="mini"
+          round
+          icon="el-icon-video-pause"
           @click="pauseRecorder"
           >暂停录音
         </el-button>
         <el-button
-          type="primary"
-          icon="el-icon-microphone"
           v-show="recorderStatus == 2"
+          type="primary"
           size="mini"
           round
+          icon="el-icon-microphone"
           @click="resumeRecorder"
           >继续录音
         </el-button>
         <el-button
-          type="primary"
-          icon="el-icon-microphone"
           v-show="recorderStatus == 2"
+          type="primary"
           size="mini"
           round
+          icon="el-icon-microphone"
           @click="stopRecorder"
           >结束录音
         </el-button>
-
         <el-button
-          type="primary"
-          icon="el-icon-video-play"
           v-show="recorderStatus == 3 || recorderStatus == 6"
+          type="primary"
           size="mini"
           round
+          icon="el-icon-video-play"
           @click="playRecorder"
           >播放录音
         </el-button>
 
         <el-button
-          type="primary"
-          icon="el-icon-video-play"
           v-show="
             recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
           "
+          type="primary"
           size="mini"
           round
+          icon="el-icon-video-play"
           @click="startRecorder"
           >重新录音
         </el-button>
 
         <el-button
-          type="primary"
-          icon="el-icon-video-pause"
           v-show="recorderStatus == 4"
+          type="primary"
           size="mini"
           round
+          icon="el-icon-video-pause"
           @click="pausePlayRecorder"
           >暂停播放
         </el-button>
         <el-button
-          type="primary"
-          icon="el-icon-video-play"
           v-show="recorderStatus == 5"
+          type="primary"
           size="mini"
           round
+          icon="el-icon-video-play"
           @click="resumePlayRecorder"
           >继续播放
         </el-button>
 
         <el-button
-          type="primary"
           v-show="
             recorderStatus == 3 || recorderStatus == 5 || recorderStatus == 6
           "
+          type="primary"
           size="mini"
           round
           @click="submit"

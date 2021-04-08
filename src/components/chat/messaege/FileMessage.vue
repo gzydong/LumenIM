@@ -4,7 +4,7 @@
       <div class="ext">{{ ext }}</div>
       <div class="file-box">
         <p class="info">
-          <span class="name" v-text="fileName"></span>
+          <span class="name">{{ fileName }}</span>
           <span class="size">({{ fileSize }})</span>
         </p>
         <p class="notice">文件已成功发送, 文件助手永久保存</p>

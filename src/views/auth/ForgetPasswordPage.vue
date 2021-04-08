@@ -28,7 +28,6 @@
                   @keyup.enter.native="onSubmit('form')"
                   style="width: 205px"
                 />
-
                 <div class="send-code-btn send-sms-disable" v-if="smsLock">
                   正在发送 ...
                 </div>
@@ -64,9 +63,9 @@
               <el-form-item>
                 <el-button
                   type="primary"
-                  @click="onSubmit('form')"
                   class="submit-btn"
                   :loading="forgetLoading"
+                  @click="onSubmit('form')"
                   >立即找回
                 </el-button>
               </el-form-item>
@@ -75,16 +74,16 @@
                 <div class="links">
                   <el-link
                     type="primary"
-                    @click="toLink('/register')"
                     :underline="false"
-                    >注册账号</el-link
-                  >
+                    @click="toLink('/register')"
+                    >注册账号
+                  </el-link>
                   <el-link
                     type="primary"
-                    @click="toLink('/login')"
                     :underline="false"
-                    >已有账号，立即登录?</el-link
-                  >
+                    @click="toLink('/login')"
+                    >已有账号，立即登录?
+                  </el-link>
                 </div>
               </el-form-item>
             </el-form>

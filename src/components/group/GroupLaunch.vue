@@ -19,19 +19,19 @@
                 :class="{ shadow: searchHeaderShadow }"
               >
                 <el-input
+                  v-model="keywords"
                   placeholder="搜索 | 好友 or 群组"
                   prefix-icon="el-icon-search"
-                  v-model="keywords"
                   clearable
                   size="small"
                 />
               </el-header>
               <el-main class="no-padding">
                 <el-scrollbar
-                  :native="false"
-                  tag="section"
-                  class="full-height"
                   ref="scrollbar"
+                  class="full-height"
+                  tag="section"
+                  :native="false"
                 >
                   <ul class="friend-items no-select">
                     <li
@@ -40,10 +40,10 @@
                       @click="triggerContacts(item)"
                     >
                       <el-avatar
-                        :size="25"
-                        :src="item.avatar"
                         class="avatar"
                         style="margin-top: 5px"
+                        :size="25"
+                        :src="item.avatar"
                       >
                         <img src="~@/assets/image/detault-avatar.jpg" />
                       </el-avatar>
@@ -78,18 +78,18 @@
               </el-header>
               <el-header height="40px" :class="{ mt40: !readonly }">
                 <el-divider content-position="left" class="no-select">
-                  <span style="color: #c4c5c7"
-                    >邀请成员 ({{ selected.length }})</span
-                  >
+                  <span style="color: #c4c5c7">
+                    邀请成员 ({{ selected.length }})
+                  </span>
                 </el-divider>
               </el-header>
               <el-main>
                 <el-scrollbar :native="false" tag="section" class="full-height">
                   <div class="selectd-items">
                     <div
-                      class="selectd-item no-select"
                       v-for="item in selected"
                       :key="item.id"
+                      class="selectd-item no-select"
                     >
                       <el-avatar :size="25" :src="item.avatar" />
                       <p>{{ item.nickname }}</p>
@@ -108,14 +108,14 @@
       <el-footer height="50px" class="no-padding footer">
         <el-button size="small" @click="close" plain>取消</el-button>
         <el-button
+          v-if="from.groupId == 0"
           type="primary"
           size="small"
-          v-if="from.groupId == 0"
           @click="createSubmit"
         >
           创建群组<span v-show="selected.length">({{ selected.length }})</span>
         </el-button>
-        <el-button type="primary" size="small" v-else @click="inviteSubmit">
+        <el-button v-else type="primary" size="small" @click="inviteSubmit">
           立即邀请({{ selected.length }})
         </el-button>
       </el-footer>

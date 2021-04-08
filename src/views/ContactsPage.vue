@@ -80,7 +80,7 @@
             </template>
             <template v-else-if="activeIndex == 1">
               <p>我的好友({{ friends.items.length }})</p>
-              <p @click="$refs.searchUsers.open()" class="pointer">
+              <p class="pointer" @click="$refs.searchUsers.open()">
                 <i class="el-icon-plus"></i>
                 <span> 添加好友</span>
               </p>
@@ -120,16 +120,16 @@
                 </template>
                 <template>
                   <div
-                    class="data-item"
                     v-for="item in apply.items"
-                    @click="openUserDetail(item.user_id)"
                     :key="item.id"
+                    class="data-item"
+                    @click="openUserDetail(item.user_id)"
                   >
                     <el-avatar
                       shape="square"
-                      :size="35"
                       class="avatar"
                       :src="item.avatar"
+                      :size="35"
                     >
                       {{ item.nickname.substr(0, 1) }}
                     </el-avatar>
@@ -150,21 +150,21 @@
                     </div>
                     <div class="apply-from" @click.prevent.stop>
                       <el-button
+                        v-show="item.status == 0"
                         size="mini"
                         type="primary"
                         icon="el-icon-check"
-                        v-show="item.status == 0"
                         @click="handleFrom(item)"
                         >同意申请
                       </el-button>
                       <el-button
+                        v-show="item.status == 1"
                         size="mini"
                         type="primary"
                         icon="el-icon-s-promotion"
-                        v-show="item.status == 1"
                         @click="toTalk(1, `1_${item.user_id}`)"
-                        >发送消息</el-button
-                      >
+                        >发送消息
+                      </el-button>
                       <el-button
                         size="mini"
                         type="danger"
@@ -203,15 +203,15 @@
                 </template>
                 <template>
                   <div
-                    class="data-item"
                     v-for="item in friends.items"
-                    @click="openUserDetail(item.id)"
                     :key="item.id"
+                    class="data-item"
+                    @click="openUserDetail(item.id)"
                   >
                     <el-avatar
+                      class="avatar"
                       shape="square"
                       :size="35"
-                      class="avatar"
                       :src="item.avatar"
                     >
                       {{ item.nickname.substr(0, 1) }}
@@ -223,7 +223,7 @@
                             ? item.friend_remark
                             : item.nickname
                         }}</span>
-                        <div class="larkc-tag agree" v-show="item.online == 1">
+                        <div v-show="item.online == 1" class="larkc-tag agree">
                           在线
                         </div>
                       </div>
@@ -278,15 +278,15 @@
                 </template>
                 <template>
                   <div
-                    class="data-item"
                     v-for="item in groups.items"
-                    @click="groupDetailId = item.id"
                     :key="item.id"
+                    class="data-item"
+                    @click="groupDetailId = item.id"
                   >
                     <el-avatar
+                      class="avatar"
                       shape="square"
                       :size="35"
-                      class="avatar"
                       :src="item.avatar"
                     >
                       {{ item.group_name.substr(0, 1) }}
@@ -294,13 +294,13 @@
                     <div class="card">
                       <div class="title">
                         <span class="name">{{ item.group_name }}</span>
-                        <div class="larkc-tag" v-show="item.not_disturb == 1">
+                        <div v-show="item.not_disturb == 1" class="larkc-tag">
                           <i
                             class="iconfont icon-xiaoximiandarao"
                             style="font-size: 10px; color: #7d7a7a"
                           ></i>
                         </div>
-                        <div class="larkc-tag wait" v-show="item.leader == 2">
+                        <div v-show="item.leader == 2" class="larkc-tag wait">
                           群主
                         </div>
                       </div>

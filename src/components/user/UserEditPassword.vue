@@ -13,42 +13,41 @@
           <el-form-item prop="old_password" label="旧密码">
             <el-input
               v-model="form.old_password"
-              type="password"
-              placeholder="请填写旧密码"
               class="cuborder-radius no-border"
-              @keyup.enter.native="onSubmit('form')"
+              type="password"
               size="medium"
+              placeholder="请填写旧密码"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item prop="new_password" label="新密码">
             <el-input
               v-model="form.new_password"
-              type="password"
-              placeholder="请填写新的密码"
               class="cuborder-radius no-border"
-              @keyup.enter.native="onSubmit('form')"
+              type="password"
               size="medium"
+              placeholder="请填写新的密码"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item prop="new_password2" label="重复密码">
             <el-input
               v-model="form.new_password2"
+              class="cuborder-radius no-border"
+              size="medium"
               type="password"
               placeholder="请再次填写新密码"
-              class="cuborder-radius no-border"
               @keyup.enter.native="onSubmit('form')"
-              size="medium"
             />
           </el-form-item>
           <el-form-item style="margin-top: 40px">
             <el-button
-              type="primary"
-              @click="onSubmit('form')"
               class="submit-btn"
-              :loading="loading"
+              type="primary"
               size="medium"
-            >
-              立即修改
+              :loading="loading"
+              @click="onSubmit('form')"
+              >立即修改
             </el-button>
           </el-form-item>
         </el-form>

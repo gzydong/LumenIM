@@ -12,54 +12,52 @@
           <el-form-item prop="email" label="邮箱">
             <el-input
               v-model="form.email"
-              placeholder="请填写邮箱地址"
               class="cuborder-radius"
-              @keyup.enter.native="onSubmit('form')"
               size="medium"
+              placeholder="请填写邮箱地址"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item prop="sms_code" label="验证码">
             <el-input
               v-model="form.sms_code"
-              placeholder="邮件验证码"
               class="cuborder-radius"
-              @keyup.enter.native="onSubmit('form')"
               style="width: 185px"
               size="medium"
               maxlength="6"
+              placeholder="邮件验证码"
+              @keyup.enter.native="onSubmit('form')"
             />
-
-            <div class="code-btn disable" v-if="smsLock">正在发送 ...</div>
+            <div v-if="smsLock" class="code-btn disable">正在发送 ...</div>
             <div
-              class="code-btn"
               v-else-if="smsLock == false && smsLockObj.time == null"
+              class="code-btn"
               @click="sendSms"
             >
               获取验证码
             </div>
-            <div class="code-btn disable" v-else>
+            <div v-else class="code-btn disable">
               重新发送({{ smsLockObj.time }}s)
             </div>
           </el-form-item>
           <el-form-item prop="password" label="密码">
             <el-input
               v-model="form.password"
-              type="password"
-              placeholder="登录密码验证"
               class="cuborder-radius no-border"
-              @keyup.enter.native="onSubmit('form')"
+              type="password"
               size="medium"
+              placeholder="登录密码验证"
+              @keyup.enter.native="onSubmit('form')"
             />
           </el-form-item>
           <el-form-item style="margin-top: 40px">
             <el-button
-              type="primary"
-              @click="onSubmit('form')"
               class="submit-btn"
-              :loading="loading"
+              type="primary"
               size="medium"
-            >
-              立即修改
+              :loading="loading"
+              @click="onSubmit('form')"
+              >立即修改
             </el-button>
           </el-form-item>
         </el-form>

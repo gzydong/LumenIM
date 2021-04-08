@@ -2,9 +2,9 @@
   <div class="image-message no-select">
     <el-image
       fit="cover"
+      :src="src"
       :lazy="true"
       :style="getImgStyle(src)"
-      :src="src"
       :preview-src-list="[src]"
     >
       <div slot="error" class="image-slot">图片加载失败...</div>
@@ -23,7 +23,6 @@ export default {
     },
   },
   methods: {
-    //获取图片信息
     getImgStyle(url) {
       return imgZoom(url, 200)
     },

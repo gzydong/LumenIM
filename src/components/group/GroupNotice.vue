@@ -40,7 +40,7 @@
           </div>
         </template>
         <template v-else>
-          <el-scrollbar :native="false" tag="section" class="full-height">
+          <el-scrollbar class="full-height" :native="false" tag="section">
             <div
               v-for="(item, index) in items"
               :key="item.id"
@@ -51,12 +51,13 @@
                 <span
                   class="right-tools no-select"
                   @click="catNoticeDetail(index)"
-                  >{{ item.isShow ? '收起' : '展开' }}</span
                 >
+                  {{ item.isShow ? '收起' : '展开' }}
+                </span>
               </div>
               <p class="datetime">
                 <el-avatar :size="15" :src="item.avatar">
-                  <img src="~@/assets/image/detault-avatar.jpg" alt="" />
+                  <img src="~@/assets/image/detault-avatar.jpg" />
                 </el-avatar>
                 <span
                   class="text nickname"

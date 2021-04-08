@@ -15,9 +15,9 @@
           <span class="group-setting-title">{{ detail.groupName }}</span>
         </p>
         <span
+          v-show="detail.is_manager"
           class="more"
           @click="isShowManager = true"
-          v-show="detail.is_manager"
           >管理</span
         >
       </div>
@@ -29,12 +29,12 @@
 
       <div class="list-item">
         <span>我的群昵称：</span>
-        <span class="edit-visit-card" v-if="!isEditRemark">
+        <span v-if="!isEditRemark" class="edit-visit-card">
           <span>
             {{ detail.visitCard }}
-            <span v-show="!detail.visitCard" style="font-size: 12px"
-              >添加群名片</span
-            >
+            <span v-show="!detail.visitCard" style="font-size: 12px">
+              添加群名片
+            </span>
           </span>
           <i
             class="el-icon-edit-outline edit-remark-icon"
@@ -46,11 +46,11 @@
         </span>
         <span v-else>
           <input
+            v-model="editRemarkText"
+            class="edit-input"
             type="text"
             v-focus
-            v-model="editRemarkText"
             @keyup.enter="editRemark"
-            class="edit-input"
           />
           <span class="input-submit" @click="editRemark">确认</span>
         </span>
@@ -60,8 +60,8 @@
         <span>消息免打扰：</span>
         <el-switch
           v-model="detail.disturb"
-          :disabled="disturbDisabled"
           inactive-color="#e0d6d6"
+          :disabled="disturbDisabled"
           @change="editDisturb"
         />
       </div>
@@ -90,11 +90,11 @@
       <div class="list-item flex">
         <span>群公告</span>
         <span
-          class="more"
           v-show="detail.group_notice"
+          class="more"
           @click="isShowGroupNotice = true"
-          >更多</span
-        >
+          >更多
+        </span>
       </div>
 
       <div class="list-item-tips group-notice">
@@ -134,16 +134,16 @@
           </template>
           <template v-else>
             <el-row
-              class="row-items"
               v-for="member in searchs"
               :key="member.user_id"
+              class="row-items"
               @click.native="openUserDetail(member.user_id)"
             >
               <el-col :span="11">
                 <img
+                  width="20px"
                   :src="member.avatar"
                   :onerror="$store.state.detaultAvatar"
-                  width="20px"
                 />
                 <span class="nickname">{{ member.nickname }}</span>
               </el-col>

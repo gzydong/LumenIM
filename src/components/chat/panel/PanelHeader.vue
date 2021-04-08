@@ -5,12 +5,12 @@
         {{ params.source == 1 ? '好友' : '群组' }}
       </span>
       <span class="nickname">{{ params.nickname }}</span>
-      <span class="num" v-show="params.source == 2">({{ groupNum }})</span>
+      <span v-show="params.source == 2" class="num">({{ groupNum }})</span>
     </div>
 
-    <div class="module center-module" v-show="params.source == 1">
+    <div v-show="params.source == 1" class="module center-module">
       <p class="online">
-        <span class="online-status" v-show="isOnline"></span>
+        <span v-show="isOnline" class="online-status"></span>
         <span>{{ isOnline ? '在线' : '离线' }}</span>
       </p>
       <p class="keyboard-status" v-show="isKeyboard">对方正在输入 ...</p>
