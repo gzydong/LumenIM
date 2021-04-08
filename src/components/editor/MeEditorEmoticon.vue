@@ -87,7 +87,7 @@
       </el-footer>
     </el-container>
 
-    <me-editor-system-emoticon
+    <MeEditorSystemEmoticon
       v-if="systemEmojiBox"
       @close="systemEmojiBox = false"
     />
@@ -95,26 +95,26 @@
 </template>
 
 <script>
-import MeEditorSystemEmoticon from "@/components/editor/MeEditorSystemEmoticon";
-import { emojiList as emoji } from "@/utils/emojis";
-import { mapState } from "vuex";
+import MeEditorSystemEmoticon from '@/components/editor/MeEditorSystemEmoticon'
+import { emojiList as emoji } from '@/utils/emojis'
+import { mapState } from 'vuex'
 
 export default {
-  name: "MeEditorEmoticon",
+  name: 'MeEditorEmoticon',
   components: {
     MeEditorSystemEmoticon,
   },
   computed: {
     ...mapState({
-      emojiItem: (state) => state.emoticon.items,
+      emojiItem: state => state.emoticon.items,
     }),
     showItems() {
-      let start = (this.page - 1) * this.pageSize;
-      let end = start + this.pageSize;
-      return this.emojiItem.slice(start, end);
+      let start = (this.page - 1) * this.pageSize
+      let end = start + this.pageSize
+      return this.emojiItem.slice(start, end)
     },
     pageTotal() {
-      return this.emojiItem.length / this.pageSize;
+      return this.emojiItem.length / this.pageSize
     },
   },
   data() {
@@ -125,31 +125,31 @@ export default {
       systemEmojiBox: false,
 
       showEmoticonId: -1,
-      showTitle: "QQ表情/符号表情",
+      showTitle: 'QQ表情/符号表情',
 
       page: 1,
       pageSize: 13,
-    };
+    }
   },
   created() {
-    this.$store.commit("LOAD_USER_EMOTICON");
+    this.$store.commit('LOAD_USER_EMOTICON')
   },
   methods: {
     // 表情包导航翻页
     turnPage(type) {
       if (type == 1) {
-        if (this.page == 1) return false;
-        this.page--;
+        if (this.page == 1) return false
+        this.page--
       } else {
-        if (this.page >= this.pageTotal) return false;
-        this.page++;
+        if (this.page >= this.pageTotal) return false
+        this.page++
       }
     },
 
     // 点击表情包导航
     triggerItem(item) {
-      this.showEmoticonId = item.emoticon_id;
-      this.showTitle = item.name;
+      this.showEmoticonId = item.emoticon_id
+      this.showTitle = item.name
     },
 
     // 选中表情
@@ -157,7 +157,7 @@ export default {
       this.callback({
         type: 1,
         value: emoji,
-      });
+      })
     },
 
     // 发送图片表情包
@@ -165,25 +165,25 @@ export default {
       this.callback({
         type: 2,
         value: item.media_id,
-      });
+      })
     },
 
     callback(data) {
-      this.$emit("selected", data);
+      this.$emit('selected', data)
     },
 
     // 自定义上传表情
     customUploadEmoji(e) {
       if (e.target.files.length == 0) {
-        return false;
+        return false
       }
 
-      this.$store.commit("UPLOAD_USER_EMOTICON", {
+      this.$store.commit('UPLOAD_USER_EMOTICON', {
         file: e.target.files[0],
-      });
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {

@@ -5,7 +5,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <h4>账户密码</h4>
-          <p>当前密码强度 ：{{ cipherStrength }}</p>
+          <p>当前密码强度 ：中</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <span class="action" @click="$refs.changePasswrodRef.open()"
@@ -17,7 +17,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <h4>绑定手机</h4>
-          <p>已绑定手机 ：{{ bindMobile }}</p>
+          <p>已绑定手机 ：{{ mobile }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <span class="action" @click="$refs.changeMobileRef.open()">更换</span>
@@ -27,7 +27,7 @@
       <el-row type="flex" class="list-item">
         <el-col :span="20" class="left-col">
           <h4>绑定邮箱</h4>
-          <p>已绑定邮箱 ：{{ bindEmail }}</p>
+          <p>已绑定邮箱 ：{{ email }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
           <span class="action" @click="$refs.changeEmailRef.open()">修改</span>
@@ -36,24 +36,24 @@
     </div>
 
     <!-- 修改密码组件 -->
-    <user-edit-password ref="changePasswrodRef" />
+    <UserEditPassword ref="changePasswrodRef" />
 
     <!-- 修改手机号组件 -->
-    <user-edit-mobile ref="changeMobileRef" @success="getUserDetail" />
+    <UserEditMobile ref="changeMobileRef" @success="getUserDetail" />
 
     <!-- 修改邮箱组件 -->
-    <user-edit-email ref="changeEmailRef" @success="getUserDetail" />
+    <UserEditEmail ref="changeEmailRef" @success="getUserDetail" />
   </div>
 </template>
 
 <script>
-import UserEditPassword from "@/components/user/UserEditPassword";
-import UserEditMobile from "@/components/user/UserEditMobile";
-import UserEditEmail from "@/components/user/UserEditEmail";
-import { ServeGetUserDetail } from "@/api/user";
+import UserEditPassword from '@/components/user/UserEditPassword'
+import UserEditMobile from '@/components/user/UserEditMobile'
+import UserEditEmail from '@/components/user/UserEditEmail'
+import { ServeGetUserDetail } from '@/api/user'
 
 export default {
-  name: "SecurityPage",
+  name: 'SecurityPage',
   components: {
     UserEditPassword,
     UserEditMobile,
@@ -61,32 +61,29 @@ export default {
   },
   data() {
     return {
-      // 密码强度
-      cipherStrength: "中",
-
-      bindMobile: "",
-
-      bindEmail: "",
-    };
+      mobile: '',
+      email: '',
+    }
   },
   created() {
-    this.getUserDetail();
+    this.getUserDetail()
   },
   methods: {
     // 获取登录用户信息
     getUserDetail() {
-      ServeGetUserDetail().then((res) => {
+      ServeGetUserDetail().then(res => {
         if (res.code == 200) {
-          this.bindMobile = res.data.mobile.replace(
+          this.mobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,
-            "$1****$2"
-          );
-          this.bindEmail = res.data.email;
+            '$1****$2'
+          )
+
+          this.email = res.data.email
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container h4 {

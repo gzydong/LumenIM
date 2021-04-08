@@ -1,6 +1,6 @@
 <template>
   <div>
-    <main-layout :idx="2">
+    <MainLayout :idx="2">
       <el-container slot="container" class="note-container">
         <el-aside width="230px" class="el-aside-one lum-scrollbar">
           <el-header class="btn-header">
@@ -250,7 +250,11 @@
                 </el-header>
                 <el-main class="no-padding">
                   <div id="note-detail">
-                    <el-scrollbar :native="false" tag="section" class="full-height">
+                    <el-scrollbar
+                      :native="false"
+                      tag="section"
+                      class="full-height"
+                    >
                       <div style="padding: 10px;display: none;">
                         <div class="subfield">
                           <p>
@@ -300,7 +304,7 @@
             <el-aside width="50px" id="note-tools">
               <div class="item" @click="markdown.isFull = !markdown.isFull">
                 <i class="el-icon-full-screen"></i>
-                <p>{{ markdown.isFull ? "取消全屏" : "全屏" }}</p>
+                <p>{{ markdown.isFull ? '取消全屏' : '全屏' }}</p>
               </div>
 
               <div
@@ -481,7 +485,7 @@
                       @click="$refs.uploadNoteFile.click()"
                     >
                       {{
-                        filesManager.status ? "上传中..." : "上传附件"
+                        filesManager.status ? '上传中...' : '上传附件'
                       }}</el-button
                     >
                   </div>
@@ -552,16 +556,13 @@
           </el-container>
         </el-main>
       </el-container>
-    </main-layout>
+    </MainLayout>
 
     <!-- 笔记附件回收站 -->
-    <note-annex-recycle
-      v-if="recycleAnnexBox"
-      @close="recycleAnnexBox = false"
-    />
+    <NoteAnnexRecycle v-if="recycleAnnexBox" @close="recycleAnnexBox = false" />
 
     <!-- 选择联系人窗口 -->
-    <user-contacts
+    <UserContacts
       v-show="selectContactsBox"
       @close="selectContactsBox = false"
       @confirm="confirmSelectContacts"
@@ -569,12 +570,12 @@
   </div>
 </template>
 <script>
-import MainLayout from "@/views/layout/MainLayout";
-import NoteAnnexRecycle from "@/components/note/NoteAnnexRecycle";
-import UserContacts from "@/components/chat/UserContacts";
-import { SvgNoteBook, SvgNote } from "@/core/icons";
-import { mavonEditor } from "mavon-editor";
-import "mavon-editor/dist/css/index.css";
+import MainLayout from '@/views/layout/MainLayout'
+import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
+import UserContacts from '@/components/chat/UserContacts'
+import { SvgNoteBook, SvgNote } from '@/core/icons'
+import { mavonEditor } from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 import {
   ServeGetArticleClass,
@@ -598,7 +599,7 @@ import {
   ServeRecoverArticle,
   ServeDeleteArticle,
   ServeForeverDeleteArticle,
-} from "@/api/article";
+} from '@/api/article'
 
 import {
   parseTime,
@@ -606,10 +607,10 @@ import {
   formateSize,
   formateTime,
   copyTextToClipboard,
-} from "@/utils/functions";
+} from '@/utils/functions'
 
 export default {
-  name: "NotePage",
+  name: 'NotePage',
   components: {
     MainLayout,
     mavonEditor,
@@ -621,42 +622,42 @@ export default {
   directives: {
     // 代码高亮指令
     code: {
-      inserted: function (el) {
-        let preNodes = el.querySelectorAll("pre");
+      inserted: function(el) {
+        let preNodes = el.querySelectorAll('pre')
 
         let copyFunc = (pre, text) => {
-          let el = document.createElement("p");
-          el.className = "fz-btn";
-          el.innerText = "复制";
+          let el = document.createElement('p')
+          el.className = 'fz-btn'
+          el.innerText = '复制'
           el.onclick = () => {
-            copyTextToClipboard(text.replace(/(^\s*)|(\s*$)/g, ""), () => {
-              el.innerText = "复制成功!";
+            copyTextToClipboard(text.replace(/(^\s*)|(\s*$)/g, ''), () => {
+              el.innerText = '复制成功!'
               setTimeout(() => {
-                el.innerText = "复制";
-              }, 1000);
-            });
-          };
+                el.innerText = '复制'
+              }, 1000)
+            })
+          }
 
-          pre.appendChild(el);
-        };
+          pre.appendChild(el)
+        }
 
         let preNmae = (pre, lang) => {
-          let el = document.createElement("p");
-          el.className = "lang-name";
-          el.innerText = lang;
-          pre.appendChild(el);
-        };
+          let el = document.createElement('p')
+          el.className = 'lang-name'
+          el.innerText = lang
+          pre.appendChild(el)
+        }
 
-        preNodes.forEach((elPre) => {
-          let elCode = elPre.querySelector("code");
-          let className = elCode.className;
-          let language = className.split("-")[1];
+        preNodes.forEach(elPre => {
+          let elCode = elPre.querySelector('code')
+          let className = elCode.className
+          let language = className.split('-')[1]
 
-          copyFunc(elPre, elCode.innerText);
+          copyFunc(elPre, elCode.innerText)
           if (language != undefined) {
-            preNmae(elPre, language);
+            preNmae(elPre, language)
           }
-        });
+        })
       },
     },
   },
@@ -665,52 +666,52 @@ export default {
       //菜单列表
       menus: [
         {
-          name: "近期笔记",
-          icon: "icon-jinqiyulan",
-          color: "rgb(255, 181, 169)",
+          name: '近期笔记',
+          icon: 'icon-jinqiyulan',
+          color: 'rgb(255, 181, 169)',
           isShowSub: false,
           isActive: true,
           submenus: [],
         },
         {
-          name: "星标笔记",
-          icon: "icon-xingxing1",
-          color: "#ffc152",
+          name: '星标笔记',
+          icon: 'icon-xingxing1',
+          color: '#ffc152',
           isShowSub: false,
           isActive: false,
           submenus: [],
         },
         {
-          name: "分类笔记",
-          icon: "icon-biji8",
-          color: "#5ba0ff",
+          name: '分类笔记',
+          icon: 'icon-biji8',
+          color: '#5ba0ff',
           isShowSub: true,
           isActive: false,
           submenus: [],
         },
         {
-          name: "标签夹",
-          icon: "icon-biaoqian5",
-          color: "#5ba0ff",
+          name: '标签夹',
+          icon: 'icon-biaoqian5',
+          color: '#5ba0ff',
           isShowSub: false,
           isActive: false,
           submenus: [],
         },
         {
-          name: "回收站",
-          icon: "el-icon-delete",
-          color: "#fd6f41",
+          name: '回收站',
+          icon: 'el-icon-delete',
+          color: '#fd6f41',
           isShowSub: false,
           isActive: false,
           submenus: [
             {
-              name: "笔记回收站",
-              icon: "icon-dian",
+              name: '笔记回收站',
+              icon: 'icon-dian',
               isActive: false,
             },
             {
-              name: "附件回收站",
-              icon: "icon-dian",
+              name: '附件回收站',
+              icon: 'icon-dian',
               isActive: false,
             },
           ],
@@ -727,20 +728,20 @@ export default {
       noteDetail: {
         loadId: 0,
         id: 0,
-        title: "",
+        title: '',
         tags: [],
         class_id: 0,
-        content: "",
-        html: "",
+        content: '',
+        html: '',
         is_asterisk: 0,
         status: 1,
-        created_at: "",
+        created_at: '',
       },
 
       // 编辑器相关信息
       markdown: {
-        mdText: "",
-        htmlText: "",
+        mdText: '',
+        htmlText: '',
         isEdit: false,
         isFull: false, //是否全屏模式
         toolbars: {
@@ -779,17 +780,17 @@ export default {
 
       //选择联系人窗口
       selectContactsBox: false,
-    };
+    }
   },
   computed: {
     isEdited() {
-      return this.markdown.mdText || this.noteDetail.title ? true : false;
+      return this.markdown.mdText || this.noteDetail.title ? true : false
     },
   },
   mounted() {
-    this.loadNoteClass();
-    this.loadNoteTags();
-    this.loadNoteList();
+    this.loadNoteClass()
+    this.loadNoteTags()
+    this.loadNoteList()
   },
   methods: {
     //格式化文件大小
@@ -803,178 +804,178 @@ export default {
 
     //加载笔记详情信息
     loadNoteDetail(id, isEdit) {
-      this.markdown.isEdit = false;
+      this.markdown.isEdit = false
       ServeGetArticleDetail({
         article_id: id,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200 && this.noteDetail.loadId == id) {
-            this.loadStatus = 1;
-            this.noteDetail.id = res.data.id;
-            this.noteDetail.loadId = res.data.id;
-            this.noteDetail.content = res.data.md_content;
-            this.noteDetail.html = res.data.content;
-            this.noteDetail.title = res.data.title;
-            this.noteDetail.created_at = res.data.created_at;
-            this.noteDetail.class_id = res.data.class_id;
-            this.noteDetail.is_asterisk = res.data.is_asterisk;
-            this.noteDetail.tags = res.data.tags;
-            this.noteDetail.status = res.data.status;
-            this.filesManager.files = res.data.files;
+            this.loadStatus = 1
+            this.noteDetail.id = res.data.id
+            this.noteDetail.loadId = res.data.id
+            this.noteDetail.content = res.data.md_content
+            this.noteDetail.html = res.data.content
+            this.noteDetail.title = res.data.title
+            this.noteDetail.created_at = res.data.created_at
+            this.noteDetail.class_id = res.data.class_id
+            this.noteDetail.is_asterisk = res.data.is_asterisk
+            this.noteDetail.tags = res.data.tags
+            this.noteDetail.status = res.data.status
+            this.filesManager.files = res.data.files
 
             // 赋值给编辑器
-            this.markdown.mdText = this.noteDetail.content;
+            this.markdown.mdText = this.noteDetail.content
 
-            this.tagManager.tags = this.menus[3].submenus.map((item) => {
+            this.tagManager.tags = this.menus[3].submenus.map(item => {
               return {
                 id: item.id,
                 name: item.name,
                 isSelectd: false,
-              };
-            });
+              }
+            })
 
-            let ids = res.data.tags.map((item) => item.id);
+            let ids = res.data.tags.map(item => item.id)
             this.tagManager.tags.forEach((value, i) => {
-              this.tagManager.tags[i].isSelectd = ids.includes(value.id);
-            });
+              this.tagManager.tags[i].isSelectd = ids.includes(value.id)
+            })
 
             if (isEdit) {
-              this.markdown.isEdit = true;
+              this.markdown.isEdit = true
             }
           } else if (res.code !== 200 && this.noteDetail.loadId == id) {
-            this.loadStatus = 2;
+            this.loadStatus = 2
           }
         })
-        .catch((err) => {
+        .catch(err => {
           if (this.noteDetail.loadId == id) {
-            this.loadStatus = 2;
+            this.loadStatus = 2
           }
-        });
+        })
     },
 
     //加载标签列表
     loadNoteTags() {
-      ServeGetArticleTag().then((res) => {
-        if (res.code != 200) return false;
-        this.menus[3].submenus = res.data.tags.map((item) => {
+      ServeGetArticleTag().then(res => {
+        if (res.code != 200) return false
+        this.menus[3].submenus = res.data.tags.map(item => {
           return {
             id: item.id,
             name: item.tag_name,
-            icon: "icon-dian",
+            icon: 'icon-dian',
             count: item.count,
             isEdit: false,
             isDefault: 0,
             isActive: false,
-          };
-        });
-      });
+          }
+        })
+      })
     },
 
     //加载文章列表
     loadNoteList() {
       let data = {
         page: 1,
-        keyword: "",
-        find_type: "",
-        cid: "",
-      };
-
-      let [i1, i2] = this.getSelectMenu();
-      if (i1 == 0) {
-        data.find_type = 1;
-      } else if (i1 == 1) {
-        data.find_type = 2;
-      } else if (i1 == 2) {
-        data.find_type = 3;
-        data.cid = this.menus[2].submenus[i2].id;
-      } else if (i1 == 3) {
-        data.find_type = 4;
-        let cid = this.menus[3].submenus[i2].id;
-        data.cid = cid;
-      } else if (i1 == 4) {
-        data.find_type = 5;
-      } else if (i1 == -1) {
-        data.keyword = trim(this.$refs.querykeywords.value);
-        data.find_type = 6;
+        keyword: '',
+        find_type: '',
+        cid: '',
       }
 
-      this.loadNoteStatus = 0;
-      ServeGetArticleList(data)
-        .then((res) => {
-          this.loadNoteStatus = 1;
+      let [i1, i2] = this.getSelectMenu()
+      if (i1 == 0) {
+        data.find_type = 1
+      } else if (i1 == 1) {
+        data.find_type = 2
+      } else if (i1 == 2) {
+        data.find_type = 3
+        data.cid = this.menus[2].submenus[i2].id
+      } else if (i1 == 3) {
+        data.find_type = 4
+        let cid = this.menus[3].submenus[i2].id
+        data.cid = cid
+      } else if (i1 == 4) {
+        data.find_type = 5
+      } else if (i1 == -1) {
+        data.keyword = trim(this.$refs.querykeywords.value)
+        data.find_type = 6
+      }
 
-          if (res.code !== 200) return false;
-          this.notes = res.data.rows.map((item) => {
+      this.loadNoteStatus = 0
+      ServeGetArticleList(data)
+        .then(res => {
+          this.loadNoteStatus = 1
+
+          if (res.code !== 200) return false
+          this.notes = res.data.rows.map(item => {
             return {
               id: item.id,
               title: item.title,
-              datetime: parseTime(item.updated_at, "{y}/{m}/{d}"),
-              classify: item.class_name || "我的笔记",
+              datetime: parseTime(item.updated_at, '{y}/{m}/{d}'),
+              classify: item.class_name || '我的笔记',
               abstract: item.abstract,
               img: item.image,
               class_id: item.class_id,
               status: item.status,
-            };
-          });
+            }
+          })
         })
-        .catch((err) => {
-          this.loadNoteStatus = 1;
-        });
+        .catch(err => {
+          this.loadNoteStatus = 1
+        })
     },
 
     //加载笔记分类列表
     loadNoteClass(class_id = null) {
-      ServeGetArticleClass().then((res) => {
-        if (res.code != 200) return false;
-        this.menus[2].submenus = res.data.rows.map((item) => {
+      ServeGetArticleClass().then(res => {
+        if (res.code != 200) return false
+        this.menus[2].submenus = res.data.rows.map(item => {
           return {
             id: item.id,
             name: item.class_name,
-            icon: "icon-dian",
+            icon: 'icon-dian',
             count: item.count,
             isEdit: false,
             isDefault: item.is_default,
             isActive: class_id == item.id,
-          };
-        });
-      });
+          }
+        })
+      })
     },
 
     //添加或编辑笔记信息
     editNote(type = 1) {
-      let data = this.getEditData();
-      if (data.title == "") {
-        this.$message("笔记标题不能为空...");
-        return false;
+      let data = this.getEditData()
+      if (data.title == '') {
+        this.$message('笔记标题不能为空...')
+        return false
       }
 
-      if (data.md_content == "" || data.content == "") {
-        this.$message("笔记内容不能为空...");
-        return false;
+      if (data.md_content == '' || data.content == '') {
+        this.$message('笔记内容不能为空...')
+        return false
       }
 
-      this.editNoteStatus = 1;
+      this.editNoteStatus = 1
       ServeEditArticle(data)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             if (data.article_id == 0) {
-              this.loadNoteList();
-              this.loadNoteClass(data.class_id);
+              this.loadNoteList()
+              this.loadNoteClass(data.class_id)
             }
 
-            this.noteDetail.id = res.data.aid;
-            this.noteDetail.loadId = res.data.aid;
-            this.noteDetail.content = data.md_content;
-            this.noteDetail.html = data.content;
+            this.noteDetail.id = res.data.aid
+            this.noteDetail.loadId = res.data.aid
+            this.noteDetail.content = data.md_content
+            this.noteDetail.html = data.content
 
             if (type == 1) {
-              this.markdown.isEdit = false;
+              this.markdown.isEdit = false
             }
           }
         })
         .finally(() => {
-          this.editNoteStatus = 0;
-        });
+          this.editNoteStatus = 0
+        })
     },
 
     //获取当前编辑笔记相关信息
@@ -985,269 +986,269 @@ export default {
         title: this.noteDetail.title,
         md_content: this.markdown.mdText,
         content: this.markdown.htmlText,
-      };
+      }
     },
 
     //切换当前编辑模式
     openEditMode() {
-      this.markdown.isEdit = true;
+      this.markdown.isEdit = true
     },
 
     //查看笔记详情
     catNote(info, isEdit = false) {
-      this.loadStatus = 0;
-      this.noteDetail.loadId = info.id;
-      this.loadNoteDetail(info.id, isEdit);
+      this.loadStatus = 0
+      this.noteDetail.loadId = info.id
+      this.loadNoteDetail(info.id, isEdit)
     },
 
     //重新加载当前查看的笔记
     reloadCatNote() {
-      this.loadNoteDetail(this.noteDetail.loadId);
+      this.loadNoteDetail(this.noteDetail.loadId)
     },
 
     //文章列表移除指定的文章
     removeListNote(id) {
       this.notes.splice(
-        this.notes.findIndex((item) => item.id == id),
+        this.notes.findIndex(item => item.id == id),
         1
-      );
+      )
     },
 
     //编辑器修改信息触发事件
     $editorChange(value, render) {
-      this.markdown.mdText = value;
-      this.markdown.htmlText = render;
+      this.markdown.mdText = value
+      this.markdown.htmlText = render
     },
 
     //编辑器保存信息触发事件
     $editorSave(value, render) {
-      this.editNote(2);
+      this.editNote(2)
     },
 
     //编辑器上传图片触发事件
     $editorUploadImage(pos, $file) {
-      let formdata = new FormData();
-      formdata.append("image", $file);
+      let formdata = new FormData()
+      formdata.append('image', $file)
       ServeUploadArticleImg(formdata)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$refs.mavonEditor.$img2Url(pos, res.data.save_path);
+            this.$refs.mavonEditor.$img2Url(pos, res.data.save_path)
           } else {
-            this.$refs.mavonEditor.$img2Url(pos, "");
+            this.$refs.mavonEditor.$img2Url(pos, '')
           }
         })
-        .catch((err) => {
-          this.$refs.mavonEditor.$img2Url(pos, "");
-        });
+        .catch(err => {
+          this.$refs.mavonEditor.$img2Url(pos, '')
+        })
     },
 
     //左侧菜单栏点击事件
     clickNoteMenu(type, index, index2 = -1) {
       if (type == 1 && (index == 2 || index == 3 || index == 4)) {
-        this.menus[index].isShowSub = !this.menus[index].isShowSub;
-        return;
+        this.menus[index].isShowSub = !this.menus[index].isShowSub
+        return
       }
 
       //点击查看附件回收站事件
       if (index == 4 && index2 != 0) {
-        this.recycleAnnexBox = true;
-        return;
+        this.recycleAnnexBox = true
+        return
       }
 
-      this.setSelectMenu(index, index2);
-      this.loadNoteList();
-      this.$refs.querykeywords.value = "";
+      this.setSelectMenu(index, index2)
+      this.loadNoteList()
+      this.$refs.querykeywords.value = ''
     },
 
     //添加新的笔记
     insterNote() {
-      let [i1, i2] = this.getSelectMenu();
+      let [i1, i2] = this.getSelectMenu()
       if (i1 != 2) {
-        i1 = 2;
-        i2 = this.defaultNoteClassIdx();
-        this.setSelectMenu(i1, i2);
-        this.loadNoteList();
+        i1 = 2
+        i2 = this.defaultNoteClassIdx()
+        this.setSelectMenu(i1, i2)
+        this.loadNoteList()
       }
 
-      this.loadStatus = 1;
-      this.openEditMode();
-      this.resetNoteEmpty();
-      this.noteDetail.class_id = this.menus[i1].submenus[i2].id;
+      this.loadStatus = 1
+      this.openEditMode()
+      this.resetNoteEmpty()
+      this.noteDetail.class_id = this.menus[i1].submenus[i2].id
     },
 
     cancelEdit() {
-      this.loadStatus = -1;
-      this.resetNoteEmpty();
+      this.loadStatus = -1
+      this.resetNoteEmpty()
     },
 
     //重置清空笔记信息
     resetNoteEmpty() {
-      this.noteDetail.id = 0;
-      this.noteDetail.loadId = 0;
-      this.noteDetail.content = "";
-      this.noteDetail.html = "";
-      this.noteDetail.title = "";
-      this.noteDetail.tags = [];
-      this.noteDetail.is_asterisk = 0;
-      this.noteDetail.class_id = 0;
-      this.noteDetail.status = 1;
-      this.filesManager.files = [];
-      this.tagManager.tags = [];
-      this.markdown.mdText = "";
-      this.markdown.htmlText = "";
+      this.noteDetail.id = 0
+      this.noteDetail.loadId = 0
+      this.noteDetail.content = ''
+      this.noteDetail.html = ''
+      this.noteDetail.title = ''
+      this.noteDetail.tags = []
+      this.noteDetail.is_asterisk = 0
+      this.noteDetail.class_id = 0
+      this.noteDetail.status = 1
+      this.filesManager.files = []
+      this.tagManager.tags = []
+      this.markdown.mdText = ''
+      this.markdown.htmlText = ''
     },
 
     //回车修改分类名
     editNoteMenu(e, i, i2) {
       let item = this.menus[i].submenus[i2],
-        name = trim(e.target.value);
-      if (name == "" && item.id == null) {
-        return this.$delete(this.menus[i].submenus, i2);
+        name = trim(e.target.value)
+      if (name == '' && item.id == null) {
+        return this.$delete(this.menus[i].submenus, i2)
       } else if (name && item.name == name) {
-        return (this.menus[i].submenus[i2].isEdit = false);
+        return (this.menus[i].submenus[i2].isEdit = false)
       }
 
       if (i == 2) {
         ServeEditArticleClass({
           class_id: item.id | 0,
           class_name: name,
-        }).then((res) => {
+        }).then(res => {
           if (res.code == 200) {
-            this.menus[i].submenus[i2].id = res.data.id;
-            this.menus[i].submenus[i2].name = name;
-            this.menus[i].submenus[i2].isEdit = false;
+            this.menus[i].submenus[i2].id = res.data.id
+            this.menus[i].submenus[i2].name = name
+            this.menus[i].submenus[i2].isEdit = false
           }
-        });
+        })
       } else {
         ServeEditArticleTag({
           tag_id: item.id | 0,
           tag_name: name,
-        }).then((res) => {
+        }).then(res => {
           if (res.code == 200) {
-            this.menus[i].submenus[i2].id = res.data.id;
-            this.menus[i].submenus[i2].name = name;
-            this.menus[i].submenus[i2].isEdit = false;
+            this.menus[i].submenus[i2].id = res.data.id
+            this.menus[i].submenus[i2].name = name
+            this.menus[i].submenus[i2].isEdit = false
           }
-        });
+        })
       }
     },
 
     //笔记分类的自定义右键菜单栏
     noteClassMenu(event, i, i2 = null) {
       if (!(i == 2 || i == 3)) {
-        return;
+        return
       }
 
-      let menu = [];
+      let menu = []
       if (i == 2 && i2 == null) {
         menu = [
           {
-            label: "重新加载",
-            icon: "el-icon-refresh",
+            label: '重新加载',
+            icon: 'el-icon-refresh',
             onClick: () => {
-              this.menus[2].submenus = [];
-              this.loadNoteClass();
+              this.menus[2].submenus = []
+              this.loadNoteClass()
             },
           },
           {
-            label: "添加分类",
-            icon: "el-icon-circle-plus-outline",
+            label: '添加分类',
+            icon: 'el-icon-circle-plus-outline',
             onClick: () => {
-              this.menus[i].isShowSub = true;
+              this.menus[i].isShowSub = true
               this.menus[i].submenus.unshift({
                 id: null,
-                name: "",
-                icon: "icon-dian",
+                name: '',
+                icon: 'icon-dian',
                 count: 0,
                 isEdit: true,
                 isActive: false,
                 isDefault: 0,
-              });
+              })
             },
           },
-        ];
+        ]
       } else if (i == 2 && i2 >= 0) {
         menu = [
           {
-            label: "添加笔记",
-            icon: "el-icon-circle-plus-outline",
+            label: '添加笔记',
+            icon: 'el-icon-circle-plus-outline',
             onClick: () => {
-              let [first_idx, last_idx] = this.getSelectMenu();
+              let [first_idx, last_idx] = this.getSelectMenu()
               if (first_idx != i || last_idx != i2) {
-                this.setSelectMenu(i, i2);
-                this.loadNoteList();
+                this.setSelectMenu(i, i2)
+                this.loadNoteList()
               }
 
-              this.insterNote();
+              this.insterNote()
             },
           },
           {
-            label: "重命名",
-            icon: "el-icon-edit-outline",
+            label: '重命名',
+            icon: 'el-icon-edit-outline',
             disabled: this.menus[i].submenus[i2].isDefault == 1,
             onClick: () => {
-              this.menus[i].submenus[i2].isEdit = true;
+              this.menus[i].submenus[i2].isEdit = true
             },
           },
           {
-            label: "删除分类",
-            icon: "el-icon-delete",
+            label: '删除分类',
+            icon: 'el-icon-delete',
             disabled:
               this.menus[i].submenus[i2].isDefault == 1 ||
               this.menus[i].submenus[i2].count > 0,
             onClick: () => {
               ServeDeleteArticleClass({
                 class_id: this.menus[i].submenus[i2].id,
-              }).then((res) => {
+              }).then(res => {
                 if (res.code == 200) {
-                  this.$delete(this.menus[i].submenus, i2);
+                  this.$delete(this.menus[i].submenus, i2)
                 }
-              });
+              })
             },
           },
           {
-            label: "向上移动",
-            icon: "el-icon-top",
+            label: '向上移动',
+            icon: 'el-icon-top',
             onClick: () => {
               if (i2 > 0) {
-                let item1 = this.menus[i].submenus[i2 - 1];
-                let item2 = this.menus[i].submenus[i2];
+                let item1 = this.menus[i].submenus[i2 - 1]
+                let item2 = this.menus[i].submenus[i2]
                 ServeArticleClassSort({
                   class_id: this.menus[i].submenus[i2].id,
                   sort_type: 2,
-                }).then((res) => {
+                }).then(res => {
                   if (res.code == 200) {
-                    this.$set(this.menus[i].submenus, i2 - 1, item2);
-                    this.$set(this.menus[i].submenus, i2, item1);
+                    this.$set(this.menus[i].submenus, i2 - 1, item2)
+                    this.$set(this.menus[i].submenus, i2, item1)
                   }
-                });
+                })
               }
             },
           },
           {
-            label: "向下移动",
-            icon: "el-icon-bottom",
+            label: '向下移动',
+            icon: 'el-icon-bottom',
             onClick: () => {
               if (i2 < this.menus[i].submenus.length - 1) {
-                let item1 = this.menus[i].submenus[i2 + 1];
-                let item2 = this.menus[i].submenus[i2];
+                let item1 = this.menus[i].submenus[i2 + 1]
+                let item2 = this.menus[i].submenus[i2]
                 ServeArticleClassSort({
                   class_id: this.menus[i].submenus[i2].id,
                   sort_type: 1,
-                }).then((res) => {
+                }).then(res => {
                   if (res.code == 200) {
-                    this.$set(this.menus[i].submenus, i2 + 1, item2);
-                    this.$set(this.menus[i].submenus, i2, item1);
+                    this.$set(this.menus[i].submenus, i2 + 1, item2)
+                    this.$set(this.menus[i].submenus, i2, item1)
                   }
-                });
+                })
               }
             },
           },
           {
-            label: "合并分类至",
-            icon: "el-icon-s-help",
+            label: '合并分类至',
+            icon: 'el-icon-s-help',
             minWidth: 200,
-            children: this.menus[2].submenus.map((item) => {
+            children: this.menus[2].submenus.map(item => {
               return {
                 label: item.name,
                 disabled: item.id == this.menus[i].submenus[i2].id,
@@ -1255,67 +1256,67 @@ export default {
                   ServeMergeArticleClass({
                     class_id: this.menus[i].submenus[i2].id,
                     toid: item.id,
-                  }).then((res) => {
+                  }).then(res => {
                     if (res.code == 200) {
-                      this.loadNoteClass();
+                      this.loadNoteClass()
                     }
-                  });
+                  })
                 },
-              };
+              }
             }),
           },
-        ];
+        ]
       } else if (i == 3 && i2 == null) {
         menu = [
           {
-            label: "重新加载",
-            icon: "el-icon-refresh",
+            label: '重新加载',
+            icon: 'el-icon-refresh',
             onClick: () => {
-              this.menus[3].submenus = [];
-              this.loadNoteTags();
+              this.menus[3].submenus = []
+              this.loadNoteTags()
             },
           },
           {
-            label: "添加标签",
-            icon: "el-icon-circle-plus-outline",
+            label: '添加标签',
+            icon: 'el-icon-circle-plus-outline',
             onClick: () => {
-              this.menus[i].isShowSub = true;
+              this.menus[i].isShowSub = true
               this.menus[i].submenus.unshift({
                 id: null,
-                name: "",
-                icon: "icon-dian",
+                name: '',
+                icon: 'icon-dian',
                 count: 0,
                 isEdit: true,
                 isActive: false,
                 isDefault: 0,
-              });
+              })
             },
           },
-        ];
+        ]
       } else if (i == 3 && i2 >= 0) {
         menu = [
           {
-            label: "重命名",
-            icon: "el-icon-edit-outline",
+            label: '重命名',
+            icon: 'el-icon-edit-outline',
             onClick: () => {
-              this.menus[i].submenus[i2].isEdit = true;
+              this.menus[i].submenus[i2].isEdit = true
             },
           },
           {
-            label: "删除标签",
-            icon: "el-icon-delete",
+            label: '删除标签',
+            icon: 'el-icon-delete',
             disabled: this.menus[i].submenus[i2].count > 0,
             onClick: () => {
               ServeDeleteArticleTag({
                 tag_id: this.menus[i].submenus[i2].id,
-              }).then((res) => {
+              }).then(res => {
                 if (res.code == 200) {
-                  this.$delete(this.menus[i].submenus, i2);
+                  this.$delete(this.menus[i].submenus, i2)
                 }
-              });
+              })
             },
           },
-        ];
+        ]
       }
 
       this.$contextmenu({
@@ -1323,39 +1324,39 @@ export default {
         event,
         zIndex: 999,
         minWidth: 150,
-      });
+      })
 
-      return false;
+      return false
     },
 
     //笔记列表的右键自定义菜单栏
     noteListMenu(event, i, note) {
       if (note.status == 2) {
-        return false;
+        return false
       }
 
       this.$contextmenu({
         items: [
           {
-            label: "编辑笔记",
-            icon: "el-icon-edit-outline",
+            label: '编辑笔记',
+            icon: 'el-icon-edit-outline',
             onClick: () => {
-              this.catNote(note, true);
+              this.catNote(note, true)
             },
           },
           {
-            label: "删除笔记",
-            icon: "el-icon-delete",
+            label: '删除笔记',
+            icon: 'el-icon-delete',
             divided: true,
             onClick: () => {
-              this.noteRecycle(note.id, note.title);
+              this.noteRecycle(note.id, note.title)
             },
           },
           {
-            label: "笔记移动至",
-            icon: "el-icon-location",
+            label: '笔记移动至',
+            icon: 'el-icon-location',
             minWidth: 200,
-            children: this.menus[2].submenus.map((item) => {
+            children: this.menus[2].submenus.map(item => {
               return {
                 label: item.name,
                 disabled: note.class_id == item.id,
@@ -1363,91 +1364,91 @@ export default {
                   ServeMoveArticle({
                     article_id: note.id,
                     class_id: item.id,
-                  }).then((res) => {
+                  }).then(res => {
                     if (res.code == 200) {
-                      this.$delete(this.notes, i);
-                      this.loadNoteClass();
+                      this.$delete(this.notes, i)
+                      this.loadNoteClass()
                     }
-                  });
+                  })
                 },
-              };
+              }
             }),
           },
         ],
         event,
         zIndex: 3,
         minWidth: 150,
-      });
+      })
 
-      return false;
+      return false
     },
 
     handleCommand(command) {
-      if (command == "a") {
-        this.insterNote();
-      } else if (command == "b") {
-        this.menus[2].isShowSub = true;
+      if (command == 'a') {
+        this.insterNote()
+      } else if (command == 'b') {
+        this.menus[2].isShowSub = true
         this.menus[2].submenus.unshift({
           id: null,
-          name: "",
-          icon: "icon-dian",
+          name: '',
+          icon: 'icon-dian',
           count: 0,
           isEdit: true,
           isDefault: 0,
           isActive: false,
-        });
-      } else if (command == "c") {
-        this.menus[3].isShowSub = true;
+        })
+      } else if (command == 'c') {
+        this.menus[3].isShowSub = true
         this.menus[3].submenus.unshift({
           id: null,
-          name: "",
-          icon: "icon-dian",
+          name: '',
+          icon: 'icon-dian',
           count: 0,
           isEdit: true,
           isDefault: 0,
           isActive: false,
-        });
+        })
       }
     },
 
     //设置笔记是否标记星号状态
     setAsterisk() {
-      let type = this.noteDetail.is_asterisk == 1 ? 2 : 1;
+      let type = this.noteDetail.is_asterisk == 1 ? 2 : 1
       ServeSetAsteriskArticle({
         article_id: this.noteDetail.id,
         type: type,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.noteDetail.is_asterisk = type == 1 ? 1 : 0;
+          this.noteDetail.is_asterisk = type == 1 ? 1 : 0
         }
-      });
+      })
     },
 
     //获取默认笔记分类的索引
     defaultNoteClassIdx() {
-      return this.menus[2].submenus.findIndex((item) => {
-        return item.isDefault == 1;
-      });
+      return this.menus[2].submenus.findIndex(item => {
+        return item.isDefault == 1
+      })
     },
 
     //上传笔记附件文件
     uploadAnnex(e) {
       if (e.target.files.length == 0 || this.filesManager.files.length >= 10) {
-        return false;
+        return false
       }
 
-      let file = e.target.files[0];
+      let file = e.target.files[0]
       if (file.size / (1024 * 1024) > 5) {
-        this.$message("文件不能大于5M...");
-        return false;
+        this.$message('文件不能大于5M...')
+        return false
       }
 
-      let fileData = new FormData();
-      fileData.append("annex", file);
-      fileData.append("article_id", this.getArticleId());
-      this.filesManager.status = true;
+      let fileData = new FormData()
+      fileData.append('annex', file)
+      fileData.append('article_id', this.getArticleId())
+      this.filesManager.status = true
       ServeUploadArticleAnnex(fileData)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.filesManager.files.push({
               id: res.data.id,
@@ -1455,255 +1456,255 @@ export default {
               created_at: parseTime(new Date()),
               file_size: res.data.file_size,
               file_suffix: res.data.file_suffix,
-            });
+            })
           }
 
-          this.filesManager.status = false;
+          this.filesManager.status = false
         })
-        .catch((err) => {
-          this.filesManager.status = false;
-        });
+        .catch(err => {
+          this.filesManager.status = false
+        })
     },
 
     //删除笔记附件
     deleteAnnex(annex_id, index) {
       ServeDeleteArticleAnnex({
         annex_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.$delete(this.filesManager.files, index);
+          this.$delete(this.filesManager.files, index)
         }
-      });
+      })
     },
 
     //设置笔记标签事件
     setNoteTag(i, type) {
       this.tagManager.tags[i].isSelectd =
-        type == 1 ? false : !this.tagManager.tags[i].isSelectd;
+        type == 1 ? false : !this.tagManager.tags[i].isSelectd
       ServeUpdateArticleTag({
         article_id: this.getArticleId(),
         tags: this.getSelectTags(),
-      });
+      })
     },
 
     //获取选中的标签ids
     getSelectTags() {
-      let ids = [];
+      let ids = []
       for (let item of this.tagManager.tags) {
-        if (item.isSelectd) ids.push(item.id);
+        if (item.isSelectd) ids.push(item.id)
       }
 
-      return ids;
+      return ids
     },
 
     //获取当前查看的笔记ID
     getArticleId() {
-      return this.noteDetail.loadId;
+      return this.noteDetail.loadId
     },
 
     //保存标签事件
     saveTagEvent() {
-      let tagName = this.$refs.editTaginput.value;
+      let tagName = this.$refs.editTaginput.value
       ServeEditArticleTag({
         tag_id: 0,
         tag_name: tagName,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
           this.menus[3].submenus.unshift({
             id: res.data.id,
             name: tagName,
-            icon: "icon-dian",
+            icon: 'icon-dian',
             count: 0,
             isEdit: false,
             isDefault: 0,
             isActive: false,
-          });
+          })
 
           this.tagManager.tags.push({
             id: res.data.id,
             name: tagName,
             isSelectd: false,
-          });
+          })
 
-          this.$refs.editTaginput.value = "";
-          this.tagManager.isInput = false;
+          this.$refs.editTaginput.value = ''
+          this.tagManager.isInput = false
         }
-      });
+      })
     },
 
     //关键词查询笔记
     queryNote() {
       if (trim(this.$refs.querykeywords.value)) {
-        this.setSelectMenu(-1, -1);
+        this.setSelectMenu(-1, -1)
       } else {
-        this.setSelectMenu(0, -1);
+        this.setSelectMenu(0, -1)
       }
 
-      this.loadNoteList();
+      this.loadNoteList()
     },
 
     //设置当前选中的菜单选项
     setSelectMenu(index1, index2) {
       this.menus.map((item, i) => {
-        item.isActive = i == index1 && index2 == -1;
+        item.isActive = i == index1 && index2 == -1
         item.submenus.map((item2, i2) => {
-          item2.isActive = i == index1 && index2 == i2;
-          return item2;
-        });
+          item2.isActive = i == index1 && index2 == i2
+          return item2
+        })
 
-        return item;
-      });
+        return item
+      })
     },
 
     //获取当前选中的菜单选项
     getSelectMenu() {
       for (let [i, item] of this.menus.entries()) {
-        if (item.isActive) return [i, -1];
+        if (item.isActive) return [i, -1]
 
-        if (!item.submenus) continue;
+        if (!item.submenus) continue
 
         for (let [i2, item2] of item.submenus.entries()) {
-          if (item2.isActive) return [i, i2];
+          if (item2.isActive) return [i, i2]
         }
       }
 
-      return [-1, -1];
+      return [-1, -1]
     },
 
     //分享笔记给我的朋友
     shareNode() {
-      this.selectContactsBox = true;
+      this.selectContactsBox = true
     },
 
     //分享好友确认按钮
     confirmSelectContacts(value) {
-      this.selectContactsBox = false;
+      this.selectContactsBox = false
       this.$notify({
-        message: "功能研发中...",
-      });
+        message: '功能研发中...',
+      })
     },
 
     //获取分类ID
     getNoteClassName(class_id) {
-      let idx = this.menus[2].submenus.findIndex((item) => {
-        return item.id == class_id;
-      });
+      let idx = this.menus[2].submenus.findIndex(item => {
+        return item.id == class_id
+      })
 
       if (idx == -1) {
-        return "未知";
+        return '未知'
       }
 
-      return this.menus[2].submenus[idx].name;
+      return this.menus[2].submenus[idx].name
     },
 
     //下载笔记（md格式）
     noteDownload() {
-      let reader = new FileReader();
-      let title = this.noteDetail.title + ".md";
+      let reader = new FileReader()
+      let title = this.noteDetail.title + '.md'
       let blob = new Blob([this.noteDetail.content], {
-        type: "text/plain",
-      });
+        type: 'text/plain',
+      })
 
-      reader.readAsDataURL(blob);
-      reader.onload = function (e) {
-        var a = document.createElement("a");
-        a.download = title;
-        a.href = e.target.result;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      };
+      reader.readAsDataURL(blob)
+      reader.onload = function(e) {
+        var a = document.createElement('a')
+        a.download = title
+        a.href = e.target.result
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
     },
 
     // 笔记移至回收站
     noteRecycle(id, title) {
-      this.$alert(`您确定要删除【${title}】笔记至回收站吗？`, "温馨提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$alert(`您确定要删除【${title}】笔记至回收站吗？`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         showCancelButton: true,
-        customClass: "border-radius0",
+        customClass: 'border-radius0',
         closeOnClickModal: true,
-        callback: (action) => {
-          if (action == "confirm") {
+        callback: action => {
+          if (action == 'confirm') {
             ServeDeleteArticle({
               article_id: id,
-            }).then((res) => {
+            }).then(res => {
               if (res.code == 200) {
-                this.removeListNote(id);
-                this.loadNoteClass();
+                this.removeListNote(id)
+                this.loadNoteClass()
                 if (id == this.noteDetail.id) {
-                  this.loadStatus = -1;
-                  this.resetNoteEmpty();
+                  this.loadStatus = -1
+                  this.resetNoteEmpty()
                 }
               }
-            });
+            })
           }
         },
-      });
+      })
     },
 
     //笔记从回收站中永久删除
     noteDelete(id, title) {
       this.$alert(
         `您确定要永久删除【${title}】笔记吗？删除后不可恢复！`,
-        "温馨提示",
+        '温馨提示',
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           showCancelButton: true,
-          customClass: "border-radius0",
+          customClass: 'border-radius0',
           closeOnClickModal: true,
-          callback: (action) => {
-            if (action == "confirm") {
+          callback: action => {
+            if (action == 'confirm') {
               ServeForeverDeleteArticle({
                 article_id: id,
-              }).then((res) => {
+              }).then(res => {
                 if (res.code == 200) {
-                  this.removeListNote(id);
+                  this.removeListNote(id)
 
                   if (id == this.noteDetail.id) {
-                    this.loadStatus = -1;
-                    this.resetNoteEmpty();
+                    this.loadStatus = -1
+                    this.resetNoteEmpty()
                   }
 
                   this.$notify({
-                    title: "删除成功",
+                    title: '删除成功',
                     message: `笔记【${title}】已删除...`,
-                    type: "success",
-                  });
+                    type: 'success',
+                  })
                 }
-              });
+              })
             }
           },
         }
-      );
+      )
     },
 
     //恢复回收站中的笔记
     noteRecover(id) {
       ServeRecoverArticle({
         article_id: id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.removeListNote(id);
-          this.loadNoteClass();
+          this.removeListNote(id)
+          this.loadNoteClass()
 
           if (id == this.noteDetail.id) {
-            this.noteDetail.status = 1;
+            this.noteDetail.status = 1
           }
 
           this.$notify({
-            title: "成功",
-            message: "笔记已成功恢复...",
-            type: "success",
-          });
+            title: '成功',
+            message: '笔记已成功恢复...',
+            type: 'success',
+          })
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 <style scoped lang="less">
-@import "~@/assets/css/markdown.css";
-@import "~@/assets/css/page/note-page.less";
+@import '~@/assets/css/markdown.css';
+@import '~@/assets/css/page/note-page.less';
 </style>

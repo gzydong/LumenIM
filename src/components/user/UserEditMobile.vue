@@ -159,7 +159,7 @@ export default {
       ServeSendMobileCode({
         mobile: this.form.username,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code !== 200) {
             this.$notify({
               title: '提示',
@@ -188,7 +188,7 @@ export default {
 
     // 表单验证
     onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (!valid) return false
         this.changeMobile()
       })
@@ -202,7 +202,7 @@ export default {
         sms_code: this.form.sms_code,
         password: this.form.password,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$refs['form'].resetFields()
             this.$notify({
@@ -218,7 +218,7 @@ export default {
 
           this.loading = false
         })
-        .catch((err) => {
+        .catch(err => {
           this.loading = false
         })
     },

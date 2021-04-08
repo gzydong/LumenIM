@@ -10,13 +10,13 @@
             </el-form-item>
             <el-form-item label="电子邮箱:">
               <p>
-                <span>{{ form.email ? form.email : "未设置邮箱" }}</span>
+                <span>{{ form.email ? form.email : '未设置邮箱' }}</span>
                 <el-button
                   type="text"
                   icon="el-icon-edit-outline"
                   style="margin-left: 20px; font-weight: 300"
                   @click="toEmail"
-                  >{{ form.email ? "修改邮箱" : "设置邮箱" }}</el-button
+                  >{{ form.email ? '修改邮箱' : '设置邮箱' }}</el-button
                 >
               </p>
             </el-form-item>
@@ -65,114 +65,116 @@
       </el-row>
     </div>
 
-    <avatar-cropper v-if="isAvatarCropper" v-on:close="closeAvatarCropper" />
+    <AvatarCropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
   </div>
 </template>
 <script>
-import AvatarCropper from "@/components/layout/AvatarCropper";
-import { ServeUpdateUserDetail, ServeGetUserDetail } from "@/api/user";
+import AvatarCropper from '@/components/layout/AvatarCropper'
+import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
 
 export default {
-  name: "UsrBasePage",
+  name: 'UsrBasePage',
   components: {
     AvatarCropper,
   },
   data() {
     return {
       isAvatarCropper: false,
+
       form: {
-        nickname: "",
-        gender: "",
-        avatar: "",
-        motto: "",
-        email: "",
-        mobile: "",
+        nickname: '',
+        gender: '',
+        avatar: '',
+        motto: '',
+        email: '',
+        mobile: '',
       },
+
       rules: {
         nickname: [
           {
             required: true,
-            message: "用户昵称不能为空!",
-            trigger: "blur",
+            message: '用户昵称不能为空!',
+            trigger: 'blur',
           },
         ],
       },
 
       loading: false,
-    };
+    }
   },
   created() {
-    this.getUserDetail();
+    this.getUserDetail()
   },
   methods: {
     toEmail() {
       this.$router.push({
-        path: "/settings/security",
-      });
+        path: '/settings/security',
+      })
     },
     onSubmit() {
-      this.$refs["form"].validate((valid) => {
-        if (!valid) return false;
-        this.editUserDetail();
-      });
+      this.$refs['form'].validate(valid => {
+        if (!valid) return false
+        this.editUserDetail()
+      })
     },
 
     // 关闭头像裁剪弹出层
-    closeAvatarCropper(type, avatar = "") {
-      this.isAvatarCropper = false;
-      if (type == 1 && avatar != "") {
-        this.form.avatar = avatar;
+    closeAvatarCropper(type, avatar = '') {
+      this.isAvatarCropper = false
+      if (type == 1 && avatar != '') {
+        this.form.avatar = avatar
       }
     },
 
     // 获取用户信息
     getUserDetail() {
-      ServeGetUserDetail().then((res) => {
+      ServeGetUserDetail().then(res => {
         if (res.code == 200) {
           this.form.mobile = res.data.mobile.replace(
             /(\d{3})\d{4}(\d{4})/,
-            "$1****$2"
-          );
-          this.form.nickname = res.data.nickname;
-          this.form.avatar = res.data.avatar;
-          this.form.motto = res.data.motto;
-          this.form.email = res.data.email;
-          this.form.gender = res.data.gender;
+            '$1****$2'
+          )
+
+          this.form.nickname = res.data.nickname
+          this.form.avatar = res.data.avatar
+          this.form.motto = res.data.motto
+          this.form.email = res.data.email
+          this.form.gender = res.data.gender
         }
-      });
+      })
     },
 
     // 修改用户信息
     editUserDetail() {
-      this.loading = true;
-      let _this = this;
+      this.loading = true
       ServeUpdateUserDetail({
         nickname: this.form.nickname,
         avatar: this.form.avatar,
         motto: this.form.motto,
         gender: this.form.gender,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$store.commit("UPDATE_USER_INFO", {
+            this.$store.commit('UPDATE_USER_INFO', {
               nickname: this.form.nickname,
               sex: this.form.gender,
               signature: this.form.motto,
               avatar: this.form.avatar,
-            });
+            })
 
             this.$message({
-              message: "信息修改成功...",
-              type: "success",
-            });
+              message: '信息修改成功...',
+              type: 'success',
+            })
           }
         })
-        .finally(function () {
-          _this.loading = false;
-        });
+        .finally(() => {
+          this.loading = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .box {
@@ -192,6 +194,7 @@ export default {
 .container /deep/ .el-textarea__inner {
   border-radius: 0;
 }
+
 .container /deep/ .el-button {
   border-radius: 2px;
   font-weight: 400;

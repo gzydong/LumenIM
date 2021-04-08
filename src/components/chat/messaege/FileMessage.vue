@@ -17,9 +17,9 @@
   </div>
 </template>
 <script>
-import { formateSize, download } from "@/utils/functions";
+import { formateSize, download } from '@/utils/functions'
 export default {
-  name: "FileMessage",
+  name: 'FileMessage',
   props: {
     file: {
       type: Object,
@@ -35,21 +35,21 @@ export default {
   data() {
     return {
       file_id: 0,
-      ext: "",
-      fileName: "",
-      fileSize: "",
-    };
+      ext: '',
+      fileName: '',
+      fileSize: '',
+    }
   },
   created() {
-    this.file_id = this.file.id;
-    this.ext = this.file.file_suffix.toUpperCase();
-    this.fileName = this.file.original_name;
-    this.fileSize = formateSize(this.file.file_size);
+    this.file_id = this.file.id
+    this.ext = this.file.file_suffix.toUpperCase()
+    this.fileName = this.file.original_name
+    this.fileSize = formateSize(this.file.file_size)
   },
   methods: {
     download,
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .file-message {

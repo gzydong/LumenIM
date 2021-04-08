@@ -73,11 +73,11 @@
                     class="time"
                     v-show="
                       item.source == 1 ||
-                      (item.source == 2 && item.float == 'right')
+                        (item.source == 2 && item.float == 'right')
                     "
                   >
                     <i class="el-icon-time"></i>
-                    {{ parseTime(item.created_at, "{m}月{d}日 {h}:{i}") }}
+                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
                   </span>
                 </div>
 
@@ -86,7 +86,7 @@
                     class="nickname"
                     v-show="item.source == 2 && item.float == 'left'"
                     >{{ item.nickname || item.friend_remarks }} |
-                    {{ parseTime(item.created_at, "{m}月{d}日 {h}:{i}") }}</span
+                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}</span
                   >
 
                   <!-- 文本消息 -->
@@ -260,28 +260,28 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
-import UserBusinessCard from "@/components/user/UserBusinessCard";
-import TalkSearchRecord from "@/components/chat/TalkSearchRecord";
-import UserContacts from "@/components/chat/UserContacts";
-import GroupPanel from "@/components/group/GroupPanel";
-import GroupNotice from "@/components/group/GroupNotice";
-import MeEditor from "@/components/editor/MeEditor";
-import PanelHeader from "./PanelHeader";
-import PanelToolbar from "./PanelToolbar";
-import SocketInstance from "@/socket-instance";
-import { SvgMentionDown } from "@/core/icons";
-import { formateTime, parseTime, copyTextToClipboard } from "@/utils/functions";
-import { findTalkIndex } from "@/utils/talk";
+import { mapState } from 'vuex'
+import UserBusinessCard from '@/components/user/UserBusinessCard'
+import TalkSearchRecord from '@/components/chat/TalkSearchRecord'
+import UserContacts from '@/components/chat/UserContacts'
+import GroupPanel from '@/components/group/GroupPanel'
+import GroupNotice from '@/components/group/GroupNotice'
+import MeEditor from '@/components/editor/MeEditor'
+import PanelHeader from './PanelHeader'
+import PanelToolbar from './PanelToolbar'
+import SocketInstance from '@/socket-instance'
+import { SvgMentionDown } from '@/core/icons'
+import { formateTime, parseTime, copyTextToClipboard } from '@/utils/functions'
+import { findTalkIndex } from '@/utils/talk'
 import {
   ServeTalkRecords,
   ServeForwardRecords,
   ServeRemoveRecords,
   ServeRevokeRecords,
-} from "@/api/chat";
+} from '@/api/chat'
 
 export default {
-  name: "TalkEditorPanel",
+  name: 'TalkEditorPanel',
   components: {
     MeEditor,
     UserContacts,
@@ -302,7 +302,7 @@ export default {
         source: 0,
         // 消息接收者ID（好友ID或者群聊ID）
         receive_id: 0,
-        nickname: "",
+        nickname: '',
       },
     },
 
@@ -349,33 +349,33 @@ export default {
 
       // 置底按钮是否显示
       tipsBoard: false,
-    };
+    }
   },
   computed: {
     ...mapState({
-      unreadMessage: (state) => state.talks.unreadMessage,
-      inputEvent: (state) => state.notify.inputEvent,
-      uid: (state) => state.user.uid,
-      records: (state) => state.dialogue.records,
-      index_name: (state) => state.dialogue.index_name,
+      unreadMessage: state => state.talks.unreadMessage,
+      inputEvent: state => state.notify.inputEvent,
+      uid: state => state.user.uid,
+      records: state => state.dialogue.records,
+      index_name: state => state.dialogue.index_name,
     }),
   },
   watch: {
     // 监听面板传递参数
     params() {
-      this.loadRecord.minRecord = 0;
-      this.tipsBoard = false;
+      this.loadRecord.minRecord = 0
+      this.tipsBoard = false
       this.multiSelect = {
         isOpen: false,
         items: [],
         mode: 0,
-      };
+      }
 
-      this.loadChatRecords();
+      this.loadChatRecords()
     },
   },
   mounted() {
-    this.loadChatRecords();
+    this.loadChatRecords()
   },
   methods: {
     parseTime,
@@ -384,22 +384,22 @@ export default {
     // 处理 Header 组件事件
     handleHeaderEvent(event_name) {
       switch (event_name) {
-        case "history":
-          this.findChatRecord = true;
-          break;
-        case "notice":
-          this.group.notice = true;
-          break;
-        case "setting":
-          this.group.panel = true;
-          break;
+        case 'history':
+          this.findChatRecord = true
+          break
+        case 'notice':
+          this.group.notice = true
+          break
+        case 'setting':
+          this.group.panel = true
+          break
       }
     },
 
     // 回车键发送消息回调事件
     submitSendMesage(content) {
       // 调用组件发送消息
-      SocketInstance.emit("event_talk", {
+      SocketInstance.emit('event_talk', {
         // 发送消息的用户ID
         send_user: this.uid,
         // 接受者消息ID(用户ID或群ID)
@@ -408,169 +408,169 @@ export default {
         source_type: this.params.source,
         // 消息文本
         text_message: content,
-      });
+      })
 
-      this.$store.commit("UPDATE_TALK_ITEM", {
+      this.$store.commit('UPDATE_TALK_ITEM', {
         index: findTalkIndex(this.index_name),
         item: {
-          draft_text: "",
+          draft_text: '',
         },
-      });
+      })
     },
 
     // 推送编辑事件消息
     onKeyboardEvent(text) {
-      this.$store.commit("UPDATE_TALK_ITEM", {
+      this.$store.commit('UPDATE_TALK_ITEM', {
         index: findTalkIndex(this.index_name),
         item: {
           draft_text: text,
         },
-      });
+      })
 
       // 判断是否推送键盘输入事件消息
       if (!this.$store.state.settings.keyboardEventNotify) {
-        return false;
+        return false
       }
 
-      let time = new Date().getTime();
+      let time = new Date().getTime()
 
       // 判断当前对话是否属于私聊信息
-      if (this.params.source == 2 || !this.isOnline) return;
+      if (this.params.source == 2 || !this.isOnline) return
 
       // 判断在两秒内是否已推送事件
       if (this.keyboardEvent.time != 0 && time - this.keyboardEvent.time < 2000)
-        return;
+        return
 
-      this.keyboardEvent.time = time;
+      this.keyboardEvent.time = time
 
       // 调用父类Websocket组件发送消息
-      SocketInstance.emit("event_keyboard", {
+      SocketInstance.emit('event_keyboard', {
         send_user: this.uid,
         receive_user: this.params.receive_id,
-      });
+      })
     },
 
     // 加载用户聊天详情信息
     loadChatRecords() {
-      const user_id = this.uid;
+      const user_id = this.uid
       const data = {
         record_id: this.loadRecord.minRecord,
         receive_id: this.params.receive_id,
         source: this.params.source,
-      };
+      }
 
-      this.loadRecord.status = 0;
+      this.loadRecord.status = 0
 
-      let el = document.getElementById("lumenChatPanel");
-      let scrollHeight = el.scrollHeight;
+      let el = document.getElementById('lumenChatPanel')
+      let scrollHeight = el.scrollHeight
 
       ServeTalkRecords(data)
-        .then((res) => {
+        .then(res => {
           // 防止点击切换过快消息返回延迟，导致信息错误
           if (
             res.code != 200 ||
             (data.receive_id != this.params.receive_id &&
               data.source != this.params.source)
           ) {
-            return;
+            return
           }
 
-          const records = res.data.rows.map((item) => {
-            item.float = "center";
+          const records = res.data.rows.map(item => {
+            item.float = 'center'
             if (item.user_id > 0) {
-              item.float = item.user_id == user_id ? "right" : "left";
+              item.float = item.user_id == user_id ? 'right' : 'left'
             }
 
-            return item;
-          });
+            return item
+          })
 
           // 判断是否是初次加载
           if (data.record_id == 0) {
-            this.$store.commit("SET_DIALOGUE", []);
+            this.$store.commit('SET_DIALOGUE', [])
           }
 
-          this.$store.commit("UNSHIFT_DIALOGUE", records.reverse());
+          this.$store.commit('UNSHIFT_DIALOGUE', records.reverse())
 
-          this.loadRecord.status = records.length >= res.data.limit ? 1 : 2;
+          this.loadRecord.status = records.length >= res.data.limit ? 1 : 2
           this.loadRecord.minRecord =
-            records.length == res.data.limit ? res.data.record_id : 0;
+            records.length == res.data.limit ? res.data.record_id : 0
 
           this.$nextTick(() => {
             if (data.record_id == 0) {
-              el.scrollTop = el.scrollHeight;
+              el.scrollTop = el.scrollHeight
             } else {
-              el.scrollTop = el.scrollHeight - scrollHeight;
+              el.scrollTop = el.scrollHeight - scrollHeight
             }
-          });
+          })
         })
-        .catch((e) => {
-          this.loadRecord.status = 1;
-        });
+        .catch(e => {
+          this.loadRecord.status = 1
+        })
     },
 
     // 多选处理方式
     handleMultiMode(value) {
-      if (value == "close") {
-        this.closeMultiSelect();
-        return false;
+      if (value == 'close') {
+        this.closeMultiSelect()
+        return false
       }
 
       if (this.multiSelect.items.length <= 1) {
-        return false;
+        return false
       }
 
-      if (value == "forward") {
-        this.multiSelect.mode = 1;
-        this.selectContacts.isShow = true;
+      if (value == 'forward') {
+        this.multiSelect.mode = 1
+        this.selectContacts.isShow = true
         // 逐条转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
-            title: "消息转发",
-            message: "会话记录不支持合并转发",
-          });
-          return false;
+            title: '消息转发',
+            message: '会话记录不支持合并转发',
+          })
+          return false
         }
-      } else if (value == "merge_forward") {
-        this.multiSelect.mode = 2;
-        this.selectContacts.isShow = true;
+      } else if (value == 'merge_forward') {
+        this.multiSelect.mode = 2
+        this.selectContacts.isShow = true
         // 合并转发
         if (this.verifyMultiSelectType(4)) {
           this.$notify({
-            title: "消息转发",
-            message: "会话记录不支持合并转发",
-          });
-          return false;
+            title: '消息转发',
+            message: '会话记录不支持合并转发',
+          })
+          return false
         }
-      } else if (value == "delete") {
-        this.multiSelect.mode = 3;
+      } else if (value == 'delete') {
+        this.multiSelect.mode = 3
 
         // 批量删除
-        let ids = this.multiSelect.items;
+        let ids = this.multiSelect.items
         ServeRemoveRecords({
           source: this.params.source,
           receive_id: this.params.receive_id,
-          record_id: ids.join(","),
-        }).then((res) => {
+          record_id: ids.join(','),
+        }).then(res => {
           if (res.code == 200) {
-            this.delRecords(ids).closeMultiSelect();
+            this.delRecords(ids).closeMultiSelect()
           }
-        });
+        })
       }
     },
 
     // 确认消息转发联系人事件
     confirmSelectContacts(arr) {
-      let user_ids = [];
-      let group_ids = [];
-      arr.forEach((item) => {
+      let user_ids = []
+      let group_ids = []
+      arr.forEach(item => {
         if (item.type == 1) {
-          user_ids.push(item.id);
+          user_ids.push(item.id)
         } else {
-          group_ids.push(item.id);
+          group_ids.push(item.id)
         }
-      });
+      })
 
-      this.selectContacts.isShow = false;
+      this.selectContacts.isShow = false
       ServeForwardRecords({
         forward_mode: this.multiSelect.mode,
         source: this.params.source,
@@ -578,278 +578,278 @@ export default {
         records_ids: this.multiSelect.items,
         receive_user_ids: user_ids,
         receive_group_ids: group_ids,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.closeMultiSelect();
+          this.closeMultiSelect()
           this.$notify({
-            title: "消息转发",
-            message: "消息转发成功...",
-            type: "success",
-          });
+            title: '消息转发',
+            message: '消息转发成功...',
+            type: 'success',
+          })
         }
-      });
+      })
     },
 
     // 处理消息时间是否显示
     compareTime(index, datetime) {
       if (datetime == undefined) {
-        return false;
+        return false
       }
 
       if (this.records[index].is_revoke == 1) {
-        return false;
+        return false
       }
 
-      datetime = datetime.replace(/-/g, "/");
-      let time = Math.floor(Date.parse(datetime) / 1000);
-      let currTime = Math.floor(new Date().getTime() / 1000);
+      datetime = datetime.replace(/-/g, '/')
+      let time = Math.floor(Date.parse(datetime) / 1000)
+      let currTime = Math.floor(new Date().getTime() / 1000)
 
       // 当前时间5分钟内时间不显示
-      if (currTime - time < 300) return false;
+      if (currTime - time < 300) return false
 
       // 判断是否是最后一条消息,最后一条消息默认显示时间
       if (index == this.records.length - 1) {
-        return true;
+        return true
       }
 
-      let nextDate = this.records[index + 1].created_at.replace(/-/g, "/");
+      let nextDate = this.records[index + 1].created_at.replace(/-/g, '/')
 
       return !(
-        parseTime(new Date(datetime), "{y}-{m}-{d} {h}:{i}") ==
-        parseTime(new Date(nextDate), "{y}-{m}-{d} {h}:{i}")
-      );
+        parseTime(new Date(datetime), '{y}-{m}-{d} {h}:{i}') ==
+        parseTime(new Date(nextDate), '{y}-{m}-{d} {h}:{i}')
+      )
     },
 
     // 查看好友用户信息
     catFriendDetail(value) {
-      this.$refs.userBusinessCard.open(value);
+      this.$refs.userBusinessCard.open(value)
     },
 
     // 撤回消息
     revokeRecords(index, item) {
       ServeRevokeRecords({
         record_id: item.id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.$store.commit("UPDATE_DIALOGUE", {
+          this.$store.commit('UPDATE_DIALOGUE', {
             index,
             item: { is_revoke: 1 },
-          });
+          })
         }
-      });
+      })
     },
 
     // 删除消息
     removeRecords(index, item) {
-      let receive_id = item.receive_id;
+      let receive_id = item.receive_id
       if (item.source == 1 && item.user_id != this.uid) {
-        receive_id = item.user_id;
+        receive_id = item.user_id
       }
 
       ServeRemoveRecords({
         source: item.source,
         receive_id: receive_id,
         record_id: item.id.toString(),
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.$store.commit("DELETE_DIALOGUE", index);
+          this.$store.commit('DELETE_DIALOGUE', index)
         }
-      });
+      })
     },
 
     // 转发消息
     forwardRecords(idx, item) {
       this.$notify({
-        title: "温馨提示",
-        message: "单条记录转发开发中...",
-      });
+        title: '温馨提示',
+        message: '单条记录转发开发中...',
+      })
     },
 
     // 从列表中删除记录
     delRecords(arr) {
-      this.$store.commit("BATCH_DELETE_DIALOGUE", arr);
-      return this;
+      this.$store.commit('BATCH_DELETE_DIALOGUE', arr)
+      return this
     },
 
     // 开启多选模式
     openMultiSelect() {
-      this.multiSelect.isOpen = true;
+      this.multiSelect.isOpen = true
     },
 
     // 关闭多选模式
     closeMultiSelect() {
-      this.multiSelect.isOpen = false;
-      this.multiSelect.items = [];
+      this.multiSelect.isOpen = false
+      this.multiSelect.items = []
     },
 
     // 判断记录是否选中
     verifyMultiSelect(records_id) {
-      return this.multiSelect.items.indexOf(records_id) >= 0;
+      return this.multiSelect.items.indexOf(records_id) >= 0
     },
 
     // 触发多选事件
     triggerMultiSelect(records_id) {
-      let i = this.multiSelect.items.indexOf(records_id);
+      let i = this.multiSelect.items.indexOf(records_id)
       if (i >= 0) {
-        this.multiSelect.items.splice(i, 1);
+        this.multiSelect.items.splice(i, 1)
       } else {
         if (this.multiSelect.items.length >= 30) {
           this.$notify({
-            title: "温馨提示",
-            message: "批量操作最大支持30条数据...",
-          });
-          return false;
+            title: '温馨提示',
+            message: '批量操作最大支持30条数据...',
+          })
+          return false
         }
-        this.multiSelect.items.push(records_id);
+        this.multiSelect.items.push(records_id)
       }
     },
 
     // 验证是否存在选择的指定类型的消息
     verifyMultiSelectType(type) {
-      return this.records.some((item) => {
-        return this.verifyMultiSelect(item.id) && item.msg_type == type;
-      });
+      return this.records.some(item => {
+        return this.verifyMultiSelect(item.id) && item.msg_type == type
+      })
     },
 
     // 消息点击右键触发自定义菜单
     onCopy(idx, item, event) {
-      let menus = [];
-      let content = "";
-      if (document.getElementById("copy_class_" + item.id)) {
-        content = document.getElementById("copy_class_" + item.id).innerText;
+      let menus = []
+      let content = ''
+      if (document.getElementById('copy_class_' + item.id)) {
+        content = document.getElementById('copy_class_' + item.id).innerText
       }
 
       if (content) {
         menus.push({
-          label: "复制",
-          icon: "el-icon-document-copy",
-          customClass: "cus-contextmenu-item",
+          label: '复制',
+          icon: 'el-icon-document-copy',
+          customClass: 'cus-contextmenu-item',
           onClick: () => {
-            copyTextToClipboard(content);
+            copyTextToClipboard(content)
           },
-        });
+        })
       }
 
       if (item.user_id == this.uid) {
         let time =
-          new Date().getTime() - Date.parse(item.created_at.replace(/-/g, "/"));
+          new Date().getTime() - Date.parse(item.created_at.replace(/-/g, '/'))
         if (Math.floor(time / 1000 / 60) < 2) {
           menus.push({
-            label: "撤回",
-            icon: "el-icon-s-flag",
-            customClass: "cus-contextmenu-item",
+            label: '撤回',
+            icon: 'el-icon-s-flag',
+            customClass: 'cus-contextmenu-item',
             onClick: () => {
-              this.revokeRecords(idx, item);
+              this.revokeRecords(idx, item)
             },
-          });
+          })
         }
       }
 
       menus.push({
-        label: "删除",
-        icon: "el-icon-delete",
-        customClass: "cus-contextmenu-item",
+        label: '删除',
+        icon: 'el-icon-delete',
+        customClass: 'cus-contextmenu-item',
         onClick: () => {
-          this.removeRecords(idx, item);
+          this.removeRecords(idx, item)
         },
-      });
+      })
 
       menus.push({
-        label: "转发",
-        icon: "el-icon-s-promotion",
-        customClass: "cus-contextmenu-item",
+        label: '转发',
+        icon: 'el-icon-s-promotion',
+        customClass: 'cus-contextmenu-item',
         onClick: () => {
-          this.forwardRecords(idx, item);
+          this.forwardRecords(idx, item)
         },
-      });
+      })
 
       menus.push({
-        label: "引用",
-        icon: "el-icon-connection",
-        customClass: "cus-contextmenu-item",
+        label: '引用',
+        icon: 'el-icon-connection',
+        customClass: 'cus-contextmenu-item',
         onClick: () => {},
-      });
+      })
 
       menus.push({
-        label: "多选",
-        icon: "el-icon-finished",
-        customClass: "cus-contextmenu-item",
+        label: '多选',
+        icon: 'el-icon-finished',
+        customClass: 'cus-contextmenu-item',
         onClick: () => {
-          this.openMultiSelect();
+          this.openMultiSelect()
         },
-      });
+      })
 
       // 判断是否是图片消息
       if (item.msg_type == 2 && item.file.file_type == 1) {
         menus.push({
-          label: "收藏",
-          icon: "el-icon-picture",
-          customClass: "cus-contextmenu-item",
+          label: '收藏',
+          icon: 'el-icon-picture',
+          customClass: 'cus-contextmenu-item',
           onClick: () => {
-            this.$store.commit("SAVE_USER_EMOTICON", {
+            this.$store.commit('SAVE_USER_EMOTICON', {
               record_id: item.id,
-            });
+            })
           },
-        });
+        })
       }
 
       this.$contextmenu({
         items: menus,
         event,
-        customClass: "cus-contextmenu",
+        customClass: 'cus-contextmenu',
         zIndex: 3,
         minWidth: 120,
-      });
+      })
 
-      this.closeMultiSelect();
-      event.preventDefault();
+      this.closeMultiSelect()
+      event.preventDefault()
     },
 
     hideChatGroup() {
-      this.group.panel = false;
+      this.group.panel = false
     },
 
     // 修改群聊免打扰状态
     disturbChange(detail) {
-      this.$store.commit("UPDATE_TALK_ITEM", {
+      this.$store.commit('UPDATE_TALK_ITEM', {
         index: findTalkIndex(`2_${this.params.receive_id}`),
         item: {
           not_disturb: parseInt(detail.status),
         },
-      });
+      })
     },
 
     // 退出群聊回调事件
     quitGroupSuccess() {
-      this.$emit("close-talk");
+      this.$emit('close-talk')
     },
 
     // 同步群信息
     syncGroupInfo(groupInfo) {
-      this.$refs.panelHeader.setGroupNum(groupInfo.members_num);
+      this.$refs.panelHeader.setGroupNum(groupInfo.members_num)
     },
 
     // 对话面板滚动事件
     talkPanelScroll(e) {
       if (e.target.scrollTop == 0 && this.loadRecord.status == 1) {
-        this.loadChatRecords();
-        return;
+        this.loadChatRecords()
+        return
       }
 
-      const height = e.target.scrollTop + e.target.clientHeight + 5;
-      this.tipsBoard = height < e.target.scrollHeight;
+      const height = e.target.scrollTop + e.target.clientHeight + 5
+      this.tipsBoard = height < e.target.scrollHeight
       if (this.tipsBoard == false && this.unreadMessage.num > 0) {
-        this.$store.commit("CLEAR_TLAK_UNREAD_MESSAGE");
+        this.$store.commit('CLEAR_TLAK_UNREAD_MESSAGE')
       }
     },
 
     // 聊天版本滚动到底部
     talkPanelScrollBottom() {
-      let el = document.getElementById("lumenChatPanel");
-      el.scrollTop = el.scrollHeight;
+      let el = document.getElementById('lumenChatPanel')
+      el.scrollTop = el.scrollHeight
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .main-box {
@@ -1044,8 +1044,7 @@ export default {
         .nickname {
           font-size: 12px;
           color: #a7a0a0;
-          margin-top: -4px;
-          margin-bottom: 2px;
+          margin: -4px 0 4px -8px;
           transform: scale(0.9);
         }
       }

@@ -57,102 +57,102 @@
   </div>
 </template>
 <script>
-import { ServeUpdatePassword } from "@/api/user";
+import { ServeUpdatePassword } from '@/api/user'
 
 export default {
-  name: "UserEditPassword",
+  name: 'UserEditPassword',
   data() {
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.new_password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
     return {
       loading: false,
       form: {
-        old_password: "",
-        new_password: "",
-        new_password2: "",
+        old_password: '',
+        new_password: '',
+        new_password2: '',
       },
       rules: {
         old_password: [
           {
             required: true,
-            message: "旧密码不能为空!",
-            trigger: "blur",
+            message: '旧密码不能为空!',
+            trigger: 'blur',
           },
         ],
         new_password: [
           {
             required: true,
-            message: "新密码不能为空!",
-            trigger: "blur",
+            message: '新密码不能为空!',
+            trigger: 'blur',
           },
         ],
         new_password2: [
           {
             required: true,
             validator: validatePass2,
-            trigger: "blur",
+            trigger: 'blur',
           },
         ],
       },
 
       isShow: false,
-    };
+    }
   },
   methods: {
     // 显示窗口
     open() {
-      this.$refs["form"].resetFields();
-      this.isShow = true;
+      this.$refs['form'].resetFields()
+      this.isShow = true
     },
 
     // 关闭窗口
     close() {
-      this.isShow = false;
+      this.isShow = false
     },
 
     // 表单验证
     onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.changePassword();
-      });
+      this.$refs[formName].validate(valid => {
+        if (!valid) return false
+        this.changePassword()
+      })
     },
 
     // 提交修改手机号
     changePassword() {
-      this.loading = true;
+      this.loading = true
       ServeUpdatePassword({
         old_password: this.form.old_password,
         new_password: this.form.new_password,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$refs["form"].resetFields();
+            this.$refs['form'].resetFields()
             this.$notify({
-              title: "成功",
-              message: "密码修改成功...",
-              type: "success",
-            });
+              title: '成功',
+              message: '密码修改成功...',
+              type: 'success',
+            })
           } else {
-            this.$message(res.message);
+            this.$message(res.message)
           }
 
-          this.loading = false;
+          this.loading = false
         })
-        .catch((err) => {
-          this.loading = false;
-        });
+        .catch(err => {
+          this.loading = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

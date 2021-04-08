@@ -5,14 +5,14 @@
         invite.operate_user.nickname
       }}</a>
 
-      <span>{{ invite.type == 1 ? "邀请了" : "将" }}</span>
+      <span>{{ invite.type == 1 ? '邀请了' : '将' }}</span>
 
       <template v-for="(user, uidx) in invite.users">
         <a @click="cat(user.id)">{{ user.nickname }}</a>
         <em v-show="uidx < invite.users.length - 1">、</em>
       </template>
 
-      <span>{{ invite.type == 1 ? "加入了群聊" : "踢出了群聊" }}</span>
+      <span>{{ invite.type == 1 ? '加入了群聊' : '踢出了群聊' }}</span>
     </div>
     <div v-else-if="invite.type == 2" class="system-msg">
       <a @click="cat(invite.operate_user.id)">{{
@@ -25,9 +25,9 @@
 </template>
 <script>
 export default {
-  name: "InviteMessage",
+  name: 'InviteMessage',
   props: {
-    //邀请方式
+    // 邀请方式
     invite: {
       type: Object,
       default: {},
@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     cat(id) {
-      this.$emit("cat", id);
+      this.$emit('cat', id)
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .invite-message {

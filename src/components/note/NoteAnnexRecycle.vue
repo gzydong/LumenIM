@@ -98,57 +98,57 @@
   </div>
 </template>
 <script>
-import Vue from "vue";
-import { Table, TableColumn } from "element-ui";
-Vue.use(Table);
-Vue.use(TableColumn);
+import Vue from 'vue'
+import { Table, TableColumn } from 'element-ui'
+Vue.use(Table)
+Vue.use(TableColumn)
 
 import {
   ServeGetRecoverAnnexList,
   ServeRecoverArticleAnnex,
   ServeDownloadAnnex,
   ServeForeverDeleteAnnex,
-} from "@/api/article";
+} from '@/api/article'
 
 export default {
-  name: "NoteAnnexRecycle",
+  name: 'NoteAnnexRecycle',
   data() {
     return {
       tableData: [],
       closeLock: false,
-    };
+    }
   },
   created() {
-    this.loadList();
+    this.loadList()
   },
   methods: {
     loadList() {
-      ServeGetRecoverAnnexList().then((res) => {
+      ServeGetRecoverAnnexList().then(res => {
         if (res.code == 200) {
-          this.tableData = res.data.rows;
+          this.tableData = res.data.rows
         }
-      });
+      })
     },
 
-    //关闭当前窗口
+    // 关闭当前窗口
     close() {
-      if (!this.closeLock) this.$emit("close");
+      if (!this.closeLock) this.$emit('close')
     },
 
-    //给遮罩层加锁
+    // 给遮罩层加锁
     lock(value) {
-      this.closeLock = value;
+      this.closeLock = value
     },
 
     // 恢复附件
     recoverAnnex(data, index) {
       ServeRecoverArticleAnnex({
         annex_id: data.id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.tableData.splice(index, 1);
+          this.tableData.splice(index, 1)
         }
-      });
+      })
     },
 
     //永久删除附件
@@ -156,27 +156,27 @@ export default {
       ServeForeverDeleteAnnex({
         annex_id: data.id,
       })
-        .then((res) => {
-          this.$refs[`popover-${index}`].doClose();
-          this.lock(false);
+        .then(res => {
+          this.$refs[`popover-${index}`].doClose()
+          this.lock(false)
           if (res.code == 200) {
-            this.tableData.splice(index, 1);
+            this.tableData.splice(index, 1)
           } else {
             this.$notify({
-              message: "附件删除失败...",
-            });
+              message: '附件删除失败...',
+            })
           }
         })
-        .catch((err) => {
-          this.$refs[`popover-${index}`].doClose();
-          this.lock(false);
-        });
+        .catch(() => {
+          this.$refs[`popover-${index}`].doClose()
+          this.lock(false)
+        })
     },
 
     //下载笔记附件
     downloadAnnex: ServeDownloadAnnex,
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

@@ -17,7 +17,7 @@
           </div>
           <div class="nickname">
             <i class="iconfont icon-qianming"></i>
-            <span>{{ userInfo.nickname || "未设置昵称" }}</span>
+            <span>{{ userInfo.nickname || '未设置昵称' }}</span>
             <div class="share no-select" @click="contacts = true">
               <i class="iconfont icon-fenxiang3" /> <span>分享</span>
             </div>
@@ -38,7 +38,7 @@
           </div>
           <div class="card-row">
             <label>昵称</label>
-            <span>{{ userInfo.nickname || "未设置昵称" }}</span>
+            <span>{{ userInfo.nickname || '未设置昵称' }}</span>
           </div>
           <div class="card-row">
             <label>性别</label>
@@ -49,7 +49,7 @@
           <div class="card-row" v-show="userInfo.friendStatus == 2">
             <label>备注</label>
             <span v-if="!editRemark.isShow">{{
-              userInfo.nicknameRemark ? userInfo.nicknameRemark : "暂无备注"
+              userInfo.nicknameRemark ? userInfo.nicknameRemark : '暂无备注'
             }}</span>
             <span v-else
               ><input
@@ -124,7 +124,7 @@
       </div>
     </el-container>
 
-    <user-contacts
+    <UserContacts
       v-if="contacts"
       @confirm="confirmContact"
       @close="contacts = false"
@@ -132,13 +132,13 @@
   </div>
 </template>
 <script>
-import UserContacts from "@/components/chat/UserContacts";
-import { ServeCreateTalkList } from "@/api/chat";
-import { ServeSearchUser } from "@/api/user";
-import { ServeCreateContact, ServeEditContactRemark } from "@/api/contacts";
+import UserContacts from '@/components/chat/UserContacts'
+import { ServeCreateTalkList } from '@/api/chat'
+import { ServeSearchUser } from '@/api/user'
+import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
 
 export default {
-  name: "UserBusinessCard",
+  name: 'UserBusinessCard',
   components: {
     UserContacts,
   },
@@ -149,103 +149,103 @@ export default {
       // 用户ID
       user_id: 0,
 
-      //用户相关信息
+      // 用户相关信息
       userInfo: {
-        mobile: "",
-        nickname: "",
-        avatar: "",
-        motto: "",
+        mobile: '',
+        nickname: '',
+        avatar: '',
+        motto: '',
         friendStatus: 0,
         friendApply: 0,
-        nicknameRemark: "",
+        nicknameRemark: '',
 
-        imgbag: require("@/assets/image/default-user-banner.png"),
-        gender: 0, //(0:未知 1:男 2:女 默认0)
+        imgbag: require('@/assets/image/default-user-banner.png'),
+        gender: 0, //[0:未知;1:男;2:女;默认0]
       },
 
-      //好友备注表单
+      // 好友备注表单
       editRemark: {
         isShow: false,
-        text: "",
+        text: '',
       },
 
-      //好友申请表单
+      // 好友申请表单
       applyFrom: {
         isShow: false,
-        text: "",
+        text: '',
       },
 
       contacts: false,
-    };
+    }
   },
   methods: {
     // 显示窗口
     open(user_id) {
-      this.isShow = true;
-      this.user_id = user_id;
-      this.findUserDetail();
+      this.isShow = true
+      this.user_id = user_id
+      this.findUserDetail()
     },
 
     // 关闭窗口
     close() {
       if (this.contacts) {
-        return false;
+        return false
       }
-      this.isShow = false;
+      this.isShow = false
     },
 
     // 手机号格式化
     mobile(mobile) {
       return (
         mobile.substr(0, 3) +
-        " " +
+        ' ' +
         mobile.substr(3, 4) +
-        " " +
+        ' ' +
         mobile.substr(7, 4)
-      );
+      )
     },
 
     // 点击编辑备注信息
     clickEditRemark() {
-      this.editRemark.isShow = true;
-      this.editRemark.text = this.userInfo.nicknameRemark;
+      this.editRemark.isShow = true
+      this.editRemark.text = this.userInfo.nicknameRemark
     },
 
     // 获取用户信息
     findUserDetail() {
       ServeSearchUser({
         user_id: this.user_id,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          let data = res.data;
-          this.userInfo.user_id = data.id;
-          this.userInfo.mobile = data.mobile;
-          this.userInfo.nickname = data.nickname;
-          this.userInfo.nicknameRemark = data.nickname_remark;
-          this.userInfo.motto = data.motto;
-          this.userInfo.avatar = data.avatar;
-          this.userInfo.friendStatus = data.friend_status;
-          this.userInfo.friendApply = data.friend_apply;
-          this.userInfo.gender = data.gender;
+          let data = res.data
+          this.userInfo.user_id = data.id
+          this.userInfo.mobile = data.mobile
+          this.userInfo.nickname = data.nickname
+          this.userInfo.nicknameRemark = data.nickname_remark
+          this.userInfo.motto = data.motto
+          this.userInfo.avatar = data.avatar
+          this.userInfo.friendStatus = data.friend_status
+          this.userInfo.friendApply = data.friend_apply
+          this.userInfo.gender = data.gender
         }
-      });
+      })
     },
 
     // 发送添加好友申请
     sendApply() {
-      if (this.applyFrom.text == "") return;
+      if (this.applyFrom.text == '') return
       ServeCreateContact({
         friend_id: this.userInfo.user_id,
         remarks: this.applyFrom.text,
-      }).then((res) => {
+      }).then(res => {
         if (res.code == 200) {
-          this.applyFrom.isShow = false;
-          this.applyFrom.text = "";
-          this.userInfo.friendApply = 1;
+          this.applyFrom.isShow = false
+          this.applyFrom.text = ''
+          this.userInfo.friendApply = 1
         } else {
-          alert("发送好友申请失败,请稍后再试...");
+          alert('发送好友申请失败,请稍后再试...')
         }
-      });
+      })
     },
 
     // 编辑好友备注信息
@@ -253,49 +253,49 @@ export default {
       let data = {
         friend_id: this.userInfo.user_id,
         remarks: this.editRemark.text,
-      };
-
-      if (data.remarks == this.userInfo.nicknameRemark) {
-        this.editRemark.isShow = false;
-        return;
       }
 
-      ServeEditContactRemark(data).then((res) => {
+      if (data.remarks == this.userInfo.nicknameRemark) {
+        this.editRemark.isShow = false
+        return
+      }
+
+      ServeEditContactRemark(data).then(res => {
         if (res.code == 200) {
-          this.editRemark.isShow = false;
-          this.userInfo.nicknameRemark = data.remarks;
-          this.$emit("changeRemark", data);
+          this.editRemark.isShow = false
+          this.userInfo.nicknameRemark = data.remarks
+          this.$emit('changeRemark', data)
         }
-      });
+      })
     },
 
     // 隐藏申请表单
     closeApplyFrom() {
-      this.applyFrom.isShow = false;
+      this.applyFrom.isShow = false
     },
 
     // 发送好友消息
     sendMessage() {
-      let userInfo = this.userInfo;
+      let userInfo = this.userInfo
       ServeCreateTalkList({
         type: 1,
         receive_id: this.user_id,
-      }).then((res) => {
-        if (res.code !== 200) return;
+      }).then(res => {
+        if (res.code !== 200) return
 
-        this.$root.dumpTalkPage(`1_${userInfo.user_id}`);
-      });
+        this.$root.dumpTalkPage(`1_${userInfo.user_id}`)
+      })
     },
 
     confirmContact(array) {
-      this.contacts = false;
+      this.contacts = false
       this.$notify.info({
-        title: "消息",
-        message: "分享功能正在开发中...",
-      });
+        title: '消息',
+        message: '分享功能正在开发中...',
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .container {

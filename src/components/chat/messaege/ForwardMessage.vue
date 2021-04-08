@@ -18,9 +18,9 @@
   </div>
 </template>
 <script>
-import TalkForwardRecord from "@/components/chat/TalkForwardRecord";
+import TalkForwardRecord from '@/components/chat/TalkForwardRecord'
 export default {
-  name: "ForwardMessage",
+  name: 'ForwardMessage',
   components: {
     TalkForwardRecord,
   },
@@ -38,28 +38,28 @@ export default {
   },
   data() {
     return {
-      title: "",
+      title: '',
       records: [],
       num: 0,
-    };
+    }
   },
   methods: {
     catForwardRecords() {
-      this.$refs.forwardRecordsRef.open(this.record_id);
+      this.$refs.forwardRecordsRef.open(this.record_id)
     },
     getForwardTitle(list) {
-      let arr = [...new Set(list.map((v) => v.nickname))];
-      return arr.join("、") + "的会话记录";
+      let arr = [...new Set(list.map(v => v.nickname))]
+      return arr.join('、') + '的会话记录'
     },
   },
   created() {
-    let forward = this.forward;
+    let forward = this.forward
 
-    this.num = forward.num;
-    this.records = forward.list;
-    this.title = this.getForwardTitle(this.records);
+    this.num = forward.num
+    this.records = forward.list
+    this.title = this.getForwardTitle(this.records)
   },
-};
+}
 </script>
 <style lang="less" scoped>
 /* 会话记录消息 */

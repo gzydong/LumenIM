@@ -44,7 +44,7 @@
                         <img src="~@/assets/image/detault-avatar.jpg" />
                       </el-avatar>
                       <span class="nickname"
-                        >[{{ item.type == 1 ? "友" : "群" }}]
+                        >[{{ item.type == 1 ? '友' : '群' }}]
                         {{ item.nickname }}</span
                       >
                       <span class="select-btn">
@@ -106,90 +106,88 @@
   </div>
 </template>
 <script>
-import { ServeGetContacts } from "@/api/contacts";
-import { ServeGetGroups } from "@/api/group";
+import { ServeGetContacts } from '@/api/contacts'
+import { ServeGetGroups } from '@/api/group'
 
 export default {
-  name: "UserContacts",
+  name: 'UserContacts',
   data() {
     return {
       contacts: [],
       search: [],
-      keywords: "",
+      keywords: '',
       headerShadow: false,
-    };
+    }
   },
   computed: {
     selected() {
-      return this.contacts.filter((item) => {
-        return item.checked;
-      });
+      return this.contacts.filter(item => item.checked)
     },
   },
   watch: {
     keywords(val) {
-      if (val == "") {
-        this.search = this.contacts;
+      if (val == '') {
+        this.search = this.contacts
       } else {
-        this.search = this.contacts.filter((item) => {
-          return item.nickname.match(this.keywords) != null;
-        });
+        this.search = this.contacts.filter(item => {
+          return item.nickname.match(this.keywords) != null
+        })
       }
     },
     contacts(arr) {
-      if (this.keywords == "") {
-        this.search = arr;
+      if (this.keywords == '') {
+        this.search = arr
       }
     },
   },
   mounted() {
-    this.scrollEvent();
+    this.scrollEvent()
   },
   created() {
-    this.loadFriends();
-    this.loadUserGroups();
+    this.loadFriends()
+    this.loadUserGroups()
   },
   methods: {
     //触发选择联系人事件
     triggerContacts(item) {
-      let index = this.contacts.findIndex((val) => {
-        return val.index_name == item.index_name;
-      });
+      let index = this.contacts.findIndex(val => {
+        return val.index_name == item.index_name
+      })
 
-      this.contacts[index].checked = !this.contacts[index].checked;
+      this.contacts[index].checked = !this.contacts[index].checked
     },
     //取消选中的联系人
     delContacts(item) {
-      let index = this.contacts.findIndex((val) => {
-        return val.index_name == item.index_name;
-      });
+      let index = this.contacts.findIndex(val => {
+        return val.index_name == item.index_name
+      })
 
-      this.contacts[index].checked = false;
+      this.contacts[index].checked = false
     },
     //移除所有选中选项
     delAll() {
       this.contacts.forEach((item, i) => {
-        this.contacts[i].checked = false;
-      });
+        this.contacts[i].checked = false
+      })
     },
     //关闭窗口
     close() {
-      this.delAll();
-      this.$emit("close");
+      this.delAll()
+      this.$emit('close')
     },
     //确认按钮点击事件
     confirm() {
-      const arr = this.selected.map((item) => ({
+      const arr = this.selected.map(item => ({
         id: item.id,
         type: item.type,
-      }));
+      }))
 
-      this.$emit("confirm", arr);
+      this.$emit('confirm', arr)
     },
 
     //加载好友列表
     loadFriends() {
-      ServeGetContacts().then((res) => {
+      ServeGetContacts().then(res => {
         if (res.code == 200) {
           for (let o of res.data) {
             this.contacts.push({
@@ -199,15 +197,15 @@ export default {
               nickname: o.friend_remark ? o.friend_remark : o.nickname,
               avatar: o.avatar,
               checked: false,
-            });
+            })
           }
         }
-      });
+      })
     },
 
     //加载群聊列表接口
     loadUserGroups() {
-      ServeGetGroups().then((res) => {
+      ServeGetGroups().then(res => {
         if (res.code == 200) {
           for (let o of res.data) {
             this.contacts.push({
@@ -217,21 +215,21 @@ export default {
               nickname: o.group_name,
               avatar: o.avatar,
               checked: false,
-            });
+            })
           }
         }
-      });
+      })
     },
 
     // 监听自定义滚动条事件
     scrollEvent() {
-      let scrollbarEl = this.$refs.scrollbar2.wrap;
+      let scrollbarEl = this.$refs.scrollbar2.wrap
       scrollbarEl.onscroll = () => {
-        this.headerShadow = scrollbarEl.scrollTop > 0;
-      };
+        this.headerShadow = scrollbarEl.scrollTop > 0
+      }
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 /deep/.el-scrollbar__wrap {

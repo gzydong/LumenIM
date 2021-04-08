@@ -68,44 +68,44 @@
   </div>
 </template>
 <script>
-import SmsLock from "@/plugins/sms-lock";
-import { ServeSendEmailCode, ServeUpdateEmail } from "@/api/user";
+import SmsLock from '@/plugins/sms-lock'
+import { ServeSendEmailCode, ServeUpdateEmail } from '@/api/user'
 
 export default {
-  name: "UserEditEmail",
+  name: 'UserEditEmail',
   data() {
     return {
       loading: false,
       form: {
-        email: "",
-        password: "",
-        sms_code: "",
+        email: '',
+        password: '',
+        sms_code: '',
       },
       rules: {
         email: [
           {
             required: true,
-            message: "请输入邮箱地址",
-            trigger: "blur",
+            message: '请输入邮箱地址',
+            trigger: 'blur',
           },
           {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: "blur",
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: "登录密码不能为空!",
-            trigger: "blur",
+            message: '登录密码不能为空!',
+            trigger: 'blur',
           },
         ],
         sms_code: [
           {
             required: true,
-            message: "验证码不能为空!",
-            trigger: "blur",
+            message: '验证码不能为空!',
+            trigger: 'blur',
           },
         ],
       },
@@ -113,10 +113,10 @@ export default {
       smsLock: false,
       smsLockObj: null,
       isShow: false,
-    };
+    }
   },
   created() {
-    this.smsLockObj = new SmsLock("CHANGE_EMAIL_SMS", 120);
+    this.smsLockObj = new SmsLock('CHANGE_EMAIL_SMS', 120)
   },
   destroyed() {
     this.smsLockObj.clearInterval()
@@ -124,76 +124,76 @@ export default {
   methods: {
     // 显示窗口
     open() {
-      this.$refs["form"].resetFields();
-      this.isShow = true;
+      this.$refs['form'].resetFields()
+      this.isShow = true
     },
 
     // 关闭窗口
     close() {
-      this.isShow = false;
+      this.isShow = false
     },
 
     //点击发送邮件验证码
     sendSms() {
-      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
       if (!mailReg.test(this.form.email)) {
-        this.$refs.form.validateField("email");
-        return false;
+        this.$refs.form.validateField('email')
+        return false
       }
 
-      this.smsLock = true;
+      this.smsLock = true
       ServeSendEmailCode({
         email: this.form.email,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.smsLockObj.start();
+            this.smsLockObj.start()
           }
         })
         .finally(() => {
-          this.smsLock = false;
-        });
+          this.smsLock = false
+        })
     },
 
     // 表单验证
     onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.changeEmail();
-      });
+      this.$refs[formName].validate(valid => {
+        if (!valid) return false
+        this.changeEmail()
+      })
     },
 
     // 提交修改手机号
     changeEmail() {
-      this.loading = true;
+      this.loading = true
       ServeUpdateEmail({
         email: this.form.email,
         email_code: this.form.sms_code,
         password: this.form.password,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$refs["form"].resetFields();
+            this.$refs['form'].resetFields()
             this.$notify({
-              title: "成功",
-              message: "修改邮箱成功...",
-              type: "success",
-            });
+              title: '成功',
+              message: '修改邮箱成功...',
+              type: 'success',
+            })
 
-            this.$emit("success");
-            this.close();
+            this.$emit('success')
+            this.close()
           } else {
-            this.$message(res.message);
+            this.$message(res.message)
           }
 
-          this.loading = false;
+          this.loading = false
         })
-        .catch((err) => {
-          this.loading = false;
-        });
+        .catch(err => {
+          this.loading = false
+        })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {

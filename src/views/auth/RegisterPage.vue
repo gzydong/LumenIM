@@ -110,106 +110,106 @@
   </div>
 </template>
 <script>
-import { ServeRegister, ServeSendVerifyCode } from "@/api/user";
-import { isMobile } from "@/utils/validate";
-import SmsLock from "@/plugins/sms-lock";
+import { ServeRegister, ServeSendVerifyCode } from '@/api/user'
+import { isMobile } from '@/utils/validate'
+import SmsLock from '@/plugins/sms-lock'
 
 export default {
-  name: "RegisterPage",
+  name: 'RegisterPage',
   data() {
     let validateMobile = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("手机号不能为空！"));
-      } else {
-        if (!isMobile(value)) {
-          callback(new Error("手机号格式不正确！"));
-        } else {
-          callback();
-        }
+      if (value === '') {
+        callback(new Error('手机号不能为空！'))
+        return
       }
-    };
+
+      if (!isMobile(value)) {
+        callback(new Error('手机号格式不正确！'))
+      } else {
+        callback()
+      }
+    }
 
     let validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
     return {
       registerLoading: false,
       form: {
-        nickname: "",
-        username: "",
-        password: "",
-        password2: "",
-        sms_code: "",
+        nickname: '',
+        username: '',
+        password: '',
+        password2: '',
+        sms_code: '',
       },
       rules: {
         nickname: [
           {
             required: true,
-            message: "用户昵称不能为空!",
-            trigger: "blur",
+            message: '用户昵称不能为空!',
+            trigger: 'blur',
           },
         ],
         username: [
           {
             validator: validateMobile,
-            trigger: "blur",
+            trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: "登录密码不能为空!",
-            trigger: "blur",
+            message: '登录密码不能为空!',
+            trigger: 'blur',
           },
         ],
         password2: [
           {
             validator: validatePass2,
-            trigger: "blur",
+            trigger: 'blur',
           },
         ],
         sms_code: [
           {
             required: true,
-            message: "验证码不能为空!",
-            trigger: "blur",
+            message: '验证码不能为空!',
+            trigger: 'blur',
           },
         ],
       },
 
       smsLock: false,
       smsLockObj: null,
-    };
+    }
   },
   created() {
-    this.smsLockObj = new SmsLock("REGISTER_SMS", 120);
+    this.smsLockObj = new SmsLock('REGISTER_SMS', 120)
   },
   destroyed() {
-    this.smsLockObj.clearInterval();
+    this.smsLockObj.clearInterval()
   },
   methods: {
     toLink(url) {
       this.$router.push({
         path: url,
-      });
+      })
     },
-    onSubmit(formName) {
-      if (this.registerLoading) {
-        return false;
-      }
 
-      this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.registerLoading = true;
-        this.register();
-      });
+    onSubmit(formName) {
+      if (this.registerLoading) return false
+
+      this.$refs[formName].validate(valid => {
+        if (!valid) return false
+        this.registerLoading = true
+        this.register()
+      })
     },
 
     register() {
@@ -218,89 +218,86 @@ export default {
         mobile: this.form.username,
         password: this.form.password,
         sms_code: this.form.sms_code,
-        platform: "web",
+        platform: 'web',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$notify({
-              title: "成功",
-              message: "注册成功,快去登录吧...",
-              type: "success",
-            });
+              title: '成功',
+              message: '注册成功,快去登录吧...',
+              type: 'success',
+            })
 
-            this.$refs.form.resetFields();
+            this.$refs.form.resetFields()
             setTimeout(() => {
-              this.$router.push({
-                path: "/login",
-              });
-            }, 1500);
+              this.toLink('/login')
+            }, 1500)
           } else {
             this.$notify.info({
-              title: "提示",
+              title: '提示',
               message: res.message,
-            });
+            })
           }
         })
-        .catch((err) => {
+        .catch(() => {
           this.$notify({
-            message: "网络错误,请稍后再试...",
-          });
+            message: '网络错误,请稍后再试...',
+          })
         })
         .finally(() => {
-          this.registerLoading = false;
-        });
+          this.registerLoading = false
+        })
     },
 
-    //点击发送验证码
-    //点击发送验证码
+    // 点击发送验证码
     sendSms() {
-      if (this.smsLock) {
-        return false;
-      }
+      if (this.smsLock) return false
 
       if (!isMobile(this.form.username)) {
-        this.$refs.form.validateField("username");
-        return false;
+        this.$refs.form.validateField('username')
+        return false
       }
 
-      this.smsLock = true;
+      this.smsLock = true
       ServeSendVerifyCode({
         mobile: this.form.username,
-        type: "user_register",
+        type: 'user_register',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$notify({
-              title: "成功",
-              message: "验证码发送成功...",
-              type: "success",
-            });
+              title: '成功',
+              message: '验证码发送成功...',
+              type: 'success',
+            })
 
-            this.smsLockObj.start();
+            this.smsLockObj.start()
+
             if (res.data.is_debug) {
               setTimeout(() => {
                 this.$notify({
-                  title: "提示",
-                  message: "已自动填充验证码",
-                });
-                this.form.sms_code = res.data.sms_code;
-              }, 500);
+                  title: '提示',
+                  message: '已自动填充验证码',
+                })
+
+                this.form.sms_code = res.data.sms_code
+              }, 500)
             }
           } else {
             this.$notify({
-              title: "提示",
+              title: '提示',
               message: res.message,
-              customClass: "cus-notifyclass",
-            });
+              customClass: 'cus-notifyclass',
+            })
           }
         })
-        .finally((err) => {
-          this.smsLock = false;
-        });
+        .finally(() => {
+          this.smsLock = false
+        })
     },
   },
-};
+}
 </script>
-<style lang="less" >
-@import "~@/assets/css/page/login-auth.less";
+<style lang="less">
+@import '~@/assets/css/page/login-auth.less';
 </style>

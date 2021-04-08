@@ -22,26 +22,26 @@
 </template>
 <script>
 export default {
-  name: "VisitCardMessage",
+  name: 'VisitCardMessage',
   data() {
     return {
       userId: 0,
       friendId: 0,
       avatar:
-        "http://im-serve0.gzydong.club/static/image/sys-head/2019012107542668696.jpg",
+        'http://im-serve0.gzydong.club/static/image/sys-head/2019012107542668696.jpg',
       sign:
-        "这个社会，是赢家通吃，输者一无所有，社会，永远都是只以成败论英雄。",
+        '这个社会，是赢家通吃，输者一无所有，社会，永远都是只以成败论英雄。',
       nickname:
-        "氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳",
-    };
+        '氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳氨基酸纳',
+    }
   },
   created() {},
   methods: {
     openVisitCard(user_id) {
-      this.$emit("openVisitCard", user_id);
+      this.$emit('openVisitCard', user_id)
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .ellipsis {

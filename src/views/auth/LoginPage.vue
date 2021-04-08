@@ -80,119 +80,111 @@
   </div>
 </template>
 <script>
-import { setToken } from "@/utils/auth";
-import { isMobile } from "@/utils/validate";
-import { ServeLogin } from "@/api/user";
+import { setToken } from '@/utils/auth'
+import { isMobile } from '@/utils/validate'
+import { ServeLogin } from '@/api/user'
 
 export default {
-  name: "LoginPage",
+  name: 'LoginPage',
   data() {
     let validateMobile = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("登录手机号不能为空！"));
+      if (value === '') {
+        callback(new Error('登录手机号不能为空！'))
       } else {
-        if (!isMobile(value)) {
-          callback(new Error("登录手机号格式不正确！"));
-        } else {
-          callback();
-        }
+        isMobile(value)
+          ? callback()
+          : callback(new Error('登录手机号格式不正确！'))
       }
-    };
+    }
 
     return {
       loginLoading: false,
       form: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
       },
       rules: {
         username: [
           {
             validator: validateMobile,
-            trigger: "blur",
+            trigger: 'blur',
           },
           {
             min: 11,
             max: 11,
-            message: "手机号格式不正确!",
-            trigger: "blur",
+            message: '手机号格式不正确!',
+            trigger: 'blur',
           },
         ],
         password: [
           {
             required: true,
-            message: "登录密码不能为空!",
-            trigger: "blur",
+            message: '登录密码不能为空!',
+            trigger: 'blur',
           },
         ],
       },
-    };
+    }
   },
   methods: {
     onSubmit(formName) {
-      if (this.loginLoading) {
-        return false;
-      }
+      if (this.loginLoading) return false
 
-      this.$refs[formName].validate((valid) => {
-        if (!valid) return false;
-        this.loginLoading = true;
-        this.login();
-      });
+      this.$refs[formName].validate(valid => {
+        if (!valid) return false
+        this.loginLoading = true
+        this.login()
+      })
     },
 
     login() {
       ServeLogin({
         mobile: this.form.username,
         password: this.form.password,
-        platform: "web",
+        platform: 'web',
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            let result = res.data;
+            let result = res.data
 
             // 保存授权信息到本地缓存
-            setToken(
-              result.authorize.access_token,
-              result.authorize.expires_in
-            );
+            setToken(result.authorize.access_token, result.authorize.expires_in)
 
-            this.$store.commit("UPDATE_USER_INFO", result.userInfo);
-            this.$store.commit("UPDATE_LOGIN_STATUS");
+            this.$store.commit('UPDATE_USER_INFO', result.userInfo)
+            this.$store.commit('UPDATE_LOGIN_STATUS')
 
-            this.$root.initialize();
-            this.$router.push({
-              path: "/",
-            });
+            // 登录成功后连接 WebSocket 服务器
+            this.$root.initialize()
+            this.toLink('/')
 
             setTimeout(() => {
               this.$notify({
-                title: "友情提示",
+                title: '友情提示',
                 message:
-                  "此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。",
+                  '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
                 duration: 0,
-              });
-            }, 3000);
+              })
+            }, 3000)
           } else {
             this.$notify.info({
-              title: "提示",
-              message: "登录密码不正确或账号不存在...",
-            });
+              title: '提示',
+              message: '登录密码不正确或账号不存在...',
+            })
           }
         })
-        .finally((err) => {
-          this.loginLoading = false;
-        });
+        .finally(() => {
+          this.loginLoading = false
+        })
     },
 
     toLink(url) {
       this.$router.push({
         path: url,
-      });
+      })
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
-@import "~@/assets/css/page/login-auth.less";
+@import '~@/assets/css/page/login-auth.less';
 </style>

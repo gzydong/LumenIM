@@ -13,22 +13,22 @@
   </div>
 </template>
 <script>
-import { imgZoom } from "@/utils/functions";
+import { imgZoom } from '@/utils/functions'
 export default {
-  name: "ImageMessage",
+  name: 'ImageMessage',
   props: {
     src: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   methods: {
     //获取图片信息
     getImgStyle(url) {
-      return imgZoom(url, 200);
+      return imgZoom(url, 200)
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .image-message {

@@ -90,23 +90,23 @@
   </div>
 </template>
 <script>
-import { VueCropper } from "vue-cropper";
-import { ServeUploadFileStream } from "@/api/upload";
+import { VueCropper } from 'vue-cropper'
+import { ServeUploadFileStream } from '@/api/upload'
 
 export default {
-  name: "AvatarCropper",
+  name: 'AvatarCropper',
   components: {
     VueCropper,
   },
   data() {
     return {
-      cusPreviewsImg: "",
+      cusPreviewsImg: '',
       previews: {},
       option: {
-        img: "",
+        img: '',
         size: 1,
         full: false,
-        outputType: "png",
+        outputType: 'png',
         canMove: true,
         fixedBox: true,
         original: false,
@@ -120,84 +120,84 @@ export default {
       },
       fixed: true,
       fixedNumber: [1, 1],
-    };
+    }
   },
   methods: {
     clickUpload() {
-      this.$refs.fileInput.click();
+      this.$refs.fileInput.click()
     },
     clearCrop() {
-      if (!this.cusPreviewsImg) return false;
-      this.$refs.cropper.clearCrop();
+      if (!this.cusPreviewsImg) return false
+      this.$refs.cropper.clearCrop()
     },
     refreshCrop() {
-      if (!this.cusPreviewsImg) return false;
-      this.$refs.cropper.refresh();
+      if (!this.cusPreviewsImg) return false
+      this.$refs.cropper.refresh()
     },
     rotateLeft() {
-      if (!this.cusPreviewsImg) return false;
-      this.$refs.cropper.rotateLeft();
+      if (!this.cusPreviewsImg) return false
+      this.$refs.cropper.rotateLeft()
     },
     rotateRight() {
-      if (!this.cusPreviewsImg) return false;
-      this.$refs.cropper.rotateRight();
+      if (!this.cusPreviewsImg) return false
+      this.$refs.cropper.rotateRight()
     },
     // 实时预览函数
     realTime(data) {
-      let that = this;
-      this.$refs.cropper.getCropData((img) => {
-        that.cusPreviewsImg = img;
-      });
+      let that = this
+      this.$refs.cropper.getCropData(img => {
+        that.cusPreviewsImg = img
+      })
     },
 
     // 上传回调事件
     uploadImg(e, num) {
-      let file = e.target.files[0];
+      let file = e.target.files[0]
       if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-        this.$message("图片类型必须是.gif,jpeg,jpg,png,bmp中的一种");
-        return false;
+        this.$message('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
+        return false
       }
 
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        let data;
-        if (typeof e.target.result === "object") {
+      let reader = new FileReader()
+      reader.onload = e => {
+        let data
+        if (typeof e.target.result === 'object') {
           // 把Array Buffer转化为blob 如果是base64不需要
-          data = window.URL.createObjectURL(new Blob([e.target.result]));
+          data = window.URL.createObjectURL(new Blob([e.target.result]))
         } else {
-          data = e.target.result;
+          data = e.target.result
         }
         if (num === 1) {
-          this.option.img = data;
+          this.option.img = data
         } else if (num === 2) {
-          this.example2.img = data;
+          this.example2.img = data
         }
-      };
+      }
       // 转化为base64
       // reader.readAsDataURL(file)
       // 转化为blob
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(file)
     },
 
     // 上传图片到服务器
     uploadService() {
-      if (this.cusPreviewsImg == "") return;
+      if (this.cusPreviewsImg == '') return
       ServeUploadFileStream({
         fileStream: this.cusPreviewsImg,
       })
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
-            this.$emit("close", 1, res.data.avatar);
+            this.$emit('close', 1, res.data.avatar)
           } else {
-            this.$message("文件上传失败,请稍后再试...");
+            this.$message('文件上传失败,请稍后再试...')
           }
         })
-        .catch((err) => {
-          this.$message("文件上传失败,请稍后再试...");
-        });
+        .catch(err => {
+          this.$message('文件上传失败,请稍后再试...')
+        })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

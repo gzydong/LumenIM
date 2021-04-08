@@ -123,7 +123,7 @@ export const ServeDownloadAnnex = (annex_id) => {
   let api = config.BASE_API_URL;
   try {
     let link = document.createElement('a');
-    link.href = `${api}/api/v1/download/article-annex?annex_id=${annex_id}&token=${getToken()}`
+    link.href = `${api}/api/v1/download/article-annex?annex_id=${annex_id}&token=${getToken()}`;
     link.click();
   } catch (e) {}
 }
