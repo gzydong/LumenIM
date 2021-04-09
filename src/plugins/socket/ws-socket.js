@@ -100,7 +100,7 @@ class WsSocket {
         let reconnect = this.config.reconnect;
         if (reconnect.lockReconnect || reconnect.number == 0) {
             return;
-        };
+        }
 
         this.config.reconnect.lockReconnect = true;
 

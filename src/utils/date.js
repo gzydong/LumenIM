@@ -32,7 +32,7 @@ export function formatDate(date, fmt) {
     }
 
     return fmt;
-};
+}
 
 /**
  * 仿照微信中的消息时间显示逻辑，将时间戳（单位：毫秒）转换为友好的显示格式.
@@ -131,4 +131,4 @@ export function formatDateShort(timestamp, mustIncludeTime) {
     }
 
     return ret;
-};
+}

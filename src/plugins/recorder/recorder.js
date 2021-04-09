@@ -132,30 +132,30 @@ export default class Recorder {
     this.recorder.onaudioprocess = function (e) {
       self.audioData.input(e.inputBuffer.getChannelData(0));
     };
-  };
+  }
 
   //停止
   stop() {
     this.recorder.disconnect();
-  };
+  }
 
   //获取音频文件
   getBlob() {
     this.stop();
     return this.audioData.encodeWAV();
-  };
+  }
 
   //回放
   play(audio) {
     audio.src = window.URL.createObjectURL(this.getBlob());
-  };
+  }
 
   //清理缓存的录音数据
   clear(audio) {
     this.audioData.buffer = [];
     this.audioData.size = 0;
     audio.src = ''
-  };
+  }
 
   static checkError(e) {
     const {
@@ -194,7 +194,7 @@ export default class Recorder {
     return {
       error: errorMsg
     }
-  };
+  }
 
   static get(callback, config) {
     if (callback) {
@@ -221,5 +221,5 @@ export default class Recorder {
         })
       }
     }
-  };
+  }
 }
