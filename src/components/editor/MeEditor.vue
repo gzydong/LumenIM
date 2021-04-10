@@ -302,7 +302,10 @@ export default {
 
       ServeSendTalkImage(fileData)
         .then(res => {
-          if (res.code == 200) ref.closeBox()
+          ref.loading = false
+          if (res.code == 200) {
+            ref.closeBox()
+          }
         })
         .finally(() => {
           ref.loading = false

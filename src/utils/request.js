@@ -1,13 +1,8 @@
-import axios from 'axios';
+import axios from 'axios'
 import config from '@/config/config'
-import {
-  getToken,
-  removeAll
-} from '@/utils/auth';
+import { getToken, removeAll } from '@/utils/auth'
 
-import {
-  Notification
-} from 'element-ui';
+import { Notification } from 'element-ui'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -15,49 +10,49 @@ const request = axios.create({
   baseURL: config.BASE_API_URL,
 
   // 请求超时时间
-  timeout: 20000
-});
+  timeout: 20000,
+})
 
 /**
  * 异常拦截处理器
- * 
- * @param {*} error 
+ *
+ * @param {*} error
  */
-const errorHandler = (error) => {
+const errorHandler = error => {
   // 判断是否是响应错误信息
   if (error.response) {
     if (error.response.status == 401) {
       removeAll()
-      location.reload();
+      location.reload()
     } else {
       Notification({
         message: '网络异常,请稍后再试...',
-        position: 'top-right'
-      });
+        position: 'top-right',
+      })
     }
   }
 
-  return Promise.reject(error);
+  return Promise.reject(error)
 }
 
 // 请求拦截器
 request.interceptors.request.use(config => {
-  const token = getToken();
+  const token = getToken()
   if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers['Authorization'] = `Bearer ${token}`
   }
 
   return config
-}, errorHandler);
+}, errorHandler)
 
 // 响应拦截器
-request.interceptors.response.use((response) => {
-  return response.data;
-}, errorHandler);
+request.interceptors.response.use(response => {
+  return response.data
+}, errorHandler)
 
 /**
  * GET 请求
- * 
+ *
  * @param {String} url
  * @param {Object} data
  * @param {Object} options
@@ -68,13 +63,13 @@ export const get = (url, data = {}, options = {}) => {
     url,
     params: data,
     method: 'get',
-    ...options
-  });
+    ...options,
+  })
 }
 
 /**
  * POST 请求
- * 
+ *
  * @param {String} url
  * @param {Object} data
  * @param {Object} options
@@ -85,13 +80,13 @@ export const post = (url, data = {}, options = {}) => {
     url,
     method: 'post',
     data: data,
-    ...options
-  });
+    ...options,
+  })
 }
 
 /**
  * 上传文件 POST 请求
- * 
+ *
  * @param {String} url
  * @param {Object} data
  * @param {Object} options
@@ -102,6 +97,6 @@ export const upload = (url, data = {}, options = {}) => {
     url,
     method: 'post',
     data: data,
-    ...options
-  });
+    ...options,
+  })
 }

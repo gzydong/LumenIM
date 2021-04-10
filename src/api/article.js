@@ -125,7 +125,9 @@ export const ServeDownloadAnnex = (annex_id) => {
     let link = document.createElement('a');
     link.href = `${api}/api/v1/download/article-annex?annex_id=${annex_id}&token=${getToken()}`;
     link.click();
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 //更新笔记标签服务接口
