@@ -191,7 +191,7 @@ export default {
             this.$message('文件上传失败,请稍后再试...')
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.$message('文件上传失败,请稍后再试...')
         })
     },

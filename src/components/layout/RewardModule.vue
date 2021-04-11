@@ -3,7 +3,7 @@
     <div class="reward" v-show="isShow">
       <div class="title">
         <span>Donate</span>
-        <i class="el-icon-circle-close" @click="close"></i>
+        <i class="el-icon-circle-close" @click="close" />
       </div>
       <div class="main">
         <div class="pay-box">

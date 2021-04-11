@@ -4,27 +4,27 @@
       <el-header class="no-padding toolbar" height="35px">
         <ul>
           <li v-popover:popoverEmoticon>
-            <i class="iconfont icon-icon_im_face" style="font-size: 15px"></i>
+            <i class="iconfont icon-icon_im_face" style="font-size: 15px" />
             <p class="tip-title">表情符号</p>
           </li>
           <li @click="codeBlock.isShow = true">
-            <i class="iconfont icon-daima"></i>
+            <i class="iconfont icon-daima" />
             <p class="tip-title">代码片段</p>
           </li>
           <li @click="recorder = true">
-            <i class="el-icon-headset"></i>
+            <i class="el-icon-headset" />
             <p class="tip-title">语音消息</p>
           </li>
           <li @click="$refs.restFile.click()">
-            <i class="el-icon-picture-outline-round"></i>
+            <i class="el-icon-picture-outline-round" />
             <p class="tip-title">图片</p>
           </li>
           <li @click="$refs.restFile2.click()">
-            <i class="el-icon-folder"></i>
+            <i class="el-icon-folder" />
             <p class="tip-title">附件</p>
           </li>
           <li @click="filesManager.isShow = true">
-            <i class="el-icon-folder-opened"></i>
+            <i class="el-icon-folder-opened" />
             <p class="tip-title">上传管理</p>
           </li>
 
@@ -49,7 +49,7 @@
                   注意：当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败。
                 </p>
               </div>
-              <i class="el-icon-info" slot="reference"></i>
+              <i class="el-icon-info" slot="reference" />
             </el-popover>
           </p>
         </ul>

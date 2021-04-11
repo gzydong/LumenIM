@@ -7,7 +7,7 @@
       <el-header height="60px" class="header no-select">
         <p>近 30 天删除的附件({{ tableData.length }})</p>
         <p class="tools">
-          <i class="el-icon-close" @click="close"></i>
+          <i class="el-icon-close" @click="close" />
         </p>
       </el-header>
       <el-main class="main lum-scrollbar">

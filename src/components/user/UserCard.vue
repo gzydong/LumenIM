@@ -10,7 +10,7 @@
           />
         </div>
         <div class="user-nickname">
-          <i class="iconfont icon-qianming"></i>
+          <i class="iconfont icon-qianming" />
           <span v-text="$store.state.user.nickname"></span>
         </div>
       </div>
@@ -22,7 +22,7 @@
             {{ $store.state.user.signature }}
           </span>
           <span v-else>
-            <i class="iconfont icon-bianji"></i>
+            <i class="iconfont icon-bianji" />
             <span>编辑个签，展示我的独特态度。</span>
           </span>
         </div>

@@ -3,9 +3,9 @@
     <el-header class="header">
       <span>群信息</span>
       <el-tooltip content="发送消息" placement="top">
-        <i class="icon-send el-icon-chat-line-square" @click="sendGroup"></i>
+        <i class="icon-send el-icon-chat-line-square" @click="sendGroup" />
       </el-tooltip>
-      <i class="el-icon-close" @click="$emit('close')"></i>
+      <i class="el-icon-close" @click="$emit('close')" />
     </el-header>
 
     <el-main class="main lum-scrollbar">
@@ -42,7 +42,7 @@
               isEditRemark = true
               editRemarkText = detail.visitCard
             "
-          ></i>
+          />
         </span>
         <span v-else>
           <input
@@ -107,7 +107,7 @@
 
       <div class="list-item">
         <p class="group-invite" @click="addGroupMembers">
-          <i class="el-icon-plus"></i>
+          <i class="el-icon-plus" />
           <span>&nbsp;邀请好友</span>
         </p>
       </div>
@@ -115,7 +115,7 @@
       <div class="list-item">
         <div class="member-box">
           <div class="view-box">
-            <i class="iconfont icon-sousuo i-sousuo"></i>
+            <i class="iconfont icon-sousuo i-sousuo" />
             <input type="text" placeholder="搜索群成员" v-model="keywords" />
           </div>
 
@@ -176,7 +176,7 @@
 
       <p v-show="signoutStatus == 1" class="signout-btn mt38">
         <span style="color: #ccc">
-          <i class="el-icon-loading"></i>
+          <i class="el-icon-loading" />
           正在退出群聊...
         </span>
       </p>
@@ -187,7 +187,7 @@
 
       <p v-show="signoutStatus == 3" class="signout-btn mt38">
         <span style="color: #339e19">
-          <i class="iconfont icon-success_no_circle"></i> 已成功退出群聊...
+          <i class="iconfont icon-success_no_circle" /> 已成功退出群聊...
         </span>
       </p>
     </div>

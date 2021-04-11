@@ -2,7 +2,7 @@
   <div v-show="isShow" class="lum-dialog-mask animated fadeIn">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
-        <i class="close el-icon-error pointer" @click="close"></i>
+        <i class="close el-icon-error pointer" @click="close" />
         <div class="img-banner">
           <img :src="userInfo.imgbag" class="img-banner" />
         </div>
@@ -16,7 +16,7 @@
             </div>
           </div>
           <div class="nickname">
-            <i class="iconfont icon-qianming"></i>
+            <i class="iconfont icon-qianming" />
             <span>{{ userInfo.nickname || '未设置昵称' }}</span>
             <div class="share no-select" @click="contacts = true">
               <i class="iconfont icon-fenxiang3" /> <span>分享</span>
@@ -27,7 +27,7 @@
       <el-main class="no-padding main">
         <div class="user-sign">
           <div class="sign-arrow"></div>
-          <i class="iconfont icon-bianji"></i>
+          <i class="iconfont icon-bianji" />
           <span>编辑个签，展示我的独特态度。 </span>
         </div>
 
@@ -66,7 +66,7 @@
               v-show="!editRemark.isShow"
               class="el-icon-edit-outline"
               @click="clickEditRemark"
-            ></i>
+            />
           </div>
           <div class="card-row">
             <label>邮箱</label>

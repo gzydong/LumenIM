@@ -4,7 +4,7 @@
       <el-header class="header no-select" height="60px">
         <p>群公告({{ items.length }})</p>
         <p class="tools">
-          <i class="el-icon-close" @click="$emit('close')"></i>
+          <i class="el-icon-close" @click="$emit('close')" />
         </p>
       </el-header>
       <el-main class="main no-padding">
@@ -12,10 +12,10 @@
           <div class="loading">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
               <span class="ant-spin-dot ant-spin-dot-spin">
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
               </span>
             </div>
             <p>正在努力加载中 ...</p>
@@ -32,7 +32,7 @@
             <i
               class="el-icon-warning"
               style="font-size: 50px; color: #ff5151"
-            ></i>
+            />
             <p>
               加载失败，
               <a @click="loadNotices" class="pointer">点击重试</a>...

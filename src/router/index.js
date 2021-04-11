@@ -1,21 +1,22 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import Vue from 'vue'
+import Router from 'vue-router'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const RouteView = {
   name: 'RouteView',
-  render: (h) => h('router-view')
+  render: h => h('router-view'),
 }
 
-const routes = [{
+const routes = [
+  {
     path: '/',
     name: 'home',
     component: () => import('@/views/MessagePage'),
     meta: {
       title: '',
-      needLogin: true
-    }
+      needLogin: true,
+    },
   },
   {
     path: '/message',
@@ -23,8 +24,8 @@ const routes = [{
     component: () => import('@/views/MessagePage'),
     meta: {
       title: '消息通知',
-      needLogin: true
-    }
+      needLogin: true,
+    },
   },
   {
     path: '/contacts',
@@ -32,8 +33,8 @@ const routes = [{
     component: () => import('@/views/ContactsPage'),
     meta: {
       title: '我的联系人',
-      needLogin: true
-    }
+      needLogin: true,
+    },
   },
   {
     path: '/notes',
@@ -41,23 +42,24 @@ const routes = [{
     component: () => import('@/views/NotePage'),
     meta: {
       title: '我的笔记',
-      needLogin: true
-    }
+      needLogin: true,
+    },
   },
   {
     path: '/settings',
     name: 'settings',
     meta: {
       title: '个人设置',
-      needLogin: true
+      needLogin: true,
     },
-    redirect: "/settings/base",
+    redirect: '/settings/base',
     component: () => import('@/views/settings/Layout'),
-    children: [{
+    children: [
+      {
         path: '/settings/base',
         meta: {
           title: '个人信息',
-          needLogin: true
+          needLogin: true,
         },
         component: () => import('@/views/settings/BasePage'),
       },
@@ -65,7 +67,7 @@ const routes = [{
         path: '/settings/security',
         meta: {
           title: '安全设置',
-          needLogin: true
+          needLogin: true,
         },
         component: () => import('@/views/settings/SecurityPage'),
       },
@@ -73,7 +75,7 @@ const routes = [{
         path: '/settings/binding',
         meta: {
           title: '账户绑定',
-          needLogin: true
+          needLogin: true,
         },
         component: () => import('@/views/settings/BindPage'),
       },
@@ -81,7 +83,7 @@ const routes = [{
         path: '/settings/personalize',
         meta: {
           title: '个性化设置',
-          needLogin: true
+          needLogin: true,
         },
         component: () => import('@/views/settings/PersonalizePage'),
       },
@@ -89,11 +91,11 @@ const routes = [{
         path: '/settings/notification',
         meta: {
           title: '消息设置',
-          needLogin: true
+          needLogin: true,
         },
         component: () => import('@/views/settings/NotificationPage'),
-      }
-    ]
+      },
+    ],
   },
 
   // 授权相关
@@ -103,8 +105,8 @@ const routes = [{
     component: () => import('@/views/auth/LoginPage'),
     meta: {
       title: '账号登录？',
-      needLogin: false
-    }
+      needLogin: false,
+    },
   },
   {
     path: '/register',
@@ -112,8 +114,8 @@ const routes = [{
     component: () => import('@/views/auth/RegisterPage'),
     meta: {
       title: '账号注册？',
-      needLogin: false
-    }
+      needLogin: false,
+    },
   },
   {
     path: '/forget',
@@ -121,8 +123,8 @@ const routes = [{
     component: () => import('@/views/auth/ForgetPasswordPage'),
     meta: {
       title: '找回密码？',
-      needLogin: false
-    }
+      needLogin: false,
+    },
   },
   {
     path: '*',
@@ -130,12 +132,12 @@ const routes = [{
     component: () => import('@/views/auth/NotFoundPage'),
     meta: {
       title: '404 NotFound',
-      needLogin: false
-    }
+      needLogin: false,
+    },
   },
-];
+]
 
 export default new Router({
   routes,
-  mode: "history"
-});
+  mode: 'history',
+})

@@ -6,4 +6,4 @@ const getters = {
   socketStatus: state => state.socketStatus,
 }
 
-export default getters;
+export default getters

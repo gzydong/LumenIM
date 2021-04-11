@@ -12,7 +12,7 @@
         fullscreen ? 'el-icon-close' : 'iconfont icon-tubiao_chakangongyi'
       "
       @click="fullscreen = !fullscreen"
-    ></i>
+    />
     <pre class="lum-scrollbar" v-html="formatCode(code, lang)" />
   </div>
 </template>

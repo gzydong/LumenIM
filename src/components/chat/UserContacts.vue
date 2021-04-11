@@ -50,7 +50,7 @@
                         <i
                           class="el-icon-success"
                           :class="{ 'i-color-green': item.checked }"
-                        ></i>
+                        />
                       </span>
                     </li>
                   </ul>
@@ -85,7 +85,7 @@
                         :class="{ group: item.type == 2 }"
                       ></div>
                       <div class="del-mask" @click="delContacts(item)">
-                        <i class="el-icon-delete"></i>
+                        <i class="el-icon-delete" />
                       </div>
                     </div>
                   </div>

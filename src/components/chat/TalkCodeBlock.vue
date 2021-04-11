@@ -23,7 +23,7 @@
               />
             </el-select>
           </div>
-          <i class="el-icon-close close-btn" @click="close"></i>
+          <i class="el-icon-close close-btn" @click="close" />
           <i
             class="iconfont icon-full-screen"
             :class="{
@@ -32,7 +32,7 @@
             }"
             :title="isFullScreen ? '关闭全屏模式' : '打开全屏模式'"
             @click="isFullScreen = !isFullScreen"
-          ></i>
+          />
         </el-header>
 
         <el-main class="main no-padding">

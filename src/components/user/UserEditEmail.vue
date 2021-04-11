@@ -4,7 +4,7 @@
       <el-header class="header" height="50px">
         <p>绑定邮箱</p>
         <p class="tools">
-          <i class="el-icon-close" @click="close"></i>
+          <i class="el-icon-close" @click="close" />
         </p>
       </el-header>
       <el-main class="main">
@@ -186,7 +186,7 @@ export default {
 
           this.loading = false
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false
         })
     },

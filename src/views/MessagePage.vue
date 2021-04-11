@@ -93,7 +93,7 @@
             >
               <el-main class="main">
                 <p v-show="loadStatus == 0" class="empty-data">
-                  <i class="el-icon-loading"></i> 正在加载数据中...
+                  <i class="el-icon-loading" /> 正在加载数据中...
                 </p>
 
                 <p v-show="loadStatus == 1 && talkNum == 0" class="empty-data">
@@ -155,7 +155,7 @@
                           v-show="item.not_disturb"
                           class="larkc-tag disturb"
                         >
-                          <i class="iconfont icon-xiaoximiandarao"></i>
+                          <i class="iconfont icon-xiaoximiandarao" />
                         </div>
                       </div>
                       <div class="card-time">

@@ -5,7 +5,7 @@
         <el-header class="header no-select" height="60px">
           <p>群管理 ({{ detail.group_name }})</p>
           <p class="tools">
-            <i class="el-icon-close" @click="$emit('close')"></i>
+            <i class="el-icon-close" @click="$emit('close')" />
           </p>
         </el-header>
         <el-main class="main no-padding">
@@ -59,10 +59,10 @@
                   <div class="avatar-box">
                     <img v-show="form.avatar" :src="form.avatar" />
                     <div class="upload-icon">
-                      <i class="el-icon-upload"></i>
+                      <i class="el-icon-upload" />
                     </div>
                     <div class="upload-mask" @click="isAvatarCropper = true">
-                      <i class="el-icon-plus"></i>
+                      <i class="el-icon-plus" />
                     </div>
                   </div>
                   <p style="margin-top: 20px">设置头像</p>

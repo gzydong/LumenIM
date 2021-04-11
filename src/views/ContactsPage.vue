@@ -74,21 +74,21 @@
               <p>
                 <span class="wait-btn" v-show="waitHandleNum">
                   【{{ waitHandleNum }}】待处理
-                  <i class="el-icon-warning"></i>
+                  <i class="el-icon-warning" />
                 </span>
               </p>
             </template>
             <template v-else-if="activeIndex == 1">
               <p>我的好友({{ friends.items.length }})</p>
               <p class="pointer" @click="$refs.searchUsers.open()">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" />
                 <span> 添加好友</span>
               </p>
             </template>
             <template v-else-if="activeIndex == 2">
               <p>我的群组({{ groups.items.length }})</p>
               <p class="pointer" @click="launchGroupShow = true">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" />
                 <span> 创建群组</span>
               </p>
             </template>
@@ -99,10 +99,10 @@
                 <div class="preloading">
                   <div class="ant-spin ant-spin-lg ant-spin-spinning">
                     <span class="ant-spin-dot ant-spin-dot-spin">
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
                     </span>
                   </div>
                   <p>数据加载中 ...</p>
@@ -182,10 +182,10 @@
                 <div class="preloading">
                   <div class="ant-spin ant-spin-lg ant-spin-spinning">
                     <span class="ant-spin-dot ant-spin-dot-spin">
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
                     </span>
                   </div>
                   <p>数据加载中 ...</p>
@@ -257,10 +257,10 @@
                 <div class="preloading">
                   <div class="ant-spin ant-spin-lg ant-spin-spinning">
                     <span class="ant-spin-dot ant-spin-dot-spin">
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
-                      <i class="ant-spin-dot-item"></i>
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
+                      <i class="ant-spin-dot-item" />
                     </span>
                   </div>
                   <p>数据加载中 ...</p>
@@ -298,7 +298,7 @@
                           <i
                             class="iconfont icon-xiaoximiandarao"
                             style="font-size: 10px; color: #7d7a7a"
-                          ></i>
+                          />
                         </div>
                         <div v-show="item.leader == 2" class="larkc-tag wait">
                           群主

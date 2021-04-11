@@ -55,9 +55,9 @@
         <el-col :span="8" class="avatar-col">
           <div class="avatar-box">
             <img :src="form.avatar" v-show="form.avatar" />
-            <div class="upload-icon"><i class="el-icon-upload"></i></div>
+            <div class="upload-icon"><i class="el-icon-upload" /></div>
             <div class="upload-mask" @click="isAvatarCropper = true">
-              <i class="el-icon-plus"></i>
+              <i class="el-icon-plus" />
             </div>
           </div>
           <p>设置头像</p>

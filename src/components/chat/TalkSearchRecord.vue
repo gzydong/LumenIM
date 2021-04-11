@@ -12,8 +12,8 @@
             style="transform: scale(0.85)"
             :class="fullscreen ? 'icon-tuichuquanping' : 'icon-quanping'"
             @click="fullscreen = !fullscreen"
-          ></i>
-          <i class="el-icon-close" @click="$emit('close')"></i>
+          />
+          <i class="el-icon-close" @click="$emit('close')" />
         </p>
       </el-header>
 
@@ -22,9 +22,9 @@
           class="iconfont pointer"
           :class="{ 'icon-shouqi2': broadside, 'icon-zhankai': !broadside }"
           @click="triggerBroadside"
-        ></i>
+        />
         <div class="search-box no-select">
-          <i class="el-icon-search"></i>
+          <i class="el-icon-search" />
           <input
             v-model="search.keyword"
             type="text"
@@ -202,11 +202,11 @@
 
                 <!-- 数据加载栏 -->
                 <div v-show="records.loadStatus == 1" class="load-button blue">
-                  <i class="el-icon-loading"></i>
+                  <i class="el-icon-loading" />
                   <span>加载数据中...</span>
                 </div>
                 <div v-show="records.loadStatus == 0" class="load-button">
-                  <i class="el-icon-arrow-up"></i>
+                  <i class="el-icon-arrow-up" />
                   <span @click="loadChatRecord">加载更多...</span>
                 </div>
               </el-scrollbar>
