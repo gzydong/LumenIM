@@ -34,7 +34,7 @@
                   class="iconfont"
                   :class="menu.icon"
                   :style="{ color: menu.color }"
-                ></i>
+                />
                 <span v-text="menu.name"></span>
                 <i
                   v-show="menu.submenus.length"
@@ -43,7 +43,7 @@
                     'icon-tubiao-': !menu.isShowSub,
                     'icon-shangla': menu.isShowSub,
                   }"
-                ></i>
+                />
               </div>
 
               <div
@@ -65,7 +65,7 @@
                   />
                 </p>
                 <p v-else>
-                  <i class="iconfont icon-dian"></i>
+                  <i class="iconfont icon-dian" />
                   <span v-text="submenu.name"></span>
                   <span v-if="submenu.count">({{ submenu.count }})</span>
                 </p>
@@ -76,7 +76,7 @@
 
         <el-aside width="350px" class="el-aside-two">
           <div class="search-header">
-            <i class="lumen-icon-sousuo iconfont icon-sousuo"></i>
+            <i class="lumen-icon-sousuo iconfont icon-sousuo" />
             <input
               type="text"
               placeholder="搜索我的笔记 ..."
@@ -89,10 +89,10 @@
           <div class="count-header">
             <span>{{ notes.length }} 篇笔记</span>
             <span v-if="loadNoteStatus == 0" class="load-span">
-              <i class="el-icon-loading"></i> 加载中 ...
+              <i class="el-icon-loading" /> 加载中 ...
             </span>
             <span v-else class="load-span">
-              <i class="iconfont icon-icon- sort-icon"></i>
+              <i class="iconfont icon-icon- sort-icon" />
             </span>
           </div>
 
@@ -150,23 +150,23 @@
                       v-show="note.status == 1"
                       class="el-icon-edit-outline"
                       @click="catNote(note, true)"
-                    ></i>
+                    />
                     <i
                       v-show="note.status == 2"
                       class="recover-note el-icon-refresh-left"
                       @click="noteRecover(note.id)"
-                    ></i>
+                    />
                     <i
                       v-if="note.status == 1"
                       class="el-icon-delete"
                       @click="noteRecycle(note.id, note.title)"
-                    ></i>
+                    />
                     <i
                       v-else
                       class="el-icon-delete"
                       slot="reference"
                       @click="noteDelete(note.id, note.title)"
-                    ></i>
+                    />
                   </div>
                 </div>
               </el-scrollbar>
@@ -188,10 +188,10 @@
           <div v-else-if="loadStatus == 0" class="loading-note">
             <div class="ant-spin ant-spin-lg ant-spin-spinning">
               <span class="ant-spin-dot ant-spin-dot-spin">
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
-                <i class="ant-spin-dot-item"></i>
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
+                <i class="ant-spin-dot-item" />
               </span>
             </div>
             <p>正在努力加载中 ...</p>
@@ -214,7 +214,7 @@
             <template v-if="markdown.isEdit">
               <el-container>
                 <el-header id="note-header" height="61px">
-                  <i class="el-icon-edit" style="display: inline-block"></i>
+                  <i class="el-icon-edit" style="display: inline-block" />
                   <input
                     v-model="noteDetail.title"
                     type="text"
@@ -305,7 +305,7 @@
             <!-- 右侧工具栏 -->
             <el-aside width="50px" id="note-tools">
               <div class="item" @click="markdown.isFull = !markdown.isFull">
-                <i class="el-icon-full-screen"></i>
+                <i class="el-icon-full-screen" />
                 <p>{{ markdown.isFull ? '取消全屏' : '全屏' }}</p>
               </div>
 
@@ -314,7 +314,7 @@
                 class="item"
                 @click="noteRecover(noteDetail.id)"
               >
-                <i class="el-icon-refresh-left"></i>
+                <i class="el-icon-refresh-left" />
                 <p>恢复</p>
               </div>
               <div
@@ -322,7 +322,7 @@
                 class="item"
                 @click="editNote(1)"
               >
-                <i class="el-icon-loading"></i>
+                <i class="el-icon-loading" />
                 <p>保存中..</p>
               </div>
               <div
@@ -330,7 +330,7 @@
                 class="item"
                 @click="cancelEdit"
               >
-                <i class="el-icon-edit-outline"></i>
+                <i class="el-icon-edit-outline" />
                 <p>取消</p>
               </div>
               <div
@@ -338,11 +338,11 @@
                 class="item"
                 @click="editNote(1)"
               >
-                <i class="el-icon-edit-outline"></i>
+                <i class="el-icon-edit-outline" />
                 <p>保存</p>
               </div>
               <div class="item" v-else @click="openEditMode()">
-                <i class="el-icon-edit-outline"></i>
+                <i class="el-icon-edit-outline" />
                 <p>编辑</p>
               </div>
 
@@ -354,7 +354,7 @@
                 <i
                   class="el-icon-collection-tag"
                   :class="{ 'i-color': noteDetail.tags.length }"
-                ></i>
+                />
                 <p>标签</p>
               </div>
 
@@ -366,8 +366,8 @@
                 <i
                   v-if="noteDetail.is_asterisk == 1"
                   class="el-icon-star-on i-color"
-                ></i>
-                <i v-else class="el-icon-star-off"></i>
+                />
+                <i v-else class="el-icon-star-off" />
                 <p>星标</p>
               </div>
 
@@ -375,7 +375,7 @@
                 <i
                   class="el-icon-link"
                   :class="{ 'i-color': filesManager.files.length }"
-                ></i>
+                />
                 <p>附件</p>
               </div>
 
@@ -386,7 +386,7 @@
                 placement="left"
               >
                 <div class="item" @click="shareNode">
-                  <i class="el-icon-share"></i>
+                  <i class="el-icon-share" />
                   <p>分享</p>
                 </div>
               </el-tooltip>
@@ -398,7 +398,7 @@
                 placement="left"
               >
                 <div class="item" @click="noteDownload">
-                  <i class="el-icon-download"></i>
+                  <i class="el-icon-download" />
                   <p>下载</p>
                 </div>
               </el-tooltip>
@@ -413,7 +413,7 @@
                   class="item"
                   @click="noteRecycle(noteDetail.id, noteDetail.title)"
                 >
-                  <i class="el-icon-delete"></i>
+                  <i class="el-icon-delete" />
                   <p>回收站</p>
                 </div>
               </el-tooltip>
@@ -428,7 +428,7 @@
                   class="item"
                   @click="noteDelete(noteDetail.id, noteDetail.title)"
                 >
-                  <i class="el-icon-delete"></i>
+                  <i class="el-icon-delete" />
                   <p>删除</p>
                 </div>
               </el-tooltip>
@@ -467,11 +467,11 @@
                             <i
                               class="el-icon-download"
                               @click="downloadAnnex(file.id)"
-                            ></i>
+                            />
                             <i
                               class="el-icon-delete"
                               @click="deleteAnnex(file.id, i)"
-                            ></i>
+                            />
                           </div>
                         </div>
                       </div>
@@ -511,7 +511,7 @@
                       class="tag-item"
                     >
                       <span v-text="tag.name"></span>
-                      <i class="el-icon-close" @click="setNoteTag(i, 1)"></i>
+                      <i class="el-icon-close" @click="setNoteTag(i, 1)" />
                     </span>
                   </div>
                   <div class="tag-manager-title">

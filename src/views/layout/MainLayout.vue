@@ -20,7 +20,7 @@
             >
               <router-link to="/message">
                 <div class="menu-items" :class="{ active: idx == 0 }">
-                  <i class="el-icon-chat-line-round"></i>
+                  <i class="el-icon-chat-line-round" />
                   <span v-show="unreadNum" class="notify"></span>
                 </div>
               </router-link>
@@ -33,7 +33,7 @@
             >
               <router-link to="/contacts">
                 <div class="menu-items" :class="{ active: idx == 1 }">
-                  <i class="el-icon-user-solid"></i>
+                  <i class="el-icon-user-solid" />
                   <span v-show="applyNum" class="notify"></span>
                 </div>
               </router-link>
@@ -46,7 +46,7 @@
             >
               <router-link to="/notes">
                 <div class="menu-items" :class="{ active: idx == 2 }">
-                  <i class="el-icon-notebook-1"></i>
+                  <i class="el-icon-notebook-1" />
                 </div>
               </router-link>
             </el-tooltip>
@@ -58,7 +58,7 @@
             >
               <router-link to="/settings">
                 <div class="menu-items" :class="{ active: idx == 3 }">
-                  <i class="el-icon-setting"></i>
+                  <i class="el-icon-setting" />
                 </div>
               </router-link>
             </el-tooltip>
@@ -70,7 +70,7 @@
             >
               <a target="_blank" href="https://github.com/gzydong/LumenIM">
                 <div class="menu-items">
-                  <i class="iconfont icon-github"></i>
+                  <i class="iconfont icon-github" />
                 </div>
               </a>
             </el-tooltip>

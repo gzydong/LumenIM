@@ -9,25 +9,25 @@
           class="multi-icon pointer"
           @click="$emit('event', 'merge_forward')"
         >
-          <i class="el-icon-position"></i>
+          <i class="el-icon-position" />
         </div>
         <p>合并转发</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer" @click="$emit('event', 'forward')">
-          <i class="el-icon-position"></i>
+          <i class="el-icon-position" />
         </div>
         <p>逐条转发</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer" @click="$emit('event', 'delete')">
-          <i class="el-icon-delete"></i>
+          <i class="el-icon-delete" />
         </div>
         <p>批量删除</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer" @click="$emit('event', 'close')">
-          <i class="el-icon-close"></i>
+          <i class="el-icon-close" />
         </div>
         <p>关闭</p>
       </div>

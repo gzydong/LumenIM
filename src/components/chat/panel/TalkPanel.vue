@@ -76,7 +76,7 @@
                     "
                     class="time"
                   >
-                    <i class="el-icon-time"></i>
+                    <i class="el-icon-time" />
                     {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
                   </span>
                 </div>
@@ -152,7 +152,7 @@
                   </div>
 
                   <!-- 消息引用(预留) -->
-                  <!-- <reply-message />   -->
+                  <!-- <reply-message /> -->
                 </div>
               </main>
             </div>
@@ -184,7 +184,7 @@
           class="talk-bubble pointer no-select"
           @click="talkPanelScrollBottom"
         >
-          <i class="el-icon-chat-dot-round"></i>
+          <i class="el-icon-chat-dot-round" />
           <span>新消息({{ unreadMessage.num }}条)</span>
           <span>
             &nbsp;#{{ unreadMessage.nickname }}#
@@ -205,7 +205,7 @@
           <PanelToolbar
             v-model="multiSelect.items.length"
             @event="handleMultiMode"
-          ></PanelToolbar>
+          />
         </template>
       </el-footer>
 

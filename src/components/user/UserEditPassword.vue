@@ -5,7 +5,7 @@
       <el-header class="header" height="50px">
         <p>修改密码</p>
         <p class="tools">
-          <i class="el-icon-close" @click="close"></i>
+          <i class="el-icon-close" @click="close" />
         </p>
       </el-header>
       <el-main class="main">

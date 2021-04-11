@@ -19,17 +19,17 @@
     <div class="module right-module">
       <el-tooltip content="历史消息" placement="top">
         <p>
-          <i class="el-icon-time" @click="triggerEvent('history')"></i>
+          <i class="el-icon-time" @click="triggerEvent('history')" />
         </p>
       </el-tooltip>
       <el-tooltip content="群公告" placement="top">
         <p v-show="params.source == 2">
-          <i class="iconfont icon-gonggao2" @click="triggerEvent('notice')"></i>
+          <i class="iconfont icon-gonggao2" @click="triggerEvent('notice')" />
         </p>
       </el-tooltip>
       <el-tooltip content="群设置" placement="top">
         <p v-show="params.source == 2">
-          <i class="el-icon-setting" @click="triggerEvent('setting')"></i>
+          <i class="el-icon-setting" @click="triggerEvent('setting')" />
         </p>
       </el-tooltip>
     </div>

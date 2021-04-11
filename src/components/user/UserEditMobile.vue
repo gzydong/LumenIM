@@ -4,7 +4,7 @@
       <el-header class="header" height="50px">
         <p>绑定手机</p>
         <p class="tools">
-          <i class="close-btn el-icon-close" @click="close"></i>
+          <i class="close-btn el-icon-close" @click="close" />
         </p>
       </el-header>
       <el-main class="main">

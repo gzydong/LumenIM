@@ -56,7 +56,7 @@
               <p style="margin-top: 50px">
                 <el-divider>
                   <span style="color: rgb(181, 176, 176); font-weight: 200">
-                    <i class="el-icon-mobile-phone"></i> 预览账号
+                    <i class="el-icon-mobile-phone" /> 预览账号
                   </span>
                 </el-divider>
               </p>

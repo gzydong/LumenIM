@@ -8,7 +8,7 @@
       <p>
         上传管理 <span v-show="total">({{ successNum }}/{{ total }})</span>
       </p>
-      <i class="close-btn el-icon-close" @click="closeBox"></i>
+      <i class="close-btn el-icon-close" @click="closeBox" />
     </el-header>
 
     <el-main class="no-padding mian lum-scrollbar">

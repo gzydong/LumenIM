@@ -52,7 +52,7 @@
                         <i
                           class="el-icon-success"
                           :class="{ 'icon-active': item.checked }"
-                        ></i>
+                        />
                       </span>
                     </li>
                   </ul>
@@ -95,7 +95,7 @@
                       <p>{{ item.nickname }}</p>
                       <div class="triangle-topleft"></div>
                       <div class="del-mask" @click="delContacts(item)">
-                        <i class="el-icon-delete"></i>
+                        <i class="el-icon-delete" />
                       </div>
                     </div>
                   </div>
