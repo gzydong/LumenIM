@@ -26,10 +26,10 @@ export default {
   },
   methods: {
     getNum() {
-      return parseInt(localStorage.getItem('ABS_BOX')) || 0
+      return parseInt(sessionStorage.getItem('ABS_BOX')) || 0
     },
     close() {
-      localStorage.setItem('ABS_BOX', this.getNum() + 1)
+      sessionStorage.setItem('ABS_BOX', this.getNum() + 1)
       this.isShow = false
     },
   },
