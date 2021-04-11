@@ -18,18 +18,18 @@ export default {
     }
   },
   created() {
-    if (this.getNum() <= 3) {
+    if (this.getNum() <= 2) {
       setTimeout(() => {
         this.isShow = true
-      }, 1000 * 60)
+      }, 1000 * 10)
     }
   },
   methods: {
     getNum() {
-      return parseInt(sessionStorage.getItem('ABS_BOX')) || 0
+      return parseInt(localStorage.getItem('ABS_BOX')) || 0
     },
     close() {
-      sessionStorage.setItem('ABS_BOX', this.getNum() + 1)
+      localStorage.setItem('ABS_BOX', this.getNum() + 1)
       this.isShow = false
     },
   },
