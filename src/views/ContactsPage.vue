@@ -82,14 +82,14 @@
               <p>我的好友({{ friends.items.length }})</p>
               <p class="pointer" @click="$refs.searchUsers.open()">
                 <i class="el-icon-plus" />
-                <span> 添加好友</span>
+                <span>添加好友</span>
               </p>
             </template>
             <template v-else-if="activeIndex == 2">
               <p>我的群组({{ groups.items.length }})</p>
               <p class="pointer" @click="launchGroupShow = true">
                 <i class="el-icon-plus" />
-                <span> 创建群组</span>
+                <span>创建群组</span>
               </p>
             </template>
           </el-header>
@@ -218,11 +218,13 @@
                     </el-avatar>
                     <div class="card">
                       <div class="title">
-                        <span class="name">{{
-                          item.friend_remark
-                            ? item.friend_remark
-                            : item.nickname
-                        }}</span>
+                        <span class="name">
+                          {{
+                            item.friend_remark
+                              ? item.friend_remark
+                              : item.nickname
+                          }}
+                        </span>
                         <div v-show="item.online == 1" class="larkc-tag agree">
                           在线
                         </div>
@@ -238,8 +240,8 @@
                         type="primary"
                         icon="el-icon-s-promotion"
                         @click="toTalk(1, `1_${item.id}`)"
-                        >发送消息</el-button
-                      >
+                        >发送消息
+                      </el-button>
                       <el-button
                         size="mini"
                         type="danger"
@@ -316,8 +318,8 @@
                         type="primary"
                         icon="el-icon-s-promotion"
                         @click="toTalk(2, `2_${item.id}`)"
-                        >发送消息</el-button
-                      >
+                        >发送消息
+                      </el-button>
                       <el-button
                         size="mini"
                         type="danger"
@@ -365,7 +367,6 @@ import GroupLaunch from '@/components/group/GroupLaunch'
 import UserBusinessCard from '@/components/user/UserBusinessCard'
 import UserSearch from '@/components/user/UserSearch'
 import GroupPanel from '@/components/group/GroupPanel'
-
 import {
   ServeGetContacts,
   ServeGetContactApplyRecords,

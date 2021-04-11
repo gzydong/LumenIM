@@ -58,7 +58,7 @@
         background: #f6f3f3;
       }
 
-      >span {
+      > span {
         padding-left: 5px;
         font-size: 13px;
         cursor: pointer;
@@ -297,22 +297,25 @@
         margin-left: 16px;
         cursor: pointer;
 
-        img {
+        /deep/.el-image {
           width: 100%;
           height: 100%;
-          border-radius: 3px;
         }
 
         /deep/.el-image__error {
           font-size: 10px;
           background-color: white;
         }
+
+        img {
+          border-radius: 3px;
+        }
       }
 
       &:hover {
         .article-image /deep/.el-image__error {
-          background: #F5F7FA;
-          color: #C0C4CC;
+          background: #f5f7fa;
+          color: #c0c4cc;
         }
       }
     }
@@ -523,7 +526,7 @@
     }
 
     .tag-item {
-      background-color: rgba(64, 158, 255, .1);
+      background-color: rgba(64, 158, 255, 0.1);
       display: inline-block;
       padding: 0 10px;
       height: 25px;
@@ -621,7 +624,7 @@
     justify-content: center;
     padding: 5px 20px;
 
-    p>span {
+    p > span {
       margin-right: 10px;
     }
 
@@ -658,7 +661,7 @@
     cursor: pointer;
     font-size: 12px;
     font-weight: 100;
-    font-family: "Microsoft YaHei";
+    font-family: 'Microsoft YaHei';
     opacity: 0;
     visibility: hidden;
     transition: ease 1s;
@@ -739,7 +742,7 @@
     p {
       font-size: 10px;
       margin-top: 5px;
-      transform: scale(.9);
+      transform: scale(0.9);
     }
 
     &:hover {
@@ -751,5 +754,6 @@
 .editor /deep/pre {
   background-color: #f6f8fa;
   color: #24292e;
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
 }

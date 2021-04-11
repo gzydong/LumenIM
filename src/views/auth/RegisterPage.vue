@@ -65,7 +65,7 @@
                 >
                   获取短信
                 </div>
-                <div class="send-code-btn send-sms-disable" v-else>
+                <div v-else class="send-code-btn send-sms-disable">
                   重新发送({{ smsLockObj.time }}s)
                 </div>
               </el-form-item>

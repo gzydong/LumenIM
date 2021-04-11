@@ -66,7 +66,7 @@
                 </p>
                 <p v-else>
                   <i class="iconfont icon-dian" />
-                  <span v-text="submenu.name"></span>
+                  <span>{{ submenu.name }}</span>
                   <span v-if="submenu.count">({{ submenu.count }})</span>
                 </p>
               </div>
@@ -119,7 +119,7 @@
                   @contextmenu.prevent="noteListMenu($event, i, note)"
                 >
                   <div class="article-title" @click="catNote(note)">
-                    <span v-text="note.title"></span>
+                    <span>{{ note.title }}</span>
                   </div>
 
                   <div class="article-items" @click="catNote(note)">
@@ -128,20 +128,15 @@
                       :class="{ 'item-image': note.img != '' }"
                     >
                       <div class="article-date">
-                        <span v-text="note.datetime"></span>
-                        <span v-text="note.classify"></span>
+                        <span>{{ note.datetime }}</span>
+                        <span>{{ note.classify }}</span>
                       </div>
-                      <div
-                        v-text="note.abstract.replace(/[\r\n]/g, '')"
-                        class="article-abstract"
-                      ></div>
+                      <div class="article-abstract">
+                        {{ note.abstract.replace(/[\r\n]/g, '') }}
+                      </div>
                     </div>
                     <div v-show="note.img" class="article-image">
-                      <el-image
-                        fit="cover"
-                        style="width: 100%; height: 100%"
-                        :src="note.img"
-                      />
+                      <el-image fit="cover" :src="note.img" />
                     </div>
                   </div>
 
@@ -264,8 +259,9 @@
                             <span
                               v-show="filesManager.files.length"
                               class="pointer"
-                              >附件({{ filesManager.files.length }})</span
                             >
+                              附件({{ filesManager.files.length }})
+                            </span>
                           </p>
                           <p style="margin-top: 10px">
                             <span>
@@ -278,8 +274,8 @@
                                 v-for="(tag, index) in noteDetail.tags"
                                 :key="index"
                                 class="larkc-tag"
-                                >{{ tag.tag_name }}</span
-                              >
+                                >{{ tag.tag_name }}
+                              </span>
                               <span
                                 v-show="noteDetail.tags.length == 0"
                                 class="larkc-tag"
@@ -295,7 +291,7 @@
                         v-code
                         id="note-info"
                         class="markdown-body"
-                      ></div>
+                      />
                     </el-scrollbar>
                   </div>
                 </el-main>
@@ -364,10 +360,12 @@
                 @click="setAsterisk"
               >
                 <i
-                  v-if="noteDetail.is_asterisk == 1"
-                  class="el-icon-star-on i-color"
+                  :class="
+                    noteDetail.is_asterisk == 1
+                      ? 'el-icon-star-on i-color'
+                      : 'el-icon-star-off'
+                  "
                 />
-                <i v-else class="el-icon-star-off" />
                 <p>星标</p>
               </div>
 
@@ -504,29 +502,29 @@
                     <span>已选择</span>
                   </div>
                   <div class="tag-manager-box">
-                    <span
+                    <p
                       v-for="(tag, i) in tagManager.tags"
                       v-show="tag.isSelectd"
                       :key="i"
                       class="tag-item"
                     >
-                      <span v-text="tag.name"></span>
+                      <span>{{ tag.name }}</span>
                       <i class="el-icon-close" @click="setNoteTag(i, 1)" />
-                    </span>
+                    </p>
                   </div>
                   <div class="tag-manager-title">
                     <span>标签栏</span>
                   </div>
                   <div class="tag-manager-box">
-                    <span
+                    <p
                       v-for="(tag, i) in tagManager.tags"
                       :key="i"
                       class="tag-item"
                       :class="{ 'tag-item-active': tag.isSelectd }"
                       @click="setNoteTag(i, 2)"
                     >
-                      <span v-text="tag.name"></span>
-                    </span>
+                      <span>{{ tag.name }}</span>
+                    </p>
                   </div>
 
                   <el-button
