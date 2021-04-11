@@ -1,16 +1,19 @@
-import Vue from "vue";
-import store from "@/store";
-import router from "@/router";
-import AppMessageEvent from "./app-message-event";
-import { parseTime } from "@/utils/functions";
-import { formateTalkItem, findTalkIndex } from "@/utils/talk";
-import { ServeClearTalkUnreadNum, ServeCreateTalkList } from "@/api/chat";
+import Vue from 'vue'
+import store from '@/store'
+import router from '@/router'
+import AppMessageEvent from './app-message-event'
+import { parseTime } from '@/utils/functions'
+import { formateTalkItem, findTalkIndex } from '@/utils/talk'
+import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
 
 /**
  * 聊天消息处理
  */
 class TalkEvent extends AppMessageEvent {
-  resource;
+  /**
+   * @var resource 资源
+   */
+  resource
 
   /**
    * 初始化构造方法
@@ -18,23 +21,23 @@ class TalkEvent extends AppMessageEvent {
    * @param {Object} resource Socket消息
    */
   constructor(resource) {
-    super();
+    super()
 
-    this.resource = resource;
+    this.resource = resource
   }
 
   handle() {
-    const indexName = this.getIndexName();
+    const indexName = this.getIndexName()
     if (!this.isTalkPage()) {
-      this.showMessageNocice(indexName);
-      return false;
+      this.showMessageNocice(indexName)
+      return false
     }
 
-    const index = findTalkIndex(indexName);
+    const index = findTalkIndex(indexName)
     if (index == -1) {
       // 判断消息来源是否在对话列表中...
-      this.loadTalkItem();
-      return;
+      this.loadTalkItem()
+      return
     }
 
     if (
@@ -44,9 +47,9 @@ class TalkEvent extends AppMessageEvent {
         this.resource.send_user
       )
     ) {
-      this.updateTalkRecord(index);
+      this.updateTalkRecord(index)
     } else {
-      this.updateTalkItem(index);
+      this.updateTalkItem(index)
     }
   }
 
@@ -57,25 +60,25 @@ class TalkEvent extends AppMessageEvent {
    * @returns
    */
   showMessageNocice(index_name) {
-    let tag = this.resource.data.source == 1 ? "[私信]" : "[群聊]";
-    let group_name = this.resource.data.group_name || "好友";
-    let nickname = this.resource.data.nickname || this.resource.data.group_name;
-    let content = this.getTalkText();
+    let tag = this.resource.data.source == 1 ? '[私信]' : '[群聊]'
+    let group_name = this.resource.data.group_name || '好友'
+    let nickname = this.resource.data.nickname || this.resource.data.group_name
+    let content = this.getTalkText()
 
     this.$notify({
       title: `${tag} 聊天通知`,
       message: `「${group_name}」@${nickname} : ${content}`,
       duration: 3000000,
-      customClass: "talk-notify pointer",
+      customClass: 'talk-notify pointer',
       onClick: function() {
-        sessionStorage.setItem("send_message_index_name", index_name);
-        router.push("/");
-        this.close();
+        sessionStorage.setItem('send_message_index_name', index_name)
+        router.push('/')
+        this.close()
       },
-      position: "bottom-right",
-    });
+      position: 'bottom-right',
+    })
 
-    store.commit("INCR_UNREAD_NUM");
+    store.commit('INCR_UNREAD_NUM')
   }
 
   /**
@@ -84,43 +87,43 @@ class TalkEvent extends AppMessageEvent {
    * @param {Number} index 聊天列表的索引
    */
   updateTalkRecord(index) {
-    let record = this.resource.data;
+    let record = this.resource.data
     record.float =
       record.user_id == 0
-        ? "center"
+        ? 'center'
         : record.user_id == this.UserId
-        ? "right"
-        : "left";
+        ? 'right'
+        : 'left'
 
-    store.commit("PUSH_DIALOGUE", record);
+    store.commit('PUSH_DIALOGUE', record)
 
     // 获取聊天面板元素节点
-    let elChatPanel = document.getElementById("lumenChatPanel");
+    let elChatPanel = document.getElementById('lumenChatPanel')
 
     // 判断的滚动条是否在底部
     let isBottom =
       Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight >=
-      elChatPanel.scrollHeight;
+      elChatPanel.scrollHeight
 
     if (isBottom || record.user_id == this.UserId) {
       Vue.nextTick(() => {
         // 更新聊天面板滚动条置底
-        elChatPanel.scrollTop = elChatPanel.scrollHeight;
-      });
+        elChatPanel.scrollTop = elChatPanel.scrollHeight
+      })
     } else {
-      store.commit("SET_TLAK_UNREAD_MESSAGE", {
+      store.commit('SET_TLAK_UNREAD_MESSAGE', {
         content: this.getTalkText(),
         nickname: record.nickname,
-      });
+      })
     }
 
-    store.commit("UPDATE_TALK_ITEM", {
+    store.commit('UPDATE_TALK_ITEM', {
       index,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date()),
       },
-    });
+    })
 
     if (
       this.resource.data.source == 1 &&
@@ -130,7 +133,7 @@ class TalkEvent extends AppMessageEvent {
       ServeClearTalkUnreadNum({
         type: store.state.dialogue.source,
         receive: store.state.dialogue.receive_id,
-      });
+      })
     }
   }
 
@@ -140,87 +143,87 @@ class TalkEvent extends AppMessageEvent {
    * @param {Number} index 聊天列表的索引
    */
   updateTalkItem(index) {
-    store.commit("INCR_UNREAD_NUM");
+    store.commit('INCR_UNREAD_NUM')
     if (index == -1) {
       // 对话列表不存在需请求后端...
-      return;
+      return
     }
 
-    store.commit("UPDATE_TALK_MESSAGE", {
+    store.commit('UPDATE_TALK_MESSAGE', {
       index,
       item: {
         msg_text: this.getTalkText(),
         updated_at: parseTime(new Date()),
       },
-    });
+    })
   }
 
   /**
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = this.resource.data.content;
+    let text = this.resource.data.content
     switch (this.resource.data.msg_type) {
       case 2:
-        let file_type = this.resource.data.file.file_type;
-        text = file_type == 1 ? "[图片消息]" : "[文件消息]";
-        break;
+        let file_type = this.resource.data.file.file_type
+        text = file_type == 1 ? '[图片消息]' : '[文件消息]'
+        break
       case 4:
-        text = "[会话记录]";
-        break;
+        text = '[会话记录]'
+        break
       case 5:
-        text = "[代码消息]";
-        break;
+        text = '[代码消息]'
+        break
     }
 
-    return text;
+    return text
   }
 
   /**
    * 判断用户是否打开对话页
    */
   isTalkPage() {
-    let path = router.currentRoute.fullPath;
-    return !(path != "/message" && path != "/");
+    let path = router.currentRoute.fullPath
+    return !(path != '/message' && path != '/')
   }
 
   /**
    * 通过消息获取消息对应的对话索引
    */
   getIndexName() {
-    let message = this.resource;
+    let message = this.resource
     if (
       message.source_type == 2 ||
       (message.source_type == 1 && message.send_user == this.UserId)
     ) {
-      return `${message.source_type}_${message.receive_user}`;
+      return `${message.source_type}_${message.receive_user}`
     }
 
-    return `${message.source_type}_${message.send_user}`;
+    return `${message.source_type}_${message.send_user}`
   }
 
   /**
    * 加载对接节点
    */
   loadTalkItem() {
-    let receive_id = 0;
-    let type = this.resource.source_type;
+    let receive_id = 0
+    let type = this.resource.source_type
     if (type == 2 || this.resource.send_user == this.UserId) {
-      receive_id = this.resource.receive_user;
+      receive_id = this.resource.receive_user
     } else {
-      receive_id = this.resource.send_user;
+      receive_id = this.resource.send_user
     }
 
     ServeCreateTalkList({
       type,
       receive_id,
-    }).then((res) => {
+    }).then(res => {
       if (res.code == 200) {
-        res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1;
-        store.commit("INSERT_TALK_ITEM", formateTalkItem(res.data.talkItem));
+        res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1
+        store.commit('INSERT_TALK_ITEM', formateTalkItem(res.data.talkItem))
       }
-    });
+    })
   }
 }
 
-export default TalkEvent;
+export default TalkEvent
