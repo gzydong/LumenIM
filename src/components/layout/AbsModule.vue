@@ -18,10 +18,10 @@ export default {
     }
   },
   created() {
-    if (this.getNum() <= 3) {
+    if (this.getNum() <= 2) {
       setTimeout(() => {
         this.isShow = true
-      }, 1000 * 60)
+      }, 1000 * 10)
     }
   },
   methods: {
