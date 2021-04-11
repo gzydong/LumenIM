@@ -167,7 +167,7 @@
                         v-if="index_name != item.index_name && item.draft_text"
                       >
                         <span class="draft-color">[草稿]</span>
-                        <span v-text="item.draft_text"></span>
+                        <span>{{ item.draft_text }}</span>
                       </template>
                       <template v-else>
                         <span
@@ -176,7 +176,7 @@
                           >[{{ item.online ? '在线' : '离线' }}]</span
                         >
                         <span v-else>[群消息]</span>
-                        <span v-text="item.msg_text"></span>
+                        <span>{{ item.msg_text }}</span>
                       </template>
                     </div>
                   </div>

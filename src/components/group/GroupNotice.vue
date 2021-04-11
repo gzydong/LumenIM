@@ -47,7 +47,7 @@
               class="notice-item"
             >
               <div class="title">
-                <span class="left-title" v-text="item.title"></span>
+                <span class="left-title">{{ item.title }}</span>
                 <span
                   class="right-tools no-select"
                   @click="catNoticeDetail(index)"
@@ -61,16 +61,15 @@
                 </el-avatar>
                 <span
                   class="text nickname"
-                  v-text="item.nickname"
                   @click="$refs.userBusinessCard.open(item.user_id)"
-                ></span>
+                >
+                  {{ item.nickname }}
+                </span>
                 <span class="text">发表于 {{ item.created_at }}</span>
               </p>
-              <p
-                class="content"
-                :class="{ retract: !item.isShow }"
-                v-text="item.content"
-              ></p>
+              <p class="content" :class="{ retract: !item.isShow }">
+                {{ item.content }}
+              </p>
             </div>
           </el-scrollbar>
         </template>

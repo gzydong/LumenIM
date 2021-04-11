@@ -18,8 +18,8 @@
           v-show="detail.is_manager"
           class="more"
           @click="isShowManager = true"
-          >管理</span
-        >
+          >管理
+        </span>
       </div>
 
       <div class="list-item">
@@ -79,9 +79,7 @@
 
       <div class="list-item-tips">群主已开启“新成员入群可查看所有聊天记录”</div>
 
-      <div class="list-item">
-        群简介
-      </div>
+      <div class="list-item">群简介</div>
 
       <div class="list-item-tips">
         {{ detail.groupProfile ? detail.groupProfile : '暂无群简介' }}
