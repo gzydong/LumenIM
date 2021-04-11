@@ -106,12 +106,16 @@
 
     <!-- 打赏组件(自行删除) -->
     <RewardModule />
+
+    <!-- 广告组件(自行删除) -->
+    <AbsModule />
   </div>
 </template>
 <script>
 import { mapState } from 'vuex'
 import UserCard from '@/components/user/UserCard'
 import RewardModule from '@/components/layout/RewardModule'
+import AbsModule from '@/components/layout/AbsModule'
 import { ServeFindFriendApplyNum } from '@/api/contacts'
 
 export default {
@@ -119,6 +123,7 @@ export default {
   components: {
     UserCard,
     RewardModule,
+    AbsModule
   },
   props: {
     idx: {
