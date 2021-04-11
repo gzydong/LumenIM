@@ -11,46 +11,46 @@ export default {
 
     // 好友登录状态监听
     friendStatus: {
-      status: 0, // 登录状态[0:下线;1:在线;]
-      friendId: 0 // 好友ID
+      // 登录状态[0:下线;1:在线;]
+      status: 0,
+      // 好友ID
+      friendId: 0,
     },
   },
   mutations: {
     // 消息未读数自增
     INCR_UNREAD_NUM(state) {
-      state.unreadNum++;
+      state.unreadNum++
     },
 
     // 好友申请事件监听
     INCR_APPLY_NUM(state) {
-      state.applyNum++;
+      state.applyNum++
     },
 
     // 设置消息未读数
     SET_UNREAD_NUM(state, num) {
-      state.unreadNum = num;
+      state.unreadNum = num
     },
 
     // 自增好友键盘输入事件
     UPDATE_KEYBOARD_EVENT(state) {
-      state.inputEvent++;
+      state.inputEvent++
     },
 
     // 更新好友登录状态
     UPDATE_FRIEND_STATUS(state, value) {
-      state.friendStatus = value;
+      state.friendStatus = value
     },
   },
   actions: {
-    ACT_UPDATE_FRIEND_STATUS({
-      commit
-    }, value) {
-      return new Promise((resolve) => {
+    ACT_UPDATE_FRIEND_STATUS({ commit }, value) {
+      return new Promise(resolve => {
         setTimeout(() => {
-          commit('UPDATE_FRIEND_STATUS', value);
-          resolve();
-        }, 0);
+          commit('UPDATE_FRIEND_STATUS', value)
+          resolve()
+        }, 0)
       })
     },
-  }
+  },
 }

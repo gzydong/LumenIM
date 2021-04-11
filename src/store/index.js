@@ -1,18 +1,18 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-import user from './modules/user';
-import talks from './modules/talk';
-import notify from './modules/notify';
-import settings from './modules/settings';
-import emoticon from './modules/emoticon';
-import dialogue from './modules/dialogue';
+import user from './modules/user'
+import talks from './modules/talk'
+import notify from './modules/notify'
+import settings from './modules/settings'
+import emoticon from './modules/emoticon'
+import dialogue from './modules/dialogue'
 
-import state from './state';
-import getters from './getters';
-import mutations from './mutations';
+import state from './state'
+import getters from './getters'
+import mutations from './mutations'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
@@ -21,11 +21,11 @@ const store = new Vuex.Store({
     talks,
     settings,
     emoticon,
-    dialogue
+    dialogue,
   },
   state,
   getters,
-  mutations
-});
+  mutations,
+})
 
-export default store;
+export default store
