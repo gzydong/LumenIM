@@ -21,7 +21,7 @@ export default {
     if (this.getNum() <= 2) {
       setTimeout(() => {
         this.isShow = true
-      }, 1000 * 10)
+      }, 1000 * 60 * 2)
     }
   },
   methods: {
