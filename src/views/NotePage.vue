@@ -35,7 +35,7 @@
                   :class="menu.icon"
                   :style="{ color: menu.color }"
                 />
-                <span v-text="menu.name"></span>
+                <span>{{ menu.name }}</span>
                 <i
                   v-show="menu.submenus.length"
                   class="iconfont icon-menu-nav"
@@ -48,7 +48,7 @@
 
               <div
                 v-for="(submenu, i2) in menu.submenus"
-                v-if="menu.isShowSub"
+                v-show="menu.isShowSub"
                 :key="i2"
                 class="note-list-two"
                 :class="{ 'note-list-active': submenu.isActive }"
@@ -76,7 +76,7 @@
 
         <el-aside width="350px" class="el-aside-two">
           <div class="search-header">
-            <i class="lumen-icon-sousuo iconfont icon-sousuo" />
+            <i class="iconfont icon-sousuo" />
             <input
               type="text"
               placeholder="搜索我的笔记 ..."
@@ -86,7 +86,7 @@
             />
           </div>
 
-          <div class="count-header">
+          <div class="title-header">
             <span>{{ notes.length }} 篇笔记</span>
             <span v-if="loadNoteStatus == 0" class="load-span">
               <i class="el-icon-loading" /> 加载中 ...
@@ -209,11 +209,10 @@
             <template v-if="markdown.isEdit">
               <el-container>
                 <el-header id="note-header" height="61px">
-                  <i class="el-icon-edit" style="display: inline-block" />
+                  <i class="el-icon-edit" />
                   <input
                     v-model="noteDetail.title"
                     type="text"
-                    style="display: inline-block"
                     placeholder="笔记标题不能为空..."
                   />
                 </el-header>
@@ -251,41 +250,6 @@
                       tag="section"
                       :native="false"
                     >
-                      <div style="padding: 10px; display: none">
-                        <div class="subfield">
-                          <p>
-                            <span>时间：{{ noteDetail.created_at }}</span>
-                            <span>阅读量(1000)</span>
-                            <span
-                              v-show="filesManager.files.length"
-                              class="pointer"
-                            >
-                              附件({{ filesManager.files.length }})
-                            </span>
-                          </p>
-                          <p style="margin-top: 10px">
-                            <span>
-                              分类：<span class="larkc-tag">{{
-                                getNoteClassName(noteDetail.class_id)
-                              }}</span>
-                            </span>
-                            <span>
-                              标签：<span
-                                v-for="(tag, index) in noteDetail.tags"
-                                :key="index"
-                                class="larkc-tag"
-                                >{{ tag.tag_name }}
-                              </span>
-                              <span
-                                v-show="noteDetail.tags.length == 0"
-                                class="larkc-tag"
-                              >
-                                无
-                              </span>
-                            </span>
-                          </p>
-                        </div>
-                      </div>
                       <div
                         v-html="noteDetail.html"
                         v-code
@@ -370,10 +334,7 @@
               </div>
 
               <div v-show="noteDetail.id" v-popover:fileManager class="item">
-                <i
-                  class="el-icon-link"
-                  :class="{ 'i-color': filesManager.files.length }"
-                />
+                <i class="el-icon-link" :class="{ 'i-color': files.length }" />
                 <p>附件</p>
               </div>
 
@@ -437,57 +398,7 @@
                 placement="left-start"
                 trigger="click"
               >
-                <p>笔记附件列表</p>
-                <div class="note-files-manager lum-scrollbar">
-                  <input
-                    type="file"
-                    ref="uploadNoteFile"
-                    @change="uploadAnnex"
-                  />
-                  <div class="file-box">
-                    <p class="no-file" v-show="filesManager.files.length == 0">
-                      暂无附件
-                    </p>
-                    <div
-                      v-for="(file, i) in filesManager.files"
-                      :key="file.id"
-                      class="file-item"
-                    >
-                      <div class="file-type">{{ file.file_suffix }}</div>
-                      <div class="file-detail">
-                        <div class="filename">{{ file.original_name }}</div>
-                        <div class="filetool">
-                          <span>{{ formateTime(file.created_at) }}</span>
-                          <span style="color: #3a8ee6">
-                            {{ formateSize(file.file_size) }}
-                          </span>
-                          <div class="filetool-help">
-                            <i
-                              class="el-icon-download"
-                              @click="downloadAnnex(file.id)"
-                            />
-                            <i
-                              class="el-icon-delete"
-                              @click="deleteAnnex(file.id, i)"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="clearfix"></div>
-                    </div>
-                  </div>
-                  <div class="files-manager-footer">
-                    <p class="upload-tips">最多可支持上传10个附件</p>
-                    <el-button
-                      type="primary"
-                      size="small"
-                      icon="el-icon-upload"
-                      :loading="filesManager.status"
-                      @click="$refs.uploadNoteFile.click()"
-                      >{{ filesManager.status ? '上传中...' : '上传附件' }}
-                    </el-button>
-                  </div>
-                </div>
+                <UploadAnnexBox :id="noteDetail.id" :fileList="files" />
               </el-popover>
 
               <!-- 笔记标签弹出层 -->
@@ -573,6 +484,8 @@
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import UserContacts from '@/components/chat/UserContacts'
+import UploadAnnexBox from '@/components/note/UploadAnnexBox'
+
 import { SvgNoteBook, SvgNote } from '@/core/icons'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -592,8 +505,6 @@ import {
   ServeMoveArticle,
   ServeUploadArticleImg,
   ServeSetAsteriskArticle,
-  ServeUploadArticleAnnex,
-  ServeDeleteArticleAnnex,
   ServeDownloadAnnex,
   ServeUpdateArticleTag,
   ServeRecoverArticle,
@@ -611,6 +522,7 @@ export default {
     UserContacts,
     SvgNoteBook,
     SvgNote,
+    UploadAnnexBox,
   },
   directives: {
     // 代码高亮指令
@@ -718,11 +630,7 @@ export default {
         },
       },
 
-      // 附件管理
-      filesManager: {
-        status: false,
-        files: [],
-      },
+      files: [],
 
       // 标签管理
       tagManager: {
@@ -775,7 +683,7 @@ export default {
             this.noteDetail.is_asterisk = res.data.is_asterisk
             this.noteDetail.tags = res.data.tags
             this.noteDetail.status = res.data.status
-            this.filesManager.files = res.data.files
+            this.files = res.data.files
 
             // 赋值给编辑器
             this.markdown.mdText = this.noteDetail.content
@@ -1048,7 +956,7 @@ export default {
       this.noteDetail.is_asterisk = 0
       this.noteDetail.class_id = 0
       this.noteDetail.status = 1
-      this.filesManager.files = []
+      this.files = []
       this.tagManager.tags = []
       this.markdown.mdText = ''
       this.markdown.htmlText = ''
@@ -1381,53 +1289,6 @@ export default {
     defaultNoteClassIdx() {
       return this.menus[2].submenus.findIndex(item => {
         return item.isDefault == 1
-      })
-    },
-
-    // 上传笔记附件文件
-    uploadAnnex(e) {
-      if (e.target.files.length == 0 || this.filesManager.files.length >= 10) {
-        return false
-      }
-
-      let file = e.target.files[0]
-      if (file.size / (1024 * 1024) > 5) {
-        this.$message('文件不能大于5M...')
-        return false
-      }
-
-      let fileData = new FormData()
-      fileData.append('annex', file)
-      fileData.append('article_id', this.getArticleId())
-
-      this.filesManager.status = true
-      ServeUploadArticleAnnex(fileData)
-        .then(res => {
-          if (res.code == 200) {
-            this.filesManager.files.push({
-              id: res.data.id,
-              original_name: res.data.original_name,
-              created_at: parseTime(new Date()),
-              file_size: res.data.file_size,
-              file_suffix: res.data.file_suffix,
-            })
-          }
-
-          this.filesManager.status = false
-        })
-        .catch(() => {
-          this.filesManager.status = false
-        })
-    },
-
-    // 删除笔记附件
-    deleteAnnex(annex_id, index) {
-      ServeDeleteArticleAnnex({
-        annex_id,
-      }).then(res => {
-        if (res.code == 200) {
-          this.$delete(this.filesManager.files, index)
-        }
       })
     },
 

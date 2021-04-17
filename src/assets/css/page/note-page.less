@@ -118,19 +118,11 @@
   text-align: center;
   position: relative;
 
-  .lumen-icon-sousuo {
+  i {
     position: absolute;
     left: 16px;
     top: 19px;
     font-size: 20px;
-    color: #505050;
-  }
-
-  .lumen-icon-clear {
-    position: absolute;
-    right: 1px;
-    top: 17px;
-    font-size: 24px;
     color: #505050;
   }
 
@@ -151,7 +143,7 @@
   }
 }
 
-.el-aside-two .count-header {
+.el-aside-two .title-header {
   height: 40px;
   line-height: 40px;
   position: relative;
@@ -393,118 +385,6 @@
   }
 }
 
-/* 文件管理弹出层 */
-.note-files-manager {
-  width: 300px;
-  min-height: 50px;
-  max-height: 675px;
-  background-color: white;
-  overflow-y: auto;
-
-  .file-box {
-    min-height: 30px;
-    border-bottom: 1px solid rgb(239, 233, 233);
-    margin-bottom: 8px;
-    padding: 5px 0;
-
-    .no-file {
-      color: #969292;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-
-    .file-item {
-      height: 50px;
-      margin-bottom: 5px;
-      margin-top: 10px;
-
-      .file-type {
-        width: 50px;
-        height: 100%;
-        background-color: #ffcc80;
-        border-radius: 3px;
-        float: left;
-        line-height: 50px;
-        text-align: center;
-        color: white;
-      }
-
-      .file-detail {
-        float: left;
-        width: 247px;
-        height: 100%;
-
-        .filename {
-          padding-left: 5px;
-          color: #172b4d;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 1.6;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .filetool {
-          color: #505f79;
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 1.6;
-          padding-left: 5px;
-          margin-top: 9px;
-          position: relative;
-
-          span {
-            margin: 0 3px;
-          }
-        }
-
-        .filetool-help {
-          position: absolute;
-          top: -5px;
-          right: 5px;
-          width: 55px;
-          height: 24px;
-          text-align: right;
-          line-height: 28px;
-
-          i {
-            font-size: 16px;
-            cursor: pointer;
-            margin-right: 5px;
-          }
-
-          .el-icon-download {
-            color: #66b1ff;
-          }
-
-          .el-icon-delete {
-            color: red;
-          }
-        }
-      }
-    }
-  }
-
-  input {
-    display: none;
-  }
-
-  .files-manager-footer {
-    .upload-tips {
-      font-size: 12px;
-      color: #ccc;
-      text-align: left;
-      float: left;
-      padding-top: 10px;
-    }
-
-    button {
-      float: right;
-    }
-  }
-}
-
 /* 标签管理弹出层 */
 .tag-manager {
   .tag-manager-title {
@@ -612,28 +492,6 @@
   border-bottom: none;
   background: #fff;
   height: 100%;
-
-  .subfield {
-    min-height: 60px;
-    background: #f7f7fc;
-    margin: 10px;
-    border-radius: 3px;
-    font-size: 13px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 5px 20px;
-
-    p > span {
-      margin-right: 10px;
-    }
-
-    .larkc-tag {
-      background: #ffffff;
-      color: #2d2d2d;
-      font-size: 14px;
-    }
-  }
 
   .markdown-body {
     padding: 20px;
