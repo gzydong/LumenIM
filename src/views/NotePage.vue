@@ -315,7 +315,7 @@
               >
                 <i
                   class="el-icon-collection-tag"
-                  :class="{ 'i-color': noteDetail.tags.length }"
+                  :class="{ 'i-color': tags.length }"
                 />
                 <p>标签</p>
               </div>
@@ -619,7 +619,6 @@ export default {
             this.noteDetail.created_at = res.data.created_at
             this.noteDetail.class_id = res.data.class_id
             this.noteDetail.is_asterisk = res.data.is_asterisk
-            this.noteDetail.tags = res.data.tags
             this.noteDetail.status = res.data.status
             this.markdown.mdText = this.noteDetail.content
 
@@ -649,10 +648,10 @@ export default {
 
     // 加载标签列表
     loadNoteTags() {
-      ServeGetArticleTag().then(res => {
-        if (res.code != 200) return false
+      ServeGetArticleTag().then(({ code, data }) => {
+        if (code != 200) return false
 
-        this.menus[3].submenus = res.data.tags.map(item => {
+        this.menus[3].submenus = data.tags.map(item => {
           return {
             id: item.id,
             name: item.tag_name,
@@ -696,12 +695,12 @@ export default {
 
       this.loadNoteStatus = 0
       ServeGetArticleList(data)
-        .then(res => {
+        .then(({ code, data }) => {
           this.loadNoteStatus = 1
 
-          if (res.code !== 200) return false
+          if (code !== 200) return false
 
-          this.notes = res.data.rows.map(item => {
+          this.notes = data.rows.map(item => {
             return {
               id: item.id,
               title: item.title,
@@ -721,10 +720,10 @@ export default {
 
     // 加载笔记分类列表
     loadNoteClass(class_id = null) {
-      ServeGetArticleClass().then(res => {
-        if (res.code != 200) return false
+      ServeGetArticleClass().then(({ code, data }) => {
+        if (code != 200) return false
 
-        this.menus[2].submenus = res.data.rows.map(item => {
+        this.menus[2].submenus = data.rows.map(item => {
           return {
             id: item.id,
             name: item.class_name,
@@ -883,7 +882,6 @@ export default {
       this.noteDetail.content = ''
       this.noteDetail.html = ''
       this.noteDetail.title = ''
-      this.noteDetail.tags = []
       this.noteDetail.is_asterisk = 0
       this.noteDetail.class_id = 0
       this.noteDetail.status = 1

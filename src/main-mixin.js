@@ -17,9 +17,9 @@ export default {
 
     // 加载用户相关设置信息，更新本地缓存
     loadUserSetting() {
-      ServeGetUserSetting().then(res => {
-        if (res.code == 200) {
-          const { user_info } = res.data
+      ServeGetUserSetting().then(({ code, data }) => {
+        if (code == 200) {
+          const { user_info } = data
 
           this.$store.commit('UPDATE_USER_INFO', {
             uid: user_info.uid,

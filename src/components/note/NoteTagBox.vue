@@ -12,7 +12,7 @@
         class="tag-item"
       >
         <span>{{ tag.name }}</span>
-        <i class="el-icon-close" @click="setNoteTag(i, 1)" />
+        <i class="el-icon-close" @click="activeTag(i, 1)" />
       </p>
     </div>
 
@@ -26,7 +26,7 @@
         :key="i"
         class="tag-item"
         :class="{ active: tag.isSelectd }"
-        @click="setNoteTag(i, 2)"
+        @click="activeTag(i, 2)"
       >
         <span>{{ tag.name }}</span>
       </p>
@@ -46,7 +46,7 @@
         type="text"
         placeholder="回车保存..."
         v-model.trim="tagText"
-        @keyup.enter="saveTagEvent"
+        @keyup.enter="saveTag"
       />
 
       <el-button type="primary" size="small" @click="isInput = false"
@@ -71,12 +71,14 @@ export default {
   },
   methods: {
     // 设置笔记标签事件
-    setNoteTag(i, type) {
-      this.tags[i].isSelectd = type == 1 ? false : !this.tags[i].isSelectd
-
+    activeTag(i, type) {
       ServeUpdateArticleTag({
         article_id: this.id,
         tags: this.getSelectTags(),
+      }).then(({ code }) => {
+        if (code == 200) {
+          this.tags[i].isSelectd = type == 1 ? false : !this.tags[i].isSelectd
+        }
       })
     },
 
@@ -91,16 +93,16 @@ export default {
     },
 
     // 保存标签事件
-    saveTagEvent() {
+    saveTag() {
       let tag_name = this.tagText
 
       ServeEditArticleTag({
         tag_id: 0,
         tag_name,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code, data }) => {
+        if (code == 200) {
           let tag = {
-            id: res.data.id,
+            id: data.id,
             name: tag_name,
             icon: 'icon-dian',
             count: 0,
@@ -132,7 +134,7 @@ export default {
   .title {
     height: 20px;
     line-height: 20px;
-    font-size: 13px;
+    font-size: 14px;
     color: #ccc;
     border-bottom: 1px solid #f0e9e9;
     padding-bottom: 5px;

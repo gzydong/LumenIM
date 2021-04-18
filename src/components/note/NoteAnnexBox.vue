@@ -2,7 +2,7 @@
   <div>
     <p>笔记附件列表({{ files.length }})</p>
     <div class="annex-box lum-scrollbar">
-      <input ref="uploadNoteFile" type="file" @change="uploadAnnex" />
+      <input ref="uploads" type="file" @change="uploadAnnex" />
       <div class="annex-main">
         <p v-show="files.length == 0" class="empty-text">
           暂无附件
@@ -34,7 +34,7 @@
           icon="el-icon-upload"
           :disabled="files.length >= maxNum"
           :loading="loadStatus"
-          @click="$refs.uploadNoteFile.click()"
+          @click="$refs.uploads.click()"
           >{{ loadStatus ? '上传中...' : '上传附件' }}
         </el-button>
       </div>
@@ -45,7 +45,7 @@
 <script>
 import {
   ServeDeleteArticleAnnex,
-  ServeDownloadAnnex,
+  ServeDownloadAnnex as downloadAnnex,
   ServeUploadArticleAnnex,
 } from '@/api/article'
 import { formateSize, formateTime, parseTime } from '@/utils/functions'
@@ -74,14 +74,14 @@ export default {
     formateTime,
 
     // 下载笔记附件
-    downloadAnnex: ServeDownloadAnnex,
+    downloadAnnex,
 
     // 删除笔记附件
     deleteAnnex(annex_id, index) {
       ServeDeleteArticleAnnex({
         annex_id,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           this.$delete(this.files, index)
         }
       })
@@ -105,14 +105,14 @@ export default {
 
       this.loadStatus = true
       ServeUploadArticleAnnex(fileData)
-        .then(res => {
-          if (res.code == 200) {
+        .then(({ code, data }) => {
+          if (code == 200) {
             this.files.push({
-              id: res.data.id,
-              original_name: res.data.original_name,
+              id: data.id,
+              original_name: data.original_name,
               created_at: parseTime(new Date()),
-              file_size: res.data.file_size,
-              file_suffix: res.data.file_suffix,
+              file_size: data.file_size,
+              file_suffix: data.file_suffix,
             })
           }
         })
