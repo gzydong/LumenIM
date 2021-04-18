@@ -153,9 +153,7 @@ export default {
   },
   computed: {
     selected() {
-      return this.contacts.filter(item => {
-        return item.checked
-      })
+      return this.contacts.filter(item => item.checked)
     },
   },
   watch: {
@@ -249,12 +247,12 @@ export default {
       }
 
       if (data.group_name == '') {
-        this.$message('群聊名称不能为空')
+        this.$message('群聊名称不能为空！')
         return
       }
 
       if (this.getIds().length < 2) {
-        this.$message('群聊人数必须大于俩人')
+        this.$message('群聊人数必须大于俩人！')
         return
       }
 
@@ -262,7 +260,7 @@ export default {
         if (res.code == 200) {
           this.$emit('create-success', res.data)
         } else {
-          this.$message('创建群聊失败')
+          this.$message('创建群聊失败！')
         }
       })
     },
@@ -276,7 +274,7 @@ export default {
         if (res.code == 200) {
           this.$emit('invite-success')
         } else {
-          this.$message('邀请好友失败')
+          this.$message('邀请好友失败！')
         }
       })
     },

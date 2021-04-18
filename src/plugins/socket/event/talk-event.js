@@ -206,21 +206,21 @@ class TalkEvent extends AppMessageEvent {
    * 加载对接节点
    */
   loadTalkItem() {
-    let receive_id = 0
+    let receive_id = this.resource.send_user
     let type = this.resource.source_type
+
     if (type == 2 || this.resource.send_user == this.UserId) {
       receive_id = this.resource.receive_user
-    } else {
-      receive_id = this.resource.send_user
     }
 
     ServeCreateTalkList({
       type,
       receive_id,
-    }).then(res => {
-      if (res.code == 200) {
-        res.data.talkItem.unread_num = res.data.talkItem.unread_num + 1
-        store.commit('INSERT_TALK_ITEM', formateTalkItem(res.data.talkItem))
+    }).then(({ code, data }) => {
+      if (code == 200) {
+        let { talkItem } = data
+        talkItem.unread_num++
+        store.commit('INSERT_TALK_ITEM', formateTalkItem(talkItem))
       }
     })
   }

@@ -37,7 +37,7 @@
             >
               获取短信
             </div>
-            <div class="send-code-btn disable" v-else>
+            <div v-else class="send-code-btn disable">
               重新发送({{ smsLockObj.time }}s)
             </div>
           </el-form-item>
@@ -74,7 +74,7 @@ import { ServeSendMobileCode, ServeUpdateMobile } from '@/api/user'
 export default {
   name: 'UserEditMobile',
   data() {
-    var validateMobile = (rule, value, callback) => {
+    let validateMobile = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('登录手机号不能为空！'))
       } else {
@@ -213,10 +213,8 @@ export default {
           } else {
             this.$message(res.message)
           }
-
-          this.loading = false
         })
-        .catch(() => {
+        .finally(() => {
           this.loading = false
         })
     },

@@ -40,7 +40,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: function() {
+      default: () => {
         return {
           source: 0,
           receive_id: 0,

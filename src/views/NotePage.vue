@@ -1374,15 +1374,15 @@ export default {
     },
 
     // 恢复回收站中的笔记
-    noteRecover(id) {
+    noteRecover(article_id) {
       ServeRecoverArticle({
-        article_id: id,
-      }).then(res => {
-        if (res.code == 200) {
-          this.removeListNote(id)
+        article_id,
+      }).then(({ code }) => {
+        if (code == 200) {
+          this.removeListNote(article_id)
           this.loadNoteClass()
 
-          if (id == this.noteDetail.id) {
+          if (article_id == this.noteDetail.id) {
             this.noteDetail.status = 1
           }
 

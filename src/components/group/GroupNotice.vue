@@ -109,9 +109,9 @@ export default {
       ServeGetGroupNotices({
         group_id: this.groupId,
       })
-        .then(res => {
-          if (res.code == 200) {
-            this.items = res.data.map(item => {
+        .then(({ code, data }) => {
+          if (code == 200) {
+            this.items = data.map(item => {
               item.isShow = false
               return item
             })

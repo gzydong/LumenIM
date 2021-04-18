@@ -411,17 +411,12 @@ export default {
     loadGroupDetail() {
       ServeGroupDetail({
         group_id: this.groupId,
-      }).then(res => {
-        if (res.code == 200) {
-          let result = res.data
-          this.form.group_name = result.group_name
-          this.form.profile = result.group_profile
-          this.form.avatar = result.avatar
-
-          this.detail = {
-            group_name: result.group_name,
-            profile: result.profile,
-            avatar: result.avatar,
+      }).then(({ code, data }) => {
+        if (code == 200) {
+          this.form = this.detail = {
+            group_name: data.group_name,
+            profile: data.profile,
+            avatar: data.avatar,
           }
         }
       })
