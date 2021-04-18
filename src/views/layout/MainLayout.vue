@@ -105,10 +105,10 @@
     </audio>
 
     <!-- 打赏组件(自行删除) -->
-    <RewardModule />
+    <!-- <RewardModule /> -->
 
     <!-- 广告组件(自行删除) -->
-    <AbsModule />
+    <!-- <AbsModule /> -->
   </div>
 </template>
 <script>

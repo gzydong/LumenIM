@@ -2,6 +2,7 @@
   <div>
     <MainLayout :idx="2">
       <el-container slot="container" class="note-container">
+        <!-- 左侧工具栏 -->
         <el-aside width="230px" class="el-aside-one lum-scrollbar">
           <el-header class="btn-header">
             <el-dropdown
@@ -74,6 +75,7 @@
           </el-scrollbar>
         </el-aside>
 
+        <!-- 笔记列表栏 -->
         <el-aside width="350px" class="el-aside-two">
           <div class="search-header">
             <i class="iconfont icon-sousuo" />
@@ -169,6 +171,7 @@
           </div>
         </el-aside>
 
+        <!-- 右侧文章栏 -->
         <el-main
           v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2"
           class="el-main-content"
@@ -198,7 +201,6 @@
             </p>
           </div>
         </el-main>
-
         <el-main
           v-else
           class="el-main-content"
@@ -333,7 +335,7 @@
                 <p>星标</p>
               </div>
 
-              <div v-show="noteDetail.id" v-popover:fileManager class="item">
+              <div v-show="noteDetail.id" v-popover:annexlist class="item">
                 <i class="el-icon-link" :class="{ 'i-color': files.length }" />
                 <p>附件</p>
               </div>
@@ -394,11 +396,11 @@
 
               <!-- 笔记附件弹出层 -->
               <el-popover
-                ref="fileManager"
+                ref="annexlist"
                 placement="left-start"
                 trigger="click"
               >
-                <UploadAnnexBox :id="noteDetail.id" :fileList="files" />
+                <NoteAnnexBox :id="noteDetail.id" :fileList="files" />
               </el-popover>
 
               <!-- 笔记标签弹出层 -->
@@ -408,60 +410,15 @@
                 width="300"
                 trigger="click"
               >
-                <div class="tag-manager">
-                  <div class="tag-manager-title">
-                    <span>已选择</span>
-                  </div>
-                  <div class="tag-manager-box">
-                    <p
-                      v-for="(tag, i) in tagManager.tags"
-                      v-show="tag.isSelectd"
-                      :key="i"
-                      class="tag-item"
-                    >
-                      <span>{{ tag.name }}</span>
-                      <i class="el-icon-close" @click="setNoteTag(i, 1)" />
-                    </p>
-                  </div>
-                  <div class="tag-manager-title">
-                    <span>标签栏</span>
-                  </div>
-                  <div class="tag-manager-box">
-                    <p
-                      v-for="(tag, i) in tagManager.tags"
-                      :key="i"
-                      class="tag-item"
-                      :class="{ 'tag-item-active': tag.isSelectd }"
-                      @click="setNoteTag(i, 2)"
-                    >
-                      <span>{{ tag.name }}</span>
-                    </p>
-                  </div>
-
-                  <el-button
-                    v-show="!tagManager.isInput"
-                    type="primary"
-                    class="inster-tag"
-                    :disabled="noteDetail.status == 2"
-                    @click="tagManager.isInput = !tagManager.isInput"
-                    >添加标签
-                  </el-button>
-
-                  <div class="tag-manager-input" v-show="tagManager.isInput">
-                    <input
-                      ref="editTaginput"
-                      type="text"
-                      placeholder="回车保存..."
-                      @keyup.enter="saveTagEvent"
-                    />
-                    <el-button
-                      type="primary"
-                      size="small"
-                      @click="tagManager.isInput = false"
-                      >取消编辑
-                    </el-button>
-                  </div>
-                </div>
+                <NoteTagBox
+                  :id="noteDetail.id"
+                  :tagsList="tags"
+                  @create="
+                    tag => {
+                      this.menus[3].submenus.push(tag)
+                    }
+                  "
+                />
               </el-popover>
             </el-aside>
           </el-container>
@@ -484,8 +441,8 @@
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import UserContacts from '@/components/chat/UserContacts'
-import UploadAnnexBox from '@/components/note/UploadAnnexBox'
-
+import NoteAnnexBox from '@/components/note/NoteAnnexBox'
+import NoteTagBox from '@/components/note/NoteTagBox'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -505,13 +462,11 @@ import {
   ServeMoveArticle,
   ServeUploadArticleImg,
   ServeSetAsteriskArticle,
-  ServeDownloadAnnex,
-  ServeUpdateArticleTag,
   ServeRecoverArticle,
   ServeDeleteArticle,
   ServeForeverDeleteArticle,
 } from '@/api/article'
-import { parseTime, trim, formateSize, formateTime } from '@/utils/functions'
+import { parseTime } from '@/utils/functions'
 
 export default {
   name: 'NotePage',
@@ -522,10 +477,10 @@ export default {
     UserContacts,
     SvgNoteBook,
     SvgNote,
-    UploadAnnexBox,
+    NoteAnnexBox,
+    NoteTagBox,
   },
   directives: {
-    // 代码高亮指令
     code: PreCode,
   },
   data() {
@@ -603,6 +558,8 @@ export default {
         status: 1,
         created_at: '',
       },
+      files: [],
+      tags: [],
 
       // 编辑器相关信息
       markdown: {
@@ -630,17 +587,7 @@ export default {
         },
       },
 
-      files: [],
-
-      // 标签管理
-      tagManager: {
-        isInput: false,
-        tags: [],
-      },
-
       recycleAnnexBox: false,
-
-      // 选择联系人窗口
       selectContactsBox: false,
     }
   },
@@ -655,15 +602,6 @@ export default {
     this.loadNoteList()
   },
   methods: {
-    // 格式化文件大小
-    formateSize,
-
-    // 格式化时间显示格式
-    formateTime,
-
-    // 下载笔记附件
-    downloadAnnex: ServeDownloadAnnex,
-
     // 加载笔记详情信息
     loadNoteDetail(id, isEdit) {
       this.markdown.isEdit = false
@@ -683,22 +621,16 @@ export default {
             this.noteDetail.is_asterisk = res.data.is_asterisk
             this.noteDetail.tags = res.data.tags
             this.noteDetail.status = res.data.status
-            this.files = res.data.files
-
-            // 赋值给编辑器
             this.markdown.mdText = this.noteDetail.content
 
-            this.tagManager.tags = this.menus[3].submenus.map(item => {
+            let ids = res.data.tags.map(item => item.id)
+            this.files = res.data.files
+            this.tags = this.menus[3].submenus.map(item => {
               return {
                 id: item.id,
                 name: item.name,
-                isSelectd: false,
+                isSelectd: ids.includes(item.id),
               }
-            })
-
-            let ids = res.data.tags.map(item => item.id)
-            this.tagManager.tags.forEach((value, i) => {
-              this.tagManager.tags[i].isSelectd = ids.includes(value.id)
             })
 
             if (isEdit) {
@@ -758,7 +690,7 @@ export default {
       } else if (i1 == 4) {
         data.find_type = 5
       } else if (i1 == -1) {
-        data.keyword = trim(this.$refs.querykeywords.value)
+        data.keyword = this.$refs.querykeywords.value.trim()
         data.find_type = 6
       }
 
@@ -810,12 +742,12 @@ export default {
     editNote(type = 1) {
       let data = this.getEditData()
       if (data.title == '') {
-        this.$message('笔记标题不能为空...')
+        this.$message('笔记标题不能为空!')
         return false
       }
 
       if (data.md_content == '' || data.content == '') {
-        this.$message('笔记内容不能为空...')
+        this.$message('笔记内容不能为空!')
         return false
       }
 
@@ -895,14 +827,13 @@ export default {
       let formdata = new FormData()
       formdata.append('image', file)
 
+      let save_path = ''
       ServeUploadArticleImg(formdata)
         .then(res => {
-          let save_path = res.data.save_path || ''
-
-          this.$refs.mavonEditor.$img2Url(pos, save_path)
+          save_path = res.data.save_path || ''
         })
-        .catch(() => {
-          this.$refs.mavonEditor.$img2Url(pos, '')
+        .finally(() => {
+          this.$refs.mavonEditor.$img2Url(pos, save_path)
         })
     },
 
@@ -957,7 +888,7 @@ export default {
       this.noteDetail.class_id = 0
       this.noteDetail.status = 1
       this.files = []
-      this.tagManager.tags = []
+      this.tags = []
       this.markdown.mdText = ''
       this.markdown.htmlText = ''
     },
@@ -1292,65 +1223,14 @@ export default {
       })
     },
 
-    // 设置笔记标签事件
-    setNoteTag(i, type) {
-      this.tagManager.tags[i].isSelectd =
-        type == 1 ? false : !this.tagManager.tags[i].isSelectd
-
-      ServeUpdateArticleTag({
-        article_id: this.getArticleId(),
-        tags: this.getSelectTags(),
-      })
-    },
-
-    // 获取选中的标签ids
-    getSelectTags() {
-      let ids = []
-      for (let item of this.tagManager.tags) {
-        if (item.isSelectd) ids.push(item.id)
-      }
-
-      return ids
-    },
-
     // 获取当前查看的笔记ID
     getArticleId() {
       return this.noteDetail.loadId
     },
 
-    // 保存标签事件
-    saveTagEvent() {
-      let tagName = this.$refs.editTaginput.value
-      ServeEditArticleTag({
-        tag_id: 0,
-        tag_name: tagName,
-      }).then(res => {
-        if (res.code == 200) {
-          this.menus[3].submenus.unshift({
-            id: res.data.id,
-            name: tagName,
-            icon: 'icon-dian',
-            count: 0,
-            isEdit: false,
-            isDefault: 0,
-            isActive: false,
-          })
-
-          this.tagManager.tags.push({
-            id: res.data.id,
-            name: tagName,
-            isSelectd: false,
-          })
-
-          this.$refs.editTaginput.value = ''
-          this.tagManager.isInput = false
-        }
-      })
-    },
-
     // 关键词查询笔记
     queryNote() {
-      if (trim(this.$refs.querykeywords.value)) {
+      if (this.$refs.querykeywords.value.trim()) {
         this.setSelectMenu(-1, -1)
       } else {
         this.setSelectMenu(0, -1)
