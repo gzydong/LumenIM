@@ -306,9 +306,9 @@ export default {
 
     // 获取好友列表
     loadFriends() {
-      ServeGetContacts().then(res => {
-        if (res.code == 200) {
-          this.contacts.friends = res.data.map(item => {
+      ServeGetContacts().then(({ code, data }) => {
+        if (code == 200) {
+          this.contacts.friends = data.map(item => {
             return {
               id: item.id,
               type: 1,
@@ -322,9 +322,9 @@ export default {
 
     // 获取群聊列表
     loadGroups() {
-      ServeGetGroups().then(res => {
-        if (res.code == 200) {
-          this.contacts.groups = res.data.map(item => {
+      ServeGetGroups().then(({ code, data }) => {
+        if (code == 200) {
+          this.contacts.groups = data.map(item => {
             return {
               id: item.id,
               type: 2,

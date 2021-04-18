@@ -598,6 +598,8 @@ export default {
   padding-left: 16px;
   padding-right: 16px;
   font-weight: 300;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .group-notice {

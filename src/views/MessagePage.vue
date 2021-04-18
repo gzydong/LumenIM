@@ -388,25 +388,25 @@ export default {
     loadChatList() {
       this.loadStatus = this.talkNum == 0 ? 0 : 1
 
-      ServeGetTalkList().then(res => {
-        if (res.code == 200) {
+      ServeGetTalkList()
+        .then(({ code, data }) => {
+          if (code !== 200) return false
+
           this.$store.commit('SET_UNREAD_NUM', 0)
           this.$store.commit('SET_TALK_ITEM', {
-            items: res.data.map(item => formateTalkItem(item)),
+            items: data.map(item => formateTalkItem(item)),
           })
 
           let index_name = sessionStorage.getItem('send_message_index_name')
           if (index_name) {
-            this.$nextTick(() => {
-              this.clickTab(index_name)
-            })
+            this.$nextTick(() => this.clickTab(index_name))
 
             sessionStorage.removeItem('send_message_index_name')
           }
-        }
-
-        this.loadStatus = 1
-      })
+        })
+        .finally(() => {
+          this.loadStatus = 1
+        })
     },
 
     // 发起群聊成功后回调方法
@@ -468,8 +468,7 @@ export default {
     },
 
     // 对话列表的右键自定义菜单
-    talkItemsMenu(data, event) {
-      let item = data
+    talkItemsMenu(item, event) {
       let items = {
         items: [
           {
@@ -570,8 +569,8 @@ export default {
       ServeTopTalkList({
         list_id: item.id,
         type: item.is_top == 0 ? 1 : 2,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
             index: findTalkIndex(item.index_name),
             item: {
@@ -588,8 +587,8 @@ export default {
         type: item.type,
         receive_id: item.type == 1 ? item.friend_id : item.group_id,
         not_disturb: item.not_disturb == 0 ? 1 : 0,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
             index: findTalkIndex(item.index_name),
             item: {
@@ -604,8 +603,8 @@ export default {
     delChatItem(item) {
       ServeDeleteTalkList({
         list_id: item.id,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           this.clearTalk()
           this.$store.commit('REMOVE_TALK_ITEM', item.index_name)
         }
@@ -616,8 +615,8 @@ export default {
     removeFriend(item) {
       ServeDeleteContact({
         friend_id: item.friend_id,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           if (this.index_name == item.index_name) {
             this.clearTalk()
           }
@@ -631,8 +630,8 @@ export default {
     removeGroup(item) {
       ServeSecedeGroup({
         group_id: item.group_id,
-      }).then(res => {
-        if (res.code == 200) {
+      }).then(({ code }) => {
+        if (code == 200) {
           if (this.index_name == item.index_name) {
             this.clearTalk()
           }

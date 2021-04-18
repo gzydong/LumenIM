@@ -68,6 +68,7 @@
 <script>
 import SmsLock from '@/plugins/sms-lock'
 import { ServeSendEmailCode, ServeUpdateEmail } from '@/api/user'
+import { isEmail } from '@/utils/validate'
 
 export default {
   name: 'UserEditEmail',
@@ -133,8 +134,7 @@ export default {
 
     //点击发送邮件验证码
     sendSms() {
-      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
-      if (!mailReg.test(this.form.email)) {
+      if (!isEmail(this.form.email)) {
         this.$refs.form.validateField('email')
         return false
       }
@@ -161,7 +161,7 @@ export default {
       })
     },
 
-    // 提交修改手机号
+    // 提交修改邮箱
     changeEmail() {
       this.loading = true
       ServeUpdateEmail({
@@ -172,21 +172,18 @@ export default {
         .then(res => {
           if (res.code == 200) {
             this.$refs['form'].resetFields()
+            this.$emit('success')
+            this.close()
             this.$notify({
               title: '成功',
               message: '修改邮箱成功...',
               type: 'success',
             })
-
-            this.$emit('success')
-            this.close()
           } else {
             this.$message(res.message)
           }
-
-          this.loading = false
         })
-        .catch(() => {
+        .finally(() => {
           this.loading = false
         })
     },
