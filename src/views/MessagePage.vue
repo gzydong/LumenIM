@@ -93,7 +93,7 @@
             >
               <el-main class="main">
                 <p v-show="loadStatus == 0" class="empty-data">
-                  <i class="el-icon-loading" /> 正在加载数据中...
+                  <i class="el-icon-loading" /> 数据加载中...
                 </p>
 
                 <p v-show="loadStatus == 1 && talkNum == 0" class="empty-data">
@@ -105,108 +105,104 @@
                 </p>
 
                 <!-- 对话列表 -->
-                <div
-                  v-show="loadStatus == 1"
-                  v-for="item in talkItems"
-                  :key="item.index_name"
-                  class="talk-item pointer"
-                  :class="{ active: index_name == item.index_name }"
-                  @click="clickTab(item.index_name)"
-                  @contextmenu.prevent="talkItemsMenu(item, $event)"
-                >
-                  <div class="avatar-box">
-                    <span v-show="!item.avatar">
-                      {{
-                        (item.remark_name
-                          ? item.remark_name
-                          : item.name
-                        ).substr(0, 1)
-                      }}
-                    </span>
-                    <img
-                      v-show="item.avatar"
-                      :src="item.avatar"
-                      :onerror="$store.state.detaultAvatar"
-                    />
-                    <div
-                      v-show="item.is_top == 0"
-                      class="top-mask"
-                      @click.stop="topChatItem(item)"
-                    >
-                      <i class="el-icon-top" />
-                    </div>
-                  </div>
-                  <div class="card-box">
-                    <div class="title">
-                      <div class="card-name">
-                        <p class="nickname">
-                          {{ item.remark_name ? item.remark_name : item.name }}
-                        </p>
-                        <div v-show="item.unread_num" class="larkc-tag">
-                          {{ item.unread_num }}条未读
-                        </div>
-                        <div v-show="item.is_top" class="larkc-tag top">
-                          TOP
-                        </div>
-                        <div v-show="item.group_id" class="larkc-tag group">
-                          群组
-                        </div>
-                        <div
-                          v-show="item.not_disturb"
-                          class="larkc-tag disturb"
-                        >
-                          <i class="iconfont icon-xiaoximiandarao" />
-                        </div>
-                      </div>
-                      <div class="card-time">
-                        {{ beautifyTime(item.updated_at) }}
-                      </div>
-                    </div>
-                    <div class="content">
-                      <template
-                        v-if="index_name != item.index_name && item.draft_text"
+                <template v-if="loadStatus == 1">
+                  <div
+                    v-for="item in talkItems"
+                    :key="item.index_name"
+                    class="talk-item pointer"
+                    :class="{ active: index_name == item.index_name }"
+                    @click="clickTab(item.index_name)"
+                    @contextmenu.prevent="talkItemsMenu(item, $event)"
+                  >
+                    <div class="avatar-box">
+                      <span v-show="!item.avatar">
+                        {{
+                          (item.remark_name
+                            ? item.remark_name
+                            : item.name
+                          ).substr(0, 1)
+                        }}
+                      </span>
+                      <img
+                        v-show="item.avatar"
+                        :src="item.avatar"
+                        :onerror="$store.state.detaultAvatar"
+                      />
+                      <div
+                        v-show="item.is_top == 0"
+                        class="top-mask"
+                        @click.stop="topChatItem(item)"
                       >
-                        <span class="draft-color">[草稿]</span>
-                        <span>{{ item.draft_text }}</span>
-                      </template>
-                      <template v-else>
-                        <span
-                          v-if="item.type == 1"
-                          :class="{ 'online-color': item.online }"
-                          >[{{ item.online ? '在线' : '离线' }}]</span
+                        <i class="el-icon-top" />
+                      </div>
+                    </div>
+                    <div class="card-box">
+                      <div class="title">
+                        <div class="card-name">
+                          <p class="nickname">
+                            {{
+                              item.remark_name ? item.remark_name : item.name
+                            }}
+                          </p>
+                          <div v-show="item.unread_num" class="larkc-tag">
+                            {{ item.unread_num }}条未读
+                          </div>
+                          <div v-show="item.is_top" class="larkc-tag top">
+                            TOP
+                          </div>
+                          <div v-show="item.group_id" class="larkc-tag group">
+                            群组
+                          </div>
+                          <div
+                            v-show="item.not_disturb"
+                            class="larkc-tag disturb"
+                          >
+                            <i class="iconfont icon-xiaoximiandarao" />
+                          </div>
+                        </div>
+                        <div class="card-time">
+                          {{ beautifyTime(item.updated_at) }}
+                        </div>
+                      </div>
+                      <div class="content">
+                        <template
+                          v-if="
+                            index_name != item.index_name && item.draft_text
+                          "
                         >
-                        <span v-else>[群消息]</span>
-                        <span>{{ item.msg_text }}</span>
-                      </template>
+                          <span class="draft-color">[草稿]</span>
+                          <span>{{ item.draft_text }}</span>
+                        </template>
+                        <template v-else>
+                          <span
+                            v-if="item.type == 1"
+                            :class="{ 'online-color': item.online }"
+                          >
+                            [{{ item.online ? '在线' : '离线' }}]
+                          </span>
+                          <span v-else>[群消息]</span>
+                          <span>{{ item.msg_text }}</span>
+                        </template>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </template>
               </el-main>
             </el-scrollbar>
           </el-container>
         </el-aside>
 
         <!-- 聊天面板容器 -->
-        <el-main class="panel-box">
-          <template v-if="index_name == null">
-            <div class="famous-box">
-              <img src="~@/assets/image/chat.png" width="300" />
-              <p>
-                不是井里没有水，而是你挖的不够深<br />
-                不是成功来得慢，而是你努力的不够多<br />
-                加油吧！ ......
-              </p>
-            </div>
-          </template>
-          <template v-else>
-            <TalkPanel
-              class="full-height"
-              :params="params"
-              :is-online="isFriendOnline"
-              @change-talk="changeTalk"
-              @close-talk="closeTalk"
-            />
-          </template>
+        <el-main class="ov-hidden full-height no-padding">
+          <WelcomeModule v-if="index_name == null" />
+          <TalkPanel
+            v-else
+            class="full-height"
+            :params="params"
+            :is-online="isFriendOnline"
+            @change-talk="changeTalk"
+            @close-talk="closeTalk"
+          />
         </el-main>
       </el-container>
     </MainLayout>
@@ -228,6 +224,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import MainLayout from '@/views/layout/MainLayout'
+import WelcomeModule from '@/components/layout/WelcomeModule'
 import GroupLaunch from '@/components/group/GroupLaunch'
 import TalkPanel from '@/components/chat/panel/TalkPanel'
 import UserBusinessCard from '@/components/user/UserBusinessCard'
@@ -254,6 +251,7 @@ export default {
     TalkPanel,
     UserBusinessCard,
     UserSearch,
+    WelcomeModule,
   },
   data() {
     return {
@@ -868,7 +866,6 @@ export default {
     .avatar-box {
       height: 35px;
       width: 35px;
-      flex-basis: 35px;
       flex-shrink: 0;
       background-color: #508afe;
       border-radius: 50%;
@@ -956,11 +953,9 @@ export default {
           .disturb {
             color: #98999c !important;
             background-color: #ecedf1 !important;
-            font-size: 12px;
-          }
-
-          .disturb i {
-            font-size: 12px;
+            i {
+              font-size: 12px;
+            }
           }
         }
       }
@@ -1005,31 +1000,6 @@ export default {
     &.active {
       border-color: #3370ff;
       background-color: #eff0f1;
-    }
-  }
-}
-
-.panel-box {
-  overflow: hidden;
-  height: 100%;
-  padding: 0;
-
-  .famous-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100%;
-    font-size: 24px;
-    user-select: none;
-
-    p {
-      width: 100%;
-      font-weight: 300;
-      text-align: center;
-      font-size: 15px;
-      color: #b9b4b4;
-      margin-top: -30px;
     }
   }
 }

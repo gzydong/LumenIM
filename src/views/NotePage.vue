@@ -2,6 +2,7 @@
   <div>
     <MainLayout :idx="2">
       <el-container slot="container" class="note-container">
+        <!-- 左侧工具栏 -->
         <el-aside width="230px" class="el-aside-one lum-scrollbar">
           <el-header class="btn-header">
             <el-dropdown
@@ -35,7 +36,7 @@
                   :class="menu.icon"
                   :style="{ color: menu.color }"
                 />
-                <span v-text="menu.name"></span>
+                <span>{{ menu.name }}</span>
                 <i
                   v-show="menu.submenus.length"
                   class="iconfont icon-menu-nav"
@@ -48,7 +49,7 @@
 
               <div
                 v-for="(submenu, i2) in menu.submenus"
-                v-if="menu.isShowSub"
+                v-show="menu.isShowSub"
                 :key="i2"
                 class="note-list-two"
                 :class="{ 'note-list-active': submenu.isActive }"
@@ -74,9 +75,10 @@
           </el-scrollbar>
         </el-aside>
 
+        <!-- 笔记列表栏 -->
         <el-aside width="350px" class="el-aside-two">
           <div class="search-header">
-            <i class="lumen-icon-sousuo iconfont icon-sousuo" />
+            <i class="iconfont icon-sousuo" />
             <input
               type="text"
               placeholder="搜索我的笔记 ..."
@@ -86,7 +88,7 @@
             />
           </div>
 
-          <div class="count-header">
+          <div class="title-header">
             <span>{{ notes.length }} 篇笔记</span>
             <span v-if="loadNoteStatus == 0" class="load-span">
               <i class="el-icon-loading" /> 加载中 ...
@@ -169,6 +171,7 @@
           </div>
         </el-aside>
 
+        <!-- 右侧文章栏 -->
         <el-main
           v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2"
           class="el-main-content"
@@ -198,7 +201,6 @@
             </p>
           </div>
         </el-main>
-
         <el-main
           v-else
           class="el-main-content"
@@ -209,11 +211,10 @@
             <template v-if="markdown.isEdit">
               <el-container>
                 <el-header id="note-header" height="61px">
-                  <i class="el-icon-edit" style="display: inline-block" />
+                  <i class="el-icon-edit" />
                   <input
                     v-model="noteDetail.title"
                     type="text"
-                    style="display: inline-block"
                     placeholder="笔记标题不能为空..."
                   />
                 </el-header>
@@ -251,41 +252,6 @@
                       tag="section"
                       :native="false"
                     >
-                      <div style="padding: 10px; display: none">
-                        <div class="subfield">
-                          <p>
-                            <span>时间：{{ noteDetail.created_at }}</span>
-                            <span>阅读量(1000)</span>
-                            <span
-                              v-show="filesManager.files.length"
-                              class="pointer"
-                            >
-                              附件({{ filesManager.files.length }})
-                            </span>
-                          </p>
-                          <p style="margin-top: 10px">
-                            <span>
-                              分类：<span class="larkc-tag">{{
-                                getNoteClassName(noteDetail.class_id)
-                              }}</span>
-                            </span>
-                            <span>
-                              标签：<span
-                                v-for="(tag, index) in noteDetail.tags"
-                                :key="index"
-                                class="larkc-tag"
-                                >{{ tag.tag_name }}
-                              </span>
-                              <span
-                                v-show="noteDetail.tags.length == 0"
-                                class="larkc-tag"
-                              >
-                                无
-                              </span>
-                            </span>
-                          </p>
-                        </div>
-                      </div>
                       <div
                         v-html="noteDetail.html"
                         v-code
@@ -349,7 +315,7 @@
               >
                 <i
                   class="el-icon-collection-tag"
-                  :class="{ 'i-color': noteDetail.tags.length }"
+                  :class="{ 'i-color': tags.length }"
                 />
                 <p>标签</p>
               </div>
@@ -369,11 +335,8 @@
                 <p>星标</p>
               </div>
 
-              <div v-show="noteDetail.id" v-popover:fileManager class="item">
-                <i
-                  class="el-icon-link"
-                  :class="{ 'i-color': filesManager.files.length }"
-                />
+              <div v-show="noteDetail.id" v-popover:annexlist class="item">
+                <i class="el-icon-link" :class="{ 'i-color': files.length }" />
                 <p>附件</p>
               </div>
 
@@ -433,61 +396,11 @@
 
               <!-- 笔记附件弹出层 -->
               <el-popover
-                ref="fileManager"
+                ref="annexlist"
                 placement="left-start"
                 trigger="click"
               >
-                <p>笔记附件列表</p>
-                <div class="note-files-manager lum-scrollbar">
-                  <input
-                    type="file"
-                    ref="uploadNoteFile"
-                    @change="uploadAnnex"
-                  />
-                  <div class="file-box">
-                    <p class="no-file" v-show="filesManager.files.length == 0">
-                      暂无附件
-                    </p>
-                    <div
-                      v-for="(file, i) in filesManager.files"
-                      :key="file.id"
-                      class="file-item"
-                    >
-                      <div class="file-type">{{ file.file_suffix }}</div>
-                      <div class="file-detail">
-                        <div class="filename">{{ file.original_name }}</div>
-                        <div class="filetool">
-                          <span>{{ formateTime(file.created_at) }}</span>
-                          <span style="color: #3a8ee6">
-                            {{ formateSize(file.file_size) }}
-                          </span>
-                          <div class="filetool-help">
-                            <i
-                              class="el-icon-download"
-                              @click="downloadAnnex(file.id)"
-                            />
-                            <i
-                              class="el-icon-delete"
-                              @click="deleteAnnex(file.id, i)"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="clearfix"></div>
-                    </div>
-                  </div>
-                  <div class="files-manager-footer">
-                    <p class="upload-tips">最多可支持上传10个附件</p>
-                    <el-button
-                      type="primary"
-                      size="small"
-                      icon="el-icon-upload"
-                      :loading="filesManager.status"
-                      @click="$refs.uploadNoteFile.click()"
-                      >{{ filesManager.status ? '上传中...' : '上传附件' }}
-                    </el-button>
-                  </div>
-                </div>
+                <NoteAnnexBox :id="noteDetail.id" :fileList="files" />
               </el-popover>
 
               <!-- 笔记标签弹出层 -->
@@ -497,60 +410,15 @@
                 width="300"
                 trigger="click"
               >
-                <div class="tag-manager">
-                  <div class="tag-manager-title">
-                    <span>已选择</span>
-                  </div>
-                  <div class="tag-manager-box">
-                    <p
-                      v-for="(tag, i) in tagManager.tags"
-                      v-show="tag.isSelectd"
-                      :key="i"
-                      class="tag-item"
-                    >
-                      <span>{{ tag.name }}</span>
-                      <i class="el-icon-close" @click="setNoteTag(i, 1)" />
-                    </p>
-                  </div>
-                  <div class="tag-manager-title">
-                    <span>标签栏</span>
-                  </div>
-                  <div class="tag-manager-box">
-                    <p
-                      v-for="(tag, i) in tagManager.tags"
-                      :key="i"
-                      class="tag-item"
-                      :class="{ 'tag-item-active': tag.isSelectd }"
-                      @click="setNoteTag(i, 2)"
-                    >
-                      <span>{{ tag.name }}</span>
-                    </p>
-                  </div>
-
-                  <el-button
-                    v-show="!tagManager.isInput"
-                    type="primary"
-                    class="inster-tag"
-                    :disabled="noteDetail.status == 2"
-                    @click="tagManager.isInput = !tagManager.isInput"
-                    >添加标签
-                  </el-button>
-
-                  <div class="tag-manager-input" v-show="tagManager.isInput">
-                    <input
-                      ref="editTaginput"
-                      type="text"
-                      placeholder="回车保存..."
-                      @keyup.enter="saveTagEvent"
-                    />
-                    <el-button
-                      type="primary"
-                      size="small"
-                      @click="tagManager.isInput = false"
-                      >取消编辑
-                    </el-button>
-                  </div>
-                </div>
+                <NoteTagBox
+                  :id="noteDetail.id"
+                  :tagsList="tags"
+                  @create="
+                    tag => {
+                      this.menus[3].submenus.push(tag)
+                    }
+                  "
+                />
               </el-popover>
             </el-aside>
           </el-container>
@@ -573,6 +441,8 @@
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import UserContacts from '@/components/chat/UserContacts'
+import NoteAnnexBox from '@/components/note/NoteAnnexBox'
+import NoteTagBox from '@/components/note/NoteTagBox'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -592,15 +462,11 @@ import {
   ServeMoveArticle,
   ServeUploadArticleImg,
   ServeSetAsteriskArticle,
-  ServeUploadArticleAnnex,
-  ServeDeleteArticleAnnex,
-  ServeDownloadAnnex,
-  ServeUpdateArticleTag,
   ServeRecoverArticle,
   ServeDeleteArticle,
   ServeForeverDeleteArticle,
 } from '@/api/article'
-import { parseTime, trim, formateSize, formateTime } from '@/utils/functions'
+import { parseTime } from '@/utils/functions'
 
 export default {
   name: 'NotePage',
@@ -611,9 +477,10 @@ export default {
     UserContacts,
     SvgNoteBook,
     SvgNote,
+    NoteAnnexBox,
+    NoteTagBox,
   },
   directives: {
-    // 代码高亮指令
     code: PreCode,
   },
   data() {
@@ -691,6 +558,8 @@ export default {
         status: 1,
         created_at: '',
       },
+      files: [],
+      tags: [],
 
       // 编辑器相关信息
       markdown: {
@@ -718,21 +587,7 @@ export default {
         },
       },
 
-      // 附件管理
-      filesManager: {
-        status: false,
-        files: [],
-      },
-
-      // 标签管理
-      tagManager: {
-        isInput: false,
-        tags: [],
-      },
-
       recycleAnnexBox: false,
-
-      // 选择联系人窗口
       selectContactsBox: false,
     }
   },
@@ -747,15 +602,6 @@ export default {
     this.loadNoteList()
   },
   methods: {
-    // 格式化文件大小
-    formateSize,
-
-    // 格式化时间显示格式
-    formateTime,
-
-    // 下载笔记附件
-    downloadAnnex: ServeDownloadAnnex,
-
     // 加载笔记详情信息
     loadNoteDetail(id, isEdit) {
       this.markdown.isEdit = false
@@ -773,24 +619,17 @@ export default {
             this.noteDetail.created_at = res.data.created_at
             this.noteDetail.class_id = res.data.class_id
             this.noteDetail.is_asterisk = res.data.is_asterisk
-            this.noteDetail.tags = res.data.tags
             this.noteDetail.status = res.data.status
-            this.filesManager.files = res.data.files
-
-            // 赋值给编辑器
             this.markdown.mdText = this.noteDetail.content
 
-            this.tagManager.tags = this.menus[3].submenus.map(item => {
+            let ids = res.data.tags.map(item => item.id)
+            this.files = res.data.files
+            this.tags = this.menus[3].submenus.map(item => {
               return {
                 id: item.id,
                 name: item.name,
-                isSelectd: false,
+                isSelectd: ids.includes(item.id),
               }
-            })
-
-            let ids = res.data.tags.map(item => item.id)
-            this.tagManager.tags.forEach((value, i) => {
-              this.tagManager.tags[i].isSelectd = ids.includes(value.id)
             })
 
             if (isEdit) {
@@ -809,10 +648,10 @@ export default {
 
     // 加载标签列表
     loadNoteTags() {
-      ServeGetArticleTag().then(res => {
-        if (res.code != 200) return false
+      ServeGetArticleTag().then(({ code, data }) => {
+        if (code != 200) return false
 
-        this.menus[3].submenus = res.data.tags.map(item => {
+        this.menus[3].submenus = data.tags.map(item => {
           return {
             id: item.id,
             name: item.tag_name,
@@ -850,18 +689,18 @@ export default {
       } else if (i1 == 4) {
         data.find_type = 5
       } else if (i1 == -1) {
-        data.keyword = trim(this.$refs.querykeywords.value)
+        data.keyword = this.$refs.querykeywords.value.trim()
         data.find_type = 6
       }
 
       this.loadNoteStatus = 0
       ServeGetArticleList(data)
-        .then(res => {
+        .then(({ code, data }) => {
           this.loadNoteStatus = 1
 
-          if (res.code !== 200) return false
+          if (code !== 200) return false
 
-          this.notes = res.data.rows.map(item => {
+          this.notes = data.rows.map(item => {
             return {
               id: item.id,
               title: item.title,
@@ -881,10 +720,10 @@ export default {
 
     // 加载笔记分类列表
     loadNoteClass(class_id = null) {
-      ServeGetArticleClass().then(res => {
-        if (res.code != 200) return false
+      ServeGetArticleClass().then(({ code, data }) => {
+        if (code != 200) return false
 
-        this.menus[2].submenus = res.data.rows.map(item => {
+        this.menus[2].submenus = data.rows.map(item => {
           return {
             id: item.id,
             name: item.class_name,
@@ -902,12 +741,12 @@ export default {
     editNote(type = 1) {
       let data = this.getEditData()
       if (data.title == '') {
-        this.$message('笔记标题不能为空...')
+        this.$message('笔记标题不能为空!')
         return false
       }
 
       if (data.md_content == '' || data.content == '') {
-        this.$message('笔记内容不能为空...')
+        this.$message('笔记内容不能为空!')
         return false
       }
 
@@ -987,14 +826,13 @@ export default {
       let formdata = new FormData()
       formdata.append('image', file)
 
+      let save_path = ''
       ServeUploadArticleImg(formdata)
         .then(res => {
-          let save_path = res.data.save_path || ''
-
-          this.$refs.mavonEditor.$img2Url(pos, save_path)
+          save_path = res.data.save_path || ''
         })
-        .catch(() => {
-          this.$refs.mavonEditor.$img2Url(pos, '')
+        .finally(() => {
+          this.$refs.mavonEditor.$img2Url(pos, save_path)
         })
     },
 
@@ -1044,12 +882,11 @@ export default {
       this.noteDetail.content = ''
       this.noteDetail.html = ''
       this.noteDetail.title = ''
-      this.noteDetail.tags = []
       this.noteDetail.is_asterisk = 0
       this.noteDetail.class_id = 0
       this.noteDetail.status = 1
-      this.filesManager.files = []
-      this.tagManager.tags = []
+      this.files = []
+      this.tags = []
       this.markdown.mdText = ''
       this.markdown.htmlText = ''
     },
@@ -1384,112 +1221,14 @@ export default {
       })
     },
 
-    // 上传笔记附件文件
-    uploadAnnex(e) {
-      if (e.target.files.length == 0 || this.filesManager.files.length >= 10) {
-        return false
-      }
-
-      let file = e.target.files[0]
-      if (file.size / (1024 * 1024) > 5) {
-        this.$message('文件不能大于5M...')
-        return false
-      }
-
-      let fileData = new FormData()
-      fileData.append('annex', file)
-      fileData.append('article_id', this.getArticleId())
-
-      this.filesManager.status = true
-      ServeUploadArticleAnnex(fileData)
-        .then(res => {
-          if (res.code == 200) {
-            this.filesManager.files.push({
-              id: res.data.id,
-              original_name: res.data.original_name,
-              created_at: parseTime(new Date()),
-              file_size: res.data.file_size,
-              file_suffix: res.data.file_suffix,
-            })
-          }
-
-          this.filesManager.status = false
-        })
-        .catch(() => {
-          this.filesManager.status = false
-        })
-    },
-
-    // 删除笔记附件
-    deleteAnnex(annex_id, index) {
-      ServeDeleteArticleAnnex({
-        annex_id,
-      }).then(res => {
-        if (res.code == 200) {
-          this.$delete(this.filesManager.files, index)
-        }
-      })
-    },
-
-    // 设置笔记标签事件
-    setNoteTag(i, type) {
-      this.tagManager.tags[i].isSelectd =
-        type == 1 ? false : !this.tagManager.tags[i].isSelectd
-
-      ServeUpdateArticleTag({
-        article_id: this.getArticleId(),
-        tags: this.getSelectTags(),
-      })
-    },
-
-    // 获取选中的标签ids
-    getSelectTags() {
-      let ids = []
-      for (let item of this.tagManager.tags) {
-        if (item.isSelectd) ids.push(item.id)
-      }
-
-      return ids
-    },
-
     // 获取当前查看的笔记ID
     getArticleId() {
       return this.noteDetail.loadId
     },
 
-    // 保存标签事件
-    saveTagEvent() {
-      let tagName = this.$refs.editTaginput.value
-      ServeEditArticleTag({
-        tag_id: 0,
-        tag_name: tagName,
-      }).then(res => {
-        if (res.code == 200) {
-          this.menus[3].submenus.unshift({
-            id: res.data.id,
-            name: tagName,
-            icon: 'icon-dian',
-            count: 0,
-            isEdit: false,
-            isDefault: 0,
-            isActive: false,
-          })
-
-          this.tagManager.tags.push({
-            id: res.data.id,
-            name: tagName,
-            isSelectd: false,
-          })
-
-          this.$refs.editTaginput.value = ''
-          this.tagManager.isInput = false
-        }
-      })
-    },
-
     // 关键词查询笔记
     queryNote() {
-      if (trim(this.$refs.querykeywords.value)) {
+      if (this.$refs.querykeywords.value.trim()) {
         this.setSelectMenu(-1, -1)
       } else {
         this.setSelectMenu(0, -1)
