@@ -100,7 +100,7 @@ class SocketInstance {
    * 推送消息
    *
    * @param {String} event 事件名
-   * @param {object} data 数据
+   * @param {Object} data 数据
    */
   emit(event, data) {
     this.socket.emit(event, data)
