@@ -23,7 +23,6 @@ const Talk = {
     talkItems: state => {
       return state.items.sort(
         getMutipSort([
-          getSort((a, b) => a.unread_num > b.unread_num),
           getSort((a, b) => a.updated_at > b.updated_at),
         ])
       )
