@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name: 'Empty',
   props: {
     text: {
       type: String,
