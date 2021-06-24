@@ -11,7 +11,7 @@ NProgress.configure({
 const WEBSITE_NAME = config.WEBSITE_NAME
 
 // 登录用户强制重定向页面
-const redirect = ['/login', '/register', '/forget']
+const redirect = ['/auth/login', '/auth/register', '/auth/forget']
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title
@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
       next('/')
     }
   } else if (to.meta.needLogin) {
-    next('/login')
+    next('/auth/login')
   }
 
   NProgress.start()

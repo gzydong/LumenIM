@@ -240,6 +240,7 @@ import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import { ServeSecedeGroup } from '@/api/group'
 import { beautifyTime } from '@/utils/functions'
 import { formateTalkItem, findTalkIndex } from '@/utils/talk'
+import { openTalk } from '@/utils/talk'
 
 const title = document.title
 
@@ -330,6 +331,12 @@ export default {
         })
       }
     },
+  },
+  //
+  beforeRouteUpdate(to, from, next) {
+    let params = to.query
+    console.log(params)
+    next()
   },
   created() {
     this.loadChatList()

@@ -5,7 +5,7 @@ import Vue from 'vue'
 import App from '@/App'
 import store from '@/store'
 import router from '@/router'
-import mixin from './main-mixin'
+import MainMixin from './mixins/main-mixin'
 
 import './core/lazy-use'
 import './core/global-component'
@@ -22,7 +22,7 @@ Vue.config.productionTip = false
 const Instance = new Vue({
   router,
   store,
-  mixins: [mixin],
+  mixins: [MainMixin],
   render: h => h(App),
 }).$mount('#app')
 

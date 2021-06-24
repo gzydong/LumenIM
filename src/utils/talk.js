@@ -1,4 +1,5 @@
 import store from '@/store'
+import router from '@/router'
 import { parseTime } from '@/utils/functions'
 
 /**
@@ -52,4 +53,21 @@ export function formateTalkItem(params) {
       : `${options.type}_${options.group_id}`
 
   return options
+}
+
+/**
+ * 打开指定对话窗口
+ *
+ * @param {Integer} userId 用户ID
+ * @param {Integer} talkType 对话类型[1:私聊;2:群聊;]
+ */
+export function openTalk(userId, talkType) {
+  router.push({
+    path: '/message',
+    query: {
+      talk: userId,
+      type: talkType,
+      v: new Date().getTime(),
+    },
+  })
 }

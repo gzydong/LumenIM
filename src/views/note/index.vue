@@ -184,15 +184,7 @@
             </p>
           </div>
           <div v-else-if="loadStatus == 0" class="loading-note">
-            <div class="ant-spin ant-spin-lg ant-spin-spinning">
-              <span class="ant-spin-dot ant-spin-dot-spin">
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-              </span>
-            </div>
-            <p>正在努力加载中 ...</p>
+            <Loading text="正在努力加载中 ..." />
           </div>
           <div v-else class="empty-note">
             <SvgNote icon-class="note" />
@@ -443,6 +435,7 @@ import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import UserContacts from '@/components/chat/UserContacts'
 import NoteAnnexBox from '@/components/note/NoteAnnexBox'
 import NoteTagBox from '@/components/note/NoteTagBox'
+import Loading from '@/components/global/Loading'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -479,6 +472,7 @@ export default {
     SvgNote,
     NoteAnnexBox,
     NoteTagBox,
+    Loading,
   },
   directives: {
     code: PreCode,

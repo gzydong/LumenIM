@@ -29,7 +29,10 @@ class TalkEvent extends AppMessageEvent {
   handle() {
     const indexName = this.getIndexName()
     if (!this.isTalkPage()) {
-      this.showMessageNocice(indexName)
+      if (this.resource.send_user != this.UserId) {
+        this.showMessageNocice(indexName)
+      }
+
       return false
     }
 
