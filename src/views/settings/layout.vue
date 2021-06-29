@@ -6,9 +6,9 @@
         <el-container class="full-height">
           <el-aside width="180px" class="aside no-select">
             <router-link
-              v-for="(menu, index) in menus"
+              v-for="(menu, key) in menus"
               :to="menu.path"
-              :key="index"
+              :key="key"
             >
               <div
                 class="menu-list pointer"
