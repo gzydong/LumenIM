@@ -9,7 +9,7 @@
               class="btn-dropdown-menu"
               split-button
               type="primary"
-              @click="insterNote"
+              @click="insertNote"
               @command="handleCommand"
             >
               <span>+ 添加笔记</span>
@@ -103,7 +103,7 @@
               <div class="note-empty">
                 <SvgNoteBook class="svg-notebook" />
                 <p style="font-size: 12px; text-align: center; color: #b6afaf">
-                  笔记空空如也，赶快<el-button type="text" @click="insterNote"
+                  笔记空空如也，赶快<el-button type="text" @click="insertNote"
                     >添加笔记</el-button
                   >吧...
                 </p>
@@ -115,7 +115,7 @@
                   v-for="(note, i) in notes"
                   class="article-row"
                   :class="{
-                    'active-row': note.id == noteDetail.loadId,
+                    'active-row': note.id == note_id,
                   }"
                   :key="note.id"
                   @contextmenu.prevent="noteListMenu($event, i, note)"
@@ -171,311 +171,83 @@
           </div>
         </el-aside>
 
-        <!-- 右侧文章栏 -->
-        <el-main
-          v-if="loadStatus == -1 || loadStatus == 0 || loadStatus == 2"
-          class="el-main-content"
-        >
-          <div v-if="loadStatus == -1" class="empty-note">
-            <SvgNote />
-            <p v-if="notes.length == 0">你的笔记空空如也</p>
-            <p v-else style="line-height: 25px">
-              这个社会，是赢家通吃，输者一无所有，<br />社会，永远都是只以成败论英雄。
-            </p>
-          </div>
-          <div v-else-if="loadStatus == 0" class="loading-note">
-            <Loading text="正在努力加载中 ..." />
-          </div>
-          <div v-else class="empty-note">
-            <SvgNote icon-class="note" />
-            <p class="pointer" @click="reloadCatNote">
-              加载笔记失败，点击重试 ...
-            </p>
-          </div>
-        </el-main>
-        <el-main
-          v-else
-          class="el-main-content"
-          :class="{ 'fullscreen-mode': markdown.isFull }"
-        >
-          <el-container class="full-height">
-            <!-- 编辑模块 -->
-            <template v-if="markdown.isEdit">
-              <el-container>
-                <el-header id="note-header" height="61px">
-                  <i class="el-icon-edit" />
-                  <input
-                    v-model="noteDetail.title"
-                    type="text"
-                    placeholder="笔记标题不能为空..."
-                  />
-                </el-header>
-                <el-main class="no-padding full-height ov-hidden">
-                  <mavon-editor
-                    ref="mavonEditor"
-                    v-model="markdown.mdText"
-                    :toolbars="markdown.toolbars"
-                    :subfield="false"
-                    :ishljs="false"
-                    :boxShadow="false"
-                    :externalLink="false"
-                    fontSize="14px"
-                    previewBackground="#fff"
-                    placeholder="请输入您的笔记正文 ..."
-                    class="editor full-height"
-                    @change="$editorChange"
-                    @imgAdd="$editorUploadImage"
-                    @save="$editorSave"
-                  />
-                </el-main>
-              </el-container>
-            </template>
-
-            <!-- 阅读模块 -->
-            <template v-else>
-              <el-container>
-                <el-header id="note-header" height="61px">
-                  {{ noteDetail.title }}
-                </el-header>
-                <el-main class="no-padding">
-                  <div id="note-detail">
-                    <el-scrollbar
-                      class="full-height"
-                      tag="section"
-                      :native="false"
-                    >
-                      <div
-                        v-html="noteDetail.html"
-                        v-code
-                        id="note-info"
-                        class="markdown-body"
-                      />
-                    </el-scrollbar>
-                  </div>
-                </el-main>
-              </el-container>
-            </template>
-
-            <!-- 右侧工具栏 -->
-            <el-aside width="50px" id="note-tools">
-              <div class="item" @click="markdown.isFull = !markdown.isFull">
-                <i class="el-icon-full-screen" />
-                <p>{{ markdown.isFull ? '取消全屏' : '全屏' }}</p>
-              </div>
-
-              <div
-                v-if="noteDetail.status == 2"
-                class="item"
-                @click="noteRecover(noteDetail.id)"
-              >
-                <i class="el-icon-refresh-left" />
-                <p>恢复</p>
-              </div>
-              <div
-                v-else-if="editNoteStatus == 1"
-                class="item"
-                @click="editNote(1)"
-              >
-                <i class="el-icon-loading" />
-                <p>保存中..</p>
-              </div>
-              <div
-                v-else-if="markdown.isEdit && !isEdited"
-                class="item"
-                @click="cancelEdit"
-              >
-                <i class="el-icon-edit-outline" />
-                <p>取消</p>
-              </div>
-              <div
-                v-else-if="markdown.isEdit"
-                class="item"
-                @click="editNote(1)"
-              >
-                <i class="el-icon-edit-outline" />
-                <p>保存</p>
-              </div>
-              <div class="item" v-else @click="openEditMode()">
-                <i class="el-icon-edit-outline" />
-                <p>编辑</p>
-              </div>
-
-              <div
-                v-show="noteDetail.id && noteDetail.status == 1"
-                v-popover:tagManager
-                class="item"
-              >
-                <i
-                  class="el-icon-collection-tag"
-                  :class="{ 'i-color': tags.length }"
-                />
-                <p>标签</p>
-              </div>
-
-              <div
-                v-show="noteDetail.id && noteDetail.status == 1"
-                class="item"
-                @click="setAsterisk"
-              >
-                <i
-                  :class="
-                    noteDetail.is_asterisk == 1
-                      ? 'el-icon-star-on i-color'
-                      : 'el-icon-star-off'
-                  "
-                />
-                <p>星标</p>
-              </div>
-
-              <div v-show="noteDetail.id" v-popover:annexlist class="item">
-                <i class="el-icon-link" :class="{ 'i-color': files.length }" />
-                <p>附件</p>
-              </div>
-
-              <el-tooltip
-                v-show="noteDetail.id && noteDetail.status == 1"
-                effect="dark"
-                content="分享笔记给我的联系人"
-                placement="left"
-              >
-                <div class="item" @click="shareNode">
-                  <i class="el-icon-share" />
-                  <p>分享</p>
-                </div>
-              </el-tooltip>
-
-              <el-tooltip
-                v-show="noteDetail.id && noteDetail.status == 1"
-                effect="dark"
-                content="下载笔记，md格式"
-                placement="left"
-              >
-                <div class="item" @click="noteDownload">
-                  <i class="el-icon-download" />
-                  <p>下载</p>
-                </div>
-              </el-tooltip>
-
-              <el-tooltip
-                v-show="noteDetail.id && noteDetail.status == 1"
-                effect="dark"
-                content="30天内可在笔记回收站中恢复"
-                placement="left"
-              >
-                <div
-                  class="item"
-                  @click="noteRecycle(noteDetail.id, noteDetail.title)"
-                >
-                  <i class="el-icon-delete" />
-                  <p>回收站</p>
-                </div>
-              </el-tooltip>
-
-              <el-tooltip
-                v-show="noteDetail.id && noteDetail.status == 2"
-                effect="dark"
-                content="从回收站中永久删除,删除后无法恢复"
-                placement="left"
-              >
-                <div
-                  class="item"
-                  @click="noteDelete(noteDetail.id, noteDetail.title)"
-                >
-                  <i class="el-icon-delete" />
-                  <p>删除</p>
-                </div>
-              </el-tooltip>
-
-              <!-- 笔记附件弹出层 -->
-              <el-popover
-                ref="annexlist"
-                placement="left-start"
-                trigger="click"
-              >
-                <NoteAnnexBox :id="noteDetail.id" :fileList="files" />
-              </el-popover>
-
-              <!-- 笔记标签弹出层 -->
-              <el-popover
-                ref="tagManager"
-                placement="left-start"
-                width="300"
-                trigger="click"
-              >
-                <NoteTagBox
-                  :id="noteDetail.id"
-                  :tagsList="tags"
-                  @create="
-                    tag => {
-                      this.menus[3].submenus.push(tag)
-                    }
-                  "
-                />
-              </el-popover>
-            </el-aside>
-          </el-container>
+        <el-main class="no-padding">
+          <NotePreview
+            ref="refNotePreview"
+            @create="
+              note_id => {
+                this.note_id = note_id
+                this.loadNoteClass()
+                this.loadNoteList()
+              }
+            "
+            @recover="
+              note_id => {
+                this.loadNoteClass()
+                this.removeListNote(note_id)
+              }
+            "
+            @change="
+              note => {
+                this.notes.forEach((value, index) => {
+                  if (value.id == note.id) {
+                    value.title = note.title
+                    value.abstract = note.abstract
+                  }
+                })
+              }
+            "
+            @recycle="
+              note_id => {
+                this.loadNoteClass()
+                this.removeListNote(note_id)
+              }
+            "
+            @del="
+              note_id => {
+                this.removeListNote(note_id)
+              }
+            "
+          />
         </el-main>
       </el-container>
     </MainLayout>
 
     <!-- 笔记附件回收站 -->
     <NoteAnnexRecycle v-if="recycleAnnexBox" @close="recycleAnnexBox = false" />
-
-    <!-- 选择联系人窗口 -->
-    <UserContacts
-      v-show="selectContactsBox"
-      @close="selectContactsBox = false"
-      @confirm="confirmSelectContacts"
-    />
   </div>
 </template>
 <script>
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
-import UserContacts from '@/components/chat/UserContacts'
-import NoteAnnexBox from '@/components/note/NoteAnnexBox'
-import NoteTagBox from '@/components/note/NoteTagBox'
-import Loading from '@/components/global/Loading'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
-import { mavonEditor } from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
-import PreCode from '@/directive/PreCode'
+import NotePreview from './NotePreview'
 import {
   ServeGetArticleClass,
   ServeGetArticleTag,
   ServeGetArticleList,
-  ServeGetArticleDetail,
   ServeEditArticleClass,
   ServeEditArticleTag,
-  ServeEditArticle,
   ServeDeleteArticleClass,
   ServeDeleteArticleTag,
   ServeArticleClassSort,
   ServeMergeArticleClass,
   ServeMoveArticle,
-  ServeUploadArticleImg,
-  ServeSetAsteriskArticle,
   ServeRecoverArticle,
   ServeDeleteArticle,
   ServeForeverDeleteArticle,
 } from '@/api/article'
 import { parseTime } from '@/utils/functions'
+import { mapState } from 'vuex'
 
 export default {
   name: 'NotePage',
   components: {
     MainLayout,
-    mavonEditor,
     NoteAnnexRecycle,
-    UserContacts,
     SvgNoteBook,
     SvgNote,
-    NoteAnnexBox,
-    NoteTagBox,
-    Loading,
-  },
-  directives: {
-    code: PreCode,
+    NotePreview,
   },
   data() {
     return {
@@ -537,57 +309,30 @@ export default {
       loadNoteStatus: 0,
       notes: [],
 
-      // 笔记详情
-      loadStatus: -1,
-      editNoteStatus: 0,
-      noteDetail: {
-        loadId: 0,
-        id: 0,
-        title: '',
-        tags: [],
-        class_id: 0,
-        content: '',
-        html: '',
-        is_asterisk: 0,
-        status: 1,
-        created_at: '',
-      },
-      files: [],
-      tags: [],
-
-      // 编辑器相关信息
-      markdown: {
-        mdText: '',
-        htmlText: '',
-        isEdit: false,
-        isFull: false, //是否全屏模式
-        toolbars: {
-          bold: true, // 粗体
-          italic: true, // 斜体
-          header: true, // 标题
-          underline: true, // 下划线
-          strikethrough: true, // 中划线
-          mark: true, // 标记
-          ol: true, // 有序列表
-          ul: true, // 无序列表
-          link: true, // 链接
-          imagelink: true, // 图片链接
-          code: true, // code
-          table: true, // 表格
-          alignleft: true, // 左对齐
-          aligncenter: true, // 居中
-          alignright: true, // 右对齐
-          subfield: true,
-        },
-      },
+      // 当前查看的笔记ID
+      note_id: 0,
 
       recycleAnnexBox: false,
-      selectContactsBox: false,
     }
   },
   computed: {
-    isEdited() {
-      return this.markdown.mdText || this.noteDetail.title ? true : false
+    ...mapState({
+      tags: state => state.note.tags,
+    }),
+  },
+  watch: {
+    tags(values) {
+      this.menus[3].submenus = values.map(item => {
+        return {
+          id: item.id,
+          name: item.tag_name,
+          icon: 'icon-dian',
+          count: item.count,
+          isEdit: false,
+          isDefault: 0,
+          isActive: false,
+        }
+      })
     },
   },
   mounted() {
@@ -596,66 +341,12 @@ export default {
     this.loadNoteList()
   },
   methods: {
-    // 加载笔记详情信息
-    loadNoteDetail(id, isEdit) {
-      this.markdown.isEdit = false
-      ServeGetArticleDetail({
-        article_id: id,
-      })
-        .then(res => {
-          if (res.code == 200 && this.noteDetail.loadId == id) {
-            this.loadStatus = 1
-            this.noteDetail.id = res.data.id
-            this.noteDetail.loadId = res.data.id
-            this.noteDetail.content = res.data.md_content
-            this.noteDetail.html = res.data.content
-            this.noteDetail.title = res.data.title
-            this.noteDetail.created_at = res.data.created_at
-            this.noteDetail.class_id = res.data.class_id
-            this.noteDetail.is_asterisk = res.data.is_asterisk
-            this.noteDetail.status = res.data.status
-            this.markdown.mdText = this.noteDetail.content
-
-            let ids = res.data.tags.map(item => item.id)
-            this.files = res.data.files
-            this.tags = this.menus[3].submenus.map(item => {
-              return {
-                id: item.id,
-                name: item.name,
-                isSelectd: ids.includes(item.id),
-              }
-            })
-
-            if (isEdit) {
-              this.markdown.isEdit = true
-            }
-          } else if (res.code !== 200 && this.noteDetail.loadId == id) {
-            this.loadStatus = 2
-          }
-        })
-        .catch(() => {
-          if (this.noteDetail.loadId == id) {
-            this.loadStatus = 2
-          }
-        })
-    },
-
     // 加载标签列表
     loadNoteTags() {
       ServeGetArticleTag().then(({ code, data }) => {
         if (code != 200) return false
 
-        this.menus[3].submenus = data.tags.map(item => {
-          return {
-            id: item.id,
-            name: item.tag_name,
-            icon: 'icon-dian',
-            count: item.count,
-            isEdit: false,
-            isDefault: 0,
-            isActive: false,
-          }
-        })
+        this.$store.commit('SET_NOTE_TAGS', data.tags)
       })
     },
 
@@ -731,103 +422,17 @@ export default {
       })
     },
 
-    // 添加或编辑笔记信息
-    editNote(type = 1) {
-      let data = this.getEditData()
-      if (data.title == '') {
-        this.$message('笔记标题不能为空!')
-        return false
-      }
-
-      if (data.md_content == '' || data.content == '') {
-        this.$message('笔记内容不能为空!')
-        return false
-      }
-
-      this.editNoteStatus = 1
-      ServeEditArticle(data)
-        .then(res => {
-          if (res.code == 200) {
-            if (data.article_id == 0) {
-              this.loadNoteList()
-              this.loadNoteClass(data.class_id)
-            }
-
-            this.noteDetail.id = res.data.aid
-            this.noteDetail.loadId = res.data.aid
-            this.noteDetail.content = data.md_content
-            this.noteDetail.html = data.content
-
-            if (type == 1) {
-              this.markdown.isEdit = false
-            }
-          }
-        })
-        .finally(() => {
-          this.editNoteStatus = 0
-        })
-    },
-
-    // 获取当前编辑笔记相关信息
-    getEditData() {
-      return {
-        article_id: this.noteDetail.id,
-        class_id: this.noteDetail.class_id,
-        title: this.noteDetail.title,
-        md_content: this.markdown.mdText,
-        content: this.markdown.htmlText,
-      }
-    },
-
-    // 切换当前编辑模式
-    openEditMode() {
-      this.markdown.isEdit = true
-    },
-
     // 查看笔记详情
-    catNote(info, isEdit = false) {
-      this.loadStatus = 0
-      this.noteDetail.loadId = info.id
-      this.loadNoteDetail(info.id, isEdit)
-    },
+    catNote(info, isEditor = false) {
+      this.note_id = info.id
 
-    // 重新加载当前查看的笔记
-    reloadCatNote() {
-      this.loadNoteDetail(this.noteDetail.loadId)
+      this.$refs.refNotePreview.open(this.note_id, isEditor)
     },
 
     // 文章列表移除指定的文章
     removeListNote(id) {
-      this.notes.splice(
-        this.notes.findIndex(item => item.id === id),
-        1
-      )
-    },
-
-    // 编辑器修改信息触发事件
-    $editorChange(value, render) {
-      this.markdown.mdText = value
-      this.markdown.htmlText = render
-    },
-
-    // 编辑器保存信息触发事件
-    $editorSave(value, render) {
-      this.editNote(2)
-    },
-
-    // 编辑器上传图片触发事件
-    $editorUploadImage(pos, file) {
-      let formdata = new FormData()
-      formdata.append('image', file)
-
-      let save_path = ''
-      ServeUploadArticleImg(formdata)
-        .then(res => {
-          save_path = res.data.save_path || ''
-        })
-        .finally(() => {
-          this.$refs.mavonEditor.$img2Url(pos, save_path)
-        })
+      let index = this.notes.findIndex(item => item.id === id)
+      this.notes.splice(index, 1)
     },
 
     // 左侧菜单栏点击事件
@@ -849,7 +454,7 @@ export default {
     },
 
     // 添加新的笔记
-    insterNote() {
+    insertNote() {
       let [i1, i2] = this.getSelectMenu()
       if (i1 != 2) {
         i1 = 2
@@ -858,31 +463,9 @@ export default {
         this.loadNoteList()
       }
 
-      this.loadStatus = 1
-      this.openEditMode()
-      this.resetNoteEmpty()
-      this.noteDetail.class_id = this.menus[i1].submenus[i2].id
-    },
+      let class_id = this.menus[i1].submenus[i2].id
 
-    cancelEdit() {
-      this.loadStatus = -1
-      this.resetNoteEmpty()
-    },
-
-    // 重置清空笔记信息
-    resetNoteEmpty() {
-      this.noteDetail.id = 0
-      this.noteDetail.loadId = 0
-      this.noteDetail.content = ''
-      this.noteDetail.html = ''
-      this.noteDetail.title = ''
-      this.noteDetail.is_asterisk = 0
-      this.noteDetail.class_id = 0
-      this.noteDetail.status = 1
-      this.files = []
-      this.tags = []
-      this.markdown.mdText = ''
-      this.markdown.htmlText = ''
+      this.$refs.refNotePreview.open(0, true, class_id)
     },
 
     // 回车修改分类名
@@ -965,7 +548,7 @@ export default {
                 this.loadNoteList()
               }
 
-              this.insterNote()
+              this.insertNote()
             },
           },
           {
@@ -1169,7 +752,7 @@ export default {
 
     handleCommand(command) {
       if (command == 'a') {
-        this.insterNote()
+        this.insertNote()
       } else if (command == 'b') {
         this.menus[2].isShowSub = true
         this.menus[2].submenus.unshift({
@@ -1195,29 +778,11 @@ export default {
       }
     },
 
-    // 设置笔记是否标记星号状态
-    setAsterisk() {
-      let type = this.noteDetail.is_asterisk == 1 ? 2 : 1
-      ServeSetAsteriskArticle({
-        article_id: this.noteDetail.id,
-        type: type,
-      }).then(res => {
-        if (res.code == 200) {
-          this.noteDetail.is_asterisk = type == 1 ? 1 : 0
-        }
-      })
-    },
-
     // 获取默认笔记分类的索引
     defaultNoteClassIdx() {
       return this.menus[2].submenus.findIndex(item => {
         return item.isDefault == 1
       })
-    },
-
-    // 获取当前查看的笔记ID
-    getArticleId() {
-      return this.noteDetail.loadId
     },
 
     // 关键词查询笔记
@@ -1260,19 +825,6 @@ export default {
       return [-1, -1]
     },
 
-    // 分享笔记给我的朋友
-    shareNode() {
-      this.selectContactsBox = true
-    },
-
-    // 分享好友确认按钮
-    confirmSelectContacts(value) {
-      this.selectContactsBox = false
-      this.$notify({
-        message: '功能研发中...',
-      })
-    },
-
     // 获取分类ID
     getNoteClassName(class_id) {
       let idx = this.menus[2].submenus.findIndex(item => {
@@ -1282,25 +834,6 @@ export default {
       if (idx == -1) return '未知'
 
       return this.menus[2].submenus[idx].name
-    },
-
-    // 下载笔记（md格式）
-    noteDownload() {
-      let reader = new FileReader()
-      let title = this.noteDetail.title + '.md'
-      let blob = new Blob([this.noteDetail.content], {
-        type: 'text/plain',
-      })
-
-      reader.readAsDataURL(blob)
-      reader.onload = function(e) {
-        let a = document.createElement('a')
-        a.download = title
-        a.href = e.target.result
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-      }
     },
 
     // 笔记移至回收站
@@ -1319,9 +852,10 @@ export default {
               if (res.code == 200) {
                 this.removeListNote(id)
                 this.loadNoteClass()
-                if (id == this.noteDetail.id) {
-                  this.loadStatus = -1
-                  this.resetNoteEmpty()
+
+                if (id == this.note_id) {
+                  this.note_id = 0
+                  this.$refs.refNotePreview.close()
                 }
               }
             })
@@ -1349,16 +883,16 @@ export default {
                 if (res.code == 200) {
                   this.removeListNote(id)
 
-                  if (id == this.noteDetail.id) {
-                    this.loadStatus = -1
-                    this.resetNoteEmpty()
-                  }
-
                   this.$notify({
                     title: '删除成功',
                     message: `笔记【${title}】已删除...`,
                     type: 'success',
                   })
+
+                  if (id == this.note_id) {
+                    this.note_id = 0
+                    this.$refs.refNotePreview.close()
+                  }
                 }
               })
             }
@@ -1376,10 +910,6 @@ export default {
           this.removeListNote(article_id)
           this.loadNoteClass()
 
-          if (article_id == this.noteDetail.id) {
-            this.noteDetail.status = 1
-          }
-
           this.$notify({
             title: '成功',
             message: '笔记已成功恢复...',
@@ -1392,6 +922,5 @@ export default {
 }
 </script>
 <style scoped lang="less">
-@import '~@/assets/css/markdown.css';
 @import '~@/assets/css/page/note-page.less';
 </style>

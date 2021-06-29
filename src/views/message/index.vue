@@ -332,7 +332,6 @@ export default {
       }
     },
   },
-  //
   beforeRouteUpdate(to, from, next) {
     let params = to.query
     console.log(params)

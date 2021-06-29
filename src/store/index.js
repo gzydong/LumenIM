@@ -7,6 +7,7 @@ import notify from './modules/notify'
 import settings from './modules/settings'
 import emoticon from './modules/emoticon'
 import dialogue from './modules/dialogue'
+import note from './modules/note'
 
 import state from './state'
 import getters from './getters'
@@ -22,6 +23,7 @@ const store = new Vuex.Store({
     settings,
     emoticon,
     dialogue,
+    note,
   },
   state,
   getters,

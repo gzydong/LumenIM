@@ -12,7 +12,7 @@
         class="tag-item"
       >
         <span>{{ tag.name }}</span>
-        <i class="el-icon-close" @click="activeTag(i, 1)" />
+        <i class="el-icon-close" @click="active(tag.id, tag.isSelectd)" />
       </p>
     </div>
 
@@ -26,7 +26,7 @@
         :key="i"
         class="tag-item"
         :class="{ active: tag.isSelectd }"
-        @click="activeTag(i, 2)"
+        @click="active(tag.id, tag.isSelectd)"
       >
         <span>{{ tag.name }}</span>
       </p>
@@ -46,7 +46,7 @@
         type="text"
         placeholder="回车保存..."
         v-model.trim="tagText"
-        @keyup.enter="saveTag"
+        @keyup.enter="save"
       />
 
       <el-button type="primary" size="small" @click="isInput = false"
@@ -58,27 +58,60 @@
 <script>
 import { ServeUpdateArticleTag, ServeEditArticleTag } from '@/api/article'
 export default {
+  name: 'NoteTagBox',
   props: {
-    id: Number,
-    tagsList: Array,
+    note_id: {
+      type: Number,
+      default: 0,
+    },
+    tag_ids: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
   },
   data() {
     return {
-      tags: [],
+      ids: [],
       isInput: false,
       tagText: '',
     }
   },
+  created() {
+    this.ids = this.tag_ids.map(tag => tag.id)
+  },
+  computed: {
+    tags() {
+      let tags = []
+      this.$store.state.note.tags.forEach(tag => {
+        tags.push({
+          id: tag.id,
+          name: tag.tag_name,
+          isSelectd: this.ids.includes(tag.id),
+        })
+      })
+
+      return tags
+    },
+  },
+
   methods: {
     // 设置笔记标签事件
-    activeTag(i, type) {
+    active(tag_id, isSelect) {
+      if (isSelect) {
+        this.ids.forEach((item, index) => {
+          if (item == tag_id) {
+            this.ids.splice(index, 1)
+          }
+        })
+      } else {
+        this.ids.push(tag_id)
+      }
+
       ServeUpdateArticleTag({
-        article_id: this.id,
+        article_id: this.note_id,
         tags: this.getSelectTags(),
-      }).then(({ code }) => {
-        if (code == 200) {
-          this.tags[i].isSelectd = type == 1 ? false : !this.tags[i].isSelectd
-        }
       })
     },
 
@@ -93,39 +126,24 @@ export default {
     },
 
     // 保存标签事件
-    saveTag() {
+    save() {
       let tag_name = this.tagText
-
       ServeEditArticleTag({
         tag_id: 0,
         tag_name,
       }).then(({ code, data }) => {
-        if (code == 200) {
-          let tag = {
-            id: data.id,
-            name: tag_name,
-            icon: 'icon-dian',
-            count: 0,
-            isEdit: false,
-            isDefault: 0,
-            isActive: false,
-          }
+        if (code !== 200) return false
 
-          this.tags.push({
-            id: tag.id,
-            name: tag.name,
-            isSelectd: false,
-          })
+        this.$store.commit('PUSH_NOTE_TAG', {
+          id: data.id,
+          tag_name: tag_name,
+          count: 0,
+        })
 
-          this.tagText = ''
-          this.isInput = false
-          this.$emit('create', tag)
-        }
+        this.tagText = ''
+        this.isInput = false
       })
     },
-  },
-  created() {
-    this.tags = this.tagsList
   },
 }
 </script>

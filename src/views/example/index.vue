@@ -1,19 +1,14 @@
 <template>
   <div class="messaege">
-    <!-- <FriendApplyMessage /> -->
-
-    <div class="test">
-      <Loading />
-    </div>
+    <NotePreview />
   </div>
 </template>
 
 <script>
-import FriendApplyMessage from '@/components/chat/messaege/FriendApplyMessage'
-import Empty from '@/components/global/Empty.vue'
-import Loading from '@/components/global/Loading.vue'
+import NotePreview from '@/views/note/NotePreview'
+
 export default {
-  components: { FriendApplyMessage, Empty, Loading },
+  components: { NotePreview },
   data() {
     return {}
   },
@@ -23,16 +18,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .messaege {
-  // height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.test {
-  width: 600px;
-  height: 600px;
-  background: rebeccapurple;
+  height: 100vh;
+  width: 800px;
+  margin: 0 auto;
+  border: 1px solid red;
 }
 </style>
