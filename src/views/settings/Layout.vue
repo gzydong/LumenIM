@@ -20,7 +20,7 @@
             </router-link>
           </el-aside>
           <el-main>
-            <router-view></router-view>
+            <router-view />
           </el-main>
         </el-container>
       </el-container>
@@ -39,7 +39,7 @@ export default {
       menus: [
         {
           name: '个人信息',
-          path: '/settings/base',
+          path: '/settings/detail',
         },
         {
           name: '安全设置',

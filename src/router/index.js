@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import AuthRouter from './auth'
+import SettingRouter from './settings'
+import ContactsRouter from './contacts'
 
 Vue.use(Router)
 
@@ -9,10 +12,13 @@ const RouteView = {
 }
 
 const routes = [
+  AuthRouter,
+  SettingRouter,
+  ContactsRouter,
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/MessagePage'),
+    component: () => import('@/views/message/index'),
     meta: {
       title: '',
       needLogin: true,
@@ -21,115 +27,34 @@ const routes = [
   {
     path: '/message',
     name: 'message',
-    component: () => import('@/views/MessagePage'),
+    component: () => import('@/views/message/index'),
     meta: {
       title: '消息通知',
       needLogin: true,
     },
   },
   {
-    path: '/contacts',
-    name: 'contacts',
-    component: () => import('@/views/ContactsPage'),
-    meta: {
-      title: '我的联系人',
-      needLogin: true,
-    },
-  },
-  {
-    path: '/notes',
-    name: 'notes',
-    component: () => import('@/views/NotePage'),
+    path: '/note',
+    name: 'note',
+    component: () => import('@/views/note/index'),
     meta: {
       title: '我的笔记',
       needLogin: true,
     },
   },
   {
-    path: '/settings',
-    name: 'settings',
+    path: '/example',
+    name: 'example',
+    component: () => import('@/views/example/index'),
     meta: {
-      title: '个人设置',
-      needLogin: true,
-    },
-    redirect: '/settings/base',
-    component: () => import('@/views/settings/Layout'),
-    children: [
-      {
-        path: '/settings/base',
-        meta: {
-          title: '个人信息',
-          needLogin: true,
-        },
-        component: () => import('@/views/settings/BasePage'),
-      },
-      {
-        path: '/settings/security',
-        meta: {
-          title: '安全设置',
-          needLogin: true,
-        },
-        component: () => import('@/views/settings/SecurityPage'),
-      },
-      {
-        path: '/settings/binding',
-        meta: {
-          title: '账户绑定',
-          needLogin: true,
-        },
-        component: () => import('@/views/settings/BindPage'),
-      },
-      {
-        path: '/settings/personalize',
-        meta: {
-          title: '个性化设置',
-          needLogin: true,
-        },
-        component: () => import('@/views/settings/PersonalizePage'),
-      },
-      {
-        path: '/settings/notification',
-        meta: {
-          title: '消息设置',
-          needLogin: true,
-        },
-        component: () => import('@/views/settings/NotificationPage'),
-      },
-    ],
-  },
-
-  // 授权相关
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/auth/LoginPage'),
-    meta: {
-      title: '账号登录？',
-      needLogin: false,
-    },
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('@/views/auth/RegisterPage'),
-    meta: {
-      title: '账号注册？',
-      needLogin: false,
-    },
-  },
-  {
-    path: '/forget',
-    name: 'forget',
-    component: () => import('@/views/auth/ForgetPasswordPage'),
-    meta: {
-      title: '找回密码？',
+      title: '测试案例',
       needLogin: false,
     },
   },
   {
     path: '*',
     name: '404 NotFound',
-    component: () => import('@/views/auth/NotFoundPage'),
+    component: () => import('@/views/other/404'),
     meta: {
       title: '404 NotFound',
       needLogin: false,

@@ -9,19 +9,9 @@
       </el-header>
       <el-main class="main no-padding">
         <template v-if="loadStatus == 0">
-          <div class="loading">
-            <div class="ant-spin ant-spin-lg ant-spin-spinning">
-              <span class="ant-spin-dot ant-spin-dot-spin">
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-                <i class="ant-spin-dot-item" />
-              </span>
-            </div>
-            <p>正在努力加载中 ...</p>
-          </div>
+          <Loading text="正在努力加载中 ..." />
         </template>
-        <template v-if="loadStatus == 1 && items.length == 0">
+        <template v-else-if="loadStatus == 1 && items.length == 0">
           <div class="loading">
             <SvgNotData class="svg-icon" />
             <p>暂无群公告</p>
@@ -80,7 +70,7 @@
 <script>
 import { ServeGetGroupNotices } from '@/api/group'
 import { SvgNotData } from '@/core/icons'
-
+import Loading from '@/components/global/Loading'
 export default {
   name: 'GroupNotice',
   props: {
@@ -91,6 +81,7 @@ export default {
   },
   components: {
     SvgNotData,
+    Loading,
   },
   data() {
     return {

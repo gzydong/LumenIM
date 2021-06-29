@@ -16,28 +16,38 @@ const assetsCDN = {
     vuex: 'Vuex',
     axios: 'axios',
   },
-  css: [
-
-  ],
+  css: [],
   js: [
     'https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
     'https://cdn.jsdelivr.net/npm/vue-router@3.4.9/dist/vue-router.min.js',
     'https://cdn.jsdelivr.net/npm/vuex@3.5.1/dist/vuex.min.js',
     'https://cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js',
-  ]
+  ],
 }
 
 // vue.config.js
 const vueConfig = {
   // 公共路径(必须有的)
-  publicPath: "/",
+  publicPath: '/',
   // 输出文件目录
-  outputDir: "dist",
+  outputDir: 'dist',
   // 静态资源存放的文件夹(相对于ouputDir)
-  assetsDir: "static",
+  assetsDir: 'static',
   runtimeCompiler: false,
   devServer: {
-    port: 8000
+    port: 8000,
+    // proxy: {
+    //   //配置跨域
+    //   '/api': {
+    //     target: 'http://api.xxxx.com', // 后台接口域名
+    //     ws: false, //如果要代理 websockets，配置这个参数
+    //     secure: false, // 如果是https接口，需要配置这个参数
+    //     changeOrigin: true, //是否跨域
+    //     pathRewrite: {
+    //       '^/api': '/api',
+    //     },
+    //   },
+    // },
   },
   configureWebpack: {
     // webpack plugins
@@ -48,17 +58,16 @@ const vueConfig = {
         algorithm: 'gzip',
         test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
         threshold: 10240,
-        minRatio: 0.8
-      })
+        minRatio: 0.8,
+      }),
     ],
 
     // if prod, add externals
     externals: isProd ? assetsCDN.externals : {},
   },
 
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set('@', resolve('src'))
+  chainWebpack: config => {
+    config.resolve.alias.set('@', resolve('src'))
 
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
@@ -73,7 +82,7 @@ const vueConfig = {
       .use('file-loader')
       .loader('file-loader')
       .options({
-        name: 'assets/[name].[hash:8].[ext]'
+        name: 'assets/[name].[hash:8].[ext]',
       })
 
     // if prod is on
@@ -86,23 +95,23 @@ const vueConfig = {
     }
   },
   pluginOptions: {
-    "style-resources-loader": {
-      preProcessor: "less",
+    'style-resources-loader': {
+      preProcessor: 'less',
       patterns: [
         //全局加载 less 变量
-        path.resolve(__dirname, "./src/assets/css/variable.less")
-      ]
-    }
+        path.resolve(__dirname, './src/assets/css/variable.less'),
+      ],
+    },
   },
   css: {
     loaderOptions: {
       less: {
         lessOptions: {
           modifyVars: {},
-          javascriptEnabled: true
-        }
-      }
-    }
+          javascriptEnabled: true,
+        },
+      },
+    },
   },
 
   // 是否为生产环境构建生成 source map？
@@ -110,7 +119,7 @@ const vueConfig = {
   // lintOnSave: undefined,
   lintOnSave: false,
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: []
+  transpileDependencies: [],
 }
 
 module.exports = vueConfig

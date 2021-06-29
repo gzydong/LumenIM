@@ -29,8 +29,13 @@ export default {
     },
 
     // 设置消息未读数
-    SET_UNREAD_NUM(state, num) {
-      state.unreadNum = num
+    SET_UNREAD_NUM(state, value) {
+      state.unreadNum = value
+    },
+
+    // 好友申请事件监听
+    SET_APPLY_NUM(state, value) {
+      state.applyNum = value
     },
 
     // 自增好友键盘输入事件

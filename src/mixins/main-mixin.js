@@ -1,4 +1,4 @@
-import SocketInstance from './socket-instance'
+import SocketInstance from '../socket-instance'
 import { ServeGetUserSetting } from '@/api/user'
 
 export default {
@@ -32,12 +32,16 @@ export default {
       })
     },
 
+    reload() {
+      this.$root.$children[0].refreshView()
+    },
+
     // 跳转到指定好友对话页
     dumpTalkPage(index_name) {
       sessionStorage.setItem('send_message_index_name', index_name)
 
       if (this.$route.path == '/message') {
-        this.$root.$children[0].refreshView()
+        this.reloadPage()
         return
       }
 

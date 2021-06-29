@@ -23,22 +23,25 @@ const preNmae = (pre, lang) => {
   pre.appendChild(el)
 }
 
+function updateNodes(el, binding, vnode) {
+  let preNodes = el.querySelectorAll('pre')
+  preNodes.forEach(elPre => {
+    let elCode = elPre.querySelector('code')
+    let className = elCode.className
+    let language = className.split('-')[1]
+
+    copyFunc(elPre, elCode.innerText)
+
+    if (language != undefined) {
+      preNmae(elPre, language)
+    }
+  })
+}
+
 /**
  * 代码格式化
  */
 export default {
-  inserted: function(el) {
-    let preNodes = el.querySelectorAll('pre')
-    preNodes.forEach(elPre => {
-      let elCode = elPre.querySelector('code')
-      let className = elCode.className
-      let language = className.split('-')[1]
-
-      copyFunc(elPre, elCode.innerText)
-
-      if (language != undefined) {
-        preNmae(elPre, language)
-      }
-    })
-  },
+  bind: updateNodes,
+  update: updateNodes,
 }

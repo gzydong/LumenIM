@@ -210,6 +210,13 @@ class WsSocket {
   }
 
   /**
+   * 关闭连接
+   */
+  close(){
+    this.connect.close()
+  }
+
+  /**
    * 推送消息
    *
    * @param {String} event 事件名

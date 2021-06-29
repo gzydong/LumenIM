@@ -51,20 +51,25 @@ import {
 import { formateSize, formateTime, parseTime } from '@/utils/functions'
 
 export default {
+  name: 'NoteAnnexBox',
   props: {
-    id: Number,
-    fileList: Array,
+    id: {
+      type: Number,
+      default: 0,
+    },
+    files: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
   },
   data() {
     return {
-      files: [],
       loadStatus: false,
       disabled: false,
       maxNum: 10,
     }
-  },
-  created() {
-    this.files = this.fileList
   },
   methods: {
     // 格式化文件大小

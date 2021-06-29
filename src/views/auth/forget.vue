@@ -1,103 +1,86 @@
 <template>
-  <div>
-    <el-container id="auth-container">
-      <el-main>
-        <div id="logo-name" class="animated slideInLeft">
-          {{ $store.state.website_name }}
-        </div>
-        <div id="login-box">
-          <div class="header">找回密码</div>
-          <div class="main">
-            <el-form ref="form" :model="form" :rules="rules">
-              <el-form-item prop="username">
-                <el-input
-                  v-model="form.username"
-                  placeholder="我的手机号"
-                  class="cuborder-radius"
-                  maxlength="11"
-                  @keyup.enter.native="onSubmit('form')"
-                />
-              </el-form-item>
+  <div id="login-box">
+    <div class="header">找回密码</div>
+    <div class="main">
+      <el-form ref="form" :model="form" :rules="rules">
+        <el-form-item prop="username">
+          <el-input
+            v-model="form.username"
+            placeholder="我的手机号"
+            class="cuborder-radius"
+            maxlength="11"
+            @keyup.enter.native="onSubmit('form')"
+          />
+        </el-form-item>
 
-              <el-form-item prop="sms_code">
-                <el-input
-                  v-model="form.sms_code"
-                  placeholder="短信验证码"
-                  class="cuborder-radius"
-                  maxlength="6"
-                  @keyup.enter.native="onSubmit('form')"
-                  style="width: 205px"
-                />
-                <div class="send-code-btn send-sms-disable" v-if="smsLock">
-                  正在发送 ...
-                </div>
-                <div
-                  class="send-code-btn"
-                  v-else-if="smsLock == false && smsLockObj.time == null"
-                  @click="sendSms"
-                >
-                  获取短信
-                </div>
-                <div class="send-code-btn send-sms-disable" v-else>
-                  重新发送({{ smsLockObj.time }}s)
-                </div>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  v-model="form.password"
-                  type="password"
-                  placeholder="设置新密码"
-                  class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')"
-                />
-              </el-form-item>
-              <el-form-item prop="password2">
-                <el-input
-                  v-model="form.password2"
-                  type="password"
-                  placeholder="确认新密码"
-                  class="cuborder-radius"
-                  @keyup.enter.native="onSubmit('form')"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  type="primary"
-                  class="submit-btn"
-                  :loading="forgetLoading"
-                  @click="onSubmit('form')"
-                  >立即找回
-                </el-button>
-              </el-form-item>
-
-              <el-form-item>
-                <div class="links">
-                  <el-link
-                    type="primary"
-                    :underline="false"
-                    @click="toLink('/register')"
-                    >注册账号
-                  </el-link>
-                  <el-link
-                    type="primary"
-                    :underline="false"
-                    @click="toLink('/login')"
-                    >已有账号，立即登录?
-                  </el-link>
-                </div>
-              </el-form-item>
-            </el-form>
+        <el-form-item prop="sms_code">
+          <el-input
+            v-model="form.sms_code"
+            placeholder="短信验证码"
+            class="cuborder-radius"
+            maxlength="6"
+            @keyup.enter.native="onSubmit('form')"
+            style="width: 205px"
+          />
+          <div class="send-code-btn send-sms-disable" v-if="smsLock">
+            正在发送 ...
           </div>
-        </div>
-        <div class="copyright" v-html="$store.state.copyright"></div>
-      </el-main>
-    </el-container>
+          <div
+            class="send-code-btn"
+            v-else-if="smsLock == false && smsLockObj.time == null"
+            @click="sendSms"
+          >
+            获取短信
+          </div>
+          <div class="send-code-btn send-sms-disable" v-else>
+            重新发送({{ smsLockObj.time }}s)
+          </div>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            v-model="form.password"
+            type="password"
+            placeholder="设置新密码"
+            class="cuborder-radius"
+            @keyup.enter.native="onSubmit('form')"
+          />
+        </el-form-item>
+        <el-form-item prop="password2">
+          <el-input
+            v-model="form.password2"
+            type="password"
+            placeholder="确认新密码"
+            class="cuborder-radius"
+            @keyup.enter.native="onSubmit('form')"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="submit-btn"
+            :loading="forgetLoading"
+            @click="onSubmit('form')"
+            >立即找回
+          </el-button>
+        </el-form-item>
 
-    <div class="fly-box">
-      <div class="fly bg-fly-circle1"></div>
-      <div class="fly bg-fly-circle2"></div>
-      <div class="fly bg-fly-circle3"></div>
-      <div class="fly bg-fly-circle4"></div>
+        <el-form-item>
+          <div class="links">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="toLink('/auth/register')"
+              >注册账号
+            </el-link>
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="toLink('/auth/login')"
+              >已有账号，立即登录?
+            </el-link>
+          </div>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -216,9 +199,7 @@ export default {
 
             this.$refs.form.resetFields()
             setTimeout(() => {
-              this.$router.push({
-                path: '/login',
-              })
+              this.$router.push('/auth/login')
             }, 1500)
           } else {
             this.$notify({
