@@ -591,7 +591,6 @@ export default {
         confirmButtonText: '确定删除',
         cancelButtonText: '取消',
         dangerouslyUseHTMLString: true,
-        customClass: 'border-radius0',
       })
         .then(() => {
           ServeRemoveMembersGroup({
@@ -605,6 +604,7 @@ export default {
                 message: `已成功将群成员移除群组...`,
                 type: 'success',
               })
+              this.batchDelMember = false
             }
           })
         })

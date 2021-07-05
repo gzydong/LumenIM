@@ -15,11 +15,6 @@ export const ServeSetUserEmoticon = data => {
   return post('/api/v1/emoticon/set-user-emoticon', data)
 }
 
-// 收藏表情包服务接口
-export const ServeCollectEmoticon = data => {
-  return post('/api/v1/emoticon/collect-emoticon', data)
-}
-
 // 移除收藏表情包服务接口
 export const ServeDelCollectEmoticon = data => {
   return post('/api/v1/emoticon/del-collect-emoticon', data)

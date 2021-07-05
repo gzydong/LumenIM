@@ -26,7 +26,7 @@ class WsSocket {
       lockReconnect: false,
       setTimeout: null, // 计时器对象
       time: 5000, // 重连间隔时间
-      number: 50, // 重连次数
+      number: 1000, // 重连次数
     },
   }
 

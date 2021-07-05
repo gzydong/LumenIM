@@ -1,8 +1,6 @@
-import {
-  ServeFindUserEmoticon,
-  ServeUploadEmoticon,
-  ServeCollectEmoticon,
-} from '@/api/emoticon'
+import { ServeFindUserEmoticon, ServeUploadEmoticon } from '@/api/emoticon'
+
+import { ServeCollectEmoticon } from '@/api/chat'
 
 import { Notification } from 'element-ui'
 

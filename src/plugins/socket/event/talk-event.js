@@ -46,11 +46,13 @@ class TalkEvent extends AppMessageEvent {
    * @return String
    */
   getIndexName() {
-    if (this.isCurrSender()) {
+    if (this.talk_type == 2) {
       return `${this.talk_type}_${this.receiver_id}`
     }
 
-    return `${this.talk_type}_${this.sender_id}`
+    let receiver_id = this.isCurrSender() ? this.receiver_id : this.sender_id
+
+    return `${this.talk_type}_${receiver_id}`
   }
 
   /**
@@ -63,9 +65,8 @@ class TalkEvent extends AppMessageEvent {
 
   handle() {
     const indexName = this.getIndexName()
-
     if (!this.isTalkPage()) {
-      return this.isCurrSender() && this.showMessageNocice(indexName)
+      return !this.isCurrSender() && this.showMessageNocice(indexName)
     }
 
     const index = findTalkIndex(indexName)
@@ -95,7 +96,7 @@ class TalkEvent extends AppMessageEvent {
     this.$notify({
       title: `${tag} 聊天通知`,
       message: `「${group_name}」@${nickname} : ${content}`,
-      duration: 3000000,
+      duration: 30000,
       customClass: 'talk-notify pointer',
       onClick: function() {
         sessionStorage.setItem('send_message_index_name', index_name)
@@ -108,6 +109,14 @@ class TalkEvent extends AppMessageEvent {
     store.commit('INCR_UNREAD_NUM')
   }
 
+  getFloatType() {
+    let user_id = this.resource.user_id
+
+    if (user_id == 0) return 'center'
+
+    return user_id == this.UserId ? 'right' : 'left'
+  }
+
   /**
    * 更新对话记录
    *
@@ -115,12 +124,8 @@ class TalkEvent extends AppMessageEvent {
    */
   updateTalkRecord(index) {
     let record = this.resource
-    record.float =
-      record.user_id == 0
-        ? 'center'
-        : record.user_id == this.UserId
-        ? 'right'
-        : 'left'
+
+    record.float = this.getFloatType()
 
     store.commit('PUSH_DIALOGUE', record)
 

@@ -82,7 +82,7 @@
       <div class="list-item">群简介</div>
 
       <div class="list-item-tips">
-        {{ detail.groupProfile ? detail.groupProfile : '暂无群简介' }}
+        {{ detail.profile ? detail.profile : '暂无群简介' }}
       </div>
 
       <div class="list-item flex">
@@ -258,7 +258,7 @@ export default {
         groupId: 0,
         groupName: '',
         groupOwner: '',
-        groupProfile: '',
+        profile: '',
         is_disturb: 0,
         no_message: false,
         visitCard: '',
@@ -341,7 +341,7 @@ export default {
           this.detail.userId = res.data.user_id
           this.detail.groupName = result.group_name
           this.detail.groupOwner = result.manager_nickname
-          this.detail.groupProfile = result.group_profile
+          this.detail.profile = result.profile
           this.detail.is_disturb = result.is_disturb == 1
           this.detail.visitCard = result.visit_card
           this.detail.is_manager = result.is_manager

@@ -30,21 +30,6 @@ export const ServeTalkRecords = data => {
   return get('/api/v1/talk/records', data)
 }
 
-// 撤回消息服务接口
-export const ServeRevokeRecords = data => {
-  return post('/api/v1/talk/revoke-records', data)
-}
-
-// 删除消息服务接口
-export const ServeRemoveRecords = data => {
-  return post('/api/v1/talk/remove-records', data)
-}
-
-// 转发消息服务接口
-export const ServeForwardRecords = data => {
-  return post('/api/v1/talk/forward-records', data)
-}
-
 // 获取转发会话记录详情列表服务接口
 export const ServeGetForwardRecords = data => {
   return get('/api/v1/talk/get-forward-records', data)
@@ -71,20 +56,40 @@ export const ServeGetRecordsContext = data => {
 
 // 发送代码块消息服务接口
 export const ServeSendTalkCodeBlock = data => {
-  return post('/api/v1/talk/send-code-block', data)
+  return post('/api/v1/talk/message/code', data)
 }
 
 // 发送聊天文件服务接口
 export const ServeSendTalkFile = data => {
-  return post('/api/v1/talk/send-file', data)
+  return post('/api/v1/talk/message/file', data)
 }
 
 // 发送聊天图片服务接口
 export const ServeSendTalkImage = data => {
-  return upload('/api/v1/talk/send-image', data)
+  return upload('/api/v1/talk/message/image', data)
 }
 
 // 发送表情包服务接口
 export const ServeSendEmoticon = data => {
-  return post('/api/v1/talk/send-emoticon', data)
+  return post('/api/v1/talk/message/emoticon', data)
+}
+
+// 转发消息服务接口
+export const ServeForwardRecords = data => {
+  return post('/api/v1/talk/message/forward', data)
+}
+
+// 撤回消息服务接口
+export const ServeRevokeRecords = data => {
+  return post('/api/v1/talk/message/revoke', data)
+}
+
+// 删除消息服务接口
+export const ServeRemoveRecords = data => {
+  return post('/api/v1/talk/message/delete', data)
+}
+
+// 收藏表情包服务接口
+export const ServeCollectEmoticon = data => {
+  return post('/api/v1/talk/message/collect', data)
 }
