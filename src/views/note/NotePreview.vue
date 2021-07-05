@@ -78,7 +78,7 @@
           </div>
 
           <div
-            v-else-if="note.status == -1"
+            v-else-if="note.status == -1 && note.md_content.length == 0"
             @click="triggerCancel"
             class="item"
           >
@@ -87,7 +87,10 @@
           </div>
 
           <div
-            v-else-if="note.status == 1 && mode == 2"
+            v-else-if="
+              (note.status == -1 && note.md_content.length) ||
+                (note.status == 1 && mode == 2)
+            "
             @click="triggerSave(true)"
             class="item"
           >
