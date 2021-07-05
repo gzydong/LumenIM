@@ -63,7 +63,7 @@ const Talk = {
 
     // 更新对话节点在线状态
     UPDATE_TALK_ONLINE_STATUS(state, resource) {
-      state.items[resource.index].online = parseInt(resource.status)
+      state.items[resource.index].is_online = parseInt(resource.status)
     },
 
     // 更新对话消息

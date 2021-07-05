@@ -24,17 +24,16 @@ class RevokeEvent extends AppMessageEvent {
   handle() {
     if (
       !this.isChatting(
-        this.resource.source,
-        this.resource.receive_id,
-        this.resource.user_id
+        this.resource.talk_type,
+        this.resource.receiver_id,
+        this.resource.sender_id
       )
     ) {
       return false
     }
 
-    let record_id = this.resource.record_id
     let index = store.state.dialogue.records.findIndex(
-      item => item.id === record_id
+      item => item.id == this.resource.record_id
     )
 
     store.commit('UPDATE_DIALOGUE', {

@@ -146,12 +146,12 @@ export default {
     },
 
     // 跳转聊天页面
-    toTalk(type, index_name) {
-      let receive_id = index_name.split('_')[1]
+    toTalk(talk_type, index_name) {
+      let receiver_id = index_name.split('_')[1]
 
       ServeCreateTalkList({
-        type,
-        receive_id,
+        talk_type,
+        receiver_id,
       }).then(res => {
         if (res.code !== 200) return
         this.$root.dumpTalkPage(index_name)

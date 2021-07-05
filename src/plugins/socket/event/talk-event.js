@@ -16,40 +16,64 @@ class TalkEvent extends AppMessageEvent {
   resource
 
   /**
-   * 初始化构造方法
-   *
-   * @param {Object} resource Socket消息
+   * 发送者ID
    */
+  sender_id = 0
+
+  /**
+   * 接收者ID
+   */
+  receiver_id = 0
+
+  /**
+   * 聊天类型[1:私聊;2:群聊;]
+   */
+  talk_type = 0
+
   constructor(resource) {
     super()
 
-    this.resource = resource
+    this.sender_id = resource.sender_id
+    this.receiver_id = resource.receiver_id
+    this.talk_type = resource.talk_type
+
+    this.resource = resource.data
+  }
+
+  /**
+   * 获取对话索引
+   *
+   * @return String
+   */
+  getIndexName() {
+    if (this.isCurrSender()) {
+      return `${this.talk_type}_${this.receiver_id}`
+    }
+
+    return `${this.talk_type}_${this.sender_id}`
+  }
+
+  /**
+   * 判断消息发送者是否来自于我
+   * @return
+   */
+  isCurrSender() {
+    return this.sender_id == this.UserId
   }
 
   handle() {
     const indexName = this.getIndexName()
-    if (!this.isTalkPage()) {
-      if (this.resource.send_user != this.UserId) {
-        this.showMessageNocice(indexName)
-      }
 
-      return false
+    if (!this.isTalkPage()) {
+      return this.isCurrSender() && this.showMessageNocice(indexName)
     }
 
     const index = findTalkIndex(indexName)
     if (index == -1) {
-      // 判断消息来源是否在对话列表中...
-      this.loadTalkItem()
-      return
+      return this.loadTalkItem()
     }
 
-    if (
-      this.isChatting(
-        this.resource.source_type,
-        this.resource.receive_user,
-        this.resource.send_user
-      )
-    ) {
+    if (this.isChatting(this.talk_type, this.receiver_id, this.sender_id)) {
       this.updateTalkRecord(index)
     } else {
       this.updateTalkItem(index)
@@ -63,9 +87,9 @@ class TalkEvent extends AppMessageEvent {
    * @returns
    */
   showMessageNocice(index_name) {
-    let tag = this.resource.data.source == 1 ? '[私信]' : '[群聊]'
-    let group_name = this.resource.data.group_name || '好友'
-    let nickname = this.resource.data.nickname || this.resource.data.group_name
+    let tag = this.talk_type == 1 ? '[私信]' : '[群聊]'
+    let group_name = this.resource.group_name || '好友'
+    let nickname = this.resource.nickname || this.resource.group_name
     let content = this.getTalkText()
 
     this.$notify({
@@ -90,7 +114,7 @@ class TalkEvent extends AppMessageEvent {
    * @param {Number} index 聊天列表的索引
    */
   updateTalkRecord(index) {
-    let record = this.resource.data
+    let record = this.resource
     record.float =
       record.user_id == 0
         ? 'center'
@@ -128,14 +152,10 @@ class TalkEvent extends AppMessageEvent {
       },
     })
 
-    if (
-      this.resource.data.source == 1 &&
-      this.UserId !== this.resource.data.user_id
-    ) {
-      // 更新未读消息
+    if (this.talk_type == 1 && this.UserId !== this.sender_id) {
       ServeClearTalkUnreadNum({
-        type: store.state.dialogue.source,
-        receive: store.state.dialogue.receive_id,
+        talk_type: store.state.dialogue.talk_type,
+        receiver_id: store.state.dialogue.receiver_id,
       })
     }
   }
@@ -165,16 +185,16 @@ class TalkEvent extends AppMessageEvent {
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = this.resource.data.content
-    switch (this.resource.data.msg_type) {
+    let text = this.resource.content
+    switch (this.resource.msg_type) {
       case 2:
-        let file_type = this.resource.data.file.file_type
+        let file_type = this.resource.file.file_type
         text = file_type == 1 ? '[图片消息]' : '[文件消息]'
         break
-      case 4:
+      case 3:
         text = '[会话记录]'
         break
-      case 5:
+      case 4:
         text = '[代码消息]'
         break
     }
@@ -191,39 +211,23 @@ class TalkEvent extends AppMessageEvent {
   }
 
   /**
-   * 通过消息获取消息对应的对话索引
-   */
-  getIndexName() {
-    let message = this.resource
-    if (
-      message.source_type == 2 ||
-      (message.source_type == 1 && message.send_user == this.UserId)
-    ) {
-      return `${message.source_type}_${message.receive_user}`
-    }
-
-    return `${message.source_type}_${message.send_user}`
-  }
-
-  /**
    * 加载对接节点
    */
   loadTalkItem() {
-    let receive_id = this.resource.send_user
-    let type = this.resource.source_type
+    let receiver_id = this.sender_id
+    let talk_type = this.talk_type
 
-    if (type == 2 || this.resource.send_user == this.UserId) {
-      receive_id = this.resource.receive_user
+    if (talk_type == 2 || this.sender_id == this.UserId) {
+      receiver_id = this.receiver_id
     }
 
     ServeCreateTalkList({
-      type,
-      receive_id,
+      talk_type,
+      receiver_id,
     }).then(({ code, data }) => {
       if (code == 200) {
-        let { talkItem } = data
-        talkItem.unread_num++
-        store.commit('INSERT_TALK_ITEM', formateTalkItem(talkItem))
+        data.unread_num++
+        store.commit('INSERT_TALK_ITEM', formateTalkItem(data))
       }
     })
   }

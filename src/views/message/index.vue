@@ -150,11 +150,11 @@
                           <div v-show="item.is_top" class="larkc-tag top">
                             TOP
                           </div>
-                          <div v-show="item.group_id" class="larkc-tag group">
+                          <div v-show="item.talk_type == 2" class="larkc-tag group">
                             群组
                           </div>
                           <div
-                            v-show="item.not_disturb"
+                            v-show="item.is_disturb"
                             class="larkc-tag disturb"
                           >
                             <i class="iconfont icon-xiaoximiandarao" />
@@ -175,10 +175,10 @@
                         </template>
                         <template v-else>
                           <span
-                            v-if="item.type == 1"
-                            :class="{ 'online-color': item.online }"
+                            v-if="item.talk_type == 1"
+                            :class="{ 'online-color': item.is_online }"
                           >
-                            [{{ item.online ? '在线' : '离线' }}]
+                            [{{ item.is_online ? '在线' : '离线' }}]
                           </span>
                           <span v-else>[群消息]</span>
                           <span>{{ item.msg_text }}</span>
@@ -240,7 +240,6 @@ import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import { ServeSecedeGroup } from '@/api/group'
 import { beautifyTime } from '@/utils/functions'
 import { formateTalkItem, findTalkIndex } from '@/utils/talk'
-import { openTalk } from '@/utils/talk'
 
 const title = document.title
 
@@ -261,8 +260,8 @@ export default {
 
       // 对话面板的传递参数
       params: {
-        source: 0,
-        receive_id: 0,
+        talk_type: 0,
+        receiver_id: 0,
         nickname: '',
       },
 
@@ -284,7 +283,7 @@ export default {
     ...mapState({
       talks: state => state.talks.items,
       index_name: state => state.dialogue.index_name,
-      monitorUserStatus: state => state.notify.friendStatus,
+      monitorFriendsStatus: state => state.notify.friendStatus,
     }),
 
     // 计算置顶栏目的高度
@@ -303,7 +302,7 @@ export default {
     // 当前对话好友在线状态
     isFriendOnline() {
       let index = findTalkIndex(this.index_name)
-      return index >= 0 && this.talks[index].online == 1
+      return index >= 0 && this.talks[index].is_online == 1
     },
   },
   watch: {
@@ -321,8 +320,8 @@ export default {
       }
     },
 
-    // 监听用户在线状态
-    monitorUserStatus(value) {
+    // 监听好友在线状态
+    monitorFriendsStatus(value) {
       let index = findTalkIndex(`1_${value.friendId}`)
       if (index >= 0) {
         this.$store.commit('UPDATE_TALK_ONLINE_STATUS', {
@@ -360,14 +359,14 @@ export default {
     // 清除当前对话
     clearTalk() {
       this.params = {
-        source: 0,
-        receive_id: 0,
+        talk_type: 0,
+        receiver_id: 0,
         nickname: '',
       }
 
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
-        source: 0,
-        receive_id: 0,
+        talk_type: 0,
+        receiver_id: 0,
       })
     },
 
@@ -429,18 +428,18 @@ export default {
       if (index == -1) return
 
       let item = this.talks[index]
-      let [source, receive_id] = index_name.split('_')
+      let [talk_type, receiver_id] = index_name.split('_')
       let nickname = item.remark_name ? item.remark_name : item.name
 
       this.params = {
-        source,
-        receive_id,
+        talk_type,
+        receiver_id,
         nickname,
       }
 
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
-        source,
-        receive_id,
+        talk_type,
+        receiver_id,
       })
 
       this.$nextTick(() => {
@@ -450,8 +449,8 @@ export default {
 
           // 清空消息未读数(后期改成WebSocket发送消息)
           ServeClearTalkUnreadNum({
-            type: source,
-            receive: receive_id,
+            talk_type,
+            receiver_id,
           })
         }
       })
@@ -466,8 +465,8 @@ export default {
     // 关闭当前对话及刷新对话列表
     closeTalk() {
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
-        source: 0,
-        receive_id: 0,
+        talk_type: 0,
+        receiver_id: 0,
       })
 
       this.loadChatList()
@@ -480,15 +479,15 @@ export default {
           {
             label: '好友信息',
             icon: 'el-icon-user',
-            disabled: item.type == 2,
+            disabled: item.talk_type == 2,
             onClick: () => {
-              this.$refs.userBusinessCard.open(item.friend_id)
+              this.$refs.userBusinessCard.open(item.receiver_id)
             },
           },
           {
             label: '修改备注',
             icon: 'el-icon-edit-outline',
-            disabled: item.type == 2,
+            disabled: item.talk_type == 2,
             onClick: () => {
               this.editFriendRemarks(item)
             },
@@ -501,9 +500,9 @@ export default {
             },
           },
           {
-            label: item.not_disturb == 0 ? '消息免打扰' : '开启消息提示',
+            label: item.is_disturb == 0 ? '消息免打扰' : '开启消息提示',
             icon:
-              item.not_disturb == 0
+              item.is_disturb == 0
                 ? 'el-icon-close-notification'
                 : 'el-icon-bell',
             onClick: () => {
@@ -519,10 +518,10 @@ export default {
             },
           },
           {
-            label: item.type == 1 ? '删除好友' : '退出群聊',
+            label: item.talk_type == 1 ? '删除好友' : '退出群聊',
             icon: 'el-icon-delete',
             onClick: () => {
-              let title = item.type == 1 ? '删除好友' : '退出群聊'
+              let title = item.talk_type == 1 ? '删除好友' : '退出群聊'
               this.$confirm(
                 `此操作将 <span style="color:red;font-size:16px;">${title}</span>, 是否继续?`,
                 '提示',
@@ -590,15 +589,15 @@ export default {
     // 设置消息免打扰
     setNotDisturb(item) {
       ServeSetNotDisturb({
-        type: item.type,
-        receive_id: item.type == 1 ? item.friend_id : item.group_id,
-        not_disturb: item.not_disturb == 0 ? 1 : 0,
+        talk_type: item.talk_type,
+        receiver_id: item.receiver_id,
+        is_disturb: item.is_disturb == 0 ? 1 : 0,
       }).then(({ code }) => {
         if (code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
             index: findTalkIndex(item.index_name),
             item: {
-              not_disturb: item.not_disturb == 0 ? 1 : 0,
+              is_disturb: item.is_disturb == 0 ? 1 : 0,
             },
           })
         }
@@ -620,7 +619,7 @@ export default {
     // 解除好友关系
     removeFriend(item) {
       ServeDeleteContact({
-        friend_id: item.friend_id,
+        friend_id: item.receiver_id,
       }).then(({ code }) => {
         if (code == 200) {
           if (this.index_name == item.index_name) {
@@ -635,7 +634,7 @@ export default {
     // 退出群聊
     removeGroup(item) {
       ServeSecedeGroup({
-        group_id: item.group_id,
+        group_id: item.receiver_id,
       }).then(({ code }) => {
         if (code == 200) {
           if (this.index_name == item.index_name) {
@@ -671,7 +670,7 @@ export default {
           }
 
           ServeEditContactRemark({
-            friend_id: item.friend_id,
+            friend_id: item.receiver_id,
             remarks: value,
           }).then(res => {
             if (res.code == 200) {

@@ -279,14 +279,13 @@ export default {
 
     // 发送好友消息
     sendMessage() {
-      let userInfo = this.userInfo
       ServeCreateTalkList({
-        type: 1,
-        receive_id: this.user_id,
+        talk_type: 1,
+        receiver_id: this.user_id,
       }).then(res => {
         if (res.code !== 200) return
 
-        this.$root.dumpTalkPage(`1_${userInfo.user_id}`)
+        this.$root.dumpTalkPage(`1_${this.userInfo.user_id}`)
       })
     },
 

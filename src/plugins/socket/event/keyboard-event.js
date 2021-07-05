@@ -28,9 +28,9 @@ class KeyboardEvent extends AppMessageEvent {
   }
 
   isShow() {
-    let [source, receive_id] = store.state.dialogue.index_name.split('_')
+    let [talk_type, receiver_id] = store.state.dialogue.index_name.split('_')
 
-    return !(source == 2 || receive_id != this.resource.send_user)
+    return !(talk_type == 2 || receiver_id != this.resource.sender_id)
   }
 }
 

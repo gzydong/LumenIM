@@ -30,27 +30,24 @@ export function findTalk(index_name) {
 export function formateTalkItem(params) {
   let options = {
     id: 0,
-    type: 1,
-    index_name: '',
+    talk_type: 1,
+    receiver_id:0,
     name: '未设置昵称',
     remark_name: '',
     avatar: '',
-    friend_id: 0,
-    group_id: 0,
-    not_disturb: 0,
+    is_disturb: 0,
     is_top: 0,
+    is_online:false,
     unread_num: 0,
     content: '......',
     draft_text: '',
+    msg_text:'',
+    index_name: '',
     created_at: parseTime(new Date()),
   }
 
   Object.assign(options, params)
-
-  options.index_name =
-    options.type == 1
-      ? `${options.type}_${options.friend_id}`
-      : `${options.type}_${options.group_id}`
+  options.index_name =`${options.talk_type}_${options.receiver_id}`
 
   return options
 }

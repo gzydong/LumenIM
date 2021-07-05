@@ -271,10 +271,10 @@ export default {
 
     // 代码块编辑器确认完成回调事件
     confirmCodeBlock(data) {
-      const { source, receive_id } = this.$store.state.dialogue
+      const { talk_type, receiver_id } = this.$store.state.dialogue
       ServeSendTalkCodeBlock({
-        source,
-        receive_id,
+        talk_type,
+        receiver_id,
         code: data.code,
         lang: data.language,
       }).then(res => {
@@ -291,12 +291,12 @@ export default {
 
     // 确认上传图片消息回调事件
     confirmUploadImage() {
-      const { source, receive_id } = this.$store.state.dialogue
+      const { talk_type, receiver_id } = this.$store.state.dialogue
 
       let fileData = new FormData()
-      fileData.append('source', source)
-      fileData.append('receive_id', receive_id)
-      fileData.append('img', this.imageViewer.file)
+      fileData.append('talk_type', talk_type)
+      fileData.append('receiver_id', receiver_id)
+      fileData.append('image', this.imageViewer.file)
 
       let ref = this.$refs.imageViewer
 
@@ -334,10 +334,10 @@ export default {
           }, 0)
         }
       } else {
-        const { source, receive_id } = this.$store.state.dialogue
+        const { talk_type, receiver_id } = this.$store.state.dialogue
         ServeSendEmoticon({
-          source,
-          receive_id,
+          talk_type,
+          receiver_id,
           emoticon_id: data.value,
         })
       }

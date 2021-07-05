@@ -59,7 +59,7 @@
       <div class="list-item flex">
         <span>消息免打扰：</span>
         <el-switch
-          v-model="detail.disturb"
+          v-model="detail.is_disturb"
           inactive-color="#e0d6d6"
           :disabled="disturbDisabled"
           @change="editDisturb"
@@ -259,7 +259,7 @@ export default {
         groupName: '',
         groupOwner: '',
         groupProfile: '',
-        disturb: 0,
+        is_disturb: 0,
         no_message: false,
         visitCard: '',
         is_manager: false,
@@ -342,7 +342,7 @@ export default {
           this.detail.groupName = result.group_name
           this.detail.groupOwner = result.manager_nickname
           this.detail.groupProfile = result.group_profile
-          this.detail.disturb = result.not_disturb == 1 ? true : false
+          this.detail.is_disturb = result.is_disturb == 1
           this.detail.visitCard = result.visit_card
           this.detail.is_manager = result.is_manager
 
@@ -357,9 +357,9 @@ export default {
     editDisturb(value) {
       this.disturbDisabled = true
       ServeSetNotDisturb({
-        type: 2,
-        receive_id: this.groupId,
-        not_disturb: value ? 1 : 0,
+        talk_type: 2,
+        receiver_id: this.groupId,
+        is_disturb: value ? 1 : 0,
       })
         .then(res => {
           if (res.code == 200) {
@@ -368,11 +368,11 @@ export default {
               status: value ? 1 : 0,
             })
           } else {
-            this.detail.disturb = value ? 0 : 1
+            this.detail.is_disturb = value ? 0 : 1
           }
         })
         .catch(() => {
-          this.detail.disturb = value ? 0 : 1
+          this.detail.is_disturb = value ? 0 : 1
         })
         .finally(() => {
           this.disturbDisabled = false

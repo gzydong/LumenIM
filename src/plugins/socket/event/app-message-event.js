@@ -22,23 +22,23 @@ class AppMessageEvent {
   /**
    * 判断消息是否来自当前对话
    *
-   * @param {Number} source 聊天消息类型（1：私聊，2：群聊）
-   * @param {Number} receive_id 接收者ID
-   * @param {Number} user_id 发送者ID
+   * @param {Number} talk_type 聊天消息类型（1：私聊，2：群聊）
+   * @param {Number} receiver_id 接收者ID
+   * @param {Number} sender_id 发送者ID
    */
-  isChatting(source, receive_id, user_id) {
-    if (source != store.state.dialogue.source) {
+  isChatting(talk_type, receiver_id, sender_id) {
+    if (talk_type != store.state.dialogue.talk_type) {
       return false
-    } else if (source == 1) {
-      if (store.state.dialogue.receive_id == receive_id) {
+    } else if (talk_type == 1) {
+      if (store.state.dialogue.receiver_id == receiver_id) {
         return true
-      } else if (store.state.dialogue.receive_id == user_id) {
+      } else if (store.state.dialogue.receiver_id == sender_id) {
         return true
       }
-    } else if (source == 2) {
+    } else if (talk_type == 2) {
       if (
-        store.state.dialogue.receive_id == receive_id ||
-        store.state.dialogue.receive_id == this.UserId
+        store.state.dialogue.receiver_id == receiver_id ||
+        store.state.dialogue.receiver_id == this.UserId
       ) {
         return true
       }

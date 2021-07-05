@@ -47,7 +47,7 @@
             <div class="card">
               <div class="title">
                 <span class="name">{{ item.group_name }}</span>
-                <div v-show="item.not_disturb == 1" class="larkc-tag">
+                <div v-show="item.is_disturb == 1" class="larkc-tag">
                   <i
                     class="iconfont icon-xiaoximiandarao"
                     style="font-size: 10px; color: #7d7a7a"
@@ -169,9 +169,7 @@ export default {
 
     // 根据用户对话索引获取对话数组对应的key
     getGroupIndex(group_id) {
-      return this.groups.items.findIndex(item => {
-        return item.id == group_id
-      })
+      return this.groups.items.findIndex(item => item.id == group_id)
     },
 
     // 退出群聊
@@ -191,9 +189,7 @@ export default {
               if (res.code == 200) {
                 this.$delete(
                   this.groups.items,
-                  this.groups.items.findIndex(item => {
-                    return item.id == group_id
-                  })
+                  this.groups.items.findIndex(item => item.id == group_id)
                 )
 
                 this.$message({
@@ -213,11 +209,11 @@ export default {
     },
 
     // 跳转聊天页面
-    toTalk(type, index_name) {
-      let receive_id = index_name.split('_')[1]
+    toTalk(talk_type, index_name) {
+      let receiver_id = index_name.split('_')[1]
       ServeCreateTalkList({
-        type,
-        receive_id,
+        talk_type,
+        receiver_id,
       }).then(res => {
         if (res.code !== 200) return
         this.$root.dumpTalkPage(index_name)
@@ -244,7 +240,7 @@ export default {
     // 修改群聊免打扰状态
     disturbChange(detail) {
       let idx = this.getGroupIndex(detail.group_id)
-      this.groups.items[idx].not_disturb = detail.status
+      this.groups.items[idx].is_disturb = detail.status
     },
   },
 }
