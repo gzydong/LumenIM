@@ -2,12 +2,12 @@ import { post, get, upload } from '@/utils/request'
 
 // 查询用户表情包服务接口
 export const ServeFindUserEmoticon = () => {
-  return get('/api/v1/emoticon/user-emoticon')
+  return get('/api/v1/emoticon/list')
 }
 
 // 查询系统表情包服务接口
 export const ServeFindSysEmoticon = () => {
-  return get('/api/v1/emoticon/system-emoticon')
+  return get('/api/v1/emoticon/system')
 }
 
 // 设置用户表情包服务接口

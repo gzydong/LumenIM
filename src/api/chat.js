@@ -37,7 +37,7 @@ export const ServeGetForwardRecords = data => {
 
 // 对话列表置顶服务接口
 export const ServeSetNotDisturb = data => {
-  return post('/api/v1/talk/set-not-disturb', data)
+  return post('/api/v1/talk/disturb', data)
 }
 
 // 查找用户聊天记录服务接口
