@@ -15,7 +15,7 @@ export const isEmail = value => {
  * @param {String} value
  */
 export const isMobile = value => {
-  return /^1[3-9]{10}$/.test(value)
+  return /^1[3456789]\d{9}$/.test(value)
 }
 
 /**
