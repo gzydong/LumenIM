@@ -96,14 +96,14 @@ class TalkEvent extends AppMessageEvent {
     this.$notify({
       title: `${tag} 聊天通知`,
       message: `「${group_name}」@${nickname} : ${content}`,
-      duration: 30000,
+      duration: 3000,
       customClass: 'talk-notify pointer',
       onClick: function() {
         sessionStorage.setItem('send_message_index_name', index_name)
         router.push('/')
         this.close()
       },
-      position: 'bottom-right',
+      position: 'top-right',
     })
 
     store.commit('INCR_UNREAD_NUM')

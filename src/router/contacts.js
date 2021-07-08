@@ -8,7 +8,7 @@ export default {
       path: '/contacts/apply',
       meta: {
         title: '我的联系人',
-        needLogin: false,
+        needLogin: true,
       },
       component: () => import('@/views/contacts/apply'),
     },
@@ -16,7 +16,7 @@ export default {
       path: '/contacts/friends',
       meta: {
         title: '我的好友',
-        needLogin: false,
+        needLogin: true,
       },
       component: () => import('@/views/contacts/friends'),
     },
@@ -24,7 +24,7 @@ export default {
       path: '/contacts/groups',
       meta: {
         title: '我的群组',
-        needLogin: false,
+        needLogin: true,
       },
       component: () => import('@/views/contacts/groups'),
     },
