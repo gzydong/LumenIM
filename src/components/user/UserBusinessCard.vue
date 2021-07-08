@@ -239,7 +239,7 @@ export default {
       if (this.applyFrom.text == '') return
       ServeCreateContact({
         friend_id: this.userInfo.user_id,
-        remarks: this.applyFrom.text,
+        remark: this.applyFrom.text,
       }).then(res => {
         if (res.code == 200) {
           this.applyFrom.isShow = false
