@@ -31,23 +31,23 @@ export function formateTalkItem(params) {
   let options = {
     id: 0,
     talk_type: 1,
-    receiver_id:0,
+    receiver_id: 0,
     name: '未设置昵称',
     remark_name: '',
     avatar: '',
     is_disturb: 0,
     is_top: 0,
-    is_online:false,
+    is_online: false,
     unread_num: 0,
     content: '......',
     draft_text: '',
-    msg_text:'',
+    msg_text: '',
     index_name: '',
     created_at: parseTime(new Date()),
   }
 
   Object.assign(options, params)
-  options.index_name =`${options.talk_type}_${options.receiver_id}`
+  options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options
 }
@@ -55,15 +55,17 @@ export function formateTalkItem(params) {
 /**
  * 打开指定对话窗口
  *
- * @param {Integer} userId 用户ID
- * @param {Integer} talkType 对话类型[1:私聊;2:群聊;]
+ * @param {Integer} talk_type 对话类型[1:私聊;2:群聊;]
+ * @param {Integer} user_id 用户ID
  */
-export function openTalk(userId, talkType) {
+export function toTalk(talk_type, user_id) {
+  sessionStorage.setItem('send_message_index_name', `${talk_type}_${user_id}`)
+
   router.push({
     path: '/message',
     query: {
-      talk: userId,
-      type: talkType,
+      talk: user_id,
+      type: talk_type,
       v: new Date().getTime(),
     },
   })

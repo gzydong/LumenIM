@@ -28,3 +28,6 @@ Vue.component(InviteMessage.name, InviteMessage)
 Vue.component(RevokeMessage.name, RevokeMessage)
 Vue.component(VisitCardMessage.name, VisitCardMessage)
 Vue.component(ReplyMessage.name, ReplyMessage)
+
+import UserCard from '@/components/user/user-card/index'
+Vue.use(UserCard)

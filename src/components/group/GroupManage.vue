@@ -211,8 +211,8 @@
                           <span
                             class="text nickname"
                             v-text="item.nickname"
-                            @click="$refs.userBusinessCard.open(item.user_id)"
-                          ></span>
+                            @click="$user(item.user_id)"
+                          />
                           <span class="text">
                             发表于 {{ item.created_at.substr(0, 16) }}
                           </span>
@@ -278,9 +278,6 @@
       <AvatarCropper v-if="isAvatarCropper" @close="closeAvatarCropper" />
     </transition>
 
-    <!-- 查看好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
-
     <transition name="el-fade-in-linear">
       <GroupLaunch
         v-if="inviteFriendBox"
@@ -293,7 +290,6 @@
 </template>
 <script>
 import AvatarCropper from '@/components/layout/AvatarCropper'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import GroupLaunch from '@/components/group/GroupLaunch'
 import { SvgNotData } from '@/core/icons'
 import {
@@ -315,7 +311,6 @@ export default {
   },
   components: {
     AvatarCropper,
-    UserBusinessCard,
     GroupLaunch,
     SvgNotData,
   },
@@ -558,7 +553,7 @@ export default {
 
     // 查看群成员信息事件
     catUserDetail(item) {
-      this.$refs.userBusinessCard.open(item.user_id)
+      this.$user(item.user_id)
     },
 
     // 选中删除成员事件

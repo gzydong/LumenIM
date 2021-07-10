@@ -150,7 +150,10 @@
                           <div v-show="item.is_top" class="larkc-tag top">
                             TOP
                           </div>
-                          <div v-show="item.talk_type == 2" class="larkc-tag group">
+                          <div
+                            v-show="item.talk_type == 2"
+                            class="larkc-tag group"
+                          >
                             群组
                           </div>
                           <div
@@ -214,9 +217,6 @@
       @create-success="groupChatSuccess"
     />
 
-    <!-- 查看用户组件 -->
-    <UserBusinessCard ref="userBusinessCard" />
-
     <!-- 用户查询组件 -->
     <UserSearch ref="searchUsers" />
   </div>
@@ -227,7 +227,6 @@ import MainLayout from '@/views/layout/MainLayout'
 import WelcomeModule from '@/components/layout/WelcomeModule'
 import GroupLaunch from '@/components/group/GroupLaunch'
 import TalkPanel from '@/components/chat/panel/TalkPanel'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import UserSearch from '@/components/user/UserSearch'
 import {
   ServeGetTalkList,
@@ -249,7 +248,6 @@ export default {
     MainLayout,
     GroupLaunch,
     TalkPanel,
-    UserBusinessCard,
     UserSearch,
     WelcomeModule,
   },
@@ -481,7 +479,7 @@ export default {
             icon: 'el-icon-user',
             disabled: item.talk_type == 2,
             onClick: () => {
-              this.$refs.userBusinessCard.open(item.receiver_id)
+              this.$user(item.receiver_id)
             },
           },
           {

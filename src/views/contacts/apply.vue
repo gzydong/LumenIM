@@ -57,14 +57,10 @@
         </template>
       </el-main>
     </el-container>
-
-    <!-- 查看好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
   </div>
 </template>
 
 <script>
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import Empty from '@/components/global/Empty'
 import Loading from '@/components/global/Loading'
 import {
@@ -75,7 +71,6 @@ import {
 
 export default {
   components: {
-    UserBusinessCard,
     Empty,
     Loading,
   },
@@ -153,7 +148,7 @@ export default {
 
     // 查看用户名片
     openUserDetail(user_id) {
-      this.$refs.userBusinessCard.open(user_id)
+      this.$user(user_id)
     },
   },
 }

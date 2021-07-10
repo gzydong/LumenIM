@@ -49,10 +49,7 @@
                 <el-avatar :size="15" :src="item.avatar">
                   <img src="~@/assets/image/detault-avatar.jpg" />
                 </el-avatar>
-                <span
-                  class="text nickname"
-                  @click="$refs.userBusinessCard.open(item.user_id)"
-                >
+                <span class="text nickname" @click="$user(item.user_id)">
                   {{ item.nickname }}
                 </span>
                 <span class="text">发表于 {{ item.created_at }}</span>

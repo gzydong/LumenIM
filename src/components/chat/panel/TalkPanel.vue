@@ -249,9 +249,6 @@
       />
     </transition>
 
-    <!-- 好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
-
     <!-- 群公告组件 -->
     <transition name="el-fade-in-linear">
       <GroupNotice
@@ -264,7 +261,6 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import TalkSearchRecord from '@/components/chat/TalkSearchRecord'
 import UserContacts from '@/components/chat/UserContacts'
 import GroupPanel from '@/components/group/GroupPanel'
@@ -290,7 +286,6 @@ export default {
     UserContacts,
     GroupPanel,
     TalkSearchRecord,
-    UserBusinessCard,
     GroupNotice,
     SvgMentionDown,
     PanelToolbar,
@@ -427,16 +422,15 @@ export default {
         },
       })
 
+      // 判断当前对话是否属于私聊信息
+      if (this.params.talk_type == 2 || !this.isOnline) return
+
       // 判断是否推送键盘输入事件消息
       if (!this.$store.state.settings.keyboardEventNotify) {
         return false
       }
 
       let time = new Date().getTime()
-
-      // 判断当前对话是否属于私聊信息
-      if (this.params.talk_type == 2 || !this.isOnline) return
-
       // 判断在两秒内是否已推送事件
       if (this.keyboardEvent.time != 0 && time - this.keyboardEvent.time < 2000)
         return
@@ -622,7 +616,7 @@ export default {
 
     // 查看好友用户信息
     catFriendDetail(value) {
-      this.$refs.userBusinessCard.open(value)
+      this.$user(value)
     },
 
     // 撤回消息

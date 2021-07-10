@@ -190,9 +190,6 @@
       </p>
     </div>
 
-    <!-- 查看好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
-
     <!-- 邀请好友组件 -->
     <transition name="el-fade-in-linear">
       <GroupLaunch
@@ -233,7 +230,6 @@ import {
 
 //创建群聊组件
 import GroupLaunch from '@/components/group/GroupLaunch'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import GroupManage from '@/components/group/GroupManage'
 import GroupNotice from '@/components/group/GroupNotice'
 
@@ -241,7 +237,6 @@ export default {
   name: 'GroupPanel',
   components: {
     GroupLaunch,
-    UserBusinessCard,
     GroupManage,
     GroupNotice,
   },
@@ -404,7 +399,7 @@ export default {
 
     // 查看用户信息
     openUserDetail(user_id) {
-      this.$refs.userBusinessCard.open(user_id)
+      this.$user(user_id)
     },
 
     // 邀请好友加入群聊

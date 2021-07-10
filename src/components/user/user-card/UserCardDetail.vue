@@ -1,5 +1,5 @@
 <template>
-  <div v-show="isShow" class="lum-dialog-mask animated fadeIn">
+  <div class="lum-dialog-mask animated fadeIn">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
         <i class="close el-icon-error pointer" @click="close" />
@@ -140,18 +140,21 @@ import { ServeCreateTalkList } from '@/api/chat'
 import { ServeSearchUser } from '@/api/user'
 import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
 
+import { toTalk } from '@/utils/talk'
+
 export default {
-  name: 'UserBusinessCard',
+  name: 'UserCardDetail',
   components: {
     UserContacts,
   },
+  props: {
+    user_id: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
-      isShow: false,
-
-      // 用户ID
-      user_id: 0,
-
       // 用户相关信息
       userInfo: {
         mobile: '',
@@ -181,20 +184,16 @@ export default {
       contacts: false,
     }
   },
+  created() {
+    this.findUserDetail()
+  },
   methods: {
-    // 显示窗口
-    open(user_id) {
-      this.isShow = true
-      this.user_id = user_id
-      this.findUserDetail()
-    },
-
-    // 关闭窗口
     close() {
       if (this.contacts) {
         return false
       }
-      this.isShow = false
+
+      this.$emit('close')
     },
 
     // 手机号格式化
@@ -284,8 +283,8 @@ export default {
         receiver_id: this.user_id,
       }).then(res => {
         if (res.code !== 200) return
-
-        this.$root.dumpTalkPage(`1_${this.userInfo.user_id}`)
+        this.close()
+        toTalk(1, this.user_id)
       })
     },
 

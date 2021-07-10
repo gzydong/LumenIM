@@ -2,9 +2,12 @@ import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 import AppMessageEvent from './app-message-event'
+import NewMessageNotify from '@/components/notify/NewMessageNotify'
 import { parseTime } from '@/utils/functions'
 import { formateTalkItem, findTalkIndex } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
+
+import vm from '@/main'
 
 /**
  * 聊天消息处理
@@ -65,7 +68,11 @@ class TalkEvent extends AppMessageEvent {
 
   handle() {
     const indexName = this.getIndexName()
+
+    // 判断当前是否在对话页面
     if (!this.isTalkPage()) {
+      store.commit('INCR_UNREAD_NUM')
+
       return !this.isCurrSender() && this.showMessageNocice(indexName)
     }
 
@@ -88,25 +95,21 @@ class TalkEvent extends AppMessageEvent {
    * @returns
    */
   showMessageNocice(index_name) {
-    let tag = this.talk_type == 1 ? '[私信]' : '[群聊]'
-    let group_name = this.resource.group_name || '好友'
-    let nickname = this.resource.nickname || this.resource.group_name
-    let content = this.getTalkText()
-
     this.$notify({
-      title: `${tag} 聊天通知`,
-      message: `「${group_name}」@${nickname} : ${content}`,
-      duration: 3000,
-      customClass: 'talk-notify pointer',
+      message: vm.$createElement(NewMessageNotify, {
+        props: {
+          params: this.resource,
+        },
+      }),
+      customClass: 'im-notify',
+      duration: 300000,
+      position: 'top-right',
       onClick: function() {
         sessionStorage.setItem('send_message_index_name', index_name)
         router.push('/')
         this.close()
       },
-      position: 'top-right',
     })
-
-    store.commit('INCR_UNREAD_NUM')
   }
 
   getFloatType() {
