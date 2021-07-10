@@ -67,9 +67,14 @@ const Talk = {
 
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
-      state.items[resource.index].msg_text = resource.item.msg_text
-      state.items[resource.index].unread_num++
-      state.items[resource.index].updated_at = resource.item.updated_at
+      for (let i in state.items) {
+        if (state.items[i].index_name === resource.index_name) {
+          state.items[i].unread_num++
+          state.items[i].msg_text = resource.msg_text
+          state.items[i].updated_at = resource.updated_at
+          break
+        }
+      }
     },
 
     // 触发对话列表重新加载

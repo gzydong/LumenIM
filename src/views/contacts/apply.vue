@@ -17,7 +17,7 @@
             v-for="(item, index) in items"
             :key="item.id"
             class="data-item"
-            @click="openUserDetail(item.user_id)"
+            @click="$user(item.user_id)"
           >
             <el-avatar
               shape="square"
@@ -77,7 +77,6 @@ export default {
   data() {
     return {
       items: [],
-
       status: 0,
     }
   },
@@ -144,11 +143,6 @@ export default {
           })
         })
         .catch(action => {})
-    },
-
-    // 查看用户名片
-    openUserDetail(user_id) {
-      this.$user(user_id)
     },
   },
 }

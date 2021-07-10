@@ -129,10 +129,8 @@
 </template>
 <script>
 import UserContacts from '@/components/user/UserContacts'
-import { ServeCreateTalkList } from '@/api/chat'
 import { ServeSearchUser } from '@/api/user'
 import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
-
 import { toTalk } from '@/utils/talk'
 
 export default {
@@ -192,9 +190,7 @@ export default {
   },
   methods: {
     close() {
-      if (this.contacts) {
-        return false
-      }
+      if (this.contacts) return false
 
       this.$emit('close')
     },
@@ -262,14 +258,8 @@ export default {
 
     // 发送好友消息
     sendMessage() {
-      ServeCreateTalkList({
-        talk_type: 1,
-        receiver_id: this.user_id,
-      }).then(res => {
-        if (res.code !== 200) return
-        this.close()
-        toTalk(1, this.user_id)
-      })
+      this.close()
+      toTalk(1, this.user_id)
     },
 
     confirmContact(array) {

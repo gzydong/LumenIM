@@ -1,6 +1,9 @@
 import store from '@/store'
 import router from '@/router'
 import { parseTime } from '@/utils/functions'
+import { ServeCreateTalkList } from '@/api/chat'
+
+const KEY_INDEX_NAME = 'send_message_index_name'
 
 /**
  * 通过对话索引查找对话列表下标
@@ -56,17 +59,35 @@ export function formateTalkItem(params) {
  * 打开指定对话窗口
  *
  * @param {Integer} talk_type 对话类型[1:私聊;2:群聊;]
- * @param {Integer} user_id 用户ID
+ * @param {Integer} receiver_id 接收者ID
  */
-export function toTalk(talk_type, user_id) {
-  sessionStorage.setItem('send_message_index_name', `${talk_type}_${user_id}`)
-
-  router.push({
-    path: '/message',
-    query: {
-      talk: user_id,
-      type: talk_type,
-      v: new Date().getTime(),
-    },
+export function toTalk(talk_type, receiver_id) {
+  ServeCreateTalkList({
+    talk_type,
+    receiver_id,
+  }).then(({ code, data }) => {
+    if (code == 200) {
+      sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+      router.push({
+        path: '/message',
+        query: {
+          v: new Date().getTime(),
+        },
+      })
+    }
   })
+}
+
+/**
+ * 获取需要打开的对话索引值
+ *
+ * @returns
+ */
+export function getCacheIndexName() {
+  let index_name = sessionStorage.getItem(KEY_INDEX_NAME)
+  if (index_name) {
+    sessionStorage.removeItem(KEY_INDEX_NAME)
+  }
+
+  return index_name
 }

@@ -115,17 +115,18 @@ class Talk extends Base {
       return !this.isCurrSender() && this.showMessageNocice(indexName)
     }
 
-    const index = findTalkIndex(indexName)
-    if (index == -1) {
-      return this.loadTalkItem()
+    // 判断会话列表是否存在，不存在则创建
+    if (findTalkIndex(indexName) == -1) {
+      return this.addTalkItem()
     }
 
     let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id)
+
     // 判断当前是否正在和好友对话
     if (isTrue) {
-      this.insertTalkRecord(index)
+      this.insertTalkRecord()
     } else {
-      this.updateTalkItem(index)
+      this.updateTalkItem()
     }
   }
 
@@ -156,11 +157,13 @@ class Talk extends Base {
   /**
    * 加载对接节点
    */
-  loadTalkItem() {
+  addTalkItem() {
     let receiver_id = this.sender_id
     let talk_type = this.talk_type
 
-    if (talk_type == 2 || this.sender_id == this.UserId) {
+    if (talk_type == 1 && this.receiver_id != this.getAccountId()) {
+      receiver_id = this.receiver_id
+    } else if (talk_type == 2) {
       receiver_id = this.receiver_id
     }
 
@@ -169,21 +172,15 @@ class Talk extends Base {
       receiver_id,
     }).then(({ code, data }) => {
       if (code == 200) {
-        data.unread_num++
-        this.getStoreInstance().commit(
-          'PUSH_TALK_ITEM',
-          formateTalkItem(data)
-        )
+        this.getStoreInstance().commit('PUSH_TALK_ITEM', formateTalkItem(data))
       }
     })
   }
 
   /**
-   * 更新对话记录
-   *
-   * @param {Number} index 聊天列表的索引
+   * 插入对话记录
    */
-  insertTalkRecord(index) {
+  insertTalkRecord() {
     let store = this.getStoreInstance()
     let record = this.resource
 
@@ -224,19 +221,16 @@ class Talk extends Base {
 
   /**
    * 更新对话列表记录
-   *
-   * @param {Number} index 聊天列表的索引
    */
-  updateTalkItem(index) {
+  updateTalkItem() {
     let store = this.getStoreInstance()
 
     store.commit('INCR_UNREAD_NUM')
+
     store.commit('UPDATE_TALK_MESSAGE', {
-      index,
-      item: {
-        msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()),
-      },
+      index_name: this.getIndexName(),
+      msg_text: this.getTalkText(),
+      updated_at: parseTime(new Date()),
     })
   }
 }

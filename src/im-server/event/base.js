@@ -53,7 +53,7 @@ class Base {
    * 判断用户是否打开对话页
    */
   isTalkPage() {
-    let path = router.currentRoute.fullPath
+    let path = router.currentRoute.path
     return !(path != '/message' && path != '/')
   }
 }

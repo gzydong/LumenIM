@@ -46,7 +46,7 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-s-promotion"
-                @click="toTalk(1, `1_${item.id}`)"
+                @click="toTalk(1, item.id)"
                 >发送消息
               </el-button>
               <el-button
@@ -66,7 +66,6 @@
 
 <script>
 import { ServeGetContacts, ServeDeleteContact } from '@/api/contacts'
-import { ServeCreateTalkList } from '@/api/chat'
 import Empty from '@/components/global/Empty'
 import Loading from '@/components/global/Loading'
 import { toTalk } from '@/utils/talk'
@@ -140,16 +139,8 @@ export default {
     },
 
     // 跳转聊天页面
-    toTalk(talk_type, index_name) {
-      let receiver_id = index_name.split('_')[1]
-
-      ServeCreateTalkList({
-        talk_type,
-        receiver_id,
-      }).then(res => {
-        if (res.code !== 200) return
-        toTalk(1, receiver_id)
-      })
+    toTalk(talk_type, receiver_id) {
+      toTalk(talk_type, receiver_id)
     },
   },
 }

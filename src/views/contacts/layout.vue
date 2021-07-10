@@ -80,6 +80,7 @@
 import MainLayout from '@/views/layout/MainLayout'
 import GroupLaunch from '@/components/group/GroupLaunch'
 import UserSearch from '@/components/user/UserSearch'
+import { toTalk } from '@/utils/talk'
 
 export default {
   name: 'ContactsPage',
@@ -130,7 +131,7 @@ export default {
 
     // 发起群聊回调事件
     launchSuccess(data) {
-      this.$root.dumpTalkPage(`2_${data.group_id}`)
+      toTalk(2, data.group_id)
     },
   },
 }
