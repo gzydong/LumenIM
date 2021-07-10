@@ -14,7 +14,7 @@ export default {
                 el.$destroy()
                 document.body.removeChild(el.$el)
               },
-              changeRemark(data) {
+              changeRemark: data => {
                 options.editRemarkCallbak && options.editRemarkCallbak(data)
               },
             },

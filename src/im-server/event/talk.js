@@ -126,7 +126,6 @@ class Talk extends Base {
       this.insertTalkRecord(index)
     } else {
       this.updateTalkItem(index)
-      console.log('asdfas')
     }
   }
 
@@ -172,7 +171,7 @@ class Talk extends Base {
       if (code == 200) {
         data.unread_num++
         this.getStoreInstance().commit(
-          'INSERT_TALK_ITEM',
+          'PUSH_TALK_ITEM',
           formateTalkItem(data)
         )
       }
@@ -210,11 +209,9 @@ class Talk extends Base {
     }
 
     store.commit('UPDATE_TALK_ITEM', {
-      index,
-      item: {
-        msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()),
-      },
+      index_name: this.getIndexName(),
+      msg_text: this.getTalkText(),
+      updated_at: parseTime(new Date()),
     })
 
     if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {

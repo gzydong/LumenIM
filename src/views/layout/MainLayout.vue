@@ -96,7 +96,7 @@
       popper-class="no-padding"
       :visible-arrow="false"
     >
-      <UserCard />
+      <AccountCard />
     </el-popover>
 
     <!-- 语音消息提示 -->
@@ -113,7 +113,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import UserCard from '@/components/user/UserCard'
+import AccountCard from '@/components/user/AccountCard'
 import RewardModule from '@/components/layout/RewardModule'
 import AbsModule from '@/components/layout/AbsModule'
 import { ServeFindFriendApplyNum } from '@/api/contacts'
@@ -121,9 +121,9 @@ import { ServeFindFriendApplyNum } from '@/api/contacts'
 export default {
   name: 'MainLayout',
   components: {
-    UserCard,
+    AccountCard,
     RewardModule,
-    AbsModule
+    AbsModule,
   },
   props: {
     idx: {

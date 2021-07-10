@@ -207,7 +207,7 @@ import {
 } from '@/api/article'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
 import PreCode from '@/directive/PreCode'
-import UserContacts from '@/components/chat/UserContacts'
+import UserContacts from '@/components/user/UserContacts'
 import NoteAnnexBox from '@/components/note/NoteAnnexBox'
 import NoteTagBox from '@/components/note/NoteTagBox'
 import { mavonEditor } from 'mavon-editor'

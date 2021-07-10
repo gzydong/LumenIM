@@ -26,8 +26,6 @@ export default {
       duration: 300000,
       position: 'top-right',
     })
-
-    this.$openUserCard()
   },
 }
 </script>

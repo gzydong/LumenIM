@@ -262,7 +262,7 @@
 <script>
 import { mapState } from 'vuex'
 import TalkSearchRecord from '@/components/chat/TalkSearchRecord'
-import UserContacts from '@/components/chat/UserContacts'
+import UserContacts from '@/components/user/UserContacts'
 import GroupPanel from '@/components/group/GroupPanel'
 import GroupNotice from '@/components/group/GroupNotice'
 import MeEditor from '@/components/editor/MeEditor'
@@ -406,20 +406,16 @@ export default {
       })
 
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(this.index_name),
-        item: {
-          draft_text: '',
-        },
+        index_name: this.index_name,
+        draft_text: '',
       })
     },
 
     // 推送编辑事件消息
     onKeyboardEvent(text) {
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(this.index_name),
-        item: {
-          draft_text: text,
-        },
+        index_name: this.index_name,
+        draft_text: text,
       })
 
       // 判断当前对话是否属于私聊信息
@@ -803,10 +799,8 @@ export default {
     // 修改群聊免打扰状态
     disturbChange(detail) {
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(`2_${this.params.receiver_id}`),
-        item: {
-          is_disturb: parseInt(detail.status),
-        },
+        index_name: `2_${this.params.receiver_id}`,
+        is_disturb: parseInt(detail.status),
       })
     },
 

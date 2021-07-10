@@ -320,13 +320,10 @@ export default {
 
     // 监听好友在线状态
     monitorFriendsStatus(value) {
-      let index = findTalkIndex(`1_${value.friendId}`)
-      if (index >= 0) {
-        this.$store.commit('UPDATE_TALK_ONLINE_STATUS', {
-          index,
-          status: value.status,
-        })
-      }
+      this.$store.commit('UPDATE_TALK_ITEM', {
+        index_name: `1_${value.friendId}`,
+        status: parseInt(value.status),
+      })
     },
   },
   beforeRouteUpdate(to, from, next) {
@@ -396,7 +393,7 @@ export default {
           if (code !== 200) return false
 
           this.$store.commit('SET_UNREAD_NUM', 0)
-          this.$store.commit('SET_TALK_ITEM', {
+          this.$store.commit('SET_TALK_ITEMS', {
             items: data.map(item => formateTalkItem(item)),
           })
 
@@ -442,8 +439,10 @@ export default {
 
       this.$nextTick(() => {
         if (index_name == this.index_name) {
-          // 清空对话的未读数
-          this.$store.commit('CLEAR_TLAK_UNREAD_NUM', index)
+          this.$store.commit('UPDATE_TALK_ITEM', {
+            index_name,
+            unread_num: 0,
+          })
 
           // 清空消息未读数(后期改成WebSocket发送消息)
           ServeClearTalkUnreadNum({
@@ -575,10 +574,8 @@ export default {
       }).then(({ code }) => {
         if (code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
-            index: findTalkIndex(item.index_name),
-            item: {
-              is_top: item.is_top == 0 ? 1 : 0,
-            },
+            index_name: item.index_name,
+            is_top: item.is_top == 0 ? 1 : 0,
           })
         }
       })
@@ -593,10 +590,8 @@ export default {
       }).then(({ code }) => {
         if (code == 200) {
           this.$store.commit('UPDATE_TALK_ITEM', {
-            index: findTalkIndex(item.index_name),
-            item: {
-              is_disturb: item.is_disturb == 0 ? 1 : 0,
-            },
+            index_name: item.index_name,
+            is_disturb: item.is_disturb == 0 ? 1 : 0,
           })
         }
       })
@@ -673,10 +668,8 @@ export default {
           }).then(res => {
             if (res.code == 200) {
               this.$store.commit('UPDATE_TALK_ITEM', {
-                index: findTalkIndex(item.index_name),
-                item: {
-                  remark_name: value,
-                },
+                index_name: item.index_name,
+                remark_name: value,
               })
 
               this.$notify({
