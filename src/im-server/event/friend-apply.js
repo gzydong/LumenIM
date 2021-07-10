@@ -1,11 +1,11 @@
-import AppMessageEvent from './app-message-event'
+import Base from './base'
 import store from '@/store'
 import router from '@/router'
 
 /**
  * 好友邀请消息处理
  */
-class FriendApplyEvent extends AppMessageEvent {
+class FriendApply extends Base {
   /**
    * @var resource 资源
    */
@@ -44,4 +44,4 @@ class FriendApplyEvent extends AppMessageEvent {
   }
 }
 
-export default FriendApplyEvent
+export default FriendApply

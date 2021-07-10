@@ -1,15 +1,15 @@
 import store from '@/store'
 import config from '@/config/config'
-import WsSocket from '@/plugins/socket/ws-socket'
+import WsSocket from '@/plugins/ws-socket'
 import { getToken } from '@/utils/auth'
 
 // 引入消息处理类
-import TalkEvent from '@/plugins/socket/event/talk-event'
-import RevokeEvent from '@/plugins/socket/event/revoke-event'
-import LoginEvent from '@/plugins/socket/event/login-event'
-import KeyboardEvent from '@/plugins/socket/event/keyboard-event'
-import GroupJoinEvent from '@/plugins/socket/event/group-join-event'
-import FriendApplyEvent from '@/plugins/socket/event/friend-apply-event'
+import KeyboardEvent from '@/im-server/event/keyboard'
+import LoginEvent from '@/im-server/event/login'
+import TalkEvent from '@/im-server/event/talk'
+import RevokeEvent from '@/im-server/event/revoke'
+import GroupJoinEvent from '@/im-server/event/group-join'
+import FriendApplyEvent from '@/im-server/event/friend-apply'
 
 /**
  * SocketInstance 连接实例

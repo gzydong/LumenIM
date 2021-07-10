@@ -268,7 +268,7 @@ import GroupNotice from '@/components/group/GroupNotice'
 import MeEditor from '@/components/editor/MeEditor'
 import PanelHeader from './PanelHeader'
 import PanelToolbar from './PanelToolbar'
-import SocketInstance from '@/socket-instance'
+import SocketInstance from '@/im-server/socket-instance'
 import { SvgMentionDown } from '@/core/icons'
 import { formateTime, parseTime, copyTextToClipboard } from '@/utils/functions'
 import { findTalkIndex } from '@/utils/talk'
@@ -625,10 +625,7 @@ export default {
         record_id: item.id,
       }).then(res => {
         if (res.code == 200) {
-          this.$store.commit('UPDATE_DIALOGUE', {
-            index,
-            item: { is_revoke: 1 },
-          })
+          this.$store.commit('UPDATE_DIALOGUE', { id: item.id, is_revoke: 1 })
         }
       })
     },

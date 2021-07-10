@@ -1,10 +1,10 @@
-import AppMessageEvent from './app-message-event'
+import Base from './base'
 import store from '@/store'
 
 /**
  * 好友邀请消息处理
  */
-class RevokeEvent extends AppMessageEvent {
+class Revoke extends Base {
   /**
    * @var resource 资源
    */
@@ -23,7 +23,7 @@ class RevokeEvent extends AppMessageEvent {
 
   handle() {
     if (
-      !this.isChatting(
+      !this.isTalk(
         this.resource.talk_type,
         this.resource.receiver_id,
         this.resource.sender_id
@@ -32,17 +32,11 @@ class RevokeEvent extends AppMessageEvent {
       return false
     }
 
-    let index = store.state.dialogue.records.findIndex(
-      item => item.id == this.resource.record_id
-    )
-
     store.commit('UPDATE_DIALOGUE', {
-      index,
-      item: {
-        is_revoke: 1,
-      },
+      id: this.resource.record_id,
+      is_revoke: 1,
     })
   }
 }
 
-export default RevokeEvent
+export default Revoke

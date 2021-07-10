@@ -18,10 +18,12 @@ export default {
       state.records = []
       state.talk_type = parseInt(resource.talk_type)
       state.receiver_id = parseInt(resource.receiver_id)
-      state.index_name =
-        state.talk_type === 0 || state.receiver_id === 0
-          ? null
-          : resource.talk_type + '_' + resource.receiver_id
+
+      if (state.talk_type === 0 || state.receiver_id === 0) {
+        state.index_name = null
+      } else {
+        state.index_name = resource.talk_type + '_' + resource.receiver_id
+      }
     },
 
     // 数组头部压入对话记录
@@ -36,7 +38,12 @@ export default {
 
     // 更新对话记录
     UPDATE_DIALOGUE(state, resource) {
-      Object.assign(state.records[resource.index], resource.item)
+      for (let i in state.records) {
+        if (state.records[i].id === resource.id) {
+          Object.assign(state.records[i], resource)
+          break
+        }
+      }
     },
 
     // 删除对话记录

@@ -1,4 +1,4 @@
-import SocketInstance from '../socket-instance'
+import SocketInstance from '@/im-server/socket-instance'
 import { ServeGetUserSetting } from '@/api/user'
 
 export default {

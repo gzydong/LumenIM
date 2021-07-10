@@ -1,18 +1,16 @@
+import Base from './base'
 import Vue from 'vue'
-import store from '@/store'
 import router from '@/router'
-import AppMessageEvent from './app-message-event'
-import NewMessageNotify from '@/components/notify/NewMessageNotify'
-import { parseTime } from '@/utils/functions'
-import { formateTalkItem, findTalkIndex } from '@/utils/talk'
-import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-
 import vm from '@/main'
+import NewMessageNotify from '@/components/notify/NewMessageNotify'
+import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
+import { formateTalkItem, findTalkIndex } from '@/utils/talk'
+import { parseTime } from '@/utils/functions'
 
 /**
- * 聊天消息处理
+ * 好友状态事件
  */
-class TalkEvent extends AppMessageEvent {
+class Talk extends Base {
   /**
    * @var resource 资源
    */
@@ -33,6 +31,11 @@ class TalkEvent extends AppMessageEvent {
    */
   talk_type = 0
 
+  /**
+   * 初始化构造方法
+   *
+   * @param {Object} resource Socket消息
+   */
   constructor(resource) {
     super()
 
@@ -41,6 +44,14 @@ class TalkEvent extends AppMessageEvent {
     this.talk_type = resource.talk_type
 
     this.resource = resource.data
+  }
+
+  /**
+   * 判断消息发送者是否来自于我
+   * @returns
+   */
+  isCurrSender() {
+    return this.sender_id == this.getAccountId()
   }
 
   /**
@@ -59,134 +70,16 @@ class TalkEvent extends AppMessageEvent {
   }
 
   /**
-   * 判断消息发送者是否来自于我
-   * @return
-   */
-  isCurrSender() {
-    return this.sender_id == this.UserId
-  }
-
-  handle() {
-    const indexName = this.getIndexName()
-
-    // 判断当前是否在对话页面
-    if (!this.isTalkPage()) {
-      store.commit('INCR_UNREAD_NUM')
-
-      return !this.isCurrSender() && this.showMessageNocice(indexName)
-    }
-
-    const index = findTalkIndex(indexName)
-    if (index == -1) {
-      return this.loadTalkItem()
-    }
-
-    if (this.isChatting(this.talk_type, this.receiver_id, this.sender_id)) {
-      this.updateTalkRecord(index)
-    } else {
-      this.updateTalkItem(index)
-    }
-  }
-
-  /**
-   * 显示消息提示
+   * 消息浮动方式
    *
-   * @param {String} index_name
    * @returns
    */
-  showMessageNocice(index_name) {
-    this.$notify({
-      message: vm.$createElement(NewMessageNotify, {
-        props: {
-          params: this.resource,
-        },
-      }),
-      customClass: 'im-notify',
-      duration: 300000,
-      position: 'top-right',
-      onClick: function() {
-        sessionStorage.setItem('send_message_index_name', index_name)
-        router.push('/')
-        this.close()
-      },
-    })
-  }
-
   getFloatType() {
     let user_id = this.resource.user_id
 
     if (user_id == 0) return 'center'
 
-    return user_id == this.UserId ? 'right' : 'left'
-  }
-
-  /**
-   * 更新对话记录
-   *
-   * @param {Number} index 聊天列表的索引
-   */
-  updateTalkRecord(index) {
-    let record = this.resource
-
-    record.float = this.getFloatType()
-
-    store.commit('PUSH_DIALOGUE', record)
-
-    // 获取聊天面板元素节点
-    let elChatPanel = document.getElementById('lumenChatPanel')
-
-    // 判断的滚动条是否在底部
-    let isBottom =
-      Math.ceil(elChatPanel.scrollTop) + elChatPanel.clientHeight >=
-      elChatPanel.scrollHeight
-
-    if (isBottom || record.user_id == this.UserId) {
-      Vue.nextTick(() => {
-        // 更新聊天面板滚动条置底
-        elChatPanel.scrollTop = elChatPanel.scrollHeight
-      })
-    } else {
-      store.commit('SET_TLAK_UNREAD_MESSAGE', {
-        content: this.getTalkText(),
-        nickname: record.nickname,
-      })
-    }
-
-    store.commit('UPDATE_TALK_ITEM', {
-      index,
-      item: {
-        msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()),
-      },
-    })
-
-    if (this.talk_type == 1 && this.UserId !== this.sender_id) {
-      ServeClearTalkUnreadNum({
-        talk_type: store.state.dialogue.talk_type,
-        receiver_id: store.state.dialogue.receiver_id,
-      })
-    }
-  }
-
-  /**
-   * 更新对话列表记录
-   *
-   * @param {Number} index 聊天列表的索引
-   */
-  updateTalkItem(index) {
-    store.commit('INCR_UNREAD_NUM')
-    if (index == -1) {
-      // 对话列表不存在需请求后端...
-      return
-    }
-
-    store.commit('UPDATE_TALK_MESSAGE', {
-      index,
-      item: {
-        msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()),
-      },
-    })
+    return user_id == this.getAccountId() ? 'right' : 'left'
   }
 
   /**
@@ -210,12 +103,55 @@ class TalkEvent extends AppMessageEvent {
     return text
   }
 
+  handle() {
+    const indexName = this.getIndexName()
+    let store = this.getStoreInstance()
+
+    // 判断当前是否在聊天页面
+    if (!this.isTalkPage()) {
+      store.commit('INCR_UNREAD_NUM')
+
+      // 判断消息是否来自于我自己，否则会提示消息通知
+      return !this.isCurrSender() && this.showMessageNocice(indexName)
+    }
+
+    const index = findTalkIndex(indexName)
+    if (index == -1) {
+      return this.loadTalkItem()
+    }
+
+    let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id)
+    // 判断当前是否正在和好友对话
+    if (isTrue) {
+      this.insertTalkRecord(index)
+    } else {
+      this.updateTalkItem(index)
+      console.log('asdfas')
+    }
+  }
+
   /**
-   * 判断用户是否打开对话页
+   * 显示消息提示
+   *
+   * @param {String} index_name
+   * @returns
    */
-  isTalkPage() {
-    let path = router.currentRoute.fullPath
-    return !(path != '/message' && path != '/')
+  showMessageNocice(index_name) {
+    this.$notify({
+      message: vm.$createElement(NewMessageNotify, {
+        props: {
+          params: this.resource,
+        },
+      }),
+      customClass: 'im-notify',
+      duration: 3000,
+      position: 'top-right',
+      onClick: function() {
+        sessionStorage.setItem('send_message_index_name', index_name)
+        router.push('/')
+        this.close()
+      },
+    })
   }
 
   /**
@@ -235,10 +171,77 @@ class TalkEvent extends AppMessageEvent {
     }).then(({ code, data }) => {
       if (code == 200) {
         data.unread_num++
-        store.commit('INSERT_TALK_ITEM', formateTalkItem(data))
+        this.getStoreInstance().commit(
+          'INSERT_TALK_ITEM',
+          formateTalkItem(data)
+        )
       }
+    })
+  }
+
+  /**
+   * 更新对话记录
+   *
+   * @param {Number} index 聊天列表的索引
+   */
+  insertTalkRecord(index) {
+    let store = this.getStoreInstance()
+    let record = this.resource
+
+    record.float = this.getFloatType()
+
+    store.commit('PUSH_DIALOGUE', record)
+
+    // 获取聊天面板元素节点
+    let el = document.getElementById('lumenChatPanel')
+
+    // 判断的滚动条是否在底部
+    let isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight
+
+    if (isBottom || record.user_id == this.getAccountId()) {
+      Vue.nextTick(() => {
+        el.scrollTop = el.scrollHeight
+      })
+    } else {
+      store.commit('SET_TLAK_UNREAD_MESSAGE', {
+        content: this.getTalkText(),
+        nickname: record.nickname,
+      })
+    }
+
+    store.commit('UPDATE_TALK_ITEM', {
+      index,
+      item: {
+        msg_text: this.getTalkText(),
+        updated_at: parseTime(new Date()),
+      },
+    })
+
+    if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
+      ServeClearTalkUnreadNum({
+        talk_type: 1,
+        receiver_id: this.sender_id,
+      })
+    }
+  }
+
+  /**
+   * 更新对话列表记录
+   *
+   * @param {Number} index 聊天列表的索引
+   */
+  updateTalkItem(index) {
+    let store = this.getStoreInstance()
+
+    store.commit('INCR_UNREAD_NUM')
+    store.commit('UPDATE_TALK_MESSAGE', {
+      index,
+      item: {
+        msg_text: this.getTalkText(),
+        updated_at: parseTime(new Date()),
+      },
     })
   }
 }
 
-export default TalkEvent
+export default Talk
