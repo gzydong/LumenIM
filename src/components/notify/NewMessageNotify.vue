@@ -2,15 +2,17 @@
   <!-- 新消息提示组件 -->
   <div class="notify-box">
     <div class="lbox">
-      <el-avatar size="medium" :src="avatar" />
+      <el-avatar size="medium" shape="square" :src="avatar" />
     </div>
     <div class="rbox">
       <div class="xheader">
-        <p class="title">{{ talk_type == 1 ? '私信消息' : '群聊消息' }}</p>
-        <p class="time">{{ datetime }}</p>
+        <p class="title">
+          {{ talk_type == 1 ? '私信消息通知' : '群聊消息通知' }}
+        </p>
+        <p class="time"><i class="el-icon-time" /> {{ datetime | format }}</p>
       </div>
       <div class="xbody">
-        <h4>@{{ nickname }}@</h4>
+        <p>@{{ nickname }}</p>
         <div>{{ content }}</div>
       </div>
     </div>
@@ -18,29 +20,41 @@
 </template>
 
 <script>
+import { parseTime } from '@/utils/functions'
+
 export default {
   components: {},
   props: {
-    params: {
-      type: Object,
-      default() {},
+    avatar: {
+      type: String,
+      default:
+        'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+    },
+    talk_type: {
+      type: Number,
+      default: 1,
+    },
+    nickname: {
+      type: String,
+      default: '',
+    },
+    content: {
+      type: String,
+      default: '',
+    },
+    datetime: {
+      type: String,
+      default: '',
     },
   },
   data() {
-    return {
-      avatar:
-        'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-      talk_type: 1,
-      nickname: '阿萨纳斯卡',
-      content: '阿斯纳俺家你卡萨啊看看番按实际开发n',
-      datetime: '2021-06-18 23:15:12',
-    }
+    return {}
   },
-  methods: {},
-  created() {
-    this.avatar = this.params.avatar || this.params.group_avatar
-
-    console.log(this.params)
+  filters: {
+    format(datetime) {
+      datetime = datetime || new Date()
+      return parseTime(datetime, '{m}/{d} {h}:{i} 分')
+    },
   },
 }
 </script>
@@ -48,7 +62,6 @@ export default {
 .notify-box {
   width: 300px;
   min-height: 100px;
-  // background: rebeccapurple;
   display: flex;
   box-sizing: border-box;
   padding: 5px;
@@ -65,7 +78,7 @@ export default {
     margin-left: 5px;
 
     .xheader {
-      height: 35px;
+      height: 25px;
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -84,13 +97,15 @@ export default {
     .xbody {
       min-height: 60px;
       width: 100%;
+      margin-top: 5px;
 
-      h4 {
+      p {
         font-size: 13px;
-        font-weight: 500;
+        font-weight: 400;
         color: #fb4208;
-        margin-bottom: 3px;
+        margin-bottom: 4px;
       }
+
       div {
         display: -webkit-box;
         -webkit-box-orient: vertical;

@@ -4,7 +4,7 @@ import router from '@/router'
 import vm from '@/main'
 import NewMessageNotify from '@/components/notify/NewMessageNotify'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { formateTalkItem, findTalkIndex } from '@/utils/talk'
+import { formateTalkItem, findTalkIndex, toTalk } from '@/utils/talk'
 import { parseTime } from '@/utils/functions'
 
 /**
@@ -104,7 +104,6 @@ class Talk extends Base {
   }
 
   handle() {
-    const indexName = this.getIndexName()
     let store = this.getStoreInstance()
 
     // 判断当前是否在聊天页面
@@ -112,11 +111,11 @@ class Talk extends Base {
       store.commit('INCR_UNREAD_NUM')
 
       // 判断消息是否来自于我自己，否则会提示消息通知
-      return !this.isCurrSender() && this.showMessageNocice(indexName)
+      return !this.isCurrSender() && this.showMessageNocice()
     }
 
     // 判断会话列表是否存在，不存在则创建
-    if (findTalkIndex(indexName) == -1) {
+    if (findTalkIndex(this.getIndexName()) == -1) {
       return this.addTalkItem()
     }
 
@@ -132,24 +131,35 @@ class Talk extends Base {
 
   /**
    * 显示消息提示
-   *
-   * @param {String} index_name
    * @returns
    */
-  showMessageNocice(index_name) {
+  showMessageNocice() {
+    let avatar = this.resource.avatar
+    let nickname = this.resource.nickname
+    let talk_type = this.resource.talk_type
+    let receiver_id = this.receiver_id
+
+    if (talk_type == 2) {
+      avatar = this.resource.group_avatar
+      nickname += `【 ${this.resource.group_name} 】`
+    }
+
     this.$notify({
       message: vm.$createElement(NewMessageNotify, {
         props: {
-          params: this.resource,
+          avatar,
+          talk_type,
+          nickname,
+          content: this.getTalkText(),
+          datetime: this.resource.created_at,
         },
       }),
       customClass: 'im-notify',
       duration: 3000,
       position: 'top-right',
       onClick: function() {
-        sessionStorage.setItem('send_message_index_name', index_name)
-        router.push('/')
         this.close()
+        toTalk(talk_type, receiver_id)
       },
     })
   }

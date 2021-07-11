@@ -300,7 +300,7 @@ export default {
     // 当前对话好友在线状态
     isFriendOnline() {
       let index = findTalkIndex(this.index_name)
-      return index >= 0 && this.talks[index].is_online == 1
+      return index >= 0 && this.talks[index].is_online == true
     },
   },
   watch: {
@@ -321,16 +321,14 @@ export default {
     // 监听好友在线状态
     monitorFriendsStatus(value) {
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index_name: `1_${value.friendId}`,
-        status: parseInt(value.status),
+        index_name: `1_${value.friend_id}`,
+        is_online: value.status == 1,
       })
     },
   },
   beforeRouteUpdate(to, from, next) {
     let index_name = getCacheIndexName()
-    if (index_name) {
-      this.clickTab(index_name)
-    }
+    if (index_name) this.clickTab(index_name)
 
     next()
   },

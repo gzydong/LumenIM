@@ -17,9 +17,13 @@ export default {
   methods: {},
   created() {
     this.$notify({
-      message: this.$createElement(FriendApplyNotify, {
+      message: this.$createElement(NewMessageNotify, {
         props: {
-          someProp: 'foobar',
+          // avatar: '',
+          talk_type: 1,
+          nickname: '那金卡仕达111',
+          content: '那数据库的纳斯达克你卡视角那你水晶蓝驾考那我呢卡莎那就看',
+          datetime: '2020-06-08 12:12:12',
         },
       }),
       customClass: 'im-notify',

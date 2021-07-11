@@ -23,7 +23,7 @@ class Login extends Base {
   handle() {
     this.getStoreInstance().dispatch('ACT_UPDATE_FRIEND_STATUS', {
       status: this.resource.status,
-      friendId: parseInt(this.resource.user_id),
+      friend_id: parseInt(this.resource.user_id),
     })
   }
 }
