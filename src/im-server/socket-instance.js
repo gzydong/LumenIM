@@ -2,6 +2,7 @@ import store from '@/store'
 import config from '@/config/config'
 import WsSocket from '@/plugins/ws-socket'
 import { getToken } from '@/utils/auth'
+import { Notification } from 'element-ui'
 
 // 引入消息处理类
 import KeyboardEvent from '@/im-server/event/keyboard'
@@ -75,6 +76,13 @@ class SocketInstance {
       })
       .on('join_group', data => {
         new GroupJoinEvent(data).handle()
+      })
+      .on('event_error', data => {
+        Notification({
+          title: '友情提示',
+          message: data.message,
+          type: 'warning',
+        })
       })
   }
 

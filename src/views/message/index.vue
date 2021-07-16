@@ -531,7 +531,7 @@ export default {
                   dangerouslyUseHTMLString: true,
                 }
               ).then(() => {
-                if (item.type == 1) {
+                if (item.talk_type == 1) {
                   this.removeFriend(item)
                 } else {
                   this.removeGroup(item)

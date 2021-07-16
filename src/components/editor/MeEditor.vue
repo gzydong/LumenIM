@@ -281,9 +281,10 @@ export default {
         if (res.code == 200) {
           this.codeBlock.isShow = false
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '代码消息发送失败',
+          this.$notify({
+            title: '友情提示',
+            message: res.message,
+            type: 'warning',
           })
         }
       })
@@ -305,6 +306,12 @@ export default {
           ref.loading = false
           if (res.code == 200) {
             ref.closeBox()
+          } else {
+            this.$notify({
+              title: '友情提示',
+              message: res.message,
+              type: 'warning',
+            })
           }
         })
         .finally(() => {
