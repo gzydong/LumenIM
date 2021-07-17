@@ -146,6 +146,12 @@
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
 
+                  <vote-message
+                    v-else-if="item.msg_type == 5"
+                    :record_id="item.id"
+                    :vote="item.vote"
+                  />
+
                   <!-- 未知消息 -->
                   <div class="unknown-msg" v-else>
                     未知消息类型[{{ item.msg_type }}]

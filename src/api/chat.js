@@ -93,3 +93,7 @@ export const ServeRemoveRecords = data => {
 export const ServeCollectEmoticon = data => {
   return post('/api/v1/talk/message/collect', data)
 }
+
+export const ServeConfirmVoteHandle = data => {
+  return post('/api/v1/talk/message/vote/handle', data)
+}

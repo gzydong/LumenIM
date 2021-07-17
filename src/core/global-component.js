@@ -13,6 +13,7 @@ import {
   RevokeMessage,
   VisitCardMessage,
   ReplyMessage,
+  VoteMessage,
 } from '@/components/chat/messaege'
 
 Vue.component(AudioMessage.name, AudioMessage)
@@ -28,6 +29,7 @@ Vue.component(InviteMessage.name, InviteMessage)
 Vue.component(RevokeMessage.name, RevokeMessage)
 Vue.component(VisitCardMessage.name, VisitCardMessage)
 Vue.component(ReplyMessage.name, ReplyMessage)
+Vue.component(VoteMessage.name, VoteMessage)
 
 import UserCard from '@/components/user/user-card/index'
 Vue.use(UserCard)
