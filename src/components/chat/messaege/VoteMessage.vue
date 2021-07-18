@@ -3,7 +3,9 @@
     <div class="vote-message">
       <div class="vote-from">
         <div class="vheader">
-          <p>{{ answer_mode == 0 ? '[多选投票]' : '[单选投票]' }}</p>
+          <p>
+            {{ answer_mode == 1 ? '[多选投票]' : '[单选投票]' }}
+          </p>
           <p>{{ title }}</p>
         </div>
 
@@ -48,24 +50,8 @@ export default {
       answer_mode: 0,
       title: '啊谁叫你打开你卡沙发那,那就是看、卡收纳是你',
       radio_value: '',
-      options: [
-        {
-          is_checked: false,
-          value: 'A',
-          text: '按时看那三科技范那 安卡萨',
-        },
-        {
-          is_checked: false,
-          value: 'B',
-          text:
-            '按时看那三科技范那 安卡萨，三等奖阿卡按会计法那、 三大咖啡那是看你发。',
-        },
-        {
-          is_checked: false,
-          value: 'C',
-          text: '按时看那三科技范那 安卡萨',
-        },
-      ],
+      options: [],
+      is_vote: false,
     }
   },
   computed: {
@@ -76,11 +62,25 @@ export default {
     },
   },
   created() {
-    console.log(this.record_id, this.vote, '0000')
+    this.answer_mode = this.vote.detail.answer_mode
+    this.vote.detail.answer_option.forEach(item => {
+      this.options.push({
+        value: item.key,
+        text: item.value,
+        is_checked: false,
+      })
+    })
+
+    let user_id = this.$store.state.user.uid
+
+    console.log(user_id)
+    this.is_vote = this.vote.vote_users.some(value => {
+      return value == user_id
+    })
   },
   methods: {
     toSelect(option, index) {
-      if (this.answer_mode == 1) {
+      if (this.answer_mode == 0) {
         this.options.forEach(option => {
           option.is_checked = false
         })
@@ -89,7 +89,7 @@ export default {
       this.options[index].is_checked = !option.is_checked
     },
     toSelect2(option) {
-      if (this.answer_mode == 1) {
+      if (this.answer_mode == 0) {
         this.options.forEach(item => {
           if (option.value == item.value) {
             item.is_checked = option.is_checked
@@ -112,9 +112,13 @@ export default {
       })
 
       ServeConfirmVoteHandle({
-        record_id: 0,
+        record_id: this.record_id,
         options: items.join(','),
-      }).then(res => {})
+      }).then(res => {
+        if (res.code == 200) {
+          alert(res.message)
+        }
+      })
     },
   },
 }

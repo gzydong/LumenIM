@@ -94,6 +94,10 @@ export const ServeCollectEmoticon = data => {
   return post('/api/v1/talk/message/collect', data)
 }
 
+export const ServeSendVote = data => {
+  return post('/api/v1/talk/message/vote', data)
+}
+
 export const ServeConfirmVoteHandle = data => {
   return post('/api/v1/talk/message/vote/handle', data)
 }

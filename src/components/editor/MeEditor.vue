@@ -27,6 +27,10 @@
             <i class="el-icon-folder-opened" />
             <p class="tip-title">上传管理</p>
           </li>
+          <li @click="vote.isShow = true">
+            <i class="el-icon-s-data" />
+            <p class="tip-title">发起投票</p>
+          </li>
 
           <p class="text-tips no-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
@@ -112,6 +116,15 @@
 
     <!-- 文件上传管理器 -->
     <MeEditorFileManage ref="filesManager" v-model="filesManager.isShow" />
+
+    <MeEditorVote
+      v-if="vote.isShow"
+      @close="
+        () => {
+          this.vote.isShow = false
+        }
+      "
+    />
   </div>
 </template>
 
@@ -120,6 +133,7 @@ import MeEditorEmoticon from './MeEditorEmoticon'
 import MeEditorFileManage from './MeEditorFileManage'
 import MeEditorImageView from './MeEditorImageView'
 import MeEditorRecorder from './MeEditorRecorder'
+import MeEditorVote from './MeEditorVote'
 import TalkCodeBlock from '@/components/chat/TalkCodeBlock'
 import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
 import { findTalk } from '@/utils/talk'
@@ -138,6 +152,7 @@ export default {
     MeEditorImageView,
     TalkCodeBlock,
     MeEditorRecorder,
+    MeEditorVote,
   },
   computed: {
     talkUser() {
@@ -167,6 +182,10 @@ export default {
       },
 
       filesManager: {
+        isShow: false,
+      },
+
+      vote: {
         isShow: false,
       },
 
