@@ -2,7 +2,7 @@
   <div class="lum-dialog-mask animated fadeIn">
     <el-container class="lum-dialog-box">
       <el-header class="header no-select" height="60px">
-        <p>发起投票</p>
+        <p>投票</p>
         <p class="tools">
           <i class="el-icon-close" @click="$emit('close')" />
         </p>
@@ -21,7 +21,7 @@
             size="medium"
             clear="vote-input"
             v-model.trim="title"
-            placeholder="请输入内容"
+            placeholder="请输入投票主题，最多60字"
             :maxlength="40"
           />
         </div>
@@ -34,7 +34,7 @@
                 size="medium"
                 clear="vote-input"
                 v-model.trim="option.value"
-                placeholder="请输入内容"
+                placeholder="请输入选项内容"
                 :maxlength="120"
               >
                 <span
@@ -49,7 +49,7 @@
             </div>
           </div>
 
-          <h6 class="pointer" @click="addOption">
+          <h6 class="pointer add-option" @click="addOption">
             <i class="el-icon-plus"></i> 添加选项
           </h6>
         </div>
@@ -167,6 +167,7 @@ export default {
   .vote-from {
     box-sizing: border-box;
     padding: 15px 25px;
+    overflow: hidden;
 
     .vote-title {
       margin: 20px 0 10px;
@@ -190,7 +191,7 @@ export default {
       }
 
       .rbox {
-        flex-basis: 60px;
+        flex-basis: 50px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -202,6 +203,12 @@ export default {
           }
         }
       }
+    }
+
+    .add-option {
+      margin-top: 5px;
+      font-weight: 400;
+      color: #3370ff;
     }
   }
 

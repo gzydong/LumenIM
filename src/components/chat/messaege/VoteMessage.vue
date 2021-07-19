@@ -5,26 +5,58 @@
         <div class="vheader">
           <p>
             {{ answer_mode == 1 ? '[多选投票]' : '[单选投票]' }}
+            <i
+              v-show="is_vote"
+              class="pointer"
+              :class="{
+                'el-icon-loading': refresh,
+                'el-icon-refresh': !refresh,
+              }"
+              title="刷新投票结果"
+              @click="loadRefresh"
+            ></i>
           </p>
           <p>{{ title }}</p>
         </div>
 
-        <div class="vbody">
-          <p v-for="(option, index) in options">
-            <el-checkbox
-              v-model="option.is_checked"
-              @change="toSelect2(option)"
-            />
-            <span @click="toSelect(option, index)" style="margin-left: 10px;">
-              {{ option.value }} 、{{ option.text }}
-            </span>
-          </p>
-        </div>
-        <div class="vfooter">
-          <el-button plain round @click="toVote">
-            {{ isUserVote ? '立即投票' : '请选择进行投票' }}
-          </el-button>
-        </div>
+        <template v-if="is_vote">
+          <div class="vbody">
+            <div class="vote-view" v-for="(option, index) in options">
+              <p class="vote-option">{{ option.value }}. {{ option.text }}</p>
+              <p class="vote-census">
+                {{ option.num }} 票 {{ option.progress }}%
+              </p>
+              <p class="vote-progress">
+                <el-progress
+                  :show-text="false"
+                  :percentage="parseInt(option.progress)"
+                />
+              </p>
+            </div>
+          </div>
+          <div class="vfooter vote-view">
+            <p>应参与人数：{{ answer_num }}</p>
+            <p>实际参与人数：{{ answered_num }}</p>
+          </div>
+        </template>
+        <template v-else>
+          <div class="vbody">
+            <p class="option" v-for="(option, index) in options">
+              <el-checkbox
+                v-model="option.is_checked"
+                @change="toSelect2(option)"
+              />
+              <span @click="toSelect(option, index)" style="margin-left: 10px;">
+                {{ option.value }} 、{{ option.text }}
+              </span>
+            </p>
+          </div>
+          <div class="vfooter">
+            <el-button plain round @click="toVote">
+              {{ isUserVote ? '立即投票' : '请选择进行投票' }}
+            </el-button>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -52,6 +84,9 @@ export default {
       radio_value: '',
       options: [],
       is_vote: false,
+      answer_num: 0,
+      answered_num: 0,
+      refresh: false,
     }
   },
   computed: {
@@ -62,23 +97,48 @@ export default {
     },
   },
   created() {
-    this.answer_mode = this.vote.detail.answer_mode
-    this.vote.detail.answer_option.forEach(item => {
+    let user_id = this.$store.state.user.uid
+    let { detail, statistics, vote_users } = this.vote
+
+    this.answer_mode = detail.answer_mode
+    this.answer_num = detail.answer_num
+    this.answered_num = detail.answered_num
+
+    detail.answer_option.forEach(item => {
       this.options.push({
         value: item.key,
         text: item.value,
         is_checked: false,
+        num: 0,
+        progress: '00.0',
       })
     })
 
-    let user_id = this.$store.state.user.uid
-
-    console.log(user_id)
-    this.is_vote = this.vote.vote_users.some(value => {
+    this.is_vote = vote_users.some(value => {
       return value == user_id
     })
+
+    this.updateStatistics(statistics)
   },
   methods: {
+    loadRefresh() {
+      this.refresh = true
+
+      setTimeout(() => {
+        this.refresh = false
+      }, 500)
+    },
+    updateStatistics(data) {
+      let count = data.count
+      this.options.forEach(option => {
+        option.num = data.options[option.value]
+
+        if (count > 0) {
+          option.progress = (data.options[option.value] / count) * 100
+        }
+      })
+    },
+
     toSelect(option, index) {
       if (this.answer_mode == 0) {
         this.options.forEach(option => {
@@ -116,7 +176,8 @@ export default {
         options: items.join(','),
       }).then(res => {
         if (res.code == 200) {
-          alert(res.message)
+          this.is_vote = true
+          this.updateStatistics(res.data)
         }
       })
     },
@@ -133,7 +194,6 @@ export default {
   overflow: hidden;
 
   .vote-from {
-    height: 100%;
     width: 100%;
 
     .vheader {
@@ -170,7 +230,7 @@ export default {
       width: 100%;
       padding: 5px 15px;
       box-sizing: border-box;
-      p {
+      .option {
         margin: 14px 0px;
         font-size: 13px;
         span {
@@ -192,11 +252,42 @@ export default {
     .vfooter {
       height: 55px;
       text-align: center;
+      box-sizing: border-box;
 
       .el-button {
         width: 80%;
         font-weight: 400;
       }
+
+      &.vote-view {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding-left: 15px;
+      }
+    }
+  }
+
+  .vote-view {
+    width: 100%;
+    min-height: 30px;
+    margin: 15px 0;
+    box-sizing: border-box;
+
+    > p {
+      margin: 6px 0px;
+      font-size: 13px;
+    }
+
+    .vote-option {
+      min-height: 20px;
+      line-height: 20px;
+    }
+
+    .vote-census {
+      height: 20px;
+      line-height: 20px;
     }
   }
 }
