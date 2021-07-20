@@ -27,7 +27,7 @@
             <i class="el-icon-folder-opened" />
             <p class="tip-title">上传管理</p>
           </li>
-          <li @click="vote.isShow = true">
+          <li v-show="isGroupTalk" @click="vote.isShow = true">
             <i class="el-icon-s-data" />
             <p class="tip-title">发起投票</p>
           </li>
@@ -157,6 +157,9 @@ export default {
   computed: {
     talkUser() {
       return this.$store.state.dialogue.index_name
+    },
+    isGroupTalk() {
+      return this.$store.state.dialogue.talk_type == 2
     },
   },
   watch: {

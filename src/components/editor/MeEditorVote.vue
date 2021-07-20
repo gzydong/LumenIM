@@ -2,7 +2,7 @@
   <div class="lum-dialog-mask animated fadeIn">
     <el-container class="lum-dialog-box">
       <el-header class="header no-select" height="60px">
-        <p>投票</p>
+        <p>发起投票</p>
         <p class="tools">
           <i class="el-icon-close" @click="$emit('close')" />
         </p>
@@ -21,8 +21,8 @@
             size="medium"
             clear="vote-input"
             v-model.trim="title"
-            placeholder="请输入投票主题，最多60字"
-            :maxlength="40"
+            placeholder="请输入投票主题，最多50字"
+            :maxlength="50"
           />
         </div>
 

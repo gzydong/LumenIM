@@ -35,8 +35,8 @@
             </div>
           </div>
           <div class="vfooter vote-view">
-            <p>应参与人数：{{ answer_num }}</p>
-            <p>实际参与人数：{{ answered_num }}</p>
+            <p>应参与人数：{{ answer_num }} 人</p>
+            <p>实际参与人数：{{ answered_num }} 人</p>
           </div>
         </template>
         <template v-else>
@@ -265,6 +265,11 @@ export default {
         justify-content: flex-start;
         align-items: flex-start;
         padding-left: 15px;
+
+        p {
+          border-left: 2px solid #2196f3;
+          padding-left: 5px;
+        }
       }
     }
   }

@@ -79,7 +79,7 @@ server {
 |代码仓库|前端源码|后端源码|
 |-|-|-|
 |Github|https://github.com/gzydong/LumenIM|https://github.com/gzydong/hyperf-chat|
-|码云|https://gitee.com/gzydong/LumenIM||
+|码云|https://gitee.com/gzydong/LumenIM|https://gitee.com/gzydong/hyperf-chat|
 
 
 #### 联系方式  
