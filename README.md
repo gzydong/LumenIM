@@ -82,7 +82,8 @@ server {
 |码云|https://gitee.com/gzydong/LumenIM|https://gitee.com/gzydong/hyperf-chat|
 
 
-#### 联系方式  
-QQ : 837215079
+#### 联系方式
+QQ作者 : 837215079
+QQ技术交流群 : 513037553
 
 ### 如果你觉得还不错，请 Star , Fork 给作者鼓励一下。
