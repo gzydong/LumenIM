@@ -7,7 +7,7 @@ import {
   TextMessage,
   VideoMessage,
   VoiceMessage,
-  SystemMessage,
+  SystemTextMessage,
   FileMessage,
   InviteMessage,
   RevokeMessage,
@@ -23,7 +23,7 @@ Vue.component(ImageMessage.name, ImageMessage)
 Vue.component(TextMessage.name, TextMessage)
 Vue.component(VideoMessage.name, VideoMessage)
 Vue.component(VoiceMessage.name, VoiceMessage)
-Vue.component(SystemMessage.name, SystemMessage)
+Vue.component(SystemTextMessage.name, SystemTextMessage)
 Vue.component(FileMessage.name, FileMessage)
 Vue.component(InviteMessage.name, InviteMessage)
 Vue.component(RevokeMessage.name, RevokeMessage)

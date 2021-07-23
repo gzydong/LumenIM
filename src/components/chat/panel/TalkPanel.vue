@@ -43,6 +43,10 @@
               <revoke-message :item="item" />
             </div>
 
+            <div v-else-if="item.msg_type == 0" class="message-box">
+              <system-text-message :content="item.content" />
+            </div>
+
             <!-- 其它对话消息 -->
             <div
               v-else
@@ -488,8 +492,8 @@ export default {
           this.$store.commit('UNSHIFT_DIALOGUE', records.reverse())
 
           this.loadRecord.status = records.length >= res.data.limit ? 1 : 2
-          this.loadRecord.minRecord =
-            records.length == res.data.limit ? res.data.record_id : 0
+
+          this.loadRecord.minRecord = res.data.record_id
 
           this.$nextTick(() => {
             if (data.record_id == 0) {

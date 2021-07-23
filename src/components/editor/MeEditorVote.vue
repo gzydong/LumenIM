@@ -122,13 +122,12 @@ export default {
       })
         .then(res => {
           if (res.code == 200) {
+            this.$emit('close')
             this.$notify({
               title: '友情提示',
-              message: res.message,
+              message: '发起投票成功!',
               type: 'success',
             })
-
-            this.$emit('close')
           } else {
             this.$notify({
               title: '友情提示',
@@ -145,6 +144,7 @@ export default {
       if (this.options.length >= 6) {
         return false
       }
+
       this.options.push({
         value: '',
       })

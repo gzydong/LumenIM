@@ -188,7 +188,7 @@ export default {
 .vote-message {
   width: 300px;
   min-height: 150px;
-  border: 1px solid #dee0e3;
+  border: 1px solid #eceff1;
   box-sizing: border-box;
   border-radius: 5px;
   overflow: hidden;

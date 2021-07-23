@@ -5,7 +5,7 @@ import ImageMessage from './ImageMessage.vue';
 import TextMessage from './TextMessage.vue';
 import VideoMessage from './VideoMessage.vue';
 import VoiceMessage from './VoiceMessage.vue';
-import SystemMessage from './SystemMessage.vue';
+import SystemTextMessage from './SystemTextMessage.vue';
 import FileMessage from './FileMessage.vue';
 import InviteMessage from './InviteMessage.vue';
 import RevokeMessage from './RevokeMessage.vue';
@@ -21,7 +21,7 @@ export {
     TextMessage,
     VideoMessage,
     VoiceMessage,
-    SystemMessage,
+    SystemTextMessage,
     FileMessage,
     InviteMessage,
     RevokeMessage,
