@@ -142,6 +142,8 @@ class Talk extends Base {
     if (talk_type == 2) {
       avatar = this.resource.group_avatar
       nickname += `【 ${this.resource.group_name} 】`
+    } else {
+      receiver_id = this.sender_id
     }
 
     this.$notify({
