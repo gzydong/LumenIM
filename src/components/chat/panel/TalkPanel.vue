@@ -865,6 +865,7 @@ export default {
   height: 100%;
   top: 0px;
   right: -350px;
+  z-index: 1;
   background: white;
   transition: all 0.5s ease-in-out;
   -moz-transition: all 0.5s ease-in-out;
