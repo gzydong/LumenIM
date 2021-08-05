@@ -1,14 +1,14 @@
 <template>
-  <div class="messaege">
-    <NotePreview />
+  <div class="test">
+    <FriendApplyMessage />
   </div>
 </template>
 
 <script>
-import NotePreview from '@/views/note/NotePreview'
 
+import FriendApplyMessage from '@/components/chat/messaege/FriendApplyMessage'
 export default {
-  components: { NotePreview },
+  components: { FriendApplyMessage },
   data() {
     return {}
   },
@@ -17,10 +17,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.messaege {
-  height: 100vh;
-  width: 800px;
-  margin: 0 auto;
-  border: 1px solid red;
-}
+  .test{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

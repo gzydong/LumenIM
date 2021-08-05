@@ -52,7 +52,6 @@ export default {
   position: relative;
   width: 170px;
   min-height: 180px;
-  margin: 5px;
   border-radius: 15px;
   overflow: hidden;
   transition: all 0.5s;
@@ -71,7 +70,7 @@ export default {
 
     .avatar {
       position: absolute;
-      top: 19px;
+      top: 18px;
       left: 8px;
       width: 40px;
       height: 40px;
