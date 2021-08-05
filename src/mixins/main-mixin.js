@@ -41,7 +41,7 @@ export default {
       sessionStorage.setItem('send_message_index_name', index_name)
 
       if (this.$route.path == '/message') {
-        this.reloadPage()
+        this.reload()
         return
       }
 
