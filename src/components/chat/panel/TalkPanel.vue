@@ -150,6 +150,7 @@
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
 
+                  <!-- 投票消息 -->
                   <vote-message
                     v-else-if="item.msg_type == 5"
                     :record_id="item.id"

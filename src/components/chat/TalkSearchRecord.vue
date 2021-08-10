@@ -85,24 +85,10 @@
           <el-container class="full-height">
             <el-header height="40px" class="type-items">
               <span
-                :class="{ active: query.msg_type == 0 }"
-                @click="triggerLoadType(0)"
-                >全部
-              </span>
-              <span
-                :class="{ active: query.msg_type == 2 }"
-                @click="triggerLoadType(2)"
-                >文件
-              </span>
-              <span
-                :class="{ active: query.msg_type == 3 }"
-                @click="triggerLoadType(3)"
-                >会话记录
-              </span>
-              <span
-                :class="{ active: query.msg_type == 4 }"
-                @click="triggerLoadType(4)"
-                >代码块
+                v-for="tab in tabType"
+                :class="{ active: query.msg_type == tab.type }"
+                @click="triggerLoadType(tab.type)"
+                >{{ tab.name }}
               </span>
             </el-header>
 
@@ -197,6 +183,13 @@
                       :lang="record.code_block.code_lang"
                     />
 
+                    <!-- 投票消息 -->
+                    <vote-message
+                      v-else-if="record.msg_type == 5"
+                      :record_id="record.id"
+                      :vote="record.vote"
+                    />
+
                     <div v-else class="other-message">未知消息类型</div>
                   </div>
                 </div>
@@ -268,6 +261,14 @@ export default {
       },
 
       showBox: 0,
+
+      tabType: [
+        { name: '全部', type: 0 },
+        { name: '文件', type: 2 },
+        { name: '会话记录', type: 3 },
+        { name: '代码块', type: 4 },
+        { name: '群投票', type: 5 },
+      ],
 
       search: {
         keyword: '', // 关键字查询
