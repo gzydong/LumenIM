@@ -251,15 +251,6 @@
       />
     </transition>
 
-    <!-- 选择联系人 -->
-    <transition name="el-fade-in-linear">
-      <UserContacts
-        v-if="selectContacts.isShow"
-        @close="selectContacts.isShow = false"
-        @confirm="confirmSelectContacts"
-      />
-    </transition>
-
     <!-- 群公告组件 -->
     <transition name="el-fade-in-linear">
       <GroupNotice
@@ -273,7 +264,6 @@
 <script>
 import { mapState } from 'vuex'
 import TalkSearchRecord from '@/components/chat/TalkSearchRecord'
-import UserContacts from '@/components/user/UserContacts'
 import GroupPanel from '@/components/group/GroupPanel'
 import GroupNotice from '@/components/group/GroupNotice'
 import MeEditor from '@/components/editor/MeEditor'
@@ -282,7 +272,6 @@ import PanelToolbar from './PanelToolbar'
 import SocketInstance from '@/im-server/socket-instance'
 import { SvgMentionDown } from '@/core/icons'
 import { formateTime, parseTime, copyTextToClipboard } from '@/utils/functions'
-import { findTalkIndex } from '@/utils/talk'
 import {
   ServeTalkRecords,
   ServeForwardRecords,
@@ -294,7 +283,6 @@ export default {
   name: 'TalkEditorPanel',
   components: {
     MeEditor,
-    UserContacts,
     GroupPanel,
     TalkSearchRecord,
     GroupNotice,
@@ -336,11 +324,6 @@ export default {
         isOpen: false,
         items: [],
         mode: 0,
-      },
-
-      // 选择联系人窗口
-      selectContacts: {
-        isShow: false,
       },
 
       // 群组Box
@@ -520,28 +503,19 @@ export default {
         return false
       }
 
-      if (value == 'forward') {
-        this.multiSelect.mode = 1
-        this.selectContacts.isShow = true
-        // 逐条转发
-        if (this.verifyMultiSelectType(4)) {
+      if (value == 'forward' || value == 'merge_forward') {
+        this.multiSelect.mode = value == 'forward' ? 1 : 2
+        if (this.verifyMultiSelectType(3)) {
           this.$notify({
             title: '消息转发',
             message: '会话记录不支持合并转发',
           })
           return false
         }
-      } else if (value == 'merge_forward') {
-        this.multiSelect.mode = 2
-        this.selectContacts.isShow = true
-        // 合并转发
-        if (this.verifyMultiSelectType(4)) {
-          this.$notify({
-            title: '消息转发',
-            message: '会话记录不支持合并转发',
-          })
-          return false
-        }
+
+        this.$contacts({
+          confirm: this.confirmSelectContacts,
+        })
       } else if (value == 'delete') {
         this.multiSelect.mode = 3
 
@@ -560,10 +534,10 @@ export default {
     },
 
     // 确认消息转发联系人事件
-    confirmSelectContacts(arr) {
+    confirmSelectContacts(data) {
       let user_ids = []
       let group_ids = []
-      arr.forEach(item => {
+      data.forEach(item => {
         if (item.type == 1) {
           user_ids.push(item.id)
         } else {
@@ -571,7 +545,6 @@ export default {
         }
       })
 
-      this.selectContacts.isShow = false
       ServeForwardRecords({
         forward_mode: this.multiSelect.mode,
         talk_type: this.params.talk_type,

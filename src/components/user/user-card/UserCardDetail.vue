@@ -15,7 +15,7 @@
           <div class="nickname">
             <i class="iconfont icon-qianming" />
             <span>{{ detail.nickname || '未设置昵称' }}</span>
-            <div class="share no-select" @click="contacts = true">
+            <div class="share no-select">
               <i class="iconfont icon-fenxiang3" /> <span>分享</span>
             </div>
           </div>
@@ -119,25 +119,15 @@
         </div>
       </div>
     </el-container>
-
-    <UserContacts
-      v-if="contacts"
-      @confirm="confirmContact"
-      @close="contacts = false"
-    />
   </div>
 </template>
 <script>
-import UserContacts from '@/components/user/UserContacts'
 import { ServeSearchUser } from '@/api/user'
 import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 
 export default {
   name: 'UserCardDetail',
-  components: {
-    UserContacts,
-  },
   props: {
     user_id: {
       type: Number,
@@ -260,14 +250,6 @@ export default {
     sendMessage() {
       this.close()
       toTalk(1, this.user_id)
-    },
-
-    confirmContact(array) {
-      this.contacts = false
-      this.$notify.info({
-        title: '消息',
-        message: '分享功能正在开发中...',
-      })
     },
   },
 }

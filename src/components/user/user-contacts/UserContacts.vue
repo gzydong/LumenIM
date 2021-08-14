@@ -1,9 +1,9 @@
 <template>
-  <div class="lum-dialog-mask">
+  <div class="lum-dialog-mask" @click.stop>
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="no-padding header no-select" height="60px">
         <p>我的联系人</p>
-        <p class="tools"><i class="el-icon-close" @click="close" /></p>
+        <p class="tools"><i class="el-icon-close" @click.stop="close" /></p>
       </el-header>
       <el-main class="main no-padding">
         <el-container class="full-height">
@@ -170,9 +170,11 @@ export default {
       })
     },
     //关闭窗口
-    close() {
+    close(e) {
       this.delAll()
       this.$emit('close')
+
+      e.stopPropagation();
     },
     //确认按钮点击事件
     confirm() {

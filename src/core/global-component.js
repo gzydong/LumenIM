@@ -33,3 +33,6 @@ Vue.component(VoteMessage.name, VoteMessage)
 
 import UserCard from '@/components/user/user-card/index'
 Vue.use(UserCard)
+
+import UserContactsBox from '@/components/user/user-contacts/index'
+Vue.use(UserContactsBox)
