@@ -1,9 +1,9 @@
 <template>
-  <div class="lum-dialog-mask" @click.stop>
+  <div class="lum-dialog-mask">
     <el-container class="lum-dialog-box" v-outside="close">
       <el-header class="no-padding header no-select" height="60px">
         <p>我的联系人</p>
-        <p class="tools"><i class="el-icon-close" @click.stop="close" /></p>
+        <p class="tools"><i class="el-icon-close" @click="close" /></p>
       </el-header>
       <el-main class="main no-padding">
         <el-container class="full-height">

@@ -148,7 +148,6 @@ export default {
           },
           {
             min: 6,
-            max: 6,
             message: '验证码格式不正确',
             trigger: 'blur',
           },

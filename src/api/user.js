@@ -47,7 +47,7 @@ export const ServeSendVerifyCode = data => {
 
 // 找回密码服务
 export const ServeForgetPassword = data => {
-  return post('/api/v1/auth/forget-password', data)
+  return post('/api/v1/auth/forget', data)
 }
 
 // 搜索用户信息服务接口

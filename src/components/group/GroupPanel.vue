@@ -160,7 +160,8 @@
     </el-main>
 
     <el-footer class="footer">
-      <button @click="isShowSignout = true">退出该群聊</button>
+      <button v-if="detail.is_manager" @click="dismiss">解散群聊</button>
+      <button v-else @click="isShowSignout = true">退出该群聊</button>
     </el-footer>
 
     <!-- 退群提示层 -->
@@ -452,6 +453,17 @@ export default {
             this.signoutStatus = 0
           }, 3000)
         })
+    },
+
+    // 解散群组
+    dismiss() {
+      this.$confirm(`你确定要解散当前群组吗？此操作是不可恢复的！`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true,
+        dangerouslyUseHTMLString: true,
+      }).then(() => {})
     },
   },
 }
