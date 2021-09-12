@@ -12,6 +12,7 @@ import RevokeMessage from './RevokeMessage.vue';
 import VisitCardMessage from './VisitCardMessage.vue';
 import ReplyMessage from './ReplyMessage.vue';
 import VoteMessage from './VoteMessage.vue';
+import LoginMessage from './LoginMessage.vue';
 
 export {
     AudioMessage,
@@ -27,5 +28,6 @@ export {
     RevokeMessage,
     VisitCardMessage,
     ReplyMessage,
-    VoteMessage
+    VoteMessage,
+    LoginMessage
 }

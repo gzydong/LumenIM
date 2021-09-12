@@ -97,6 +97,8 @@ class Talk extends Base {
         break
       case 4:
         text = '[代码消息]'
+      case 8:
+        text = '[登录提醒]'
         break
     }
 

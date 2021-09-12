@@ -1,14 +1,18 @@
 <template>
   <el-header id="panel-header">
     <div class="module left-module">
-      <span class="icon-badge" :class="{ 'red-color': params.talk_type == 1 }">
+      <span
+        class="icon-badge"
+        v-show="params.is_robot == 0"
+        :class="{ 'red-color': params.talk_type == 1 }"
+      >
         {{ params.talk_type == 1 ? '好友' : '群组' }}
       </span>
       <span class="nickname">{{ params.nickname }}</span>
       <span v-show="params.talk_type == 2" class="num">({{ groupNum }})</span>
     </div>
 
-    <div v-show="params.talk_type == 1" class="module center-module">
+    <div v-show="params.talk_type == 1 && params.is_robot == 0" class="module center-module">
       <p class="online">
         <span v-show="isOnline" class="online-status"></span>
         <span>{{ isOnline ? '在线' : '离线' }}</span>
@@ -16,9 +20,9 @@
       <p class="keyboard-status" v-show="isKeyboard">对方正在输入 ...</p>
     </div>
 
-    <div class="module right-module">
+    <div class="module right-module" >
       <el-tooltip content="历史消息" placement="top">
-        <p>
+        <p v-show="params.is_robot == 0">
           <i class="el-icon-time" @click="triggerEvent('history')" />
         </p>
       </el-tooltip>
@@ -44,6 +48,7 @@ export default {
         return {
           talk_type: 0,
           receiver_id: 0,
+          params: 0,
           nickname: '',
         }
       },
@@ -62,6 +67,7 @@ export default {
       params: {
         talk_type: 0,
         receiver_id: 0,
+        params: 0,
         nickname: '',
       },
       isOnline: false,

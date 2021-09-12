@@ -6,6 +6,8 @@ export default {
     // 接收者ID
     receiver_id: 0,
 
+    is_robot: 0,
+
     // 聊天记录
     records: [],
 
@@ -18,6 +20,7 @@ export default {
       state.records = []
       state.talk_type = parseInt(resource.talk_type)
       state.receiver_id = parseInt(resource.receiver_id)
+      state.is_robot = parseInt(resource.is_robot)
 
       if (state.talk_type === 0 || state.receiver_id === 0) {
         state.index_name = null

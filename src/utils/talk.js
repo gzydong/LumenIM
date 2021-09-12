@@ -40,7 +40,7 @@ export function formateTalkItem(params) {
     avatar: '',
     is_disturb: 0,
     is_top: 0,
-    is_online: false,
+    is_online: 0,
     unread_num: 0,
     content: '......',
     draft_text: '',

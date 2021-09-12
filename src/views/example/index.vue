@@ -1,6 +1,8 @@
 <template>
   <div class="test">
     <!-- <NewMessageNotify /> -->
+
+    <visit-card-message/>
   </div>
 </template>
 

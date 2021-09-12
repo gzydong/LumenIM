@@ -150,6 +150,11 @@
                           <div v-show="item.is_top" class="larkc-tag top">
                             TOP
                           </div>
+
+                          <div v-show="item.is_robot" class="larkc-tag top">
+                            BOT
+                          </div>
+
                           <div
                             v-show="item.talk_type == 2"
                             class="larkc-tag group"
@@ -177,13 +182,16 @@
                           <span>{{ item.draft_text }}</span>
                         </template>
                         <template v-else>
-                          <span
-                            v-if="item.talk_type == 1"
-                            :class="{ 'online-color': item.is_online }"
-                          >
-                            [{{ item.is_online ? '在线' : '离线' }}]
-                          </span>
-                          <span v-else>[群消息]</span>
+                          <template v-if="item.is_robot == 0">
+                            <span
+                              v-if="item.talk_type == 1"
+                              :class="{ 'online-color': item.is_online == 1 }"
+                            >
+                              [{{ item.is_online == 1 ? '在线' : '离线' }}]
+                            </span>
+                            <span v-else>[群消息]</span>
+                          </template>
+
                           <span>{{ item.msg_text }}</span>
                         </template>
                       </div>
@@ -300,7 +308,7 @@ export default {
     // 当前对话好友在线状态
     isFriendOnline() {
       let index = findTalkIndex(this.index_name)
-      return index >= 0 && this.talks[index].is_online == true
+      return index >= 0 && this.talks[index].is_online == 1
     },
   },
   watch: {
@@ -322,7 +330,7 @@ export default {
     monitorFriendsStatus(value) {
       this.$store.commit('UPDATE_TALK_ITEM', {
         index_name: `1_${value.friend_id}`,
-        is_online: value.status == 1,
+        is_online: value.status,
       })
     },
   },
@@ -363,6 +371,7 @@ export default {
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
         talk_type: 0,
         receiver_id: 0,
+        is_robot: 0,
       })
     },
 
@@ -431,11 +440,13 @@ export default {
         talk_type,
         receiver_id,
         nickname,
+        is_robot: item.is_robot,
       }
 
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
         talk_type,
         receiver_id,
+        is_robot: item.is_robot,
       })
 
       this.$nextTick(() => {
@@ -465,6 +476,7 @@ export default {
       this.$store.commit('UPDATE_DIALOGUE_MESSAGE', {
         talk_type: 0,
         receiver_id: 0,
+        is_robot: 0,
       })
 
       this.loadChatList()
@@ -477,7 +489,7 @@ export default {
           {
             label: '好友信息',
             icon: 'el-icon-user',
-            disabled: item.talk_type == 2,
+            disabled: item.talk_type == 2 || item.is_robot == 1,
             onClick: () => {
               this.$user(item.receiver_id)
             },
@@ -485,7 +497,7 @@ export default {
           {
             label: '修改备注',
             icon: 'el-icon-edit-outline',
-            disabled: item.talk_type == 2,
+            disabled: item.talk_type == 2 || item.is_robot == 1,
             onClick: () => {
               this.editFriendRemarks(item)
             },
@@ -503,6 +515,7 @@ export default {
               item.is_disturb == 0
                 ? 'el-icon-close-notification'
                 : 'el-icon-bell',
+            disabled: item.is_robot == 1,
             onClick: () => {
               this.setNotDisturb(item)
             },
@@ -518,6 +531,7 @@ export default {
           {
             label: item.talk_type == 1 ? '删除好友' : '退出群聊',
             icon: 'el-icon-delete',
+            disabled: item.is_robot == 1,
             onClick: () => {
               let title = item.talk_type == 1 ? '删除好友' : '退出群聊'
               this.$confirm(

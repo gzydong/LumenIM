@@ -157,6 +157,12 @@
                     :vote="item.vote"
                   />
 
+                  <!-- 登录消息 -->
+                  <login-message
+                    v-else-if="item.msg_type == 8"
+                    :detail="item.login"
+                  />
+
                   <!-- 未知消息 -->
                   <div class="unknown-msg" v-else>
                     未知消息类型[{{ item.msg_type }}]
@@ -970,10 +976,11 @@ export default {
       flex-basis: 40px;
       flex-shrink: 0;
       display: flex;
-      justify-content: center;
+      align-items: center;
       order: 2;
       user-select: none;
       padding-top: 22px;
+      flex-direction: column;
     }
 
     .main-column {
