@@ -127,11 +127,11 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onParse(evt) {
-    let [eventType, message] = JSON.parse(evt.data)
+    let obj = JSON.parse(evt.data)
 
     return {
-      event: eventType,
-      data: message,
+      event: obj.event,
+      data: obj.content,
       orginData: evt.data,
     }
   }
@@ -196,7 +196,7 @@ class WsSocket {
    */
   heartbeat() {
     this.config.heartbeat.setInterval = setInterval(() => {
-      this.connect.send('PING')
+      this.connect.send('{"event":"heartbeat","data":"ping"}')
     }, this.config.heartbeat.time)
   }
 

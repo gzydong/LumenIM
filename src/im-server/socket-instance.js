@@ -58,6 +58,10 @@ class SocketInstance {
    * 注册回调消息处理事件
    */
   registerEvents() {
+    this.socket.on('heartbeat', data => {
+      
+    })
+    
     this.socket.on('event_talk', data => {
       new TalkEvent(data).handle()
     })

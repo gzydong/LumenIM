@@ -13,6 +13,7 @@
     <% } %>
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_1425251_3v0kq1by4iq.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.css">
+
   </head>
   <body>
     <noscript>
@@ -25,6 +26,7 @@
         </div>
       </div>
     </div>
+
     <!-- require cdn assets js -->
     <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
     <script type="text/javascript" src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>

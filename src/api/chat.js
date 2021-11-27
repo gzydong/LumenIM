@@ -55,6 +55,11 @@ export const ServeGetRecordsContext = data => {
 }
 
 // 发送代码块消息服务接口
+export const ServeSendTalkText = data => {
+  return post('/api/v1/talk/message/text', data)
+}
+
+// 发送代码块消息服务接口
 export const ServeSendTalkCodeBlock = data => {
   return post('/api/v1/talk/message/code', data)
 }

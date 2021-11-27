@@ -504,8 +504,8 @@ export default {
 
         this.notice.loading = true
         ServeEditGroupNotice({
-          notice_id: this.notice.form.id,
-          group_id: this.groupId,
+          notice_id: parseInt(this.notice.form.id),
+          group_id: parseInt(this.groupId),
           title: this.notice.form.title,
           content: this.notice.form.content,
           is_top: 0,

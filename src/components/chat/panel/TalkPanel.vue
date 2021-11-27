@@ -163,6 +163,13 @@
                     :detail="item.login"
                   />
 
+                  <!-- 位置消息 -->
+                  <location-message
+                    v-else-if="item.msg_type == 10"
+                    :lat="item.location.latitude"
+                    :lng="item.location.longitude"
+                  />
+
                   <!-- 未知消息 -->
                   <div class="unknown-msg" v-else>
                     未知消息类型[{{ item.msg_type }}]
@@ -283,6 +290,7 @@ import {
   ServeForwardRecords,
   ServeRemoveRecords,
   ServeRevokeRecords,
+  ServeSendTalkText,
 } from '@/api/chat'
 
 export default {
@@ -398,16 +406,15 @@ export default {
 
     // 回车键发送消息回调事件
     submitSendMesage(content) {
-      SocketInstance.emit('event_talk', {
-        sender_id: this.uid,
-        receiver_id: this.params.receiver_id,
-        talk_type: this.params.talk_type,
-        text_message: content,
-      })
-
-      this.$store.commit('UPDATE_TALK_ITEM', {
-        index_name: this.index_name,
-        draft_text: '',
+      ServeSendTalkText({
+        receiver_id: parseInt(this.params.receiver_id),
+        talk_type: parseInt(this.params.talk_type),
+        text: content,
+      }).then(() => {
+        this.$store.commit('UPDATE_TALK_ITEM', {
+          index_name: this.index_name,
+          draft_text: '',
+        })
       })
     },
 
@@ -435,8 +442,8 @@ export default {
 
       // 调用父类Websocket组件发送消息
       SocketInstance.emit('event_keyboard', {
-        sender_id: this.uid,
-        receiver_id: this.params.receiver_id,
+        sender_id: parseInt(this.uid),
+        receiver_id: parseInt(this.params.receiver_id),
       })
     },
 
@@ -447,6 +454,7 @@ export default {
         record_id: this.loadRecord.minRecord,
         receiver_id: this.params.receiver_id,
         talk_type: this.params.talk_type,
+        limit: 30,
       }
 
       this.loadRecord.status = 0

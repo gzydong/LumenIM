@@ -11,6 +11,10 @@
             <i class="iconfont icon-daima" />
             <p class="tip-title">代码片段</p>
           </li>
+          <li @click="sendGeoLocation">
+            <i class="el-icon-location-information" />
+            <p class="tip-title">地理位置</p>
+          </li>
           <li @click="recorder = true">
             <i class="el-icon-headset" />
             <p class="tip-title">语音消息</p>
@@ -372,6 +376,21 @@ export default {
       }
 
       this.$refs.popoverEmoticon.doClose()
+    },
+
+    sendGeoLocation() {
+      if (!navigator.geolocation) {
+        alert('您的浏览器浏览器不支持获取地理位置信息。')
+        return
+      }
+
+      var geolocation = new BMap.Geolocation()
+      geolocation.getCurrentPosition(
+        function(r) {
+          console.log(r.point)
+        },
+        { enableHighAccuracy: true }
+      )
     },
   },
 }

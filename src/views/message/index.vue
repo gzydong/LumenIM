@@ -457,10 +457,10 @@ export default {
           })
 
           // 清空消息未读数(后期改成WebSocket发送消息)
-          ServeClearTalkUnreadNum({
-            talk_type,
-            receiver_id,
-          })
+          // ServeClearTalkUnreadNum({
+          //   talk_type,
+          //   receiver_id,
+          // })
         }
       })
     },

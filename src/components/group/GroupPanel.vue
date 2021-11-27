@@ -354,7 +354,7 @@ export default {
       this.disturbDisabled = true
       ServeSetNotDisturb({
         talk_type: 2,
-        receiver_id: this.groupId,
+        receiver_id: parseInt(this.groupId),
         is_disturb: value ? 1 : 0,
       })
         .then(res => {

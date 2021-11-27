@@ -57,10 +57,10 @@ export const ServeGetGroupMembers = data => {
 
 //  获取群组公告列表
 export const ServeGetGroupNotices = data => {
-  return get('/api/v1/group/notices', data)
+  return get('/api/v1/group/notice/list', data)
 }
 
 //  编辑群公告
 export const ServeEditGroupNotice = data => {
-  return post('/api/v1/group/edit-notice', data)
+  return post('/api/v1/group/notice/edit', data)
 }

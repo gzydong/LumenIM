@@ -226,10 +226,10 @@ class Talk extends Base {
     })
 
     if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
-      ServeClearTalkUnreadNum({
-        talk_type: 1,
-        receiver_id: this.sender_id,
-      })
+      // ServeClearTalkUnreadNum({
+      //   talk_type: 1,
+      //   receiver_id: this.sender_id,
+      // })
     }
   }
 

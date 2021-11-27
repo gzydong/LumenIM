@@ -51,7 +51,6 @@
           </div>
           <div
             v-for="subitem in item.list"
-            :key="subitem.src"
             class="emoji-item"
             @click="clickImageEmoticon(subitem)"
           >

@@ -55,7 +55,7 @@
         </div>
       </el-main>
       <el-footer class="footer">
-        <el-button plain size="small">取消</el-button>
+        <el-button plain size="small" @click="$emit('close')">取消</el-button>
         <el-button
           type="primary"
           size="small"

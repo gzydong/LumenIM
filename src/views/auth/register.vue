@@ -246,7 +246,7 @@ export default {
       this.smsLock = true
       ServeSendVerifyCode({
         mobile: this.form.username,
-        type: 'user_register',
+        channel: 'register',
       })
         .then(res => {
           if (res.code == 200) {

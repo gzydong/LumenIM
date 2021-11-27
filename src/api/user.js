@@ -42,7 +42,7 @@ export const ServeSendMobileCode = data => {
 
 // 发送找回密码验证码
 export const ServeSendVerifyCode = data => {
-  return post('/api/v1/auth/send-verify-code', data)
+  return post('/api/v1/common/sms-code', data)
 }
 
 // 找回密码服务
@@ -52,12 +52,12 @@ export const ServeForgetPassword = data => {
 
 // 搜索用户信息服务接口
 export const ServeSearchUser = data => {
-  return post('/api/v1/users/search-user', data)
+  return get('/api/v1/contact/detail', data)
 }
 
 // 修改个人信息服务接口
 export const ServeUpdateUserDetail = data => {
-  return post('/api/v1/users/edit-user-detail', data)
+  return post('/api/v1/users/edit/detail', data)
 }
 
 // 查询用户信息服务接口

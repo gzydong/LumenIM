@@ -35,6 +35,8 @@ const vueConfig = {
   assetsDir: 'static',
   runtimeCompiler: false,
   devServer: {
+
+    // https: true,
     port: 8000,
     // proxy: {
     //   //配置跨域

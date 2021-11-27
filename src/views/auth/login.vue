@@ -130,7 +130,7 @@ export default {
             let result = res.data
 
             // 保存授权信息到本地缓存
-            setToken(result.authorize.access_token, result.authorize.expires_in)
+            setToken(result.access_token, result.expires_in)
 
             this.$store.commit('UPDATE_USER_INFO', result.userInfo)
             this.$store.commit('UPDATE_LOGIN_STATUS')
