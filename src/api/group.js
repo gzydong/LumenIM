@@ -42,7 +42,7 @@ export const ServeSecedeGroup = data => {
 
 // 修改群聊名片服务接口
 export const ServeUpdateGroupCard = data => {
-  return post('/api/v1/group/set-group-card', data)
+  return post('/api/v1/group/members/remark', data)
 }
 
 // 获取用户可邀请加入群组的好友列表

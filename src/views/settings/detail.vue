@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="container">
-      <h4>设置个人信息</h4>
+      <h4>个人信息</h4>
       <el-row>
         <el-col :span="15">
           <el-form ref="form" :model="form" :rules="rules">

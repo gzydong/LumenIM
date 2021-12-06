@@ -46,7 +46,7 @@
         </span>
         <span v-else>
           <input
-            v-model="editRemarkText"
+            v-model.trim="editRemarkText"
             class="edit-input"
             type="text"
             v-focus
@@ -388,7 +388,7 @@ export default {
       }
 
       ServeUpdateGroupCard({
-        group_id: this.groupId,
+        group_id: parseInt(this.groupId),
         visit_card: this.editRemarkText,
       }).then(res => {
         if (res.code == 200) {
