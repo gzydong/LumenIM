@@ -222,8 +222,8 @@ export default {
               if (res.data.is_file_merge) {
                 ServeSendTalkFile({
                   hash_name: res.data.hash,
-                  receive_id: this.$store.state.dialogue.receive_id,
-                  source: this.$store.state.dialogue.source,
+                  receiver_id: this.$store.state.dialogue.receiver_id,
+                  talk_type: this.$store.state.dialogue.talk_type,
                 })
               }
             } else {

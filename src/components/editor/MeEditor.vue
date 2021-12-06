@@ -27,6 +27,10 @@
             <i class="el-icon-folder-opened" />
             <p class="tip-title">上传管理</p>
           </li>
+          <li v-show="isGroupTalk" @click="vote.isShow = true">
+            <i class="el-icon-s-data" />
+            <p class="tip-title">发起投票</p>
+          </li>
 
           <p class="text-tips no-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
@@ -112,6 +116,15 @@
 
     <!-- 文件上传管理器 -->
     <MeEditorFileManage ref="filesManager" v-model="filesManager.isShow" />
+
+    <MeEditorVote
+      v-if="vote.isShow"
+      @close="
+        () => {
+          this.vote.isShow = false
+        }
+      "
+    />
   </div>
 </template>
 
@@ -120,6 +133,7 @@ import MeEditorEmoticon from './MeEditorEmoticon'
 import MeEditorFileManage from './MeEditorFileManage'
 import MeEditorImageView from './MeEditorImageView'
 import MeEditorRecorder from './MeEditorRecorder'
+import MeEditorVote from './MeEditorVote'
 import TalkCodeBlock from '@/components/chat/TalkCodeBlock'
 import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
 import { findTalk } from '@/utils/talk'
@@ -138,10 +152,14 @@ export default {
     MeEditorImageView,
     TalkCodeBlock,
     MeEditorRecorder,
+    MeEditorVote,
   },
   computed: {
     talkUser() {
       return this.$store.state.dialogue.index_name
+    },
+    isGroupTalk() {
+      return this.$store.state.dialogue.talk_type == 2
     },
   },
   watch: {
@@ -167,6 +185,10 @@ export default {
       },
 
       filesManager: {
+        isShow: false,
+      },
+
+      vote: {
         isShow: false,
       },
 
@@ -271,19 +293,20 @@ export default {
 
     // 代码块编辑器确认完成回调事件
     confirmCodeBlock(data) {
-      const { source, receive_id } = this.$store.state.dialogue
+      const { talk_type, receiver_id } = this.$store.state.dialogue
       ServeSendTalkCodeBlock({
-        source,
-        receive_id,
+        talk_type,
+        receiver_id,
         code: data.code,
         lang: data.language,
       }).then(res => {
         if (res.code == 200) {
           this.codeBlock.isShow = false
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '代码消息发送失败',
+          this.$notify({
+            title: '友情提示',
+            message: res.message,
+            type: 'warning',
           })
         }
       })
@@ -291,12 +314,12 @@ export default {
 
     // 确认上传图片消息回调事件
     confirmUploadImage() {
-      const { source, receive_id } = this.$store.state.dialogue
+      const { talk_type, receiver_id } = this.$store.state.dialogue
 
       let fileData = new FormData()
-      fileData.append('source', source)
-      fileData.append('receive_id', receive_id)
-      fileData.append('img', this.imageViewer.file)
+      fileData.append('talk_type', talk_type)
+      fileData.append('receiver_id', receiver_id)
+      fileData.append('image', this.imageViewer.file)
 
       let ref = this.$refs.imageViewer
 
@@ -305,6 +328,12 @@ export default {
           ref.loading = false
           if (res.code == 200) {
             ref.closeBox()
+          } else {
+            this.$notify({
+              title: '友情提示',
+              message: res.message,
+              type: 'warning',
+            })
           }
         })
         .finally(() => {
@@ -334,10 +363,10 @@ export default {
           }, 0)
         }
       } else {
-        const { source, receive_id } = this.$store.state.dialogue
+        const { talk_type, receiver_id } = this.$store.state.dialogue
         ServeSendEmoticon({
-          source,
-          receive_id,
+          talk_type,
+          receiver_id,
           emoticon_id: data.value,
         })
       }

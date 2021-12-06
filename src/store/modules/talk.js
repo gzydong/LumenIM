@@ -22,9 +22,7 @@ const Talk = {
     },
     talkItems: state => {
       return state.items.sort(
-        getMutipSort([
-          getSort((a, b) => a.updated_at > b.updated_at),
-        ])
+        getMutipSort([getSort((a, b) => a.updated_at > b.updated_at)])
       )
     },
     // 消息未读数总计
@@ -37,17 +35,23 @@ const Talk = {
   },
   mutations: {
     // 设置对话列表
-    SET_TALK_ITEM(state, resource) {
+    SET_TALK_ITEMS(state, resource) {
       state.items = resource.items
     },
 
     // 更新对话节点
     UPDATE_TALK_ITEM(state, resource) {
-      Object.assign(state.items[resource.index], resource.item)
+      let index = state.items.findIndex(
+        item => item.index_name === resource.index_name
+      )
+
+      if (index >= 0) {
+        Object.assign(state.items[index], resource)
+      }
     },
 
     // 新增对话节点
-    INSERT_TALK_ITEM(state, resource) {
+    PUSH_TALK_ITEM(state, resource) {
       state.items.push(resource)
     },
 
@@ -61,21 +65,16 @@ const Talk = {
       }
     },
 
-    // 更新对话节点在线状态
-    UPDATE_TALK_ONLINE_STATUS(state, resource) {
-      state.items[resource.index].online = parseInt(resource.status)
-    },
-
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
-      state.items[resource.index].msg_text = resource.item.msg_text
-      state.items[resource.index].unread_num++
-      state.items[resource.index].updated_at = resource.item.updated_at
-    },
-
-    // 清空对话的未读数
-    CLEAR_TLAK_UNREAD_NUM(state, index) {
-      state.items[index].unread_num = 0
+      for (let i in state.items) {
+        if (state.items[i].index_name === resource.index_name) {
+          state.items[i].unread_num++
+          state.items[i].msg_text = resource.msg_text
+          state.items[i].updated_at = resource.updated_at
+          break
+        }
+      }
     },
 
     // 触发对话列表重新加载

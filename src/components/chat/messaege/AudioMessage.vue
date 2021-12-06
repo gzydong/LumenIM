@@ -84,9 +84,6 @@ export default {
       return formatSeconds(this.currentTime)
     },
   },
-  created() {
-    console.log(this.src)
-  },
   methods: {
     toPlay() {
       if (this.loading) {

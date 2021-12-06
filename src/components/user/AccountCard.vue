@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  name: 'UserCard',
+  name: 'AccountCard',
 }
 </script>
 <style lang="less" scoped>

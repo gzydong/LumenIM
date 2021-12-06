@@ -1,10 +1,12 @@
 export default {
   state: {
     // 对话来源[1:私聊;2:群聊]
-    source: 0,
+    talk_type: 0,
 
     // 接收者ID
-    receive_id: 0,
+    receiver_id: 0,
+
+    is_robot: 0,
 
     // 聊天记录
     records: [],
@@ -16,12 +18,15 @@ export default {
     // 更新对话
     UPDATE_DIALOGUE_MESSAGE(state, resource) {
       state.records = []
-      state.source = parseInt(resource.source)
-      state.receive_id = parseInt(resource.receive_id)
-      state.index_name =
-        state.source === 0 || state.receive_id === 0
-          ? null
-          : resource.source + '_' + resource.receive_id
+      state.talk_type = parseInt(resource.talk_type)
+      state.receiver_id = parseInt(resource.receiver_id)
+      state.is_robot = parseInt(resource.is_robot)
+
+      if (state.talk_type === 0 || state.receiver_id === 0) {
+        state.index_name = null
+      } else {
+        state.index_name = resource.talk_type + '_' + resource.receiver_id
+      }
     },
 
     // 数组头部压入对话记录
@@ -36,7 +41,12 @@ export default {
 
     // 更新对话记录
     UPDATE_DIALOGUE(state, resource) {
-      Object.assign(state.records[resource.index], resource.item)
+      for (let i in state.records) {
+        if (state.records[i].id === resource.id) {
+          Object.assign(state.records[i], resource)
+          break
+        }
+      }
     },
 
     // 删除对话记录

@@ -64,7 +64,7 @@
 
               <!-- 代码块消息 -->
               <code-message
-                v-else-if="record.msg_type == 5"
+                v-else-if="record.msg_type == 4"
                 :code="record.code_block.code"
                 :lang="record.code_block.code_lang"
               />
@@ -84,22 +84,29 @@ export default {
   name: 'TalkForwardRecord',
   data() {
     return {
-      // 记录列表
+      record_id: 0,
       records: [],
-
-      // 加载状态
       loading: false,
-
-      // 窗口是否显示
       isShow: false,
     }
   },
   methods: {
-    // 加载数据列表
+    open(record_id) {
+      if (record_id !== this.record_id) {
+        this.record_id = record_id
+        this.records = []
+        this.loadRecords()
+      }
+
+      this.isShow = true
+    },
+    close() {
+      this.isShow = false
+    },
     loadRecords() {
       this.loading = true
       ServeGetForwardRecords({
-        records_id: this.records_id,
+        record_id: this.record_id,
       })
         .then(res => {
           if (res.code == 200) {
@@ -109,22 +116,6 @@ export default {
         .finally(() => {
           this.loading = false
         })
-    },
-
-    // 显示窗口
-    open(records_id) {
-      if (records_id != this.records_id) {
-        this.records = []
-      }
-
-      this.records_id = records_id
-      this.isShow = true
-      this.loadRecords()
-    },
-
-    // 关闭窗口
-    close() {
-      this.isShow = false
     },
   },
 }

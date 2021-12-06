@@ -4,7 +4,7 @@
       <el-header height="60px" class="header">
         <p>消息管理器</p>
         <p class="title">
-          <span>{{ findSource == 1 ? '好友' : '群' }}【{{ title }}】</span>
+          <span>{{ query.talk_type == 1 ? '好友' : '群' }}【{{ title }}】</span>
         </p>
         <p class="tools">
           <i
@@ -62,7 +62,8 @@
                   class="contacts-item pointer"
                   :class="{
                     selected:
-                      findSource == item.type && findReceiveId == item.id,
+                      query.talk_type == item.type &&
+                      query.receiver_id == item.id,
                   }"
                   :key="item.id"
                   @click="triggerMenuItem(item)"
@@ -84,24 +85,10 @@
           <el-container class="full-height">
             <el-header height="40px" class="type-items">
               <span
-                :class="{ active: records.msgType == 0 }"
-                @click="triggerLoadType(0)"
-                >全部
-              </span>
-              <span
-                :class="{ active: records.msgType == 5 }"
-                @click="triggerLoadType(5)"
-                >代码块
-              </span>
-              <span
-                :class="{ active: records.msgType == 2 }"
-                @click="triggerLoadType(2)"
-                >文件
-              </span>
-              <span
-                :class="{ active: records.msgType == 4 }"
-                @click="triggerLoadType(4)"
-                >会话记录
+                v-for="tab in tabType"
+                :class="{ active: query.msg_type == tab.type }"
+                @click="triggerLoadType(tab.type)"
+                >{{ tab.name }}
               </span>
             </el-header>
 
@@ -184,16 +171,23 @@
 
                     <!-- 会话记录消息 -->
                     <forward-message
-                      v-else-if="record.msg_type == 4"
+                      v-else-if="record.msg_type == 3"
                       :forward="record.forward"
                       :record_id="record.id"
                     />
 
                     <!-- 代码块消息 -->
                     <code-message
-                      v-else-if="record.msg_type == 5"
+                      v-else-if="record.msg_type == 4"
                       :code="record.code_block.code"
                       :lang="record.code_block.code_lang"
+                    />
+
+                    <!-- 投票消息 -->
+                    <vote-message
+                      v-else-if="record.msg_type == 5"
+                      :record_id="record.id"
+                      :vote="record.vote"
                     />
 
                     <div v-else class="other-message">未知消息类型</div>
@@ -206,7 +200,7 @@
                   <span>加载数据中...</span>
                 </div>
                 <div v-show="records.loadStatus == 0" class="load-button">
-                  <i class="el-icon-arrow-up" />
+                  <i class="el-icon-arrow-down" />
                   <span @click="loadChatRecord">加载更多...</span>
                 </div>
               </el-scrollbar>
@@ -226,22 +220,23 @@ import { formateSize as renderSize, download, imgZoom } from '@/utils/functions'
 export default {
   name: 'TalkSearchRecord',
   props: {
-    receiveId: {
-      type: [Number, String],
-      default: 0,
-    },
-    source: {
-      type: [Number, String],
-      default: 0,
-    },
-    titleName: {
-      type: String,
-      default: '',
+    params: {
+      type: Object,
+      default: () => {
+        return {
+          talk_type: 0,
+          receiver_id: 0,
+          title: '',
+        }
+      },
     },
   },
   data() {
     return {
       fullscreen: false,
+
+      user_id: this.$store.state.user.uid,
+      title: '',
 
       // 侧边栏相关信息
       broadside: false,
@@ -251,22 +246,29 @@ export default {
         groups: [],
       },
 
-      uid: this.$store.state.user.uid,
-      title: '',
-      findType: 0, // 查询的方式 0:所有 1:图片 2:文件
-      findSource: 0, // 查询的聊天类型 1:私聊 2:群聊
-      findReceiveId: 0, // 接收者ID(用户ID或群ID)
+      query: {
+        talk_type: 0,
+        receiver_id: 0,
+        msg_type: 0,
+      },
 
       // 用户聊天记录
       records: {
-        recordId: 0,
-        msgType: 0,
+        record_id: 0,
         items: [],
         isEmpty: false,
         loadStatus: 0,
       },
 
       showBox: 0,
+
+      tabType: [
+        { name: '全部', type: 0 },
+        { name: '文件', type: 2 },
+        { name: '会话记录', type: 3 },
+        { name: '代码块', type: 4 },
+        { name: '群投票', type: 5 },
+      ],
 
       search: {
         keyword: '', // 关键字查询
@@ -279,9 +281,12 @@ export default {
     }
   },
   mounted() {
-    this.title = this.titleName
-    this.findSource = this.source
-    this.findReceiveId = this.receiveId
+    this.title = this.params.title
+    this.query = {
+      talk_type: this.params.talk_type,
+      receiver_id: this.params.receiver_id,
+      msg_type: 0,
+    }
 
     this.loadChatRecord(0)
   },
@@ -339,8 +344,8 @@ export default {
     // 左侧联系人菜单点击事件
     triggerMenuItem(item) {
       this.title = item.name
-      this.findSource = item.type
-      this.findReceiveId = item.id
+      this.query.talk_type = item.type
+      this.query.receiver_id = item.id
       this.showBox = 0
 
       this.triggerLoadType(0)
@@ -349,10 +354,10 @@ export default {
     // 加载历史记录
     loadChatRecord() {
       let data = {
-        record_id: this.records.recordId,
-        receive_id: this.findReceiveId,
-        msg_type: this.records.msgType,
-        source: this.findSource,
+        talk_type: this.query.talk_type,
+        receiver_id: this.query.receiver_id,
+        record_id: this.records.record_id,
+        msg_type: this.query.msg_type,
       }
 
       if (this.records.loadStatus == 1) return
@@ -373,7 +378,7 @@ export default {
           if (this.records.items.length == 0) {
             this.records.isEmpty = true
           } else {
-            this.records.recordId = this.records.items[
+            this.records.record_id = this.records.items[
               this.records.items.length - 1
             ].id
           }
@@ -384,8 +389,8 @@ export default {
     },
 
     triggerLoadType(type) {
-      this.records.recordId = 0
-      this.records.msgType = type
+      this.records.record_id = 0
+      this.query.msg_type = type
       this.records.isEmpty = false
       this.records.items = []
 

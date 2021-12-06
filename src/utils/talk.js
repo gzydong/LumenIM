@@ -1,6 +1,9 @@
 import store from '@/store'
 import router from '@/router'
 import { parseTime } from '@/utils/functions'
+import { ServeCreateTalkList } from '@/api/chat'
+
+const KEY_INDEX_NAME = 'send_message_index_name'
 
 /**
  * 通过对话索引查找对话列表下标
@@ -30,27 +33,24 @@ export function findTalk(index_name) {
 export function formateTalkItem(params) {
   let options = {
     id: 0,
-    type: 1,
-    index_name: '',
+    talk_type: 1,
+    receiver_id: 0,
     name: '未设置昵称',
     remark_name: '',
     avatar: '',
-    friend_id: 0,
-    group_id: 0,
-    not_disturb: 0,
+    is_disturb: 0,
     is_top: 0,
+    is_online: 0,
     unread_num: 0,
     content: '......',
     draft_text: '',
+    msg_text: '',
+    index_name: '',
     created_at: parseTime(new Date()),
   }
 
   Object.assign(options, params)
-
-  options.index_name =
-    options.type == 1
-      ? `${options.type}_${options.friend_id}`
-      : `${options.type}_${options.group_id}`
+  options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options
 }
@@ -58,16 +58,36 @@ export function formateTalkItem(params) {
 /**
  * 打开指定对话窗口
  *
- * @param {Integer} userId 用户ID
- * @param {Integer} talkType 对话类型[1:私聊;2:群聊;]
+ * @param {Integer} talk_type 对话类型[1:私聊;2:群聊;]
+ * @param {Integer} receiver_id 接收者ID
  */
-export function openTalk(userId, talkType) {
-  router.push({
-    path: '/message',
-    query: {
-      talk: userId,
-      type: talkType,
-      v: new Date().getTime(),
-    },
+export function toTalk(talk_type, receiver_id) {
+  ServeCreateTalkList({
+    talk_type,
+    receiver_id,
+  }).then(({ code, data }) => {
+    if (code == 200) {
+      sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+      router.push({
+        path: '/message',
+        query: {
+          v: new Date().getTime(),
+        },
+      })
+    }
   })
+}
+
+/**
+ * 获取需要打开的对话索引值
+ *
+ * @returns
+ */
+export function getCacheIndexName() {
+  let index_name = sessionStorage.getItem(KEY_INDEX_NAME)
+  if (index_name) {
+    sessionStorage.removeItem(KEY_INDEX_NAME)
+  }
+
+  return index_name
 }

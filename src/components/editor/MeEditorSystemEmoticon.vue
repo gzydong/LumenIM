@@ -12,7 +12,7 @@
         <ul>
           <li v-for="(item, i) in items" :key="item.id" class="no-select">
             <div class="pkg-avatar">
-              <el-image :src="item.url" fit="cover" :lazy="true" />
+              <el-image :src="item.icon" fit="cover" :lazy="true" />
             </div>
             <div class="pkg-info" v-text="item.name"></div>
             <div class="pkg-status">

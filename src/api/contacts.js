@@ -5,11 +5,6 @@ export const ServeGetContacts = data => {
   return get('/api/v1/contacts/list', data)
 }
 
-// 好友申请服务接口
-export const ServeCreateContact = data => {
-  return post('/api/v1/contacts/add', data)
-}
-
 // 解除好友关系服务接口
 export const ServeDeleteContact = data => {
   return post('/api/v1/contacts/delete', data)
@@ -20,27 +15,31 @@ export const ServeEditContactRemark = data => {
   return post('/api/v1/contacts/edit-remark', data)
 }
 
-// 查询好友申请未读数量服务接口
-export const ServeFindFriendApplyNum = () => {
-  return get('/api/v1/contacts/apply-unread-num')
+// 搜索联系人
+export const ServeSearchContact = data => {
+  return get('/api/v1/contacts/search', data)
+}
+
+// 好友申请服务接口
+export const ServeCreateContact = data => {
+  return post('/api/v1/contacts/apply/create', data)
 }
 
 // 查询好友申请服务接口
 export const ServeGetContactApplyRecords = data => {
-  return get('/api/v1/contacts/apply-records', data)
+  return get('/api/v1/contacts/apply/records', data)
 }
 
 // 处理好友申请服务接口
-export const ServeHandleFriendApply = data => {
-  return post('/api/v1/contacts/accept-invitation', data)
+export const ServeApplyAccept = data => {
+  return post('/api/v1/contacts/apply/accept', data)
 }
 
-// 删除好友申请记录服务接口
-export const ServeDeleteContactApply = data => {
-  return post('/api/v1/contacts/delete-apply', data)
+export const ServeApplyDecline = data => {
+  return post('/api/v1/contacts/apply/decline', data)
 }
 
-// 搜索联系人
-export const ServeSearchContact = data => {
-  return get('/api/v1/contacts/search', data)
+// 查询好友申请未读数量服务接口
+export const ServeFindFriendApplyNum = () => {
+  return get('/api/v1/contacts/apply-unread-num')
 }

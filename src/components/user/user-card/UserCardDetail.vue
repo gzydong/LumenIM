@@ -1,24 +1,21 @@
 <template>
-  <div v-show="isShow" class="lum-dialog-mask animated fadeIn">
+  <div class="lum-dialog-mask animated fadeIn">
     <el-container class="container" v-outside="close">
       <el-header class="no-padding header" height="180px">
         <i class="close el-icon-error pointer" @click="close" />
         <div class="img-banner">
-          <img :src="userInfo.imgbag" class="img-banner" />
+          <img :src="detail.bag" class="img-banner" />
         </div>
         <div class="user-header">
           <div class="avatar">
             <div class="avatar-box">
-              <img
-                :src="userInfo.avatar"
-                :onerror="$store.state.detaultAvatar"
-              />
+              <img :src="detail.avatar" :onerror="$store.state.detaultAvatar" />
             </div>
           </div>
           <div class="nickname">
             <i class="iconfont icon-qianming" />
-            <span>{{ userInfo.nickname || '未设置昵称' }}</span>
-            <div class="share no-select" @click="contacts = true">
+            <span>{{ detail.nickname || '未设置昵称' }}</span>
+            <div class="share no-select">
               <i class="iconfont icon-fenxiang3" /> <span>分享</span>
             </div>
           </div>
@@ -34,25 +31,21 @@
         <div class="card-rows no-select">
           <div class="card-row">
             <label>手机</label>
-            <span>{{ mobile(userInfo.mobile) }}</span>
+            <span>{{ detail.mobile | mobile }}</span>
           </div>
           <div class="card-row">
             <label>昵称</label>
-            <span>{{ userInfo.nickname || '未设置昵称' }}</span>
+            <span>{{ detail.nickname || '未设置昵称' }}</span>
           </div>
           <div class="card-row">
             <label>性别</label>
-            <span v-if="userInfo.gender == 1">男</span>
-            <span v-else-if="userInfo.gender == 2">女</span>
-            <span v-else>未知</span>
+            <span>{{ detail.gender | gender }}</span>
           </div>
-          <div v-show="userInfo.friendStatus == 2" class="card-row">
+          <div v-show="detail.friend_status == 2" class="card-row">
             <label>备注</label>
-            <span v-if="!editRemark.isShow">
-              {{
-                userInfo.nicknameRemark ? userInfo.nicknameRemark : '暂无备注'
-              }}
-            </span>
+            <span v-if="editRemark.isShow == false">{{
+              detail.nickname_remark ? detail.nickname_remark : '暂无备注'
+            }}</span>
             <span v-else>
               <input
                 v-model="editRemark.text"
@@ -75,47 +68,47 @@
         </div>
       </el-main>
       <el-footer
-        v-show="userInfo.friendStatus !== 0"
+        v-show="detail.friend_status !== 0"
         class="no-padding footer"
         height="50px"
       >
         <el-button
-          v-if="userInfo.friendStatus == 1 && userInfo.friendApply == 0"
+          v-if="detail.friend_status == 1 && detail.friend_apply == 0"
           type="primary"
           size="small"
           icon="el-icon-circle-plus-outline"
-          @click="applyFrom.isShow = true"
+          @click="apply.isShow = true"
           >添加好友
         </el-button>
         <el-button
-          v-else-if="userInfo.friendApply == 1"
+          v-else-if="detail.friend_apply == 1"
           type="primary"
           size="small"
           >已发送好友申请，请耐心等待...
         </el-button>
         <el-button
-          v-else-if="userInfo.friendStatus == 2"
+          v-else-if="detail.friend_status == 2"
           type="primary"
           size="small"
           icon="el-icon-s-promotion"
-          @click="sendMessage(userInfo)"
+          @click="sendMessage(detail)"
           >发消息
         </el-button>
       </el-footer>
 
       <!-- 添加好友申请表单 -->
       <div
-        v-outside="closeApplyFrom"
+        v-outside="closeApply"
         class="friend-from"
-        :class="{ 'friend-from-show': applyFrom.isShow }"
+        :class="{ 'friend-from-show': apply.isShow }"
       >
         <p>
           <span>请填写好友申请备注：</span>
-          <span @click="closeApplyFrom">取消</span>
+          <span @click="closeApply">取消</span>
         </p>
         <div>
           <input
-            v-model="applyFrom.text"
+            v-model="apply.text"
             type="text"
             placeholder="(必填项)"
             @keyup.enter="sendApply"
@@ -126,44 +119,45 @@
         </div>
       </div>
     </el-container>
-
-    <UserContacts
-      v-if="contacts"
-      @confirm="confirmContact"
-      @close="contacts = false"
-    />
   </div>
 </template>
 <script>
-import UserContacts from '@/components/chat/UserContacts'
-import { ServeCreateTalkList } from '@/api/chat'
 import { ServeSearchUser } from '@/api/user'
 import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
+import { toTalk } from '@/utils/talk'
 
 export default {
-  name: 'UserBusinessCard',
-  components: {
-    UserContacts,
+  name: 'UserCardDetail',
+  props: {
+    user_id: {
+      type: Number,
+      default: 0,
+    },
+  },
+  filters: {
+    gender(value) {
+      let arr = ['未知', '男', '女']
+      return arr[value] || '未知'
+    },
+    // 手机号格式化
+    mobile(value) {
+      return (
+        value.substr(0, 3) + ' ' + value.substr(3, 4) + ' ' + value.substr(7, 4)
+      )
+    },
   },
   data() {
     return {
-      isShow: false,
-
-      // 用户ID
-      user_id: 0,
-
-      // 用户相关信息
-      userInfo: {
+      detail: {
         mobile: '',
         nickname: '',
         avatar: '',
         motto: '',
-        friendStatus: 0,
-        friendApply: 0,
-        nicknameRemark: '',
-
-        imgbag: require('@/assets/image/default-user-banner.png'),
-        gender: 0, //[0:未知;1:男;2:女;默认0]
+        friend_status: 0,
+        friend_apply: 0,
+        nickname_remark: '',
+        bag: require('@/assets/image/default-user-banner.png'),
+        gender: 0,
       },
 
       // 好友备注表单
@@ -173,7 +167,7 @@ export default {
       },
 
       // 好友申请表单
-      applyFrom: {
+      apply: {
         isShow: false,
         text: '',
       },
@@ -181,70 +175,45 @@ export default {
       contacts: false,
     }
   },
+  created() {
+    this.loadUserDetail()
+  },
   methods: {
-    // 显示窗口
-    open(user_id) {
-      this.isShow = true
-      this.user_id = user_id
-      this.findUserDetail()
-    },
-
-    // 关闭窗口
     close() {
-      if (this.contacts) {
-        return false
-      }
-      this.isShow = false
-    },
+      if (this.contacts) return false
 
-    // 手机号格式化
-    mobile(mobile) {
-      return (
-        mobile.substr(0, 3) +
-        ' ' +
-        mobile.substr(3, 4) +
-        ' ' +
-        mobile.substr(7, 4)
-      )
+      this.$emit('close')
     },
 
     // 点击编辑备注信息
     clickEditRemark() {
       this.editRemark.isShow = true
-      this.editRemark.text = this.userInfo.nicknameRemark
+      this.editRemark.text = this.detail.nickname_remark
     },
 
     // 获取用户信息
-    findUserDetail() {
+    loadUserDetail() {
       ServeSearchUser({
         user_id: this.user_id,
       }).then(res => {
         if (res.code == 200) {
-          let data = res.data
-          this.userInfo.user_id = data.id
-          this.userInfo.mobile = data.mobile
-          this.userInfo.nickname = data.nickname
-          this.userInfo.nicknameRemark = data.nickname_remark
-          this.userInfo.motto = data.motto
-          this.userInfo.avatar = data.avatar
-          this.userInfo.friendStatus = data.friend_status
-          this.userInfo.friendApply = data.friend_apply
-          this.userInfo.gender = data.gender
+          this.detail.user_id = res.data.id
+          Object.assign(this.detail, res.data)
         }
       })
     },
 
     // 发送添加好友申请
     sendApply() {
-      if (this.applyFrom.text == '') return
+      if (this.apply.text == '') return
       ServeCreateContact({
-        friend_id: this.userInfo.user_id,
-        remarks: this.applyFrom.text,
+        friend_id: this.detail.user_id,
+        remark: this.apply.text,
       }).then(res => {
         if (res.code == 200) {
-          this.applyFrom.isShow = false
-          this.applyFrom.text = ''
-          this.userInfo.friendApply = 1
+          this.apply.isShow = false
+          this.apply.text = ''
+          this.detail.friend_apply = 1
         } else {
           alert('发送好友申请失败,请稍后再试...')
         }
@@ -254,11 +223,11 @@ export default {
     // 编辑好友备注信息
     editRemarkSubmit() {
       let data = {
-        friend_id: this.userInfo.user_id,
+        friend_id: this.detail.user_id,
         remarks: this.editRemark.text,
       }
 
-      if (data.remarks == this.userInfo.nicknameRemark) {
+      if (data.remarks == this.detail.nickname_remark) {
         this.editRemark.isShow = false
         return
       }
@@ -266,36 +235,21 @@ export default {
       ServeEditContactRemark(data).then(res => {
         if (res.code == 200) {
           this.editRemark.isShow = false
-          this.userInfo.nicknameRemark = data.remarks
+          this.detail.nickname_remark = data.remarks
           this.$emit('changeRemark', data)
         }
       })
     },
 
     // 隐藏申请表单
-    closeApplyFrom() {
-      this.applyFrom.isShow = false
+    closeApply() {
+      this.apply.isShow = false
     },
 
     // 发送好友消息
     sendMessage() {
-      let userInfo = this.userInfo
-      ServeCreateTalkList({
-        type: 1,
-        receive_id: this.user_id,
-      }).then(res => {
-        if (res.code !== 200) return
-
-        this.$root.dumpTalkPage(`1_${userInfo.user_id}`)
-      })
-    },
-
-    confirmContact(array) {
-      this.contacts = false
-      this.$notify.info({
-        title: '消息',
-        message: '分享功能正在开发中...',
-      })
+      this.close()
+      toTalk(1, this.user_id)
     },
   },
 }

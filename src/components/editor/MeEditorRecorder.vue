@@ -276,7 +276,6 @@ export default {
     destroyRecorder(callBack) {
       this.recorder.destroy().then(() => {
         this.recorder = null
-        console.log('销毁了...')
         if (callBack) {
           callBack()
         }

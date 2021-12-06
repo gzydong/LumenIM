@@ -34,13 +34,17 @@
           <!-- 消息主体 -->
           <div v-for="(item, idx) in records" :key="item.id">
             <!-- 群消息 -->
-            <div v-if="item.msg_type == 3" class="message-box">
+            <div v-if="item.msg_type == 9" class="message-box">
               <invite-message @cat="catFriendDetail" :invite="item.invite" />
             </div>
 
             <!-- 撤回消息 -->
             <div v-else-if="item.is_revoke == 1" class="message-box">
               <revoke-message :item="item" />
+            </div>
+
+            <div v-else-if="item.msg_type == 0" class="message-box">
+              <system-text-message :content="item.content" />
             </div>
 
             <!-- 其它对话消息 -->
@@ -71,8 +75,8 @@
                 <div class="talk-title">
                   <span
                     v-show="
-                      item.source == 1 ||
-                        (item.source == 2 && item.float == 'right')
+                      item.msg_type == 1 ||
+                        (item.msg_type == 2 && item.float == 'right')
                     "
                     class="time"
                   >
@@ -83,7 +87,7 @@
 
                 <div class="talk-content">
                   <span
-                    v-show="item.source == 2 && item.float == 'left'"
+                    v-show="item.msg_type == 2 && item.float == 'left'"
                     class="nickname"
                   >
                     {{ item.nickname || item.friend_remarks }} |
@@ -131,7 +135,7 @@
 
                   <!-- 会话记录消息 -->
                   <forward-message
-                    v-else-if="item.msg_type == 4"
+                    v-else-if="item.msg_type == 3"
                     :forward="item.forward"
                     :record_id="item.id"
                     @contextmenu.native="onCopy(idx, item, $event)"
@@ -139,11 +143,24 @@
 
                   <!-- 代码块消息 -->
                   <code-message
-                    v-else-if="item.msg_type == 5"
+                    v-else-if="item.msg_type == 4"
                     :code="item.code_block.code"
                     :lang="item.code_block.code_lang"
                     :maxwidth="true"
                     @contextmenu.native="onCopy(idx, item, $event)"
+                  />
+
+                  <!-- 投票消息 -->
+                  <vote-message
+                    v-else-if="item.msg_type == 5"
+                    :record_id="item.id"
+                    :vote="item.vote"
+                  />
+
+                  <!-- 登录消息 -->
+                  <login-message
+                    v-else-if="item.msg_type == 8"
+                    :detail="item.login"
                   />
 
                   <!-- 未知消息 -->
@@ -216,8 +233,8 @@
         v-outside="hideChatGroup"
       >
         <GroupPanel
-          v-if="params.source == 2"
-          :group-id="params.receive_id"
+          v-if="params.talk_type == 2"
+          :group-id="params.receiver_id"
           @close="hideChatGroup"
           @send-group="hideChatGroup"
           @quit-group="quitGroupSuccess"
@@ -231,30 +248,20 @@
     <transition name="el-fade-in-linear">
       <TalkSearchRecord
         v-if="findChatRecord"
-        :source="params.source"
-        :receive-id="params.receive_id"
-        :titleName="params.nickname"
+        :params="{
+          talk_type: params.talk_type,
+          receiver_id: params.receiver_id,
+          title: params.nickname,
+        }"
         @close="findChatRecord = false"
       />
     </transition>
-
-    <!-- 选择联系人 -->
-    <transition name="el-fade-in-linear">
-      <UserContacts
-        v-if="selectContacts.isShow"
-        @close="selectContacts.isShow = false"
-        @confirm="confirmSelectContacts"
-      />
-    </transition>
-
-    <!-- 好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
 
     <!-- 群公告组件 -->
     <transition name="el-fade-in-linear">
       <GroupNotice
         v-if="group.notice"
-        :group-id="params.receive_id"
+        :group-id="params.receiver_id"
         @close="group.notice = false"
       />
     </transition>
@@ -262,18 +269,15 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import TalkSearchRecord from '@/components/chat/TalkSearchRecord'
-import UserContacts from '@/components/chat/UserContacts'
 import GroupPanel from '@/components/group/GroupPanel'
 import GroupNotice from '@/components/group/GroupNotice'
 import MeEditor from '@/components/editor/MeEditor'
 import PanelHeader from './PanelHeader'
 import PanelToolbar from './PanelToolbar'
-import SocketInstance from '@/socket-instance'
+import SocketInstance from '@/im-server/socket-instance'
 import { SvgMentionDown } from '@/core/icons'
 import { formateTime, parseTime, copyTextToClipboard } from '@/utils/functions'
-import { findTalkIndex } from '@/utils/talk'
 import {
   ServeTalkRecords,
   ServeForwardRecords,
@@ -285,10 +289,8 @@ export default {
   name: 'TalkEditorPanel',
   components: {
     MeEditor,
-    UserContacts,
     GroupPanel,
     TalkSearchRecord,
-    UserBusinessCard,
     GroupNotice,
     SvgMentionDown,
     PanelToolbar,
@@ -301,9 +303,9 @@ export default {
       default: function() {
         return {
           // 消息来源（1：好友私信 2:群聊）
-          source: 0,
+          talk_type: 0,
           // 消息接收者ID（好友ID或者群聊ID）
-          receive_id: 0,
+          receiver_id: 0,
           nickname: '',
         }
       },
@@ -328,11 +330,6 @@ export default {
         isOpen: false,
         items: [],
         mode: 0,
-      },
-
-      // 选择联系人窗口
-      selectContacts: {
-        isShow: false,
       },
 
       // 群组Box
@@ -401,34 +398,28 @@ export default {
 
     // 回车键发送消息回调事件
     submitSendMesage(content) {
-      // 调用组件发送消息
       SocketInstance.emit('event_talk', {
-        // 发送消息的用户ID
-        send_user: this.uid,
-        // 接受者消息ID(用户ID或群ID)
-        receive_user: this.params.receive_id,
-        // 聊天类型[1:私聊;2:群聊信息显示用户昵称;]
-        source_type: this.params.source,
-        // 消息文本
+        sender_id: this.uid,
+        receiver_id: this.params.receiver_id,
+        talk_type: this.params.talk_type,
         text_message: content,
       })
 
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(this.index_name),
-        item: {
-          draft_text: '',
-        },
+        index_name: this.index_name,
+        draft_text: '',
       })
     },
 
     // 推送编辑事件消息
     onKeyboardEvent(text) {
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(this.index_name),
-        item: {
-          draft_text: text,
-        },
+        index_name: this.index_name,
+        draft_text: text,
       })
+
+      // 判断当前对话是否属于私聊信息
+      if (this.params.talk_type == 2 || !this.isOnline) return
 
       // 判断是否推送键盘输入事件消息
       if (!this.$store.state.settings.keyboardEventNotify) {
@@ -436,10 +427,6 @@ export default {
       }
 
       let time = new Date().getTime()
-
-      // 判断当前对话是否属于私聊信息
-      if (this.params.source == 2 || !this.isOnline) return
-
       // 判断在两秒内是否已推送事件
       if (this.keyboardEvent.time != 0 && time - this.keyboardEvent.time < 2000)
         return
@@ -448,8 +435,8 @@ export default {
 
       // 调用父类Websocket组件发送消息
       SocketInstance.emit('event_keyboard', {
-        send_user: this.uid,
-        receive_user: this.params.receive_id,
+        sender_id: this.uid,
+        receiver_id: this.params.receiver_id,
       })
     },
 
@@ -458,8 +445,8 @@ export default {
       const user_id = this.uid
       const data = {
         record_id: this.loadRecord.minRecord,
-        receive_id: this.params.receive_id,
-        source: this.params.source,
+        receiver_id: this.params.receiver_id,
+        talk_type: this.params.talk_type,
       }
 
       this.loadRecord.status = 0
@@ -472,8 +459,8 @@ export default {
           // 防止点击切换过快消息返回延迟，导致信息错误
           if (
             res.code != 200 ||
-            (data.receive_id != this.params.receive_id &&
-              data.source != this.params.source)
+            (data.receiver_id != this.params.receiver_id &&
+              data.talk_type != this.params.talk_type)
           ) {
             return
           }
@@ -495,8 +482,8 @@ export default {
           this.$store.commit('UNSHIFT_DIALOGUE', records.reverse())
 
           this.loadRecord.status = records.length >= res.data.limit ? 1 : 2
-          this.loadRecord.minRecord =
-            records.length == res.data.limit ? res.data.record_id : 0
+
+          this.loadRecord.minRecord = res.data.record_id
 
           this.$nextTick(() => {
             if (data.record_id == 0) {
@@ -522,36 +509,27 @@ export default {
         return false
       }
 
-      if (value == 'forward') {
-        this.multiSelect.mode = 1
-        this.selectContacts.isShow = true
-        // 逐条转发
-        if (this.verifyMultiSelectType(4)) {
+      if (value == 'forward' || value == 'merge_forward') {
+        this.multiSelect.mode = value == 'forward' ? 1 : 2
+        if (this.verifyMultiSelectType(3)) {
           this.$notify({
             title: '消息转发',
             message: '会话记录不支持合并转发',
           })
           return false
         }
-      } else if (value == 'merge_forward') {
-        this.multiSelect.mode = 2
-        this.selectContacts.isShow = true
-        // 合并转发
-        if (this.verifyMultiSelectType(4)) {
-          this.$notify({
-            title: '消息转发',
-            message: '会话记录不支持合并转发',
-          })
-          return false
-        }
+
+        this.$contacts({
+          confirm: this.confirmSelectContacts,
+        })
       } else if (value == 'delete') {
         this.multiSelect.mode = 3
 
         // 批量删除
         let ids = this.multiSelect.items
         ServeRemoveRecords({
-          source: this.params.source,
-          receive_id: this.params.receive_id,
+          talk_type: this.params.talk_type,
+          receiver_id: this.params.receiver_id,
           record_id: ids.join(','),
         }).then(res => {
           if (res.code == 200) {
@@ -562,10 +540,10 @@ export default {
     },
 
     // 确认消息转发联系人事件
-    confirmSelectContacts(arr) {
+    confirmSelectContacts(data) {
       let user_ids = []
       let group_ids = []
-      arr.forEach(item => {
+      data.forEach(item => {
         if (item.type == 1) {
           user_ids.push(item.id)
         } else {
@@ -573,11 +551,10 @@ export default {
         }
       })
 
-      this.selectContacts.isShow = false
       ServeForwardRecords({
         forward_mode: this.multiSelect.mode,
-        source: this.params.source,
-        receive_id: this.params.receive_id,
+        talk_type: this.params.talk_type,
+        receiver_id: this.params.receiver_id,
         records_ids: this.multiSelect.items,
         receive_user_ids: user_ids,
         receive_group_ids: group_ids,
@@ -625,7 +602,7 @@ export default {
 
     // 查看好友用户信息
     catFriendDetail(value) {
-      this.$refs.userBusinessCard.open(value)
+      this.$user(value)
     },
 
     // 撤回消息
@@ -634,24 +611,21 @@ export default {
         record_id: item.id,
       }).then(res => {
         if (res.code == 200) {
-          this.$store.commit('UPDATE_DIALOGUE', {
-            index,
-            item: { is_revoke: 1 },
-          })
+          this.$store.commit('UPDATE_DIALOGUE', { id: item.id, is_revoke: 1 })
         }
       })
     },
 
     // 删除消息
     removeRecords(index, item) {
-      let receive_id = item.receive_id
-      if (item.source == 1 && item.user_id != this.uid) {
-        receive_id = item.user_id
+      let receiver_id = item.receiver_id
+      if (item.talk_type == 1 && item.user_id != this.uid) {
+        receiver_id = item.user_id
       }
 
       ServeRemoveRecords({
-        source: item.source,
-        receive_id: receive_id,
+        talk_type: item.talk_type,
+        receiver_id: receiver_id,
         record_id: item.id.toString(),
       }).then(res => {
         if (res.code == 200) {
@@ -815,10 +789,8 @@ export default {
     // 修改群聊免打扰状态
     disturbChange(detail) {
       this.$store.commit('UPDATE_TALK_ITEM', {
-        index: findTalkIndex(`2_${this.params.receive_id}`),
-        item: {
-          not_disturb: parseInt(detail.status),
-        },
+        index_name: `2_${this.params.receiver_id}`,
+        is_disturb: parseInt(detail.status),
       })
     },
 
@@ -873,6 +845,7 @@ export default {
   height: 100%;
   top: 0px;
   right: -350px;
+  z-index: 1;
   background: white;
   transition: all 0.5s ease-in-out;
   -moz-transition: all 0.5s ease-in-out;
@@ -1003,10 +976,11 @@ export default {
       flex-basis: 40px;
       flex-shrink: 0;
       display: flex;
-      justify-content: center;
+      align-items: center;
       order: 2;
       user-select: none;
       padding-top: 22px;
+      flex-direction: column;
     }
 
     .main-column {

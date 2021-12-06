@@ -1,15 +1,16 @@
 import store from '@/store'
 import config from '@/config/config'
-import WsSocket from '@/plugins/socket/ws-socket'
+import WsSocket from '@/plugins/ws-socket'
 import { getToken } from '@/utils/auth'
+import { Notification } from 'element-ui'
 
 // 引入消息处理类
-import TalkEvent from '@/plugins/socket/event/talk-event'
-import RevokeEvent from '@/plugins/socket/event/revoke-event'
-import LoginEvent from '@/plugins/socket/event/login-event'
-import KeyboardEvent from '@/plugins/socket/event/keyboard-event'
-import GroupJoinEvent from '@/plugins/socket/event/group-join-event'
-import FriendApplyEvent from '@/plugins/socket/event/friend-apply-event'
+import KeyboardEvent from '@/im-server/event/keyboard'
+import LoginEvent from '@/im-server/event/login'
+import TalkEvent from '@/im-server/event/talk'
+import RevokeEvent from '@/im-server/event/revoke'
+import GroupJoinEvent from '@/im-server/event/group-join'
+import FriendApplyEvent from '@/im-server/event/friend-apply'
 
 /**
  * SocketInstance 连接实例
@@ -57,25 +58,37 @@ class SocketInstance {
    * 注册回调消息处理事件
    */
   registerEvents() {
-    this.socket
-      .on('event_talk', data => {
-        new TalkEvent(data).handle()
+    this.socket.on('event_talk', data => {
+      new TalkEvent(data).handle()
+    })
+
+    this.socket.on('event_online_status', data => {
+      new LoginEvent(data).handle()
+    })
+
+    this.socket.on('event_keyboard', data => {
+      new KeyboardEvent(data).handle()
+    })
+
+    this.socket.on('event_revoke_talk', data => {
+      new RevokeEvent(data).handle()
+    })
+
+    this.socket.on('event_friend_apply', data => {
+      new FriendApplyEvent(data).handle()
+    })
+
+    this.socket.on('join_group', data => {
+      new GroupJoinEvent(data).handle()
+    })
+
+    this.socket.on('event_error', data => {
+      Notification({
+        title: '友情提示',
+        message: data.message,
+        type: 'warning',
       })
-      .on('event_online_status', data => {
-        new LoginEvent(data).handle()
-      })
-      .on('event_keyboard', data => {
-        new KeyboardEvent(data).handle()
-      })
-      .on('event_revoke_talk', data => {
-        new RevokeEvent(data).handle()
-      })
-      .on('event_friend_apply', data => {
-        new FriendApplyEvent(data).handle()
-      })
-      .on('join_group', data => {
-        new GroupJoinEvent(data).handle()
-      })
+    })
   }
 
   /**

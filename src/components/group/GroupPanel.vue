@@ -59,7 +59,7 @@
       <div class="list-item flex">
         <span>消息免打扰：</span>
         <el-switch
-          v-model="detail.disturb"
+          v-model="detail.is_disturb"
           inactive-color="#e0d6d6"
           :disabled="disturbDisabled"
           @change="editDisturb"
@@ -82,7 +82,7 @@
       <div class="list-item">群简介</div>
 
       <div class="list-item-tips">
-        {{ detail.groupProfile ? detail.groupProfile : '暂无群简介' }}
+        {{ detail.profile ? detail.profile : '暂无群简介' }}
       </div>
 
       <div class="list-item flex">
@@ -160,7 +160,8 @@
     </el-main>
 
     <el-footer class="footer">
-      <button @click="isShowSignout = true">退出该群聊</button>
+      <button v-if="detail.is_manager" @click="dismiss">解散群聊</button>
+      <button v-else @click="isShowSignout = true">退出该群聊</button>
     </el-footer>
 
     <!-- 退群提示层 -->
@@ -189,9 +190,6 @@
         </span>
       </p>
     </div>
-
-    <!-- 查看好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
 
     <!-- 邀请好友组件 -->
     <transition name="el-fade-in-linear">
@@ -233,7 +231,6 @@ import {
 
 //创建群聊组件
 import GroupLaunch from '@/components/group/GroupLaunch'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 import GroupManage from '@/components/group/GroupManage'
 import GroupNotice from '@/components/group/GroupNotice'
 
@@ -241,7 +238,6 @@ export default {
   name: 'GroupPanel',
   components: {
     GroupLaunch,
-    UserBusinessCard,
     GroupManage,
     GroupNotice,
   },
@@ -258,8 +254,8 @@ export default {
         groupId: 0,
         groupName: '',
         groupOwner: '',
-        groupProfile: '',
-        disturb: 0,
+        profile: '',
+        is_disturb: 0,
         no_message: false,
         visitCard: '',
         is_manager: false,
@@ -341,8 +337,8 @@ export default {
           this.detail.userId = res.data.user_id
           this.detail.groupName = result.group_name
           this.detail.groupOwner = result.manager_nickname
-          this.detail.groupProfile = result.group_profile
-          this.detail.disturb = result.not_disturb == 1 ? true : false
+          this.detail.profile = result.profile
+          this.detail.is_disturb = result.is_disturb == 1
           this.detail.visitCard = result.visit_card
           this.detail.is_manager = result.is_manager
 
@@ -357,9 +353,9 @@ export default {
     editDisturb(value) {
       this.disturbDisabled = true
       ServeSetNotDisturb({
-        type: 2,
-        receive_id: this.groupId,
-        not_disturb: value ? 1 : 0,
+        talk_type: 2,
+        receiver_id: this.groupId,
+        is_disturb: value ? 1 : 0,
       })
         .then(res => {
           if (res.code == 200) {
@@ -368,11 +364,11 @@ export default {
               status: value ? 1 : 0,
             })
           } else {
-            this.detail.disturb = value ? 0 : 1
+            this.detail.is_disturb = value ? 0 : 1
           }
         })
         .catch(() => {
-          this.detail.disturb = value ? 0 : 1
+          this.detail.is_disturb = value ? 0 : 1
         })
         .finally(() => {
           this.disturbDisabled = false
@@ -404,7 +400,7 @@ export default {
 
     // 查看用户信息
     openUserDetail(user_id) {
-      this.$refs.userBusinessCard.open(user_id)
+      this.$user(user_id)
     },
 
     // 邀请好友加入群聊
@@ -457,6 +453,17 @@ export default {
             this.signoutStatus = 0
           }, 3000)
         })
+    },
+
+    // 解散群组
+    dismiss() {
+      this.$confirm(`你确定要解散当前群组吗？此操作是不可恢复的！`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true,
+        dangerouslyUseHTMLString: true,
+      }).then(() => {})
     },
   },
 }

@@ -32,20 +32,13 @@
         </el-main>
       </el-container>
     </div>
-
-    <!-- 查看好友用户信息 -->
-    <UserBusinessCard ref="userBusinessCard" />
   </div>
 </template>
 <script>
 import { ServeSearchContact } from '@/api/contacts'
-import UserBusinessCard from '@/components/user/UserBusinessCard'
 
 export default {
   name: 'UserSearch',
-  components: {
-    UserBusinessCard,
-  },
   data() {
     return {
       loading: false,
@@ -80,7 +73,7 @@ export default {
       })
         .then(res => {
           if (res.code == 200) {
-            this.$refs.userBusinessCard.open(res.data.id)
+            this.$user(res.data.id)
             this.close()
           } else {
             this.error = true

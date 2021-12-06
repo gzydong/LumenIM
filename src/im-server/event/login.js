@@ -1,9 +1,9 @@
-import AppMessageEvent from './app-message-event'
-import store from '@/store'
+import Base from './base'
+
 /**
- * 好友邀请消息处理
+ * 好友状态事件
  */
-class LoginEvent extends AppMessageEvent {
+class Login extends Base {
   /**
    * @var resource 资源
    */
@@ -21,11 +21,11 @@ class LoginEvent extends AppMessageEvent {
   }
 
   handle() {
-    store.dispatch('ACT_UPDATE_FRIEND_STATUS', {
+    this.getStoreInstance().dispatch('ACT_UPDATE_FRIEND_STATUS', {
       status: this.resource.status,
-      friendId: parseInt(this.resource.user_id),
+      friend_id: parseInt(this.resource.user_id),
     })
   }
 }
 
-export default LoginEvent
+export default Login

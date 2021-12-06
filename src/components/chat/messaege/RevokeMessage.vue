@@ -4,7 +4,7 @@
       <span v-if="$store.state.user.uid == item.user_id">
         你撤回了一条消息 | {{ sendTime(item.created_at) }}
       </span>
-      <span v-else-if="item.source == 1">
+      <span v-else-if="item.talk_type == 1">
         对方撤回了一条消息 | {{ sendTime(item.created_at) }}
       </span>
       <span v-else>

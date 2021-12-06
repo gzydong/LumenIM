@@ -6,7 +6,7 @@
       </el-header>
       <el-header height="40px" class="no-select subheader">
         <p :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">
-          全部群组({{ groups.items.length }})
+          全部群组({{ items.length }})
         </p>
         <el-divider direction="vertical" />
         <p :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">
@@ -22,16 +22,16 @@
         </p>
       </el-header>
       <el-main class="panel-body no-padding lum-scrollbar">
-        <template v-if="groups.status == 0">
+        <template v-if="status == 0">
           <Loading />
         </template>
-        <template v-else-if="groups.status == 1 && groups.items.length == 0">
+        <template v-else-if="status == 1 && items.length == 0">
           <Empty text="暂未加入群聊" />
         </template>
 
-        <template v-if="groups.status == 1">
+        <template v-if="status == 1">
           <div
-            v-for="item in filterGroups"
+            v-for="(item, index) in filterGroups"
             :key="item.id"
             class="data-item"
             @click="groupDetailId = item.id"
@@ -47,7 +47,7 @@
             <div class="card">
               <div class="title">
                 <span class="name">{{ item.group_name }}</span>
-                <div v-show="item.not_disturb == 1" class="larkc-tag">
+                <div v-show="item.is_disturb == 1" class="larkc-tag">
                   <i
                     class="iconfont icon-xiaoximiandarao"
                     style="font-size: 10px; color: #7d7a7a"
@@ -68,14 +68,14 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-s-promotion"
-                @click="toTalk(2, `2_${item.id}`)"
+                @click="toTalkPage(2, item.id)"
                 >发送消息
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
                 icon="el-icon-delete"
-                @click="deleteGroup(item)"
+                @click="deleteGroup(item, index)"
                 >退出群聊
               </el-button>
             </div>
@@ -99,10 +99,9 @@
 <script>
 import GroupPanel from '@/components/group/GroupPanel'
 import { ServeGetGroups, ServeSecedeGroup } from '@/api/group'
-import { ServeCreateTalkList } from '@/api/chat'
-
 import Empty from '@/components/global/Empty'
 import Loading from '@/components/global/Loading'
+import { toTalk } from '@/utils/talk'
 
 export default {
   components: { GroupPanel, Empty, Loading },
@@ -111,10 +110,8 @@ export default {
       tabIndex: 0,
 
       // 我的群组
-      groups: {
-        items: [],
-        status: 0,
-      },
+      items: [],
+      status: 0,
 
       counts: {
         1: 0,
@@ -126,8 +123,8 @@ export default {
     }
   },
   watch: {
-    'groups.items'() {
-      this.groups.items.forEach(item => {
+    items() {
+      this.items.forEach(item => {
         if (item.leader == 0) {
           this.counts[3]++
         } else if (item.leader == 1) {
@@ -140,7 +137,7 @@ export default {
   },
   computed: {
     filterGroups() {
-      return this.groups.items.filter(item => {
+      return this.items.filter(item => {
         if (this.tabIndex == 1) {
           return item.leader == 2
         } else if (this.tabIndex == 2) {
@@ -161,21 +158,19 @@ export default {
     loadUserGroups() {
       ServeGetGroups().then(res => {
         if (res.code == 200) {
-          this.groups.status = 1
-          this.groups.items = res.data
+          this.status = 1
+          this.items = res.data
         }
       })
     },
 
     // 根据用户对话索引获取对话数组对应的key
     getGroupIndex(group_id) {
-      return this.groups.items.findIndex(item => {
-        return item.id == group_id
-      })
+      return this.items.findIndex(item => item.id == group_id)
     },
 
     // 退出群聊
-    deleteGroup(item) {
+    deleteGroup(item, index) {
       this.$alert(`您确定要退出【${item.group_name}】群聊吗？`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -183,55 +178,44 @@ export default {
         customClass: 'border-radius0',
         closeOnClickModal: true,
         callback: action => {
-          if (action == 'confirm') {
-            let group_id = item.id
-            ServeSecedeGroup({
-              group_id,
-            }).then(res => {
-              if (res.code == 200) {
-                this.$delete(
-                  this.groups.items,
-                  this.groups.items.findIndex(item => {
-                    return item.id == group_id
-                  })
-                )
-
-                this.$message({
-                  message: `您已成功退出【${item.group_name}】群聊 ...`,
-                  type: 'success',
-                })
-              } else {
-                this.$message({
-                  message: `退出 【${item.group_name}】】群聊失败 ...`,
-                  type: 'info',
-                })
-              }
-            })
+          if (action != 'confirm') {
+            return false
           }
+
+          let group_id = item.id
+          ServeSecedeGroup({
+            group_id,
+          }).then(res => {
+            if (res.code == 200) {
+              this.$delete(this.items, index)
+              this.$message({
+                message: `您已成功退出【${item.group_name}】群聊 ...`,
+                type: 'success',
+              })
+            } else {
+              this.$message({
+                message: `退出 【${item.group_name}】】群聊失败 ...`,
+                type: 'info',
+              })
+            }
+          })
         },
       })
     },
 
     // 跳转聊天页面
-    toTalk(type, index_name) {
-      let receive_id = index_name.split('_')[1]
-      ServeCreateTalkList({
-        type,
-        receive_id,
-      }).then(res => {
-        if (res.code !== 200) return
-        this.$root.dumpTalkPage(index_name)
-      })
+    toTalkPage(talk_type, receiver_id) {
+      toTalk(talk_type, receiver_id)
     },
 
     // 群聊窗口点击发送群聊信息按钮回调事件
-    sendMessage(groupId) {
-      this.toTalk(2, `2_${groupId}`)
+    sendMessage(group_id) {
+      this.toTalkPage(2, group_id)
     },
 
     // 用户退出群聊回调事件
     quitGroupSuccess() {
-      this.$delete(this.groups.items, this.getGroupIndex(this.groupDetailId))
+      this.$delete(this.items, this.getGroupIndex(this.groupDetailId))
       this.groupDetailId = 0
     },
 
@@ -243,8 +227,8 @@ export default {
 
     // 修改群聊免打扰状态
     disturbChange(detail) {
-      let idx = this.getGroupIndex(detail.group_id)
-      this.groups.items[idx].not_disturb = detail.status
+      let index = this.getGroupIndex(detail.group_id)
+      this.items[index].is_disturb = detail.status
     },
   },
 }

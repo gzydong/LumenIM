@@ -1,9 +1,9 @@
-import AppMessageEvent from './app-message-event'
+import Base from './base'
 
 /**
  * 好友邀请消息处理
  */
-class GroupJoinEvent extends AppMessageEvent {
+class GroupJoin extends Base {
   /**
    * @var resource 资源
    */
@@ -28,4 +28,4 @@ class GroupJoinEvent extends AppMessageEvent {
   }
 }
 
-export default GroupJoinEvent
+export default GroupJoin

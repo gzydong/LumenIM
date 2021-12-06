@@ -8,7 +8,7 @@ Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + 
 ### 功能模块
 - 基于 Swoole WebSocket 服务做消息即时推送
 - 支持私聊及群聊
-- 支持多种聊天消息类型 例如:文本、代码块、图片及其它类型文件，并支持文件下载
+- 支持多种聊天消息类型 例如:文本消息、代码块、群投票、图片及其它类型文件，并支持文件下载
 - 支持聊天消息撤回、删除(批量删除)、转发消息(逐条转发、合并转发)
 - 支持编写个人笔记、支持笔记分享(好友或群)
 
@@ -79,10 +79,11 @@ server {
 |代码仓库|前端源码|后端源码|
 |-|-|-|
 |Github|https://github.com/gzydong/LumenIM|https://github.com/gzydong/hyperf-chat|
-|码云|https://gitee.com/gzydong/LumenIM||
+|码云|https://gitee.com/gzydong/LumenIM|https://gitee.com/gzydong/hyperf-chat|
 
 
-#### 联系方式  
-QQ : 837215079
+#### 联系方式
+QQ作者 : 837215079
+QQ技术交流群 : 513037553
 
 ### 如果你觉得还不错，请 Star , Fork 给作者鼓励一下。

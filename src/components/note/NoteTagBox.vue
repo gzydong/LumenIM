@@ -106,6 +106,14 @@ export default {
           }
         })
       } else {
+        if (this.ids.length >= 5) {
+          this.$notify.info({
+            title: '消息',
+            message: '最多只能选择5个标签!',
+          })
+          return
+        }
+
         this.ids.push(tag_id)
       }
 

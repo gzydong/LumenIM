@@ -14,7 +14,7 @@ export default {
       // 登录状态[0:下线;1:在线;]
       status: 0,
       // 好友ID
-      friendId: 0,
+      friend_id: 0,
     },
   },
   mutations: {

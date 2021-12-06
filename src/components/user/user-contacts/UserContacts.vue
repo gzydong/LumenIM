@@ -170,9 +170,11 @@ export default {
       })
     },
     //关闭窗口
-    close() {
+    close(e) {
       this.delAll()
       this.$emit('close')
+
+      e.stopPropagation();
     },
     //确认按钮点击事件
     confirm() {

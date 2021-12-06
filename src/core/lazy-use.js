@@ -37,6 +37,7 @@ import {
   RadioGroup,
   Progress,
   Dialog,
+  Checkbox
 } from 'element-ui'
 
 Vue.use(Popover)
@@ -67,6 +68,7 @@ Vue.use(Autocomplete)
 Vue.use(Scrollbar)
 Vue.use(Avatar)
 Vue.use(Radio)
+Vue.use(Checkbox)
 Vue.use(RadioGroup)
 Vue.use(Progress)
 Vue.use(Dialog)
