@@ -106,28 +106,28 @@
 
                   <!-- 图片消息 -->
                   <image-message
-                    v-else-if="item.msg_type == 2 && item.file.file_type == 1"
-                    :src="item.file.file_url"
+                    v-else-if="item.msg_type == 2 && item.file.type == 1"
+                    :src="item.file.url"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
 
                   <!-- 音频文件预留 -->
                   <audio-message
-                    v-else-if="item.msg_type == 2 && item.file.file_type == 2"
-                    :src="item.file.file_url"
+                    v-else-if="item.msg_type == 2 && item.file.type == 2"
+                    :src="item.file.url"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
 
                   <!-- 视频文件预留 -->
                   <video-message
-                    v-else-if="item.msg_type == 2 && item.file.file_type == 3"
-                    :src="item.file.file_url"
+                    v-else-if="item.msg_type == 2 && item.file.type == 3"
+                    :src="item.file.url"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
 
                   <!-- 文件消息 -->
                   <file-message
-                    v-else-if="item.msg_type == 2 && item.file.file_type == 4"
+                    v-else-if="item.msg_type == 2 && item.file.type == 4"
                     :file="item.file"
                     :record_id="item.id"
                     @contextmenu.native="onCopy(idx, item, $event)"
@@ -145,7 +145,7 @@
                   <code-message
                     v-else-if="item.msg_type == 4"
                     :code="item.code_block.code"
-                    :lang="item.code_block.code_lang"
+                    :lang="item.code_block.lang"
                     :maxwidth="true"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   />
@@ -561,11 +561,11 @@ export default {
 
       ServeForwardRecords({
         forward_mode: this.multiSelect.mode,
-        talk_type: this.params.talk_type,
-        receiver_id: this.params.receiver_id,
-        records_ids: this.multiSelect.items,
-        receive_user_ids: user_ids,
-        receive_group_ids: group_ids,
+        talk_type: parseInt(this.params.talk_type),
+        receiver_id: parseInt(this.params.receiver_id),
+        records_ids: this.multiSelect.items.join(","),
+        receive_user_ids: user_ids.join(","),
+        receive_group_ids: group_ids.join(","),
       }).then(res => {
         if (res.code == 200) {
           this.closeMultiSelect()
@@ -765,7 +765,7 @@ export default {
       })
 
       // 判断是否是图片消息
-      if (item.msg_type == 2 && item.file.file_type == 1) {
+      if (item.msg_type == 2 && item.file.type == 1) {
         menus.push({
           label: '收藏',
           icon: 'el-icon-picture',

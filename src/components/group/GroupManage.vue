@@ -437,7 +437,7 @@ export default {
         group_id: this.groupId,
       }).then(res => {
         if (res.code == 200) {
-          this.notice.items = res.data.map(item => {
+          this.notice.items = res.data.rows.map(item => {
             item.isShow = false
             return item
           })
@@ -451,7 +451,7 @@ export default {
         if (!valid) return false
         this.loading = true
         ServeEditGroup({
-          group_id: this.groupId,
+          group_id: parseInt(this.groupId),
           group_name: this.form.group_name,
           profile: this.form.profile,
           avatar: this.form.avatar,
@@ -589,7 +589,7 @@ export default {
       })
         .then(() => {
           ServeRemoveMembersGroup({
-            group_id: this.groupId,
+            group_id: parseInt(this.groupId),
             members_ids: ids.join(','),
           }).then(res => {
             if (res.code == 200) {

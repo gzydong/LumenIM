@@ -174,7 +174,6 @@ export default {
 
     // 处理拆分上传文件
     fileSlice(file, hash, eachSize) {
-      const ext = getFileExt(file.name)
       const splitNum = Math.ceil(file.size / eachSize) // 分片总数
       const forms = []
 
@@ -186,10 +185,7 @@ export default {
         // 构建表单
         const form = new FormData()
         form.append('file', file.slice(start, end))
-        form.append('name', file.name)
-        form.append('hash', hash)
-        form.append('ext', ext)
-        form.append('size', file.size)
+        form.append('upload_id', hash)
         form.append('split_index', i)
         form.append('split_num', splitNum)
         forms.push(form)
@@ -209,6 +205,7 @@ export default {
       let form = this.items[$index].forms[i]
       let length = this.items[$index].forms.length
       this.items[$index].status = 1
+
       ServeFileSubareaUpload(form)
         .then(res => {
           if (res.code == 200) {

@@ -19,7 +19,7 @@ class WsSocket {
   config = {
     heartbeat: {
       enabled: true, // 是否发送心跳包
-      time: 10000, // 心跳包发送间隔时长
+      time: 20000, // 心跳包发送间隔时长（毫秒）
       setInterval: null, // 心跳包计时器
     },
     reconnect: {
@@ -29,6 +29,9 @@ class WsSocket {
       number: 1000, // 重连次数
     },
   }
+
+  // 最后心跳时间
+  time = 0
 
   /**
    * 自定义绑定消息事件
@@ -142,6 +145,8 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onOpen(evt) {
+    this.time = (new Date()).getTime()
+
     this.events.onOpen(evt)
 
     if (this.config.heartbeat.enabled) {
@@ -181,6 +186,8 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onMessage(evt) {
+    this.time = (new Date()).getTime()
+
     let result = this.onParse(evt)
 
     // 判断消息事件是否被绑定
@@ -196,6 +203,14 @@ class WsSocket {
    */
   heartbeat() {
     this.config.heartbeat.setInterval = setInterval(() => {
+      let t = (new Date).getTime()
+
+      // 2分钟内无响应则断开连接
+      if ((t - this.time) > 2*60*1000){
+          this.close()
+          return
+      }
+
       this.connect.send('{"event":"heartbeat","data":"ping"}')
     }, this.config.heartbeat.time)
   }

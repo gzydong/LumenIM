@@ -118,7 +118,7 @@ export default {
   pre:before {
     position: absolute;
     left: 12px;
-    z-index: 2;
+    z-index: 0;
     margin-top: -18px;
     width: 12px;
     height: 12px;

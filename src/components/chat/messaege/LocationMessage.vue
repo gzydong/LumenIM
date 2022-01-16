@@ -4,7 +4,6 @@
       class="bm-view"
       :center="center"
       :zoom="zoom"
-      ak="Q47kDECgU9ROIGiWnyXldH0hL9IVhXxt"
       @ready="handler"
     >
     </baidu-map>
@@ -17,13 +16,9 @@
 </template>
 
 <script>
-import { BaiduMap } from 'vue-baidu-map'
 
 export default {
   name: 'LocationMessage',
-  components: {
-    BaiduMap,
-  },
   props: {
     lng: 0,
     lat: 0,

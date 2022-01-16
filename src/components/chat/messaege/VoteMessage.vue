@@ -40,8 +40,8 @@
           </div>
         </template>
         <template v-else>
-          <div class="vbody">
-            <p class="option" v-for="(option, index) in options">
+          <div class="vbody" >
+            <p class="option" :class="{ 'option-radio': answer_mode == 0 }" v-for="(option, index) in options">
               <el-checkbox
                 v-model="option.is_checked"
                 @change="toSelect2(option)"
@@ -230,6 +230,13 @@ export default {
       width: 100%;
       padding: 5px 15px;
       box-sizing: border-box;
+
+      .option-radio {
+        /deep/.el-checkbox__inner {
+          border-radius: 50%;
+        }
+      }
+
       .option {
         margin: 14px 0px;
         font-size: 13px;

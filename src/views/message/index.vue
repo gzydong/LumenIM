@@ -40,11 +40,9 @@
             </el-header>
 
             <!-- 置顶栏 -->
-            <el-header
+            <header
               v-show="loadStatus == 1 && topItems.length > 0"
               class="subheader"
-              :class="{ shadow: subHeaderShadow }"
-              :height="subHeaderPx"
             >
               <div
                 v-for="item in topItems"
@@ -82,7 +80,7 @@
                   {{ item.remark_name ? item.remark_name : item.name }}
                 </div>
               </div>
-            </el-header>
+            </header>
 
             <!-- 对话列表栏 -->
             <el-scrollbar
@@ -169,7 +167,7 @@
                           </div>
                         </div>
                         <div class="card-time">
-                          {{ beautifyTime(item.updated_at) }}
+                          <u-time :value="item.updated_at" />
                         </div>
                       </div>
                       <div class="content">
@@ -215,6 +213,8 @@
             @close-talk="closeTalk"
           />
         </el-main>
+
+        <!-- <el-aside width="350px">asnfasjk</el-aside> -->
       </el-container>
     </MainLayout>
 
@@ -236,6 +236,7 @@ import WelcomeModule from '@/components/layout/WelcomeModule'
 import GroupLaunch from '@/components/group/GroupLaunch'
 import TalkPanel from '@/components/chat/panel/TalkPanel'
 import UserSearch from '@/components/user/UserSearch'
+import UTime from './utime.vue'
 import {
   ServeGetTalkList,
   ServeClearTalkUnreadNum,
@@ -258,6 +259,7 @@ export default {
     TalkPanel,
     UserSearch,
     WelcomeModule,
+    UTime,
   },
   data() {
     return {
@@ -291,7 +293,6 @@ export default {
       index_name: state => state.dialogue.index_name,
       monitorFriendsStatus: state => state.notify.friendStatus,
     }),
-
     // 计算置顶栏目的高度
     subHeaderPx() {
       const n = 7 // 一排能显示的用户数
@@ -304,7 +305,6 @@ export default {
 
       return `${len}px`
     },
-
     // 当前对话好友在线状态
     isFriendOnline() {
       let index = findTalkIndex(this.index_name)
@@ -458,8 +458,8 @@ export default {
 
           // 清空消息未读数(后期改成WebSocket发送消息)
           ServeClearTalkUnreadNum({
-            talk_type:parseInt(talk_type),
-            receiver_id:parseInt(receiver_id),
+            talk_type: parseInt(talk_type),
+            receiver_id: parseInt(receiver_id),
           })
         }
       })
@@ -727,7 +727,6 @@ export default {
     .from-search {
       flex: 1 1;
       flex-shrink: 0;
-      height: 40px;
 
       /deep/ .el-input .el-input__inner {
         border-radius: 20px;
@@ -738,10 +737,8 @@ export default {
       flex-basis: 32px;
       flex-shrink: 0;
       height: 32px;
-      margin-bottom: 8px;
       margin-left: 15px;
       cursor: pointer;
-      line-height: 32px;
       text-align: center;
       position: relative;
       user-select: none;
@@ -776,15 +773,17 @@ export default {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 3px 8px 10px;
+    padding: 5px 8px;
     overflow: hidden;
     flex-shrink: 0;
+    justify-content: flex-start;
+    background: aliceblue;
 
     .top-item {
       flex-basis: 41px;
       flex-shrink: 0;
       height: 50px;
-      margin: 0 1px 6px 1px;
+      margin: 3px 0 3px 2px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1008,6 +1007,7 @@ export default {
     }
 
     &.active {
+      border-radius: 15px;
       border-color: #3370ff;
       background-color: #eff0f1;
     }

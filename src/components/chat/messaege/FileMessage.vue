@@ -41,9 +41,9 @@ export default {
   },
   created() {
     this.file_id = this.file.id
-    this.ext = this.file.file_suffix.toUpperCase()
+    this.ext = this.file.suffix.toUpperCase()
     this.fileName = this.file.original_name
-    this.fileSize = formateSize(this.file.file_size)
+    this.fileSize = formateSize(this.file.size)
   },
   methods: {
     download,

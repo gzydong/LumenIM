@@ -27,7 +27,7 @@
           >
             <p>{{ datetime }}</p>
             <p style="font-size: 13px; margin-top: 5px">
-              <span v-if="recorderStatus == 1">正在录音</span>
+              <span v-if="recorderStatus == 1">正在录音...</span>
               <span v-else-if="recorderStatus == 2">已暂停录音</span>
               <span v-else-if="recorderStatus == 3">录音时长</span>
             </p>
@@ -299,7 +299,14 @@ export default {
     },
 
     submit() {
-      alert('功能研发中,敬请期待...')
+      let blob = this.recorder.getWAVBlob()
+      //blob转file
+      let file = new File([blob], "在线录音.wav", {
+        type: blob.type,
+        lastModified: Date.now(),
+      })
+
+      this.$emit('send', file)
     },
   },
 }
@@ -329,7 +336,7 @@ export default {
   position: relative;
   width: 180px;
   height: 160px;
-  border: 8px solid #bebebe;
+  border: 8px solid #eae8e8;
   border-bottom: 0px;
   border-top-left-radius: 110px;
   border-top-right-radius: 110px;
@@ -342,7 +349,7 @@ export default {
   bottom: -20px;
   width: 40px;
   height: 82px;
-  background-color: #bebebe;
+  background-color: #eae8e8;
   border-radius: 15px;
 }
 

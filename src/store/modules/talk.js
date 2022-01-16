@@ -41,12 +41,11 @@ const Talk = {
 
     // 更新对话节点
     UPDATE_TALK_ITEM(state, resource) {
-      let index = state.items.findIndex(
-        item => item.index_name === resource.index_name
-      )
-
-      if (index >= 0) {
-        Object.assign(state.items[index], resource)
+      for (const iterator of state.items) {
+        if (iterator.index_name === resource.index_name) {
+          Object.assign(iterator, resource)
+          break
+        }
       }
     },
 
@@ -67,13 +66,15 @@ const Talk = {
 
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
-      for (let i in state.items) {
-        if (state.items[i].index_name === resource.index_name) {
-          state.items[i].unread_num++
-          state.items[i].msg_text = resource.msg_text
-          state.items[i].updated_at = resource.updated_at
-          break
+      for (const iterator of state.items) {
+        if (iterator.index_name !== resource.index_name) {
+          continue
         }
+
+        iterator.unread_num++
+        iterator.msg_text = resource.msg_text
+        iterator.updated_at = resource.updated_at
+        break
       }
     },
 

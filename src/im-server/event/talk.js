@@ -87,6 +87,7 @@ class Talk extends Base {
    */
   getTalkText() {
     let text = this.resource.content
+
     switch (this.resource.msg_type) {
       case 2:
         let file_type = this.resource.file.file_type
@@ -97,6 +98,7 @@ class Talk extends Base {
         break
       case 4:
         text = '[代码消息]'
+        break
       case 8:
         text = '[登录提醒]'
         break
@@ -226,10 +228,10 @@ class Talk extends Base {
     })
 
     if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
-      // ServeClearTalkUnreadNum({
-      //   talk_type: 1,
-      //   receiver_id: this.sender_id,
-      // })
+      ServeClearTalkUnreadNum({
+        talk_type: 1,
+        receiver_id: this.sender_id,
+      })
     }
   }
 

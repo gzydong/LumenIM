@@ -256,7 +256,12 @@ export default {
         return
       }
 
-      ServeCreateGroup(data).then(res => {
+      ServeCreateGroup({
+        avatar: '',
+        name: this.from.groupName,
+        profile: '',
+        ids: this.getIds().join(','),
+      }).then(res => {
         if (res.code == 200) {
           this.$emit('create-success', res.data)
         } else {
@@ -268,8 +273,8 @@ export default {
     //好友邀请提交
     inviteSubmit() {
       ServeInviteGroup({
-        group_id: this.from.groupId,
-        uids: this.getIds().join(','),
+        group_id: parseInt(this.from.groupId),
+        ids: this.getIds().join(','),
       }).then(res => {
         if (res.code == 200) {
           this.$emit('invite-success')

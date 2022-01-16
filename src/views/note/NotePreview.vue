@@ -349,7 +349,7 @@ export default {
       let save_path = ''
       ServeUploadArticleImg(formdata)
         .then(res => {
-          save_path = res.data.save_path || ''
+          save_path = res.data.url || ''
         })
         .finally(() => {
           this.$refs.mavonEditor.$img2Url(pos, save_path)

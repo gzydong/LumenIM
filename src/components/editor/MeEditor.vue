@@ -16,7 +16,7 @@
             <p class="tip-title">地理位置</p>
           </li>
           <li @click="recorder = true">
-            <i class="el-icon-headset" />
+            <i class="el-icon-microphone" />
             <p class="tip-title">语音消息</p>
           </li>
           <li @click="$refs.restFile.click()">
@@ -108,7 +108,11 @@
       @confirm="confirmUploadImage"
     />
 
-    <MeEditorRecorder v-if="recorder" @close="recorder = false" />
+    <MeEditorRecorder
+      v-if="recorder"
+      @close="recorder = false"
+      @send="sendRecorder"
+    />
 
     <!-- 代码块编辑器 -->
     <TalkCodeBlock
@@ -129,6 +133,8 @@
         }
       "
     />
+
+    <!-- <MeEditorLocation/> -->
   </div>
 </template>
 
@@ -138,6 +144,7 @@ import MeEditorFileManage from './MeEditorFileManage'
 import MeEditorImageView from './MeEditorImageView'
 import MeEditorRecorder from './MeEditorRecorder'
 import MeEditorVote from './MeEditorVote'
+import MeEditorLocation from './MeEditorLocation'
 import TalkCodeBlock from '@/components/chat/TalkCodeBlock'
 import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
 import { findTalk } from '@/utils/talk'
@@ -157,6 +164,7 @@ export default {
     TalkCodeBlock,
     MeEditorRecorder,
     MeEditorVote,
+    MeEditorLocation,
   },
   computed: {
     talkUser() {
@@ -259,6 +267,7 @@ export default {
 
     // 选择图片文件后回调方法
     uploadImageChange(e) {
+      console.log(e.target.files[0])
       this.openImageViewer(e.target.files[0])
       this.$refs.restFile.value = null
     },
@@ -293,6 +302,11 @@ export default {
     openImageViewer(file) {
       this.imageViewer.isShow = true
       this.imageViewer.file = file
+    },
+
+    sendRecorder(file) {
+      this.recorder = false
+      this.$refs.filesManager.upload(file)
     },
 
     // 代码块编辑器确认完成回调事件
@@ -378,20 +392,7 @@ export default {
       this.$refs.popoverEmoticon.doClose()
     },
 
-    sendGeoLocation() {
-      if (!navigator.geolocation) {
-        alert('您的浏览器浏览器不支持获取地理位置信息。')
-        return
-      }
-
-      var geolocation = new BMap.Geolocation()
-      geolocation.getCurrentPosition(
-        function(r) {
-          console.log(r.point)
-        },
-        { enableHighAccuracy: true }
-      )
-    },
+    sendGeoLocation() {},
   },
 }
 </script>

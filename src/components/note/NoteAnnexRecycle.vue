@@ -16,7 +16,7 @@
           <el-table-column
             prop="original_name"
             label="附件名称"
-            width="180"
+            width="230"
             :show-overflow-tooltip="true"
           >
             <template slot-scope="scope">
@@ -180,9 +180,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .lum-dialog-box {
-  width: 700px;
+  width: 100%;
   height: 80%;
-  max-width: 700px;
+  max-width: 800px;
 
   .main {
     padding-top: 0;

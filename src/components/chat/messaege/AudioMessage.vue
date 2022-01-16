@@ -7,11 +7,13 @@
         <i v-else class="el-icon-video-play" />
         <audio
           ref="audio"
-          type="audio/mp3"
+          preload="auto"
+          type="audio/mp3,audio/wav"
           :src="src"
           @timeupdate="timeupdate"
           @ended="ended"
           @canplay="canplay"
+          @error="onError"
         ></audio>
       </div>
     </div>
@@ -21,7 +23,12 @@
         <span>{{ getCurrDuration }} / {{ getTotalDuration }}</span>
       </div>
       <div class="process">
-        <el-progress :percentage="progress" :show-text="false" />
+        <el-progress
+          :percentage="progress"
+          color="#ff5722"
+          :show-text="false"
+          :stroke-width="4"
+        />
       </div>
     </div>
   </div>
@@ -74,6 +81,7 @@ export default {
       duration: 0,
       currentTime: 0,
       progress: 0,
+      error: false,
     }
   },
   computed: {
@@ -86,7 +94,7 @@ export default {
   },
   methods: {
     toPlay() {
-      if (this.loading) {
+      if (this.loading || this.error) {
         return
       }
 
@@ -96,14 +104,19 @@ export default {
       } else {
         audio.play()
       }
+
       this.isPlay = !this.isPlay
     },
 
     // 当目前的播放位置已更改时
     timeupdate() {
       let audio = this.$refs.audio
-      this.currentTime = audio.currentTime
-      this.progress = (audio.currentTime / audio.duration) * 100
+      if (audio.duration == 0) {
+        this.progress = 0
+      } else {
+        this.currentTime = audio.currentTime
+        this.progress = (audio.currentTime / audio.duration) * 100
+      }
     },
 
     // 当浏览器可以播放音频/视频时
@@ -115,6 +128,12 @@ export default {
     // 当目前的播放列表已结束时
     ended() {
       this.isPlay = false
+      this.progress = 0
+    },
+
+    onError() {
+      this.error = true
+      this.loading = false
     },
   },
 }
@@ -127,7 +146,7 @@ export default {
   background: #ffffff;
   display: flex;
   align-items: center;
-  border: 1px solid #03a9f4;
+  border: 1px solid #ff5722;
   overflow: hidden;
 
   > div {
@@ -140,21 +159,21 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+
     .disc {
       width: 42px;
       height: 42px;
-      background: #e9e5e5;
+      background: #ff5722;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       cursor: pointer;
-      transition: ease 0.5;
 
       &.play {
         background: #ff5722;
-        box-shadow: 0 0 4px 0px #f76a3e;
+        animation: spin 3s linear infinite;
       }
 
       i {
@@ -162,7 +181,7 @@ export default {
       }
 
       &:active i {
-        transform: scale(1.1);
+        transform: scale(1.2);
       }
     }
   }
@@ -188,6 +207,24 @@ export default {
       height: 20px;
       width: 90%;
     }
+  }
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
