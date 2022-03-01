@@ -1,16 +1,16 @@
 # Lumen IM 即时聊天系统(前端)
 
 ###  项目介绍
-Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + Vue，后端采用了基于 Swoole 开发的 Hyperf 协程框架进行接口开发，并使用 WebSocket 服务进行消息实时推送。目前后端 WebSocket 已支持分布式集群部署。
+Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + Vue，后端采用了基于 Swoole 开发的 Hyperf 协程框架进行接口开发，并使用 WebSocket 服务进行消息实时推送。
 
-目前该项目是在 [旧版本](https://github.com/gzydong/LumenIM/tree/v1.0.0) 项目的基础上进行了后端重构，且前后端都有较大的改动。
+目前前端以兼容golang后端
 
 ### 功能模块
 - 基于 Swoole WebSocket 服务做消息即时推送
 - 支持私聊及群聊
 - 支持多种聊天消息类型 例如:文本消息、代码块、群投票、图片及其它类型文件，并支持文件下载
 - 支持聊天消息撤回、删除(批量删除)、转发消息(逐条转发、合并转发)
-- 支持编写个人笔记、支持笔记分享(好友或群)
+- 支持编写个人笔记
 
 ### 项目预览
 - 地址： [http://im.gzydong.club](http://im.gzydong.club)
@@ -26,6 +26,8 @@ npm config set registry https://registry.npm.taobao.org
 ###### 下载安装
 ```bash
 ## 克隆项目源码包
+git clone git@gitee.com:gzydong/LumenIM.git
+或
 git clone git@github.com:gzydong/LumenIM.git
 
 ## 安装项目依赖扩展组件
