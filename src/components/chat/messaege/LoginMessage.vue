@@ -31,7 +31,14 @@ export default {
     }
   },
   created() {
-    this.ip = this.detail.ip
+    
+
+    if(this.detail == undefined){
+      return
+    }
+
+
+    this.ip = this.detail.ip || ''
     this.datetime = parseTime(
       this.detail.created_at,
       '{y}年{m}月{d}日 {h}:{i}:{s}'

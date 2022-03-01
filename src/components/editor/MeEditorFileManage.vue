@@ -150,10 +150,10 @@ export default {
         file_size: file.size,
       }).then(res => {
         if (res.code == 200) {
-          const { hash_name, split_size } = res.data
+          const { upload_id, split_size } = res.data
 
           this.items.unshift({
-            hashName: hash_name,
+            hashName: upload_id,
             originalFile: file,
             filename: file.name,
             status: 0, // 文件上传状态 0:等待上传 1:上传中 2:上传完成 3:网络异常
@@ -162,12 +162,12 @@ export default {
             filetype: file.type || '未知',
             datetime: parseTime(new Date(), '{m}-{d} {h}:{i}'),
             ext: getFileExt(file.name),
-            forms: this.fileSlice(file, hash_name, split_size),
+            forms: this.fileSlice(file, upload_id, split_size),
             successNum: 0,
             isDelete: false,
           })
 
-          this.triggerUpload(hash_name)
+          this.triggerUpload(upload_id)
         }
       })
     },
@@ -216,9 +216,9 @@ export default {
             )
             if (this.items[$index].successNum == length) {
               this.items[$index].status = 2
-              if (res.data.is_file_merge) {
+              if (res.data.is_merge) {
                 ServeSendTalkFile({
-                  hash_name: res.data.hash,
+                  upload_id: res.data.upload_id,
                   receiver_id: this.$store.state.dialogue.receiver_id,
                   talk_type: this.$store.state.dialogue.talk_type,
                 })

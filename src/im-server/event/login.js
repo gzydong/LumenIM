@@ -21,9 +21,9 @@ class Login extends Base {
   }
 
   handle() {
-    this.getStoreInstance().dispatch('ACT_UPDATE_FRIEND_STATUS', {
-      status: this.resource.status,
-      friend_id: parseInt(this.resource.user_id),
+    this.getStoreInstance().commit('UPDATE_TALK_ITEM', {
+      index_name: `1_${this.resource.user_id}`,
+      is_online: this.resource.status,
     })
   }
 }

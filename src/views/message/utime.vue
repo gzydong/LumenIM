@@ -36,11 +36,12 @@ export default {
       let time = new Date().getTime()
       let inTime = new Date(this.value.replace(/-/g, '/')).getTime()
 
+      clearInterval(this.timeout)
+
       if (time - inTime > 35 * 60 * 1000) {
         return
       }
 
-      clearInterval(this.timeout)
       this.timeout = setTimeout(() => {
         this.setTime()
       }, 60 * 1000)

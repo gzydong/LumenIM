@@ -43,3 +43,8 @@ export const ServeApplyDecline = data => {
 export const ServeFindFriendApplyNum = () => {
   return get('/api/v1/contact/apply/unread-num')
 }
+
+// 搜索用户信息服务接口
+export const ServeSearchUser = data => {
+  return get('/api/v1/contact/detail', data)
+}

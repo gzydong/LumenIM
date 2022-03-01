@@ -9,7 +9,7 @@
         </p>
       </el-header>
       <el-main class="main">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" :model="form" :rules="rules" label-position="top" >
           <el-form-item prop="old_password" label="旧密码">
             <el-input
               v-model="form.old_password"
@@ -47,7 +47,7 @@
               size="medium"
               :loading="loading"
               @click="onSubmit('form')"
-              >立即修改
+              >提交
             </el-button>
           </el-form-item>
         </el-form>
@@ -157,5 +157,10 @@ export default {
 .lum-dialog-box {
   width: 450px;
   max-width: 450px;
+}
+
+/deep/.el-form--label-top .el-form-item__label{
+  padding: 0;
+  line-height: 30px;
 }
 </style>

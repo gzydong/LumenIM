@@ -146,7 +146,7 @@
                 <span class="nickname">{{ member.nickname }}</span>
               </el-col>
               <el-col :span="8">
-                <span>{{ member.visit_card ? member.visit_card : '-' }}</span>
+                <span>{{ member.user_card ? member.user_card : '-' }}</span>
               </el-col>
               <el-col :span="5">
                 <span v-if="member.gender == 1">男</span>

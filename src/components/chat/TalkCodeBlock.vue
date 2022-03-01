@@ -48,7 +48,7 @@
 
         <el-footer class="footer no-padding" height="50px">
           <div class="code-num">
-            <span>代码字数：{{ code.length }}字</span>
+            <span>文字总数：{{ code.length }}个字</span>
             <span v-show="code.length > 10000 && editMode" class="code-warning">
               (字数不能超过10000字)
             </span>
@@ -252,6 +252,7 @@ export default {
   box-shadow: 0 2px 8px 0 rgba(31, 35, 41, 0.2);
   transition: 0.5s ease;
   background: #2d2d2d;
+  border-radius: 5px;
 
   .header {
     position: relative;
@@ -300,10 +301,6 @@ export default {
       height: 100%;
       line-height: 50px;
       text-align: right;
-
-      button {
-        border-radius: 0;
-      }
     }
   }
 }

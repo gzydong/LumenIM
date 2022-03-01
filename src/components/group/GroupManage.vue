@@ -75,7 +75,7 @@
               <el-container class="full-height">
                 <el-header height="50px" class="notice-header">
                   <el-input
-                    v-model="searchMembers"
+                    v-model="keywords"
                     style="width: 200px"
                     size="small"
                     clearable
@@ -116,7 +116,7 @@
                   >
                     <div class="members">
                       <div
-                        v-for="member in filterMembers"
+                        v-for="member in searchs"
                         class="member no-select"
                         :class="{
                           selectd: member.is_delete && batchDelMember,
@@ -348,9 +348,9 @@ export default {
       },
 
       // 群成员列表
-      searchMembers: '',
       batchDelMember: false,
       members: [],
+      keywords:"",
 
       // 群公告相关数据
       notice: {
@@ -385,13 +385,13 @@ export default {
     }
   },
   computed: {
-    filterMembers() {
-      return this.searchMembers == ''
+    searchs() {
+      return this.keywords == ''
         ? this.members
         : this.members.filter(item => {
             return (
-              item.nickname.match(this.searchMembers) != null ||
-              item.visit_card.match(this.searchMembers) != null
+              item.nickname.match(this.keywords) != null ||
+              item.user_card.match(this.keywords) != null
             )
           })
     },
@@ -901,7 +901,7 @@ export default {
   padding: 28px;
   background: #fff;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   box-sizing: border-box;
   height: 415px;

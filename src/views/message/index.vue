@@ -41,7 +41,7 @@
 
             <!-- 置顶栏 -->
             <header
-              v-show="loadStatus == 1 && topItems.length > 0"
+              v-show="loadStatus == 3 && topItems.length > 0"
               class="subheader"
             >
               <div
@@ -90,20 +90,22 @@
               :native="false"
             >
               <el-main class="main">
-                <p v-show="loadStatus == 0" class="empty-data">
+                <p v-show="loadStatus == 2" class="empty-data">
                   <i class="el-icon-loading" /> 数据加载中...
                 </p>
 
-                <p v-show="loadStatus == 1 && talkNum == 0" class="empty-data">
+                <p v-show="loadStatus == 3 && talkNum == 0" class="empty-data">
                   暂无聊天消息
                 </p>
 
-                <p v-show="loadStatus == 1 && talkNum > 0" class="main-menu">
+                <p v-show="loadStatus == 3 && talkNum > 0" class="main-menu">
                   <span class="title">消息记录 ({{ talkNum }})</span>
                 </p>
 
+                <p v-show="loadStatus == 4" style="text-align:center;">数据加载失败，请点击重试！</p>
+
                 <!-- 对话列表 -->
-                <template v-if="loadStatus == 1">
+                <template v-if="loadStatus == 3">
                   <div
                     v-for="item in talkItems"
                     :key="item.index_name"
@@ -214,7 +216,7 @@
           />
         </el-main>
 
-        <!-- <el-aside width="350px">asnfasjk</el-aside> -->
+        <!-- <el-aside width="350px" class="panel-aside"></el-aside> -->
       </el-container>
     </MainLayout>
 
@@ -238,7 +240,6 @@ import TalkPanel from '@/components/chat/panel/TalkPanel'
 import UserSearch from '@/components/user/UserSearch'
 import UTime from './utime.vue'
 import {
-  ServeGetTalkList,
   ServeClearTalkUnreadNum,
   ServeDeleteTalkList,
   ServeTopTalkList,
@@ -247,7 +248,7 @@ import {
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import { ServeSecedeGroup } from '@/api/group'
 import { beautifyTime } from '@/utils/functions'
-import { formateTalkItem, findTalkIndex, getCacheIndexName } from '@/utils/talk'
+import { findTalkIndex, getCacheIndexName } from '@/utils/talk'
 
 const title = document.title
 
@@ -279,9 +280,6 @@ export default {
       // header 工具菜单
       subMenu: false,
 
-      // 对话消息列表加载状态[0:加载中;1:加载完成;2:加载失败;]
-      loadStatus: 0,
-
       // 消息未读数计时器
       interval: null,
     }
@@ -289,9 +287,9 @@ export default {
   computed: {
     ...mapGetters(['topItems', 'talkItems', 'unreadNum', 'talkNum']),
     ...mapState({
+      loadStatus: state => state.talks.loadStatus,
       talks: state => state.talks.items,
       index_name: state => state.dialogue.index_name,
-      monitorFriendsStatus: state => state.notify.friendStatus,
     }),
     // 计算置顶栏目的高度
     subHeaderPx() {
@@ -314,7 +312,6 @@ export default {
   watch: {
     unreadNum(value) {
       clearInterval(this.interval)
-      this.$store.commit('SET_UNREAD_NUM', value)
 
       if (value > 0) {
         this.interval = setInterval(() => {
@@ -325,23 +322,19 @@ export default {
         document.title = title
       }
     },
-
-    // 监听好友在线状态
-    monitorFriendsStatus(value) {
-      this.$store.commit('UPDATE_TALK_ITEM', {
-        index_name: `1_${value.friend_id}`,
-        is_online: value.status,
-      })
-    },
   },
+
   beforeRouteUpdate(to, from, next) {
     let index_name = getCacheIndexName()
+
     if (index_name) this.clickTab(index_name)
 
     next()
   },
   created() {
-    this.loadChatList()
+    let index_name = getCacheIndexName()
+
+    if (index_name) this.clickTab(index_name)
   },
   mounted() {
     this.scrollEvent()
@@ -394,36 +387,11 @@ export default {
       }
     },
 
-    // 获取用户对话列表
-    loadChatList() {
-      this.loadStatus = this.talkNum == 0 ? 0 : 1
-
-      ServeGetTalkList()
-        .then(({ code, data }) => {
-          if (code !== 200) return false
-
-          this.$store.commit('SET_UNREAD_NUM', 0)
-          this.$store.commit('SET_TALK_ITEMS', {
-            items: data.map(item => formateTalkItem(item)),
-          })
-
-          let index_name = sessionStorage.getItem('send_message_index_name')
-          if (index_name) {
-            this.$nextTick(() => this.clickTab(index_name))
-
-            sessionStorage.removeItem('send_message_index_name')
-          }
-        })
-        .finally(() => {
-          this.loadStatus = 1
-        })
-    },
-
     // 发起群聊成功后回调方法
     groupChatSuccess(data) {
       this.launchGroupShow = false
       sessionStorage.setItem('send_message_index_name', `2_${data.group_id}`)
-      this.loadChatList()
+      this.$store.dispatch('LOAD_TALK_ITEMS')
     },
 
     // 切换聊天栏目
@@ -468,7 +436,7 @@ export default {
     // 修改当前对话
     changeTalk(index_name) {
       sessionStorage.setItem('send_message_index_name', index_name)
-      this.loadChatList()
+      this.$store.dispatch('LOAD_TALK_ITEMS')
     },
 
     // 关闭当前对话及刷新对话列表
@@ -479,7 +447,7 @@ export default {
         is_robot: 0,
       })
 
-      this.loadChatList()
+      this.$store.dispatch('LOAD_TALK_ITEMS')
     },
 
     // 对话列表的右键自定义菜单
@@ -848,7 +816,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 3px 10px 3px 10px;
+    padding: 6px 10px 6px 10px;
     align-items: center;
     user-select: none;
 
@@ -1007,12 +975,16 @@ export default {
     }
 
     &.active {
-      border-radius: 15px;
-      border-color: #3370ff;
+      .avatar-box {
+        border-radius: 5px;
+      }
+
       background-color: #eff0f1;
     }
   }
 }
+
+
 
 @media screen and (max-width: 800px) {
   .aside-box {

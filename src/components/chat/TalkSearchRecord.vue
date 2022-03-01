@@ -69,7 +69,7 @@
                   @click="triggerMenuItem(item)"
                 >
                   <div class="avatar">
-                    <el-avatar :size="20" :src="item.avatar">
+                    <el-avatar :size="20" :src="item.avatar" shape="square">
                       <img src="~@/assets/image/detault-avatar.jpg" />
                     </el-avatar>
                   </div>

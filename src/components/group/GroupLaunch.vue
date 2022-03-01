@@ -39,21 +39,20 @@
                       :key="item.id"
                       @click="triggerContacts(item)"
                     >
-                      <el-avatar
-                        class="avatar"
-                        style="margin-top: 5px"
-                        :size="25"
-                        :src="item.avatar"
-                      >
-                        <img src="~@/assets/image/detault-avatar.jpg" />
-                      </el-avatar>
-                      <span class="nickname">{{ item.nickname }}</span>
-                      <span class="select-btn">
+                      
+                      <div class="avatar">
+                        <el-avatar :size="25" :src="item.avatar" shape="square">
+                          <img src="~@/assets/image/detault-avatar.jpg" />
+                        </el-avatar>
+                      </div>
+                      <div class="content"><span class="lum-text-ellipsis">{{ item.nickname }}</span></div>
+
+                      <div class="checkbox">
                         <i
                           class="el-icon-success"
                           :class="{ 'icon-active': item.checked }"
                         />
-                      </span>
+                      </div>
                     </li>
                   </ul>
                 </el-scrollbar>
@@ -65,7 +64,7 @@
             <el-container class="full-height">
               <el-header height="50px" v-show="!readonly">
                 <div class="group-from no-select">
-                  <label>群名称</label>
+                  <label>群名称*</label>
                   <p>
                     <el-input
                       v-model="from.groupName"
@@ -85,20 +84,27 @@
               </el-header>
               <el-main>
                 <el-scrollbar :native="false" tag="section" class="full-height">
-                  <div class="selectd-items">
-                    <div
+                  <ul class="friend-items no-select">
+                    <li
                       v-for="item in selected"
                       :key="item.id"
-                      class="selectd-item no-select"
+                      @click="triggerContacts(item)"
+                      style="padding: 0;"
                     >
-                      <el-avatar :size="25" :src="item.avatar" />
-                      <p>{{ item.nickname }}</p>
-                      <div class="triangle-topleft"></div>
-                      <div class="del-mask" @click="delContacts(item)">
-                        <i class="el-icon-delete" />
+                      <div class="avatar">
+                        <el-avatar :size="25" :src="item.avatar" shape="square">
+                          <img src="~@/assets/image/detault-avatar.jpg" />
+                        </el-avatar>
                       </div>
-                    </div>
-                  </div>
+                      <div class="content"><span class="lum-text-ellipsis">{{ item.nickname }}</span></div>
+                      <div class="checkbox">
+                        <i
+                          class="el-icon-success"
+                          :class="{ 'icon-active': item.checked }"
+                        />
+                      </div>
+                    </li>
+                  </ul>
                 </el-scrollbar>
               </el-main>
             </el-container>
@@ -332,40 +338,41 @@ export default {
 
 .friend-items {
   li {
-    padding: 10px;
+    height: 40px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    margin: 2px 0;
+    display: flex;
+    flex-direction: row;
     cursor: pointer;
-    position: relative;
 
-    &:hover {
-      background: #f5f5f5;
+    > div {
+      height: 100%;
+      display: flex;
+      align-items: center;
     }
 
     .avatar {
-      margin-top: 3px;
+      width: 40px;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .nickname {
-      width: 60%;
-      white-space: nowrap;
+    .content {
+      flex: 1 auto;
+      padding-left: 8px;
       overflow: hidden;
-      text-overflow: ellipsis;
-      position: absolute;
-      top: 10px;
-      left: 52px;
-      height: 35px;
-      line-height: 35px;
+      font-size: 14px;
       font-weight: 400;
-      font-size: 13px;
+      &:hover{
+        color: #409eff;
+      }
     }
 
-    .select-btn {
-      position: absolute;
-      width: 32px;
-      height: 35px;
-      right: 3px;
-      top: 10px;
-      line-height: 35px;
-      text-align: center;
+    .checkbox {
+      flex-shrink: 0;
+      width: 20px;
+      justify-content: center;
 
       i {
         color: #ccc;

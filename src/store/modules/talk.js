@@ -1,8 +1,12 @@
 import { getSort, getMutipSort } from '@/utils/functions'
+import { ServeGetTalkList } from '@/api/chat'
+import { formateTalkItem } from '@/utils/talk'
 
 const Talk = {
   state: {
-    // 用户对话列表
+    loadStatus: 1, // 加载状态[1:未加载;2:加载中;3:加载完成;4:加载失败;]
+
+    // 会话列表
     items: [],
 
     // 最后一条消息
@@ -11,9 +15,6 @@ const Talk = {
       nickname: '未知',
       content: '...',
     },
-
-    // 对话列表重载状态
-    heavyLoad: false,
   },
   getters: {
     // 过滤所有置顶对话列表
@@ -34,6 +35,10 @@ const Talk = {
     talkNum: state => state.items.length,
   },
   mutations: {
+    SET_LOAD_STATUS(state, resource) {
+      state.loadStatus = resource
+    },
+
     // 设置对话列表
     SET_TALK_ITEMS(state, resource) {
       state.items = resource.items
@@ -78,11 +83,6 @@ const Talk = {
       }
     },
 
-    // 触发对话列表重新加载
-    TRIGGER_TALK_ITEMS_LOAD(state, status = false) {
-      state.heavyLoad = status
-    },
-
     SET_TLAK_UNREAD_MESSAGE(state, resource) {
       state.unreadMessage.num++
       state.unreadMessage.nickname = resource.nickname
@@ -96,6 +96,26 @@ const Talk = {
         nickname: '未知',
         content: '...',
       }
+    },
+  },
+  actions: {
+    // 加载会话列表
+    LOAD_TALK_ITEMS(context) {
+      context.commit('SET_LOAD_STATUS', 2)
+
+      ServeGetTalkList()
+        .then(({ code, data }) => {
+          if (code !== 200) return
+
+          context.commit('SET_TALK_ITEMS', {
+            items: data.map(item => formateTalkItem(item)),
+          })
+          
+          context.commit('SET_LOAD_STATUS', 3)
+        })
+        .catch(() => {
+          context.commit('SET_LOAD_STATUS', 4)
+        })
     },
   },
 }

@@ -38,9 +38,7 @@ class Keyboard extends Base {
       return false
     }
 
-    let store = this.getStoreInstance()
-
-    store.commit('UPDATE_KEYBOARD_EVENT')
+    this.getStoreInstance().commit('UPDATE_KEYBOARD_EVENT')
   }
 }
 

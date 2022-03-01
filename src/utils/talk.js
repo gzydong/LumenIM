@@ -41,6 +41,7 @@ export function formateTalkItem(params) {
     is_disturb: 0,
     is_top: 0,
     is_online: 0,
+    is_robot: 0,
     unread_num: 0,
     content: '......',
     draft_text: '',
@@ -50,6 +51,7 @@ export function formateTalkItem(params) {
   }
 
   Object.assign(options, params)
+  
   options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options
@@ -63,11 +65,16 @@ export function formateTalkItem(params) {
  */
 export function toTalk(talk_type, receiver_id) {
   ServeCreateTalkList({
-    talk_type,
-    receiver_id,
+    talk_type: parseInt(talk_type),
+    receiver_id: parseInt(receiver_id),
   }).then(({ code, data }) => {
     if (code == 200) {
       sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+
+      if (findTalkIndex(`${talk_type}_${receiver_id}`) == -1) {
+        store.commit('PUSH_TALK_ITEM', formateTalkItem(data))
+      }
+
       router.push({
         path: '/message',
         query: {

@@ -222,7 +222,7 @@
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
-import NotePreview from './NotePreview'
+import NotePreview from './NotePreview.vue'
 import {
   ServeGetArticleClass,
   ServeGetArticleTag,

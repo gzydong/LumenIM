@@ -1,244 +1,242 @@
 <template>
   <div>
     <el-container class="ov-hidden full-height">
-      <PanelHeader
-        ref="panelHeader"
-        :data="params"
-        :online="isOnline"
-        :keyboard="inputEvent"
-        @event="handleHeaderEvent"
-      />
+      <el-container>
+        <PanelHeader
+          ref="panelHeader"
+          :data="params"
+          :online="isOnline"
+          :keyboard="inputEvent"
+          @event="handleHeaderEvent"
+        />
 
-      <!-- 主体信息 -->
-      <el-main class="main-box no-padding">
-        <div
-          id="lumenChatPanel"
-          class="talks-container lum-scrollbar"
-          @scroll="talkPanelScroll($event)"
-        >
-          <!-- 数据加载状态栏 -->
-          <div class="loading-toolbar">
-            <span v-if="loadRecord.status == 0" class="color-blue">
-              <i class="el-icon-loading" /> 正在加载数据中...
-            </span>
-            <span
-              v-else-if="loadRecord.status == 1"
-              class="pointer color-blue"
-              @click="loadChatRecords"
-            >
-              <i class="el-icon-bottom" /> 查看更多消息...
-            </span>
-            <span v-else> 没有更多消息了... </span>
-          </div>
-
-          <!-- 消息主体 -->
-          <div v-for="(item, idx) in records" :key="item.id">
-            <!-- 群消息 -->
-            <div v-if="item.msg_type == 9" class="message-box">
-              <invite-message @cat="catFriendDetail" :invite="item.invite" />
+        <!-- 主体信息 -->
+        <el-main class="main-box no-padding">
+          <div
+            id="lumenChatPanel"
+            class="talks-container lum-scrollbar"
+            @scroll="talkPanelScroll($event)"
+          >
+            <!-- 数据加载状态栏 -->
+            <div class="loading-toolbar">
+              <span v-if="loadRecord.status == 0" class="color-blue">
+                <i class="el-icon-loading" /> 正在加载数据中...
+              </span>
+              <span
+                v-else-if="loadRecord.status == 1"
+                class="pointer color-blue"
+                @click="loadChatRecords"
+              >
+                <i class="el-icon-bottom" /> 查看更多消息...
+              </span>
+              <span v-else> 没有更多消息了... </span>
             </div>
 
-            <!-- 撤回消息 -->
-            <div v-else-if="item.is_revoke == 1" class="message-box">
-              <revoke-message :item="item" />
-            </div>
+            <!-- 消息主体 -->
+            <div v-for="(item, idx) in records" :key="item.id">
+              <!-- 群消息 -->
+              <div v-if="item.msg_type == 9" class="message-box">
+                <invite-message @cat="catFriendDetail" :invite="item.invite" />
+              </div>
 
-            <div v-else-if="item.msg_type == 0" class="message-box">
-              <system-text-message :content="item.content" />
-            </div>
+              <!-- 撤回消息 -->
+              <div v-else-if="item.is_revoke == 1" class="message-box">
+                <revoke-message :item="item" />
+              </div>
 
-            <!-- 其它对话消息 -->
-            <div
-              v-else
-              class="message-box record-box"
-              :class="{
-                'direction-rt': item.float == 'right',
-                'checkbox-border': multiSelect.isOpen === true,
-              }"
-            >
-              <aside v-show="multiSelect.isOpen" class="checkbox-column">
-                <i
-                  class="el-icon-success"
-                  :class="{ selected: verifyMultiSelect(item.id) }"
-                  @click="triggerMultiSelect(item.id)"
-                />
-              </aside>
-              <aside class="avatar-column">
-                <el-avatar
-                  class="pointer"
-                  :size="30"
-                  :src="item.avatar"
-                  @click.native="catFriendDetail(item.user_id)"
-                />
-              </aside>
-              <main class="main-column">
-                <div class="talk-title">
-                  <span
-                    v-show="
-                      item.msg_type == 1 ||
-                        (item.msg_type == 2 && item.float == 'right')
-                    "
-                    class="time"
-                  >
-                    <i class="el-icon-time" />
-                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
-                  </span>
-                </div>
+              <div v-else-if="item.msg_type == 0" class="message-box">
+                <system-text-message :content="item.content" />
+              </div>
 
-                <div class="talk-content">
-                  <span
-                    v-show="item.msg_type == 2 && item.float == 'left'"
-                    class="nickname"
-                  >
-                    {{ item.nickname || item.friend_remarks }} |
-                    {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
-                  </span>
-
-                  <!-- 文本消息 -->
-                  <text-message
-                    v-if="item.msg_type == 1"
-                    :content="item.content"
-                    :float="item.float"
-                    :full-width="false"
-                    :arrow="true"
-                    @contextmenu.native="onCopy(idx, item, $event)"
+              <!-- 其它对话消息 -->
+              <div
+                v-else
+                class="message-box record-box"
+                :class="{
+                  'direction-rt': item.float == 'right',
+                  'checkbox-border': multiSelect.isOpen === true,
+                }"
+              >
+                <aside v-show="multiSelect.isOpen" class="checkbox-column">
+                  <i
+                    class="el-icon-success"
+                    :class="{ selected: verifyMultiSelect(item.id) }"
+                    @click="triggerMultiSelect(item.id)"
                   />
-
-                  <!-- 图片消息 -->
-                  <image-message
-                    v-else-if="item.msg_type == 2 && item.file.type == 1"
-                    :src="item.file.url"
-                    @contextmenu.native="onCopy(idx, item, $event)"
+                </aside>
+                <aside class="avatar-column">
+                  <el-avatar
+                    class="pointer"
+                    :size="30"
+                    :src="item.avatar"
+                    @click.native="catFriendDetail(item.user_id)"
                   />
-
-                  <!-- 音频文件预留 -->
-                  <audio-message
-                    v-else-if="item.msg_type == 2 && item.file.type == 2"
-                    :src="item.file.url"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
-
-                  <!-- 视频文件预留 -->
-                  <video-message
-                    v-else-if="item.msg_type == 2 && item.file.type == 3"
-                    :src="item.file.url"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
-
-                  <!-- 文件消息 -->
-                  <file-message
-                    v-else-if="item.msg_type == 2 && item.file.type == 4"
-                    :file="item.file"
-                    :record_id="item.id"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
-
-                  <!-- 会话记录消息 -->
-                  <forward-message
-                    v-else-if="item.msg_type == 3"
-                    :forward="item.forward"
-                    :record_id="item.id"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
-
-                  <!-- 代码块消息 -->
-                  <code-message
-                    v-else-if="item.msg_type == 4"
-                    :code="item.code_block.code"
-                    :lang="item.code_block.lang"
-                    :maxwidth="true"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
-
-                  <!-- 投票消息 -->
-                  <vote-message
-                    v-else-if="item.msg_type == 5"
-                    :record_id="item.id"
-                    :vote="item.vote"
-                  />
-
-                  <!-- 登录消息 -->
-                  <login-message
-                    v-else-if="item.msg_type == 8"
-                    :detail="item.login"
-                  />
-
-                  <!-- 位置消息 -->
-                  <location-message
-                    v-else-if="item.msg_type == 10"
-                    :lat="item.location.latitude"
-                    :lng="item.location.longitude"
-                  />
-
-                  <!-- 未知消息 -->
-                  <div class="unknown-msg" v-else>
-                    未知消息类型[{{ item.msg_type }}]
+                </aside>
+                <main class="main-column">
+                  <div class="talk-title">
+                    <span
+                      v-show="
+                        item.msg_type == 1 ||
+                          (item.msg_type == 2 && item.float == 'right')
+                      "
+                      class="time"
+                    >
+                      <i class="el-icon-time" />
+                      {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
+                    </span>
                   </div>
 
-                  <!-- 消息引用(预留) -->
-                  <!-- <reply-message /> -->
-                </div>
-              </main>
+                  <div class="talk-content">
+                    <span
+                      v-show="item.msg_type == 2 && item.float == 'left'"
+                      class="nickname"
+                    >
+                      {{ item.nickname || item.friend_remarks }} |
+                      {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
+                    </span>
+
+                    <!-- 文本消息 -->
+                    <text-message
+                      v-if="item.msg_type == 1"
+                      :content="item.content"
+                      :float="item.float"
+                      :full-width="false"
+                      :arrow="true"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 图片消息 -->
+                    <image-message
+                      v-else-if="item.msg_type == 2 && item.file.type == 1"
+                      :src="item.file.url"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 音频文件预留 -->
+                    <audio-message
+                      v-else-if="item.msg_type == 2 && item.file.type == 2"
+                      :src="item.file.url"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 视频文件预留 -->
+                    <video-message
+                      v-else-if="item.msg_type == 2 && item.file.type == 3"
+                      :src="item.file.url"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 文件消息 -->
+                    <file-message
+                      v-else-if="item.msg_type == 2 && item.file.type == 4"
+                      :file="item.file"
+                      :record_id="item.id"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 会话记录消息 -->
+                    <forward-message
+                      v-else-if="item.msg_type == 3"
+                      :forward="item.forward"
+                      :record_id="item.id"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 代码块消息 -->
+                    <code-message
+                      v-else-if="item.msg_type == 4"
+                      :code="item.code_block.code"
+                      :lang="item.code_block.lang"
+                      :maxwidth="true"
+                      @contextmenu.native="onCopy(idx, item, $event)"
+                    />
+
+                    <!-- 投票消息 -->
+                    <vote-message
+                      v-else-if="item.msg_type == 5"
+                      :record_id="item.id"
+                      :vote="item.vote"
+                    />
+
+                    <!-- 登录消息 -->
+                    <login-message
+                      v-else-if="item.msg_type == 8"
+                      :detail="item.login"
+                    />
+
+                    <!-- 位置消息 -->
+                    <location-message
+                      v-else-if="item.msg_type == 10"
+                      :lat="item.location.latitude"
+                      :lng="item.location.longitude"
+                    />
+
+                    <!-- 未知消息 -->
+                    <div class="unknown-msg" v-else>
+                      未知消息类型[{{ item.msg_type }}]
+                    </div>
+
+                    <!-- 消息引用(预留) -->
+                    <!-- <reply-message /> -->
+                  </div>
+                </main>
+              </div>
+
+              <!-- 消息时间 -->
+              <div
+                v-show="compareTime(idx, item.created_at)"
+                class="datetime no-select"
+                v-text="sendTime(item.created_at)"
+              />
             </div>
-
-            <!-- 消息时间 -->
-            <div
-              v-show="compareTime(idx, item.created_at)"
-              class="datetime no-select"
-              v-text="sendTime(item.created_at)"
-            />
           </div>
-        </div>
 
-        <!-- 置底按钮 -->
-        <transition name="el-fade-in-linear">
+          <!-- 置底按钮 -->
+          <transition name="el-fade-in-linear">
+            <div
+              v-show="tipsBoard"
+              class="tips-board pointer"
+              @click="talkPanelScrollBottom"
+            >
+              <SvgMentionDown class="svg" />
+              <span>回到底部</span>
+            </div>
+          </transition>
+
+          <!-- 新消息气泡 -->
           <div
-            v-show="tipsBoard"
-            class="tips-board pointer"
+            v-show="tipsBoard && unreadMessage.num"
+            class="talk-bubble pointer no-select"
             @click="talkPanelScrollBottom"
           >
-            <SvgMentionDown class="svg" />
-            <span>回到底部</span>
+            <i class="el-icon-chat-dot-round" />
+            <span>新消息({{ unreadMessage.num }}条)</span>
+            <span>
+              &nbsp;#{{ unreadMessage.nickname }}#
+              {{ unreadMessage.content }}
+            </span>
           </div>
-        </transition>
+        </el-main>
 
-        <!-- 新消息气泡 -->
-        <div
-          v-show="tipsBoard && unreadMessage.num"
-          class="talk-bubble pointer no-select"
-          @click="talkPanelScrollBottom"
-        >
-          <i class="el-icon-chat-dot-round" />
-          <span>新消息({{ unreadMessage.num }}条)</span>
-          <span>
-            &nbsp;#{{ unreadMessage.nickname }}#
-            {{ unreadMessage.content }}
-          </span>
-        </div>
-      </el-main>
-
-      <!-- 页脚信息 -->
-      <el-footer class="footer-box" height="160">
-        <template v-if="multiSelect.isOpen === false">
-          <MeEditor
-            @send="submitSendMesage"
-            @keyboard-event="onKeyboardEvent"
-          />
-        </template>
-        <template v-else>
-          <PanelToolbar
-            v-model="multiSelect.items.length"
-            @event="handleMultiMode"
-          />
-        </template>
-      </el-footer>
+        <!-- 页脚信息 -->
+        <el-footer class="footer-box" height="160">
+          <template v-if="multiSelect.isOpen === false">
+            <MeEditor
+              @send="submitSendMesage"
+              @keyboard-event="onKeyboardEvent"
+            />
+          </template>
+          <template v-else>
+            <PanelToolbar
+              v-model="multiSelect.items.length"
+              @event="handleMultiMode"
+            />
+          </template>
+        </el-footer>
+      </el-container>
 
       <!-- 群设置侧边栏 -->
-      <div
-        class="sidebar-box"
-        :class="{ show: group.panel }"
-        v-outside="hideChatGroup"
-      >
+      <el-aside v-if="group.panel && params.talk_type == 2" width="350px" class="panel-aside">
         <GroupPanel
           v-if="params.talk_type == 2"
           :group-id="params.receiver_id"
@@ -248,7 +246,7 @@
           @disturb-change="disturbChange"
           @group-info="syncGroupInfo"
         />
-      </div>
+      </el-aside>
     </el-container>
 
     <!-- 消息管理器 -->
@@ -399,7 +397,7 @@ export default {
           this.group.notice = true
           break
         case 'setting':
-          this.group.panel = true
+          this.group.panel = !this.group.panel
           break
       }
     },
@@ -563,9 +561,9 @@ export default {
         forward_mode: this.multiSelect.mode,
         talk_type: parseInt(this.params.talk_type),
         receiver_id: parseInt(this.params.receiver_id),
-        records_ids: this.multiSelect.items.join(","),
-        receive_user_ids: user_ids.join(","),
-        receive_group_ids: group_ids.join(","),
+        records_ids: this.multiSelect.items.join(','),
+        receive_user_ids: user_ids.join(','),
+        receive_group_ids: group_ids.join(','),
       }).then(res => {
         if (res.code == 200) {
           this.closeMultiSelect()
@@ -839,31 +837,15 @@ export default {
   position: relative;
 }
 
+.panel-aside {
+  border-left: 1px solid #f5eeee;
+}
+
 /* 面板页脚 */
 .footer-box {
   height: 160px !important;
   padding: 0;
   border-top: 1px solid #f5f5f5;
-}
-
-/* 侧边栏css */
-.sidebar-box {
-  position: absolute;
-  width: 350px;
-  height: 100%;
-  top: 0px;
-  right: -350px;
-  z-index: 1;
-  background: white;
-  transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -webkit-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-
-  &.show {
-    right: 0;
-    box-shadow: 0 0 14px #e2e1e1;
-  }
 }
 
 .tips-board {
@@ -1066,5 +1048,9 @@ export default {
       }
     }
   }
+}
+
+.lum-scrollbar::-webkit-scrollbar {
+    background-color: #ffffff;
 }
 </style>
