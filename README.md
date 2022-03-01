@@ -3,7 +3,7 @@
 ###  项目介绍
 Lumen IM 是一个网页版在线即时聊天项目，前端使用 Element-ui + Vue，后端采用了基于 Swoole 开发的 Hyperf 协程框架进行接口开发，并使用 WebSocket 服务进行消息实时推送。
 
-目前前端以兼容golang后端
+目前前端已兼容golang后端
 
 ### 功能模块
 - 基于 Swoole WebSocket 服务做消息即时推送
