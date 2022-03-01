@@ -20,7 +20,7 @@
           <p>已绑定手机 ：{{ mobile }}</p>
         </el-col>
         <el-col :span="4" class="right-col">
-          <span class="action" @click="$refs.changeMobileRef.open()">更换</span>
+          <span class="action" @click="$refs.changeMobileRef.open()">修改</span>
         </el-col>
       </el-row>
 

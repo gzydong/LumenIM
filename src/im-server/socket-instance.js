@@ -37,11 +37,15 @@ class SocketInstance {
         },
         // Websocket 连接成功回调方法
         onOpen: evt => {
-          this.updateSocketStatus(true)
+          // 更新 WebSocket 连接状态
+          store.commit('UPDATE_SOCKET_STATUS', true)
+
+          store.dispatch('LOAD_TALK_ITEMS')
         },
         // Websocket 断开连接回调方法
         onClose: evt => {
-          this.updateSocketStatus(false)
+          // 更新 WebSocket 连接状态
+          store.commit('UPDATE_SOCKET_STATUS', false)
         },
       }
     )
@@ -58,6 +62,8 @@ class SocketInstance {
    * 注册回调消息处理事件
    */
   registerEvents() {
+    this.socket.on('heartbeat', data => {})
+
     this.socket.on('event_talk', data => {
       new TalkEvent(data).handle()
     })
@@ -89,15 +95,6 @@ class SocketInstance {
         type: 'warning',
       })
     })
-  }
-
-  /**
-   * 更新 WebSocket 连接状态
-   *
-   * @param {Boolean} status 连接状态
-   */
-  updateSocketStatus(status) {
-    store.commit('UPDATE_SOCKET_STATUS', status)
   }
 
   /**

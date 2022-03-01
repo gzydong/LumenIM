@@ -8,7 +8,7 @@
         </p>
       </el-header>
       <el-main class="main">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" :model="form" :rules="rules" label-position="top">
           <el-form-item prop="username" label="手机号">
             <el-input
               v-model="form.username"
@@ -23,7 +23,7 @@
             <el-input
               v-model="form.sms_code"
               class="cuborder-radius"
-              style="width: 185px"
+              style="width: 265px"
               maxlength="6"
               size="medium"
               placeholder="验证码"
@@ -35,7 +35,7 @@
               class="send-code-btn"
               @click="sendSms"
             >
-              获取短信
+              获取验证码
             </div>
             <div v-else class="send-code-btn disable">
               重新发送({{ smsLockObj.time }}s)
@@ -58,7 +58,7 @@
               size="medium"
               :loading="loading"
               @click="onSubmit('form')"
-              >立即修改
+              >提交
             </el-button>
           </el-form-item>
         </el-form>
@@ -69,7 +69,8 @@
 <script>
 import { isMobile } from '@/utils/validate'
 import SmsLock from '@/plugins/sms-lock'
-import { ServeSendMobileCode, ServeUpdateMobile } from '@/api/user'
+import { ServeUpdateMobile } from '@/api/user'
+import { ServeSendVerifyCode } from '@/api/common'
 
 export default {
   name: 'UserEditMobile',
@@ -154,7 +155,8 @@ export default {
       }
 
       this.smsLock = true
-      ServeSendMobileCode({
+      ServeSendVerifyCode({
+        channel: 'change_account',
         mobile: this.form.username,
       })
         .then(res => {
@@ -238,6 +240,7 @@ export default {
       cursor: pointer;
       user-select: none;
       margin-left: 5px;
+      border-radius: 5px;
 
       &:active {
         background: #e4dbdb;
@@ -250,5 +253,10 @@ export default {
       }
     }
   }
+}
+
+/deep/.el-form--label-top .el-form-item__label{
+  padding: 0;
+  line-height: 30px;
 }
 </style>

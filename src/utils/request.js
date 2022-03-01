@@ -24,6 +24,13 @@ const errorHandler = error => {
     if (error.response.status == 401) {
       removeAll()
       location.reload()
+    } else if (error.response.status == 403) {
+      Notification({
+        title: '警告',
+        type: 'warning',
+        message: '无权限操作 ...',
+        position: 'top-right',
+      })
     } else {
       Notification({
         message: '网络异常,请稍后再试...',

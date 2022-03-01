@@ -85,7 +85,8 @@
   </div>
 </template>
 <script>
-import { ServeForgetPassword, ServeSendVerifyCode } from '@/api/user'
+import { ServeForgetPassword } from '@/api/auth'
+import { ServeSendVerifyCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
 import SmsLock from '@/plugins/sms-lock'
 
@@ -144,11 +145,6 @@ export default {
           {
             required: true,
             message: '验证码不能为空!',
-            trigger: 'blur',
-          },
-          {
-            min: 6,
-            message: '验证码格式不正确',
             trigger: 'blur',
           },
         ],
@@ -226,7 +222,7 @@ export default {
       this.smsLock = true
       ServeSendVerifyCode({
         mobile: this.form.username,
-        type: 'forget_password',
+        channel: 'forget_account',
       })
         .then(res => {
           if (res.code == 200) {

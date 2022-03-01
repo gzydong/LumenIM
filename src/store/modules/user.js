@@ -1,6 +1,6 @@
 import { setUserInfo, getUserInfo, removeAll, getToken } from '@/utils/auth'
 
-import { ServeLogout } from '@/api/user'
+import { ServeLogout } from '@/api/auth'
 
 let state = {
   // 用户ID

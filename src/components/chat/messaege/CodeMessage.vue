@@ -100,7 +100,7 @@ export default {
     height: 100%;
     width: 100%;
     overflow: auto;
-    padding: 10px;
+    padding: 30px 10px 10px 10px;
     line-height: 24px;
     background: #272822;
     color: #d5d4d4;
@@ -113,6 +113,19 @@ export default {
         background-color: black;
       }
     }
+  }
+
+  pre:before {
+    position: absolute;
+    left: 12px;
+    z-index: 0;
+    margin-top: -18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fc625d;
+    box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+    content: ' ';
   }
 
   &.full-screen {

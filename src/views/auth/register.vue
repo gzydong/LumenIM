@@ -96,7 +96,8 @@
   </div>
 </template>
 <script>
-import { ServeRegister, ServeSendVerifyCode } from '@/api/user'
+import { ServeSendVerifyCode } from '@/api/common'
+import { ServeRegister } from '@/api/auth'
 import { isMobile } from '@/utils/validate'
 import SmsLock from '@/plugins/sms-lock'
 
@@ -246,7 +247,7 @@ export default {
       this.smsLock = true
       ServeSendVerifyCode({
         mobile: this.form.username,
-        type: 'user_register',
+        channel: 'register',
       })
         .then(res => {
           if (res.code == 200) {

@@ -91,7 +91,7 @@
 </template>
 <script>
 import { VueCropper } from 'vue-cropper'
-import { ServeUploadFileStream } from '@/api/upload'
+import { ServeUploadAvatar } from '@/api/upload'
 
 export default {
   name: 'AvatarCropper',
@@ -181,19 +181,28 @@ export default {
     // 上传图片到服务器
     uploadService() {
       if (this.cusPreviewsImg == '') return
-      ServeUploadFileStream({
-        fileStream: this.cusPreviewsImg,
-      })
-        .then(res => {
-          if (res.code == 200) {
-            this.$emit('close', 1, res.data.avatar)
-          } else {
+
+      this.$refs.cropper.getCropBlob(blob => {
+        let file = new File([blob], 'avatar.png', {
+          type: blob.type,
+          lastModified: Date.now(),
+        })
+
+        const form = new FormData()
+        form.append('file', file)
+
+        ServeUploadAvatar(form)
+          .then(res => {
+            if (res.code == 200) {
+              this.$emit('close', 1, res.data.avatar)
+            } else {
+              this.$message('文件上传失败,请稍后再试...')
+            }
+          })
+          .catch(() => {
             this.$message('文件上传失败,请稍后再试...')
-          }
-        })
-        .catch(() => {
-          this.$message('文件上传失败,请稍后再试...')
-        })
+          })
+      })
     },
   },
 }

@@ -22,7 +22,7 @@ export const ServeTopTalkList = data => {
 
 // 清除聊天消息未读数服务接口
 export const ServeClearTalkUnreadNum = data => {
-  return post('/api/v1/talk/update-unread-num', data)
+  return post('/api/v1/talk/unread/clear', data)
 }
 
 // 获取聊天记录服务接口
@@ -32,7 +32,7 @@ export const ServeTalkRecords = data => {
 
 // 获取转发会话记录详情列表服务接口
 export const ServeGetForwardRecords = data => {
-  return get('/api/v1/talk/get-forward-records', data)
+  return get('/api/v1/talk/records/forward', data)
 }
 
 // 对话列表置顶服务接口
@@ -42,7 +42,7 @@ export const ServeSetNotDisturb = data => {
 
 // 查找用户聊天记录服务接口
 export const ServeFindTalkRecords = data => {
-  return get('/api/v1/talk/find-chat-records', data)
+  return get('/api/v1/talk/records/history', data)
 }
 
 // 搜索用户聊天记录服务接口
@@ -52,6 +52,11 @@ export const ServeSearchTalkRecords = data => {
 
 export const ServeGetRecordsContext = data => {
   return get('/api/v1/talk/get-records-context', data)
+}
+
+// 发送代码块消息服务接口
+export const ServeSendTalkText = data => {
+  return post('/api/v1/talk/message/text', data)
 }
 
 // 发送代码块消息服务接口

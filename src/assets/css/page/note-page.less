@@ -18,7 +18,7 @@
     padding: 0;
 
     /deep/.btn-dropdown-menu {
-      border-radius: 20px;
+      border-radius: 5px;
       overflow: hidden;
     }
 
@@ -72,13 +72,15 @@
     }
 
     .note-list-two {
-      height: 40px;
-      line-height: 40px;
+      height: 35px;
+      line-height: 35px;
       padding-left: 30px;
       cursor: pointer;
 
       i {
         color: #448aff;
+        position: relative;
+        top: 2px;
       }
 
       span {
@@ -197,19 +199,26 @@
 
   .article-row {
     min-height: 50px;
-    border-bottom: 2px solid #ffffff;
+    // border-bottom: 2px solid #ffffff;
     padding: 10px 10px 5px 10px;
     position: relative;
 
+    background: white;
+    margin: 8px 5px;
+    border-radius: 5px;
+
     .article-title {
-      height: 22px;
-      line-height: 22px;
+      height: 24px;
+      line-height: 24px;
       font-size: 14px;
       width: 327px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
+      i{
+        display: none;
+      }
     }
 
     .article-tool {
@@ -266,7 +275,7 @@
           flex-grow: 1;
           max-height: 42px;
           font-size: 12px;
-          color: #989494;
+          color: #b5b5b5;
           line-height: 1.6;
           text-overflow: ellipsis;
           -webkit-box-orient: vertical;
@@ -292,6 +301,7 @@
         /deep/.el-image {
           width: 100%;
           height: 100%;
+          border-radius: 3px;
         }
 
         /deep/.el-image__error {
@@ -314,15 +324,18 @@
 
     &:hover,
     &.active-row {
-      background: white;
-
       .article-title {
+        color: #5c504c;
+        font-weight: bold;
         width: 270px;
       }
 
       .article-tool {
         display: block;
       }
+
+
+      box-shadow: 0 0 0 #ccc;
     }
   }
 }

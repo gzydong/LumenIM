@@ -29,7 +29,7 @@
             v-model="search.keyword"
             type="text"
             maxlength="30"
-            placeholder="关键字搜索"
+            placeholder="搜索"
             @keyup.enter="searchText($event)"
           />
         </div>
@@ -69,7 +69,7 @@
                   @click="triggerMenuItem(item)"
                 >
                   <div class="avatar">
-                    <el-avatar :size="20" :src="item.avatar">
+                    <el-avatar :size="20" :src="item.avatar" shape="square">
                       <img src="~@/assets/image/detault-avatar.jpg" />
                     </el-avatar>
                   </div>
@@ -140,30 +140,31 @@
                     <!-- 文件 - 图片消息 -->
                     <image-message
                       v-else-if="
-                        record.msg_type == 2 && record.file.file_type == 1
+                        record.msg_type == 2 && record.file.type == 1
                       "
-                      :src="record.file.file_url"
+                      :src="record.file.url"
                     />
 
                     <!-- 文件 - 音频消息 -->
                     <audio-message
                       v-else-if="
-                        record.msg_type == 2 && record.file.file_type == 2
+                        record.msg_type == 2 && record.file.type == 2
                       "
-                      :src="record.file.file_url"
+                      :src="record.file.url"
                     />
 
                     <!-- 文件 - 视频消息 -->
                     <video-message
                       v-else-if="
-                        record.msg_type == 2 && record.file.file_type == 3
+                        record.msg_type == 2 && record.file.type == 3
                       "
+                      :src="record.file.url"
                     />
 
                     <!-- 文件 - 其它格式文件 -->
                     <file-message
                       v-else-if="
-                        record.msg_type == 2 && record.file.file_type == 4
+                        record.msg_type == 2 && record.file.type == 4
                       "
                       :file="record.file"
                       :record_id="record.id"
@@ -180,7 +181,7 @@
                     <code-message
                       v-else-if="record.msg_type == 4"
                       :code="record.code_block.code"
-                      :lang="record.code_block.code_lang"
+                      :lang="record.code_block.lang"
                     />
 
                     <!-- 投票消息 -->
@@ -264,7 +265,7 @@ export default {
 
       tabType: [
         { name: '全部', type: 0 },
-        { name: '文件', type: 2 },
+        { name: '图片/视频/文件', type: 2 },
         { name: '会话记录', type: 3 },
         { name: '代码块', type: 4 },
         { name: '群投票', type: 5 },
@@ -329,7 +330,7 @@ export default {
     loadGroups() {
       ServeGetGroups().then(({ code, data }) => {
         if (code == 200) {
-          this.contacts.groups = data.map(item => {
+          this.contacts.groups = data.rows.map(item => {
             return {
               id: item.id,
               type: 2,
@@ -358,6 +359,7 @@ export default {
         receiver_id: this.query.receiver_id,
         record_id: this.records.record_id,
         msg_type: this.query.msg_type,
+        limit: 30,
       }
 
       if (this.records.loadStatus == 1) return
@@ -563,7 +565,6 @@ export default {
   .active {
     color: #03a9f4;
     font-weight: 500;
-    font-size: 13px;
   }
 
   span {

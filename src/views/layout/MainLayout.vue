@@ -101,7 +101,7 @@
 
     <!-- 语音消息提示 -->
     <audio id="audio" preload="auto">
-      <source src="~@/assets/image/1701.mp3" type="audio/mp3" />
+      <source src="@/assets/image/1701.mp3" type="audio/mp3" />
     </audio>
 
     <!-- 打赏组件(自行删除) -->
@@ -112,7 +112,7 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import AccountCard from '@/components/user/AccountCard'
 import RewardModule from '@/components/layout/RewardModule'
 import AbsModule from '@/components/layout/AbsModule'
@@ -136,12 +136,12 @@ export default {
       userAvatar: state => state.user.avatar,
       detaultAvatar: state => state.detaultAvatar,
       socketStatus: state => state.socketStatus,
-      unreadNum: state => state.notify.unreadNum,
       applyNum: state => state.notify.applyNum,
       notifyCueTone: state => state.settings.notifyCueTone,
       themeMode: state => state.settings.themeMode,
       themeBagImg: state => state.settings.themeBagImg,
     }),
+    ...mapGetters(['unreadNum']),
   },
   watch: {
     unreadNum(n, o) {
@@ -155,12 +155,7 @@ export default {
   },
   methods: {
     play() {
-      document
-        .querySelector('#audio')
-        .play()
-        .catch(() => {
-          console.error('消息提示音播放异常')
-        })
+      document.querySelector('#audio').play()
     },
     logout() {
       this.$store.dispatch('ACT_USER_LOGOUT')
@@ -187,7 +182,7 @@ export default {
   margin: auto;
   overflow: hidden;
   transition: ease 0.5s;
-  border-radius: 5px;
+  border-radius: 10px;
 
   &.full-mode {
     width: 100%;

@@ -122,7 +122,7 @@
   </div>
 </template>
 <script>
-import { ServeSearchUser } from '@/api/user'
+import { ServeSearchUser } from '@/api/contacts'
 import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 
@@ -130,7 +130,7 @@ export default {
   name: 'UserCardDetail',
   props: {
     user_id: {
-      type: Number,
+      type: [Number,String],
       default: 0,
     },
   },

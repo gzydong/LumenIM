@@ -99,7 +99,7 @@ export default {
       })
         .then(({ code, data }) => {
           if (code == 200) {
-            this.items = data.map(item => {
+            this.items = data.rows.map(item => {
               item.isShow = false
               return item
             })

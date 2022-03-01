@@ -17,7 +17,7 @@ export const ServeCreateGroup = data => {
 
 //  修改群信息
 export const ServeEditGroup = data => {
-  return post('/api/v1/group/edit', data)
+  return post('/api/v1/group/setting', data)
 }
 
 // 邀请好友加入群聊服务接口
@@ -27,7 +27,7 @@ export const ServeInviteGroup = data => {
 
 // 移除群聊成员服务接口
 export const ServeRemoveMembersGroup = data => {
-  return post('/api/v1/group/remove-members', data)
+  return post('/api/v1/group/member/remove', data)
 }
 
 // 管理员解散群聊服务接口
@@ -42,25 +42,25 @@ export const ServeSecedeGroup = data => {
 
 // 修改群聊名片服务接口
 export const ServeUpdateGroupCard = data => {
-  return post('/api/v1/group/set-group-card', data)
+  return post('/api/v1/group/member/remark', data)
 }
 
 // 获取用户可邀请加入群组的好友列表
 export const ServeGetInviteFriends = data => {
-  return get('/api/v1/group/invite-friends', data)
+  return get('/api/v1/group/member/invites', data)
 }
 
 //  获取群组成员列表
 export const ServeGetGroupMembers = data => {
-  return get('/api/v1/group/members', data)
+  return get('/api/v1/group/member/list', data)
 }
 
 //  获取群组公告列表
 export const ServeGetGroupNotices = data => {
-  return get('/api/v1/group/notices', data)
+  return get('/api/v1/group/notice/list', data)
 }
 
 //  编辑群公告
 export const ServeEditGroupNotice = data => {
-  return post('/api/v1/group/edit-notice', data)
+  return post('/api/v1/group/notice/edit', data)
 }

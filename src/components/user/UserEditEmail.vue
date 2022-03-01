@@ -8,7 +8,7 @@
         </p>
       </el-header>
       <el-main class="main">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" :model="form" :rules="rules" label-position="top">
           <el-form-item prop="email" label="邮箱">
             <el-input
               v-model="form.email"
@@ -22,7 +22,7 @@
             <el-input
               v-model="form.sms_code"
               class="cuborder-radius"
-              style="width: 185px"
+              style="width: 265px"
               size="medium"
               maxlength="6"
               placeholder="邮件验证码"
@@ -57,7 +57,7 @@
               size="medium"
               :loading="loading"
               @click="onSubmit('form')"
-              >立即修改
+              >提交
             </el-button>
           </el-form-item>
         </el-form>
@@ -67,7 +67,8 @@
 </template>
 <script>
 import SmsLock from '@/plugins/sms-lock'
-import { ServeSendEmailCode, ServeUpdateEmail } from '@/api/user'
+import { ServeUpdateEmail } from '@/api/user'
+import { ServeSendEmailCode } from '@/api/common'
 import { isEmail } from '@/utils/validate'
 
 export default {
@@ -219,5 +220,10 @@ export default {
       }
     }
   }
+}
+
+/deep/.el-form--label-top .el-form-item__label{
+  padding: 0;
+  line-height: 30px;
 }
 </style>

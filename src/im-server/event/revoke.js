@@ -2,7 +2,7 @@ import Base from './base'
 import store from '@/store'
 
 /**
- * 好友邀请消息处理
+ * 撤销消息处理
  */
 class Revoke extends Base {
   /**
@@ -23,19 +23,17 @@ class Revoke extends Base {
 
   handle() {
     if (
-      !this.isTalk(
+      this.isTalk(
         this.resource.talk_type,
         this.resource.receiver_id,
         this.resource.sender_id
       )
     ) {
-      return false
+      store.commit('UPDATE_DIALOGUE', {
+        id: this.resource.record_id,
+        is_revoke: 1,
+      })
     }
-
-    store.commit('UPDATE_DIALOGUE', {
-      id: this.resource.record_id,
-      is_revoke: 1,
-    })
   }
 }
 

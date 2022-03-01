@@ -42,7 +42,9 @@ export function formateTime(datetime) {
     return parseTime(outTime, '{m}-{d} {h}:{i}')
   }
 
-  if (time.getHours() != outTime.getHours()) {
+  let diff = time.getTime() - outTime.getTime()
+
+  if (time.getHours() != outTime.getHours() || diff > 30 * 60 * 1000) {
     return parseTime(outTime, '{h}:{i}')
   }
 
@@ -67,8 +69,8 @@ export function formateSize(value) {
   let unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   let index = 0
   let srcsize = parseFloat(value)
-  index = Math.floor(Math.log(srcsize) / Math.log(1024))
-  let size = srcsize / Math.pow(1024, index)
+  index = Math.floor(Math.log(srcsize) / Math.log(1000))
+  let size = srcsize / Math.pow(1000, index)
   size = size.toFixed(2) //保留的小数位数
   return size + unitArr[index]
 }
@@ -143,7 +145,8 @@ export function download(cr_id) {
   let token = getToken()
   try {
     let link = document.createElement('a')
-    link.href = `${api}/api/v1/download/user-chat-file?cr_id=${cr_id}&token=${token}`
+    link.target = "_blank"
+    link.href = `${api}/api/v1/talk/records/file/download?cr_id=${cr_id}&token=${token}`
     link.click()
   } catch (e) {}
 }

@@ -6,6 +6,7 @@ export default {
     // 判断用户是否登录
     if (this.$store.getters.loginStatus) {
       this.initialize()
+      this.$store.dispatch('LOAD_TALK_ITEMS')
     }
   },
   methods: {

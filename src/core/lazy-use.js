@@ -79,9 +79,18 @@ Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$alert = MessageBox.alert
+Vue.prototype.$dialog = MessageBox.Dialog
 
 import Contextmenu from 'vue-contextmenujs'
 Vue.use(Contextmenu)
+
+
+import BaiduMap from 'vue-baidu-map'
+
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: 'Q47kDECgU9ROIGiWnyXldH0hL9IVhXxt'
+})
 
 process.env.NODE_ENV !== 'production' &&
   console.warn('[Lumen-IM] NOTICE: element-ui use lazy-load.')

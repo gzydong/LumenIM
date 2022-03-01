@@ -40,19 +40,20 @@
 
               <!-- 文件 - 图片消息 -->
               <image-message
-                v-else-if="record.msg_type == 2 && record.file.file_type == 1"
-                :src="record.file.file_url"
+                v-else-if="record.msg_type == 2 && record.file.type == 1"
+                :src="record.file.url"
               />
 
               <!-- 文件 - 音频消息 -->
               <audio-message
-                v-else-if="record.msg_type == 2 && record.file.file_type == 2"
-                :src="record.file.file_url"
+                v-else-if="record.msg_type == 2 && record.file.type == 2"
+                :src="record.file.url"
               />
 
               <!-- 文件 - 视频消息 -->
               <video-message
-                v-else-if="record.msg_type == 2 && record.file.file_type == 3"
+                v-else-if="record.msg_type == 2 && record.file.type == 3"
+                :src="record.file.url"
               />
 
               <!-- 文件 - 其它格式文件 -->
@@ -66,7 +67,7 @@
               <code-message
                 v-else-if="record.msg_type == 4"
                 :code="record.code_block.code"
-                :lang="record.code_block.code_lang"
+                :lang="record.code_block.lang"
               />
 
               <div v-else class="other-message">未知消息类型</div>

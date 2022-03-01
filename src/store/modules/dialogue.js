@@ -41,9 +41,9 @@ export default {
 
     // 更新对话记录
     UPDATE_DIALOGUE(state, resource) {
-      for (let i in state.records) {
-        if (state.records[i].id === resource.id) {
-          Object.assign(state.records[i], resource)
+      for (const iterator of state.records) {
+        if (iterator.id === resource.id) {
+          Object.assign(iterator, resource)
           break
         }
       }

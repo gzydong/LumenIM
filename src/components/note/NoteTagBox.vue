@@ -182,7 +182,7 @@ export default {
       margin: 0 3px 5px 0;
       color: #409eff;
       background: rgba(64, 158, 255, 0.1);
-      border-radius: 1px;
+      border-radius: 3px;
 
       i {
         cursor: pointer;
@@ -190,14 +190,13 @@ export default {
       }
 
       &.active {
-        background: #70b5fb;
-        color: #ffffff;
+        border: 1px dashed #70b5fb;
       }
     }
   }
 
   .addbtn {
-    height: 33px;
+    height: 35px;
     width: 100%;
     margin-top: 20px;
     line-height: 9px;

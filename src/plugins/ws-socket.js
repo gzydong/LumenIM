@@ -4,12 +4,7 @@ class WsSocket {
    *
    * @var Websocket
    */
-  connect
-
-  /**
-   * 服务器连接地址
-   */
-  url
+  connect = null
 
   /**
    * 配置信息
@@ -18,9 +13,9 @@ class WsSocket {
    */
   config = {
     heartbeat: {
-      enabled: true, // 是否发送心跳包
-      time: 10000, // 心跳包发送间隔时长
-      setInterval: null, // 心跳包计时器
+      setInterval: null,
+      pingInterval: 20000,
+      pingTimeout: 60000,
     },
     reconnect: {
       lockReconnect: false,
@@ -30,12 +25,21 @@ class WsSocket {
     },
   }
 
+  // 最后心跳时间
+  lastTime = 0
+
   /**
    * 自定义绑定消息事件
    *
    * @var Array
    */
   onCallBacks = []
+
+  defaultEvent = {
+    onError: evt => {},
+    onOpen: evt => {},
+    onClose: evt => {},
+  }
 
   /**
    * 创建 WsSocket 的实例
@@ -47,14 +51,13 @@ class WsSocket {
     this.urlCallBack = urlCallBack
 
     // 定义 WebSocket 原生方法
-    this.events = Object.assign(
-      {
-        onError: evt => {},
-        onOpen: evt => {},
-        onClose: evt => {},
-      },
-      events
-    )
+    this.events = Object.assign({}, this.defaultEvent, events)
+
+    this.on('connect', data => {
+      this.config.heartbeat.pingInterval = data.ping_interval * 1000
+      this.config.heartbeat.pingTimeout = data.ping_timeout * 1000
+      this.heartbeat()
+    })
   }
 
   /**
@@ -65,6 +68,7 @@ class WsSocket {
    */
   on(event, callBack) {
     this.onCallBacks[event] = callBack
+
     return this
   }
 
@@ -72,14 +76,9 @@ class WsSocket {
    * 加载 WebSocket
    */
   loadSocket() {
-    // 判断当前是否已经连接
-    if (this.connect != null) {
-      this.connect.close()
-      this.connect = null
-    }
+    const url = this.urlCallBack()
 
-    this.url = this.urlCallBack()
-    const connect = new WebSocket(this.url)
+    const connect = new WebSocket(url)
     connect.onerror = this.onError.bind(this)
     connect.onopen = this.onOpen.bind(this)
     connect.onmessage = this.onMessage.bind(this)
@@ -92,33 +91,21 @@ class WsSocket {
    * 连接 Websocket
    */
   connection() {
-    this.loadSocket()
+    this.connect == null && this.loadSocket()
   }
 
   /**
    * 掉线重连 Websocket
    */
   reconnect() {
-    let reconnect = this.config.reconnect
-    if (reconnect.lockReconnect || reconnect.number == 0) {
-      return
-    }
-
-    this.config.reconnect.lockReconnect = true
-
     // 没连接上会一直重连，设置延迟避免请求过多
-    reconnect.setTimeout && clearTimeout(reconnect.setTimeout)
+    clearTimeout(this.config.reconnect.setTimeout)
 
     this.config.reconnect.setTimeout = setTimeout(() => {
       this.connection()
 
-      this.config.reconnect.lockReconnect = false
-      this.config.reconnect.number--
-
-      console.log(
-        `网络连接已断开，正在尝试重新连接(${this.config.reconnect.number})...`
-      )
-    }, reconnect.time)
+      console.log(`网络连接已断开，正在尝试重新连接...`)
+    }, this.config.reconnect.time)
   }
 
   /**
@@ -127,11 +114,11 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onParse(evt) {
-    let [eventType, message] = JSON.parse(evt.data)
+    const { event, content } = JSON.parse(evt.data)
 
     return {
-      event: eventType,
-      data: message,
+      event: event,
+      data: content,
       orginData: evt.data,
     }
   }
@@ -142,11 +129,11 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onOpen(evt) {
+    this.lastTime = new Date().getTime()
+
     this.events.onOpen(evt)
 
-    if (this.config.heartbeat.enabled) {
-      this.heartbeat()
-    }
+    this.ping()
   }
 
   /**
@@ -155,15 +142,13 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onClose(evt) {
-    if (this.config.heartbeat.enabled) {
-      clearInterval(this.config.heartbeat.setInterval)
-    }
-
-    if (evt.code == 1006) {
-      this.reconnect()
-    }
-
     this.events.onClose(evt)
+
+    this.connect.close()
+
+    this.connect = null
+
+    evt.code == 1006 && this.reconnect()
   }
 
   /**
@@ -173,6 +158,9 @@ class WsSocket {
    */
   onError(evt) {
     this.events.onError(evt)
+    this.connect.close()
+    this.connect = null
+    this.reconnect()
   }
 
   /**
@@ -181,6 +169,8 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onMessage(evt) {
+    this.lastTime = new Date().getTime()
+
     let result = this.onParse(evt)
 
     // 判断消息事件是否被绑定
@@ -192,12 +182,22 @@ class WsSocket {
   }
 
   /**
-   * WebSocket心跳检测
+   * WebSocket 心跳检测
    */
   heartbeat() {
     this.config.heartbeat.setInterval = setInterval(() => {
-      this.connect.send('PING')
-    }, this.config.heartbeat.time)
+      let t = new Date().getTime()
+
+      if (t - this.lastTime > this.config.heartbeat.pingTimeout) {
+        this.reconnect()
+      } else {
+        this.ping()
+      }
+    }, this.config.heartbeat.pingInterval)
+  }
+
+  ping() {
+    this.connect.send('{"event":"heartbeat","content":"ping"}')
   }
 
   /**
@@ -212,7 +212,7 @@ class WsSocket {
   /**
    * 关闭连接
    */
-  close(){
+  close() {
     this.connect.close()
   }
 
@@ -223,14 +223,12 @@ class WsSocket {
    * @param {Object} data 数据
    */
   emit(event, data) {
+    const content = JSON.stringify({ event, data })
+
     if (this.connect && this.connect.readyState === 1) {
-      this.connect.send(
-        JSON.stringify({
-          event,
-          data,
-        })
-      )
+      this.connect.send(content)
     } else {
+      alert('WebSocket 连接已关闭...')
       console.error('WebSocket 连接已关闭...', this.connect)
     }
   }

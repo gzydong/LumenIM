@@ -9,6 +9,7 @@
               class="btn-dropdown-menu"
               split-button
               type="primary"
+              placement="top-end"
               @click="insertNote"
               @command="handleCommand"
             >
@@ -221,7 +222,7 @@
 import MainLayout from '@/views/layout/MainLayout'
 import NoteAnnexRecycle from '@/components/note/NoteAnnexRecycle'
 import { SvgNoteBook, SvgNote } from '@/core/icons'
-import NotePreview from './NotePreview'
+import NotePreview from './NotePreview.vue'
 import {
   ServeGetArticleClass,
   ServeGetArticleTag,
@@ -253,7 +254,7 @@ export default {
     return {
       menus: [
         {
-          name: '近期笔记',
+          name: '近期编辑',
           icon: 'icon-jinqiyulan',
           color: 'rgb(255, 181, 169)',
           isShowSub: false,
@@ -355,7 +356,7 @@ export default {
       let data = {
         page: 1,
         keyword: '',
-        find_type: '',
+        find_type: 0,
         cid: '',
       }
 

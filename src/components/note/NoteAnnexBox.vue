@@ -9,13 +9,13 @@
         </p>
 
         <div v-for="(file, i) in files" :key="file.id" class="file-item">
-          <div class="suffix">{{ file.file_suffix }}</div>
+          <div class="suffix">{{ file.suffix }}</div>
           <div class="content">
             <div class="filename">{{ file.original_name }}</div>
             <div class="filetool">
               <span>{{ formateTime(file.created_at) }}</span>
               <span class="size">
-                {{ formateSize(file.file_size) }}
+                {{ formateSize(file.size) }}
               </span>
               <div class="tools">
                 <i class="el-icon-download" @click="downloadAnnex(file.id)" />
@@ -116,8 +116,8 @@ export default {
               id: data.id,
               original_name: data.original_name,
               created_at: parseTime(new Date()),
-              file_size: data.file_size,
-              file_suffix: data.file_suffix,
+              size: data.size,
+              suffix: data.suffix,
             })
           }
         })

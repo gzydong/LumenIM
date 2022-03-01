@@ -46,7 +46,7 @@
         </span>
         <span v-else>
           <input
-            v-model="editRemarkText"
+            v-model.trim="editRemarkText"
             class="edit-input"
             type="text"
             v-focus
@@ -146,7 +146,7 @@
                 <span class="nickname">{{ member.nickname }}</span>
               </el-col>
               <el-col :span="8">
-                <span>{{ member.visit_card ? member.visit_card : '-' }}</span>
+                <span>{{ member.user_card ? member.user_card : '-' }}</span>
               </el-col>
               <el-col :span="5">
                 <span v-if="member.gender == 1">男</span>
@@ -354,7 +354,7 @@ export default {
       this.disturbDisabled = true
       ServeSetNotDisturb({
         talk_type: 2,
-        receiver_id: this.groupId,
+        receiver_id: parseInt(this.groupId),
         is_disturb: value ? 1 : 0,
       })
         .then(res => {
@@ -388,7 +388,7 @@ export default {
       }
 
       ServeUpdateGroupCard({
-        group_id: this.groupId,
+        group_id: parseInt(this.groupId),
         visit_card: this.editRemarkText,
       }).then(res => {
         if (res.code == 200) {

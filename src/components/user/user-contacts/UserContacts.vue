@@ -208,7 +208,7 @@ export default {
     loadUserGroups() {
       ServeGetGroups().then(res => {
         if (res.code == 200) {
-          for (let o of res.data) {
+          for (let o of res.data.rows) {
             this.contacts.push({
               id: o.id,
               type: 2,

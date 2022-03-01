@@ -1,6 +1,5 @@
 import Base from './base'
 import Vue from 'vue'
-import router from '@/router'
 import vm from '@/main'
 import NewMessageNotify from '@/components/notify/NewMessageNotify'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
@@ -87,6 +86,7 @@ class Talk extends Base {
    */
   getTalkText() {
     let text = this.resource.content
+
     switch (this.resource.msg_type) {
       case 2:
         let file_type = this.resource.file.file_type
@@ -97,6 +97,7 @@ class Talk extends Base {
         break
       case 4:
         text = '[代码消息]'
+        break
       case 8:
         text = '[登录提醒]'
         break
@@ -106,14 +107,11 @@ class Talk extends Base {
   }
 
   handle() {
-    let store = this.getStoreInstance()
-
     // 判断当前是否在聊天页面
     if (!this.isTalkPage()) {
-      store.commit('INCR_UNREAD_NUM')
 
       // 判断消息是否来自于我自己，否则会提示消息通知
-      return !this.isCurrSender() && this.showMessageNocice()
+      !this.isCurrSender() && this.showMessageNocice()
     }
 
     // 判断会话列表是否存在，不存在则创建
@@ -238,8 +236,6 @@ class Talk extends Base {
    */
   updateTalkItem() {
     let store = this.getStoreInstance()
-
-    store.commit('INCR_UNREAD_NUM')
 
     store.commit('UPDATE_TALK_MESSAGE', {
       index_name: this.getIndexName(),

@@ -65,7 +65,7 @@
 <script>
 import { setToken } from '@/utils/auth'
 import { isMobile } from '@/utils/validate'
-import { ServeLogin } from '@/api/user'
+import { ServeLogin } from '@/api/auth'
 
 export default {
   data() {
@@ -130,23 +130,18 @@ export default {
             let result = res.data
 
             // 保存授权信息到本地缓存
-            setToken(result.authorize.access_token, result.authorize.expires_in)
+            setToken(result.access_token, result.expires_in)
 
             this.$store.commit('UPDATE_USER_INFO', result.userInfo)
             this.$store.commit('UPDATE_LOGIN_STATUS')
+            this.$store.dispatch('LOAD_TALK_ITEMS')
 
             // 登录成功后连接 WebSocket 服务器
             this.$root.initialize()
-            this.toLink('/')
 
-            setTimeout(() => {
-              this.$notify({
-                title: '友情提示',
-                message:
-                  '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
-                duration: 0,
-              })
-            }, 3000)
+            this.toLink('/')
+            
+            this.showNotice()
           } else {
             this.$notify.info({
               title: '提示',
@@ -163,6 +158,17 @@ export default {
       this.$router.push({
         path: url,
       })
+    },
+
+    showNotice() {
+      setTimeout(() => {
+        this.$notify({
+          title: '友情提示',
+          message:
+            '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
+          duration: 0,
+        })
+      }, 3000)
     },
   },
 }

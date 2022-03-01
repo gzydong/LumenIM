@@ -15,6 +15,7 @@ import {
   ReplyMessage,
   VoteMessage,
   LoginMessage,
+  LocationMessage,
 } from '@/components/chat/messaege'
 
 Vue.component(AudioMessage.name, AudioMessage)
@@ -32,6 +33,7 @@ Vue.component(VisitCardMessage.name, VisitCardMessage)
 Vue.component(ReplyMessage.name, ReplyMessage)
 Vue.component(VoteMessage.name, VoteMessage)
 Vue.component(LoginMessage.name, LoginMessage)
+Vue.component(LocationMessage.name, LocationMessage)
 
 import UserCard from '@/components/user/user-card/index'
 Vue.use(UserCard)

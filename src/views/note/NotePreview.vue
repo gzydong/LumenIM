@@ -352,7 +352,7 @@ export default {
       let save_path = ''
       ServeUploadArticleImg(formdata)
         .then(res => {
-          save_path = res.data.save_path || ''
+          save_path = res.data.url || ''
         })
         .finally(() => {
           this.$refs.mavonEditor.$img2Url(pos, save_path)
@@ -387,11 +387,14 @@ export default {
 
       this.saveStatus = 1
       let isNewSave = data.article_id == 0
+
+      console.log(data)
+
       ServeEditArticle(data)
         .then(res => {
           if (res.code != 200) return false
 
-          this.note.id = res.data.aid
+          this.note.id = res.data.id
           this.note.md_content = data.md_content
           this.note.content = data.content
           this.note.status = 1
