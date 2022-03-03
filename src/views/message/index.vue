@@ -102,7 +102,7 @@
                   <span class="title">消息记录 ({{ talkNum }})</span>
                 </p>
 
-                <p v-show="loadStatus == 4" style="text-align:center;">数据加载失败，请点击重试！</p>
+                <!-- <p v-show="loadStatus == 4" style="text-align:center;">数据加载失败，请点击重试！</p> -->
 
                 <!-- 对话列表 -->
                 <template v-if="loadStatus == 3">

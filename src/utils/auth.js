@@ -11,7 +11,8 @@ const USER_SETTING = 'LUMENIM_SETTING'
  * @param {Number} expires
  */
 export function setToken(token, expires) {
-  expires = new Date().getTime() + expires * 1000
+  expires = new Date().getTime() + expires * 1000 - 100 * 1000
+
   return localStorage.setItem(
     USER_TOKEN,
     JSON.stringify({
@@ -32,6 +33,13 @@ export function getToken() {
         expires: 0,
       })
   )
+
+  let t = new Date().getTime()
+
+  if (result.expires <= t) {
+    localStorage.removeItem(USER_TOKEN)
+    return ''
+  }
 
   return result.token
 }

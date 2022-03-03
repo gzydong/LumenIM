@@ -29,6 +29,12 @@ class SocketInstance {
   constructor() {
     this.socket = new WsSocket(
       () => {
+        let token = getToken()
+
+        if(token == ""){
+            window.location.reload()
+        }
+
         return `${config.BASE_WS_URL}?token=` + getToken()
       },
       {
