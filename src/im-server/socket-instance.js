@@ -74,23 +74,23 @@ class SocketInstance {
       new TalkEvent(data).handle()
     })
 
-    this.socket.on('event_online_status', data => {
+    this.socket.on('event_login', data => {
       new LoginEvent(data).handle()
     })
 
-    this.socket.on('event_keyboard', data => {
+    this.socket.on('event_talk_keyboard', data => {
       new KeyboardEvent(data).handle()
     })
 
-    this.socket.on('event_revoke_talk', data => {
+    this.socket.on('event_talk_revoke', data => {
       new RevokeEvent(data).handle()
     })
 
-    this.socket.on('event_friend_apply', data => {
+    this.socket.on('event_contact_apply', data => {
       new FriendApplyEvent(data).handle()
     })
 
-    this.socket.on('join_group', data => {
+    this.socket.on('event_talk_join_group', data => {
       new GroupJoinEvent(data).handle()
     })
 

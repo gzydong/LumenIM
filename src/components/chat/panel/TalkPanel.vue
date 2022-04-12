@@ -236,7 +236,11 @@
       </el-container>
 
       <!-- 群设置侧边栏 -->
-      <el-aside v-if="group.panel && params.talk_type == 2" width="350px" class="panel-aside">
+      <el-aside
+        v-if="group.panel && params.talk_type == 2"
+        width="350px"
+        class="panel-aside"
+      >
         <GroupPanel
           v-if="params.talk_type == 2"
           :group-id="params.receiver_id"
@@ -439,7 +443,7 @@ export default {
       this.keyboardEvent.time = time
 
       // 调用父类Websocket组件发送消息
-      SocketInstance.emit('event_keyboard', {
+      SocketInstance.emit('event_talk_keyboard', {
         sender_id: parseInt(this.uid),
         receiver_id: parseInt(this.params.receiver_id),
       })
@@ -1051,6 +1055,6 @@ export default {
 }
 
 .lum-scrollbar::-webkit-scrollbar {
-    background-color: #ffffff;
+  background-color: #ffffff;
 }
 </style>
