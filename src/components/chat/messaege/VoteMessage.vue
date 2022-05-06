@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       answer_mode: 0,
-      title: '啊谁叫你打开你卡沙发那,那就是看、卡收纳是你',
+      title: '',
       radio_value: '',
       options: [],
       is_vote: false,
@@ -103,6 +103,7 @@ export default {
     this.answer_mode = detail.answer_mode
     this.answer_num = detail.answer_num
     this.answered_num = detail.answered_num
+    this.title = detail.title
 
     detail.answer_option.forEach(item => {
       this.options.push({

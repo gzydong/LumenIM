@@ -76,8 +76,8 @@
                   <div class="talk-title">
                     <span
                       v-show="
-                        item.msg_type == 1 ||
-                          (item.msg_type == 2 && item.float == 'right')
+                        params.talk_type == 1 ||
+                          (params.talk_type == 2 && item.float == 'right')
                       "
                       class="time"
                     >
@@ -88,10 +88,10 @@
 
                   <div class="talk-content">
                     <span
-                      v-show="item.msg_type == 2 && item.float == 'left'"
+                      v-show="params.talk_type == 2 && item.float == 'left'"
                       class="nickname"
                     >
-                      {{ item.nickname || item.friend_remarks }} |
+                      {{ item.friend_remarks || item.nickname }} |
                       {{ parseTime(item.created_at, '{m}月{d}日 {h}:{i}') }}
                     </span>
 
