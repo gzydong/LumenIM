@@ -64,21 +64,10 @@
 </template>
 <script>
 import { setToken } from '@/utils/auth'
-import { isMobile } from '@/utils/validate'
 import { ServeLogin } from '@/api/auth'
 
 export default {
   data() {
-    let validateMobile = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('登录手机号不能为空！'))
-      } else {
-        isMobile(value)
-          ? callback()
-          : callback(new Error('登录手机号格式不正确！'))
-      }
-    }
-
     return {
       loginLoading: false,
       form: {
@@ -88,13 +77,8 @@ export default {
       rules: {
         username: [
           {
-            validator: validateMobile,
-            trigger: 'blur',
-          },
-          {
-            min: 11,
-            max: 11,
-            message: '手机号格式不正确!',
+            required: true,
+            message: '登录账号不能为空!',
             trigger: 'blur',
           },
         ],
