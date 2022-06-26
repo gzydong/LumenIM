@@ -189,6 +189,7 @@ class WsSocket {
       let t = new Date().getTime()
 
       if (t - this.lastTime > this.config.heartbeat.pingTimeout) {
+        this.connect.close()
         this.reconnect()
       } else {
         this.ping()
