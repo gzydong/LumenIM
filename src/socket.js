@@ -10,6 +10,16 @@ import EventLogin from './event/socket/login'
 import { NAvatar } from 'naive-ui'
 import { notifyIcon } from '@/constant/default'
 
+const urlCallback = () => {
+  if (!isLoggedIn()) {
+    window.location.reload()
+  }
+
+  const url = `${import.meta.env.VITE_SOCKET_API}/wss/default.io`
+
+  return `${url}?token=${getAccessToken()}`
+}
+
 /**
  * Socket 连接实例
  *
@@ -25,16 +35,6 @@ class Socket {
    * Socket 初始化实例
    */
   constructor() {
-    let url = `${import.meta.env.VITE_SOCKET_API}/wss/default.io`
-
-    const urlCallback = () => {
-      if (!isLoggedIn()) {
-        window.location.reload()
-      }
-
-      return `${url}?token=${getAccessToken()}`
-    }
-
     this.socket = new WsSocket(urlCallback, {
       onError: evt => {
         console.log('Websocket 连接失败回调方法')
