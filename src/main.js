@@ -1,29 +1,35 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import router from './router'
+import App from './App.vue'
 
-import Vue from 'vue'
-import App from '@/App'
-import store from '@/store'
-import router from '@/router'
-import MainMixin from './mixins/main-mixin'
+import '@/assets/css/define/theme.less'
+import '@/assets/css/define/global.less'
+import './plugins/highlight.js'
+import { setComponents } from './plugins/me-core.js'
+import { setupNaive } from './plugins/naive-ui'
+import { setMdEditor } from './plugins/md-editor'
+import { setHljsVuePlugin } from './plugins/hljs'
 
-import './core/lazy-use'
-import './core/global-component'
-import './core/filter'
-import './core/directives'
-import '@/permission'
-import '@/icons'
+async function bootstrap() {
+  const app = createApp(App)
 
-// 引入自定义全局css
-import '@/assets/css/global.less'
+  app.use(createPinia())
+  app.use(router)
+  app.directive('focus', {
+    mounted(el) {
+      setTimeout(() => {
+        el.focus()
+      }, 0)
+    },
+  })
 
-Vue.config.productionTip = false
+  setHljsVuePlugin(app)
+  setupNaive(app)
+  setMdEditor(app)
+  setComponents(app)
 
-const Instance = new Vue({
-  router,
-  store,
-  mixins: [MainMixin],
-  render: h => h(App),
-}).$mount('#app')
+  app.mount('#app')
+}
 
-export default Instance
+bootstrap()

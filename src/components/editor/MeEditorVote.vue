@@ -1,226 +1,169 @@
-<template>
-  <div class="lum-dialog-mask animated fadeIn">
-    <el-container class="lum-dialog-box">
-      <el-header class="header no-select" height="60px">
-        <p>发起投票</p>
-        <p class="tools">
-          <i class="el-icon-close" @click="$emit('close')" />
-        </p>
-      </el-header>
-      <el-main class="main no-padding vote-from">
-        <div class="vote-title">投票方式</div>
-        <div>
-          <el-radio-group v-model="mode">
-            <el-radio :label="0">单选</el-radio>
-            <el-radio :label="1">多选</el-radio>
-          </el-radio-group>
-        </div>
-        <div class="vote-title">投票主题</div>
-        <div>
-          <el-input
-            size="medium"
-            clear="vote-input"
-            v-model.trim="title"
-            placeholder="请输入投票主题，最多50字"
-            :maxlength="50"
-          />
-        </div>
+<script setup>
+import { reactive, computed, ref } from 'vue'
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NRadioGroup,
+  NSpace,
+  NRadio,
+} from 'naive-ui'
+import { RemoveCircleOutline } from '@vicons/ionicons5'
 
-        <div class="vote-title">投票选项</div>
-        <div>
-          <div class="vote-options" v-for="(option, index) in options">
-            <div class="lbox">
-              <el-input
-                size="medium"
-                clear="vote-input"
-                v-model.trim="option.value"
-                placeholder="请输入选项内容"
-                :maxlength="120"
-              >
-                <span
-                  slot="prefix"
-                  style="margin-left:7px;"
-                  v-text="String.fromCharCode(65 + index)"
-                />
-              </el-input>
-            </div>
-            <div class="rbox">
-              <i class="el-icon-close" @click="removeOption(index)"></i>
+const emit = defineEmits(['close', 'submit'])
+
+const isShow = ref(true)
+const model = reactive({
+  mode: 0,
+  anonymous: 0,
+  title: '',
+  options: [
+    {
+      value: '',
+    },
+    {
+      value: '',
+    },
+    {
+      value: '',
+    },
+  ],
+})
+
+const onMaskClick = () => {
+  emit('close')
+}
+
+const onSubmit = () => {
+  let data = {
+    title: model.title,
+    mode: model.mode,
+    anonymous: model.anonymous,
+    options: model.options.map(item => item.value),
+  }
+
+  emit('submit', data)
+}
+
+const addOption = () => {
+  model.options.push({ value: '' })
+}
+
+const delOption = index => {
+  model.options.length > 2 && model.options.splice(index, 1)
+}
+
+// 是否可提交
+const isCanSubmit = computed(() => {
+  return (
+    model.title.trim().length == 0 ||
+    model.options.some(item => item.value.trim().length === 0)
+  )
+})
+</script>
+
+<template>
+  <n-modal
+    v-model:show="isShow"
+    preset="card"
+    title="发起投票"
+    size="huge"
+    :bordered="false"
+    style="max-width: 450px; border-radius: 10px"
+    :on-after-leave="onMaskClick"
+  >
+    <n-form>
+      <n-form-item label="投票方式" :required="true">
+        <n-radio-group v-model:value="model.anonymous">
+          <n-space>
+            <n-radio :value="0"> 公开投票 </n-radio>
+            <n-radio :value="1"> 匿名投票 </n-radio>
+          </n-space>
+        </n-radio-group>
+      </n-form-item>
+
+      <n-form-item label="选择方式" :required="true">
+        <n-radio-group v-model:value="model.mode">
+          <n-space>
+            <n-radio :value="0"> 单选 </n-radio>
+            <n-radio :value="1"> 多选 </n-radio>
+          </n-space>
+        </n-radio-group>
+      </n-form-item>
+
+      <n-form-item label="投票主题" :required="true">
+        <n-input
+          placeholder="请输入投票主题，最多50字"
+          v-model:value="model.title"
+        />
+      </n-form-item>
+
+      <n-form-item label="投票选项" :required="true">
+        <div class="options">
+          <div v-for="(option, i) in model.options" class="option">
+            <n-input
+              placeholder="&nbsp;请输入选项内容"
+              v-model:value="option.value"
+            >
+              <template #prefix>
+                <span style="color: #ccc"
+                  >{{ String.fromCharCode(65 + i) }}.</span
+                >
+              </template>
+            </n-input>
+
+            <div class="btn flex-center pointer" @click="delOption(i)">
+              <n-icon size="20" :component="RemoveCircleOutline" />
             </div>
           </div>
 
-          <h6 class="pointer add-option" @click="addOption">
-            <i class="el-icon-plus"></i> 添加选项
-          </h6>
+          <n-button
+            text
+            type="primary"
+            @click="addOption"
+            v-if="model.options.length < 6"
+          >
+            +添加选项
+          </n-button>
         </div>
-      </el-main>
-      <el-footer class="footer">
-        <el-button plain size="small" @click="$emit('close')">取消</el-button>
-        <el-button
+      </n-form-item>
+    </n-form>
+
+    <template #footer>
+      <div style="width: 100%; text-align: right">
+        <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
+        <n-button
           type="primary"
-          size="small"
-          :disabled="isCheck"
-          :loading="loading"
-          @click="submit"
-          >发起投票</el-button
+          @click="onSubmit"
+          class="mt-l15"
+          :disabled="isCanSubmit"
         >
-      </el-footer>
-    </el-container>
-  </div>
+          发起投票
+        </n-button>
+      </div>
+    </template>
+  </n-modal>
 </template>
-<script>
-import { ServeSendVote } from '@/api/chat'
 
-export default {
-  name: 'MeEditorVote',
-  props: {
-    group_id: {
-      type: [String, Number],
-      default: 0,
-    },
-  },
-  data() {
-    return {
-      loading: false,
-      mode: 0,
-      title: '',
-      options: [
-        {
-          value: '',
-        },
-        {
-          value: '',
-        },
-        {
-          value: '',
-        },
-      ],
-    }
-  },
-  computed: {
-    isCheck() {
-      if (this.title == '') return true
-
-      return this.options.some(option => option.value == '')
-    },
-  },
-  methods: {
-    submit() {
-      let items = []
-      const { receiver_id } = this.$store.state.dialogue
-      this.options.forEach(option => {
-        items.push(option.value)
-      })
-
-      this.loading = true
-
-      ServeSendVote({
-        receiver_id,
-        mode: this.mode,
-        title: this.title,
-        options: items,
-      })
-        .then(res => {
-          if (res.code == 200) {
-            this.$emit('close')
-            this.$notify({
-              title: '友情提示',
-              message: '发起投票成功!',
-              type: 'success',
-            })
-          } else {
-            this.$notify({
-              title: '友情提示',
-              message: res.message,
-              type: 'warning',
-            })
-          }
-        })
-        .catch(() => {
-          this.loading = false
-        })
-    },
-    addOption() {
-      if (this.options.length >= 6) {
-        return false
-      }
-
-      this.options.push({
-        value: '',
-      })
-    },
-    removeOption(index) {
-      if (this.options.length <= 2) {
-        return false
-      }
-
-      this.$delete(this.options, index)
-    },
-  },
-}
-</script>
 <style lang="less" scoped>
-.lum-dialog-box {
-  height: 600px;
-  max-width: 450px;
+.options {
+  width: 100%;
 
-  .vote-from {
-    box-sizing: border-box;
-    padding: 15px 25px;
-    overflow: hidden;
-
-    .vote-title {
-      margin: 20px 0 10px;
-      &:first-child {
-        margin-top: 0;
-      }
-    }
-
-    .vote-options {
-      display: flex;
-      min-height: 30px;
-      margin: 10px 0;
-
-      .lbox {
-        width: 100%;
-
-        /deep/.el-input__prefix {
-          height: 36px;
-          line-height: 36px;
-        }
-      }
-
-      .rbox {
-        flex-basis: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        i {
-          font-size: 18px;
-          cursor: pointer;
-          &:hover {
-            color: red;
-          }
-        }
-      }
-    }
-
-    .add-option {
-      margin-top: 5px;
-      font-weight: 400;
-      color: #3370ff;
-    }
-  }
-
-  .footer {
+  .option {
+    margin: 8px 0;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding-right: 32px;
-  }
-}
 
-/deep/.el-radio__input.is-checked + .el-radio__label {
-  color: #606266;
+    .btn {
+      width: 30px;
+      height: 30px;
+      margin-left: 3px;
+    }
+
+    &:hover {
+      color: red;
+    }
+  }
 }
 </style>

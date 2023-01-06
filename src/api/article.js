@@ -1,6 +1,5 @@
 import { post, get, upload } from '@/utils/request'
-import { getToken } from '@/utils/auth'
-import config from '@/config/config'
+import { getAccessToken } from '@/utils/auth'
 
 // -------- 笔记相关 --------
 
@@ -127,14 +126,13 @@ export const ServeGetRecoverAnnexList = () => {
 
 // 下载笔记附件服务接口
 export const ServeDownloadAnnex = annex_id => {
-  let api = config.BASE_API_URL
+  let api = import.meta.env.VITE_BASE_API
   try {
     let link = document.createElement('a')
-    link.target = "_blank"
-    link.href = `${api}/api/v1/note/annex/download?annex_id=${annex_id}&token=${getToken()}`
+    // link.target = '_blank'
+    link.href = `${api}/api/v1/note/annex/download?annex_id=${annex_id}&token=${getAccessToken()}`
     link.click()
   } catch (e) {
     console.error(e)
   }
 }
-

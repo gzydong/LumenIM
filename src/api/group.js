@@ -5,6 +5,10 @@ export const ServeGetGroups = () => {
   return get('/api/v1/group/list')
 }
 
+export const ServeGroupOvertList = (data) => {
+  return get('/api/v1/group/overt/list',data)
+}
+
 // 获取群信息服务接口
 export const ServeGroupDetail = data => {
   return get('/api/v1/group/detail', data)
@@ -64,3 +68,35 @@ export const ServeGetGroupNotices = data => {
 export const ServeEditGroupNotice = data => {
   return post('/api/v1/group/notice/edit', data)
 }
+
+
+export const ServeGetGroupApplyList = data => {
+  return get('/api/v1/group/apply/list', data)
+}
+
+export const ServeDeleteGroupApply = data => {
+  return post('/api/v1/group/apply/delete', data)
+}
+
+export const ServeAgreeGroupApply = data => {
+  return post('/api/v1/group/apply/agree', data)
+}
+
+export const ServeCreateGroupApply = data => {
+  return post('/api/v1/group/apply/create', data)
+}
+
+// 转让群主
+export const ServeGroupHandover = data => {
+  return post('/api/v1/group/handover', data)
+}
+
+// 分配管理员
+export const ServeGroupAssignAdmin = data => {
+  return post('/api/v1/group/assign-admin', data)
+}
+
+export const ServeGroupNoSpeak = data => {
+  return post('/api/v1/group/no-speak', data)
+}
+

@@ -1,262 +1,187 @@
-<template>
-  <div id="login-box">
-    <div class="header">找回密码</div>
-    <div class="main">
-      <el-form ref="form" :model="form" :rules="rules">
-        <el-form-item prop="username">
-          <el-input
-            v-model="form.username"
-            placeholder="我的手机号"
-            class="cuborder-radius"
-            maxlength="11"
-            @keyup.enter.native="onSubmit('form')"
-          />
-        </el-form-item>
-
-        <el-form-item prop="sms_code">
-          <el-input
-            v-model="form.sms_code"
-            placeholder="短信验证码"
-            class="cuborder-radius"
-            maxlength="6"
-            @keyup.enter.native="onSubmit('form')"
-            style="width: 205px"
-          />
-          <div class="send-code-btn send-sms-disable" v-if="smsLock">
-            正在发送 ...
-          </div>
-          <div
-            class="send-code-btn"
-            v-else-if="smsLock == false && smsLockObj.time == null"
-            @click="sendSms"
-          >
-            获取短信
-          </div>
-          <div class="send-code-btn send-sms-disable" v-else>
-            重新发送({{ smsLockObj.time }}s)
-          </div>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="设置新密码"
-            class="cuborder-radius"
-            @keyup.enter.native="onSubmit('form')"
-          />
-        </el-form-item>
-        <el-form-item prop="password2">
-          <el-input
-            v-model="form.password2"
-            type="password"
-            placeholder="确认新密码"
-            class="cuborder-radius"
-            @keyup.enter.native="onSubmit('form')"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            class="submit-btn"
-            :loading="forgetLoading"
-            @click="onSubmit('form')"
-            >立即找回
-          </el-button>
-        </el-form-item>
-
-        <el-form-item>
-          <div class="links">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="toLink('/auth/register')"
-              >注册账号
-            </el-link>
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="toLink('/auth/login')"
-              >已有账号，立即登录?
-            </el-link>
-          </div>
-        </el-form-item>
-      </el-form>
-    </div>
-  </div>
-</template>
-<script>
+<script setup>
+import { reactive, ref, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeForgetPassword } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
-import { isMobile } from '@/utils/validate'
 import SmsLock from '@/plugins/sms-lock'
+import { isMobile } from '@/utils/validate'
 
-export default {
-  name: 'ForgetPasswordPage',
-  data() {
-    let validateMobile = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('手机号不能为空！'))
-      } else {
-        isMobile(value) ? callback() : callback(new Error('手机号格式不正确！'))
-      }
-    }
-
-    let validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.form.password) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    }
-
-    return {
-      forgetLoading: false,
-
-      form: {
-        username: '',
-        password: '',
-        password2: '',
-        sms_code: '',
-      },
-
-      rules: {
-        username: [
-          {
-            validator: validateMobile,
-            trigger: 'blur',
-          },
-        ],
-        password: [
-          {
-            required: true,
-            message: '登录密码不能为空!',
-            trigger: 'blur',
-          },
-        ],
-        password2: [
-          {
-            validator: validatePass2,
-            trigger: 'blur',
-          },
-        ],
-        sms_code: [
-          {
-            required: true,
-            message: '验证码不能为空!',
-            trigger: 'blur',
-          },
-        ],
-      },
-
-      smsLock: false,
-      smsLockObj: null,
-    }
+const router = useRouter()
+const formRef = ref(null)
+const rules = {
+  sms_code: {
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '验证码不能为空！',
   },
-  created() {
-    this.smsLockObj = new SmsLock('FORGET_PSW_SMS', 60)
-  },
-  destroyed() {
-    this.smsLockObj.clearInterval()
-  },
-  methods: {
-    toLink(url) {
-      this.$router.push({
-        path: url,
-      })
-    },
-
-    onSubmit(formName) {
-      if (this.forgetLoading) return false
-
-      this.$refs[formName].validate(valid => {
-        if (!valid) return false
-        this.forgetLoading = true
-        this.forgetAccount()
-      })
-    },
-
-    forgetAccount() {
-      ServeForgetPassword({
-        mobile: this.form.username,
-        password: this.form.password,
-        sms_code: this.form.sms_code,
-      })
-        .then(res => {
-          this.forgetLoading = false
-          if (res.code == 200) {
-            this.$notify({
-              title: '成功',
-              message: '密码修改成功,快去登录吧...',
-              type: 'success',
-            })
-
-            this.$refs.form.resetFields()
-            setTimeout(() => {
-              this.$router.push('/auth/login')
-            }, 1500)
-          } else {
-            this.$notify({
-              message: res.message,
-            })
-          }
-        })
-        .catch(() => {
-          this.forgetLoading = false
-          this.$notify({
-            message: '网络错误,请稍后再试...',
-          })
-        })
-    },
-
-    //点击发送验证码
-    sendSms() {
-      if (this.smsLock) return false
-
-      if (!isMobile(this.form.username)) {
-        this.$refs.form.validateField('username')
-        return false
+  username: {
+    required: true,
+    trigger: ['blur', 'input'],
+    validator(rule, value) {
+      if (!value) {
+        return new Error('手机号不能为空！')
+      } else if (!isMobile(value)) {
+        return new Error('请正确填写手机号！')
       }
 
-      this.smsLock = true
-      ServeSendVerifyCode({
-        mobile: this.form.username,
-        channel: 'forget_account',
-      })
-        .then(res => {
-          if (res.code == 200) {
-            this.smsLockObj.start()
-            this.$notify({
-              title: '成功',
-              message: '验证码发送成功...',
-              type: 'success',
-            })
-
-            if (res.data.is_debug) {
-              setTimeout(() => {
-                this.$notify({
-                  title: '提示',
-                  message: '已自动填充验证码',
-                })
-
-                this.form.sms_code = res.data.sms_code
-              }, 500)
-            }
-          } else {
-            this.$notify({
-              title: '提示',
-              message: '验证码发送失败...',
-            })
-          }
-        })
-        .finally(() => {
-          this.smsLock = false
-        })
+      return true
     },
+  },
+  password: {
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '密码不能为空！',
   },
 }
+
+// 短信按钮倒计时
+const lockTime = ref(0)
+
+// 初始化短信按钮锁
+const lock = new SmsLock('FORGET_PSW_SMS', 120, time => {
+  lockTime.value = time
+})
+
+const model = reactive({
+  username: '',
+  password: '',
+  sms_code: '',
+  loading: false,
+})
+
+const onForget = () => {
+  model.loading = true
+
+  const response = ServeForgetPassword({
+    mobile: model.username,
+    password: model.password,
+    sms_code: model.sms_code,
+  })
+
+  response.then(res => {
+    if (res.code == 200) {
+      $message.success('密码修改成功！')
+
+      setTimeout(() => {
+        router.push('/auth/login')
+      }, 500)
+    } else {
+      $message.warning(res.message)
+    }
+  })
+
+  response.finally(() => {
+    model.loading = false
+  })
+}
+
+const onValidate = e => {
+  e.preventDefault()
+
+  formRef.value.validate(errors => {
+    !errors && onForget()
+  })
+}
+
+// 发送短信
+const onSendSms = () => {
+  if (!isMobile(model.username)) {
+    $message.warning('请正确填写手机号！')
+    return
+  }
+
+  const response = ServeSendVerifyCode({
+    mobile: model.username,
+    channel: 'forget_account',
+  })
+
+  response.then(res => {
+    if (res.code == 200) {
+      lock.start()
+      $message.success('短信发送成功！')
+    } else {
+      $message.warning(res.message)
+    }
+  })
+
+  response.finally(() => {
+    model.loading = false
+  })
+}
+
+onUnmounted(() => {
+  lock.clear()
+})
 </script>
+
+<template>
+  <section class="el-container is-vertical login-box">
+    <header class="el-header box-header">找回密码</header>
+
+    <main class="el-main" style="padding: 3px">
+      <n-form ref="formRef" size="large" :model="model" :rules="rules">
+        <n-form-item path="username" :show-label="false">
+          <n-input
+            placeholder="登录账号/手机号"
+            v-model:value="model.username"
+            :maxlength="11"
+            @keydown.enter.native="onValidate"
+          />
+        </n-form-item>
+
+        <n-form-item path="sms_code" :show-label="false">
+          <n-input
+            placeholder="验证码"
+            :maxlength="6"
+            v-model:value="model.sms_code"
+            @keydown.enter.native="onValidate"
+          />
+          <n-button
+            tertiary
+            class="mt-l5"
+            @click="onSendSms"
+            :disabled="lockTime > 0"
+          >
+            获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
+          </n-button>
+        </n-form-item>
+
+        <n-form-item path="password" :show-label="false">
+          <n-input
+            placeholder="设置密码"
+            type="password"
+            show-password-on="click"
+            v-model:value="model.password"
+            @keydown.enter.native="onValidate"
+          />
+        </n-form-item>
+
+        <n-button
+          type="primary"
+          size="large"
+          block
+          class="mt-t20"
+          @click="onValidate"
+          :loading="model.loading"
+          round
+        >
+          立即找回
+        </n-button>
+      </n-form>
+
+      <div class="helper">
+        <n-button text color="#409eff" @click="router.push('/auth/register')">
+          注册账号
+        </n-button>
+        <n-button text color="#409eff" @click="router.push('/auth/login')">
+          已有账号，立即登录?
+        </n-button>
+      </div>
+    </main>
+  </section>
+</template>
+
 <style lang="less" scoped>
-@import '~@/assets/css/page/login-auth.less';
+@import '@/assets/css/login.less';
 </style>

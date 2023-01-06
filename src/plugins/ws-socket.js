@@ -20,8 +20,8 @@ class WsSocket {
     reconnect: {
       lockReconnect: false,
       setTimeout: null, // 计时器对象
-      time: 5000, // 重连间隔时间
-      number: 1000, // 重连次数
+      time: 3000, // 重连间隔时间
+      number: 10000000, // 重连次数
     },
   }
 
@@ -57,6 +57,7 @@ class WsSocket {
       this.config.heartbeat.pingInterval = data.ping_interval * 1000
       this.config.heartbeat.pingTimeout = data.ping_timeout * 1000
       this.heartbeat()
+      this.connect.send('{"event":"heartbeat","content":"ping"}')
     })
   }
 
@@ -144,7 +145,7 @@ class WsSocket {
   onClose(evt) {
     this.events.onClose(evt)
 
-    this.connect.close()
+    this.connect && this.connect.close()
 
     this.connect = null
 
@@ -189,11 +190,10 @@ class WsSocket {
       let t = new Date().getTime()
 
       if (t - this.lastTime > this.config.heartbeat.pingTimeout) {
-        
         if(this.connect){
           this.connect.close()
         }
-
+        
         this.reconnect()
       } else {
         this.ping()
@@ -233,7 +233,6 @@ class WsSocket {
     if (this.connect && this.connect.readyState === 1) {
       this.connect.send(content)
     } else {
-      alert('WebSocket 连接已关闭...')
       console.error('WebSocket 连接已关闭...', this.connect)
     }
   }

@@ -1,347 +1,267 @@
-<template>
-  <div>
-    <el-container class="container">
-      <el-header height="30px" class="no-padding header">
-        <span v-text="showTitle"></span>
-        <div class="addbtn" @click="systemEmojiBox = true">系统表情</div>
-      </el-header>
-      <el-main class="no-padding main lum-scrollbar">
-        <input
-          type="file"
-          ref="fileCustomEmoji"
-          accept="image/*"
-          style="display: none"
-          @change="customUploadEmoji"
-        />
+<script setup>
+import { ref, computed } from 'vue'
+import { useEditorStore } from '@/store/editor'
+import { ImageSharp, Trash } from '@vicons/ionicons5'
+import { emojiList as emoji } from '@/utils/emojis'
 
-        <div v-show="showEmoticonId == -1" class="emoticon">
-          <div class="title">QQ表情</div>
+const emit = defineEmits(['on-select'])
+const editorStore = useEditorStore()
+const fileImageRef = ref(null)
+const tabIndex = ref(0)
+const items = computed(() => editorStore.emoticon.items)
+
+// 触发上传按钮事件
+const onTriggerUpload = () => {
+  fileImageRef.value.click()
+}
+
+// 上传表情包
+const onUpload = e => {
+  let file = e.target.files[0]
+
+  editorStore.uploadUserEmoticon(file)
+}
+
+// 删除表情包
+const onDelete = (index, id) => {
+  editorStore.removeUserEmoticon({ index, id })
+}
+
+const onTabs = index => {
+  tabIndex.value = index
+}
+
+const onSendEmoticon = (type, value) => {
+  emit('on-select', { type, value })
+}
+</script>
+<template>
+  <form enctype="multipart/form-data" style="display: none">
+    <input type="file" ref="fileImageRef" accept="image/*" @change="onUpload" />
+  </form>
+
+  <section class="el-container is-vertical section height100">
+    <header class="el-header em-header bdr-b">
+      <span>{{ items[tabIndex].name }}</span>
+      <span class="sys-btn">系统表情</span>
+    </header>
+
+    <main class="el-main em-main me-scrollbar">
+      <div class="symbol-box" v-if="tabIndex == 0">
+        <p class="title">QQ表情</p>
+        <div class="options">
           <div
-            v-for="(elImg, text) in emoji.emojis"
-            v-html="elImg"
-            class="emoticon-item"
-            @click="clickEmoticon(text)"
-          ></div>
-          <div class="clear"></div>
-          <div class="title">符号表情</div>
+            v-for="(img, key) in emoji.emojis"
+            v-html="img"
+            @click="onSendEmoticon(1, key)"
+            class="option pointer flex-center"
+          />
+        </div>
+        <p class="title">符号表情</p>
+        <div class="options">
           <div
-            v-for="(item, i) in emoji.symbol"
-            :key="i"
-            class="emoticon-item symbol"
-            @click="clickEmoticon(item)"
-          >
-            {{ item }}
-          </div>
-          <div class="clear"></div>
+            v-for="img in emoji.symbol"
+            v-text="img"
+            @click="onSendEmoticon(1, img)"
+            class="option pointer flex-center"
+          />
+        </div>
+      </div>
+
+      <div class="collect-box" v-else>
+        <div
+          v-if="tabIndex == 1"
+          class="item pointer upload-btn"
+          @click="onTriggerUpload"
+        >
+          <n-icon size="30" class="icon" :component="ImageSharp" />
+          <span>自定义</span>
         </div>
 
         <div
-          v-for="item in emojiItem.slice(1)"
-          v-show="item.emoticon_id == showEmoticonId"
-          :key="item.emoticon_id"
-          class="emoji-box"
+          class="item pointer"
+          v-for="(item, index) in items[tabIndex].children"
+          :key="index"
         >
-          <div
-            v-if="item.emoticon_id == 0"
-            class="emoji-item custom-emoji"
-            @click="$refs.fileCustomEmoji.click()"
-          >
-            <i class="el-icon-picture" />
-            <span>自定义</span>
-          </div>
-          <div
-            v-for="subitem in item.list"
-            class="emoji-item"
-            @click="clickImageEmoticon(subitem)"
-          >
-            <el-image :src="subitem.src" fit="cover" />
-          </div>
-          <div class="clear"></div>
-        </div>
-      </el-main>
-      <el-footer height="40px" class="no-padding footer">
-        <div class="toolbar-items">
-          <div
-            v-show="emojiItem.length > 13"
-            class="toolbar-item prev-page"
-            @click="turnPage(1)"
-          >
-            <i class="el-icon-caret-left" />
-          </div>
-          <div
-            v-for="(item, index) in showItems"
-            :key="index"
-            class="toolbar-item"
-            @click="triggerItem(item)"
-          >
-            <img :src="item.url" />
-            <p class="title">{{ item.name }}</p>
-          </div>
-          <div
-            v-show="emojiItem.length > 13 && showItems.length == 13"
-            class="toolbar-item next-page"
-            @click="turnPage(2)"
-          >
-            <i class="el-icon-caret-right" />
-          </div>
-        </div>
-      </el-footer>
-    </el-container>
+          <img :src="item.src" @click="onSendEmoticon(2, item.media_id)" />
 
-    <MeEditorSystemEmoticon
-      v-if="systemEmojiBox"
-      @close="systemEmojiBox = false"
-    />
-  </div>
+          <div
+            v-if="tabIndex == 1"
+            class="mask"
+            @click="onDelete(index, item.media_id)"
+          >
+            <n-icon size="18" color="#ff5722" class="icon" :component="Trash" />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="el-footer em-footer tabs">
+      <div
+        class="tab pointer"
+        v-for="(item, index) in items"
+        :key="index"
+        @click="onTabs(index)"
+        :class="{ active: index == tabIndex }"
+      >
+        <p class="tip">{{ item.name }}</p>
+        <img width="20" height="20" :src="item.icon" />
+      </div>
+    </footer>
+  </section>
 </template>
-
-<script>
-import MeEditorSystemEmoticon from '@/components/editor/MeEditorSystemEmoticon'
-import { emojiList as emoji } from '@/utils/emojis'
-import { mapState } from 'vuex'
-
-export default {
-  name: 'MeEditorEmoticon',
-  components: {
-    MeEditorSystemEmoticon,
-  },
-  computed: {
-    ...mapState({
-      emojiItem: state => state.emoticon.items,
-    }),
-    showItems() {
-      let start = (this.page - 1) * this.pageSize
-      let end = start + this.pageSize
-      return this.emojiItem.slice(start, end)
-    },
-    pageTotal() {
-      return this.emojiItem.length / this.pageSize
-    },
-  },
-  data() {
-    return {
-      emoji,
-
-      // 系统表情包套弹出窗
-      systemEmojiBox: false,
-
-      showEmoticonId: -1,
-      showTitle: 'QQ表情/符号表情',
-
-      page: 1,
-      pageSize: 13,
-    }
-  },
-  created() {
-    this.$store.commit('LOAD_USER_EMOTICON')
-  },
-  methods: {
-    // 表情包导航翻页
-    turnPage(type) {
-      if (type == 1) {
-        if (this.page == 1) return false
-        this.page--
-      } else {
-        if (this.page >= this.pageTotal) return false
-        this.page++
-      }
-    },
-
-    // 点击表情包导航
-    triggerItem(item) {
-      this.showEmoticonId = item.emoticon_id
-      this.showTitle = item.name
-    },
-
-    // 选中表情
-    clickEmoticon(emoji) {
-      this.callback({
-        type: 1,
-        value: emoji,
-      })
-    },
-
-    // 发送图片表情包
-    clickImageEmoticon(item) {
-      this.callback({
-        type: 2,
-        value: item.media_id,
-      })
-    },
-
-    callback(data) {
-      this.$emit('selected', data)
-    },
-
-    // 自定义上传表情
-    customUploadEmoji(e) {
-      if (e.target.files.length == 0) {
-        return false
-      }
-
-      this.$store.commit('UPLOAD_USER_EMOTICON', {
-        file: e.target.files[0],
-      })
-    },
-  },
-}
-</script>
 <style lang="less" scoped>
-.container {
-  height: 300px;
+.section {
   width: 500px;
+  height: 250px;
+  overflow: hidden;
   background-color: white;
+  border-radius: 3px;
 
-  .header {
-    line-height: 30px;
-    font-size: 13px;
-    font-weight: 400;
-    padding-left: 5px;
-    user-select: none;
-    position: relative;
-    border-bottom: 1px solid #fbf5f5;
+  .em-header {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
 
-    .addbtn {
-      position: absolute;
-      right: 10px;
-      top: 1px;
+    .sys-btn {
       color: #409eff;
       cursor: pointer;
     }
   }
 
-  .footer {
-    background-color: #eff1f7;
+  .em-main {
+    height: 100px;
+    padding-bottom: 20px;
+  }
 
-    .toolbar-items {
-      width: 100%;
-      height: 40px;
-      line-height: 40px;
+  .em-footer {
+    height: 32px;
+    background-color: #f5f5f5;
+  }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    .tab {
+      position: relative;
+      height: 26px;
+      width: 26px;
+      background-color: white;
+      margin: 2px;
+      flex-shrink: 0;
       display: flex;
-      flex-direction: row;
       align-items: center;
+      justify-content: center;
 
-      .toolbar-item {
-        height: 30px;
-        width: 30px;
-        margin: 0 2px;
-        background-color: #fff;
-        display: inline-block;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
+      &.active {
+        background-color: transparent;
+      }
+
+      .tip {
+        position: absolute;
+        left: 0;
+        top: -32px;
+        height: 26px;
+        min-width: 20px;
+        white-space: pre;
+        padding: 0 5px;
+        font-size: 12px;
+        border-radius: 2px;
+        background-color: rgba(31, 35, 41, 0.9);
+        color: white;
+        display: none;
         align-items: center;
-        position: relative;
+      }
 
-        img {
-          width: 20px;
-          height: 20px;
+      &:hover {
+        .tip {
+          display: flex;
         }
 
-        .title {
-          display: none;
-          position: absolute;
-          top: -25px;
-          left: 0px;
-          height: 20px;
-          line-height: 20px;
-          background: #353434;
-          color: white;
-          min-width: 30px;
-          font-size: 10px;
-          padding-left: 5px;
-          padding-right: 5px;
-          border-radius: 2px;
-          white-space: pre;
-          text-align: center;
-        }
+        background-color: #dfdcdc;
+      }
+    }
+  }
 
-        &:hover .title {
-          display: block;
+  .symbol-box {
+    .title {
+      width: 50%;
+      height: 25px;
+      line-height: 25px;
+      color: #ccc;
+      font-weight: 400;
+      padding-left: 3px;
+      font-size: 12px;
+    }
+    .options {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+
+      .option {
+        height: 32px;
+        width: 32px;
+        margin: 2px;
+        border: 1px dashed #ccc;
+        font-size: 24px;
+        user-select: none;
+
+        &:hover {
+          border-color: #409eff;
         }
       }
     }
   }
-}
 
-.container .footer .toolbar-items .prev-page:active i,
-.container .footer .toolbar-items .next-page:active i {
-  transform: scale(1.2);
-}
-
-.emoji-box,
-.emoticon {
-  width: 100%;
-}
-
-.emoticon {
-  .title {
-    width: 50%;
-    height: 25px;
-    line-height: 25px;
-    color: #ccc;
-    font-weight: 400;
-    padding-left: 3px;
-    font-size: 12px;
-  }
-
-  .emoticon-item {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    float: left;
-    cursor: pointer;
+  .collect-box {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
 
-    &:hover {
-      transform: scale(1.3);
-    }
-  }
-
-  .symbol {
-    font-size: 22px;
-  }
-}
-
-.emoji-box {
-  .emoji-item {
-    width: 67px;
-    height: 67px;
-    margin: 2px;
-    background-color: #eff1f7;
-    float: left;
-    cursor: pointer;
-    transition: ease-in 0.3s;
-  }
-
-  .custom-emoji {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-size: 10px;
-
-    i {
-      font-size: 30px;
-      margin-bottom: 3px;
+    .upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      span {
+        font-size: 13px;
+      }
     }
 
-    &:active {
-      color: #409eff;
+    .item {
+      position: relative;
+      width: 65px;
+      height: 65px;
+      background-color: #eff1f7;
+      margin: 2px;
+
+      .mask {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25px;
+        height: 25px;
+        background-color: #f5f5f5;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:hover {
+        .mask {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
   }
-}
-
-/deep/ .el-image {
-  width: 100%;
-  height: 100%;
-  transition: ease-in 0.3s;
-}
-
-.emoji-box .emoji-item:hover .el-image,
-.emoji-box .emoji-item:hover {
-  border-radius: 10px;
 }
 </style>
