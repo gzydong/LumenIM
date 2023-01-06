@@ -9,7 +9,7 @@ let num = storage.get('reward', 0)
 
 setTimeout(() => {
   isShow.value = num <= 2
-}, 15000)
+}, 1000*60*2)
 
 const onClose = () => {
   isShow.value = false
