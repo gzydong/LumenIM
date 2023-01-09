@@ -49,7 +49,7 @@ const img = (src, width = 200) => {
   overflow: hidden;
   padding: 5px;
   border-radius: 5px;
-  background-color: #1ebafc;
+  background-color: #daf3fd;
   min-width: 30px;
   min-height: 30px;
 

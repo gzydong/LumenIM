@@ -2,6 +2,7 @@
 import { ArrowUp, ArrowDown, NotificationsOffOutline } from '@vicons/ionicons5'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
+import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
@@ -72,9 +73,8 @@ defineProps({
             >
               [{{ data.is_online == 1 ? '在线' : '离线' }}]&nbsp;
             </span>
-            <span v-else>[群消息]&nbsp;</span>
           </template>
-          <span v-html="data.msg_text"></span>
+          <span v-html="textReplaceMention(data.msg_text,'red')"></span>
         </template>
       </div>
     </div>

@@ -1,7 +1,8 @@
 <script setup>
-import { reactive, ref, markRaw, computed, onMounted } from 'vue'
+import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
 import { useEditorStore } from '@/store/editor'
+import { useTalkStore } from '@/store/talk'
 import { NPopover } from 'naive-ui'
 import {
   HappyOutline,
@@ -23,6 +24,7 @@ import MeMention from './MeMention.vue'
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
 const editorStore = useEditorStore()
+const talkStore = useTalkStore()
 const props = defineProps({
   show_vote: {
     type: Boolean,
@@ -30,10 +32,12 @@ const props = defineProps({
   },
 })
 
+const indexName = computed(() => dialogueStore.index_name)
+
 let lastSelection = null
 let lastEditRange = null
 
-onMounted(() => {
+const editorListener = () => {
   const fn = function () {
     // 设置最后光标对象
     // lastEditRange = window.getSelection().getRangeAt(0)
@@ -56,7 +60,24 @@ onMounted(() => {
   editor.addEventListener('paste', e => {
     console.log('e', e)
   })
+}
+
+onMounted(() => {
+  editorListener()
 })
+
+watch(
+  indexName,
+  () => {
+    const elEditor = document.getElementById('me-editor')
+    if (elEditor) {
+      const talk = talkStore.findItem(dialogueStore.index_name)
+
+      elEditor.innerText = talk.draft_text
+    }
+  },
+  { immediate: true }
+)
 
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
@@ -72,7 +93,7 @@ const imagePreview = reactive({
 
 // 键盘监听事件
 const onKeydownEvent = e => {
-  let text = e.target.innerHTML.toString().replace(/<br>/g, '/n')
+  let text = e.target.innerText.replace(/<br>/g, '/n')
 
   // 更新草稿
   dialogueStore.updateEditorText(text)
@@ -82,13 +103,11 @@ const onKeydownEvent = e => {
     return e.preventDefault()
   }
 
-  // @群成员
+  // @群成员 目前先隐藏
   // 这里需要判断是否是群聊，非群聊不需要@功能
   if (e.shiftKey && e.keyCode == 50 && dialogueStore.isGroupTalk) {
     lastEditRange = window.getSelection().getRangeAt(0)
-
     editorStore.updateMentionStatus(true)
-
     return e.preventDefault()
   }
 
@@ -97,6 +116,9 @@ const onKeydownEvent = e => {
     if (text.length > 1024) {
       return $message.info('发送内容超长，请分条发送')
     }
+
+    // 查询@好友
+    console.log(e.target.innerHTML.match(/data-atid="\d+"/g))
 
     emit(
       'editor-event',
@@ -204,9 +226,8 @@ const editorInsertMention = (atid, atname) => {
   let node = document.createElement('span')
   node.className = 'mention'
   node.contentEditable = false
-  node.textContent = `@${atname}`
+  node.textContent = `@${atname} `
   node.dataset['atid'] = atid
-  node.dataset['atname'] = `@${atname}`
   lastEditRange.insertNode(node)
 
   window.getSelection().collapseToEnd()

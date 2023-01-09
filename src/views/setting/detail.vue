@@ -36,14 +36,14 @@ ServeGetUserDetail().then(res => {
 
 // 修改用户信息
 const onChangeDetail = () => {
-  if (!detail.nickname) {
+  if (!detail.nickname.trim()) {
     return $message.warning('昵称不能为空！')
   }
 
   detail.loading = true
 
   const response = ServeUpdateUserDetail({
-    nickname: detail.nickname,
+    nickname: detail.nickname.trim(),
     avatar: detail.avatar,
     motto: detail.motto,
     gender: parseInt(detail.gender),

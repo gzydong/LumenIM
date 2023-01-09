@@ -70,8 +70,6 @@ export const useDialogueStore = defineStore('dialogue', {
       this.index_name = this.talk.talk_type + '_' + this.talk.receiver_id
       this.records = []
       this.unreadBubble = 0
-
-      document.getElementById('me-editor').innerHTML = ''
     },
 
     // 清空对话记录

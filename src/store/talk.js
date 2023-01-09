@@ -41,6 +41,10 @@ export const useTalkStore = defineStore('talk', {
     },
   },
   actions: {
+    findItem(index_name){
+      return this.items.find(item => item.index_name === index_name)
+    },
+
     // 更新对话节点
     updateItem(params) {
       const item = this.items.find(

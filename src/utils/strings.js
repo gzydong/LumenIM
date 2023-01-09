@@ -38,6 +38,18 @@ export function textReplaceLink(text, color = '#409eff') {
 }
 
 /**
+ * 文本 替换@信息
+ *
+ * @param {String} text 文本
+ * @param {String} color 超链接颜色
+ */
+export function textReplaceMention(text, color = '#2196F3') {
+  return text.replace(new RegExp(/@\S+/, 'g'), ($0, $1) => {
+    return `<a style="color:${color};">${$0}</a>`
+  })
+}
+
+/**
  * 格式化文件大小
  *
  * @param {String} value 文件大小(字节)

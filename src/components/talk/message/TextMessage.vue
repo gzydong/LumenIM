@@ -1,10 +1,6 @@
 <script setup>
-import { onMounted } from 'vue'
 import { textReplaceEmoji } from '@/utils/emojis'
-import { textReplaceLink } from '@/utils/strings'
-import { modal } from '@/utils/common'
-import UserCardModal from '@/components/user/UserCardModal.vue'
-
+import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 const props = defineProps({
   content: {
     type: String,
@@ -20,22 +16,11 @@ const props = defineProps({
   },
 })
 
-const lickColor = props.float == 'right' ? '#ffffff' : 'rgb(9 149 208)'
-
-const textContent = textReplaceLink(props.content, lickColor)
-
-onMounted(() => {
-  document.querySelectorAll('.text-message .mention').forEach(el => {
-    el.onclick = e => {
-      if (e.target.dataset.atid > 0) {
-        modal(UserCardModal, {
-          uid: parseInt(e.target.dataset.atid),
-        })
-      }
-    }
-  })
-})
+let textContent = textReplaceLink(props.content, '#2196F3')
+textContent = textReplaceMention(textContent)
+textContent = textReplaceEmoji(textContent)
 </script>
+
 <template>
   <div
     class="text-message"
@@ -44,9 +29,10 @@ onMounted(() => {
       right: float == 'right',
     }"
   >
-    <pre v-html="textReplaceEmoji(textContent)" />
+    <pre v-html="textContent" />
   </div>
 </template>
+
 <style lang="less" scoped>
 .text-message {
   position: relative;
@@ -54,12 +40,13 @@ onMounted(() => {
   min-height: 30px;
   border-radius: 3px;
   padding: 3px;
-  color: rgb(13, 26, 38);
+  color: #000000;
   background: #eff0f1;
 
   &.right {
-    color: #fff;
-    background: #1ebafc;
+    // color: #fff;
+    // background: #1ebafc;
+    background-color: #daf3fd;
   }
 
   pre {
@@ -75,6 +62,9 @@ onMounted(() => {
     :deep(.emoji) {
       vertical-align: text-bottom;
       margin: 0 5px;
+    }
+    a {
+      color: blue;
     }
 
     img {
