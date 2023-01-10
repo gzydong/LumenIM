@@ -40,14 +40,6 @@ setTimeout(() => {
   })
 }, 3000)
 
-let ss = '在吗@朋友 你在干嘛 @wjenkj 哈哈哈'
-
-console.log(
-  ss.replace(new RegExp(/@\S+/,'g'), ($0, $1) => {
-    return `<a>${$0}</a>`
-  })
-)
-
 // 监听用户是否离开页面
 document.addEventListener('visibilitychange', () => {
   // 设置用户是否离开页面  visible,hidden

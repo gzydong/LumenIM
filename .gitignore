@@ -12,6 +12,7 @@ dist
 dist_electron
 dist-ssr
 *.local
+makefile
 
 # Editor directories and files
 .vscode/*

@@ -93,7 +93,11 @@ const imagePreview = reactive({
 
 // 键盘监听事件
 const onKeydownEvent = e => {
-  let text = e.target.innerText.replace(/<br>/g, '/n')
+  if (e.keyCode == 37 || e.keyCode == 39) {
+    return
+  }
+
+  let text = e.target.innerText.replace(/<br>/g, '/n').trim()
 
   // 更新草稿
   dialogueStore.updateEditorText(text)
@@ -117,17 +121,24 @@ const onKeydownEvent = e => {
       return $message.info('发送内容超长，请分条发送')
     }
 
-    // 查询@好友
-    console.log(e.target.innerHTML.match(/data-atid="\d+"/g))
+    let atids = e.target.innerHTML.match(/data-atid="\d+"/g)
+    let uids = []
+    if (atids) {
+      uids = atids
+        .toString()
+        .match(/\d+/g)
+        .map(value => {
+          return parseInt(value)
+        })
+    }
 
-    emit(
-      'editor-event',
-      emitCall('text_event', text, isBool => {
-        if (isBool) {
-          e.target.innerHTML = ''
-        }
-      })
-    )
+    let event = emitCall('text_event', { text, uids }, isBool => {
+      if (isBool) {
+        e.target.innerHTML = ''
+      }
+    })
+
+    emit('editor-event', event)
 
     return e.preventDefault()
   }
@@ -223,12 +234,15 @@ const editorInsertText = text => {
 }
 
 const editorInsertMention = (atid, atname) => {
-  let node = document.createElement('span')
-  node.className = 'mention'
-  node.contentEditable = false
-  node.textContent = `@${atname} `
-  node.dataset['atid'] = atid
+  let node = document.createTextNode(' ')
   lastEditRange.insertNode(node)
+
+  let node2 = document.createElement('span')
+  node2.className = 'mention'
+  node2.contentEditable = false
+  node2.textContent = `@${atname} `// 这里的空格请勿删除，正则匹配需要用到
+  node2.dataset['atid'] = atid
+  lastEditRange.insertNode(node2)
 
   window.getSelection().collapseToEnd()
 }
@@ -397,6 +411,7 @@ const onMention = (id, name) => {
       <main class="el-main o-hidden height100">
         <div
           id="me-editor"
+          spellcheck="true"
           contenteditable="plaintext-only"
           @keydown="onKeydownEvent($event)"
           @input="onInputEvent($event)"

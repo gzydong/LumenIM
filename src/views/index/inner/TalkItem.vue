@@ -65,6 +65,7 @@ defineProps({
           <span class="draft">[草稿]&nbsp;</span>
           <span v-html="data.draft_text"></span>
         </template>
+
         <template v-else>
           <template v-if="data.is_robot == 0">
             <span

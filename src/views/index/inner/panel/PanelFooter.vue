@@ -48,13 +48,18 @@ const props = defineProps({
 
 const isShowHistory = ref(false)
 
+// 发送文本消息
 const onSendTextEvent = throttle(value => {
   let { data, callBack } = value
 
   const res = ServeSendTalkText({
     receiver_id: props.receiver_id,
     talk_type: props.talk_type,
-    text: data,
+    text: data.text,
+    mention: {
+      all: 0,
+      uids: data.uids,
+    },
   })
 
   res.then(({ code, message }) => {
@@ -78,6 +83,7 @@ const onSendTextEvent = throttle(value => {
   })
 }, 1000)
 
+// 发送图片消息
 const onSendImageEvent = ({ data, callBack }) => {
   let fileData = new FormData()
 
@@ -113,6 +119,7 @@ const onSendCodeEvent = ({ data, callBack }) => {
   })
 }
 
+// 发送文件消息
 const onSendFileEvent = ({ data }) => {
   let maxsize = 100 * 1024 * 1024
   if (data.size > maxsize) {
@@ -146,6 +153,7 @@ const onSendVoteEvent = ({ data, callBack }) => {
   })
 }
 
+// 发送表情消息
 const onSendEmoticonEvent = ({ data, callBack }) => {
   ServeSendEmoticon({
     receiver_id: props.receiver_id,
@@ -163,6 +171,7 @@ const onKeyboardPush = throttle(() => {
   })
 }, 3000)
 
+// 编辑器输入事件
 const onInputEvent = ({ data }) => {
   talkStore.updateItem({
     index_name: props.index_name,
@@ -170,6 +179,7 @@ const onInputEvent = ({ data }) => {
   })
 
   // 判断对方是否在线和是否需要推送
+  // 3秒时间内推送一次
   if (notifyStore.isKeyboard && props.online) {
     onKeyboardPush()
   }
