@@ -380,6 +380,7 @@ onMounted(() => {
                 v-if="item.msg_type == 1"
                 :content="item.content"
                 :float="item.float"
+                :talk_type="talk_type"
                 style="max-width: 600px"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />

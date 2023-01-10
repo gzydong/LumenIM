@@ -14,10 +14,19 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  talk_type: {
+    type: Number,
+    default: 0,
+  },
 })
 
 let textContent = textReplaceLink(props.content, '#2196F3')
-textContent = textReplaceMention(textContent)
+
+// 只有对话类型为群聊时，需要解析@信息
+if (props.talk_type == 2) {
+  textContent = textReplaceMention(textContent)
+}
+
 textContent = textReplaceEmoji(textContent)
 </script>
 
