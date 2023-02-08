@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from '@/api/upload'
 import { ServeSendTalkFile } from '@/api/chat'
 
-const message = window.$message
+const message = window.window.$message
 
 // 处理拆分上传文件
 function fileSlice(file, uploadId, eachSize) {

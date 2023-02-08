@@ -19,7 +19,9 @@ const params = reactive({
 
 const filter = computed(() => {
   return items.value.filter(item => {
-    return item.group_name.match(keywords.value) != null
+    return (
+      item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
+    )
   })
 })
 

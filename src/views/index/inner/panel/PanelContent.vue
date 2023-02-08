@@ -169,7 +169,7 @@ const onPanelScroll = e => {
 const onCopyText = data => {
   if (data.content) {
     clipboard(data.content, () => {
-      $message.success('复制成功!')
+      window.$message.success('复制成功!')
     })
   }
 }
@@ -274,7 +274,7 @@ const onRowClick = item => {
       // 需要判断消息类型
       item.isCheck = !item.isCheck
     } else {
-      $message.info('此类消息不支持转发！！！')
+      window.$message.info('此类消息不支持转发！！！')
     }
   }
 }
@@ -350,7 +350,7 @@ onMounted(() => {
           <aside class="avatar-column">
             <n-avatar
               round
-              size="small"
+              size="medium"
               :src="item.avatar"
               :fallback-src="defAvatar"
             />
@@ -362,12 +362,13 @@ onMounted(() => {
               class="talk-title"
               :class="{ show: talk_type == 2 && item.float == 'left' }"
             >
+            <span>
+                {{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}
+              </span>
               <span v-show="talk_type == 2 && item.float == 'left'">{{
                 item.friend_remarks || item.nickname
               }}</span>
-              <span>
-                {{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}
-              </span>
+              
             </div>
 
             <div
@@ -647,7 +648,7 @@ onMounted(() => {
       align-items: center;
       order: 2;
       user-select: none;
-      padding-top: 26px;
+      padding-top: 23px;
       flex-direction: column;
     }
 

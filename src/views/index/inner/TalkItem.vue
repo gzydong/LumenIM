@@ -2,7 +2,6 @@
 import { ArrowUp, ArrowDown, NotificationsOffOutline } from '@vicons/ionicons5'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
-import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
@@ -63,19 +62,17 @@ defineProps({
       <div class="content">
         <template v-if="!active && data.draft_text">
           <span class="draft">[草稿]&nbsp;</span>
-          <span v-html="data.draft_text"></span>
+          <span class="draft-text" v-html="data.draft_text"></span>
         </template>
 
         <template v-else>
-          <template v-if="data.is_robot == 0">
-            <span
-              v-if="data.talk_type == 1"
-              :class="{ online: data.is_online == 1 }"
-            >
-              [{{ data.is_online == 1 ? '在线' : '离线' }}]&nbsp;
-            </span>
-          </template>
-          <span v-html="textReplaceMention(data.msg_text,'red')"></span>
+          <span
+            v-show="data.is_robot == 0 && data.talk_type == 1"
+            :class="{ online: data.is_online == 1 }"
+          >
+            [{{ data.is_online == 1 ? '在线' : '离线' }}]&nbsp;
+          </span>
+          <span v-html="data.msg_text"></span>
         </template>
       </div>
     </div>
@@ -84,8 +81,7 @@ defineProps({
 
 <style lang="less">
 .talk .mention {
-  color: #f14813;
-  font-weight: 400;
+  color: #8f959e;
 }
 </style>
 <style lang="less" scoped>

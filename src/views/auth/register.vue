@@ -69,13 +69,13 @@ const onRegister = () => {
 
   response.then(res => {
     if (res.code == 200) {
-      $message.success('注册成功！')
+      window.$message.success('注册成功！')
 
       setTimeout(() => {
         router.push('/auth/login')
       }, 500)
     } else {
-      $message.warning(res.message)
+      window.$message.warning(res.message)
     }
   })
 
@@ -95,7 +95,7 @@ const onValidate = e => {
 // 发送短信
 const onSendSms = () => {
   if (!isMobile(model.username)) {
-    $message.warning('请正确填写手机号！')
+    window.$message.warning('请正确填写手机号！')
     return
   }
 
@@ -107,16 +107,16 @@ const onSendSms = () => {
   response.then(res => {
     if (res.code == 200) {
       lock.start()
-      $message.success('短信发送成功！')
+      window.$message.success('短信发送成功！')
 
       if (res.data.is_debug) {
         model.sms_code = res.data.sms_code
         setTimeout(() => {
-          $message.success('已开启验证码自动填充！')
+          window.$message.success('已开启验证码自动填充！')
         }, 1000)
       }
     } else {
-      $message.warning(res.message)
+      window.$message.warning(res.message)
     }
   })
 

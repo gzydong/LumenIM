@@ -174,7 +174,7 @@ export const useNoteStore = defineStore('note', {
           this.class.splice(index, 1)
         }
       } else {
-        $message.info(res.message)
+        window.$message.info(res.message)
       }
     },
 
@@ -202,7 +202,7 @@ export const useNoteStore = defineStore('note', {
           this.tags.splice(index, 1)
         }
       } else {
-        $message.info(res.message)
+        window.$message.info(res.message)
       }
     },
   },

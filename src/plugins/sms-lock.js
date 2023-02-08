@@ -42,9 +42,8 @@ class SmsLock {
     this.clear()
 
     const time = this.getExpireTime()
-    if (time === null) {
-      return
-    }
+
+    if (time === null) return
 
     if (time <= this.getCurrentTime()) {
       this.callBack(0)
@@ -56,9 +55,7 @@ class SmsLock {
 
     this.callBack(t)
 
-    this.timer = setTimeout(() => {
-      this.compute()
-    }, 1000)
+    this.timer = setTimeout(() => this.compute(), 1000)
   }
 
   // 获取当前时间

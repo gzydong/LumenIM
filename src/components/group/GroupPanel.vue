@@ -127,10 +127,10 @@ const onSignOut = () => {
     group_id: props.gid,
   }).then(res => {
     if (res.code == 200) {
-      $message.success('已退出群组！')
+      window.$message.success('已退出群组！')
       onClose()
     } else {
-      $message.error(res.message)
+      window.$message.error(res.message)
     }
   })
 }
@@ -143,11 +143,11 @@ const onChangeRemark = () => {
     if (code == 200) {
       editCardPopover.value.setShow(false)
       state.detail.visit_card = state.remark
-      $message.success('已更新群名片！')
+      window.$message.success('已更新群名片！')
 
       loadMembers()
     } else {
-      $message.error(message)
+      window.$message.error(message)
     }
   })
 }

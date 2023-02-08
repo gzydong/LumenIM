@@ -4,7 +4,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore } from '@/store/dialogue'
 import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
-import { NDropdown, NSkeleton, NEmpty, NIcon } from 'naive-ui'
+import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip } from 'naive-ui'
 import {
   ChatbubbleEllipsesOutline,
   AddSharp,
@@ -141,21 +141,21 @@ const onSetDisturb = data => {
     is_disturb: data.is_disturb == 0 ? 1 : 0,
   }).then(res => {
     if (res.code == 200) {
-      $message.success('设置成功!')
+      window.$message.success('设置成功!')
 
       talkStore.updateItem({
         index_name: data.index_name,
         is_disturb: data.is_disturb == 0 ? 1 : 0,
       })
     } else {
-      $message.error(res.message)
+      window.$message.error(res.message)
     }
   })
 }
 
 // 更新联系人备注
 const onUpdateContactRemark = data => {
-  $message.info('开发中...')
+  window.$message.info('开发中...')
 }
 
 // 置顶会话
@@ -186,10 +186,10 @@ const onDeleteContact = data => {
         friend_id: data.receiver_id,
       }).then(({ code }) => {
         if (code == 200) {
-          $message.success('删除联系人成功！')
+          window.$message.success('删除联系人成功！')
           onDeleteTalk(data.index_name)
         } else {
-          $message.error(res.message)
+          window.$message.error(res.message)
         }
       })
     },
@@ -209,10 +209,10 @@ const onSignOutGroup = data => {
         group_id: data.receiver_id,
       }).then(res => {
         if (res.code == 200) {
-          $message.success('已退出群组！')
+          window.$message.success('已退出群组！')
           onDeleteTalk(data.index_name)
         } else {
-          $message.error(res.message)
+          window.$message.error(res.message)
         }
       })
     },
@@ -366,34 +366,42 @@ onMounted(() => {
       class="el-header tops-header"
       v-show="loadStatus == 3 && topItems.length > 0"
     >
-      <div
-        class="top-item pointer"
+      <n-tooltip
         v-for="item in topItems"
         :key="item.index_name"
-        @click="onTabTalk(item)"
-        :class="{
-          active: item.index_name == indexName,
-        }"
+        placement="bottom"
+        trigger="hover"
       >
-        <n-avatar
-          v-if="item.avatar"
-          round
-          :src="item.avatar"
-          :fallback-src="defAvatar"
-        />
-        <n-avatar
-          v-else
-          round
-          :style="{
-            color: '#ffffff',
-            backgroundColor: '#508afe',
-          }"
-        >
-          {{ item.name && (item.name.substr(0, 1) || '') }}
-        </n-avatar>
+        <template #trigger>
+          <div
+            class="top-item pointer"
+            @click="onTabTalk(item)"
+            :class="{
+              active: item.index_name == indexName,
+            }"
+          >
+            <n-avatar
+              v-if="item.avatar"
+              round
+              :src="item.avatar"
+              :fallback-src="defAvatar"
+            />
+            <n-avatar
+              v-else
+              round
+              :style="{
+                color: '#ffffff',
+                backgroundColor: '#508afe',
+              }"
+            >
+              {{ item.name && (item.name.substr(0, 1) || '') }}
+            </n-avatar>
 
-        <span class="text">{{ item.remark_name || item.name }}</span>
-      </div>
+            <span class="text">{{ item.remark_name || item.name }}</span>
+          </div>
+        </template>
+        <span> {{ item.remark_name || item.name }} </span>
+      </n-tooltip>
     </header>
 
     <!-- 标题栏目 -->

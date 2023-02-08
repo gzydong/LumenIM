@@ -63,10 +63,10 @@ const onSubmit = () => {
 
   response.then(res => {
     if (res.code == 200) {
-      $message.success('编辑群公告成功...')
+      window.$message.success('编辑群公告成功...')
       emit('success')
     } else {
-      $message.warning(res.message)
+      window.$message.warning(res.message)
     }
   })
 

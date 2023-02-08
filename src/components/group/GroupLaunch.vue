@@ -93,7 +93,7 @@ const onCreateSubmit = ids => {
     if (res.code == 200) {
       onReset()
       emit('on-submit', res.data)
-      $message.success('创建成功！')
+      window.$message.success('创建成功！')
       isShowBox.value = false
     }
   })
@@ -106,7 +106,7 @@ const onInviteSubmit = ids => {
   }).then(res => {
     if (res.code == 200) {
       emit('on-invite')
-      $message.success('邀请成功！')
+      window.$message.success('邀请成功！')
       isShowBox.value = false
     }
   })

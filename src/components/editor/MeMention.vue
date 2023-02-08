@@ -1,9 +1,40 @@
 <script setup>
+import { ref, onUnmounted } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import { ArrowBackCircleOutline } from '@vicons/ionicons5'
 import { defAvatar } from '@/constant/default'
 
 const emit = defineEmits(['on-select', 'on-close'])
+
+const index = ref(-1)
+
+function callBack(e) {
+  if (e.keyCode == 38 || e.keyCode == 40) {
+    if (e.keyCode == 38) {
+      if (index.value > 0) {
+        index.value--
+      }
+    } else {
+      if (index.value < editorStore.mention.items.length - 1) {
+        index.value++
+      }
+    }
+
+    window.document.getElementById('mention-items-container').scrollTop =
+      index.value * 32
+  } else if (e.keyCode == 13) {
+    const item = editorStore.mention.items[index.value]
+    editorStore.mention.isShow = false
+    emit('on-select', item.id, item.name)
+    return e.preventDefault()
+  }
+}
+
+window.addEventListener('keyup', callBack)
+
+onUnmounted(() => {
+  window.removeEventListener('keyup', callBack)
+})
 
 const editorStore = useEditorStore()
 </script>
@@ -25,8 +56,11 @@ const editorStore = useEditorStore()
     >
       <div
         class="item"
-        v-for="item in editorStore.mention.items"
+        v-for="(item, i) in editorStore.mention.items"
         :key="item.id"
+        :class="{
+          selectd: i == index,
+        }"
         @click="emit('on-select', item.id, item.name)"
       >
         <n-avatar
@@ -82,7 +116,7 @@ const editorStore = useEditorStore()
       width: 90px;
     }
 
-    &:hover {
+    &.selectd {
       border-color: rgb(80 138 254);
       color: rgb(80 138 254);
     }

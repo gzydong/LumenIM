@@ -58,7 +58,7 @@ const onAgree = item => {
     if (res.code == 200) {
       onLoadData()
     } else {
-      $message.info(res.message)
+      window.$message.info(res.message)
     }
   })
 }
@@ -70,7 +70,7 @@ const onDelete = item => {
     if (res.code == 200) {
       onLoadData()
     } else {
-      $message.info(res.message)
+      window.$message.info(res.message)
     }
   })
 }

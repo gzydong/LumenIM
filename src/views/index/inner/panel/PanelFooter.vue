@@ -74,12 +74,12 @@ const onSendTextEvent = throttle(value => {
 
       callBack(true)
     } else {
-      $message.warning(message)
+      window.$message.warning(message)
     }
   })
 
   res.catch(() => {
-    $message.warning('网络繁忙,请稍后重试！！！')
+    window.$message.warning('网络繁忙,请稍后重试！！！')
   })
 }, 1000)
 
@@ -97,7 +97,7 @@ const onSendImageEvent = ({ data, callBack }) => {
     if (res.code == 200) {
       callBack(true)
     } else {
-      $message.info(res.message)
+      window.$message.info(res.message)
     }
   })
   resp.finally(() => callBack(false))
@@ -114,7 +114,7 @@ const onSendCodeEvent = ({ data, callBack }) => {
     if (code == 200) {
       callBack(true)
     } else {
-      $message.warning(message)
+      window.$message.warning(message)
     }
   })
 }
@@ -123,7 +123,7 @@ const onSendCodeEvent = ({ data, callBack }) => {
 const onSendFileEvent = ({ data }) => {
   let maxsize = 100 * 1024 * 1024
   if (data.size > maxsize) {
-    return $message.info('上传文件不能超过100M！！！')
+    return window.$message.info('上传文件不能超过100M！！！')
   }
 
   uploadsStore.initUploadFile(

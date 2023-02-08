@@ -30,10 +30,10 @@ const onSubmit = () => {
 
   response.then(res => {
     if (res.code == 200) {
-      $message.success('入群申请提交成功...')
+      window.$message.success('入群申请提交成功...')
       onMaskClick()
     } else {
-      $message.warning(res.message)
+      window.$message.warning(res.message)
     }
   })
 

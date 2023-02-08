@@ -39,9 +39,6 @@ let lastEditRange = null
 
 const editorListener = () => {
   const fn = function () {
-    // 设置最后光标对象
-    // lastEditRange = window.getSelection().getRangeAt(0)
-
     let selection = window.getSelection
       ? window.getSelection()
       : document.selection
@@ -58,7 +55,7 @@ const editorListener = () => {
   editor.onkeyup = fn // 编辑框按键弹起事件
 
   editor.addEventListener('paste', e => {
-    console.log('e', e)
+    console.log('paste', e)
   })
 }
 
@@ -73,7 +70,7 @@ watch(
     if (elEditor) {
       const talk = talkStore.findItem(dialogueStore.index_name)
 
-      elEditor.innerText = talk.draft_text
+      elEditor.innerHTML = talk.draft_text
     }
   },
   { immediate: true }
@@ -93,21 +90,17 @@ const imagePreview = reactive({
 
 // 键盘监听事件
 const onKeydownEvent = e => {
-  if (e.keyCode == 37 || e.keyCode == 39) {
-    return
+  if (e.keyCode == 38 || e.keyCode == 40) {
+    return e.preventDefault()
   }
 
   let text = e.target.innerText.replace(/<br>/g, '/n').trim()
-
-  // 更新草稿
-  dialogueStore.updateEditorText(text)
 
   // 空信息禁止换行
   if (e.keyCode == 13 && !text) {
     return e.preventDefault()
   }
 
-  // @群成员 目前先隐藏
   // 这里需要判断是否是群聊，非群聊不需要@功能
   if (e.shiftKey && e.keyCode == 50 && dialogueStore.isGroupTalk) {
     lastEditRange = window.getSelection().getRangeAt(0)
@@ -115,10 +108,14 @@ const onKeydownEvent = e => {
     return e.preventDefault()
   }
 
+  if (e.keyCode == 13 && editorStore.mention.isShow) {
+    return e.preventDefault()
+  }
+
   // 回车发送消息
   if (e.keyCode == 13 && e.shiftKey == false && text) {
     if (text.length > 1024) {
-      return $message.info('发送内容超长，请分条发送')
+      return window.$message.info('发送内容超长，请分条发送')
     }
 
     let atids = e.target.innerHTML.match(/data-atid="\d+"/g)
@@ -142,6 +139,9 @@ const onKeydownEvent = e => {
 
     return e.preventDefault()
   }
+
+  editorStore.updateMentionStatus(false)
+  dialogueStore.updateEditorText(e.target.innerHTML.toString())
 }
 
 // 输入事件监听
@@ -240,7 +240,7 @@ const editorInsertMention = (atid, atname) => {
   let node2 = document.createElement('span')
   node2.className = 'mention'
   node2.contentEditable = false
-  node2.textContent = `@${atname} `// 这里的空格请勿删除，正则匹配需要用到
+  node2.textContent = `@${atname} ` // 这里的空格请勿删除，正则匹配需要用到
   node2.dataset['atid'] = atid
   lastEditRange.insertNode(node2)
 
@@ -358,7 +358,7 @@ const onMention = (id, name) => {
 
 <template>
   <section class="el-container editor">
-    <aside class="el-aside" v-show="editorStore.mention.isShow">
+    <aside class="el-aside" v-if="editorStore.mention.isShow">
       <MeMention
         @on-select="onMention"
         @on-close="editorStore.updateMentionStatus(false)"

@@ -6,7 +6,7 @@ import {
 } from '@/api/emoticon'
 import { ServeCollectEmoticon } from '@/api/chat'
 
-const message = window.$message
+const message = window.window.$message
 
 export const useEditorStore = defineStore('editor', {
   state: () => {

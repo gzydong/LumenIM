@@ -39,9 +39,7 @@ request.interceptors.request.use(config => {
 }, errorHandler)
 
 // 响应拦截器
-request.interceptors.response.use(response => {
-  return response.data
-}, errorHandler)
+request.interceptors.response.use(response => response.data, errorHandler)
 
 /**
  * GET 请求

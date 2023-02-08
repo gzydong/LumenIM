@@ -49,12 +49,10 @@ textContent = textReplaceEmoji(textContent)
   min-height: 30px;
   border-radius: 3px;
   padding: 3px;
-  color: #000000;
+  color: #1f2329;
   background: #eff0f1;
 
   &.right {
-    // color: #fff;
-    // background: #1ebafc;
     background-color: #daf3fd;
   }
 
@@ -64,7 +62,7 @@ textContent = textReplaceEmoji(textContent)
     word-break: break-word;
     word-wrap: break-word;
     font-size: 14px;
-    padding: 3px 10px;
+    padding: 3px 5px;
     font-family: 'Microsoft YaHei';
     line-height: 25px;
 

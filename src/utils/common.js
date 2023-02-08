@@ -52,6 +52,17 @@ export function throttle(fn, delay, call = function () {}) {
  * @param {Function} callback 复制成功回调方法
  */
 export function clipboard(text, callback) {
+  if (navigator.clipboard) {
+    return navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        callback && callback()
+      })
+      .catch(() => {
+        alert('Oops, unable to copy')
+      })
+  }
+
   let textArea = document.createElement('textarea')
   textArea.style.background = 'transparent'
   textArea.value = text
@@ -62,12 +73,12 @@ export function clipboard(text, callback) {
 
   try {
     document.execCommand('copy')
-    if (callback) callback()
+    callback && callback()
   } catch (err) {
     alert('Oops, unable to copy')
+  } finally {
+    document.body.removeChild(textArea)
   }
-
-  document.body.removeChild(textArea)
 }
 
 /**
@@ -90,8 +101,8 @@ export function modal(Constructor, props = {}) {
   const app = createApp(Constructor, {
     ...props,
     remove() {
+      mountNode.remove()
       app.unmount(mountNode)
-      document.body.removeChild(mountNode)
     },
   })
 

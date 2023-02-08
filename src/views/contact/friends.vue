@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { NSpace, NDivider, NTag } from 'naive-ui'
+import { NSpace, NDivider, NTag, NTabs, NTab, NDropdown } from 'naive-ui'
 import { SearchOutline, AddOutline } from '@vicons/ionicons5'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
@@ -15,17 +15,51 @@ const userStore = useUserStore()
 const isShowDrawer = ref(false)
 const isShowUserSearch = ref(false)
 const keywords = ref('')
+const index = ref(0)
 const items = ref([])
+const groups = ref([
+  {
+    id: 0,
+    name: '全部好友',
+    count: 0,
+  },
+  {
+    id: 1,
+    name: '家人',
+    count: 0,
+  },
+  {
+    id: 2,
+    name: '同事',
+    count: 0,
+  },
+  {
+    id: 3,
+    name: '朋友',
+    count: 0,
+  },
+])
+
 const filter = computed(() => {
   return items.value.filter(item => {
-    return item.nickname.match(keywords.value) != null
+    let findIndex = item.nickname
+      .toLowerCase()
+      .indexOf(keywords.value.toLowerCase())
+
+    return findIndex != -1 && index.value == item.group_id
   })
 })
 
 const onLoadData = () => {
   ServeGetContacts().then(res => {
     if (res.code == 200) {
-      items.value = res.data.items || []
+      items.value =
+        res.data.items.map(item => {
+          item.group_id = 0
+          return item
+        }) || []
+
+      groups.value[0].count = items.value.length
     }
   })
 }
@@ -44,6 +78,17 @@ const onShowApplyList = () => {
   isShowDrawer.value = true
 }
 
+const onToolsMenu = value => {
+  switch (value) {
+    case 'add':
+      isShowUserSearch.value = true
+      break
+    case 'group':
+      window.$message.info('待完善...')
+      break
+  }
+}
+
 onLoadData()
 </script>
 
@@ -52,11 +97,9 @@ onLoadData()
     <header class="el-header from-header bdr-b">
       <div>
         <n-space>
-          <n-button text color="#333"> 全部好友({{ filter.length }}) </n-button>
-          <n-divider vertical />
           <p>
             <n-button text @click="onShowApplyList" color="#333">
-              申请列表
+              好友申请列表
             </n-button>
             <span v-show="userStore.isContactApply" class="badge new-apply">
               New
@@ -79,11 +122,38 @@ onLoadData()
             </template>
           </n-input>
 
-          <n-button circle @click="isShowUserSearch = true">
-            <template #icon> <n-icon :component="AddOutline" /> </template>
-          </n-button>
+          <n-dropdown
+            :animated="true"
+            trigger="click"
+            :show-arrow="false"
+            @select="onToolsMenu"
+            :options="[
+              {
+                label: '添加好友',
+                key: 'add',
+              },
+              {
+                label: '分组管理',
+                key: 'group',
+              },
+            ]"
+          >
+            <n-button circle>
+              <template #icon>
+                <n-icon :component="AddOutline" />
+              </template>
+            </n-button>
+          </n-dropdown>
         </n-space>
       </div>
+    </header>
+
+    <header class="el-header pd-10">
+      <n-tabs type="line" v-model:value="index">
+        <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">
+          {{ tab.name }}({{ tab.count }})
+        </n-tab>
+      </n-tabs>
     </header>
 
     <main
@@ -91,14 +161,6 @@ onLoadData()
       class="el-main pd-10 me-scrollbar"
       v-if="filter.length"
     >
-      <!-- <div class="tags">
-        <n-tag class="tag pointer" :bordered="false" type="info" round> 家人(10) </n-tag>
-        <n-tag class="tag pointer" :bordered="false" type="info" round> 同事(2) </n-tag>
-        <n-tag class="tag pointer" :bordered="false" type="info" round>
-          添加标签
-        </n-tag>
-      </div> -->
-
       <div class="cards">
         <MemberCard
           v-for="item in filter"

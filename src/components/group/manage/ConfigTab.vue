@@ -14,9 +14,9 @@ const onDismiss = () => {
     group_id: props.id,
   }).then(res => {
     if (res.code == 200) {
-      $message.success('群组已解散！')
+      window.$message.success('群组已解散！')
     } else {
-      $message.info(res.message)
+      window.$message.info(res.message)
     }
   })
 }

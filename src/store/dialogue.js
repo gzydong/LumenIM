@@ -150,7 +150,7 @@ export const useDialogueStore = defineStore('dialogue', {
         if (res.code == 200) {
           this.batchDelDialogueRecord(ids)
         } else {
-          $message.warning(res.message)
+          window.$message.warning(res.message)
         }
       })
     },
@@ -161,7 +161,7 @@ export const useDialogueStore = defineStore('dialogue', {
         if (res.code == 200) {
           this.updateDialogueRecord({ id: record_id, is_revoke: 1 })
         } else {
-          $message.warning(res.message)
+          window.$message.warning(res.message)
         }
       })
     },

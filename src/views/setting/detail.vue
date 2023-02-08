@@ -37,7 +37,7 @@ ServeGetUserDetail().then(res => {
 // 修改用户信息
 const onChangeDetail = () => {
   if (!detail.nickname.trim()) {
-    return $message.warning('昵称不能为空！')
+    return window.$message.warning('昵称不能为空！')
   }
 
   detail.loading = true
@@ -51,11 +51,11 @@ const onChangeDetail = () => {
   })
 
   response.then(() => {
-    $message.success('信息保存成功！')
+    window.$message.success('信息保存成功！')
   })
 
   response.catch(() => {
-    $message.warning('信息保存失败！')
+    window.$message.warning('信息保存失败！')
   })
 
   response.finally(() => {

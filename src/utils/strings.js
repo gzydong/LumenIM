@@ -45,7 +45,7 @@ export function textReplaceLink(text, color = '#409eff') {
  */
 export function textReplaceMention(text, color = '#2196F3') {
   return text.replace(new RegExp(/@\S+/, 'g'), ($0, $1) => {
-    return `<a style="color:${color};">${$0}</a>`
+    return `<span style="color:${color};">${$0}</span>`
   })
 }
 

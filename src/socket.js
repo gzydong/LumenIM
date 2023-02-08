@@ -108,7 +108,7 @@ class Socket {
 
     // 好友申请事件
     this.socket.on('event_contact_apply', data => {
-      $notification.create({
+      windoes.$notification.create({
         title: '好友申请通知',
         content: data.remark,
         description: `申请人: ${data.friend.nickname}`,
@@ -126,7 +126,7 @@ class Socket {
     })
 
     this.socket.on('event_error', data => {
-      $message.error(JSON.stringify(data))
+      window.$message.error(JSON.stringify(data))
     })
   }
 

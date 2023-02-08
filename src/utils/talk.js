@@ -2,6 +2,7 @@ import { useTalkStore } from '@/store/talk'
 import router from '@/router'
 import { parseTime } from '@/utils/datetime'
 import { ServeCreateTalkList } from '@/api/chat'
+import { textReplaceMention } from '@/utils/strings'
 
 const KEY_INDEX_NAME = 'send_message_index_name'
 
@@ -70,6 +71,7 @@ export function formatTalkItem(params) {
 
   Object.assign(options, params)
 
+  options.msg_text = textReplaceMention(options.msg_text, 'red')
   options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options
@@ -110,7 +112,7 @@ export function toTalk(talk_type, receiver_id) {
         },
       })
     } else {
-      $message.info(message)
+      window.$message.info(message)
     }
   })
 }

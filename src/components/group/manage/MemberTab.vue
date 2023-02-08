@@ -83,7 +83,7 @@ const onDelete = item => {
   }).then(res => {
     if (res.code == 200) {
       onLoadData()
-      $message.success('删除成功！')
+      window.$message.success('删除成功！')
     }
   })
 }
@@ -100,7 +100,7 @@ const onBatchDelete = () => {
     if (res.code == 200) {
       batchDelete.value = false
       onLoadData()
-      $message.success('删除成功！')
+      window.$message.success('删除成功！')
     }
   })
 }
@@ -149,10 +149,10 @@ const onAssignAdmin = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          $message.success('操作成功！')
+          window.$message.success('操作成功！')
           onLoadData()
         } else {
-          $message.error(res.message)
+          window.$message.error(res.message)
         }
       })
     },
@@ -171,10 +171,10 @@ const onTransfer = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          $message.success('操作成功！')
+          window.$message.success('操作成功！')
           onLoadData()
         } else {
-          $message.error(res.message)
+          window.$message.error(res.message)
         }
       })
     },
@@ -200,10 +200,10 @@ const onForbidden = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          $message.success('操作成功！')
+          window.$message.success('操作成功！')
           onLoadData()
         } else {
-          $message.error(res.message)
+          window.$message.error(res.message)
         }
       })
     },
