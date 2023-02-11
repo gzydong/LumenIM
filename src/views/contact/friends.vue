@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { NSpace, NDivider, NTag, NTabs, NTab, NDropdown } from 'naive-ui'
-import { SearchOutline, AddOutline } from '@vicons/ionicons5'
+import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
+import { SearchOutline, AddOutline,EllipsisHorizontalSharp } from '@vicons/ionicons5'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import ApplyListModal from './inner/ApplyListModal.vue'
@@ -9,7 +9,7 @@ import UserSearchModal from './inner/UserSearchModal.vue'
 import { modal } from '@/utils/common'
 import { toTalk } from '@/utils/talk'
 import { useUserStore } from '@/store/user'
-import { ServeGetContacts } from '@/api/contacts'
+import { ServeGetContacts, ServeContactGroupList } from '@/api/contacts'
 
 const userStore = useUserStore()
 const isShowDrawer = ref(false)
@@ -17,34 +17,17 @@ const isShowUserSearch = ref(false)
 const keywords = ref('')
 const index = ref(0)
 const items = ref([])
-const groups = ref([
-  {
-    id: 0,
-    name: '全部好友',
-    count: 0,
-  },
-  {
-    id: 1,
-    name: '家人',
-    count: 0,
-  },
-  {
-    id: 2,
-    name: '同事',
-    count: 0,
-  },
-  {
-    id: 3,
-    name: '朋友',
-    count: 0,
-  },
-])
+const groups = ref([])
 
 const filter = computed(() => {
   return items.value.filter(item => {
     let findIndex = item.nickname
       .toLowerCase()
       .indexOf(keywords.value.toLowerCase())
+
+    if (index.value == 0) {
+      return findIndex != -1
+    }
 
     return findIndex != -1 && index.value == item.group_id
   })
@@ -53,13 +36,13 @@ const filter = computed(() => {
 const onLoadData = () => {
   ServeGetContacts().then(res => {
     if (res.code == 200) {
-      items.value =
-        res.data.items.map(item => {
-          item.group_id = 0
-          return item
-        }) || []
+      items.value = res.data.items || []
+    }
+  })
 
-      groups.value[0].count = items.value.length
+  ServeContactGroupList().then(res => {
+    if (res.code == 200) {
+      groups.value = res.data.items || []
     }
   })
 }
@@ -124,7 +107,7 @@ onLoadData()
 
           <n-dropdown
             :animated="true"
-            trigger="click"
+            trigger="hover"
             :show-arrow="false"
             @select="onToolsMenu"
             :options="[
@@ -140,7 +123,7 @@ onLoadData()
           >
             <n-button circle>
               <template #icon>
-                <n-icon :component="AddOutline" />
+                <n-icon :component="EllipsisHorizontalSharp" />
               </template>
             </n-button>
           </n-dropdown>
@@ -148,7 +131,7 @@ onLoadData()
       </div>
     </header>
 
-    <header class="el-header pd-10">
+    <header  v-if="groups.length" class="el-header pd-10">
       <n-tabs type="line" v-model:value="index">
         <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">
           {{ tab.name }}({{ tab.count }})
@@ -165,7 +148,7 @@ onLoadData()
         <MemberCard
           v-for="item in filter"
           :avatar="item.avatar"
-          :username="item.friend_remark || item.nickname"
+          :username="item.remark || item.nickname"
           :gender="item.gender"
           :motto="item.motto"
           flag="查看"

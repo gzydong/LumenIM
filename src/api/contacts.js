@@ -48,3 +48,8 @@ export const ServeFindFriendApplyNum = () => {
 export const ServeSearchUser = data => {
   return get('/api/v1/contact/detail', data)
 }
+
+// 搜索用户信息服务接口
+export const ServeContactGroupList = data => {
+  return get('/api/v1/contact/group/list', data)
+}

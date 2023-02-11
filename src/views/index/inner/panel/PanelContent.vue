@@ -432,6 +432,7 @@ onMounted(() => {
                 :code="item.code_block.code"
                 :lang="item.code_block.lang"
                 @contextmenu.prevent="onContextMenu($event, item)"
+                style="max-width: 330px;max-height: 200px;"
               />
 
               <!-- 投票消息 -->
