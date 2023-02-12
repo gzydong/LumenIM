@@ -1,11 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
-import { SearchOutline, AddOutline,EllipsisHorizontalSharp } from '@vicons/ionicons5'
+import { SearchOutline, EllipsisHorizontalSharp } from '@vicons/ionicons5'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import ApplyListModal from './inner/ApplyListModal.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
+import GroupManage from './inner/GroupManage.vue'
 import { modal } from '@/utils/common'
 import { toTalk } from '@/utils/talk'
 import { useUserStore } from '@/store/user'
@@ -14,6 +15,7 @@ import { ServeGetContacts, ServeContactGroupList } from '@/api/contacts'
 const userStore = useUserStore()
 const isShowDrawer = ref(false)
 const isShowUserSearch = ref(false)
+const isShowGroupModal = ref(false)
 const keywords = ref('')
 const index = ref(0)
 const items = ref([])
@@ -21,10 +23,9 @@ const groups = ref([])
 
 const filter = computed(() => {
   return items.value.filter(item => {
-    let findIndex = item.nickname
-      .toLowerCase()
-      .indexOf(keywords.value.toLowerCase())
+    let value = item.remark || item.nickname
 
+    let findIndex = value.toLowerCase().indexOf(keywords.value.toLowerCase())
     if (index.value == 0) {
       return findIndex != -1
     }
@@ -68,6 +69,8 @@ const onToolsMenu = value => {
       break
     case 'group':
       window.$message.info('待完善...')
+
+      isShowGroupModal.value = true
       break
   }
 }
@@ -131,7 +134,7 @@ onLoadData()
       </div>
     </header>
 
-    <header  v-if="groups.length" class="el-header pd-10">
+    <header v-if="groups.length" class="el-header pd-10">
       <n-tabs type="line" v-model:value="index">
         <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">
           {{ tab.name }}({{ tab.count }})
@@ -172,6 +175,9 @@ onLoadData()
 
   <!-- 用户查询模态框 -->
   <UserSearchModal v-model:show="isShowUserSearch" />
+
+  <!-- 分组管理 -->
+  <GroupManage v-if="isShowGroupModal" @close="isShowGroupModal = false" />
 </template>
 
 <style lang="less" scoped>
@@ -184,14 +190,6 @@ onLoadData()
 }
 
 #drawer-target {
-  .tags {
-    margin-bottom: 10px;
-    .tag {
-      margin-right: 8px;
-      margin-bottom: 5px;
-    }
-  }
-
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

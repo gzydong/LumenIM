@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { NMention,InternalSelectMenu } from 'naive-ui'
+import { NMention } from 'naive-ui'
 
 const options = [
   {
