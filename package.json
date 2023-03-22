@@ -40,7 +40,7 @@
   },
   "build": {
     "appId": "com.gzydong.Lumen-IM",
-    "productName": "Lumen IM",
+    "productName": "LumenIM",
     "copyright": "Copyright © 2022 Lumen IM",
     "mac": {
       "category": "public.app-category.utilities",

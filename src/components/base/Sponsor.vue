@@ -28,13 +28,13 @@ const onClose = () => {
       <div class="main">
         <div class="pay-box">
           <img
-            src="https://cdn.learnku.com/uploads/images/202101/30/46424/PPYHOUhCb4.jpg"
+            src="https://im.gzydong.club/public/media/image/talk/20230226/dfc440a2bdb2ae852d57a2003b3b350b_737x742.png"
           />
           <p>支付宝</p>
         </div>
         <div class="pay-box">
           <img
-            src="https://cdn.learnku.com/uploads/images/202101/30/46424/XLmCJjbvlQ.png"
+            src="https://im.gzydong.club/public/media/image/talk/20230226/6493e01b44b6e5cb6a219cea863eb13e_621x620.png"
           />
           <p>微信</p>
         </div>

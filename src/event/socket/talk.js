@@ -85,8 +85,7 @@ class Talk extends Base {
 
     switch (this.resource.msg_type) {
       case 2:
-        let file_type = this.resource.file.file_type
-        text = file_type == 1 ? '[图片消息]' : '[文件消息]'
+        text = '[文件消息]'
         break
       case 3:
         text = '[会话记录]'
@@ -113,7 +112,6 @@ class Talk extends Base {
   }
 
   handle() {
-
     // TODO 需要做消息去重处理
 
     if (!this.isCurrSender()) {
@@ -194,7 +192,7 @@ class Talk extends Base {
     if (!this.isCurrSender()) {
       // 推送已读消息
       setTimeout(() => {
-        socket.emit('event_talk_read', {
+        socket.emit('im.message.read', {
           receiver_id: this.sender_id,
           msg_id: [this.resource.id],
         })

@@ -1,7 +1,5 @@
 # Lumen IM 即时聊天
-<img alt="GitHub stars badge" src="https://img.shields.io/github/stars/gzydong/LumenIM">
-<img alt="GitHub forks badge" src="https://img.shields.io/github/forks/gzydong/LumenIM">
-<img alt="GitHub license badge" src="https://img.shields.io/github/license/gzydong/LumenIM">
+<img alt="GitHub stars badge" src="https://img.shields.io/github/stars/gzydong/LumenIM"> <img alt="GitHub forks badge" src="https://img.shields.io/github/forks/gzydong/LumenIM"> <img alt="GitHub license badge" src="https://img.shields.io/github/license/gzydong/LumenIM">
 
 ###  项目介绍
 Lumen IM 是一个网页版即时聊天系统，界面简约美观

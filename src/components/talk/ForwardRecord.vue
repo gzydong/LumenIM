@@ -24,7 +24,7 @@ const onLoadData = () => {
     record_id: props.recordId,
   }).then(res => {
     if (res.code == 200) {
-      records.value = res.data.rows || []
+      records.value = res.data.items || []
 
       title.value = `会话记录(${records.value.length})`
     }
@@ -57,7 +57,7 @@ onLoadData()
     <div class="main-box me-scrollbar">
       <Loading v-if="records.length === 0" />
 
-      <div v-for="item in records" :key="item.id" class="message-item">
+      <div v-for="item in records" :key="item.msg_id" class="message-item">
         <div class="left-box">
           <n-avatar :size="30" :src="item.avatar" />
         </div>
@@ -80,36 +80,36 @@ onLoadData()
 
           <!-- 文件 - 图片消息 -->
           <image-message
-            v-else-if="item.msg_type == 2 && item.file.type == 1"
-            :src="item.file.url"
+            v-else-if="item.msg_type == 2 && item.extra.type == 1"
+            :src="item.extra.url"
           />
 
           <!-- 文件 - 音频消息 -->
           <audio-message
-            v-else-if="item.msg_type == 2 && item.file.type == 2"
-            :src="item.file.url"
+            v-else-if="item.msg_type == 2 && item.extra.type == 2"
+            :src="item.extra.url"
           />
 
           <!-- 文件 - 视频消息 -->
           <video-message
-            v-else-if="item.msg_type == 2 && item.file.type == 3"
-            :src="item.file.url"
+            v-else-if="item.msg_type == 2 && item.extra.type == 3"
+            :src="item.extra.url"
           />
 
           <!-- 文件消息 -->
           <file-message
-            v-else-if="item.msg_type == 2 && item.file && item.file.type == 4"
-            :file-name="item.file.original_name"
-            :size="item.file.size"
-            :ext="item.file.suffix"
+            v-else-if="item.msg_type == 2 && item.extra && item.extra.type == 4"
+            :file-name="item.extra.original_name"
+            :size="item.extra.size"
+            :ext="item.extra.suffix"
             :record-id="item.id"
           />
 
           <!-- 代码块消息 -->
           <code-message
             v-else-if="item.msg_type == 4"
-            :code="item.code_block.code"
-            :lang="item.code_block.lang"
+            :code="item.extra.code"
+            :lang="item.extra.lang"
           />
 
           <div v-else class="other-message">未知消息类型</div>

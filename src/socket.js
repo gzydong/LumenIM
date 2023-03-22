@@ -7,6 +7,7 @@ import WsSocket from './plugins/ws-socket'
 import EventTalk from './event/socket/talk'
 import EventKeyboard from './event/socket/keyboard'
 import EventLogin from './event/socket/login'
+import EventRevoke from './event/socket/revoke'
 import { NAvatar } from 'naive-ui'
 import { notifyIcon } from '@/constant/default'
 
@@ -78,16 +79,16 @@ class Socket {
    * 注册回调消息处理事件
    */
   register() {
-    this.socket.on('heartbeat', data => {
-      if (data === 'ping') {
-        this.emit('heartbeat', 'pong')
-      }
+    this.socket.on('ping', data => {
+      this.emit('pong', '')
     })
 
-    // 对话消息事件
-    this.socket.on('event_talk', data => new EventTalk(data))
+    this.socket.on('pong', data => {})
 
-    this.socket.on('event_talk_read', data => {
+    // 对话消息事件
+    this.socket.on('im.message', data => new EventTalk(data))
+
+    this.socket.on('im.message.read', data => {
       const dialogueStore = useDialogueStore()
 
       if (dialogueStore.index_name == `1_${data.sender_id}`) {
@@ -98,17 +99,17 @@ class Socket {
     })
 
     // 好友在线状态事件
-    this.socket.on('event_login', data => new EventLogin(data))
+    this.socket.on('im.contact.status', data => new EventLogin(data))
 
     // 好友键盘输入事件
-    this.socket.on('event_talk_keyboard', data => new EventKeyboard(data))
+    this.socket.on('im.message.keyboard', data => new EventKeyboard(data))
 
     // 消息撤回事件
-    this.socket.on('event_talk_revoke', data => {})
+    this.socket.on('im.message.revoke', data => new EventRevoke(data))
 
     // 好友申请事件
-    this.socket.on('event_contact_apply', data => {
-      windoes.$notification.create({
+    this.socket.on('im.contact.apply', data => {
+      window.$notification.create({
         title: '好友申请通知',
         content: data.remark,
         description: `申请人: ${data.friend.nickname}`,

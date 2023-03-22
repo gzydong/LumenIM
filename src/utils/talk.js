@@ -6,11 +6,11 @@ import { textReplaceMention } from '@/utils/strings'
 
 const KEY_INDEX_NAME = 'send_message_index_name'
 
-export function formatTalkRecord(login_uid, data) {
+export function formatTalkRecord(uid, data) {
   data.float = 'center'
 
   if (data.user_id > 0) {
-    data.float = data.user_id == login_uid ? 'right' : 'left'
+    data.float = data.user_id == uid ? 'right' : 'left'
   }
 
   data.isCheck = false

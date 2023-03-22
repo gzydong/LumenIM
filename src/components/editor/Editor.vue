@@ -71,7 +71,9 @@ watch(
     if (elEditor) {
       const talk = talkStore.findItem(dialogueStore.index_name)
 
-      elEditor.innerHTML = talk.draft_text
+      if (talk) {
+        elEditor.innerHTML = talk.draft_text
+      }
     }
   },
   { immediate: true }

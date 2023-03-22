@@ -78,7 +78,7 @@ const onLoadTalk = () => {
       return
     }
 
-    const records = res.data.rows || []
+    const records = res.data.items || []
 
     records.map(item => formatTalkRecord(props.uid, item))
 
@@ -95,10 +95,12 @@ const onLoadTalk = () => {
         }
       }
 
-      socket.emit('event_talk_read', {
-        receiver_id: props.receiver_id,
-        msg_id: msgIds,
-      })
+      if (msgIds.length) {
+        socket.emit('im.message.read', {
+          receiver_id: props.receiver_id,
+          msg_id: msgIds,
+        })
+      }
     }
 
     dialogueStore.unshiftDialogueRecord(records.reverse())
@@ -304,10 +306,15 @@ onMounted(() => {
         <span v-else class="no-more"> 没有更多消息了 </span>
       </div>
 
-      <div class="message-item" v-for="(item, index) in records" :key="item.id">
+      <div
+        class="message-item"
+        v-for="(item, index) in records"
+        :key="item.msg_id"
+        :data-msg_id="item.msg_id"
+      >
         <!-- 群消息 -->
         <div v-if="item.msg_type == 9" class="message-box">
-          <invite-message :invite="item.invite" @user-info="onUserInfo" />
+          <invite-message :invite="item.extra" @user-info="onUserInfo" />
         </div>
 
         <!-- 撤回消息 -->
@@ -362,13 +369,12 @@ onMounted(() => {
               class="talk-title"
               :class="{ show: talk_type == 2 && item.float == 'left' }"
             >
-            <span>
+              <span>
                 {{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}
               </span>
               <span v-show="talk_type == 2 && item.float == 'left'">{{
                 item.friend_remarks || item.nickname
               }}</span>
-              
             </div>
 
             <div
@@ -389,9 +395,9 @@ onMounted(() => {
               <!-- 图片消息 -->
               <image-message
                 v-else-if="
-                  item.msg_type == 2 && item.file && item.file.type == 1
+                  item.msg_type == 2 && item.extra && item.extra.type == 1
                 "
-                :src="item.file.url"
+                :src="item.extra.url"
                 :float="item.float"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
@@ -399,20 +405,20 @@ onMounted(() => {
               <!-- 音频文件预留 -->
               <audio-message
                 v-else-if="
-                  item.msg_type == 2 && item.file && item.file.type == 2
+                  item.msg_type == 2 && item.extra && item.extra.type == 2
                 "
-                :src="item.file.url"
+                :src="item.extra.url"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 
               <!-- 文件消息 -->
               <file-message
                 v-else-if="
-                  item.msg_type == 2 && item.file && item.file.type == 4
+                  item.msg_type == 2 && item.extra && item.extra.type == 4
                 "
-                :file-name="item.file.original_name"
-                :size="item.file.size"
-                :ext="item.file.suffix"
+                :file-name="item.extra.original_name"
+                :size="item.extra.size"
+                :ext="item.extra.suffix"
                 :record-id="item.id"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
@@ -420,31 +426,30 @@ onMounted(() => {
               <!-- 会话记录消息 -->
               <forward-message
                 v-else-if="item.msg_type == 3"
+                :data="item.extra"
                 :record-id="item.id"
-                :records="item.forward.list"
-                :num="item.forward.num"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 
               <!-- 代码块消息 -->
               <code-message
                 v-else-if="item.msg_type == 4"
-                :code="item.code_block.code"
-                :lang="item.code_block.lang"
+                :code="item.extra.code"
+                :lang="item.extra.lang"
                 @contextmenu.prevent="onContextMenu($event, item)"
-                style="max-width: 330px;max-height: 200px;"
+                style="max-width: 330px; max-height: 200px"
               />
 
               <!-- 投票消息 -->
               <vote-message
                 v-else-if="item.msg_type == 5"
-                :title="item.vote.detail.title"
-                :mode="item.vote.detail.answer_mode"
-                :options="item.vote.detail.answer_option"
-                :statistics="item.vote.statistics"
-                :answer_num="item.vote.detail.answer_num"
-                :answered_num="item.vote.detail.answered_num"
-                :vote_users="item.vote.vote_users"
+                :title="item.extra.detail.title"
+                :mode="item.extra.detail.answer_mode"
+                :options="item.extra.detail.answer_option"
+                :statistics="item.extra.statistics"
+                :answer_num="item.extra.detail.answer_num"
+                :answered_num="item.extra.detail.answered_num"
+                :vote_users="item.extra.vote_users"
                 :record_id="item.id"
                 :user_id="uid"
                 @contextmenu.prevent="onContextMenu($event, item)"
@@ -453,11 +458,11 @@ onMounted(() => {
               <!-- 登录消息 -->
               <login-message
                 v-else-if="item.msg_type == 8"
-                :ip="item.login.ip || ''"
-                :address="item.login.address"
-                :datetime="item.login.created_at"
-                :reason="item.login.reason"
-                :platform="item.login.agent"
+                :ip="item.extra.ip || ''"
+                :address="item.extra.address"
+                :datetime="item.extra.datetime"
+                :reason="item.extra.reason"
+                :platform="item.extra.agent"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 

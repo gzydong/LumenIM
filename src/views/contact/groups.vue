@@ -28,7 +28,7 @@ const filter = computed(() => {
 const onLoadData = () => {
   ServeGetGroups().then(res => {
     if (res.code == 200) {
-      items.value = res.data.rows || []
+      items.value = res.data.items || []
     }
   })
 }

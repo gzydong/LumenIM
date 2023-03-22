@@ -63,12 +63,12 @@ const loadChatRecord = () => {
       records.value = []
     }
 
-    let items = res.data.rows || []
+    let items = res.data.items || []
 
     records.value.push(...items)
 
     if (items.length) {
-      model.recordId = items[items.length - 1].id
+      model.recordId = res.data.record_id
     }
 
     model.loading = false
@@ -181,58 +181,59 @@ loadChatRecord()
 
             <!-- 文件 - 图片消息 -->
             <image-message
-              v-else-if="item.msg_type == 2 && item.file.type == 1"
-              :src="item.file.url"
+              v-else-if="item.msg_type == 2 && item.extra.type == 1"
+              :src="item.extra.url"
               float="left"
             />
 
             <!-- 文件 - 音频消息 -->
             <audio-message
-              v-else-if="item.msg_type == 2 && item.file.type == 2"
-              :src="item.file.url"
+              v-else-if="item.msg_type == 2 && item.extra.type == 2"
+              :src="item.extra.url"
             />
 
             <!-- 文件 - 视频消息 -->
             <video-message
-              v-else-if="item.msg_type == 2 && item.file.type == 3"
-              :src="item.file.url"
+              v-else-if="item.msg_type == 2 && item.extra.type == 3"
+              :src="item.extra.url"
             />
 
             <!-- 文件消息 -->
             <file-message
-              v-else-if="item.msg_type == 2 && item.file && item.file.type == 4"
-              :file-name="item.file.original_name"
-              :size="item.file.size"
-              :ext="item.file.suffix"
+              v-else-if="
+                item.msg_type == 2 && item.extra && item.extra.type == 4
+              "
+              :file-name="item.extra.original_name"
+              :size="item.extra.size"
+              :ext="item.extra.suffix"
               :record-id="item.id"
             />
 
             <!-- 会话记录消息 -->
             <forward-message
               v-else-if="item.msg_type == 3"
+              :data="item.extra"
               :record-id="item.id"
-              :records="item.forward.list"
-              :num="item.forward.num"
               @contextmenu.prevent="onContextMenu($event, item)"
             />
 
             <!-- 代码块消息 -->
             <code-message
               v-else-if="item.msg_type == 4"
-              :code="item.code_block.code"
-              :lang="item.code_block.lang"
+              :code="item.extra.code"
+              :lang="item.extra.lang"
             />
 
             <!-- 投票消息 -->
             <vote-message
               v-else-if="item.msg_type == 5"
-              :title="item.vote.detail.title"
-              :mode="item.vote.detail.answer_mode"
-              :options="item.vote.detail.answer_option"
-              :statistics="item.vote.statistics"
-              :answer_num="item.vote.detail.answer_num"
-              :answered_num="item.vote.detail.answered_num"
-              :vote_users="item.vote.vote_users"
+              :title="item.extra.detail.title"
+              :mode="item.extra.detail.answer_mode"
+              :options="item.extra.detail.answer_option"
+              :statistics="item.extra.statistics"
+              :answer_num="item.extra.detail.answer_num"
+              :answered_num="item.extra.detail.answered_num"
+              :vote_users="item.extra.vote_users"
               :record_id="item.id"
               :user_id="uid"
             />

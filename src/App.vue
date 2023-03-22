@@ -1,5 +1,6 @@
 <script setup>
 import { watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useNotifyStore } from '@/store/notify'
 import { useTalkStore } from '@/store/talk'
@@ -21,6 +22,7 @@ import { applyNotificationAuth } from '@/utils/notification'
 const notifyStore = useNotifyStore()
 const userStore = useUserStore()
 const useTalk = useTalkStore()
+const router = useRouter()
 
 if (isLoggedIn()) {
   socket.connect()
@@ -49,8 +51,20 @@ document.addEventListener('visibilitychange', () => {
   if (!notifyStore.isLeaveWeb) {
     console.info('已回到页面...')
 
+    if (!isLoggedIn()) {
+      window['$dialog'].info({
+        title: '友情提示',
+        content: '当前登录已失效，请重新登录？',
+        positiveText: '立即登录?',
+        maskClosable: false,
+        onPositiveClick: () => {
+          router.push('/auth/login')
+        },
+      })
+    }
+
     let paths = ['/auth/login', '/auth/register', '/auth/forget']
-    if (!paths.includes(window.location.pathname)) {
+    if (!paths.includes(window.location.pathname) && isLoggedIn()) {
       !socket.isConnect() && socket.connect()
     }
   }

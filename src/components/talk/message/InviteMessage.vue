@@ -15,21 +15,24 @@ const onCatInfo = uid => {
 
 <template>
   <div class="invite-message">
-    <div v-if="invite.type == 1 || invite.type == 3" class="sys-text">
-      <a @click="onCatInfo(invite.operate_user.id)">
-        {{ invite.operate_user.nickname }}
+    <div v-if="invite.action == 1 || invite.action == 2" class="sys-text">
+      <a @click="onCatInfo(invite.operator.uid)">
+        {{ invite.operator.nickname }}
       </a>
-      <span>{{ invite.type == 1 ? '邀请了' : '将' }}</span>
-      <template v-for="(user, uidx) in invite.users">
-        <a @click="onCatInfo(user.id)">{{ user.nickname }}</a>
-        <em v-show="uidx < invite.users.length - 1">、</em>
+
+      <span>{{ invite.action == 1 ? '邀请了' : '将' }}</span>
+
+      <template v-for="(user, uidx) in invite.members">
+        <a @click="onCatInfo(user.uid)">{{ user.nickname }}</a>
+        <em v-show="uidx < invite.members.length - 1">、</em>
       </template>
-      <span>{{ invite.type == 1 ? '加入了群聊' : '踢出了群聊' }}</span>
+
+      <span>{{ invite.action == 1 ? '加入了群聊' : '踢出了群聊' }}</span>
     </div>
 
-    <div v-else-if="invite.type == 2" class="sys-text">
-      <a @click="onCatInfo(invite.operate_user.id)">
-        {{ invite.operate_user.nickname }}
+    <div v-else-if="invite.action == 3" class="sys-text">
+      <a @click="onCatInfo(invite.operator.uid)">
+        {{ invite.operator.nickname }}
       </a>
       <span>退出了群聊</span>
     </div>
