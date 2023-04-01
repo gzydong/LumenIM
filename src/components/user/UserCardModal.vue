@@ -1,16 +1,12 @@
 <script setup>
-import { ref, reactive } from 'vue'
-import { NIcon, NModal, NButton, NInput, NAvatar } from 'naive-ui'
-import {
-  PaperPlaneOutline,
-  Add,
-  CreateOutline,
-  CloseCircleSharp,
-} from '@vicons/ionicons5'
+import { ref, reactive, computed } from 'vue'
+import { NIcon, NModal, NButton, NInput, NAvatar, NDropdown } from 'naive-ui'
+import { PaperPlaneOutline, Add, CloseCircleSharp } from '@vicons/ionicons5'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
 import { defAvatar } from '@/constant/default'
+import { ServeContactGroupList, ServeContactMoveGroup } from '@/api/contacts'
 
 const props = defineProps({
   uid: {
@@ -23,6 +19,7 @@ const props = defineProps({
   },
 })
 
+const isOpenFrom = ref(false)
 const showModal = ref(false)
 const state = reactive({
   id: 0,
@@ -37,7 +34,18 @@ const state = reactive({
   text: '',
 })
 
-const isOpenFrom = ref(false)
+const options = reactive([])
+const groupName = computed(() => {
+  const item = options.find(item => {
+    return item.key == state.group_id
+  })
+
+  if (item) {
+    return item.label
+  }
+
+  return '未设置分组'
+})
 
 const onLoadData = () => {
   ServeSearchUser({
@@ -52,9 +60,19 @@ const onLoadData = () => {
       state.remark = data.nickname_remark
       state.email = data.email || ''
       state.status = data.friend_status
+      state.group_id = data.group_id
       showModal.value = true
     } else {
       window.$message.info('用户信息不存在！', { showIcon: false })
+    }
+  })
+
+  ServeContactGroupList().then(res => {
+    if (res.code == 200) {
+      let items = res.data.items || []
+      for (const iter of items) {
+        options.push({ label: iter.name, key: iter.id })
+      }
     }
   })
 }
@@ -78,6 +96,20 @@ const onJoinContact = () => {
       window.$message.success('申请发送成功！')
     } else {
       window.$message.error(res.message)
+    }
+  })
+}
+
+const handleSelectGroup = value => {
+  ServeContactMoveGroup({
+    user_id: props.uid,
+    group_id: value,
+  }).then(({ code, message }) => {
+    if (code == 200) {
+      state.group_id = value
+      $message.success('分组修改成功！')
+    } else {
+      $message.error(message)
     }
   })
 }
@@ -132,32 +164,40 @@ onLoadData()
 
           <div class="infos">
             <div class="info-item">
-              <span class="name">手机</span>
+              <span class="name">手机 :</span>
               <span class="text">{{ state.mobile }}</span>
             </div>
             <div class="info-item">
-              <span class="name">昵称</span>
+              <span class="name">昵称 :</span>
               <span class="text">{{ state.nickname || '-' }}</span>
             </div>
             <div class="info-item">
-              <span class="name">性别</span>
+              <span class="name">性别 :</span>
               <span class="text">{{
                 state.gender == 1 ? '男' : state.gender == 2 ? '女' : '未知'
               }}</span>
             </div>
-            <div class="info-item">
-              <span class="name">备注</span>
-              <span
-                class="text pointer"
-                style="display: flex; align-items: center"
-              >
+            <div class="info-item" v-if="state.status == 2">
+              <span class="name">备注 :</span>
+              <span class="text edit pointer">
                 {{ state.remark || '未设置' }}&nbsp;&nbsp;
-                <n-icon :component="CreateOutline" :size="18" />
               </span>
             </div>
             <div class="info-item">
-              <span class="name">邮箱</span>
+              <span class="name">邮箱 :</span>
               <span class="text">{{ state.email || '-' }}</span>
+            </div>
+            <div class="info-item" v-if="state.status == 2">
+              <span class="name">分组 :</span>
+              <n-dropdown
+                trigger="click"
+                placement="bottom-start"
+                :show-arrow="true"
+                :options="options"
+                @select="handleSelectGroup"
+              >
+                <span class="text edit pointer">{{ groupName }}</span>
+              </n-dropdown>
             </div>
           </div>
         </main>
@@ -221,7 +261,6 @@ onLoadData()
   height: 600px;
   background-color: #ffffff;
   border-radius: 5px;
-  overflow: hidden;
 
   .header {
     height: 180px;
@@ -243,6 +282,7 @@ onLoadData()
       background-size: 100%;
       overflow: hidden;
       object-fit: cover;
+      border-radius: 5px 5px 0 0;
 
       .close-box {
         position: absolute;
@@ -378,6 +418,12 @@ onLoadData()
       flex: 1 auto;
       margin-left: 5px;
       color: #736f6f;
+    }
+
+    .edit {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      text-underline-offset: 3px;
     }
   }
 }

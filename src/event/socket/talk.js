@@ -116,7 +116,7 @@ class Talk extends Base {
 
     if (!this.isCurrSender()) {
       // 判断消息是否来自于我自己，否则会提示消息通知
-      this.showMessageNocice()
+      // this.showMessageNocice()
     }
 
     // 判断会话列表是否存在，不存在则创建

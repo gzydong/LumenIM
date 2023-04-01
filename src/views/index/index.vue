@@ -16,7 +16,10 @@ onUnmounted(() => {
 <template>
   <IMLayout>
     <section class="el-container height100">
-      <aside class="el-aside bdr-r" style="width: 320px">
+      <aside
+        class="el-aside bdr-r test-bor"
+        style="width: 320px; position: relative"
+      >
         <IndexSider />
       </aside>
 
@@ -27,3 +30,18 @@ onUnmounted(() => {
     </section>
   </IMLayout>
 </template>
+
+<!-- <style lang="less">
+.test-bor:after {
+  content: ' ';
+  width: 3px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -2px;
+  cursor: ew-resize;
+  :hover {
+    background-color: red;
+  }
+}
+</style> -->

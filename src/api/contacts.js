@@ -53,3 +53,7 @@ export const ServeSearchUser = data => {
 export const ServeContactGroupList = data => {
   return get('/api/v1/contact/group/list', data)
 }
+
+export const ServeContactMoveGroup = data => {
+  return post('/api/v1/contact/move-group', data)
+}
