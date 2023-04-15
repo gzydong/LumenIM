@@ -2,55 +2,15 @@
 import { reactive, computed, onMounted } from 'vue'
 import { NCheckbox, NProgress } from 'naive-ui'
 import { ServeConfirmVoteHandle } from '@/api/chat'
+import { useUserStore } from '@/store/user'
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: '',
-  },
-  mode: {
-    type: Number,
-    default: 0,
-  },
-  options: {
-    type: Array,
-    default: () => {
-      return []
-    },
-  },
-  answer_num: {
-    type: Number,
-    default: 0,
-  },
-  answered_num: {
-    type: Number,
-    default: 0,
-  },
-  statistics: {
-    type: Object,
-    default: () => {
-      return {
-        count: 0,
-        options: {},
-      }
-    },
-  },
-  vote_users: {
-    type: Array,
-    default: () => {
-      return []
-    },
-  },
-  record_id: {
-    type: Number,
-    default: 0,
-  },
-  user_id: {
-    type: Number,
-    default: 0,
-  },
+  extra: Object,
+  data: Object,
 })
 
+const userStore = useUserStore()
+const mode = props.extra.detail.answer_mode
 const state = reactive({ options: [] })
 
 // 是否可提交
@@ -60,7 +20,7 @@ const isCanSubmit = computed(() => {
 
 // 是否已投票
 const isVoted = computed(() => {
-  return props.vote_users.some(item => item == props.user_id)
+  return props.extra.vote_users.some(item => item == userStore.uid)
 })
 
 /**
@@ -102,7 +62,7 @@ function updateStatistics(data) {
  * @param {*} option
  */
 function change(data, option) {
-  if (props.mode == 0) {
+  if (mode == 0) {
     state.options.forEach(option => (option.is_checked = false))
   }
 
@@ -122,19 +82,19 @@ const onSubmit = () => {
   })
 
   ServeConfirmVoteHandle({
-    record_id: props.record_id,
+    record_id: props.data.id,
     options: items.join(','),
   }).then(res => {
     if (res.code == 200) {
       updateStatistics(res.data)
-      props.vote_users.push(props.user_id)
+      props.extra.vote_users.push(userStore.uid)
     }
   })
 }
 
 onMounted(() => {
-  setOptions(props.options)
-  updateStatistics(props.statistics)
+  setOptions(props.extra.detail.answer_option)
+  updateStatistics(props.extra.statistics)
 })
 </script>
 
@@ -145,7 +105,7 @@ onMounted(() => {
         <p style="font-weight: bold">
           {{ mode == 1 ? '[多选投票]' : '[单选投票]' }}
         </p>
-        <p>{{ title }}</p>
+        <p>{{ extra.detail.title }}</p>
       </div>
 
       <template v-if="isVoted">
@@ -165,8 +125,8 @@ onMounted(() => {
           </div>
         </div>
         <div class="vfooter vote-view">
-          <p>应参与人数：{{ answer_num }} 人</p>
-          <p>实际参与人数：{{ answered_num }} 人</p>
+          <p>应参与人数：{{ extra.detail.answer_num }} 人</p>
+          <p>实际参与人数：{{ extra.detail.answered_num }} 人</p>
         </div>
       </template>
       <template v-else>
@@ -255,6 +215,7 @@ onMounted(() => {
         .text {
           margin-left: 10px;
           cursor: pointer;
+          line-height: 26px;
         }
 
         &.radio {

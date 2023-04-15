@@ -18,10 +18,8 @@ export const defAvatar = new URL(
   import.meta.url
 ).href
 
-export const notifyIcon = new URL(
-  `../assets/image/notify.png`,
-  import.meta.url
-).href
+export const notifyIcon = new URL(`../assets/image/notify.png`, import.meta.url)
+  .href
 
 export const defBanner = new URL(
   `../assets/image/default-user-banner.png`,

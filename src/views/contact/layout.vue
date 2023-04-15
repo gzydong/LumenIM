@@ -6,8 +6,8 @@ import {
   BalloonOutline,
   PeopleOutline,
 } from '@vicons/ionicons5'
-import IMLayout from '@/views/layout/IMLayout.vue'
-import SubViewLayout from '@/components/base/SubViewLayout.vue'
+import Layout from '@/layout/index.vue'
+import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()
@@ -43,7 +43,7 @@ const menus = reactive([
 </script>
 
 <template>
-  <IMLayout :index="1">
+  <Layout :index="1">
     <SubViewLayout title="通信录" :menus="menus" />
-  </IMLayout>
+  </Layout>
 </template>

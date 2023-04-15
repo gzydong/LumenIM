@@ -5,8 +5,8 @@ import {
   ShirtOutline,
   NotificationsOutline,
 } from '@vicons/ionicons5'
-import IMLayout from '@/views/layout/IMLayout.vue'
-import SubViewLayout from '@/components/base/SubViewLayout.vue'
+import Layout from '@/layout/index.vue'
+import SubViewLayout from '@/layout/SubViewLayout.vue'
 
 const menus = [
   {
@@ -38,7 +38,7 @@ const menus = [
 </script>
 
 <template>
-  <IMLayout :index="4">
+  <Layout :index="4">
     <SubViewLayout title="我的设置" :menus="menus" />
-  </IMLayout>
+  </Layout>
 </template>

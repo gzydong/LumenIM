@@ -3,33 +3,14 @@ import { computed, ref } from 'vue'
 import ForwardRecord from '../ForwardRecord.vue'
 
 const props = defineProps({
-  recordId: {
-    type: Number,
-    default: 0,
-  },
-  records: {
-    type: Array,
-    default: () => [],
-  },
-  num: {
-    type: Number,
-    default: 0,
-  },
-  data: {
-    type: Object,
-    default: () => {
-      return {
-        msg_ids: [],
-        records: [],
-      }
-    },
-  },
+  extra: Object,
+  data: Object,
 })
 
 const isShowRecord = ref(false)
 
 const title = computed(() => {
-  return [...new Set(props.data.records.map(v => v.nickname))].join('、')
+  return [...new Set(props.extra.records.map(v => v.nickname))].join('、')
 })
 
 const onClick = () => {
@@ -39,8 +20,7 @@ const onClick = () => {
 <template>
   <section class="forward-message pointer" @click="onClick">
     <div class="title">{{ title }} 的会话记录</div>
-
-    <div class="list" v-for="(record, index) in data.records" :key="index">
+    <div class="list" v-for="(record, index) in extra.records" :key="index">
       <p>
         <span>{{ record.nickname }}: </span>
         <span>{{ record.text }}</span>
@@ -48,12 +28,12 @@ const onClick = () => {
     </div>
 
     <div class="tips">
-      <span>转发：聊天会话记录 ({{ data.msg_ids.length }}条)</span>
+      <span>转发：聊天会话记录 ({{ extra.msg_ids.length }}条)</span>
     </div>
 
     <ForwardRecord
       v-if="isShowRecord"
-      :record-id="recordId"
+      :record-id="data.id"
       @close="isShowRecord = false"
     />
   </section>

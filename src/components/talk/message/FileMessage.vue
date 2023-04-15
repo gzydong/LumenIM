@@ -3,39 +3,25 @@ import { fileFormatSize } from '@/utils/strings'
 import { download } from '@/utils/functions'
 
 defineProps({
-  recordId: {
-    type: Number,
-    default: 0,
-  },
-  fileName: {
-    type: String,
-    default: '',
-  },
-  size: {
-    type: Number,
-    default: 0,
-  },
-  ext: {
-    type: String,
-    default: '',
-  },
+  extra: Object,
+  data: Object,
 })
 </script>
 
 <template>
   <section class="file-message">
     <div class="main">
-      <div class="ext">{{ ext }}</div>
+      <div class="ext">{{ extra.suffix }}</div>
       <div class="file-box">
         <p class="info">
-          <span class="name">{{ fileName }}</span>
-          <span class="size">({{ fileFormatSize(size) }})</span>
+          <span class="name">{{ extra.name }}</span>
+          <span class="size">({{ fileFormatSize(extra.size) }})</span>
         </p>
         <p class="notice">文件已成功发送, 文件助手永久保存</p>
       </div>
     </div>
     <div class="footer">
-      <a @click="download(recordId)">下载</a>
+      <a @click="download(data.id)">下载</a>
       <a>在线预览</a>
     </div>
   </section>

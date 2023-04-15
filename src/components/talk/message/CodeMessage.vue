@@ -3,14 +3,8 @@ import { ref } from 'vue'
 import { CloseCircleSharp } from '@vicons/ionicons5'
 
 defineProps({
-  code: {
-    type: String,
-    default: '',
-  },
-  lang: {
-    type: String,
-    default: '',
-  },
+  extra: Object,
+  data: Object,
 })
 
 const isFullCat = ref(false)
@@ -21,7 +15,7 @@ const isFullCat = ref(false)
       <span class="text">详情</span>
     </p>
 
-    <highlightjs :language="lang" :code="code" />
+    <highlightjs :language="extra.lang" :code="extra.code" />
 
     <div v-if="isFullCat" class="full-code">
       <div class="close pointer" @click="isFullCat = false">
@@ -32,7 +26,11 @@ const isFullCat = ref(false)
         />
       </div>
 
-      <highlightjs :language="lang" :code="code" @contextmenu.stop />
+      <highlightjs
+        :language="extra.lang"
+        :code="extra.code"
+        @contextmenu.stop
+      />
     </div>
   </div>
 </template>

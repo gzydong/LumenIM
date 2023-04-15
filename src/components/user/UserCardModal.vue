@@ -52,15 +52,7 @@ const onLoadData = () => {
     user_id: props.uid,
   }).then(({ code, data }) => {
     if (code == 200) {
-      state.avatar = data.avatar
-      state.nickname = data.nickname
-      state.mobile = data.mobile
-      state.motto = data.motto
-      state.gender = data.gender
-      state.remark = data.nickname_remark
-      state.email = data.email || ''
-      state.status = data.friend_status
-      state.group_id = data.group_id
+      Object.assign(state, data)
       showModal.value = true
     } else {
       window.$message.info('用户信息不存在！', { showIcon: false })
@@ -177,7 +169,7 @@ onLoadData()
                 state.gender == 1 ? '男' : state.gender == 2 ? '女' : '未知'
               }}</span>
             </div>
-            <div class="info-item" v-if="state.status == 2">
+            <div class="info-item" v-if="state.friend_status == 2">
               <span class="name">备注 :</span>
               <span class="text edit pointer">
                 {{ state.remark || '未设置' }}&nbsp;&nbsp;
@@ -187,7 +179,7 @@ onLoadData()
               <span class="name">邮箱 :</span>
               <span class="text">{{ state.email || '-' }}</span>
             </div>
-            <div class="info-item" v-if="state.status == 2">
+            <div class="info-item" v-if="state.friend_status == 2">
               <span class="name">分组 :</span>
               <n-dropdown
                 trigger="click"
@@ -203,7 +195,7 @@ onLoadData()
         </main>
 
         <footer
-          v-if="state.status == 2"
+          v-if="state.friend_status == 2"
           class="el-footer footer bdr-t flex-center"
         >
           <n-button type="primary" color="#1890ff" block @click="onToTalk">
@@ -215,7 +207,7 @@ onLoadData()
         </footer>
 
         <footer
-          v-else-if="state.status == 1"
+          v-else-if="state.friend_status == 1"
           class="el-footer footer bdr-t flex-center"
         >
           <template v-if="isOpenFrom">

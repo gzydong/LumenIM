@@ -9,10 +9,8 @@ import {
 } from '@vicons/ionicons5'
 
 defineProps({
-  src: {
-    type: String,
-    default: '',
-  },
+  extra: Object,
+  data: Object,
 })
 
 const audioRef = ref(null)
@@ -97,7 +95,7 @@ function formatSeconds(value) {
       ref="audioRef"
       preload="auto"
       type="audio/mp3,audio/wav"
-      :src="src"
+      :src="extra.url"
       @timeupdate="onTimeUpdate"
       @ended="onPlayEnd"
       @canplay="onCanplay"

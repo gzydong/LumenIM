@@ -1,5 +1,5 @@
 <script setup>
-import { watchEffect } from 'vue'
+import { watchEffect, provide } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useNotifyStore } from '@/store/notify'
@@ -18,6 +18,12 @@ import MessageApi from '@/components/common/MessageApi.vue'
 import DialogApi from '@/components/common/DialogApi.vue'
 import { isLoggedIn } from '@/utils/auth'
 import { applyNotificationAuth } from '@/utils/notification'
+import { modal } from '@/utils/common'
+import UserCardModal from '@/components/user/UserCardModal.vue'
+
+provide('showUserModal', uid => {
+  modal(UserCardModal, { uid })
+})
 
 const notifyStore = useNotifyStore()
 const userStore = useUserStore()

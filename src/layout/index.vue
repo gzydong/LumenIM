@@ -1,6 +1,6 @@
 <script setup>
-import IMLayoutMenu from './IMLayoutMenu.vue'
-import Sponsor from '@/components/base/Sponsor.vue'
+import Menu from './component/menu.vue'
+import Sponsor from './component/Sponsor.vue'
 import { useNotifyStore } from '@/store/notify'
 
 const notifyStore = useNotifyStore()
@@ -22,7 +22,7 @@ defineProps({
       }"
     >
       <aside class="el-aside" style="width: 60px">
-        <IMLayoutMenu :index="index" />
+        <Menu :index="index" />
       </aside>
       <main class="el-main">
         <slot></slot>

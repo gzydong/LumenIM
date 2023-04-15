@@ -146,7 +146,9 @@ onLoad()
                   </div>
 
                   <div class="content">
-                    <span class="text-ellipsis">{{ item.nickname }}</span>
+                    <span class="text-ellipsis">{{
+                      item.remark || item.nickname
+                    }}</span>
                   </div>
 
                   <div class="checkbox">

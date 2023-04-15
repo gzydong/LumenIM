@@ -1,7 +1,7 @@
 <script setup>
 import { onUnmounted } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
-import IMLayout from '@/views/layout/IMLayout.vue'
+import Layout from '@/layout/index.vue'
 import IndexContent from './inner/IndexContent.vue'
 import IndexSider from './inner/IndexSider.vue'
 import IndexAmicable from './inner/IndexAmicable.vue'
@@ -14,7 +14,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <IMLayout>
+  <Layout>
     <section class="el-container height100">
       <aside
         class="el-aside bdr-r test-bor"
@@ -28,7 +28,7 @@ onUnmounted(() => {
         <IndexAmicable v-else />
       </main>
     </section>
-  </IMLayout>
+  </Layout>
 </template>
 
 <!-- <style lang="less">

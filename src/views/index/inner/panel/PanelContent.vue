@@ -1,21 +1,19 @@
 <script setup>
 import { reactive, watch, computed, nextTick, onMounted } from 'vue'
-import socket from '@/socket'
-import { useDialogueStore } from '@/store/dialogue'
 import { NDropdown } from 'naive-ui'
-import { formatTime, parseTime } from '@/utils/datetime'
-import { clipboard } from '@/utils/common'
-import { formatTalkRecord } from '@/utils/talk'
-import { defAvatar } from '@/constant/default'
 import {
   CheckmarkCircleSharp,
   CaretDownSharp,
   NotificationsOutline,
-  CheckmarkCircleOutline,
 } from '@vicons/ionicons5'
+import socket from '@/socket'
+import { useDialogueStore } from '@/store/dialogue'
+import { formatTime, parseTime } from '@/utils/datetime'
+import { clipboard } from '@/utils/common'
+import { formatTalkRecord } from '@/utils/talk'
+import { defAvatar } from '@/constant/default'
+import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
-import UserCardModal from '@/components/user/UserCardModal.vue'
-import { modal } from '@/utils/common'
 
 const dialogueStore = useDialogueStore()
 const props = defineProps({
@@ -265,15 +263,9 @@ const onReload = () => {
   onLoadTalk()
 }
 
-const onUserInfo = uid => {
-  modal(UserCardModal, { uid })
-}
-
 const onRowClick = item => {
   if (dialogueStore.isOpenMultiSelect) {
-    // 1:文本消息;2:文件消息;3:会话消息;4:代码消息;5:投票消息;6:群公告;7:好友申请;8:登录通知;9:入群消息/退群消息;
-    if ([1, 2, 4].includes(item.msg_type)) {
-      // 需要判断消息类型
+    if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
     } else {
       window.$message.info('此类消息不支持转发！！！')
@@ -312,9 +304,20 @@ onMounted(() => {
         :key="item.msg_id"
         :data-msg_id="item.msg_id"
       >
-        <!-- 群消息 -->
-        <div v-if="item.msg_type == 9" class="message-box">
-          <invite-message :invite="item.extra" @user-info="onUserInfo" />
+        <!-- 系统消息 -->
+        <div v-if="item.msg_type >= 1000" class="message-box">
+          <component
+            :is="MessageComponents[item.msg_type]"
+            :extra="item.extra"
+            :data="item"
+          />
+
+          <p
+            v-if="!MessageComponents[item.msg_type]"
+            style="display: flex; justify-content: center"
+          >
+            <unknown-message :extra="item.extra" :data="item" />
+          </p>
         </div>
 
         <!-- 撤回消息 -->
@@ -326,11 +329,6 @@ onMounted(() => {
             :talk_type="item.talk_type"
             :datetime="item.created_at"
           />
-        </div>
-
-        <!-- 系统消息 -->
-        <div v-else-if="item.msg_type == 0" class="message-box">
-          <system-text-message :content="item.content" />
         </div>
 
         <div
@@ -382,106 +380,22 @@ onMounted(() => {
               :class="{ pointer: dialogueStore.isOpenMultiSelect }"
               @click="onRowClick(item)"
             >
-              <!-- 文本消息 -->
-              <text-message
-                v-if="item.msg_type == 1"
-                :content="item.content"
-                :float="item.float"
-                :talk_type="talk_type"
-                style="max-width: 600px"
+              <component
+                :is="MessageComponents[item.msg_type]"
+                :extra="item.extra"
+                :data="item"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 
-              <!-- 图片消息 -->
-              <image-message
-                v-else-if="
-                  item.msg_type == 2 && item.extra && item.extra.type == 1
-                "
-                :src="item.extra.url"
-                :float="item.float"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
+              <p v-if="!MessageComponents[item.msg_type]">
+                <unknown-message :extra="item.extra" :data="item" />
+              </p>
 
-              <!-- 音频文件预留 -->
-              <audio-message
-                v-else-if="
-                  item.msg_type == 2 && item.extra && item.extra.type == 2
-                "
-                :src="item.extra.url"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
-
-              <!-- 文件消息 -->
-              <file-message
-                v-else-if="
-                  item.msg_type == 2 && item.extra && item.extra.type == 4
-                "
-                :file-name="item.extra.original_name"
-                :size="item.extra.size"
-                :ext="item.extra.suffix"
-                :record-id="item.id"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
-
-              <!-- 会话记录消息 -->
-              <forward-message
-                v-else-if="item.msg_type == 3"
-                :data="item.extra"
-                :record-id="item.id"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
-
-              <!-- 代码块消息 -->
-              <code-message
-                v-else-if="item.msg_type == 4"
-                :code="item.extra.code"
-                :lang="item.extra.lang"
-                @contextmenu.prevent="onContextMenu($event, item)"
-                style="max-width: 330px; max-height: 200px"
-              />
-
-              <!-- 投票消息 -->
-              <vote-message
-                v-else-if="item.msg_type == 5"
-                :title="item.extra.detail.title"
-                :mode="item.extra.detail.answer_mode"
-                :options="item.extra.detail.answer_option"
-                :statistics="item.extra.statistics"
-                :answer_num="item.extra.detail.answer_num"
-                :answered_num="item.extra.detail.answered_num"
-                :vote_users="item.extra.vote_users"
-                :record_id="item.id"
-                :user_id="uid"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
-
-              <!-- 登录消息 -->
-              <login-message
-                v-else-if="item.msg_type == 8"
-                :ip="item.extra.ip || ''"
-                :address="item.extra.address"
-                :datetime="item.extra.datetime"
-                :reason="item.extra.reason"
-                :platform="item.extra.agent"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
-
-              <p v-else>未知消息</p>
-
-              <!-- 预留 -->
               <div
                 v-if="talk_type == 1 && item.float == 'right'"
                 class="read-status"
               >
-                <n-icon
-                  v-if="item.is_read"
-                  size="18"
-                  color="#65c468"
-                  :component="CheckmarkCircleOutline"
-                />
-                <span v-else>未读</span>
-
-                <!-- {{ item.is_read ? '已读' : '已送达' }} -->
+                {{ item.is_read ? '已读' : '已送达' }}
               </div>
             </div>
           </main>

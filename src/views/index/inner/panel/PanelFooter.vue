@@ -49,41 +49,9 @@ const props = defineProps({
 const isShowHistory = ref(false)
 
 
-function uuid() {
-    var s = [];
-    var hexDigits = "0123456789abcdef";
-    for (var i = 0; i < 36; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-    }
-    s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-    s[8] = s[13] = s[18] = s[23] = "-";
- 
-    var uuid = s.join("");
-    return uuid;
-}
-
 // 发送文本消息
 const onSendTextEvent = throttle(value => {
   let { data, callBack } = value
-
-
-  // socket.send({
-  //   msg_id: uuid(),
-  //   ack_id: uuid(),
-  //   event: 'event.talk.text.message',
-  //   body: {
-  //     receiver: {
-  //       talk_type: props.talk_type,
-  //       receiver_id: props.receiver_id,
-  //     },
-  //     content: data.text,
-  //   },
-  // })
-
-
-  // callBack(true)
-  // return
 
   const res = ServeSendTalkText({
     receiver_id: props.receiver_id,
@@ -94,8 +62,6 @@ const onSendTextEvent = throttle(value => {
       uids: data.uids,
     },
   })
-
-
 
   res.then(({ code, message }) => {
     if (code == 200) {

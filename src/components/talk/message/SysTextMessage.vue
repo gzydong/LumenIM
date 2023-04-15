@@ -1,15 +1,13 @@
 <script setup>
 defineProps({
-  content: {
-    type: String,
-    default: '',
-  },
+  extra: Object,
+  data: Object,
 })
 </script>
 <template>
   <div class="system-text-message">
     <div class="content">
-      {{ content }}
+      {{ data.content }}
     </div>
   </div>
 </template>

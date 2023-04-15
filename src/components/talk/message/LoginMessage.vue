@@ -1,25 +1,7 @@
 <script setup>
 defineProps({
-  datetime: {
-    type: String,
-    default: '2022年03月12日 13:45:52 (CST)',
-  },
-  ip: {
-    type: String,
-    default: '111.225.145.247',
-  },
-  address: {
-    type: String,
-    default: '中国 河北省 张家口市 电信',
-  },
-  platform: {
-    type: String,
-    default: 'Chrome / Mac OS',
-  },
-  reason: {
-    type: String,
-    default: '常用设备登录',
-  },
+  extra: Object,
+  data: Object,
 })
 
 function getExploreName(userAgent = '') {
@@ -60,13 +42,14 @@ function getExploreOs(userAgent = '') {
 <template>
   <section class="login-message">
     <h4>登录操作通知</h4>
-    <p>登录时间：{{ datetime }} (CST)</p>
-    <p>IP 地址：{{ ip }}</p>
-    <p>登录地点：{{ address }}</p>
+    <p>登录时间：{{ extra.datetime }} (CST)</p>
+    <p>IP 地址：{{ extra.ip }}</p>
+    <p>登录地点：{{ extra.address }}</p>
     <p>
-      登录设备：{{ getExploreName(platform) }} / {{ getExploreOs(platform) }}
+      登录设备：{{ getExploreName(extra.platform) }} /
+      {{ getExploreOs(extra.platform) }}
     </p>
-    <p>异常原因：{{ reason }}</p>
+    <p>异常原因：{{ extra.reason }}</p>
   </section>
 </template>
 <style lang="less" scoped>

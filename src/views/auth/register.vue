@@ -187,7 +187,6 @@ onUnmounted(() => {
           class="mt-t20"
           @click="onValidate"
           :loading="model.loading"
-          round
         >
           立即注册
         </n-button>

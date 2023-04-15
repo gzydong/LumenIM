@@ -67,7 +67,7 @@ defineProps({
 
         <template v-else>
           <span
-            v-show="data.is_robot == 0 && data.talk_type == 1"
+            v-show="data.is_robot == 0 && data.talk_type == 1 && data.is_online == 1"
             :class="{ online: data.is_online == 1 }"
           >
             [{{ data.is_online == 1 ? '在线' : '离线' }}]&nbsp;

@@ -164,7 +164,6 @@ onUnmounted(() => {
           class="mt-t20"
           @click="onValidate"
           :loading="model.loading"
-          round
         >
           立即找回
         </n-button>

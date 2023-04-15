@@ -12,7 +12,7 @@ const store = useUserStore()
       <div class="user-avatar">
         <img :src="store.avatar" />
       </div>
-      
+
       <div class="user-nickname">
         <span>{{ store.nickname }}</span>
       </div>

@@ -114,7 +114,7 @@ const onClickAccount = type => {
           class="mt-t20"
           @click="onValidate"
           :loading="model.loading"
-          round
+          
         >
           立即登录
         </n-button>

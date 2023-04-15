@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { NModal } from 'naive-ui'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
+import { MessageComponents } from '@/constant/message'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -71,48 +71,15 @@ onLoadData()
             <span class="time"> {{ item.created_at }}</span>
           </div>
 
-          <!-- 文本消息 -->
-          <text-message
-            v-if="item.msg_type == 1"
-            :content="item.content"
-            float="left"
+          <component
+            :is="MessageComponents[item.msg_type]"
+            :extra="item.extra"
+            :data="item"
           />
 
-          <!-- 文件 - 图片消息 -->
-          <image-message
-            v-else-if="item.msg_type == 2 && item.extra.type == 1"
-            :src="item.extra.url"
-          />
-
-          <!-- 文件 - 音频消息 -->
-          <audio-message
-            v-else-if="item.msg_type == 2 && item.extra.type == 2"
-            :src="item.extra.url"
-          />
-
-          <!-- 文件 - 视频消息 -->
-          <video-message
-            v-else-if="item.msg_type == 2 && item.extra.type == 3"
-            :src="item.extra.url"
-          />
-
-          <!-- 文件消息 -->
-          <file-message
-            v-else-if="item.msg_type == 2 && item.extra && item.extra.type == 4"
-            :file-name="item.extra.original_name"
-            :size="item.extra.size"
-            :ext="item.extra.suffix"
-            :record-id="item.id"
-          />
-
-          <!-- 代码块消息 -->
-          <code-message
-            v-else-if="item.msg_type == 4"
-            :code="item.extra.code"
-            :lang="item.extra.lang"
-          />
-
-          <div v-else class="other-message">未知消息类型</div>
+          <p v-if="!MessageComponents[item.msg_type]">
+            <unknown-message :extra="item.extra" :data="item" />
+          </p>
         </div>
       </div>
     </div>

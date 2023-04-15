@@ -3,14 +3,8 @@ import { NImage } from 'naive-ui'
 import { getImageInfo } from '@/utils/functions'
 
 defineProps({
-  src: {
-    type: String,
-    default: '',
-  },
-  float: {
-    type: String,
-    default: 'right',
-  },
+  extra: Object,
+  data: Object,
 })
 
 /**
@@ -38,10 +32,10 @@ const img = (src, width = 200) => {
 <template>
   <section
     class="image-message"
-    :class="{ left: float === 'left' }"
-    :style="img(src, 200)"
+    :class="{ left: data.float === 'left' }"
+    :style="img(extra.url, 200)"
   >
-    <n-image :src="src" />
+    <n-image :src="extra.url" />
   </section>
 </template>
 <style lang="less" scoped>
