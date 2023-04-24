@@ -8,6 +8,7 @@ import VoteMessage from './VoteMessage.vue'
 import RevokeMessage from './RevokeMessage.vue'
 import SysTextMessage from './SysTextMessage.vue'
 import AudioMessage from './AudioMessage.vue'
+import VideoMessage from './VideoMessage.vue'
 import UnknownMessage from './UnknownMessage.vue'
 import SysGroupCreateMessage from './SysGroupJoinMessage.vue'
 import SysGroupJoinMessage from './SysGroupJoinMessage.vue'
@@ -35,5 +36,6 @@ export {
   SysGroupMemberMutedMessage,
   SysGroupMemberCancelMutedMessage,
   SysGroupTransferMessage,
-  SysGroupMemberQuitMessage
+  SysGroupMemberQuitMessage,
+  VideoMessage,
 }

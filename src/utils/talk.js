@@ -71,7 +71,7 @@ export function formatTalkItem(params) {
 
   Object.assign(options, params)
 
-  options.msg_text = textReplaceMention(options.msg_text, 'red')
+  options.msg_text = options.msg_text
   options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options

@@ -3,6 +3,7 @@ import { nextTick } from 'vue'
 import socket from '@/socket'
 import { parseTime } from '@/utils/datetime'
 import { WebNotify } from '@/utils/notification'
+import * as message from '@/constant/message'
 import {
   formatTalkItem,
   findTalkIndex,
@@ -81,21 +82,10 @@ class Talk extends Base {
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = this.resource.content
+    let text = this.resource.content.replace(/<img .*?>/g, '')
 
-    switch (this.resource.msg_type) {
-      case 2:
-        text = '[文件消息]'
-        break
-      case 3:
-        text = '[会话记录]'
-        break
-      case 4:
-        text = '[代码消息]'
-        break
-      case 8:
-        text = '[系统通知] 账号登录提醒！'
-        break
+    if (this.resource.msg_type != message.ChatMsgTypeText) {
+      text = message.ChatMsgTypeMapping[this.resource.msg_type]
     }
 
     return text

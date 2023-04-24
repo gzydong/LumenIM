@@ -386,7 +386,7 @@ onMounted(() => {
       justify-content: flex-end;
 
       .tip {
-        color: #4caf50;
+        color: #ff9800;
       }
 
       .icons {

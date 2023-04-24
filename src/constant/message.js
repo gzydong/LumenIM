@@ -25,31 +25,57 @@ export const ChatMsgSysGroupNoticeCreate = 1111 // 创建群公告
 export const ChatMsgSysGroupNoticeUpdate = 1112 // 更新群公告
 export const ChatMsgSysGroupTransfer = 1113 // 变更群主
 
-function components() {
-  let components = {}
-  components[ChatMsgTypeText] = 'text-message'
-  components[ChatMsgTypeCode] = 'code-message'
-  components[ChatMsgTypeImage] = 'image-message'
-  components[ChatMsgTypeAudio] = 'audio-message'
-  components[ChatMsgTypeFile] = 'file-message'
-  components[ChatMsgTypeForward] = 'forward-message'
-  components[ChatMsgTypeLogin] = 'login-message'
-  components[ChatMsgTypeVote] = 'vote-message'
-  components[ChatMsgSysText] = 'sys-text-message'
-  components[ChatMsgSysGroupCreate] = 'sys-group-create-message'
-  components[ChatMsgSysGroupMemberJoin] = 'sys-group-join-message'
-  components[ChatMsgSysGroupMemberQuit] = 'sys-group-member-quit-message'
-  components[ChatMsgSysGroupMemberKicked] = 'sys-group-member-kicked-message'
-  components[ChatMsgSysGroupMemberMuted] = 'sys-group-member-muted-message'
-  components[ChatMsgSysGroupMemberCancelMuted] =
-    'sys-group-member-cancel-muted-message'
-  components[ChatMsgSysGroupTransfer] = 'sys-group-transfer-message'
-
-  return components
+export const ChatMsgTypeMapping = {
+  [ChatMsgTypeText]: '[文本消息]',
+  [ChatMsgTypeImage]: '[图片消息]',
+  [ChatMsgTypeAudio]: '[语音消息]',
+  [ChatMsgTypeVideo]: '[视频消息]',
+  [ChatMsgTypeFile]: '[文件消息]',
+  [ChatMsgTypeLocation]: '[位置消息]',
+  [ChatMsgTypeCard]: '[名片消息]',
+  [ChatMsgTypeForward]: '[转发消息]',
+  [ChatMsgTypeLogin]: '[登录消息]',
+  [ChatMsgTypeVote]: '[投票消息]',
+  [ChatMsgTypeCode]: '[代码消息]',
+  [ChatMsgSysText]: '[系统消息]',
+  [ChatMsgSysGroupCreate]: '[创建群消息]',
+  [ChatMsgSysGroupMemberJoin]: '[加入群消息]',
+  [ChatMsgSysGroupMemberQuit]: '[退出群消息]',
+  [ChatMsgSysGroupMemberKicked]: '[踢出群消息]',
+  [ChatMsgSysGroupMessageRevoke]: '[撤回消息]',
+  [ChatMsgSysGroupDismissed]: '[群解散消息]',
+  [ChatMsgSysGroupMuted]: '[群禁言消息]',
+  [ChatMsgSysGroupCancelMuted]: '[群解除禁言消息]',
+  [ChatMsgSysGroupMemberMuted]: '[群成员禁言消息]',
+  [ChatMsgSysGroupMemberCancelMuted]: '[群成员解除禁言消息]',
 }
 
 // 消息类型 - 消息组件 映射关系
-export const MessageComponents = components()
+export const MessageComponents = {
+  [ChatMsgTypeText]: 'text-message',
+  [ChatMsgTypeImage]: 'image-message',
+  [ChatMsgTypeAudio]: 'audio-message',
+  [ChatMsgTypeVideo]: 'video-message',
+  [ChatMsgTypeFile]: 'file-message',
+  [ChatMsgTypeLocation]: 'location-message',
+  [ChatMsgTypeCard]: 'user-card-message',
+  [ChatMsgTypeForward]: 'forward-message',
+  [ChatMsgTypeLogin]: 'login-message',
+  [ChatMsgTypeVote]: 'vote-message',
+  [ChatMsgTypeCode]: 'code-message',
+  [ChatMsgSysText]: 'sys-text-message',
+  [ChatMsgSysGroupCreate]: 'sys-group-create-message',
+  [ChatMsgSysGroupMemberJoin]: 'sys-group-join-message',
+  [ChatMsgSysGroupMemberQuit]: 'sys-group-member-quit-message',
+  [ChatMsgSysGroupMemberKicked]: 'sys-group-member-kicked-message',
+  // [ChatMsgSysGroupMessageRevoke]: '[撤回消息]',
+  // [ChatMsgSysGroupDismissed]: '[群解散消息]',
+  // [ChatMsgSysGroupMuted]: '[群禁言消息]',
+  // [ChatMsgSysGroupCancelMuted]: '[群解除禁言消息]',
+  [ChatMsgSysGroupMemberMuted]: 'sys-group-member-muted-message',
+  [ChatMsgSysGroupMemberCancelMuted]: 'sys-group-member-cancel-muted-message',
+  [ChatMsgSysGroupTransfer]: 'sys-group-transfer-message',
+}
 
 // 可转发的消息类型
 export const ForwardableMessageType = [

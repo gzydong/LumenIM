@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch, computed, nextTick, onMounted } from 'vue'
+import { reactive, watch, computed, nextTick, onMounted, inject } from 'vue'
 import { NDropdown } from 'naive-ui'
 import {
   CheckmarkCircleSharp,
@@ -15,6 +15,7 @@ import { defAvatar } from '@/constant/default'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 
+const user = inject('showUserModal')
 const dialogueStore = useDialogueStore()
 const props = defineProps({
   uid: {
@@ -354,25 +355,24 @@ onMounted(() => {
           <!-- 头像信息 -->
           <aside class="avatar-column">
             <n-avatar
-              round
               size="medium"
               :src="item.avatar"
               :fallback-src="defAvatar"
+              round
+              class="pointer"
+              @click="user(item.user_id)"
             />
           </aside>
 
           <!-- 主体信息 -->
           <main class="main-column">
-            <div
-              class="talk-title"
-              :class="{ show: talk_type == 2 && item.float == 'left' }"
-            >
-              <span>
-                {{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}
-              </span>
-              <span v-show="talk_type == 2 && item.float == 'left'">{{
-                item.friend_remarks || item.nickname
-              }}</span>
+            <div class="talk-title">
+              <span
+                class="nickname"
+                v-show="talk_type == 2 && item.float == 'left'"
+                >{{ item.nickname }}</span
+              >
+              <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
             </div>
 
             <div
@@ -557,7 +557,7 @@ onMounted(() => {
       flex-shrink: 0;
       order: 1;
       user-select: none;
-      padding-top: 25px;
+      padding-top: 15px;
     }
 
     .avatar-column {
@@ -568,7 +568,8 @@ onMounted(() => {
       align-items: center;
       order: 2;
       user-select: none;
-      padding-top: 23px;
+      // padding-top: 23px;
+      padding-top: 7px;
       flex-direction: column;
     }
 
@@ -590,11 +591,15 @@ onMounted(() => {
         user-select: none;
         color: #a7a0a0;
         transition: 0.5s ease;
-        opacity: 0;
-        // margin-left: -5px;
+        opacity: 1;
 
         &.show {
           opacity: 1;
+        }
+
+        .nickname {
+          font-weight: bold;
+          color: #9e9e9e;
         }
 
         span {

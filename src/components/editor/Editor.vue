@@ -20,7 +20,7 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import MeMention from './MeMention.vue'
-import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
+import { getPasteImgs, getDragPasteImg, pasteFilter } from '@/utils/editor'
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
@@ -54,10 +54,6 @@ const editorListener = () => {
   let editor = document.getElementById('me-editor')
   editor.onclick = fn // 编辑框点击事件
   editor.onkeyup = fn // 编辑框按键弹起事件
-
-  // editor.addEventListener('paste', e => {
-  //   console.log('paste', e)
-  // })
 }
 
 onMounted(() => {
@@ -359,21 +355,20 @@ const onMention = (id, name) => {
 }
 
 //复制粘贴图片回调方法
-const pasteImage = e => {
+const onPaste = e => {
   let files = getPasteImgs(e)
-  if (files.length == 0) return
-
-  console.log('pasteImage', files[0])
-
-  openImagePreview(files[0])
+  if (files.length > 0) {
+    openImagePreview(files[0])
+  } else {
+    pasteFilter(e)
+  }
 }
 
 //拖拽上传图片回调方法
-const dragPasteImage = e => {
+const onDragPaste = e => {
   let files = getDragPasteImg(e)
   if (files.length == 0) return
   openImagePreview(files[0])
-  console.log('dragPasteImage', files[0])
 }
 </script>
 
@@ -433,12 +428,12 @@ const dragPasteImage = e => {
         <div
           id="me-editor"
           spellcheck="true"
-          contenteditable="plaintext-only"
+          contenteditable="true"
           @keydown="onKeydownEvent($event)"
           @input="onInputEvent($event)"
           placeholder="你想要说点什么呢..."
-          v-paste="pasteImage"
-          v-drag="dragPasteImage"
+          v-paste="onPaste"
+          v-drag="onDragPaste"
         />
       </main>
     </section>
