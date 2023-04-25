@@ -5,6 +5,7 @@ import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 const props = defineProps({
   extra: Object,
   data: Object,
+  maxWidth: Boolean,
 })
 
 const float = props.data.float
@@ -26,6 +27,7 @@ textContent = textReplaceEmoji(textContent)
     :class="{
       left: float == 'left',
       right: float == 'right',
+      maxwidth: maxWidth,
     }"
   >
     <pre v-html="textContent" />
@@ -39,16 +41,16 @@ textContent = textReplaceEmoji(textContent)
   min-height: 30px;
   padding: 3px;
   color: #333;
-  max-width: 60%;
-
-  &.left {
-    background: #eff0f1;
-    border-radius: 0px 10px 0px 10px;
-  }
+  background: #eff0f1;
+  border-radius: 0px 10px 0px 10px;
 
   &.right {
     background-color: #daf3fd;
     border-radius: 10px 0px 10px 0px;
+  }
+
+  &.maxwidth {
+    max-width: 70%;
   }
 
   > pre {
@@ -58,7 +60,7 @@ textContent = textReplaceEmoji(textContent)
     word-wrap: break-word;
     font-size: 14px;
     padding: 3px 5px;
-    font-family: 'Microsoft YaHei';
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Alibaba PuHuiTi 2.0 45';
     line-height: 25px;
 
     :deep(.emoji) {

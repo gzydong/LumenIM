@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
 import { MessageComponents } from '@/constant/message'
+import { defAvatar } from '@/constant/default'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -59,27 +60,20 @@ onLoadData()
 
       <div v-for="item in records" :key="item.msg_id" class="message-item">
         <div class="left-box">
-          <n-avatar :size="30" :src="item.avatar" />
+          <n-avatar :size="30" :src="item.avatar || defAvatar" />
         </div>
 
         <div class="right-box">
           <div class="msg-header">
-            <span class="name">
-              {{ item.nickname_remarks || item.nickname }}
-            </span>
-
+            <span class="name">{{ item.nickname }}</span>
             <span class="time"> {{ item.created_at }}</span>
           </div>
 
           <component
-            :is="MessageComponents[item.msg_type]"
+            :is="MessageComponents[item.msg_type] || 'unknown-message'"
             :extra="item.extra"
             :data="item"
           />
-
-          <p v-if="!MessageComponents[item.msg_type]">
-            <unknown-message :extra="item.extra" :data="item" />
-          </p>
         </div>
       </div>
     </div>
@@ -112,12 +106,6 @@ onLoadData()
     user-select: none;
     padding-top: 8px;
     margin-right: 10px;
-
-    img {
-      height: 30px;
-      width: 30px;
-      border-radius: 3px;
-    }
   }
 
   .right-box {

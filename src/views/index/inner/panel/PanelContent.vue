@@ -1,11 +1,7 @@
 <script setup>
 import { reactive, watch, computed, nextTick, onMounted, inject } from 'vue'
-import { NDropdown } from 'naive-ui'
-import {
-  CheckmarkCircleSharp,
-  CaretDownSharp,
-  NotificationsOutline,
-} from '@vicons/ionicons5'
+import { NDropdown, NCheckbox } from 'naive-ui'
+import { CaretDownSharp, NotificationsOutline } from '@vicons/ionicons5'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -87,19 +83,7 @@ const onLoadTalk = () => {
     }
 
     if (props.talk_type == 1) {
-      let msgIds = []
-      for (const record of records) {
-        if (props.receiver_id === record.user_id && record.is_read === 0) {
-          msgIds.push(record.id)
-        }
-      }
-
-      if (msgIds.length) {
-        socket.emit('im.message.read', {
-          receiver_id: props.receiver_id,
-          msg_id: msgIds,
-        })
-      }
+      onAfterRead(records)
     }
 
     dialogueStore.unshiftDialogueRecord(records.reverse())
@@ -119,6 +103,23 @@ const onLoadTalk = () => {
   response.catch(() => {
     loadConfig.status = 1
   })
+}
+
+function onAfterRead(records) {
+  let ids = []
+
+  for (const record of records) {
+    if (props.receiver_id === record.user_id && record.is_read === 0) {
+      ids.push(record.id)
+    }
+  }
+
+  if (ids.length) {
+    socket.emit('im.message.read', {
+      receiver_id: props.receiver_id,
+      msg_id: ids,
+    })
+  }
 }
 
 // 是否显示消息时间
@@ -303,22 +304,14 @@ onMounted(() => {
         class="message-item"
         v-for="(item, index) in records"
         :key="item.msg_id"
-        :data-msg_id="item.msg_id"
       >
         <!-- 系统消息 -->
         <div v-if="item.msg_type >= 1000" class="message-box">
           <component
-            :is="MessageComponents[item.msg_type]"
+            :is="MessageComponents[item.msg_type] || 'unknown-message'"
             :extra="item.extra"
             :data="item"
           />
-
-          <p
-            v-if="!MessageComponents[item.msg_type]"
-            style="display: flex; justify-content: center"
-          >
-            <unknown-message :extra="item.extra" :data="item" />
-          </p>
         </div>
 
         <!-- 撤回消息 -->
@@ -343,23 +336,21 @@ onMounted(() => {
         >
           <!-- 多选按钮 -->
           <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
-            <n-icon
-              size="18"
-              :color="item.isCheck ? 'rgb(80 138 254)' : '#ccc'"
-              class="pointer"
-              :component="CheckmarkCircleSharp"
-              @click="item.isCheck = !item.isCheck"
+            <n-checkbox
+              size="small"
+              :checked="item.isCheck"
+              @update:checked="item.isCheck = !item.isCheck"
             />
           </aside>
 
           <!-- 头像信息 -->
           <aside class="avatar-column">
             <n-avatar
+              round
               size="medium"
+              class="pointer"
               :src="item.avatar"
               :fallback-src="defAvatar"
-              round
-              class="pointer"
               @click="user(item.user_id)"
             />
           </aside>
@@ -370,8 +361,9 @@ onMounted(() => {
               <span
                 class="nickname"
                 v-show="talk_type == 2 && item.float == 'left'"
-                >{{ item.nickname }}</span
               >
+                {{ item.nickname }}
+              </span>
               <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
             </div>
 
@@ -381,19 +373,16 @@ onMounted(() => {
               @click="onRowClick(item)"
             >
               <component
-                :is="MessageComponents[item.msg_type]"
+                :is="MessageComponents[item.msg_type] || 'unknown-message'"
                 :extra="item.extra"
                 :data="item"
+                :max-width="true"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 
-              <p v-if="!MessageComponents[item.msg_type]">
-                <unknown-message :extra="item.extra" :data="item" />
-              </p>
-
               <div
-                v-if="talk_type == 1 && item.float == 'right'"
                 class="read-status"
+                v-if="talk_type == 1 && item.float == 'right'"
               >
                 {{ item.is_read ? '已读' : '已送达' }}
               </div>

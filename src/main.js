@@ -86,9 +86,11 @@ document.body.addEventListener('click', event => {
 function choosePush(el) {
   const href = el.getAttribute('href')
 
-  if (isElectronMode() || el.getAttribute('alt') === 'link') {
-    return window.open(href)
-  }
+  if (href) {
+    if (isElectronMode() || el.getAttribute('alt') === 'link') {
+      return window.open(href)
+    }
 
-  window.location.href = href
+    window.location.href = href
+  }
 }

@@ -5,14 +5,20 @@ import { CloseCircleSharp } from '@vicons/ionicons5'
 defineProps({
   extra: Object,
   data: Object,
+  maxWidth: Boolean,
 })
 
 const isFullCat = ref(false)
 </script>
 <template>
-  <div class="code-message">
+  <div
+    class="code-message"
+    :class="{
+      maxwidth: maxWidth,
+    }"
+  >
     <p class="more pointer flex-center" @click="isFullCat = true">
-      <span class="text">详情</span>
+      <span class="text">{{ extra.lang }}</span>
     </p>
 
     <highlightjs :language="extra.lang" :code="extra.code" />
@@ -20,8 +26,8 @@ const isFullCat = ref(false)
     <div v-if="isFullCat" class="full-code">
       <div class="close pointer" @click="isFullCat = false">
         <n-icon
-          :size="50"
           color="rgb(173 168 168)"
+          :size="50"
           :component="CloseCircleSharp"
         />
       </div>
@@ -36,31 +42,24 @@ const isFullCat = ref(false)
 </template>
 <style lang="less" scoped>
 .code-message {
-  border-radius: 10px;
-  overflow: hidden;
-  overflow-x: auto;
-  min-width: 300px;
-  background-color: #f5f5f5;
   position: relative;
+  min-width: 150px;
+  border-radius: 10px;
+  overflow-x: auto;
+  background-color: #f5f5f5;
+  border: 1px solid #f5f5f5;
+
+  &.maxwidth {
+    max-width: 70%;
+  }
 
   .more {
     height: 35px;
     font-size: 14px;
-    color: #ffffff;
+    color: #333;
     display: flex;
     justify-content: flex-end;
     padding: 0 15px;
-    background: #3d3d3e;
-
-    .text {
-      display: none;
-    }
-
-    &:hover {
-      .text {
-        display: block;
-      }
-    }
 
     &:before {
       position: absolute;
@@ -105,7 +104,6 @@ const isFullCat = ref(false)
   :deep(pre) {
     width: 100%;
     height: 100vh;
-
     overflow: auto;
     padding: 0;
     box-sizing: border-box;
@@ -114,6 +112,7 @@ const isFullCat = ref(false)
       overflow-y: auto !important;
       max-height: unset !important;
     }
+
     code {
       height: 100%;
     }

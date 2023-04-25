@@ -174,22 +174,17 @@ loadChatRecord()
 
           <div class="right-box">
             <div class="msg-header">
-              <span class="name">
-                {{ item.nickname }}
-              </span>
-
+              <span class="name">{{ item.nickname }}</span>
               <span class="time"> {{ item.created_at }}</span>
             </div>
 
             <component
-              :is="message.MessageComponents[item.msg_type]"
+              :is="
+                message.MessageComponents[item.msg_type] || 'unknown-message'
+              "
               :extra="item.extra"
               :data="item"
             />
-
-            <p v-if="!message.MessageComponents[item.msg_type]">
-              <unknown-message :extra="item.extra" :data="item" />
-            </p>
           </div>
         </div>
 

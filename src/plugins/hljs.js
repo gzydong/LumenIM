@@ -1,5 +1,5 @@
 import hljsVuePlugin from '@highlightjs/vue-plugin'
-import 'highlight.js/styles/monokai-sublime.css'
+import 'highlight.js/styles/github.css'
 import 'highlight.js/lib/common'
 
 
