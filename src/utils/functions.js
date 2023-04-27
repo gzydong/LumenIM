@@ -81,3 +81,7 @@ export function countDownTime(second = 0) {
     seconds
   )}`
 }
+
+export function removeTags(str) {
+  return str.replace(/<\/?[^>]+>/gi, '')
+}

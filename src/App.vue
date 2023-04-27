@@ -20,6 +20,16 @@ import { isLoggedIn } from '@/utils/auth'
 import { applyNotificationAuth } from '@/utils/notification'
 import { modal } from '@/utils/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
+import { DEFAULT_ICON_CONFIGS, IconProvider } from '@icon-park/vue-next'
+
+IconProvider({
+  ...DEFAULT_ICON_CONFIGS,
+  theme: 'outline',
+  size: 24,
+  fill: '#000000',
+  strokeWidth: 2,
+  strokeLinejoin: 'bevel',
+})
 
 provide('showUserModal', uid => {
   modal(UserCardModal, { uid })

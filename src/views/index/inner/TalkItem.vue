@@ -1,8 +1,8 @@
 <script setup>
 import { ArrowUp, ArrowDown, NotificationsOffOutline } from '@vicons/ionicons5'
-import { NBadge } from 'naive-ui'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
+import { removeTags } from '@/utils/functions'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
@@ -60,8 +60,8 @@ defineProps({
       <div class="content">
         <div class="text">
           <template v-if="!active && data.draft_text">
-            <span class="draft">[草稿]&nbsp;</span>
-            <span>{{ data.draft_text }}</span>
+            <span class="draft">[草稿]</span>
+            <span>{{ removeTags(data.draft_text) }}</span>
           </template>
           <template v-else>
             <span
@@ -69,9 +69,9 @@ defineProps({
               v-show="
                 data.is_robot == 0 && data.talk_type == 1 && data.is_online == 1
               "
-              >[在线]&nbsp;</span
+              >[在线]</span
             >
-            <span>{{ data.msg_text }}</span>
+            <span>{{ removeTags(data.msg_text) }}</span>
           </template>
         </div>
         <div class="unread" v-show="data.unread_num">
@@ -154,7 +154,6 @@ defineProps({
         flex: 1 1;
         display: flex;
         overflow: hidden;
-
         .nickname {
           white-space: nowrap;
           overflow: hidden;
@@ -176,7 +175,6 @@ defineProps({
       height: 20px;
       display: flex;
       align-items: center;
-      
 
       .text {
         font-weight: 300;
@@ -189,9 +187,11 @@ defineProps({
 
         .draft {
           color: red;
+          padding-right: 3px;
         }
         .online {
           color: #8bc34a;
+          padding-right: 3px;
         }
       }
 

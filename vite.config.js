@@ -21,5 +21,8 @@ export default defineConfig(({ command, mode }) => {
     root: process.cwd(),
     assetsInclude: ['./src/assets'],
     plugins: [vue(), vueJsx({}), compressPlugin()],
+    define: {
+      __APP_ENV__: env.APP_ENV,
+    },
   }
 })

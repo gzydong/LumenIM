@@ -1,14 +1,14 @@
 <script setup>
-import { reactive, markRaw, computed } from 'vue'
-import {
-  GitNetworkOutline,
-  PersonAddOutline,
-  BalloonOutline,
-  PeopleOutline,
-} from '@vicons/ionicons5'
+import { reactive, computed,markRaw } from 'vue'
 import Layout from '@/layout/index.vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store/user'
+import {
+  PeoplesTwo,
+  Peoples,
+  ChartGraph,
+  ShareThree,
+} from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 
@@ -16,26 +16,26 @@ const menus = reactive([
   {
     name: '我的好友',
     path: '/contact/friend',
-    icon: markRaw(PersonAddOutline),
+    icon: markRaw(Peoples),
     size: 18,
     tips: computed(() => (userStore.isContactApply ? 'New' : '')),
   },
   {
     name: '我的群组',
     path: '/contact/group',
-    icon: markRaw(PeopleOutline),
+    icon: markRaw(PeoplesTwo),
     size: 20,
   },
   {
     name: '公开群组',
     path: '/contact/group/open',
-    icon: markRaw(BalloonOutline),
+    icon: markRaw(ShareThree),
     size: 18,
   },
   {
     name: '组织架构',
     path: '/contact/organize',
-    icon: markRaw(GitNetworkOutline),
+    icon: markRaw(ChartGraph),
     show: computed(() => userStore.isQiye),
     size: 18,
   },

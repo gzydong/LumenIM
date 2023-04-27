@@ -1,5 +1,5 @@
 <script setup>
-import { markRaw, reactive, computed } from 'vue'
+import { reactive, computed,markRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useTalkStore } from '@/store/talk'
@@ -62,7 +62,7 @@ const onLogout = () => {
 
 const onClickMenu = menu => {
   if (menu.external) {
-    window.location.href = menu.link
+    window.open(menu.link)
   } else {
     router.push(menu.link)
   }
@@ -84,10 +84,10 @@ const onClickMenu = menu => {
         <template #trigger>
           <n-avatar
             class="logo"
+            round
             :size="35"
             :src="userStore.avatar"
             :fallback-src="defAvatar"
-            style="border-radius: 10px;"
           />
         </template>
         <AccountCard />
