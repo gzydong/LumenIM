@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, reactive, ref, onMounted, h } from 'vue'
+import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore } from '@/store/dialogue'
 import { useEditorStore } from '@/store/editor'
@@ -27,11 +27,10 @@ import {
 import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
 import { ServeDeleteContact } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
-import UserCardModal from '@/components/user/UserCardModal.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
-import { modal } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 
+const user = inject('showUserModal')
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
@@ -76,16 +75,11 @@ const onTabTalk = data => {
     return
   }
 
-  // 更新编辑信息
-  dialogueStore.setDialogue({
-    username: data.remark_name || data.name,
-    talk_type: data.talk_type,
-    receiver_id: data.receiver_id,
-    online: data.is_online == 1,
-  })
+  // 关闭提及功能
+  editorStore.isShowMention = false
 
-  // 更新编辑草稿
-  dialogueStore.updateEditorText(data.draft_text)
+  // 更新编辑信息
+  dialogueStore.setDialogue(data)
 
   // 清空消息未读数
   if (data.unread_num > 0) {
@@ -99,9 +93,6 @@ const onTabTalk = data => {
       })
     })
   }
-
-  // 关闭提及功能
-  editorStore.isShowMention = false
 
   if (data.talk_type == 2) {
     ServeGetGroupMembers({
@@ -117,9 +108,7 @@ const onTabTalk = data => {
 }
 
 const onUserInfo = data => {
-  modal(UserCardModal, {
-    uid: data.receiver_id,
-  })
+  user(data.receiver_id)
 }
 
 // 移除会话
@@ -151,11 +140,6 @@ const onSetDisturb = data => {
       window.$message.error(res.message)
     }
   })
-}
-
-// 更新联系人备注
-const onUpdateContactRemark = data => {
-  window.$message.info('开发中...')
 }
 
 // 置顶会话
@@ -239,15 +223,15 @@ const onContextMenuTalk = (e, item) => {
   }
 
   state.dropdown.options.push({
-    icon: item.is_top ? renderIcon(ArrowDown) : renderIcon(ArrowUp),
+    icon: renderIcon(item.is_top ? ArrowDown : ArrowUp),
     label: item.is_top ? '取消置顶' : '会话置顶',
     key: 'top',
   })
 
   state.dropdown.options.push({
-    icon: item.is_disturb
-      ? renderIcon(NotificationsOutline)
-      : renderIcon(NotificationsOffOutline),
+    icon: renderIcon(
+      item.is_disturb ? NotificationsOutline : NotificationsOffOutline
+    ),
     label: item.is_disturb ? '关闭免打扰' : '开启免打扰',
     key: 'disturb',
   })
@@ -504,16 +488,17 @@ onMounted(() => {
 }
 
 .tops-header {
-  min-height: 20px;
   background: #f0f8ff;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   padding: 5px 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-  justify-content: flex-start;
+  padding-right: 0;
+  padding-right: 8px;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  grid-gap: 0 14px;
+  grid-template-columns: repeat(auto-fill, 32px);
+  display: grid;
+  box-sizing: border-box;
 
   .top-item {
     flex-basis: 46px;

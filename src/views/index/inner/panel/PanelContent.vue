@@ -193,6 +193,11 @@ const onMultiSelect = data => {
 
 // 会话列表右键显示菜单
 const onContextMenu = (e, item) => {
+  if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
+    e.preventDefault()
+    return
+  }
+
   state.dropdown.show = false
   state.dropdown.item = Object.assign({}, item)
   state.dropdown.options = [

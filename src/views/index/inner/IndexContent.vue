@@ -84,6 +84,7 @@ const onPanelHeaderEvent = eventType => {
 
         <!-- 编辑器区域 -->
         <PanelFooter
+          v-if="dialogueStore.isShowEditor"
           :uid="talkParams.uid"
           :index_name="talkParams.index_name"
           :talk_type="talkParams.type"

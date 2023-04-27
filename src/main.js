@@ -10,6 +10,7 @@ import { setComponents } from './plugins/me-core.js'
 import { setupNaive } from './plugins/naive-ui'
 import { setMdEditor } from './plugins/md-editor'
 import { setHljsVuePlugin } from './plugins/hljs'
+import { setupDirective } from './plugins/directive'
 import { isElectronMode } from '@/utils/common'
 
 async function bootstrap() {
@@ -62,6 +63,7 @@ async function bootstrap() {
   setupNaive(app)
   setMdEditor(app)
   setComponents(app)
+  setupDirective(app)
 
   app.mount('#app')
 }

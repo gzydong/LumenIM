@@ -1,5 +1,6 @@
 <script setup>
 import { ArrowUp, ArrowDown, NotificationsOffOutline } from '@vicons/ionicons5'
+import { NBadge } from 'naive-ui'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
 
@@ -46,9 +47,6 @@ defineProps({
       <div class="header">
         <div class="title">
           <span class="nickname">{{ username }}</span>
-          <span class="badge" v-show="data.unread_num">
-            {{ data.unread_num }}条未读
-          </span>
           <span class="badge top" v-show="data.is_top">TOP</span>
           <span class="badge roboot" v-show="data.is_robot">BOT</span>
           <span class="badge group" v-show="data.talk_type == 2">群组</span>
@@ -60,22 +58,27 @@ defineProps({
       </div>
 
       <div class="content">
-        <template v-if="!active && data.draft_text">
-          <span class="draft">[草稿]&nbsp;</span>
-          <span class="draft-text" v-html="data.draft_text"></span>
-        </template>
-
-        <template v-else>
-          <span
-            v-show="
-              data.is_robot == 0 && data.talk_type == 1 && data.is_online == 1
-            "
-            class="online"
-          >
-            [在线]&nbsp;
+        <div class="text">
+          <template v-if="!active && data.draft_text">
+            <span class="draft">[草稿]&nbsp;</span>
+            <span>{{ data.draft_text }}</span>
+          </template>
+          <template v-else>
+            <span
+              class="online"
+              v-show="
+                data.is_robot == 0 && data.talk_type == 1 && data.is_online == 1
+              "
+              >[在线]&nbsp;</span
+            >
+            <span>{{ data.msg_text }}</span>
+          </template>
+        </div>
+        <div class="unread" v-show="data.unread_num">
+          <span class="badge">
+            {{ data.unread_num > 99 ? '99+' : data.unread_num }}
           </span>
-          <span v-text="data.msg_text"></span>
-        </template>
+        </div>
       </div>
     </div>
   </div>
@@ -88,10 +91,9 @@ defineProps({
 </style>
 <style lang="less" scoped>
 .talk {
-  padding: 8px 10px;
+  padding: 8px 10px 8px 5px;
   height: 50px;
   display: flex;
-  flex-direction: row;
   align-items: center;
   transition: 0.2s ease-in;
   margin: 5px 2px 5px 5px;
@@ -100,7 +102,6 @@ defineProps({
   .avatar-box {
     height: 34px;
     width: 34px;
-    flex-shrink: 0;
     background-color: #508afe;
     border-radius: 50%;
     display: flex;
@@ -145,22 +146,20 @@ defineProps({
       height: 20px;
       display: flex;
       align-items: center;
+
       .title {
         color: #1f2329;
         font-size: 14px;
         line-height: 20px;
         flex: 1 1;
         display: flex;
-        align-items: center;
         overflow: hidden;
 
         .nickname {
-          font-weight: 400;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           margin-right: 3px;
-          display: inline-block;
         }
       }
 
@@ -173,20 +172,40 @@ defineProps({
     }
 
     .content {
-      font-size: 13px;
-      line-height: 18px;
-      color: #8f959e;
-      margin-top: 3px;
-      font-weight: 300;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      width: 100%;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      
 
-      .draft {
-        color: red;
+      .text {
+        font-weight: 300;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+        color: #8f959e;
+        flex: 1 auto;
+
+        .draft {
+          color: red;
+        }
+        .online {
+          color: #8bc34a;
+        }
       }
-      .online {
-        color: #8bc34a;
+
+      .unread {
+        color: #8f959e;
+        font-size: 12px;
+        user-select: none;
+
+        .badge {
+          background-color: #f44336;
+          color: #ffffff;
+          border-radius: 3px;
+          transform-origin: right;
+        }
       }
     }
   }

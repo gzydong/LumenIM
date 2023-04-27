@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { NModal, NInput, NScrollbar, NDivider } from 'naive-ui'
-import { SearchOutline, Checkbox, TrashSharp } from '@vicons/ionicons5'
+import { NModal, NInput, NScrollbar, NDivider, NCheckbox } from 'naive-ui'
+import { SearchOutline, TrashSharp } from '@vicons/ionicons5'
 import { defAvatar } from '@/constant/default.js'
 import {
   ServeCreateGroup,
@@ -176,12 +176,10 @@ onLoad()
                   </div>
 
                   <div class="checkbox">
-                    <n-icon
-                      :size="16"
-                      :color="
-                        item.checked ? 'rgb(80 138 254)' : 'rgb(222 215 215)'
-                      "
-                      :component="Checkbox"
+                    <n-checkbox
+                      size="small"
+                      :checked="item.checked"
+                      @update:checked="item.checked = !item.checked"
                     />
                   </div>
                 </div>

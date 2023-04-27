@@ -15,11 +15,8 @@ onUnmounted(() => {
 
 <template>
   <Layout>
-    <section class="el-container height100">
-      <aside
-        class="el-aside bdr-r test-bor"
-        style="width: 320px; position: relative"
-      >
+    <section class="el-container">
+      <aside v-dropsize="{ max: 500, min: 250 }" class="el-aside bdr-r">
         <IndexSider />
       </aside>
 
@@ -31,17 +28,20 @@ onUnmounted(() => {
   </Layout>
 </template>
 
-<!-- <style lang="less">
-.test-bor:after {
-  content: ' ';
-  width: 3px;
+<style lang="less">
+.el-container {
   height: 100%;
-  position: absolute;
-  top: 0;
-  right: -2px;
-  cursor: ew-resize;
-  :hover {
-    background-color: red;
+}
+
+.el-aside {
+  width: 320px;
+  position: relative;
+  user-select: none;
+}
+
+@media screen and (max-width: 900px) {
+  .el-aside {
+    width: 280px;
   }
 }
-</style> -->
+</style>

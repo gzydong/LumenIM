@@ -13,10 +13,10 @@ function loadHtmlUrl() {
 function createWindow() {
   // 创建浏览器窗口
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    minWidth: 1200,
-    minHeight: 600,
+    width: 900,
+    height: 700,
+    minWidth: 900,
+    minHeight: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

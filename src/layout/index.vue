@@ -1,5 +1,5 @@
 <script setup>
-import Menu from './component/menu.vue'
+import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
 import { useNotifyStore } from '@/store/notify'
 

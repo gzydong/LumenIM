@@ -84,10 +84,10 @@ const onClickMenu = menu => {
         <template #trigger>
           <n-avatar
             class="logo"
-            round
             :size="35"
             :src="userStore.avatar"
             :fallback-src="defAvatar"
+            style="border-radius: 10px;"
           />
         </template>
         <AccountCard />

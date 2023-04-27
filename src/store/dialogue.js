@@ -41,6 +41,9 @@ export const useDialogueStore = defineStore('dialogue', {
 
       // 当前对话群成员呢列表
       groupMembers: [],
+
+      // 是否显示编辑器
+      isShowEditor: false,
     }
   },
   getters: {
@@ -60,16 +63,21 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新对话信息
     setDialogue(data = {}) {
-      this.online = data.online || false
+      this.online = data.is_online == 1
       this.talk = {
-        username: data.username || '',
-        talk_type: data.talk_type || 0,
-        receiver_id: data.receiver_id || 0,
+        username: data.remark_name || data.name,
+        talk_type: data.talk_type,
+        receiver_id: data.receiver_id,
       }
 
-      this.index_name = this.talk.talk_type + '_' + this.talk.receiver_id
+      this.index_name = data.talk_type + '_' + data.receiver_id
       this.records = []
       this.unreadBubble = 0
+      this.isShowEditor = data.is_robot === 0
+
+      if (data.draft_text) {
+        this.updateEditorText(data.draft_text)
+      }
     },
 
     // 清空对话记录
@@ -84,7 +92,6 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 推送对话记录
     addDialogueRecord(record) {
-
       // TOOD 需要通过 sequence 排序，保证消息一致性
       // this.records.splice(index, 0, record)
 
