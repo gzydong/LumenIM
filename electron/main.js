@@ -1,5 +1,5 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron')
 const path = require('path')
 
 const NODE_ENV = process.env.NODE_ENV
@@ -17,6 +17,8 @@ function createWindow() {
     height: 700,
     minWidth: 900,
     minHeight: 700,
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

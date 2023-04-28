@@ -56,6 +56,7 @@ defineProps({
     line-height: 60px;
     padding-left: 15px;
     font-size: 18px;
+    -webkit-app-region: drag;
   }
 
   .el-aside {

@@ -2,6 +2,7 @@
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
 import { useNotifyStore } from '@/store/notify'
+import { isElectronMode } from '@/utils/common'
 
 const notifyStore = useNotifyStore()
 
@@ -21,7 +22,12 @@ defineProps({
         'small-screen': !notifyStore.isFullScreen,
       }"
     >
-      <aside class="el-aside" style="width: 60px">
+      <aside
+        class="el-aside"
+        :class="{
+          'pd-t15': isElectronMode(),
+        }"
+      >
         <Menu :index="index" />
       </aside>
       <main class="el-main">
@@ -47,6 +53,13 @@ defineProps({
     width: 100vw;
     overflow: hidden;
     background-color: #ffffff;
+
+    .el-aside {
+      width: 70px;
+      background-color: #001427;
+      // padding-top: 15px;
+      background-color: #efefef;
+    }
 
     &.small-screen {
       position: fixed;

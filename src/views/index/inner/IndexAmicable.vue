@@ -11,7 +11,7 @@
 .amicable {
   height: 100%;
   width: 100%;
-
+  -webkit-app-region: drag;
   .content {
     width: 400px;
     height: 300px;

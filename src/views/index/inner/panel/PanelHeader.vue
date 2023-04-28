@@ -83,6 +83,7 @@ const onEvent = key => {
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  -webkit-app-region: drag;
 
   .module {
     height: 100%;

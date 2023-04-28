@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed,markRaw } from 'vue'
+import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useTalkStore } from '@/store/talk'
@@ -10,9 +10,9 @@ import {
   PersonOutline,
   SettingsOutline,
   ChatboxEllipsesOutline,
-  ArrowDownCircle,
 } from '@vicons/ionicons5'
 import { LogoGithub, MdBook } from '@vicons/ionicons4'
+import { Download } from '@icon-park/vue-next'
 
 defineProps({
   index: {
@@ -111,8 +111,8 @@ const onClickMenu = menu => {
         <!-- 消息提示 -->
         <div class="hotspot" v-if="nav.hotspot" />
 
-        <p><n-icon :size="20" :component="nav.icon" /></p>
-        <p style="font-size: 12px">{{ nav.title }}</p>
+        <p><n-icon :size="22" :component="nav.icon" /></p>
+        <span style="font-size: 12px">{{ nav.title }}</span>
       </div>
     </main>
 
@@ -124,11 +124,14 @@ const onClickMenu = menu => {
           placement="right"
         >
           <template #trigger>
-            <n-icon
-              size="22"
-              color="rgb(177 162 162)"
-              :component="ArrowDownCircle"
+            <download
+              theme="outline"
+              size="24"
+              fill="#000000"
+              :strokeWidth="2"
+              strokeLinejoin="bevel"
             />
+            <!-- <n-icon size="22" :component="ArrowDownCircle" /> -->
           </template>
 
           <div style="width: 200px; height: 100px; padding-top: 10px">
@@ -158,7 +161,6 @@ const onClickMenu = menu => {
 .menu {
   height: 100%;
   width: 100%;
-  background-color: #001427;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -195,10 +197,7 @@ const onClickMenu = menu => {
   .menu-footer {
     height: 100px;
     width: 100%;
-    flex-shrink: 0;
     font-size: 15px;
-    color: rgb(207, 207, 207);
-    font-weight: 300;
 
     p {
       height: 40px;
@@ -214,25 +213,33 @@ const onClickMenu = menu => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 8px 3px;
-  color: #a4a4a4;
-  padding: 5px;
   user-select: none;
   cursor: pointer;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 12px;
+  width: 54px;
+  height: 54px;
+  margin: 8px auto;
+  border-radius: 10px;
 
-  &:hover,
   &.active {
-    background-color: #ffffff26;
-    color: rgb(194, 204, 193);
-    font-weight: 600;
+    &::after {
+      position: absolute;
+      content: '';
+      width: 0;
+      height: 0;
+      right: -8px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid #ffffff;
+    }
   }
 
   .hotspot {
     width: 5px;
     height: 5px;
-    background: #ff1e1e;
+    --hotspot: #ff1e1e;
+    background: var(--hotspot);
     display: inline-block;
     border-radius: 5px;
     position: absolute;
@@ -246,23 +253,23 @@ const onClickMenu = menu => {
 
 @keyframes notifymove {
   0% {
-    background: #ff1e1e;
+    background: var(--hotspot);
   }
 
   25% {
-    background: #2e3238;
+    background: transparent;
   }
 
   50% {
-    background: #ff1e1e;
+    background: var(--hotspot);
   }
 
   75% {
-    background: #2e3238;
+    background: transparent;
   }
 
   100% {
-    background: #ff1e1e;
+    background: var(--hotspot);
   }
 }
 
