@@ -4,12 +4,7 @@ import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
-import {
-  ChatboxEllipsesOutline,
-  CloseOutline,
-  SearchOutline,
-  AddOutline,
-} from '@vicons/ionicons5'
+import { Comment, Search, Close, PeoplePlus } from '@icon-park/vue-next'
 import {
   ServeGroupDetail,
   ServeGetGroupMembers,
@@ -159,13 +154,13 @@ loadMembers()
   <section class="el-container is-vertical section">
     <header class="el-header header bdr-b">
       <div class="left-icon" @click="emit('to-talk')">
-        <n-icon size="21" :component="ChatboxEllipsesOutline" />
+        <n-icon size="21" :component="Comment" />
       </div>
       <div class="center-text">
         <span>群信息</span>
       </div>
       <div class="right-icon">
-        <n-icon size="24" :component="CloseOutline" @click="onClose" />
+        <n-icon size="24" :component="Close" @click="onClose" />
       </div>
     </header>
 
@@ -247,12 +242,12 @@ loadMembers()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
 
           <n-button @click="isShowGroup = true" circle class="mt-l15">
-            <template #icon> <n-icon :component="AddOutline" /> </template>
+            <template #icon> <n-icon :component="PeoplePlus" /> </template>
           </n-button>
         </div>
 

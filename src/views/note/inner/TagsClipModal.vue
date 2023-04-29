@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useNoteStore } from '@/store/note'
 import { ServeUpdateArticleTag } from '@/api/article'
-import { CloseOutline } from '@vicons/ionicons5'
+import { Close } from '@icon-park/vue-next'
 
 const store = useNoteStore()
 let loading = false
@@ -60,7 +60,7 @@ const onActive = item => {
   <section class="tag-box">
     <div class="header">
       <span>标签管理</span>
-      <n-button text type="info">添加标签</n-button>
+      <!-- <n-button text type="info">添加标签</n-button> -->
     </div>
 
     <div class="tag-groups">
@@ -74,8 +74,8 @@ const onActive = item => {
       >
         <span>{{ tag.tag_name }}</span>
         <span class="icon flex-center">
-          <n-icon :size="18" :component="CloseOutline"
-        /></span>
+          &nbsp;<n-icon :size="13" :component="Close" />
+        </span>
       </p>
     </div>
 

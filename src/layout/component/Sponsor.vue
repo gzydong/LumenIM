@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Close } from '@vicons/ionicons5'
+import { Close } from '@icon-park/vue-next'
 import { storage } from '@/utils/storage'
 
 let isShow = ref(false)
@@ -9,7 +9,7 @@ let num = storage.get('reward', 0)
 
 setTimeout(() => {
   isShow.value = num <= 2
-}, 1000*60*2)
+}, 1000 * 60 * 2)
 
 const onClose = () => {
   isShow.value = false
@@ -22,7 +22,7 @@ const onClose = () => {
     <div class="reward" v-show="isShow">
       <div class="title">
         <span>开源支持</span>
-        <n-icon :size="24" :component="Close" @click="onClose" />
+        <n-icon :size="18" :component="Close" @click="onClose" />
       </div>
 
       <div class="main">

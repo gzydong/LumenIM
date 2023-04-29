@@ -7,7 +7,7 @@ import {
   ServeDownloadAnnex as onDownload,
 } from '@/api/article'
 import { useNoteStore } from '@/store/note'
-import { CloudUploadOutline } from '@vicons/ionicons5'
+import { UploadOne } from '@icon-park/vue-next'
 
 const store = useNoteStore()
 
@@ -108,7 +108,7 @@ async function onUpload(e) {
           @click="onTriggerUpload"
         >
           <template #icon>
-            <n-icon :component="CloudUploadOutline" />
+            <n-icon :component="UploadOne" />
           </template>
           上传附件
         </n-button>

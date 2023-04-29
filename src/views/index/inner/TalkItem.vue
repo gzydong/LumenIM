@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowUp, ArrowDown, NotificationsOffOutline } from '@vicons/ionicons5'
+import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
 import { removeTags } from '@/utils/functions'
@@ -51,7 +51,7 @@ defineProps({
           <span class="badge roboot" v-show="data.is_robot">BOT</span>
           <span class="badge group" v-show="data.talk_type == 2">群组</span>
           <span class="disturb" v-show="data.is_disturb">
-            <n-icon :component="NotificationsOffOutline" />
+            <n-icon :component="CloseRemind" />
           </span>
         </div>
         <div class="datetime"><Xtime :time="data.updated_at" /></div>

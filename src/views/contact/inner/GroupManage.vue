@@ -1,12 +1,7 @@
 <script setup>
 import { reactive, computed, ref } from 'vue'
-import {
-  NModal,
-  NForm,
-  NFormItem,
-  NInput,
-} from 'naive-ui'
-import { RemoveCircleOutline, ArrowDown, ArrowUp } from '@vicons/ionicons5'
+import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
+import { ArrowDown, ArrowUp, DeleteMode } from '@icon-park/vue-next'
 
 const emit = defineEmits(['close', 'submit'])
 
@@ -75,7 +70,7 @@ const isCanSubmit = computed(() => {
               <n-icon
                 size="20"
                 class="pointer"
-                :component="RemoveCircleOutline"
+                :component="DeleteMode"
                 @click="delOption(i)"
               />
               <n-icon class="pointer" size="20" :component="ArrowUp" />

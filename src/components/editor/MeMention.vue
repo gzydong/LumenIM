@@ -1,9 +1,8 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import { useEditorStore } from '@/store/editor'
-import { ArrowBackCircleOutline } from '@vicons/ionicons5'
+import { ArrowCircleLeft } from '@icon-park/vue-next'
 import { defAvatar } from '@/constant/default'
-
 const emit = defineEmits(['on-select', 'on-close'])
 
 const index = ref(-1)
@@ -46,7 +45,7 @@ const editorStore = useEditorStore()
       <n-icon
         :size="20"
         class="pointer"
-        :component="ArrowBackCircleOutline"
+        :component="ArrowCircleLeft"
         @click="emit('on-close')"
       />
     </header>

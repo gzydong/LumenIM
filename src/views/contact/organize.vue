@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
-import { SearchOutline } from '@vicons/ionicons5'
+import { Search } from '@icon-park/vue-next'
 import { toTalk } from '@/utils/talk'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
@@ -170,7 +170,7 @@ onLoadDepartment()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
         </header>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive, nextTick } from 'vue'
-import { NSpace, NDropdown } from 'naive-ui'
-import { SearchOutline, Checkbox, AddOutline } from '@vicons/ionicons5'
+import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
+import { Search, AddOne } from '@icon-park/vue-next'
 import { defAvatar } from '@/constant/default'
 import GroupLaunch from '../GroupLaunch.vue'
 import UserCardModal from '@/components/user/UserCardModal.vue'
@@ -289,12 +289,12 @@ onLoadData()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
 
           <n-button circle @click="isGroupLaunch = true">
-            <template #icon> <n-icon :component="AddOutline" /> </template>
+            <template #icon> <n-icon :component="AddOne" /> </template>
           </n-button>
         </n-space>
       </div>
@@ -315,13 +315,10 @@ onLoadData()
         :key="member.user_id"
       >
         <div class="tool flex-center" v-show="batchDelete">
-          <n-icon
+          <n-checkbox
             v-show="member.leader < 2"
-            class="pointer"
-            :size="16"
-            :color="member.is_delete ? 'rgb(80 138 254)' : 'rgb(222 215 215)'"
-            :component="Checkbox"
-            @click="onRowClick"
+            size="small"
+            :checked="member.is_delete"
           />
         </div>
         <div class="avatar pointer" @click="onUserInfo(member)">
@@ -400,8 +397,7 @@ onLoadData()
 }
 
 .main {
-  padding: 0 15px;
-  box-sizing: border-box;
+  padding: 0 5px;
 }
 
 .member-item {
@@ -415,6 +411,7 @@ onLoadData()
   border: 1px dashed transparent;
   padding: 3px;
   border-bottom: 1px solid #f5f5f5;
+  box-sizing: border-box;
 
   &:hover {
     border: 1px dashed rgb(80 138 254);

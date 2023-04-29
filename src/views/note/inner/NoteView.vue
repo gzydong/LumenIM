@@ -2,16 +2,16 @@
 import { computed, watch, reactive, ref } from 'vue'
 import { NPopover } from 'naive-ui'
 import {
-  ScanOutline,
-  CreateOutline,
-  HeartOutline,
-  PricetagOutline,
-  Attach,
-  ArrowDown,
-  TrashSharp,
-  ArrowRedoOutline,
-  ScanCircleOutline,
-} from '@vicons/ionicons5'
+  Share,
+  Delete as IconDelete,
+  DownloadFour,
+  FolderFocus,
+  Label as IconLabel,
+  Star as IconStar,
+  EditOne,
+  FullScreen,
+  OffScreen,
+} from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import TagsClipModal from './TagsClipModal.vue'
@@ -266,7 +266,7 @@ const onShare = () => {
         <n-icon
           class="icon"
           size="18"
-          :component="!isFull ? ScanOutline : ScanCircleOutline"
+          :component="!isFull ? FullScreen : OffScreen"
         />
         <p>全屏</p>
       </div>
@@ -276,7 +276,7 @@ const onShare = () => {
         class="nav-item"
         @click="store.setEditorMode('edit')"
       >
-        <n-icon class="icon" size="18" :component="CreateOutline" />
+        <n-icon class="icon" size="18" :component="EditOne" />
         <p>编辑</p>
       </div>
 
@@ -285,7 +285,7 @@ const onShare = () => {
         class="nav-item"
         @click="onSave(true)"
       >
-        <n-icon class="icon" size="18" :component="CreateOutline" />
+        <n-icon class="icon" size="18" :component="EditOne" />
         <p v-if="detail.id == 0 && editor.markdown.length === 0">取消</p>
         <p v-else>{{ loading ? '保存中..' : '保存' }}</p>
       </div>
@@ -296,7 +296,7 @@ const onShare = () => {
         :class="{ active: detail.is_asterisk == 1 }"
         @click="onCollection"
       >
-        <n-icon class="icon" size="18" :component="HeartOutline" />
+        <n-icon class="icon" size="18" :component="IconStar" />
         <p>收藏</p>
       </div>
 
@@ -314,7 +314,7 @@ const onShare = () => {
             class="nav-item"
             :class="{ active: store.view.detail.tags.length }"
           >
-            <n-icon class="icon" size="18" :component="PricetagOutline" />
+            <n-icon class="icon" size="18" :component="IconLabel" />
             <p>标签</p>
           </div>
         </template>
@@ -333,7 +333,7 @@ const onShare = () => {
             class="nav-item"
             :class="{ active: store.view.detail.files.length }"
           >
-            <n-icon class="icon" size="18" :component="Attach" />
+            <n-icon class="icon" size="18" :component="FolderFocus" />
             <p>附件</p>
           </div>
         </template>
@@ -341,17 +341,17 @@ const onShare = () => {
       </n-popover>
 
       <div v-show="detail.id" class="nav-item" @click="onDownload">
-        <n-icon class="icon" size="18" :component="ArrowDown" />
+        <n-icon class="icon" size="18" :component="DownloadFour" />
         <p>下载</p>
       </div>
 
       <div v-show="detail.id" class="nav-item" @click="onDelete">
-        <n-icon class="icon" size="18" :component="TrashSharp" />
+        <n-icon class="icon" size="18" :component="IconDelete" />
         <p>删除</p>
       </div>
 
       <div v-show="detail.id" class="nav-item" @click="onShare">
-        <n-icon class="icon" size="18" :component="ArrowRedoOutline" />
+        <n-icon class="icon" size="18" :component="Share" />
         <p>分享</p>
       </div>
     </aside>

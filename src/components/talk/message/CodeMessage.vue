@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { CloseCircleSharp } from '@vicons/ionicons5'
+import { CloseOne } from '@icon-park/vue-next'
 
 defineProps({
   extra: Object,
@@ -25,11 +25,7 @@ const isFullCat = ref(false)
 
     <div v-if="isFullCat" class="full-code">
       <div class="close pointer" @click="isFullCat = false">
-        <n-icon
-          color="rgb(173 168 168)"
-          :size="50"
-          :component="CloseCircleSharp"
-        />
+        <CloseOne :size="30" />
       </div>
 
       <highlightjs
@@ -115,6 +111,7 @@ const isFullCat = ref(false)
 
     code {
       height: 100%;
+      padding-top: 30px !important;
     }
   }
 }

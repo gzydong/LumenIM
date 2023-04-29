@@ -2,7 +2,7 @@
 import { ref, reactive, inject } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
-import { ChevronDownOutline, CalendarNumberOutline } from '@vicons/ionicons5'
+import { Down, Calendar } from '@icon-park/vue-next'
 import * as message from '@/constant/message'
 
 const emit = defineEmits(['close'])
@@ -130,7 +130,7 @@ loadChatRecord()
               <n-icon
                 :size="20"
                 class="pointer"
-                :component="CalendarNumberOutline"
+                :component="Calendar"
               />
             </template>
             <n-date-picker
@@ -141,11 +141,7 @@ loadChatRecord()
             />
           </n-popover> -->
 
-          <n-icon
-            :size="20"
-            class="pointer"
-            :component="CalendarNumberOutline"
-          />
+          <n-icon :size="20" class="pointer" :component="Calendar" />
         </div>
       </header>
 
@@ -197,7 +193,7 @@ loadChatRecord()
             v-show="!model.loadMore"
             :size="20"
             class="icon"
-            :component="ChevronDownOutline"
+            :component="Down"
           />
           <span>
             &nbsp;{{ model.loadMore ? '数据加载中...' : '加载更多' }}

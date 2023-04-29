@@ -7,12 +7,13 @@ import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import { defAvatar } from '@/constant/default'
 import {
-  PersonOutline,
-  SettingsOutline,
-  ChatboxEllipsesOutline,
-} from '@vicons/ionicons5'
-import { LogoGithub, MdBook } from '@vicons/ionicons4'
-import { Download } from '@icon-park/vue-next'
+  Download,
+  GithubOne,
+  BookOpen,
+  SettingTwo,
+  Message,
+  AddressBook,
+} from '@icon-park/vue-next'
 
 defineProps({
   index: {
@@ -28,30 +29,30 @@ const router = useRouter()
 const menus = reactive([
   {
     link: '/message',
-    icon: markRaw(ChatboxEllipsesOutline),
+    icon: markRaw(Message),
     title: '消息',
     hotspot: computed(() => talkStore.talkUnreadNum > 0),
   },
   {
     link: '/contact/friend',
-    icon: markRaw(PersonOutline),
+    icon: markRaw(AddressBook),
     title: '通讯录',
     hotspot: computed(() => userStore.isContactApply),
   },
   {
     link: '/note',
-    icon: markRaw(MdBook),
+    icon: markRaw(BookOpen),
     title: '笔记',
   },
   {
     link: 'https://github.com/gzydong/LumenIM',
-    icon: markRaw(LogoGithub),
+    icon: markRaw(GithubOne),
     external: true,
     title: '源码',
   },
   {
     link: '/settings/detail',
-    icon: markRaw(SettingsOutline),
+    icon: markRaw(SettingTwo),
     title: '设置',
   },
 ])

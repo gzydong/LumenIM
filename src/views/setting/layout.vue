@@ -1,38 +1,33 @@
 <script setup>
-import {
-  PersonOutline,
-  ShieldCheckmarkOutline,
-  ShirtOutline,
-  NotificationsOutline,
-} from '@vicons/ionicons5'
 import Layout from '@/layout/index.vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
+import { Tool, Protect, Remind, LinkThree, User } from '@icon-park/vue-next'
 
 const menus = [
   {
     name: '个人中心',
     path: '/settings/detail',
-    icon: PersonOutline,
+    icon: User,
   },
   {
     name: '安全设置',
     path: '/settings/security',
-    icon: ShieldCheckmarkOutline,
+    icon: Protect,
   },
   {
     name: '个性设置',
     path: '/settings/personalize',
-    icon: ShirtOutline,
+    icon: Tool,
   },
   {
     name: '绑定设置',
     path: '/settings/binding',
-    icon: PersonOutline,
+    icon: LinkThree,
   },
   {
     name: '通知设置',
     path: '/settings/notification',
-    icon: NotificationsOutline,
+    icon: Remind,
   },
 ]
 </script>

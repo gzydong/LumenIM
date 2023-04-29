@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import { NModal } from 'naive-ui'
-import { MicOutline } from '@vicons/ionicons5'
+import { Voice } from '@icon-park/vue-next'
 import Recorder from 'js-audio-recorder'
 import { countDownTime } from '@/utils/functions'
 
@@ -105,12 +105,12 @@ onUnmounted(() => {
           round
           @click="onStart"
         >
-          <n-icon :component="MicOutline" />
+          <n-icon :component="Voice" />
           &nbsp;开始录音
         </n-button>
 
         <n-button v-show="status == 1" type="primary" round @click="onStop">
-          <n-icon :component="MicOutline" />
+          <n-icon :component="Voice" />
           &nbsp;结束录音
         </n-button>
 

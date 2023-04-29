@@ -1,7 +1,8 @@
 <script setup>
 import { reactive, watch, computed, nextTick, onMounted, inject } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
-import { CaretDownSharp, NotificationsOutline } from '@vicons/ionicons5'
+import { ExpandDownOne, Remind } from '@icon-park/vue-next'
+
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -409,7 +410,7 @@ onMounted(() => {
       }"
       @click="onSkipBottom"
     >
-      <n-icon size="18" color="#fff" :component="NotificationsOutline" />
+      <n-icon size="18" color="#fff" :component="Remind" />
       <span>{{ dialogueStore.unreadBubble }}条新消息，请注意查看！</span>
     </div>
 
@@ -419,7 +420,7 @@ onMounted(() => {
       :class="{ show: state.skipBottom }"
       @click="onSkipBottom"
     >
-      <n-icon size="14" color="#fff" :component="CaretDownSharp" />
+      <n-icon size="14" color="#fff" :component="ExpandDownOne" />
       <span>回</span>
       <span>到</span>
       <span>底</span>

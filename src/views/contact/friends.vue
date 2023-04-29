@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
-import { SearchOutline, EllipsisHorizontalSharp } from '@vicons/ionicons5'
+import { Search, More } from '@icon-park/vue-next'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import ApplyListModal from './inner/ApplyListModal.vue'
@@ -104,7 +104,7 @@ onLoadData()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
 
@@ -126,7 +126,7 @@ onLoadData()
           >
             <n-button circle>
               <template #icon>
-                <n-icon :component="EllipsisHorizontalSharp" />
+                <n-icon :component="More" />
               </template>
             </n-button>
           </n-dropdown>

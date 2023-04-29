@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { NModal } from 'naive-ui'
-import { ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
+import { Up, Down } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetGroupNotices } from '@/api/group'
 
@@ -93,10 +93,7 @@ onLoadData()
           <span class="nickname text-ellipsis">{{ item.nickname }}</span>
           <span class="datetime">发表于 {{ item.created_at }}</span>
           <span class="btn" @click="item.isShow = !item.isShow">
-            <n-icon
-              :size="18"
-              :component="item.isShow ? ChevronUpOutline : ChevronDownOutline"
-            />
+            <n-icon :size="18" :component="item.isShow ? Up : Down" />
             {{ item.isShow ? '收起' : '展开' }}
           </span>
         </div>

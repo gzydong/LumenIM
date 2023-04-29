@@ -1,6 +1,6 @@
 <script setup>
 import { NDropdown } from 'naive-ui'
-import { EllipsisHorizontal } from '@vicons/ionicons5'
+import { More } from '@icon-park/vue-next'
 
 defineProps({
   type: {
@@ -69,7 +69,7 @@ const onEvent = key => {
         placement="bottom-end"
         @select="onEvent"
       >
-        <n-icon :size="24" class="icon" :component="EllipsisHorizontal" />
+        <n-icon :size="30" class="icon" :component="More" />
       </n-dropdown>
     </div>
   </header>

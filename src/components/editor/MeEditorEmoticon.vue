@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useEditorStore } from '@/store/editor'
-import { ImageSharp, Trash } from '@vicons/ionicons5'
+import { UploadOne, Delete } from '@icon-park/vue-next'
+
 import { emojiList as emoji } from '@/utils/emojis'
 
 const emit = defineEmits(['on-select'])
@@ -74,7 +75,7 @@ const onSendEmoticon = (type, value) => {
           class="item pointer upload-btn"
           @click="onTriggerUpload"
         >
-          <n-icon size="30" class="icon" :component="ImageSharp" />
+          <n-icon size="30" class="icon" :component="UploadOne" />
           <span>自定义</span>
         </div>
 
@@ -90,7 +91,12 @@ const onSendEmoticon = (type, value) => {
             class="mask"
             @click="onDelete(index, item.media_id)"
           >
-            <n-icon size="18" color="#ff5722" class="icon" :component="Trash" />
+            <n-icon
+              size="18"
+              color="#ff5722"
+              class="icon"
+              :component="Delete"
+            />
           </div>
         </div>
       </div>

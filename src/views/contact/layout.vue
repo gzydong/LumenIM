@@ -1,13 +1,13 @@
 <script setup>
-import { reactive, computed,markRaw } from 'vue'
+import { reactive, computed, markRaw } from 'vue'
 import Layout from '@/layout/index.vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store/user'
 import {
   PeoplesTwo,
-  Peoples,
   ChartGraph,
   ShareThree,
+  PersonalCollection,
 } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
@@ -16,7 +16,7 @@ const menus = reactive([
   {
     name: '我的好友',
     path: '/contact/friend',
-    icon: markRaw(Peoples),
+    icon: markRaw(PersonalCollection),
     size: 18,
     tips: computed(() => (userStore.isContactApply ? 'New' : '')),
   },

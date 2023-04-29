@@ -1,6 +1,6 @@
 <script setup>
-import { ArrowRedoOutline, AddCircleOutline } from '@vicons/ionicons5'
 import { defAvatar } from '@/constant/default'
+import { ShareThree, AddOne } from '@icon-park/vue-next'
 
 const emit = defineEmits(['talk', 'join'])
 defineProps({
@@ -61,14 +61,8 @@ defineProps({
         <div class="status">{{ flag }}</div>
         <div class="tool">
           <n-icon
-            v-if="isMember"
-            :component="ArrowRedoOutline"
-            @click.stop="emit('talk')"
-          />
-          <n-icon
-            v-else
-            :component="AddCircleOutline"
-            @click.stop="emit('join')"
+            :component="isMember ? ShareThree : AddOne"
+            @click.stop="emit(isMember ? 'talk' : 'join')"
           />
         </div>
       </div>

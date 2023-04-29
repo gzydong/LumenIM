@@ -1,12 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
-import {
-  TrashOutline,
-  CloseSharp,
-  ArrowRedoOutline,
-  NavigateOutline,
-} from '@vicons/ionicons5'
+import { Share, ShareThree, Delete, Close } from '@icon-park/vue-next'
+
 import ContactModal from '@/components/user/ContactModal.vue'
 
 const dialogueStore = useDialogueStore()
@@ -75,25 +71,25 @@ const onContactModal = data => {
     <div class="multi-groups">
       <div class="btn-group">
         <div class="multi-icon pointer flex-center" @click="onMergeForward">
-          <n-icon :size="22" :component="ArrowRedoOutline" />
+          <n-icon :size="22" :component="Share" />
         </div>
         <p>合并转发</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer flex-center" @click="onSingleForward">
-          <n-icon :size="22" :component="NavigateOutline" />
+          <n-icon :size="22" :component="ShareThree" />
         </div>
         <p>逐条转发</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer flex-center" @click="onMultiDelete">
-          <n-icon :size="22" :component="TrashOutline" />
+          <n-icon :size="22" :component="Delete" />
         </div>
         <p>批量删除</p>
       </div>
       <div class="btn-group">
         <div class="multi-icon pointer flex-center" @click="onClose">
-          <n-icon :size="24" :component="CloseSharp" />
+          <n-icon :size="22" :component="Close" />
         </div>
         <p>关闭</p>
       </div>

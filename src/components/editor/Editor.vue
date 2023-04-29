@@ -5,14 +5,15 @@ import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
 import { NPopover } from 'naive-ui'
 import {
-  HappyOutline,
-  ImageOutline,
-  MicOutline,
-  DocumentAttachOutline,
-  CodeSlashOutline,
-  PodiumOutline,
-  TimeOutline,
-} from '@vicons/ionicons5'
+  Voice as IconVoice,
+  SourceCode,
+  Local,
+  SmilingFace,
+  Pic,
+  FolderUpload,
+  Ranking,
+  History,
+} from '@icon-park/vue-next'
 import { emitCall } from '@/utils/common'
 import MeEditorImage from './MeEditorImage.vue'
 import MeEditorVote from './MeEditorVote.vue'
@@ -295,7 +296,7 @@ const onRecorderEvent = file => {
 const navs = reactive([
   {
     title: '图片',
-    icon: markRaw(ImageOutline),
+    icon: markRaw(Pic),
     show: true,
     click: () => {
       fileImageRef.value.click()
@@ -303,7 +304,7 @@ const navs = reactive([
   },
   {
     title: '附件',
-    icon: markRaw(DocumentAttachOutline),
+    icon: markRaw(FolderUpload),
     show: true,
     click: () => {
       uploadFileRef.value.click()
@@ -311,7 +312,7 @@ const navs = reactive([
   },
   {
     title: '代码',
-    icon: markRaw(CodeSlashOutline),
+    icon: markRaw(SourceCode),
     show: true,
     click: () => {
       isShowEditorCode.value = true
@@ -319,21 +320,21 @@ const navs = reactive([
   },
   {
     title: '语音消息',
-    icon: markRaw(MicOutline),
+    icon: markRaw(IconVoice),
     show: true,
     click: () => {
       isShowEditorRecorder.value = true
     },
   },
-  // {
-  //   title: '地理位置',
-  //   icon: markRaw(LocationOutline),
-  //   show: true,
-  //   click: () => {},
-  // },
+  {
+    title: '地理位置',
+    icon: markRaw(Local),
+    show: true,
+    click: () => {},
+  },
   {
     title: '群投票',
-    icon: markRaw(PodiumOutline),
+    icon: markRaw(Ranking),
     show: computed(() => props.show_vote),
     click: () => {
       isShowEditorVote.value = true
@@ -341,7 +342,7 @@ const navs = reactive([
   },
   {
     title: '历史记录',
-    icon: markRaw(TimeOutline),
+    icon: markRaw(History),
     show: true,
     click: () => {
       emit('editor-event', emitCall('history_event'))
@@ -402,7 +403,7 @@ const onDragPaste = e => {
           >
             <template #trigger>
               <div class="item pointer">
-                <n-icon size="18" class="icon" :component="HappyOutline" />
+                <n-icon size="18" class="icon" :component="SmilingFace" />
                 <p class="tip-title">表情符号</p>
               </div>
             </template>

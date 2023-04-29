@@ -1,12 +1,15 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { NModal, NInput, NScrollbar, NDivider, NDropdown } from 'naive-ui'
 import {
-  SearchOutline,
-  Checkbox,
-  TrashSharp,
-  OptionsOutline,
-} from '@vicons/ionicons5'
+  NModal,
+  NInput,
+  NScrollbar,
+  NCheckbox,
+  NDivider,
+  NDropdown,
+} from 'naive-ui'
+import { Search, DeleteMode, SettingConfig } from '@icon-park/vue-next'
+
 import { defAvatar } from '@/constant/default.js'
 import { ServeGetContacts } from '@/api/contacts'
 
@@ -113,7 +116,7 @@ onLoad()
               :options="options"
               placement="bottom-start"
             >
-              <n-icon :size="26" class="pointer" :component="OptionsOutline" />
+              <n-icon :size="26" class="pointer" :component="SettingConfig" />
             </n-dropdown>
 
             <n-input
@@ -124,7 +127,7 @@ onLoad()
               size="small"
             >
               <template #prefix>
-                <n-icon :component="SearchOutline" />
+                <n-icon :component="Search" />
               </template>
             </n-input>
           </header>
@@ -152,13 +155,7 @@ onLoad()
                   </div>
 
                   <div class="checkbox">
-                    <n-icon
-                      :size="16"
-                      :color="
-                        item.checked ? 'rgb(80 138 254)' : 'rgb(222 215 215)'
-                      "
-                      :component="Checkbox"
-                    />
+                    <n-checkbox size="small" :checked="item.checked" />
                   </div>
                 </div>
               </div>
@@ -198,7 +195,7 @@ onLoad()
                     <span class="text-ellipsis">{{ item.nickname }}</span>
                   </div>
                   <div class="checkbox">
-                    <n-icon :size="16" color="red" :component="TrashSharp" />
+                    <n-icon :size="16" color="red" :component="DeleteMode" />
                   </div>
                 </div>
               </div>

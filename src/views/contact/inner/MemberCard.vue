@@ -1,11 +1,6 @@
 <script setup>
-import {
-  ArrowRedoOutline,
-  MaleOutline,
-  MaleFemaleOutline,
-} from '@vicons/ionicons5'
+import { Male, Female, ShareThree } from '@icon-park/vue-next'
 import { defAvatar } from '@/constant/default'
-
 const emit = defineEmits(['to-talk'])
 
 defineProps({
@@ -50,12 +45,8 @@ defineProps({
         </span>
 
         <div v-if="gender > 0">
-          <n-icon
-            v-if="gender == 2"
-            :component="MaleFemaleOutline"
-            color="#ff5722"
-          />
-          <n-icon v-else :component="MaleOutline" color="#508afe" />
+          <n-icon v-if="gender == 2" :component="Female" color="#ff5722" />
+          <n-icon v-else :component="Male" color="#508afe" />
         </div>
       </div>
 
@@ -64,7 +55,7 @@ defineProps({
       <div class="helper">
         <div class="status">{{ flag }}</div>
         <div class="tool">
-          <n-icon :component="ArrowRedoOutline" @click.stop="emit('to-talk')" />
+          <n-icon :component="ShareThree" @click.stop="emit('to-talk')" />
         </div>
       </div>
     </div>

@@ -9,8 +9,7 @@ import {
   NSpace,
   NRadio,
 } from 'naive-ui'
-import { RemoveCircleOutline } from '@vicons/ionicons5'
-
+import { DeleteMode } from '@icon-park/vue-next'
 const emit = defineEmits(['close', 'submit'])
 
 const isShow = ref(true)
@@ -114,7 +113,7 @@ const isCanSubmit = computed(() => {
             </n-input>
 
             <div class="btn flex-center pointer" @click="delOption(i)">
-              <n-icon size="20" :component="RemoveCircleOutline" />
+              <n-icon size="20" :component="DeleteMode" />
             </div>
           </div>
 

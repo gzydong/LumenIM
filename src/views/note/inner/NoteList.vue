@@ -1,10 +1,9 @@
 <script setup>
-import { SearchOutline, Menu } from '@vicons/ionicons5'
+import { Search, SortAmountDown, SortAmountUp } from '@icon-park/vue-next'
 import { NImage, NScrollbar } from 'naive-ui'
 import { useNoteStore } from '@/store/note'
 import { debounce } from '@/utils/common'
 import Loading from '@/components/base/Loading.vue'
-
 const store = useNoteStore()
 
 const onCatDetail = item => {
@@ -19,7 +18,7 @@ const onSearchInput = debounce(e => {
   <section class="el-container is-vertical section">
     <header class="el-header search-header">
       <div class="icon">
-        <n-icon size="18" :component="SearchOutline" />
+        <n-icon size="18" :component="Search" />
       </div>
 
       <input
@@ -34,11 +33,14 @@ const onSearchInput = debounce(e => {
     <header class="el-header sub-header">
       <span>{{ store.notes.items.length }} 篇笔记</span>
       <div class="menu-icon">
-        <n-icon size="18" :component="Menu" />
+        <n-icon size="18" :component="SortAmountDown" />
       </div>
     </header>
 
-    <main class="el-main height100 flex-center" v-if="store.notes.loadStatus == 0">
+    <main
+      class="el-main height100 flex-center"
+      v-if="store.notes.loadStatus == 0"
+    >
       <Loading />
     </main>
 

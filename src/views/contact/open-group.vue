@@ -4,7 +4,7 @@ import { NAlert } from 'naive-ui'
 import { ServeGroupOvertList } from '@/api/group'
 import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'
-import { SearchOutline, AddCircleOutline } from '@vicons/ionicons5'
+import { Search, AddOne } from '@icon-park/vue-next'
 import { debounce } from '@/utils/common'
 import { toTalk } from '@/utils/talk'
 
@@ -88,7 +88,7 @@ onLoadData()
               round
             >
               <template #prefix>
-                <n-icon :component="SearchOutline" />
+                <n-icon :component="Search" />
               </template>
             </n-input>
           </div>
@@ -126,10 +126,7 @@ onLoadData()
               class="flex-center more"
               @click="onLoadMore"
             >
-              <n-icon
-                :component="AddCircleOutline"
-                @click.stop="emit('join')"
-              />
+              <n-icon :component="AddOne" @click.stop="emit('join')" />
 
               &nbsp;加载更多
             </div>

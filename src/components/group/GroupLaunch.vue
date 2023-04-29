@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NDivider, NCheckbox } from 'naive-ui'
-import { SearchOutline, TrashSharp } from '@vicons/ionicons5'
+import { Search, DeleteMode } from '@icon-park/vue-next'
 import { defAvatar } from '@/constant/default.js'
 import {
   ServeCreateGroup,
@@ -151,7 +151,7 @@ onLoad()
               clearable
             >
               <template #prefix>
-                <n-icon :component="SearchOutline" />
+                <n-icon :component="Search" />
               </template>
             </n-input>
           </header>
@@ -234,7 +234,7 @@ onLoad()
                     <span class="text-ellipsis">{{ item.nickname }}</span>
                   </div>
                   <div class="checkbox">
-                    <n-icon :size="16" color="red" :component="TrashSharp" />
+                    <n-icon :size="16" color="red" :component="DeleteMode" />
                   </div>
                 </div>
               </div>

@@ -2,7 +2,7 @@
 import { ref, reactive, watch, nextTick } from 'vue'
 import { NScrollbar, NDropdown } from 'naive-ui'
 import RecycleModal from './RecycleModal.vue'
-import { ChevronDownOutline, Add } from '@vicons/ionicons5'
+import { Down, AddOne } from '@icon-park/vue-next'
 import { useNoteStore } from '@/store/note'
 
 const store = useNoteStore()
@@ -269,10 +269,8 @@ loadWatchTagsMenu()
           },
         ]"
       >
-        <n-button circle>
-          <template #icon>
-            <n-icon :component="Add" />
-          </template>
+        <n-button text>
+          <n-icon size="32" :component="AddOne" />
         </n-button>
       </n-dropdown>
     </header>
@@ -314,7 +312,7 @@ loadWatchTagsMenu()
               v-show="menu.submenus.length"
               class="nav-icon"
               size="18"
-              :component="ChevronDownOutline"
+              :component="Down"
             />
           </div>
 
