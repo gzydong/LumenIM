@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "electron": "wait-on tcp:5174 && cross-env NODE_ENV=development PROT=5174 electron .",
     "electron:dev": "concurrently -k \"npm run dev\" \"npm run electron\"",
-    "electron:build": "vite build --mode electron && electron-builder --mac && electron-builder --win --x64"
+    "electron:build": "vite build --mode electron && electron-builder --mac && electron-builder --win --x64",
+    "electron:build-mac": "vite build --mode electron && electron-builder --mac"
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",

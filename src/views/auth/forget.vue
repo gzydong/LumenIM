@@ -39,9 +39,7 @@ const rules = {
 const lockTime = ref(0)
 
 // 初始化短信按钮锁
-const lock = new SmsLock('FORGET_PSW_SMS', 120, time => {
-  lockTime.value = time
-})
+const lock = new SmsLock('FORGET_PSW_SMS', 120, time => (lockTime.value = time))
 
 const model = reactive({
   username: '',
@@ -116,7 +114,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="el-container is-vertical login-box">
+  <section class="el-container is-vertical login-box forget">
     <header class="el-header box-header">找回密码</header>
 
     <main class="el-main" style="padding: 3px">

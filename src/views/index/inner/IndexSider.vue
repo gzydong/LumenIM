@@ -488,7 +488,7 @@ onMounted(() => {
 }
 
 .tops-header {
-  background: #f0f8ff;
+  // background: #f0f8ff;
   padding: 5px 8px;
   padding-right: 0;
   padding-right: 8px;

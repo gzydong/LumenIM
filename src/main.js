@@ -13,7 +13,6 @@ import { setHljsVuePlugin } from './plugins/hljs'
 import { setupDirective } from './plugins/directive'
 import { isElectronMode } from '@/utils/common'
 
-
 async function bootstrap() {
   const app = createApp(App)
 

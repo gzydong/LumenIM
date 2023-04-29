@@ -131,7 +131,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="el-container is-vertical login-box">
+  <section class="el-container is-vertical login-box reister">
     <header class="el-header box-header">账号注册</header>
 
     <main class="el-main" style="padding: 3px">

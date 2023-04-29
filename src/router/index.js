@@ -7,6 +7,7 @@ import { isLoggedIn } from '@/utils/auth'
 import SettingRouter from './modules/setting'
 import ContactRouter from './modules/contact'
 import AuthRouter from './modules/auth'
+import Home from '@/views/index/index.vue'
 
 const routes = [
   SettingRouter,
@@ -16,7 +17,7 @@ const routes = [
     path: '/',
     name: 'Home',
     meta: { requiresAuth: true },
-    component: () => import('@/views/index/index.vue'),
+    component: Home,
   },
   {
     path: '/message',

@@ -1,7 +1,9 @@
-<script setup></script>
+<script setup>
+import { isElectronMode } from '@/utils/common'
+</script>
 
 <template>
-  <div id="logo-name">Lumen IM</div>
+  <div id="logo-name" v-if="!isElectronMode()">Lumen IM</div>
 
   <section class="section">
     <router-view />
@@ -9,7 +11,11 @@
 
   <div class="copyright">
     <span>©2020 - 2022 Lumen IM 在线聊天</span>
-    <span><a href="http://beian.miit.gov.cn" target="_blank">黔ICP备20006767号</a></span>
+    <span
+      ><a href="http://beian.miit.gov.cn" target="_blank"
+        >黔ICP备20006767号</a
+      ></span
+    >
     <span>Github源码</span>
   </div>
 
@@ -22,11 +28,8 @@
 </template>
 
 <style lang="less" scoped>
-.section {
-  position: fixed;
-  height: 100%;
-  width: 100%;
+body {
+  -webkit-app-region: drag;
 }
-
 @import '@/assets/css/login.less';
 </style>

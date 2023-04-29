@@ -9,7 +9,6 @@ import socket from '@/socket'
 import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()
-
 const route = useRoute()
 const router = useRouter()
 const formRef = ref(null)
@@ -41,7 +40,7 @@ const onLogin = () => {
     platform: 'web',
   })
 
-  response.then(res => {
+  response.then(async res => {
     if (res.code == 200) {
       window.$message.success('登录成功！')
       setAccessToken(res.data.access_token, res.data.expires_in)
@@ -83,7 +82,7 @@ const onClickAccount = type => {
 </script>
 
 <template>
-  <section class="el-container is-vertical login-box">
+  <section class="el-container is-vertical login-box login">
     <header class="el-header box-header">快捷登录</header>
 
     <main class="el-main" style="padding: 3px">
@@ -114,7 +113,6 @@ const onClickAccount = type => {
           class="mt-t20"
           @click="onValidate"
           :loading="model.loading"
-          
         >
           立即登录
         </n-button>

@@ -18,16 +18,15 @@ import MessageApi from '@/components/common/MessageApi.vue'
 import DialogApi from '@/components/common/DialogApi.vue'
 import { isLoggedIn } from '@/utils/auth'
 import { applyNotificationAuth } from '@/utils/notification'
-import { modal } from '@/utils/common'
+import { modal, isElectronMode } from '@/utils/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
-import { DEFAULT_ICON_CONFIGS, IconProvider } from '@icon-park/vue-next'
+import { IconProvider } from '@icon-park/vue-next'
 
 IconProvider({
-  ...DEFAULT_ICON_CONFIGS,
   theme: 'outline',
   size: 24,
   fill: '#000000',
-  strokeWidth: 2,
+  strokeWidth: 3,
   strokeLinejoin: 'bevel',
 })
 
@@ -63,11 +62,18 @@ document.addEventListener('visibilitychange', () => {
   // 设置用户是否离开页面  visible,hidden
   notifyStore.isLeaveWeb = document.visibilityState === 'hidden'
 
+  const pathname = router.currentRoute.value.path
+
   // 用户回到页面时判断哪连接是否正常，不正常则重连
   if (!notifyStore.isLeaveWeb) {
     console.info('已回到页面...')
 
-    if (!isLoggedIn()) {
+    let paths = ['/auth/login', '/auth/register', '/auth/forget']
+    if (!paths.includes(pathname) && isLoggedIn()) {
+      !socket.isConnect() && socket.connect()
+    }
+
+    if (!paths.includes(pathname) && !isLoggedIn()) {
       window['$dialog'].info({
         title: '友情提示',
         content: '当前登录已失效，请重新登录？',
@@ -78,17 +84,12 @@ document.addEventListener('visibilitychange', () => {
         },
       })
     }
-
-    let paths = ['/auth/login', '/auth/register', '/auth/forget']
-    if (!paths.includes(window.location.pathname) && isLoggedIn()) {
-      !socket.isConnect() && socket.connect()
-    }
   }
 })
 
-if (window.electron) {
+if (isElectronMode()) {
   watchEffect(() => {
-    window.electron.setBadge(useTalk.talkUnreadNum)
+    electron.setBadge(useTalk.talkUnreadNum)
   })
 }
 </script>
