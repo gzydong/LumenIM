@@ -1,12 +1,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { NModal, NImage } from 'naive-ui'
-import {
-  TrashOutline,
-  CalendarNumberOutline,
-  ReloadOutline,
-  CloudDownloadOutline,
-} from '@vicons/ionicons5'
+import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import {
   ServeGetArticleList,
@@ -149,11 +144,7 @@ onMounted(() => {
           </span>
         </div>
         <div style="display: flex; align-items: center">
-          <n-icon
-            :size="20"
-            class="pointer"
-            :component="CalendarNumberOutline"
-          />
+          <n-icon :size="20" class="pointer" :component="CalendarThirty" />
         </div>
       </header>
 
@@ -193,14 +184,14 @@ onMounted(() => {
                     :size="18"
                     color="#03a9f4"
                     class="pointer"
-                    :component="ReloadOutline"
+                    :component="Undo"
                     @click="onRecoverArticle(index, note.id)"
                   />
                   <n-icon
                     :size="18"
                     color="red"
                     class="pointer"
-                    :component="TrashOutline"
+                    :component="Delete"
                     @click="onDeleteArticle(index, note.id)"
                   />
                 </div>
@@ -274,21 +265,21 @@ onMounted(() => {
                     :size="18"
                     color="#03a9f4"
                     class="pointer"
-                    :component="CloudDownloadOutline"
+                    :component="ToBottom"
                     @click="onDownload(annex.id)"
                   />
                   <n-icon
                     :size="18"
                     color="#03a9f4"
                     class="pointer"
-                    :component="ReloadOutline"
+                    :component="Undo"
                     @click="onRecoverAnnex(index, annex.id)"
                   />
                   <n-icon
                     :size="18"
                     color="red"
                     class="pointer"
-                    :component="TrashOutline"
+                    :component="Delete"
                     @click="onDeleteAnnex(index, annex.id)"
                   />
                 </div>

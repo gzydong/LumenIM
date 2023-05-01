@@ -13,6 +13,7 @@ import {
   FolderUpload,
   Ranking,
   History,
+  TipsOne,
 } from '@icon-park/vue-next'
 import { emitCall } from '@/utils/common'
 import MeEditorImage from './MeEditorImage.vue'
@@ -422,7 +423,10 @@ const onDragPaste = e => {
             <p class="tip-title">{{ nav.title }}</p>
           </div>
         </div>
-        <div class="tips">按Enter发送 / Shift+Enter 换行</div>
+        <div class="tips">
+          <n-icon size="18" class="pointer" :component="TipsOne" />
+          <!-- 按Enter发送 / Shift+Enter 换行 -->
+        </div>
       </header>
 
       <main class="el-main o-hidden height100">
@@ -527,8 +531,6 @@ const onDragPaste = e => {
       width: 200px;
       display: flex;
       align-items: center;
-      font-size: 13px;
-      color: #ccc;
       justify-content: flex-end;
       padding-right: 20px;
       user-select: none;

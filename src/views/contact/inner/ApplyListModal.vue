@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { NEmpty, NModal } from 'naive-ui'
-import { Checkmark, CloseOutline } from '@vicons/ionicons5'
+import { Check, Close } from '@icon-park/vue-next'
 import {
   ServeGetContactApplyRecords,
   ServeApplyAccept,
@@ -122,14 +122,14 @@ onLoadData()
         <div class="tools">
           <n-button size="tiny" type="primary" @click="onAccept(item)">
             <template #icon>
-              <n-icon :component="Checkmark" />
+              <n-icon :component="Check" />
             </template>
             同意
           </n-button>
 
           <n-button size="tiny" color="red" @click="onDecline(item)">
             <template #icon>
-              <n-icon :component="CloseOutline" />
+              <n-icon :component="Close" />
             </template>
             拒绝
           </n-button>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { NIcon, NModal, NButton, NInput, NAvatar, NDropdown } from 'naive-ui'
-import { PaperPlaneOutline, Add, CloseCircleSharp } from '@vicons/ionicons5'
+import { AddOne, CloseOne, Send } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
@@ -125,7 +125,7 @@ onLoadData()
           <div class="img-banner">
             <img src="@/assets/image/banners.webp" class="img-banner" />
             <div class="close-box" @click="remove">
-              <n-icon :component="CloseCircleSharp" :size="22" />
+              <n-icon :component="CloseOne" :size="22" />
             </div>
           </div>
 
@@ -200,7 +200,7 @@ onLoadData()
         >
           <n-button type="primary" color="#1890ff" block @click="onToTalk">
             <template #icon>
-              <n-icon :component="PaperPlaneOutline" />
+              <n-icon :component="Send" />
             </template>
             发送消息
           </n-button>
@@ -235,7 +235,7 @@ onLoadData()
               @click="isOpenFrom = true"
             >
               <template #icon>
-                <n-icon :component="Add" />
+                <n-icon :component="AddOne" />
               </template>
               添加好友
             </n-button>

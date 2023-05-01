@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from 'vue'
 import { NSpace, NEmpty } from 'naive-ui'
-import { SearchOutline, AddOutline } from '@vicons/ionicons5'
+import { Search, AddOne } from '@icon-park/vue-next'
 import NoticeEditor from './NoticeEditor.vue'
 import { ServeGetGroupNotices } from '@/api/group'
 
@@ -103,12 +103,12 @@ onLoadData()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
 
           <n-button circle @click="onAdd">
-            <template #icon> <n-icon :component="AddOutline" /> </template>
+            <template #icon> <n-icon :component="AddOne" /> </template>
           </n-button>
         </n-space>
       </div>

@@ -6,17 +6,19 @@ import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
 import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip } from 'naive-ui'
 import {
-  ChatbubbleEllipsesOutline,
-  AddSharp,
-  TrashOutline,
-  CreateOutline,
-  EnterOutline,
-  IdCardOutline,
+  Search,
   ArrowUp,
   ArrowDown,
-  NotificationsOutline,
-  NotificationsOffOutline,
-} from '@vicons/ionicons5'
+  Logout,
+  Delete,
+  Clear,
+  Remind,
+  CloseRemind,
+  EditTwo,
+  IdCard,
+  AddOne,
+} from '@icon-park/vue-next'
+
 import TalkItem from './TalkItem.vue'
 import {
   ServeTopTalkList,
@@ -211,12 +213,12 @@ const onContextMenuTalk = (e, item) => {
 
   if (item.talk_type == 1) {
     state.dropdown.options.push({
-      icon: renderIcon(IdCardOutline),
+      icon: renderIcon(IdCard),
       label: '好友信息',
       key: 'info',
     })
     state.dropdown.options.push({
-      icon: renderIcon(CreateOutline),
+      icon: renderIcon(EditTwo),
       label: '修改备注',
       key: 'remark',
     })
@@ -229,28 +231,26 @@ const onContextMenuTalk = (e, item) => {
   })
 
   state.dropdown.options.push({
-    icon: renderIcon(
-      item.is_disturb ? NotificationsOutline : NotificationsOffOutline
-    ),
+    icon: renderIcon(item.is_disturb ? Remind : CloseRemind),
     label: item.is_disturb ? '关闭免打扰' : '开启免打扰',
     key: 'disturb',
   })
 
   state.dropdown.options.push({
-    icon: renderIcon(TrashOutline),
+    icon: renderIcon(Clear),
     label: '移除会话',
     key: 'remove',
   })
 
   if (item.talk_type == 1) {
     state.dropdown.options.push({
-      icon: renderIcon(TrashOutline),
+      icon: renderIcon(Delete),
       label: '删除好友',
       key: 'delete_contact',
     })
   } else {
     state.dropdown.options.push({
-      icon: renderIcon(EnterOutline),
+      icon: renderIcon(Logout),
       label: '退出群聊',
       key: 'signout_group',
     })
@@ -334,13 +334,13 @@ onMounted(() => {
     <header class="el-header tools-header">
       <n-input placeholder="搜索聊天 / 好友 / 群组" round style="width: 78%">
         <template #prefix>
-          <n-icon :component="ChatbubbleEllipsesOutline" />
+          <n-icon :component="Search" />
         </template>
       </n-input>
 
       <n-button circle @click="isShowGroup = true">
         <template #icon>
-          <n-icon :component="AddSharp"></n-icon>
+          <n-icon :component="AddOne"></n-icon>
         </template>
       </n-button>
     </header>

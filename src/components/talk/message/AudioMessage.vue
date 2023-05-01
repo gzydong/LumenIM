@@ -1,12 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from 'vue'
 import { NProgress } from 'naive-ui'
-import {
-  PauseCircleOutline,
-  CaretForwardCircleOutline,
-  HeadsetOutline,
-  Sync,
-} from '@vicons/ionicons5'
+import { LoadingOne, PlayOne, HeadsetOne, PauseOne } from '@icon-park/vue-next'
 
 defineProps({
   extra: Object,
@@ -108,7 +103,7 @@ function formatSeconds(value) {
         class="disc"
         :class="{ play: state.isAudioPlay }"
       >
-        <n-icon size="24" :component="Sync" />
+        <n-icon size="24" :component="LoadingOne" />
       </div>
 
       <div
@@ -117,17 +112,13 @@ function formatSeconds(value) {
         :class="{ play: state.isAudioPlay }"
         @click.stop="onPlay"
       >
-        <n-icon
-          size="24"
-          v-if="state.isAudioPlay"
-          :component="PauseCircleOutline"
-        />
-        <n-icon size="24" v-else :component="CaretForwardCircleOutline" />
+        <n-icon size="24" v-if="state.isAudioPlay" :component="PauseOne" />
+        <n-icon v-else :component="PlayOne" />
       </div>
     </div>
     <div class="detail">
       <div class="text">
-        <n-icon size="12" :component="HeadsetOutline" />
+        <n-icon :component="HeadsetOne" />
         <span>{{ getCurrDuration }} / {{ getTotalDuration }}</span>
       </div>
       <div class="process">
@@ -181,10 +172,6 @@ function formatSeconds(value) {
       i {
         font-size: 24px;
       }
-
-      &:active i {
-        transform: scale(1.2);
-      }
     }
   }
 
@@ -199,6 +186,8 @@ function formatSeconds(value) {
     .text {
       width: 90%;
       font-size: 12px;
+      display: flex;
+      align-items: center;
       i {
         margin-right: 5px;
       }

@@ -1,12 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { NSpace } from 'naive-ui'
-import {
-  SearchOutline,
-  CheckmarkOutline,
-  CloseOutline,
-  Sync,
-} from '@vicons/ionicons5'
+import { Search, RefreshOne, CheckSmall, Close } from '@icon-park/vue-next'
 import {
   ServeGetGroupApplyList,
   ServeDeleteGroupApply,
@@ -91,12 +86,12 @@ onLoadData()
             round
           >
             <template #prefix>
-              <n-icon :component="SearchOutline" />
+              <n-icon :component="Search" />
             </template>
           </n-input>
 
           <n-button circle @click="onLoadData">
-            <template #icon> <n-icon :component="Sync" /> </template>
+            <template #icon> <n-icon :component="RefreshOne" /> </template>
           </n-button>
         </n-space>
       </div>
@@ -136,7 +131,7 @@ onLoadData()
               type="info"
             >
               <template #icon>
-                <n-icon :component="CheckmarkOutline" />
+                <n-icon :component="CheckSmall" />
               </template>
             </n-button>
 
@@ -148,7 +143,7 @@ onLoadData()
               type="tertiary"
             >
               <template #icon>
-                <n-icon :component="CloseOutline" />
+                <n-icon :component="Close" />
               </template>
             </n-button>
           </n-space>

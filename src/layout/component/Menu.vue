@@ -280,7 +280,7 @@ const onClickMenu = menu => {
   }
 
   25% {
-    background: #2e3238;
+    background: transparent;
   }
 
   50% {
@@ -288,7 +288,7 @@ const onClickMenu = menu => {
   }
 
   75% {
-    background: #2e3238;
+    background: transparent;
   }
 
   100% {

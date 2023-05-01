@@ -7,7 +7,7 @@
     "dev": "vite --mode development",
     "build": "vite build",
     "preview": "vite preview",
-    "electron": "wait-on tcp:5174 && cross-env NODE_ENV=development PROT=5174 electron .",
+    "electron": "wait-on tcp:8080 && cross-env NODE_ENV=development PROT=8080 electron .",
     "electron:dev": "concurrently -k \"npm run dev\" \"npm run electron\"",
     "electron:build": "vite build --mode electron && electron-builder --mac && electron-builder --win --x64",
     "electron:build-mac": "vite build --mode electron && electron-builder --mac"
@@ -25,7 +25,6 @@
   },
   "devDependencies": {
     "@icon-park/vue-next": "^1.4.2",
-    "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "concurrently": "^7.3.0",

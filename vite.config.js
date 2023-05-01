@@ -12,6 +12,9 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     base: env.VITE_BASE,
+    server: {
+      port: 8080,
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'), // 路径别名

@@ -6,7 +6,7 @@ const NODE_ENV = process.env.NODE_ENV
 
 function loadHtmlUrl() {
   return NODE_ENV === 'development'
-    ? `http://127.0.0.1:${process.env.PROT}`
+    ? `http://localhost:${process.env.PROT}`
     : `file://${path.join(__dirname, '../dist/index.html')}`
 }
 
