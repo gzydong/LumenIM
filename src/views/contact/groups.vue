@@ -2,7 +2,7 @@
 import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDivider, NDrawer } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
-import { Search, AddOne } from '@icon-park/vue-next'
+import { Search, AddOne, Plus } from '@icon-park/vue-next'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
@@ -80,7 +80,7 @@ onMounted(() => {
           </n-input>
 
           <n-button circle @click="isShowCreateGroupBox = true">
-            <template #icon> <n-icon :component="AddOne" /> </template>
+            <n-icon :size="22" :component="Plus" />
           </n-button>
         </n-space>
       </div>

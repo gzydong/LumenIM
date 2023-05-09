@@ -2,7 +2,7 @@
 import { ref, reactive, watch, nextTick } from 'vue'
 import { NScrollbar, NDropdown } from 'naive-ui'
 import RecycleModal from './RecycleModal.vue'
-import { Down, AddOne } from '@icon-park/vue-next'
+import { Down, AddOne, Plus } from '@icon-park/vue-next'
 import { useNoteStore } from '@/store/note'
 
 const store = useNoteStore()
@@ -269,8 +269,8 @@ loadWatchTagsMenu()
           },
         ]"
       >
-        <n-button text>
-          <n-icon size="32" :component="AddOne" />
+        <n-button circle>
+          <n-icon :size="22" :component="Plus" />
         </n-button>
       </n-dropdown>
     </header>

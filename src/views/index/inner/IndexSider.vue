@@ -16,7 +16,7 @@ import {
   CloseRemind,
   EditTwo,
   IdCard,
-  AddOne,
+  Plus,
 } from '@icon-park/vue-next'
 
 import TalkItem from './TalkItem.vue'
@@ -340,7 +340,7 @@ onMounted(() => {
 
       <n-button circle @click="isShowGroup = true">
         <template #icon>
-          <n-icon :component="AddOne"></n-icon>
+          <n-icon :size="22" :component="Plus" />
         </template>
       </n-button>
     </header>
