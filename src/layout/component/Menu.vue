@@ -74,13 +74,12 @@ const onClickMenu = menu => {
   <section class="menu">
     <header class="menu-header">
       <n-popover
-        :overlap="false"
         placement="right"
         trigger="hover"
         :show-arrow="false"
         :raw="true"
-        :animated="true"
-        style="margin-left: 16px"
+        :animated="false"
+        style="margin-left: 16px; border-radius: 8px; overflow: hidden"
       >
         <template #trigger>
           <n-avatar
@@ -132,7 +131,6 @@ const onClickMenu = menu => {
               :strokeWidth="2"
               strokeLinejoin="bevel"
             />
-            <!-- <n-icon size="22" :component="ArrowDownCircle" /> -->
           </template>
 
           <div style="width: 200px; height: 100px; padding-top: 10px">

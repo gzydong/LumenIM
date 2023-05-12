@@ -45,9 +45,8 @@ const onClick = () => {
   min-height: 95px;
   max-height: 150px;
   border-radius: 10px;
-  padding: 8px 15px;
-  border: 1px solid #d6caca;
-  text-align: left;
+  padding: 8px 10px;
+  border: 1px solid rgb(239 239 245);
   user-select: none;
   background-color: #ffffff;
 

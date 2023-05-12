@@ -5,6 +5,7 @@ import { useUserStore } from '@/store/user'
 import { useNotifyStore } from '@/store/notify'
 import { useTalkStore } from '@/store/talk'
 import socket from '@/socket'
+import hljs from 'highlight.js/lib/core'
 import { overrides } from '@/constant/theme'
 import {
   NNotificationProvider,
@@ -92,6 +93,8 @@ if (isElectronMode()) {
     electron.setBadge(useTalk.talkUnreadNum)
   })
 }
+
+
 </script>
 
 <template>
@@ -106,6 +109,7 @@ if (isElectronMode()) {
     :locale="zhCN"
     :date-locale="dateZhCN"
     inline-theme-disabled
+    :hljs="hljs"
   >
     <n-message-provider>
       <message-api />

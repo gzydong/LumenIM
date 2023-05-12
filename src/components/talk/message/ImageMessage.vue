@@ -7,12 +7,6 @@ defineProps({
   data: Object,
 })
 
-/**
- * 通过图片Url获取图片等比例缩放的宽度和高度信息
- *
- * @param {String} src
- * @param {Number} width
- */
 const img = (src, width = 200) => {
   const info = getImageInfo(src)
 
@@ -33,7 +27,7 @@ const img = (src, width = 200) => {
   <section
     class="image-message"
     :class="{ left: data.float === 'left' }"
-    :style="img(extra.url, 200)"
+    :style="img(extra.url, 350)"
   >
     <n-image :src="extra.url" />
   </section>
@@ -54,8 +48,7 @@ const img = (src, width = 200) => {
   :deep(.n-image img) {
     width: 100%;
     height: 100%;
-    border-radius: 2px;
-    // background: #ffffff;
+    border-radius: 5px;
   }
 }
 </style>

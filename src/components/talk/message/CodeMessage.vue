@@ -1,118 +1,136 @@
 <script setup>
 import { ref } from 'vue'
-import { CloseOne } from '@icon-park/vue-next'
+import { NCode } from 'naive-ui'
+import { clipboard } from '@/utils/common'
+import { Copy, Stretching } from '@icon-park/vue-next'
 
-defineProps({
+const props = defineProps({
   extra: Object,
   data: Object,
   maxWidth: Boolean,
 })
 
-const isFullCat = ref(false)
+const lineMumber = props.extra.code.trim().split('\n').length
+const full = ref(false)
+
+const onClipboard = () => {
+  clipboard(props.extra.code, () => {
+    $message.success('复制成功')
+  })
+}
 </script>
 <template>
-  <div
-    class="code-message"
+  <section
+    class="code-message el-container is-vertical"
     :class="{
       maxwidth: maxWidth,
+      full: full,
     }"
   >
-    <p class="more pointer flex-center" @click="isFullCat = true">
-      <span class="text">{{ extra.lang }}</span>
-    </p>
+    <header class="el-header tools">
+      <p># {{ extra.lang }}</p>
+      <p>
+        <stretching
+          theme="outline"
+          size="18"
+          fill="#333"
+          :strokeWidth="2"
+          @click="full = !full"
+          class="icon"
+        />
 
-    <highlightjs :language="extra.lang" :code="extra.code" />
-
-    <div v-if="isFullCat" class="full-code">
-      <div class="close pointer" @click="isFullCat = false">
-        <CloseOne :size="30" />
+        <copy
+          theme="outline"
+          size="18"
+          fill="#333"
+          :strokeWidth="2"
+          @click="onClipboard"
+          class="icon"
+        />
+      </p>
+    </header>
+    <main class="el-main" :lineMumber="lineMumber">
+      <n-code :language="extra.lang" :code="extra.code" show-line-numbers />
+      <div
+        class="el-footer mask pointer"
+        v-show="lineMumber > 20"
+        @click="full = !full"
+      >
+        查看更多
       </div>
-
-      <highlightjs
-        :language="extra.lang"
-        :code="extra.code"
-        @contextmenu.stop
-      />
-    </div>
-  </div>
+    </main>
+  </section>
 </template>
 <style lang="less" scoped>
 .code-message {
-  position: relative;
   min-width: 150px;
   border-radius: 10px;
   overflow-x: auto;
-  background-color: #f5f5f5;
-  border: 1px solid #f5f5f5;
+  border: 1px solid rgb(239 239 245);
+  padding: 5px 8px;
+  max-height: 500px;
+  overflow-y: hidden;
+  flex: unset;
+
+  .el-main {
+    overflow-y: hidden;
+  }
 
   &.maxwidth {
     max-width: 70%;
   }
 
-  .more {
-    height: 35px;
-    font-size: 14px;
-    color: #333;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0 15px;
-
-    &:before {
-      position: absolute;
-      left: 12px;
-      z-index: 0;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #fc625d;
-      box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
-      content: ' ';
-    }
-  }
-
-  :deep(pre code.hljs) {
-    padding: 10px;
-    max-height: 500px;
-    min-height: 80px;
-    min-width: 100px;
-    overflow-y: hidden;
-    box-sizing: border-box;
-  }
-}
-
-.full-code {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 3;
-  width: 100vw;
-  height: 100vh;
-
-  .close {
+  &.full {
     position: fixed;
-    right: 30px;
-    top: 30px;
-    height: 50px;
-    width: 50px;
-    z-index: 9999999;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    box-sizing: border-box;
+    max-width: unset;
+    max-height: unset;
+    overflow-y: unset;
+    border-radius: unset;
+
+    .el-main {
+      overflow-y: unset;
+    }
+
+    .mask {
+      display: none;
+    }
   }
 
-  :deep(pre) {
-    width: 100%;
-    height: 100vh;
-    overflow: auto;
-    padding: 0;
-    box-sizing: border-box;
+  .tools {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    cursor: pointer;
+    padding: 0 8px;
 
-    .hljs {
-      overflow-y: auto !important;
-      max-height: unset !important;
+    .icon {
+      margin-left: 5px;
     }
+  }
 
-    code {
-      height: 100%;
-      padding-top: 30px !important;
-    }
+  .mask {
+    height: 80px;
+    text-align: center;
+    line-height: 10;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    color: #696363;
   }
 }
 </style>

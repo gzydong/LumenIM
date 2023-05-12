@@ -57,14 +57,12 @@ defineProps({
     .el-aside {
       width: 70px;
       background-color: #001427;
-      // padding-top: 15px;
       background-color: #efefef;
     }
 
     &.small-screen {
       position: fixed;
-      width: 70%;
-      min-width: 800px;
+      width: 1000px;
       height: 650px;
       border-radius: 10px;
       transition: all 0.5s;

@@ -2,7 +2,6 @@
 import { reactive, watch, computed, nextTick, onMounted, inject } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
 import { ExpandDownOne, Remind } from '@icon-park/vue-next'
-
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -288,6 +287,10 @@ watch(props, () => {
 onMounted(() => {
   onReload()
 })
+
+const log = (index, item) => {
+  console.log(index, item)
+}
 </script>
 
 <template>

@@ -1,6 +1,6 @@
-
 import hljs from 'highlight.js/lib/core'
 import php from 'highlight.js/lib/languages/php'
+import c from 'highlight.js/lib/languages/c'
 import go from 'highlight.js/lib/languages/go'
 import java from 'highlight.js/lib/languages/java'
 import python from 'highlight.js/lib/languages/python'
@@ -17,6 +17,7 @@ import shell from 'highlight.js/lib/languages/shell'
 import ini from 'highlight.js/lib/languages/ini'
 import makefile from 'highlight.js/lib/languages/makefile'
 
+hljs.registerLanguage('c', c)
 hljs.registerLanguage('php', php)
 hljs.registerLanguage('go', go)
 hljs.registerLanguage('java', java)

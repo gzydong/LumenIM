@@ -33,7 +33,7 @@ defineProps({
   height: 85px;
   padding: 10px 15px;
   border-radius: 10px;
-  border: 1px solid #d6caca;
+  border: 1px solid rgb(239 239 245);
 
   .main {
     height: 45px;
@@ -47,7 +47,6 @@ defineProps({
       align-items: center;
       width: 45px;
       height: 45px;
-      flex-shrink: 0;
       color: #ffffff;
       background: #49a4ff;
       border-radius: 5px;

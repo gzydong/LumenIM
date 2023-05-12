@@ -13,7 +13,7 @@ defineProps({
     preload="metadata"
     :poster="extra.cover"
     :src="extra.url"
-  ></video>
+  />
 </template>
 
 <style lang="less" scoped>

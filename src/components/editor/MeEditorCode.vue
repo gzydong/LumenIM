@@ -33,10 +33,20 @@ const onMaskClick = () => {
 }
 
 const onSubmit = () => {
-  emit('on-submit', {
+  let data = {
     lang: model.lang,
     code: model.code,
-  })
+  }
+
+  if (model.lang == 'json') {
+    try {
+      data.code = JSON.stringify(JSON.parse(model.code), null, 2)
+    } catch (error) {
+      data.code = model.code
+    }
+  }
+
+  emit('on-submit', data)
 }
 </script>
 
@@ -45,7 +55,7 @@ const onSubmit = () => {
     v-model:show="isShowBox"
     preset="card"
     title="代码消息"
-    style="max-width: 800px; height: 600px;border-radius: 10px;"
+    style="max-width: 800px; height: 600px; border-radius: 10px"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

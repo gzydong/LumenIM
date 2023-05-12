@@ -42,7 +42,7 @@ onLoadData()
     :title="title"
     size="huge"
     :bordered="false"
-    style="max-width: 450px; border-radius: 10px"
+    style="max-width: 550px; border-radius: 10px"
     class="o-hidden"
     :on-after-leave="onMaskClick"
     :segmented="{
@@ -82,36 +82,29 @@ onLoadData()
 
 <style lang="less" scoped>
 .main-box {
-  height: 500px;
+  height: 600px;
   width: 100%;
   overflow-y: auto;
 }
 
 .message-item {
-  min-height: 30px;
+  min-height: 38px;
   display: flex;
-  margin-bottom: 5px;
-  flex-direction: row;
+  margin-bottom: 10px;
   padding: 5px 15px;
-
-  &:first-child {
-    margin-top: 10px;
-  }
 
   .left-box {
     width: 30px;
-    flex-shrink: 0;
     display: flex;
-    justify-content: center;
     user-select: none;
     padding-top: 8px;
-    margin-right: 10px;
   }
 
   .right-box {
     flex: auto;
     overflow-x: auto;
-    padding: 0px 5px 15px 5px;
+    height: fit-content;
+    margin-left: 10px;
 
     .msg-header {
       height: 30px;
@@ -121,9 +114,8 @@ onLoadData()
       position: relative;
       user-select: none;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-
+      
       .name {
         color: #333;
       }
