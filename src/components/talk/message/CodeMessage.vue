@@ -1,21 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { NCode } from 'naive-ui'
-import { clipboard } from '@/utils/common'
 import { Copy, Stretching } from '@icon-park/vue-next'
+import { clipboard } from '@/utils/common'
+import { message } from '@/utils/util'
+import { CodeExtra } from './types.d'
 
-const props = defineProps({
-  extra: Object,
-  data: Object,
-  maxWidth: Boolean,
-})
+const props = defineProps<{
+  extra: CodeExtra
+  data: any
+  maxWidth: Boolean
+}>()
 
 const lineMumber = props.extra.code.trim().split('\n').length
 const full = ref(false)
 
 const onClipboard = () => {
   clipboard(props.extra.code, () => {
-    $message.success('复制成功')
+    message().success('复制成功')
   })
 }
 </script>

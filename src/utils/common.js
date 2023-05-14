@@ -78,6 +78,8 @@ export function clipboard(text, callback) {
     alert('Oops, unable to copy')
   } finally {
     document.body.removeChild(textArea)
+
+    console.log(err)
   }
 }
 

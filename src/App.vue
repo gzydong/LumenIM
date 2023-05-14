@@ -1,9 +1,8 @@
 <script setup>
+import '@icon-park/vue-next/styles/index.css'
 import { watchEffect, provide } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store/user'
-import { useNotifyStore } from '@/store/notify'
-import { useTalkStore } from '@/store/talk'
+import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
 import socket from '@/socket'
 import hljs from 'highlight.js/lib/core'
 import { overrides } from '@/constant/theme'
@@ -14,19 +13,17 @@ import {
   zhCN,
   dateZhCN,
 } from 'naive-ui'
-import NotificationApi from '@/components/common/NotificationApi.vue'
-import MessageApi from '@/components/common/MessageApi.vue'
-import DialogApi from '@/components/common/DialogApi.vue'
+import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import { isLoggedIn } from '@/utils/auth'
 import { applyNotificationAuth } from '@/utils/notification'
 import { modal, isElectronMode } from '@/utils/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
-import { IconProvider } from '@icon-park/vue-next'
+import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 
 IconProvider({
+  ...DEFAULT_ICON_CONFIGS,
   theme: 'outline',
   size: 24,
-  fill: '#000000',
   strokeWidth: 3,
   strokeLinejoin: 'bevel',
 })
@@ -93,13 +90,11 @@ if (isElectronMode()) {
     electron.setBadge(useTalk.talkUnreadNum)
   })
 }
-
-
 </script>
 
 <template>
   <!--接收信息提示音-->
-  <audio id="audio" preload muted>
+  <audio id="audio" preload="preload" muted>
     <source src="@/assets/music.mp3" type="audio/mp3" />
   </audio>
 
