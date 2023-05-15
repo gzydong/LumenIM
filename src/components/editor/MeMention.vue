@@ -82,8 +82,6 @@ const editorStore = useEditorStore()
 
 <style lang="less" scoped>
 .el-container {
-  width: 150px;
-
   .el-header {
     display: flex;
     align-items: center;

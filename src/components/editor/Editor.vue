@@ -376,7 +376,7 @@ const onDragPaste = e => {
 
 <template>
   <section class="el-container editor">
-    <aside class="el-aside" v-if="editorStore.mention.isShow">
+    <aside class="el-aside" style="width: 150px;" v-if="editorStore.mention.isShow">
       <MeMention
         @on-select="onMention"
         @on-close="editorStore.updateMentionStatus(false)"
