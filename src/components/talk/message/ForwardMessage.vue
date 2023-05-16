@@ -1,11 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import ForwardRecord from '../ForwardRecord.vue'
+import { ForwardExtra } from './types'
 
-const props = defineProps({
-  extra: Object,
-  data: Object,
-})
+const props = defineProps<{
+  extra: ForwardExtra
+  data: any
+  maxWidth: Boolean
+}>()
 
 const isShowRecord = ref(false)
 

@@ -52,7 +52,7 @@ export function textReplaceMention(text, color = '#2196F3') {
 /**
  * 格式化文件大小
  *
- * @param {String} value 文件大小(字节)
+ * @param {string|number} value 文件大小(字节)
  */
 export function fileFormatSize(value) {
   if (null == value || value == '') {

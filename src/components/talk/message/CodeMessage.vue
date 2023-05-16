@@ -79,7 +79,7 @@ const onClipboard = () => {
   }
 
   &.maxwidth {
-    max-width: 70%;
+    max-width: 60%;
   }
 
   &.full {

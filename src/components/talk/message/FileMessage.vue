@@ -1,11 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { fileFormatSize } from '@/utils/strings'
 import { download } from '@/utils/functions'
+import { FileExtra } from './types'
 
-defineProps({
-  extra: Object,
-  data: Object,
-})
+defineProps<{
+  extra: FileExtra
+  data: any
+  maxWidth: Boolean
+}>()
 </script>
 
 <template>

@@ -115,7 +115,7 @@ onLoadData()
       user-select: none;
       display: flex;
       justify-content: space-between;
-      
+
       .name {
         color: #333;
       }
