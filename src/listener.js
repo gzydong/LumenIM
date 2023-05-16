@@ -5,7 +5,7 @@ import { isElectronMode } from '@/utils/common'
 import { useRouter } from 'vue-router'
 
 function registerOnceExpireNotice() {
-  let onceExpireNotice = false
+  let once = false
   let paths = ['/auth/login', '/auth/register', '/auth/forget']
 
   document.addEventListener('visibilitychange', () => {
@@ -13,7 +13,7 @@ function registerOnceExpireNotice() {
       return
     }
 
-    if (isLoggedIn() || onceExpireNotice) {
+    if (isLoggedIn() || once) {
       return
     }
 
@@ -22,7 +22,7 @@ function registerOnceExpireNotice() {
       return
     }
 
-    onceExpireNotice = true
+    once = true
 
     window['$dialog'].info({
       title: '友情提示',
@@ -30,7 +30,7 @@ function registerOnceExpireNotice() {
       positiveText: '立即登录?',
       maskClosable: false,
       onPositiveClick: () => {
-        onceExpireNotice = false
+        once = false
         useRouter().push('/auth/login')
       },
     })
