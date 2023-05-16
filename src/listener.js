@@ -2,6 +2,7 @@ import { isLoggedIn } from '@/utils/auth'
 import { useNotifyStore } from '@/store'
 import { applyNotificationAuth } from '@/utils/notification'
 import { isElectronMode } from '@/utils/common'
+import { useRouter } from 'vue-router'
 
 function registerOnceExpireNotice() {
   let onceExpireNotice = false
@@ -16,7 +17,7 @@ function registerOnceExpireNotice() {
       return
     }
 
-    const pathname = router.currentRoute.value.path
+    const pathname = useRouter().currentRoute.value.path
     if (paths.includes(pathname)) {
       return
     }
@@ -30,7 +31,7 @@ function registerOnceExpireNotice() {
       maskClosable: false,
       onPositiveClick: () => {
         onceExpireNotice = false
-        router.push('/auth/login')
+        useRouter().push('/auth/login')
       },
     })
   })
