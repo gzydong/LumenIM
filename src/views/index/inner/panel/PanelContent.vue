@@ -167,10 +167,18 @@ const onPanelScroll = e => {
   }
 }
 
+function HTMLDecode(text) {
+  var temp = document.createElement('div')
+  temp.innerHTML = text
+  var output = temp.innerText || temp.textContent
+  temp = null
+  return output
+}
+
 // 复制文本信息
 const onCopyText = data => {
   if (data.content) {
-    clipboard(data.content, () => {
+    clipboard(HTMLDecode(data.content), () => {
       window.$message.success('复制成功!')
     })
   }

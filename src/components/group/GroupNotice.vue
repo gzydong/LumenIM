@@ -12,6 +12,7 @@ const props = defineProps({
     default: 0,
   },
 })
+
 const isShow = ref(true)
 const title = ref('群公告')
 
@@ -84,12 +85,9 @@ onLoadData()
         <div class="title text-ellipsis">
           {{ item.title }}
         </div>
+
         <div class="describe">
-          <n-avatar
-            round
-            :size="18"
-            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-          />
+          <n-avatar round :size="18" :src="item.avatar" />
           <span class="nickname text-ellipsis">{{ item.nickname }}</span>
           <span class="datetime">发表于 {{ item.created_at }}</span>
           <span class="btn" @click="item.isShow = !item.isShow">

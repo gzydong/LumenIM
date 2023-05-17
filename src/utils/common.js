@@ -88,7 +88,7 @@ export function clipboard(text, callback) {
  *
  * @param {String} event
  * @param {Any} data
- * @param {Function} fn
+ * @param {Function|undefined} fn
  * @returns
  */
 export function emitCall(event, data, fn) {
