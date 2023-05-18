@@ -119,3 +119,25 @@ export function isElectronMode() {
 export function electron() {
   return window.electron
 }
+
+
+export function htmlDecode(input) {
+  // 匹配 HTML 实体的正则表达式
+  var htmlEntities = /&(?:[a-z]+|#\d+);/gi
+  // 匹配已知 HTML 实体的映射
+  var htmlEntityMap = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&#39;': "'",
+    '&quot;': '"',
+    '&nbsp;': ' ',
+    '&copy;': '\u00A9', // 版权符号
+    '&reg;': '\u00AE', // 注册商标符号
+    // ... 添加其他实体的映射
+  }
+  // 使用正则表达式和映射替换输入中的实体
+  return input.replace(htmlEntities, function (match) {
+    return htmlEntityMap[match] || match
+  })
+}

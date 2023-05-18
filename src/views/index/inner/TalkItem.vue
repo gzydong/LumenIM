@@ -2,7 +2,6 @@
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
 import { defAvatar } from '@/constant/default'
-import { removeTags } from '@/utils/functions'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
@@ -61,7 +60,7 @@ defineProps({
         <div class="text">
           <template v-if="!active && data.draft_text">
             <span class="draft">[草稿]</span>
-            <span>{{ removeTags(data.draft_text) }}</span>
+            <span v-html="data.draft_text" />
           </template>
           <template v-else>
             <span
@@ -71,7 +70,7 @@ defineProps({
               "
               >[在线]</span
             >
-            <span>{{ removeTags(data.msg_text) }}</span>
+            <span v-html="data.msg_text" />
           </template>
         </div>
         <div class="unread" v-show="data.unread_num">
@@ -84,11 +83,6 @@ defineProps({
   </div>
 </template>
 
-<style lang="less">
-.talk .mention {
-  color: #8f959e;
-}
-</style>
 <style lang="less" scoped>
 .talk {
   padding: 8px 10px 8px 5px;

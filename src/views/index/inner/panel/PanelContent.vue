@@ -1,16 +1,26 @@
-<script setup>
-import { reactive, watch, computed, nextTick, onMounted, inject } from 'vue'
+<script setup lang="ts">
+import {
+  reactive,
+  watch,
+  computed,
+  nextTick,
+  onMounted,
+  inject,
+  ref,
+} from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
 import { ExpandDownOne, Remind } from '@icon-park/vue-next'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
-import { clipboard } from '@/utils/common'
+import { clipboard, htmlDecode } from '@/utils/common'
 import { formatTalkRecord } from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
+import { useMenu } from './menu'
 
+const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user = inject('showUserModal')
 const dialogueStore = useDialogueStore()
 const props = defineProps({
@@ -37,17 +47,8 @@ const loadConfig = reactive({
   minRecord: 0,
 })
 
-const state = reactive({
-  dropdown: {
-    options: [],
-    show: false,
-    dropdownX: 0,
-    dropdownY: 0,
-    item: {},
-  },
-
-  skipBottom: false,
-})
+// 置底按钮
+const skipBottom = ref(false)
 
 // 加载会话记录
 const onLoadTalk = () => {
@@ -58,8 +59,11 @@ const onLoadTalk = () => {
     limit: 30,
   }
 
+  let scrollHeight = 0
   let el = document.getElementById('lumenChatPanel')
-  let scrollHeight = el.scrollHeight
+  if (el) {
+    scrollHeight = el.scrollHeight
+  }
 
   loadConfig.status = 0
 
@@ -75,7 +79,7 @@ const onLoadTalk = () => {
 
     const records = res.data.items || []
 
-    records.map(item => formatTalkRecord(props.uid, item))
+    records.map((item: any) => formatTalkRecord(props.uid, item))
 
     // 判断是否是初次加载
     if (data.record_id == 0) {
@@ -92,6 +96,8 @@ const onLoadTalk = () => {
     loadConfig.minRecord = res.data.record_id
 
     nextTick(() => {
+      if (!el) return
+
       if (data.record_id == 0) {
         el.scrollTop = el.scrollHeight
       } else {
@@ -105,8 +111,8 @@ const onLoadTalk = () => {
   })
 }
 
-function onAfterRead(records) {
-  let ids = []
+function onAfterRead(records: any) {
+  let ids: number[] = []
 
   for (const record of records) {
     if (props.receiver_id === record.user_id && record.is_read === 0) {
@@ -123,7 +129,7 @@ function onAfterRead(records) {
 }
 
 // 是否显示消息时间
-const isShowTalkTime = (index, datetime) => {
+const isShowTalkTime = (index: number, datetime: string) => {
   if (datetime == undefined) {
     return false
   }
@@ -153,105 +159,58 @@ const isShowTalkTime = (index, datetime) => {
 }
 
 // 窗口滚动事件
-const onPanelScroll = e => {
+const onPanelScroll = (e: any) => {
   if (e.target.scrollTop == 0 && loadConfig.status == 1) {
     onLoadTalk()
   }
 
   const height = e.target.scrollTop + e.target.clientHeight
 
-  state.skipBottom = height < e.target.scrollHeight
-
-  if (!state.skipBottom && dialogueStore.unreadBubble) {
+  skipBottom.value = height < e.target.scrollHeight - 200
+  if (!skipBottom.value && dialogueStore.unreadBubble) {
     dialogueStore.setUnreadBubble(0)
   }
 }
 
-function HTMLDecode(text) {
-  var temp = document.createElement('div')
-  temp.innerHTML = text
-  var output = temp.innerText || temp.textContent
-  temp = null
-  return output
-}
-
 // 复制文本信息
-const onCopyText = data => {
-  if (data.content) {
-    clipboard(HTMLDecode(data.content), () => {
-      window.$message.success('复制成功!')
-    })
+const onCopyText = (data: any) => {
+  if (!data.content) {
+    return
   }
+
+  clipboard(htmlDecode(data.content), () =>
+    window['$message'].success('复制成功!')
+  )
 }
 
 // 删除对话消息
-const onDeleteTalk = data => {
+const onDeleteTalk = (data: any) => {
   dialogueStore.ApiDeleteRecord([data.id])
 }
 
 // 撤销对话消息
-const onRevokeTalk = data => {
+const onRevokeTalk = (data: any) => {
   dialogueStore.ApiRevokeRecord(data.id)
 }
 
 // 多选事件
-const onMultiSelect = data => {
+const onMultiSelect = (data: any) => {
   dialogueStore.isOpenMultiSelect = true
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e, item) => {
+const onContextMenu = (e: any, item: any) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
-    e.preventDefault()
-    return
+    return e.preventDefault()
   }
 
-  state.dropdown.show = false
-  state.dropdown.item = Object.assign({}, item)
-  state.dropdown.options = [
-    {
-      label: '复制',
-      key: 'copy',
-      disabled: !item.content,
-    },
-    {
-      label: `撤回`,
-      key: 'revoke',
-      disabled: (() => {
-        if (props.uid != item.user_id) {
-          return true
-        }
-
-        let datetime = item.created_at.replace(/-/g, '/')
-
-        let time = new Date().getTime() - Date.parse(datetime)
-
-        return Math.floor(time / 1000 / 60) > 2
-      })(),
-    },
-    {
-      label: '删除',
-      key: 'delete',
-      disabled: false,
-    },
-    {
-      label: '多选',
-      key: 'multiSelect',
-      disabled: false,
-    },
-  ]
-
-  nextTick(() => {
-    state.dropdown.show = true
-    state.dropdown.dropdownX = e.clientX
-    state.dropdown.dropdownY = e.clientY
-  })
+  showDropdownMenu(e, props.uid, item)
 
   e.preventDefault()
 }
 
 // 会话列表右键菜单回调事件
-const onContextMenuHandle = key => {
+const onContextMenuHandle = (key: string) => {
   const evnets = {
     copy: onCopyText,
     revoke: onRevokeTalk,
@@ -259,10 +218,10 @@ const onContextMenuHandle = key => {
     multiSelect: onMultiSelect,
   }
 
-  state.dropdown.show = false
-
   // 触发事件
-  evnets[key] && evnets[key](state.dropdown.item)
+  evnets[key] && evnets[key](dropdown.item)
+
+  closeDropdownMenu()
 }
 
 // 聊天版本滚动到底部
@@ -278,12 +237,12 @@ const onReload = () => {
   onLoadTalk()
 }
 
-const onRowClick = item => {
+const onRowClick = (item: any) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
     } else {
-      window.$message.info('此类消息不支持转发！！！')
+      window['$message'].info('此类消息不支持转发！！！')
     }
   }
 }
@@ -295,10 +254,6 @@ watch(props, () => {
 onMounted(() => {
   onReload()
 })
-
-const log = (index, item) => {
-  console.log(index, item)
-}
 </script>
 
 <template>
@@ -428,7 +383,7 @@ const log = (index, item) => {
     <!-- 置底按钮 -->
     <div
       class="skip-bottom pointer"
-      :class="{ show: state.skipBottom }"
+      :class="{ show: skipBottom }"
       @click="onSkipBottom"
     >
       <n-icon size="14" color="#fff" :component="ExpandDownOne" />
@@ -441,17 +396,12 @@ const log = (index, item) => {
 
   <!-- 右键菜单 -->
   <n-dropdown
-    :show="state.dropdown.show"
-    :x="state.dropdown.dropdownX"
-    :y="state.dropdown.dropdownY"
-    :options="state.dropdown.options"
+    :show="dropdown.show"
+    :x="dropdown.x"
+    :y="dropdown.y"
+    :options="dropdown.options"
     @select="onContextMenuHandle"
-    @clickoutside="
-      () => {
-        state.dropdown.show = false
-        state.dropdown.item = {}
-      }
-    "
+    @clickoutside="closeDropdownMenu"
   />
 </template>
 

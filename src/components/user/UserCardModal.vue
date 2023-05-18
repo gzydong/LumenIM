@@ -135,7 +135,7 @@ onLoadData()
                 <n-avatar
                   round
                   :size="70"
-                  :src="state.avatar"
+                  :src="state.avatar || defAvatar"
                   :fallback-src="defAvatar"
                 />
               </div>

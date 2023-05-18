@@ -54,7 +54,7 @@ const tribute = new Tribute({
   requireLeadingSpace: false,
   lookup: 'name',
   values: function (_, cb) {
-    cb(dialogueStore.isGroupTalk ? editorStore.mention.items : [])
+    cb(editorStore.mentions)
   },
 })
 
@@ -131,7 +131,6 @@ const onKeydownEvent = e => {
     return e.preventDefault()
   }
 
-  editorStore.updateMentionStatus(false)
   dialogueStore.updateEditorText(e.target.innerHTML.toString())
 }
 

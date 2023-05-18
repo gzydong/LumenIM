@@ -6,16 +6,13 @@ import {
 } from '@/api/emoticon'
 import { ServeCollectEmoticon } from '@/api/chat'
 
-const message = window.window.$message
+const message = window['$message']
 
 export const useEditorStore = defineStore('editor', {
   state: () => {
     return {
       // 提及列表
-      mention: {
-        isShow: false,
-        items: [],
-      },
+      mentions: [],
 
       // 表包相关
       emoticon: {
@@ -34,29 +31,16 @@ export const useEditorStore = defineStore('editor', {
     }
   },
   actions: {
-    // 更新提及显示状态
-    updateMentionStatus(isShow) {
-      this.mention.isShow = isShow
-    },
     // 更新提及列表
     updateMentionItems(data) {
-      let items = [
-        {
-          id: 0,
-          name: '所有人',
-          avatar: '',
-        },
-      ]
-
-      for (const o of data) {
-        items.push({
-          id: o.user_id,
-          name: o.nickname,
-          avatar: o.avatar,
-        })
+      if (data.length === 0) {
+        return (this.mentions = [])
       }
 
-      this.mention.items = items
+      this.mentions = [{ id: 0, name: '所有人' }]
+      for (const o of data) {
+        this.mentions.push({ id: o.user_id, name: o.nickname })
+      }
     },
 
     // ==================== 表情包相关 ======================

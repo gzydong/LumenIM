@@ -57,6 +57,10 @@
   "exclude": [
     "node_modules",
     "dist",
-    "@vue/tsconfig/tsconfig.dom.json",
   ],
+  // "references": [
+  //   {
+  //     "path": "./tsconfig.app.json"
+  //   }
+  // ]
 }
