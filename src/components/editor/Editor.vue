@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import {
-  reactive,
-  watch,
-  ref,
-  markRaw,
-  computed,
-  onMounted,
-  nextTick,
-} from 'vue'
+import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
 import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
@@ -53,33 +45,33 @@ const tribute = new Tribute({
   },
   requireLeadingSpace: false,
   lookup: 'name',
-  values: function (_, cb) {
-    cb(editorStore.mentions)
-  },
+  values: (_, cb) => cb(editorStore.mentions),
 })
 
-onMounted(() => {
-  const elEditor = document.getElementById('me-editor')
-  if (elEditor) {
-    tribute.attach(elEditor)
-    elEditor.focus()
+const loadEditorDraftText = () => {
+  const editor = document.getElementById('me-editor')
+  if (!editor) {
+    return
   }
-})
 
-function watchIndexName() {
-  const elEditor = document.getElementById('me-editor')
-  if (elEditor) {
-    const talk = talkStore.findItem(dialogueStore.index_name)
-
-    if (talk) {
-      elEditor.innerHTML = talk.draft_text
-    }
-
-    elEditor.focus()
+  const talk = talkStore.findItem(dialogueStore.index_name)
+  if (talk) {
+    editor.innerHTML = talk.draft_text
   }
+
+  editor.focus()
 }
 
-watch(indexName, watchIndexName, { immediate: true })
+onMounted(() => {
+  const editor = document.getElementById('me-editor')
+  if (editor) {
+    tribute.attach(editor)
+  }
+
+  loadEditorDraftText()
+})
+
+watch(indexName, loadEditorDraftText, { immediate: true })
 
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
@@ -127,6 +119,7 @@ const onKeydownEvent = e => {
         e.target.innerHTML = ''
       }
     })
+
     emit('editor-event', event)
     return e.preventDefault()
   }

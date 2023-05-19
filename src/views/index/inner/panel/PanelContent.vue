@@ -247,13 +247,9 @@ const onRowClick = (item: any) => {
   }
 }
 
-watch(props, () => {
-  onReload()
-})
+watch(props, onReload)
 
-onMounted(() => {
-  onReload()
-})
+onMounted(onReload)
 </script>
 
 <template>

@@ -150,7 +150,7 @@ onLoadDepartment()
         block-line
         :data="tree"
         :default-expand-all="true"
-        :cancelable="false"
+        :cancelable="true"
         :default-selected-keys="[-1]"
         :node-props="onNodeProps"
       />
