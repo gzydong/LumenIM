@@ -6,7 +6,9 @@ import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
 import { GenderOptions } from '@/constant/default'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { hidePhone } from '@/utils/strings'
+import { useUserStore } from '@/store/user'
 
+const userStore = useUserStore()
 const router = useRouter()
 const cropper = ref(false)
 
@@ -22,22 +24,22 @@ const detail = reactive({
 })
 
 // 加载用户信息
-ServeGetUserDetail().then(res => {
-  detail.nickname = res.data.nickname.toString()
-  detail.mobile = res.data.mobile.toString()
-  detail.email = res.data.email.toString()
-  detail.gender = res.data.gender.toString()
-  detail.motto = res.data.motto.toString()
-  detail.avatar = res.data.avatar
-  if (res.data.birthday) {
-    detail.birthday = ref(res.data.birthday)
+ServeGetUserDetail().then(({ data }) => {
+  detail.nickname = data.nickname.toString()
+  detail.mobile = data.mobile.toString()
+  detail.email = data.email.toString()
+  detail.gender = data.gender.toString()
+  detail.motto = data.motto.toString()
+  detail.avatar = data.avatar
+  if (data.birthday) {
+    detail.birthday = ref(data.birthday)
   }
 })
 
 // 修改用户信息
 const onChangeDetail = () => {
   if (!detail.nickname.trim()) {
-    return window.$message.warning('昵称不能为空！')
+    return window['$message'].warning('昵称不能为空！')
   }
 
   detail.loading = true
@@ -51,11 +53,12 @@ const onChangeDetail = () => {
   })
 
   response.then(() => {
-    window.$message.success('信息保存成功！')
+    window['$message'].success('信息保存成功！')
+    userStore.loadSetting()
   })
 
   response.catch(() => {
-    window.$message.warning('信息保存失败！')
+    window['$message'].warning('信息保存失败！')
   })
 
   response.finally(() => {

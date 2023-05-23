@@ -154,15 +154,22 @@ const onVoteEvent = data => {
   emit('editor-event', msg)
 }
 
-const editorInsertText = text => {
-  var range, node
-  if (window.getSelection && window.getSelection().getRangeAt) {
-    range = window.getSelection().getRangeAt(0)
-    node = range.createContextualFragment(text)
-    range.insertNode(node)
+function editorInsertText(text: string) {
+  let editor = document.getElementById('me-editor')
+  let selection = window.getSelection()
+
+  if (selection && editor) {
+    editor.focus()
+
+    let range = selection.getRangeAt(0)
+    range.deleteContents()
+    let textNode = document.createTextNode(text)
+    range.insertNode(textNode)
+    range.setStartAfter(textNode)
     range.collapse(true)
-  } else if (document.selection && document.selection.createRange) {
-    document.selection.createRange().pasteHTML(text)
+    selection.removeAllRanges()
+    selection.addRange(range)
+    editor.focus()
   }
 }
 
