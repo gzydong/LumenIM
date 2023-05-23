@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed, markRaw } from 'vue'
+import { reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useTalkStore } from '@/store/talk'
@@ -9,10 +9,10 @@ import { defAvatar } from '@/constant/default'
 import {
   Download,
   GithubOne,
-  BookOpen,
   SettingTwo,
   Message,
-  AddressBook,
+  NotebookAndPen,
+  People,
 } from '@icon-park/vue-next'
 
 defineProps({
@@ -29,30 +29,30 @@ const router = useRouter()
 const menus = reactive([
   {
     link: '/message',
-    icon: markRaw(Message),
+    icon: Message,
     title: '消息',
     hotspot: computed(() => talkStore.talkUnreadNum > 0),
   },
   {
     link: '/contact/friend',
-    icon: markRaw(AddressBook),
+    icon: People,
     title: '通讯录',
     hotspot: computed(() => userStore.isContactApply),
   },
   {
     link: '/note',
-    icon: markRaw(BookOpen),
+    icon: NotebookAndPen,
     title: '笔记',
   },
   {
     link: 'https://github.com/gzydong/LumenIM',
-    icon: markRaw(GithubOne),
+    icon: GithubOne,
     external: true,
     title: '源码',
   },
   {
     link: '/settings/detail',
-    icon: markRaw(SettingTwo),
+    icon: SettingTwo,
     title: '设置',
   },
 ])
@@ -111,7 +111,15 @@ const onClickMenu = menu => {
         <!-- 消息提示 -->
         <div class="hotspot" v-if="nav.hotspot" />
 
-        <p><n-icon :size="22" :component="nav.icon" /></p>
+        <p>
+          <component
+            :is="nav.icon"
+            :theme="i == index ? 'filled' : 'outline'"
+            :fill="i == index ? '#4a90e2' : '#333'"
+            :strokeWidth="2"
+            :size="22"
+          />
+        </p>
         <span style="font-size: 12px">{{ nav.title }}</span>
       </div>
     </main>

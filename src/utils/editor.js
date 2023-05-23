@@ -214,3 +214,14 @@ export function pasteFilter(e) {
     document.execCommand('insertText', false, text)
   }
 }
+
+export function pasteUids(value) {
+  let atids = value.match(/data-atid="\d+"/g)
+
+  return atids
+    ? atids
+        .toString()
+        .match(/\d+/g)
+        .map(value => parseInt(value))
+    : []
+}

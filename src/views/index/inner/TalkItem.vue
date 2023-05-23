@@ -27,7 +27,7 @@ defineProps({
 
 <template>
   <div
-    class="talk pointer"
+    class="talk pointer" 
     :class="{ actived: active }"
     @click="emit('tab-talk', data)"
   >
@@ -90,7 +90,7 @@ defineProps({
   display: flex;
   align-items: center;
   transition: 0.2s ease-in;
-  margin: 5px 2px 5px 5px;
+  margin: 0px 2px 5px 5px;
   border-radius: 5px;
 
   .avatar-box {

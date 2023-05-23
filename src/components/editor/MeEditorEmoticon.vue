@@ -7,7 +7,7 @@ import { emojiList as emoji } from '@/utils/emojis'
 
 const emit = defineEmits(['on-select'])
 const editorStore = useEditorStore()
-const fileImageRef = ref(null)
+const fileImageRef = ref()
 const tabIndex = ref(0)
 const items = computed(() => editorStore.emoticon.items)
 

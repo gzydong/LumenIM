@@ -112,7 +112,7 @@ export function toTalk(talk_type, receiver_id) {
         },
       })
     } else {
-      window.$message.info(message)
+      window['$message'].info(message)
     }
   })
 }
@@ -130,4 +130,13 @@ export function getCacheIndexName() {
   }
 
   return index_name
+}
+
+/**
+ * 获取需要打开的对话索引值
+ *
+ * @returns
+ */
+export function setCacheIndexName(type, id) {
+  sessionStorage.setItem(KEY_INDEX_NAME, `${type}_${id}`)
 }

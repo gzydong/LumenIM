@@ -1,22 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { textReplaceEmoji } from '@/utils/emojis'
-import { textReplaceLink, textReplaceMention } from '@/utils/strings'
+import { Data } from './types.d'
 
-const props = defineProps({
-  extra: Object,
-  data: Object,
-  maxWidth: Boolean,
-})
+const props = defineProps<{
+  extra: any
+  data: Data
+  maxWidth: Boolean
+}>()
 
 const float = props.data.float
 
 let textContent = props.data.content
-// let textContent = textReplaceLink(props.data.content, '#2196F3')
-
-// // 只有对话类型为群聊时，需要解析@信息
-if (props.data.talk_type == 2) {
-  textContent = textReplaceMention(textContent)
-}
 
 textContent = textReplaceEmoji(textContent)
 </script>

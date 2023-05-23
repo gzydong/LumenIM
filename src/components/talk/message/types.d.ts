@@ -1,3 +1,8 @@
+export interface TextExtra {
+    lang: string
+    code: string
+}
+
 export interface CodeExtra {
     lang: string
     code: string
@@ -20,4 +25,9 @@ export interface ForwardExtra {
     }[];
     talk_type: number;
     user_id: number;
+}
+
+export interface Data {
+    float: string;
+    content: string
 }

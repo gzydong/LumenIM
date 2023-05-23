@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
 import { useNotifyStore } from '@/store/notify'
+import { isElectronMode } from '@/utils/common'
 
 const notifyStore = useNotifyStore()
 
@@ -18,7 +19,7 @@ const isFullScreen = computed({
     <h3 class="title">个性设置</h3>
 
     <div class="view-box">
-      <div class="view-list">
+      <div v-show="!isElectronMode()" class="view-list">
         <div class="content">
           <div class="name">主题模式</div>
           <div class="desc">

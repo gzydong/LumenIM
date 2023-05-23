@@ -227,7 +227,12 @@ const onContextMenuHandle = (key: string) => {
 // 聊天版本滚动到底部
 const onSkipBottom = () => {
   let el = document.getElementById('lumenChatPanel')
-  el.scrollTop = el.scrollHeight + 1000
+  if (el) {
+    el.scrollTo({
+      top: el.scrollHeight + 1000,
+      behavior: 'smooth',
+    })
+  }
 }
 
 const onReload = () => {

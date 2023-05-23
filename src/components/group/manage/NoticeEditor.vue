@@ -23,7 +23,7 @@ const props = defineProps({
   },
 })
 
-const formRef = ref(null)
+const formRef = ref()
 const model = reactive({
   title: props.title,
   content: props.content,

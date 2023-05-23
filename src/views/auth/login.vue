@@ -11,7 +11,7 @@ import { useUserStore } from '@/store/user'
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const formRef = ref(null)
+const formRef = ref()
 const rules = {
   username: {
     required: true,

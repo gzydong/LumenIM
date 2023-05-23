@@ -8,7 +8,7 @@ import SmsLock from '@/plugins/sms-lock'
 import { isMobile } from '@/utils/validate'
 
 const router = useRouter()
-const formRef = ref(null)
+const formRef = ref()
 const rules = {
   nickname: {
     required: true,

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore } from '@/store/dialogue'
@@ -18,7 +18,6 @@ import {
   IdCard,
   Plus,
 } from '@icon-park/vue-next'
-
 import TalkItem from './TalkItem.vue'
 import {
   ServeTopTalkList,
@@ -29,10 +28,16 @@ import {
 import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
 import { ServeDeleteContact } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
-import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
+import {
+  findTalk,
+  findTalkIndex,
+  getCacheIndexName,
+  setCacheIndexName,
+} from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 
 const user = inject('showUserModal')
+
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
@@ -57,7 +62,7 @@ const loadStatus = computed(() => talkStore.loadStatus)
 // 当前会话索引
 const indexName = computed(() => dialogueStore.index_name)
 
-const renderIcon = icon => {
+const renderIcon = (icon: any) => {
   return () => {
     return h(NIcon, null, {
       default: () => h(icon),
@@ -72,13 +77,10 @@ const onDeleteTalk = (index_name = '') => {
 }
 
 // 切换会话
-const onTabTalk = data => {
+const onTabTalk = (data: any, follow = false) => {
   if (data.index_name === indexName.value) {
     return
   }
-
-  // 关闭提及功能
-  editorStore.isShowMention = false
 
   // 更新编辑信息
   dialogueStore.setDialogue(data)
@@ -99,22 +101,34 @@ const onTabTalk = data => {
   if (data.talk_type == 2) {
     ServeGetGroupMembers({
       group_id: data.receiver_id,
-    }).then(res => {
-      if (res.code == 200) {
-        editorStore.updateMentionItems(res.data || [])
+    }).then(({ code, data }) => {
+      if (code == 200) {
+        editorStore.updateMentionItems(data || [])
       }
     })
   } else {
     editorStore.updateMentionItems([])
   }
+
+  // 设置滚动条跟随
+  if (follow) {
+    let el = document.getElementById('talk-session-list')
+    if (el) {
+      let index = findTalkIndex(data.index_name)
+      el.scrollTo({
+        top: index * 66 + index * 5,
+        behavior: 'smooth',
+      })
+    }
+  }
 }
 
-const onUserInfo = data => {
+const onUserInfo = (data: any) => {
   user(data.receiver_id)
 }
 
 // 移除会话
-const onRemoveTalk = data => {
+const onRemoveTalk = (data: any) => {
   ServeDeleteTalkList({
     list_id: data.id,
   }).then(({ code }) => {
@@ -125,43 +139,44 @@ const onRemoveTalk = data => {
 }
 
 // 设置消息免打扰
-const onSetDisturb = data => {
+const onSetDisturb = (data: any) => {
   ServeSetNotDisturb({
     talk_type: data.talk_type,
     receiver_id: data.receiver_id,
     is_disturb: data.is_disturb == 0 ? 1 : 0,
-  }).then(res => {
-    if (res.code == 200) {
-      window.$message.success('设置成功!')
-
+  }).then(({ code, message }) => {
+    if (code == 200) {
+      window['$message'].success('设置成功!')
       talkStore.updateItem({
         index_name: data.index_name,
         is_disturb: data.is_disturb == 0 ? 1 : 0,
       })
     } else {
-      window.$message.error(res.message)
+      window['$message'].error(message)
     }
   })
 }
 
 // 置顶会话
-const onToTopTalk = data => {
+const onToTopTalk = (data: any) => {
   ServeTopTalkList({
     list_id: data.id,
     type: data.is_top == 0 ? 1 : 2,
-  }).then(({ code }) => {
+  }).then(({ code, message }) => {
     if (code == 200) {
       talkStore.updateItem({
         index_name: data.index_name,
         is_top: data.is_top == 0 ? 1 : 0,
       })
+    } else {
+      window['$message'].error(message)
     }
   })
 }
 
 // 移除联系人
-const onDeleteContact = data => {
-  window.$dialog.create({
+const onDeleteContact = (data: any) => {
+  window['$dialog'].create({
     showIcon: false,
     title: `删除 [${data.name}] 联系人？`,
     content: '删除后不在接收对方任何消息。',
@@ -170,12 +185,12 @@ const onDeleteContact = data => {
     onPositiveClick: () => {
       ServeDeleteContact({
         friend_id: data.receiver_id,
-      }).then(({ code }) => {
+      }).then(({ code, message }) => {
         if (code == 200) {
-          window.$message.success('删除联系人成功！')
+          window['$message'].success('删除联系人成功！')
           onDeleteTalk(data.index_name)
         } else {
-          window.$message.error(res.message)
+          window['$message'].error(message)
         }
       })
     },
@@ -183,8 +198,8 @@ const onDeleteContact = data => {
 }
 
 // 退出群聊
-const onSignOutGroup = data => {
-  window.$dialog.create({
+const onSignOutGroup = (data: any) => {
+  window['$dialog'].create({
     showIcon: false,
     title: `退出 [${data.name}] 群聊？`,
     content: '退出后不在接收任何群消息。',
@@ -193,12 +208,12 @@ const onSignOutGroup = data => {
     onPositiveClick: () => {
       ServeSecedeGroup({
         group_id: data.receiver_id,
-      }).then(res => {
-        if (res.code == 200) {
-          window.$message.success('已退出群组！')
+      }).then(({ code, message }) => {
+        if (code == 200) {
+          window['$message'].success('已退出群组！')
           onDeleteTalk(data.index_name)
         } else {
-          window.$message.error(res.message)
+          window['$message'].error(message)
         }
       })
     },
@@ -266,7 +281,7 @@ const onContextMenuTalk = (e, item) => {
 }
 
 // 会话列表右键菜单回调事件
-const onContextMenuTalkHandle = key => {
+const onContextMenuTalkHandle = (key: string) => {
   // 注册回调事件
   const evnets = {
     info: onUserInfo,
@@ -286,30 +301,20 @@ const onReload = () => {
 }
 
 // 创建群组回调事件
-const onGroupCallBack = data => {
+const onGroupCallBack = (data: any) => {
   onReload()
 }
 
 // 初始化加载
 const onInitialize = () => {
   let index_name = getCacheIndexName()
-  if (index_name) {
-    onTabTalk(findTalk(index_name))
 
-    // 设置滚动条
-    document.getElementById('talk-session-list').scrollTop =
-      findTalkIndex(index_name) * 66
-  }
+  index_name && onTabTalk(findTalk(index_name), true)
 }
 
 // 路由更新事件
-onBeforeRouteUpdate(to => {
-  onInitialize()
-})
-
-onMounted(() => {
-  onInitialize()
-})
+onBeforeRouteUpdate(onInitialize)
+onMounted(onInitialize)
 </script>
 
 <template>
@@ -359,7 +364,7 @@ onMounted(() => {
         <template #trigger>
           <div
             class="top-item pointer"
-            @click="onTabTalk(item)"
+            @click="onTabTalk(item, true)"
             :class="{
               active: item.index_name == indexName,
             }"

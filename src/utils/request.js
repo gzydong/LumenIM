@@ -10,6 +10,8 @@ const request = axios.create({
   timeout: 10000,
 })
 
+let once = false
+
 /**
  * 异常拦截处理器
  *
@@ -20,7 +22,19 @@ const errorHandler = error => {
   if (error.response) {
     if (error.response.status == 401) {
       delAccessToken()
-      location.reload()
+
+      if (!once) {
+        once = true
+        window['$dialog'].info({
+          title: '友情提示',
+          content: '当前登录已失效，请重新登录？',
+          positiveText: '立即登录?',
+          maskClosable: false,
+          onPositiveClick: () => {
+            location.reload()
+          },
+        })
+      }
     }
   }
 

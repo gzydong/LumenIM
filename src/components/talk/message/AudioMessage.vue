@@ -8,7 +8,7 @@ defineProps({
   data: Object,
 })
 
-const audioRef = ref(null)
+const audioRef = ref()
 const state = reactive({
   isAudioPlay: false,
   progress: 0,

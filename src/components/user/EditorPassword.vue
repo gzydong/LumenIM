@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
 import { ServeUpdatePassword } from '@/api/user'
 
-const formRef = ref(null)
+const formRef = ref()
 
 const props = defineProps({
   remove: {

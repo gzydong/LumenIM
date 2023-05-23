@@ -17,7 +17,7 @@ const detail = reactive({
   email: '',
   gender: '0',
   motto: '0',
-  birthday: ref(null),
+  birthday: ref(),
   loading: false,
 })
 

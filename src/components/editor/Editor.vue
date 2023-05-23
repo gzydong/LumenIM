@@ -23,7 +23,12 @@ import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
-import { getPasteImgs, getDragPasteImg, pasteFilter } from '@/utils/editor'
+import {
+  getPasteImgs,
+  getDragPasteImg,
+  pasteFilter,
+  pasteUids,
+} from '@/utils/editor'
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
@@ -41,7 +46,7 @@ const indexName = computed(() => dialogueStore.index_name)
 const tribute = new Tribute({
   noMatchTemplate: () => '',
   selectTemplate: item => {
-    return `<span class="tribute-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.name}</span>`
+    return ` <span class="tribute-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.name}</span>`
   },
   requireLeadingSpace: false,
   lookup: 'name',
@@ -50,9 +55,7 @@ const tribute = new Tribute({
 
 const loadEditorDraftText = () => {
   const editor = document.getElementById('me-editor')
-  if (!editor) {
-    return
-  }
+  if (!editor) return
 
   const talk = talkStore.findItem(dialogueStore.index_name)
   if (talk) {
@@ -60,6 +63,16 @@ const loadEditorDraftText = () => {
   }
 
   editor.focus()
+
+  // 将光标移动到文本末尾
+  let selection = window.getSelection()
+  if (selection) {
+    let range = document.createRange()
+    range.selectNodeContents(editor)
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
 }
 
 onMounted(() => {
@@ -76,9 +89,9 @@ watch(indexName, loadEditorDraftText, { immediate: true })
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
 const isShowEditorRecorder = ref(false)
-const fileImageRef = ref(null)
-const uploadFileRef = ref(null)
-const emoticonRef = ref(null)
+const fileImageRef = ref()
+const uploadFileRef = ref()
+const emoticonRef = ref()
 
 const imagePreview = reactive({
   show: false,
@@ -86,10 +99,7 @@ const imagePreview = reactive({
 })
 
 // 键盘监听事件
-const onKeydownEvent = e => {
-  if (e.keyCode == 38 || e.keyCode == 40) {
-    return e.preventDefault()
-  }
+const onKeydownEvent = (e: any) => {
   let text = e.target.innerText.replace(/<br>/g, '/n').trim()
 
   // 空信息禁止换行
@@ -103,24 +113,14 @@ const onKeydownEvent = e => {
       return window['$message'].info('发送内容超长，请分条发送')
     }
 
-    let atids = e.target.innerHTML.match(/data-atid="\d+"/g)
-    let uids = []
-    if (atids) {
-      uids = atids
-        .toString()
-        .match(/\d+/g)
-        .map(value => {
-          return parseInt(value)
-        })
-    }
+    let uids = pasteUids(e.target.innerHTML)
 
-    let event = emitCall('text_event', { text, uids }, isBool => {
-      if (isBool) {
-        e.target.innerHTML = ''
-      }
+    let event = emitCall('text_event', { text, uids }, (ok: any) => {
+      ok && (e.target.innerHTML = '')
     })
 
     emit('editor-event', event)
+
     return e.preventDefault()
   }
 
@@ -137,16 +137,16 @@ const onInputEvent = e => {
 
 // 推送图片事件
 const onImageEvent = ({ callBack }) => {
-  const msg = emitCall('image_event', imagePreview.file, isBool => {
-    callBack(isBool)
+  const data = emitCall('image_event', imagePreview.file, (ok: boolean) => {
+    callBack(ok)
   })
 
-  emit('editor-event', msg)
+  emit('editor-event', data)
 }
 
 const onVoteEvent = data => {
-  const msg = emitCall('vote_event', data, isBool => {
-    if (isBool) {
+  const msg = emitCall('vote_event', data, (ok: boolean) => {
+    if (ok) {
       isShowEditorVote.value = false
     }
   })
@@ -166,11 +166,14 @@ const editorInsertText = text => {
   }
 }
 
-const onEmoticonEvent = data => {
+const onEmoticonEvent = (data: any) => {
   if (data.type == 1) {
     editorInsertText(data.value)
   } else {
-    emit('editor-event', emitCall('emoticon_event', data.value))
+    emit(
+      'editor-event',
+      emitCall('emoticon_event', data.value, () => {})
+    )
   }
 
   emoticonRef.value.setShow(false)
@@ -483,5 +486,6 @@ const onDragPaste = e => {
 
 .tribute-mention {
   color: #518afe;
+  padding: 0 2px;
 }
 </style>
