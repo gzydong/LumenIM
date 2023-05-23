@@ -4,7 +4,7 @@ import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
-import { Comment, Search, Close, PeoplePlus } from '@icon-park/vue-next'
+import { Comment, Search, Close, Plus } from '@icon-park/vue-next'
 import {
   ServeGroupDetail,
   ServeGetGroupMembers,
@@ -122,10 +122,10 @@ const onSignOut = () => {
     group_id: props.gid,
   }).then(res => {
     if (res.code == 200) {
-      window.$message.success('已退出群组！')
+      window['$message'].success('已退出群组！')
       onClose()
     } else {
-      window.$message.error(res.message)
+      window['$message'].error(res.message)
     }
   })
 }
@@ -138,11 +138,11 @@ const onChangeRemark = () => {
     if (code == 200) {
       editCardPopover.value.setShow(false)
       state.detail.visit_card = state.remark
-      window.$message.success('已更新群名片！')
+      window['$message'].success('已更新群名片！')
 
       loadMembers()
     } else {
-      window.$message.error(message)
+      window['$message'].error(message)
     }
   })
 }
@@ -247,7 +247,9 @@ loadMembers()
           </n-input>
 
           <n-button @click="isShowGroup = true" circle class="mt-l15">
-            <template #icon> <n-icon :component="PeoplePlus" /> </template>
+            <template #icon>
+              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+            </template>
           </n-button>
         </div>
 

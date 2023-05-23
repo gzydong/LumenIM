@@ -127,7 +127,7 @@ class Socket {
     })
 
     this.socket.on('event_error', data => {
-      window.$message.error(JSON.stringify(data))
+      window['$message'].error(JSON.stringify(data))
     })
   }
 

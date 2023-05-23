@@ -91,7 +91,7 @@ const onSubmit = () => {
       if (res.code == 200) {
         emit('success', res.data.avatar)
       } else {
-        window.$message.info(res.message)
+        window['$message'].info(res.message)
       }
     })
   })

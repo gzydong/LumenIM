@@ -36,7 +36,7 @@ const onLoadData = () => {
 
 function onSubmitBaseInfo() {
   if (modelDetail.name.trim() == '') {
-    return window.$message.info('群名称不能为空！')
+    return window['$message'].info('群名称不能为空！')
   }
 
   ServeEditGroup({
@@ -46,9 +46,9 @@ function onSubmitBaseInfo() {
     profile: modelDetail.profile,
   }).then(res => {
     if (res.code == 200) {
-      window.$message.success('群信息更新成功！')
+      window['$message'].success('群信息更新成功！')
     } else {
-      window.$message.error(res.message)
+      window['$message'].error(res.message)
     }
   })
 }

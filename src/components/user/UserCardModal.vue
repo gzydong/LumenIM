@@ -55,7 +55,7 @@ const onLoadData = () => {
       Object.assign(state, data)
       showModal.value = true
     } else {
-      window.$message.info('用户信息不存在！', { showIcon: false })
+      window['$message'].info('用户信息不存在！', { showIcon: false })
     }
   })
 
@@ -76,7 +76,7 @@ const onToTalk = () => {
 
 const onJoinContact = () => {
   if (!state.text.length) {
-    return window.$message.info('备注信息不能为空！')
+    return window['$message'].info('备注信息不能为空！')
   }
 
   ServeCreateContact({
@@ -85,9 +85,9 @@ const onJoinContact = () => {
   }).then(res => {
     if (res.code == 200) {
       isOpenFrom.value = false
-      window.$message.success('申请发送成功！')
+      window['$message'].success('申请发送成功！')
     } else {
-      window.$message.error(res.message)
+      window['$message'].error(res.message)
     }
   })
 }

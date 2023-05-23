@@ -80,7 +80,7 @@ onMounted(() => {
           </n-input>
 
           <n-button circle @click="isShowCreateGroupBox = true">
-            <n-icon :size="22" :component="Plus" />
+            <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
           </n-button>
         </n-space>
       </div>

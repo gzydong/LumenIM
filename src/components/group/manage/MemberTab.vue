@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive, nextTick } from 'vue'
 import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
-import { Search, AddOne } from '@icon-park/vue-next'
+import { Search, Plus } from '@icon-park/vue-next'
 import { defAvatar } from '@/constant/default'
 import GroupLaunch from '../GroupLaunch.vue'
 import UserCardModal from '@/components/user/UserCardModal.vue'
@@ -83,7 +83,7 @@ const onDelete = item => {
   }).then(res => {
     if (res.code == 200) {
       onLoadData()
-      window.$message.success('删除成功！')
+      window['$message'].success('删除成功！')
     }
   })
 }
@@ -100,7 +100,7 @@ const onBatchDelete = () => {
     if (res.code == 200) {
       batchDelete.value = false
       onLoadData()
-      window.$message.success('删除成功！')
+      window['$message'].success('删除成功！')
     }
   })
 }
@@ -149,10 +149,10 @@ const onAssignAdmin = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window.$message.success('操作成功！')
+          window['$message'].success('操作成功！')
           onLoadData()
         } else {
-          window.$message.error(res.message)
+          window['$message'].error(res.message)
         }
       })
     },
@@ -171,10 +171,10 @@ const onTransfer = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window.$message.success('操作成功！')
+          window['$message'].success('操作成功！')
           onLoadData()
         } else {
-          window.$message.error(res.message)
+          window['$message'].error(res.message)
         }
       })
     },
@@ -200,10 +200,10 @@ const onForbidden = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window.$message.success('操作成功！')
+          window['$message'].success('操作成功！')
           onLoadData()
         } else {
-          window.$message.error(res.message)
+          window['$message'].error(res.message)
         }
       })
     },
@@ -294,7 +294,9 @@ onLoadData()
           </n-input>
 
           <n-button circle @click="isGroupLaunch = true">
-            <template #icon> <n-icon :component="AddOne" /> </template>
+            <template #icon>
+              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+            </template>
           </n-button>
         </n-space>
       </div>

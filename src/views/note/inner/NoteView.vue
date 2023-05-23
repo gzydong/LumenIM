@@ -72,7 +72,7 @@ const onUploadImage = (event, insertImage, files) => {
         desc: files[0].name,
       })
     } else {
-      window.$message.info(res.message)
+      window['$message'].info(res.message)
     }
   })
 }
@@ -102,7 +102,7 @@ const onSave = isCloseEditMode => {
   })
     .then(res => {
       if (res.code != 200) {
-        return window.$message.info(res.message)
+        return window['$message'].info(res.message)
       }
 
       if (data.id == 0) {
@@ -120,7 +120,7 @@ const onSave = isCloseEditMode => {
         store.setEditorMode('preview')
       }
 
-      window.$message.success('保存成功！', {
+      window['$message'].success('保存成功！', {
         duration: 1000,
       })
     })
@@ -207,7 +207,7 @@ const onDelete = () => {
 }
 
 const onShare = () => {
-  window.$message.info('开发中...')
+  window['$message'].info('开发中...')
 }
 </script>
 

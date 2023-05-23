@@ -68,7 +68,7 @@ const onToolsMenu = value => {
       isShowUserSearch.value = true
       break
     case 'group':
-      window.$message.info('待完善...')
+      window['$message'].info('待完善...')
 
       isShowGroupModal.value = true
       break

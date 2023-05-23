@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from 'vue'
 import { NSpace, NEmpty } from 'naive-ui'
-import { Search, AddOne } from '@icon-park/vue-next'
+import { Search, Plus } from '@icon-park/vue-next'
 import NoticeEditor from './NoticeEditor.vue'
 import { ServeGetGroupNotices } from '@/api/group'
 
@@ -108,7 +108,9 @@ onLoadData()
           </n-input>
 
           <n-button circle @click="onAdd">
-            <template #icon> <n-icon :component="AddOne" /> </template>
+            <template #icon>
+              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+            </template>
           </n-button>
         </n-space>
       </div>

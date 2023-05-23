@@ -50,9 +50,9 @@ const onAccept = item => {
   }).then(res => {
     if (res.code == 200) {
       onLoadData()
-      window.$message.success('已同意！')
+      window['$message'].success('已同意！')
     } else {
-      window.$message.info(res.message)
+      window['$message'].info(res.message)
     }
   })
 }
@@ -64,9 +64,9 @@ const onDecline = item => {
   }).then(res => {
     if (res.code == 200) {
       onLoadData()
-      window.$message.success('已拒绝！')
+      window['$message'].success('已拒绝！')
     } else {
-      window.$message.info(res.message)
+      window['$message'].info(res.message)
     }
   })
 }

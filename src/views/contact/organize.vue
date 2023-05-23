@@ -33,7 +33,7 @@ const onToTalk = item => {
   if (userStore.uid != item.user_id) {
     toTalk(1, item.user_id)
   } else {
-    window.$message.info('禁止给自己发送消息!!!')
+    window['$message'].info('禁止给自己发送消息!!!')
   }
 }
 

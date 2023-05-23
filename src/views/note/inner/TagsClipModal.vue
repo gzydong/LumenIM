@@ -49,7 +49,7 @@ const onActive = item => {
   })
 
   if (!item.is_check && items.length > 5) {
-    return window.$message.info('标签不能超过5个！')
+    return window['$message'].info('标签不能超过5个！')
   }
 
   onSave(items.map(v => v.id))

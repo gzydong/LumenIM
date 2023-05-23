@@ -4,7 +4,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore } from '@/store/dialogue'
 import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
-import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip } from 'naive-ui'
+import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip, NInput } from 'naive-ui'
 import {
   Search,
   ArrowUp,
@@ -26,7 +26,7 @@ import {
   ServeSetNotDisturb,
 } from '@/api/chat'
 import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
-import { ServeDeleteContact } from '@/api/contacts'
+import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import {
   findTalk,
@@ -220,6 +220,41 @@ const onSignOutGroup = (data: any) => {
   })
 }
 
+const onChangeRemark = (data: any) => {
+  let remark = ''
+  window['$dialog'].create({
+    showIcon: false,
+    title: '修改备注',
+    content: () => {
+      return h(NInput, {
+        defaultValue: data.remark_name,
+        placeholder: '请输入备注信息',
+        style: { marginTop: '20px' },
+        onInput: value => (remark = value),
+        autofocus:true,
+      })
+    },
+    negativeText: '取消',
+    positiveText: '修改备注',
+    onPositiveClick: () => {
+      ServeEditContactRemark({
+        friend_id: data.receiver_id,
+        remark: remark,
+      }).then(({ code, message }) => {
+        if (code == 200) {
+          window['$message'].success('备注成功！')
+          talkStore.updateItem({
+            index_name: data.index_name,
+            remark_name: remark,
+          })
+        } else {
+          window['$message'].error(message)
+        }
+      })
+    },
+  })
+}
+
 // 会话列表右键显示菜单
 const onContextMenuTalk = (e, item) => {
   state.dropdown.show = false
@@ -290,6 +325,7 @@ const onContextMenuTalkHandle = (key: string) => {
     disturb: onSetDisturb,
     signout_group: onSignOutGroup,
     delete_contact: onDeleteContact,
+    remark: onChangeRemark,
   }
 
   state.dropdown.show = false
@@ -345,7 +381,7 @@ onMounted(onInitialize)
 
       <n-button circle @click="isShowGroup = true">
         <template #icon>
-          <n-icon :size="22" :component="Plus" />
+          <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
         </template>
       </n-button>
     </header>

@@ -26,7 +26,7 @@ async function onUpload(e) {
 
   let file = e.target.files[0]
   if (file.size / (1024 * 1024) > 5) {
-    window.$message.info('笔记附件不能大于5M!')
+    window['$message'].info('笔记附件不能大于5M!')
     return false
   }
 
