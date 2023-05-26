@@ -99,9 +99,9 @@ const handleSelectGroup = value => {
   }).then(({ code, message }) => {
     if (code == 200) {
       state.group_id = value
-      $message.success('分组修改成功！')
+      window['$message'].success('分组修改成功！')
     } else {
-      $message.error(message)
+      window['$message'].error(message)
     }
   })
 }
@@ -122,34 +122,31 @@ onLoadData()
     <div class="section">
       <section class="el-container container is-vertical height100">
         <header class="el-header header">
-          <div class="img-banner">
-            <img src="@/assets/image/banners.webp" class="img-banner" />
-            <div class="close-box" @click="remove">
-              <n-icon :component="CloseOne" :size="22" />
-            </div>
+          <n-avatar
+            round
+            class="avatar"
+            :size="100"
+            :src="state.avatar || defAvatar"
+            :fallback-src="defAvatar"
+          />
+
+          <div
+            class="close"
+            @click="
+              () => {
+                remove()
+              }
+            "
+          >
+            <close-one theme="outline" size="22" fill="#fff" :strokeWidth="2" />
           </div>
 
-          <div class="user-header">
-            <div class="avatar">
-              <div class="avatar-box">
-                <n-avatar
-                  round
-                  :size="70"
-                  :src="state.avatar || defAvatar"
-                  :fallback-src="defAvatar"
-                />
-              </div>
-            </div>
-            <div class="nickname">
-              <span>{{ state.nickname || '未设置' }}</span>
-              <div class="share">
-                <span>分享</span>
-              </div>
-            </div>
+          <div class="nickname text-ellipsis">
+            {{ state.nickname || '未设置昵称' }}
           </div>
         </header>
 
-        <main class="el-main main">
+        <main class="el-main main me-scrollbar">
           <div class="motto">
             {{ state.motto || '编辑个签，展示我的独特态度。' }}
           </div>
@@ -161,7 +158,9 @@ onLoadData()
             </div>
             <div class="info-item">
               <span class="name">昵称 :</span>
-              <span class="text">{{ state.nickname || '-' }}</span>
+              <span class="text text-ellipsis"
+                >{{ state.nickname || '-' }}
+              </span>
             </div>
             <div class="info-item">
               <span class="name">性别 :</span>
@@ -198,7 +197,13 @@ onLoadData()
           v-if="state.friend_status == 2"
           class="el-footer footer bdr-t flex-center"
         >
-          <n-button type="primary" color="#1890ff" block @click="onToTalk">
+          <n-button
+            round
+            type="primary"
+            color="#1890ff"
+            block
+            @click="onToTalk"
+          >
             <template #icon>
               <n-icon :component="Send" />
             </template>
@@ -232,12 +237,10 @@ onLoadData()
               type="primary"
               color="#1890ff"
               block
+              round
               @click="isOpenFrom = true"
             >
-              <template #icon>
-                <n-icon :component="AddOne" />
-              </template>
-              添加好友
+              + 添加好友
             </n-button>
           </template>
         </footer>
@@ -252,44 +255,42 @@ onLoadData()
   width: 360px;
   height: 600px;
   background-color: #ffffff;
-  border-radius: 5px;
+  border-radius: 10px;
+  overflow: hidden;
 
   .header {
-    height: 180px;
+    width: 100%;
+    height: 230px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #247ec6, #73c1ff);
+
+    .nickname {
+      position: absolute;
+      bottom: 20px;
+      width: 80%;
+      height: 30px;
+      font-size: 16px;
+      line-height: 30px;
+      text-align: center;
+      color: #ffffff;
+    }
 
     .close {
       position: absolute;
-      right: 10px;
-      top: 10px;
-      color: white;
-      transition: all 1s;
-      z-index: 1;
-      font-size: 20px;
-    }
-
-    .img-banner {
-      width: 100%;
-      height: 100%;
-      background-size: 100%;
-      overflow: hidden;
-      object-fit: cover;
-      border-radius: 5px 5px 0 0;
-
-      .close-box {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        color: #ffffff;
-        height: 20px;
-        width: 20px;
+      right: 20px;
+      top: 20px;
+      &:hover {
         cursor: pointer;
+        transform: scale(1.1);
       }
     }
   }
 
   .main {
-    padding: 60px 30px 0 30px;
+    padding: 20px 30px;
 
     .motto {
       min-height: 26px;
@@ -331,10 +332,10 @@ onLoadData()
   position: absolute;
   bottom: -40px;
   display: flex;
-  flex-direction: row;
+  background-color: red;
 
   .avatar {
-    width: 100px;
+    flex-basis: 100px;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
@@ -358,7 +359,7 @@ onLoadData()
   }
 
   .nickname {
-    flex: auto;
+    flex: 1 1;
     padding-top: 50px;
     font-size: 16px;
     font-weight: 400;
@@ -368,6 +369,8 @@ onLoadData()
     span {
       margin-left: 5px;
     }
+
+    background-color: rebeccapurple;
 
     .share {
       display: inline-flex;

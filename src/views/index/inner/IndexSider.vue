@@ -231,7 +231,7 @@ const onChangeRemark = (data: any) => {
         placeholder: '请输入备注信息',
         style: { marginTop: '20px' },
         onInput: value => (remark = value),
-        autofocus:true,
+        autofocus: true,
       })
     },
     negativeText: '取消',
@@ -431,7 +431,7 @@ onMounted(onInitialize)
 
     <!-- 标题栏目 -->
     <header
-      v-show="loadStatus == 3 && topItems.length > 0"
+      v-show="loadStatus == 3 && items.length > 0"
       class="el-header notify-header"
     >
       <p>会话记录({{ items.length }})</p>

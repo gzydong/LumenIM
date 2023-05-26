@@ -9,7 +9,7 @@ import {
   ref,
 } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
-import { ExpandDownOne, Remind } from '@icon-park/vue-next'
+import { Loading } from '@icon-park/vue-next'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -19,6 +19,8 @@ import { defAvatar } from '@/constant/default'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
+import SkipBottom from './SkipBottom.vue'
+import UnreadBubble from './UnreadBubble.vue'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user = inject('showUserModal')
@@ -320,7 +322,7 @@ onMounted(onReload)
           <aside class="avatar-column">
             <n-avatar
               round
-              size="medium"
+              size="small"
               class="pointer"
               :src="item.avatar"
               :fallback-src="defAvatar"
@@ -357,7 +359,19 @@ onMounted(onReload)
                 class="read-status"
                 v-if="talk_type == 1 && item.float == 'right'"
               >
-                {{ item.is_read ? '已读' : '已送达' }}
+                <loading
+                  theme="outline"
+                  size="19"
+                  fill="#000"
+                  :strokeWidth="1"
+                  class="icon-rotate"
+                  v-show="item.send_status == 1"
+                />
+
+                <span v-show="item.send_status == 1"> 正在发送... </span>
+                <span v-show="item.send_status != 1">
+                  {{ item.is_read ? '已读' : '已送达' }}
+                </span>
               </div>
             </div>
           </main>
@@ -369,30 +383,13 @@ onMounted(onReload)
       </div>
     </div>
 
+
+    <!-- AYsd@1234.# -->
     <!-- 新消息提示 -->
-    <div
-      class="unread-bubble pointer"
-      :class="{
-        show: dialogueStore.unreadBubble,
-      }"
-      @click="onSkipBottom"
-    >
-      <n-icon size="18" color="#fff" :component="Remind" />
-      <span>{{ dialogueStore.unreadBubble }}条新消息，请注意查看！</span>
-    </div>
+    <UnreadBubble @click="onSkipBottom" />
 
     <!-- 置底按钮 -->
-    <div
-      class="skip-bottom pointer"
-      :class="{ show: skipBottom }"
-      @click="onSkipBottom"
-    >
-      <n-icon size="14" color="#fff" :component="ExpandDownOne" />
-      <span>回</span>
-      <span>到</span>
-      <span>底</span>
-      <span>部</span>
-    </div>
+    <SkipBottom v-model="skipBottom" @click="onSkipBottom" />
   </section>
 
   <!-- 右键菜单 -->
@@ -407,55 +404,21 @@ onMounted(onReload)
 </template>
 
 <style lang="less" scoped>
+.icon-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .section {
   position: relative;
   height: 100%;
   width: 100%;
   overflow: hidden;
-
-  .unread-bubble {
-    position: absolute;
-    left: -300px;
-    bottom: 20px;
-    min-width: 100px;
-    height: 35px;
-    background-color: #1ebafc;
-    border-radius: 0 20px 20px 0;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    color: #ffffff;
-    transition: left 1s ease-in-out;
-
-    span {
-      margin-left: 5px;
-    }
-
-    &.show {
-      left: 0px;
-    }
-  }
-
-  .skip-bottom {
-    position: absolute;
-    right: -30px;
-    top: 15%;
-    width: 30px;
-    height: 100px;
-    font-size: 12px;
-    background-color: #1ebafc;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    transition: right 1s ease-in-out;
-
-    &.show {
-      right: 0px;
-    }
-  }
 }
 
 .me-scrollbar {
@@ -505,28 +468,23 @@ onMounted(onReload)
   .record-box {
     display: flex;
     flex-direction: row;
-    transition: 0.5s ease;
 
     .checkbox-column {
       display: flex;
       justify-content: center;
-      flex-basis: 40px;
-      flex-shrink: 0;
+      width: 35px;
       order: 1;
       user-select: none;
-      padding-top: 15px;
+      padding-top: 12px;
     }
 
     .avatar-column {
-      width: 40px;
-      flex-basis: 40px;
-      flex-shrink: 0;
+      width: 35px;
       display: flex;
       align-items: center;
       order: 2;
       user-select: none;
-      // padding-top: 23px;
-      padding-top: 7px;
+      padding-top: 10px;
       flex-direction: column;
     }
 
@@ -577,6 +535,7 @@ onMounted(onReload)
           margin: 0 8px;
           color: #a79e9e;
           font-size: 12px;
+          user-select: none;
         }
       }
 

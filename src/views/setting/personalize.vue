@@ -37,7 +37,7 @@ const isFullScreen = computed({
           <div class="desc">当前未设置名片背景</div>
         </div>
         <div class="tools">
-          <n-button quaternary round type="info" text> 修改 </n-button>
+          <n-button type="info" text> 修改 </n-button>
         </div>
       </div>
 
@@ -47,7 +47,7 @@ const isFullScreen = computed({
           <div class="desc">当前未设置聊天背景图</div>
         </div>
         <div class="tools">
-          <n-button quaternary round type="info" text> 修改 </n-button>
+          <n-button type="info" text> 修改 </n-button>
         </div>
       </div>
     </div>

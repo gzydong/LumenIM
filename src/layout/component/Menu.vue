@@ -13,6 +13,7 @@ import {
   Message,
   NotebookAndPen,
   People,
+  SmartOptimization,
 } from '@icon-park/vue-next'
 
 defineProps({
@@ -44,6 +45,11 @@ const menus = reactive([
     icon: NotebookAndPen,
     title: '笔记',
   },
+  // {
+  //   link: '/settings/detail',
+  //   icon: SmartOptimization,
+  //   title: 'Ai助手',
+  // },
   {
     link: 'https://github.com/gzydong/LumenIM',
     icon: GithubOne,

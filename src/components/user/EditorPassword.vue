@@ -3,14 +3,10 @@ import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
 import { ServeUpdatePassword } from '@/api/user'
 
-const formRef = ref()
+defineProps(['modelValue'])
+const emit = defineEmits(['update:modelValue', 'close'])
 
-const props = defineProps({
-  remove: {
-    type: Function, //传入移除节点方法,这里是createApp中的方法
-    default: null,
-  },
-})
+const formRef = ref()
 
 const model = reactive({
   oldPassword: '',
@@ -44,16 +40,7 @@ const rules = {
   },
 }
 
-const emit = defineEmits(['close'])
-
-const isShow = ref(true)
 const loading = ref(false)
-
-const onMaskClick = () => {
-  emit('close')
-
-  props.remove()
-}
 
 const onSubmit = () => {
   loading.value = true
@@ -87,17 +74,21 @@ const onValidate = e => {
 
 <template>
   <n-modal
-    v-model:show="isShow"
+    :show="modelValue"
     preset="card"
-    title="修改密码"
+    title="修改密码？"
     size="huge"
-    style="max-width: 450px; border-radius: 10px"
-    :on-after-leave="onMaskClick"
+    style="max-width: 400px; border-radius: 10px"
+    :on-update:show="
+      value => {
+        $emit('update:modelValue', value)
+      }
+    "
   >
     <n-form ref="formRef" :model="model" :rules="rules">
       <n-form-item label="登录密码" path="oldPassword">
         <n-input
-          placeholder="请填写当前账号密码"
+          placeholder="请填写登录密码"
           type="password"
           v-model:value="model.oldPassword"
         />
@@ -105,7 +96,7 @@ const onValidate = e => {
 
       <n-form-item label="设置新密码" path="newPassword">
         <n-input
-          placeholder="请设置新密码"
+          placeholder="请填写新密码"
           type="password"
           v-model:value="model.newPassword"
         />
@@ -122,7 +113,9 @@ const onValidate = e => {
 
     <template #footer>
       <div style="width: 100%; text-align: right">
-        <n-button type="tertiary" @click="onMaskClick"> 取消 </n-button>
+        <n-button type="tertiary" @click="$emit('update:modelValue', false)">
+          取消
+        </n-button>
         <n-button
           type="primary"
           class="mt-l15"

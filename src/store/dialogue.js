@@ -24,9 +24,6 @@ export const useDialogueStore = defineStore('dialogue', {
       // 好友是否正在输入文字
       keyboard: false,
 
-      // 对话输入框信息
-      editorText: '',
-
       // 对方是否在线
       online: false,
 
@@ -39,21 +36,25 @@ export const useDialogueStore = defineStore('dialogue', {
       // 是否开启多选操作模式
       isOpenMultiSelect: false,
 
-      // 当前对话群成员呢列表
-      groupMembers: [],
-
       // 是否显示编辑器
       isShowEditor: false,
+
+      // 对话记录
+      items: [
+        {
+          talk_type: 1, // 对话类型
+          receiver_id: 0, // 接收者ID
+          read_sequence: 0, // 当前已读的最后一条记录
+          records: [],
+        },
+      ],
     }
   },
   getters: {
     // 多选列表
-    selectItems: state => {
-      return state.records.filter(item => item.isCheck)
-    },
-    isGroupTalk: state => {
-      return state.talk.talk_type == 2
-    },
+    selectItems: state => state.records.filter(item => item.isCheck),
+    // 当前对话是否是群聊
+    isGroupTalk: state => state.talk.talk_type === 2,
   },
   actions: {
     // 更新在线状态
@@ -74,10 +75,6 @@ export const useDialogueStore = defineStore('dialogue', {
       this.records = []
       this.unreadBubble = 0
       this.isShowEditor = data.is_robot === 0
-
-      if (data.draft_text) {
-        this.updateEditorText(data.draft_text)
-      }
     },
 
     // 清空对话记录
@@ -121,11 +118,6 @@ export const useDialogueStore = defineStore('dialogue', {
       clearTimeout(keyboardTimeout)
 
       keyboardTimeout = setTimeout(() => (this.keyboard = false), 2000)
-    },
-
-    // 自增好友键盘输入事件
-    updateEditorText(text) {
-      this.editorText = text
     },
 
     setUnreadBubble(value) {
@@ -189,5 +181,7 @@ export const useDialogueStore = defineStore('dialogue', {
         }
       })
     },
+
+    ApiSendTextMessage(options) {},
   },
 })

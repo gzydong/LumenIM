@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
-import { useDialogueStore } from '@/store/dialogue'
-import { useEditorStore } from '@/store/editor'
-import { useTalkStore } from '@/store/talk'
+import { useDialogueStore, useEditorStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import Tribute from 'tributejs'
 import 'tributejs/tribute.css'
@@ -123,8 +121,6 @@ const onKeydownEvent = (e: any) => {
 
     return e.preventDefault()
   }
-
-  dialogueStore.updateEditorText(e.target.innerHTML.toString())
 }
 
 // 输入事件监听

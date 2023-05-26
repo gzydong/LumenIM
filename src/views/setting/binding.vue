@@ -1,11 +1,10 @@
 <script setup>
-  import {reactive} from 'vue'
+import { reactive } from 'vue'
 
-  const state = reactive({
-    mobile:"",
-    email:"",
-  })
-
+const state = reactive({
+  mobile: '',
+  email: '',
+})
 </script>
 
 <template>
@@ -22,7 +21,7 @@
           <div class="desc">当前未绑定github账号</div>
         </div>
         <div class="tools">
-          <n-button quaternary round type="info" text> 设置 </n-button>
+          <n-button type="info" text> 设置 </n-button>
         </div>
       </div>
 
@@ -35,7 +34,7 @@
           <div class="desc">当前未绑定gitee账号</div>
         </div>
         <div class="tools">
-          <n-button quaternary round type="info" text> 设置 </n-button>
+          <n-button type="info" text> 设置 </n-button>
         </div>
       </div>
     </div>

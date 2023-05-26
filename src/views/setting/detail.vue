@@ -1,9 +1,16 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NForm, NFormItem, NInput, NSelect, NDatePicker } from 'naive-ui'
+import {
+  NForm,
+  NFormItem,
+  NInput,
+  NDatePicker,
+  NRadio,
+  NRadioGroup,
+  NSpace,
+} from 'naive-ui'
 import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
-import { GenderOptions } from '@/constant/default'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { hidePhone } from '@/utils/strings'
 import { useUserStore } from '@/store/user'
@@ -127,12 +134,13 @@ const onUploadAvatar = avatar => {
           />
         </n-form-item>
         <n-form-item label="我的性别：">
-          <n-select
-            v-model:value="detail.gender"
-            placeholder="设置你的性别"
-            :options="GenderOptions"
-            style="max-width: 192px"
-          />
+          <n-radio-group v-model:value="detail.gender" name="gender">
+            <n-space>
+              <n-radio key="0" value="0"> 未设置 </n-radio>
+              <n-radio key="1" value="1"> 男 </n-radio>
+              <n-radio key="2" value="2"> 女 </n-radio>
+            </n-space>
+          </n-radio-group>
         </n-form-item>
         <n-form-item label="我的生日：">
           <n-date-picker

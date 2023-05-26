@@ -48,7 +48,6 @@ const props = defineProps({
 
 const isShowHistory = ref(false)
 
-
 // 发送文本消息
 const onSendTextEvent = throttle(value => {
   let { data, callBack } = value
@@ -57,10 +56,6 @@ const onSendTextEvent = throttle(value => {
     receiver_id: props.receiver_id,
     talk_type: props.talk_type,
     text: data.text,
-    mention: {
-      all: 0,
-      uids: data.uids,
-    },
   })
 
   res.then(({ code, message }) => {
@@ -70,8 +65,11 @@ const onSendTextEvent = throttle(value => {
         draft_text: '',
       })
 
-      // 对话列表滚动条置顶
-      document.getElementById('talk-session-list').scrollTop = 0
+      let el = document.getElementById('talk-session-list')
+      if (el) {
+        // 对话列表滚动条置顶
+        el.scrollTop = 0
+      }
 
       callBack(true)
     } else {

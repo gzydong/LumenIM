@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
 
 /**
  * 防抖函数
@@ -119,7 +119,6 @@ export function isElectronMode() {
 export function electron() {
   return window.electron
 }
-
 
 export function htmlDecode(input) {
   // 匹配 HTML 实体的正则表达式

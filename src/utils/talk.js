@@ -2,7 +2,6 @@ import { useTalkStore } from '@/store/talk'
 import router from '@/router'
 import { parseTime } from '@/utils/datetime'
 import { ServeCreateTalkList } from '@/api/chat'
-import { textReplaceMention } from '@/utils/strings'
 
 const KEY_INDEX_NAME = 'send_message_index_name'
 

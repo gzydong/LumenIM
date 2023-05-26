@@ -1,64 +1,77 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
-import { ServeUpdatePassword } from '@/api/user'
+import { ServeUpdateEmail } from '@/api/user'
+import SmsLock from '@/plugins/sms-lock'
+import { ServeSendEmailCode } from '@/api/common'
+
+defineProps(['modelValue'])
+const emit = defineEmits(['update:modelValue', 'success'])
+
+// 短信按钮倒计时
+const lockTime = ref(0)
+
+// 初始化短信按钮锁
+const lock = new SmsLock(
+  'CHANGE_EMAIL_SMS',
+  120,
+  time => (lockTime.value = time)
+)
 
 const formRef = ref()
 
 const model = reactive({
-  oldPassword: '',
-  newPassword: '',
-  newPassword2: '',
+  password: '',
+  email: '',
+  code: '',
 })
 
 const rules = {
-  oldPassword: {
+  password: {
     required: true,
-    trigger: ['blur', 'input'],
-    message: '登录密码不能为空！',
+    trigger: ['input'],
+    message: '账号密码不能为空！',
   },
-  newPassword: {
+  email: {
     required: true,
-    trigger: ['blur', 'input'],
-    message: '新密码不能为空！',
+    trigger: ['input'],
+    message: '邮箱不能为空！',
   },
-  newPassword2: {
+  code: {
     required: true,
-    trigger: ['blur', 'change'],
-    validator(rule, value) {
-      if (!value) {
-        return new Error('确认密码不能为空！')
-      } else if (model.newPassword != model.newPassword2) {
-        return new Error('两次密码输入不一致！')
-      }
-
-      return true
-    },
+    trigger: ['change'],
+    message: '验证码不能为空！',
   },
 }
 
-const emit = defineEmits(['close'])
-
-const isShow = ref(true)
 const loading = ref(false)
 
-const onMaskClick = () => {
-  emit('close')
+const onSendEmail = () => {
+  const response = ServeSendEmailCode({
+    email: model.email,
+  })
+
+  response.then(({ code, message }) => {
+    if (code == 200) {
+      lock.start()
+      window['$message'].success('邮件发送成功！')
+    } else {
+      window['$message'].warning(message)
+    }
+  })
 }
 
 const onSubmit = () => {
   loading.value = true
 
-  let response = ServeUpdatePassword({
-    old_password: model.oldPassword,
-    new_password: model.newPassword,
-  })
+  let response = ServeUpdateEmail(model)
 
-  response.then(res => {
-    if (res.code == 200) {
+  response.then(({ code, message }) => {
+    if (code == 200) {
       window['$message'].success('密码修改成功...')
+      emit('success', model.email)
     } else {
-      window['$message'].warning(res.message)
+      window['$message'].warning(message)
     }
   })
 
@@ -78,42 +91,56 @@ const onValidate = e => {
 
 <template>
   <n-modal
-    v-model:show="isShow"
+    :show="modelValue"
     preset="card"
-    title="修改邮箱"
+    title="修改邮箱？"
     size="huge"
-    style="max-width: 450px; border-radius: 10px"
-    :on-after-leave="onMaskClick"
+    style="max-width: 400px; border-radius: 10px"
+    :on-update:show="
+      value => {
+        $emit('update:modelValue', value)
+      }
+    "
   >
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item label="登录密码" path="oldPassword">
+      <n-form-item label="登录密码" path="password">
         <n-input
-          placeholder="请填写当前账号密码"
+          placeholder="请填写登录密码"
           type="password"
-          v-model:value="model.oldPassword"
+          v-model:value="model.password"
         />
       </n-form-item>
 
-      <n-form-item label="设置新密码" path="newPassword">
+      <n-form-item label="设置新邮箱" path="email">
         <n-input
-          placeholder="请设置新密码"
-          type="password"
-          v-model:value="model.newPassword"
+          placeholder="请填写新邮箱"
+          type="text"
+          v-model:value="model.email"
         />
       </n-form-item>
 
-      <n-form-item label="确认新密码" path="newPassword2">
+      <n-form-item label="邮箱验证码" path="code">
         <n-input
-          placeholder="请重复输入新密码"
-          type="password"
-          v-model:value="model.newPassword2"
+          placeholder="请填写验证码"
+          type="text"
+          v-model:value="model.code"
         />
+        <n-button
+          tertiary
+          class="mt-l5"
+          @click="onSendEmail"
+          :disabled="lockTime > 0"
+        >
+          获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
+        </n-button>
       </n-form-item>
     </n-form>
 
     <template #footer>
       <div style="width: 100%; text-align: right">
-        <n-button type="tertiary" @click="onMaskClick"> 取消 </n-button>
+        <n-button type="tertiary" @click="$emit('update:modelValue', false)">
+          取消
+        </n-button>
         <n-button
           type="primary"
           class="mt-l15"
