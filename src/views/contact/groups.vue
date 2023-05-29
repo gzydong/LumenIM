@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, reactive, onMounted } from 'vue'
-import { NSpace, NDivider, NDrawer } from 'naive-ui'
+import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
-import { Search, AddOne, Plus } from '@icon-park/vue-next'
+import { Search, Plus } from '@icon-park/vue-next'
+import { useUserStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
 import { toTalk } from '@/utils/talk'
 
+const userStore = useUserStore()
 const isShowCreateGroupBox = ref(false)
 const keywords = ref('')
 const items = ref([])
@@ -17,8 +19,24 @@ const params = reactive({
   id: 0,
 })
 
+const tabIndex = ref('all')
+
+const uid = userStore.uid
+
+const filterCreator = computed(() => {
+  return items.value.filter((item: any) => item.creator_id == uid)
+})
+
 const filter = computed(() => {
-  return items.value.filter(item => {
+  return items.value.filter((item: any) => {
+    if (tabIndex.value == 'create' && item.creator_id != uid) {
+      return false
+    }
+
+    if (tabIndex.value == 'join' && item.creator_id == uid) {
+      return false
+    }
+
     return (
       item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
     )
@@ -56,34 +74,32 @@ onMounted(() => {
   <section id="drawer-target" class="el-container is-vertical height100">
     <header class="el-header from-header bdr-b">
       <div>
-        <n-space>
-          <n-button text se> 全部群组({{ items.length }}) </n-button>
-          <n-divider vertical />
-          <n-button text> 我创建的 </n-button>
-          <n-divider vertical />
-          <n-button text> 我加入的 </n-button>
-        </n-space>
+        <n-tabs v-model:value="tabIndex">
+          <n-tab name="all"> 全部群组({{ items.length }}) </n-tab>
+          <n-tab name="create"> 我创建的({{ filterCreator.length }}) </n-tab>
+          <n-tab name="join">
+            我加入的({{ items.length - filterCreator.length }})
+          </n-tab>
+        </n-tabs>
       </div>
 
-      <div>
-        <n-space>
-          <n-input
-            v-model:value.trim="keywords"
-            placeholder="搜索"
-            clearable
-            style="width: 200px"
-            round
-          >
-            <template #prefix>
-              <n-icon :component="Search" />
-            </template>
-          </n-input>
+      <n-space>
+        <n-input
+          v-model:value.trim="keywords"
+          placeholder="搜索"
+          clearable
+          style="max-width: 200px"
+          round
+        >
+          <template #prefix>
+            <n-icon :component="Search" />
+          </template>
+        </n-input>
 
-          <n-button circle @click="isShowCreateGroupBox = true">
-            <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
-          </n-button>
-        </n-space>
-      </div>
+        <n-button circle @click="isShowCreateGroupBox = true">
+          <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+        </n-button>
+      </n-space>
     </header>
 
     <main v-if="filter.length == 0" class="el-main flex-center">
@@ -142,8 +158,8 @@ onMounted(() => {
   height: 60px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
   justify-content: space-between;
+  padding: 0 15px;
 }
 
 .cards {
