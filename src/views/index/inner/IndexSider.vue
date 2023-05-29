@@ -159,6 +159,10 @@ const onSetDisturb = (data: any) => {
 
 // 置顶会话
 const onToTopTalk = (data: any) => {
+  if (data.is_top == 0 && topItems.value.length >= 18) {
+    return window['$message'].info('指定最多不能超过18个会话！')
+  }
+
   ServeTopTalkList({
     list_id: data.id,
     type: data.is_top == 0 ? 1 : 2,
@@ -408,7 +412,7 @@ onMounted(onInitialize)
             <n-avatar
               v-if="item.avatar"
               round
-              :src="item.avatar"
+              :src="item.avatar || defAvatar"
               :fallback-src="defAvatar"
             />
             <n-avatar
@@ -421,6 +425,17 @@ onMounted(onInitialize)
             >
               {{ item.name && (item.name.substr(0, 1) || '') }}
             </n-avatar>
+
+            <span class="icon-mark robot" v-show="item.is_robot == 1">
+              助
+            </span>
+
+            <span
+              class="icon-mark group"
+              v-show="item.talk_type == 2 && item.is_robot == 0"
+            >
+              群
+            </span>
 
             <span class="text">{{ item.remark_name || item.name }}</span>
           </div>
@@ -550,7 +565,31 @@ onMounted(onInitialize)
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 
+    .icon-mark {
+      position: absolute;
+      height: 25px;
+      width: 25px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      right: -12px;
+      bottom: 15px;
+      transform: scale(0.6);
+      border-radius: 50%;
+
+      &.group {
+        color: #3370ff;
+        background-color: #e1eaff;
+      }
+
+      &.robot {
+        color: #dc9b04 !important;
+        background-color: #faf1d1 !important;
+      }
+    }
     &.active {
       .text {
         color: rgb(80 138 254);

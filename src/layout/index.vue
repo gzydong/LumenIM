@@ -56,8 +56,9 @@ defineProps({
 
     .el-aside {
       width: 70px;
-      background-color: #001427;
-      background-color: #efefef;
+      // background-color: #001427;
+      // background-color: #efefef;
+      box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
     }
 
     &.small-screen {

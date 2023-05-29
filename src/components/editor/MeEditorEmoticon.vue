@@ -44,7 +44,7 @@ const onSendEmoticon = (type, value) => {
   <section class="el-container is-vertical section height100">
     <header class="el-header em-header bdr-b">
       <span>{{ items[tabIndex].name }}</span>
-      <span class="sys-btn">系统表情</span>
+      <!-- <span class="sys-btn">系统表情</span> -->
     </header>
 
     <main class="el-main em-main me-scrollbar">

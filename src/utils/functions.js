@@ -77,11 +77,28 @@ export function countDownTime(second = 0) {
   const minutes = parseInt((second / 60) % 60, 10) //剩余的分钟
   const seconds = parseInt(second % 60, 10) //剩余的秒数
 
-  return `${formate0to9(hours)}:${formate0to9(minutes)}:${formate0to9(
-    seconds
-  )}`
+  return `${formate0to9(hours)}:${formate0to9(minutes)}:${formate0to9(seconds)}`
 }
 
 export function removeTags(str) {
   return str.replace(/<\/?[^>]+>/gi, '')
+}
+
+export function downloadImage(src, name) {
+  let image = new Image()
+  image.setAttribute('crossOrigin', 'anonymous')
+  image.onload = function () {
+    let canvas = document.createElement('canvas')
+    canvas.width = image.width
+    canvas.height = image.height
+    let context = canvas.getContext('2d')
+    context.drawImage(image, 0, 0, image.width, image.height)
+    let url = canvas.toDataURL('image/png')
+    let a = document.createElement('a')
+    let event = new MouseEvent('click')
+    a.download = name || 'image.png'
+    a.href = url
+    a.dispatchEvent(event)
+  }
+  image.src = src
 }

@@ -7,7 +7,6 @@ import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import { defAvatar } from '@/constant/default'
 import {
-  Download,
   GithubOne,
   SettingTwo,
   Message,
@@ -51,12 +50,6 @@ const menus = reactive([
   //   title: 'Ai助手',
   // },
   {
-    link: 'https://github.com/gzydong/LumenIM',
-    icon: GithubOne,
-    external: true,
-    title: '源码',
-  },
-  {
     link: '/settings/detail',
     icon: SettingTwo,
     title: '设置',
@@ -82,9 +75,7 @@ const onClickMenu = menu => {
       <n-popover
         placement="right"
         trigger="hover"
-        :show-arrow="false"
         :raw="true"
-        :animated="false"
         style="margin-left: 16px; border-radius: 8px; overflow: hidden"
       >
         <template #trigger>
@@ -107,11 +98,11 @@ const onClickMenu = menu => {
     <main class="menu-main">
       <div
         class="menu-items"
+        v-for="(nav, i) in menus"
+        :key="nav.link"
         :class="{
           active: i == index,
         }"
-        v-for="(nav, i) in menus"
-        :key="nav.link"
         @click="onClickMenu(nav)"
       >
         <!-- 消息提示 -->
@@ -126,46 +117,22 @@ const onClickMenu = menu => {
             :size="22"
           />
         </p>
-        <span style="font-size: 12px">{{ nav.title }}</span>
+
+        <span>{{ nav.title }}</span>
       </div>
     </main>
 
-    <footer class="menu-footer pointer">
-      <p>
-        <n-popover
-          :style="{ marginLeft: '30px', marginTop: '-6px', height: '100px' }"
-          trigger="hover"
-          placement="right"
+    <footer class="menu-footer">
+      <div>
+        <a
+          class="pointer"
+          href="https://github.com/gzydong/LumenIM"
+          target="_blank"
         >
-          <template #trigger>
-            <download
-              theme="outline"
-              size="24"
-              fill="#000000"
-              :strokeWidth="2"
-              strokeLinejoin="bevel"
-            />
-          </template>
-
-          <div style="width: 200px; height: 100px; padding-top: 10px">
-            <h3>下载客户端(预览)</h3>
-            <br />
-            <a
-              style="color: #03a9f4"
-              href="https://im.gzydong.club/public/pkg/LumenIM.dmg"
-              target="_blank"
-              >Mac 客户端</a
-            >&nbsp;&nbsp;|&nbsp;&nbsp;
-            <a
-              style="color: #03a9f4"
-              href="https://im.gzydong.club/public/pkg/LumenIM.exe"
-              target="_blank"
-              >Windows x64</a
-            >
-          </div>
-        </n-popover>
-      </p>
-      <p @click="onLogout">退出</p>
+          <github-one theme="outline" size="22" fill="#333" :strokeWidth="2" />
+        </a>
+      </div>
+      <div @click="onLogout" class="pointer">退出</div>
     </footer>
   </section>
 </template>
@@ -208,14 +175,14 @@ const onClickMenu = menu => {
   }
 
   .menu-footer {
-    height: 100px;
+    height: 90px;
     width: 100%;
-    font-size: 15px;
 
-    p {
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
+    div {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

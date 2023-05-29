@@ -53,6 +53,7 @@ const onSubmit = () => {
   response.then(res => {
     if (res.code == 200) {
       window['$message'].success('密码修改成功...')
+      emit('update:modelValue', false)
     } else {
       window['$message'].warning(res.message)
     }

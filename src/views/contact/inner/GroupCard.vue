@@ -1,6 +1,6 @@
 <script setup>
 import { defAvatar } from '@/constant/default'
-import { ShareThree, AddOne } from '@icon-park/vue-next'
+import { ShareThree, AddOne,PeoplePlusOne } from '@icon-park/vue-next'
 
 const emit = defineEmits(['talk', 'join'])
 defineProps({
@@ -61,7 +61,7 @@ defineProps({
         <div class="status">{{ flag }}</div>
         <div class="tool">
           <n-icon
-            :component="isMember ? ShareThree : AddOne"
+            :component="isMember ? ShareThree : PeoplePlusOne"
             @click.stop="emit(isMember ? 'talk' : 'join')"
           />
         </div>

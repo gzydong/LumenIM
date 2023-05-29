@@ -78,7 +78,7 @@ const onSendTextEvent = throttle(value => {
   })
 
   res.catch(() => {
-    window['$message'].warning('网络繁忙,请稍后重试！！！')
+    window['$message'].warning('网络繁忙,请稍后重试!')
   })
 }, 1000)
 
@@ -91,12 +91,11 @@ const onSendImageEvent = ({ data, callBack }) => {
   fileData.append('image', data)
 
   const resp = ServeSendTalkImage(fileData)
-
-  resp.then(res => {
-    if (res.code == 200) {
+  resp.then(({ code, message }) => {
+    if (code == 200) {
       callBack(true)
     } else {
-      window['$message'].info(res.message)
+      window['$message'].info(message)
     }
   })
   resp.finally(() => callBack(false))
@@ -122,7 +121,7 @@ const onSendCodeEvent = ({ data, callBack }) => {
 const onSendFileEvent = ({ data }) => {
   let maxsize = 100 * 1024 * 1024
   if (data.size > maxsize) {
-    return window['$message'].info('上传文件不能超过100M！！！')
+    return window['$message'].info('上传文件不能超过100M!')
   }
 
   uploadsStore.initUploadFile(
@@ -143,24 +142,32 @@ const onSendVoteEvent = ({ data, callBack }) => {
     options: data.options,
   })
 
-  response.then(res => {
-    callBack(true)
+  response.then(({ code, message }) => {
+    if (code == 200) {
+      callBack(true)
+    } else {
+      window['$message'].info(message)
+    }
   })
 
-  response.catch(() => {
-    callBack(false)
-  })
+  response.catch(() => callBack(false))
 }
 
 // 发送表情消息
 const onSendEmoticonEvent = ({ data, callBack }) => {
-  ServeSendEmoticon({
+  let response = ServeSendEmoticon({
     receiver_id: props.receiver_id,
     talk_type: props.talk_type,
     emoticon_id: data,
   })
 
-  callBack(true)
+  response.then(({ code, message }) => {
+    if (code == 200) {
+      callBack(true)
+    } else {
+      window['$message'].info(message)
+    }
+  })
 }
 
 const onKeyboardPush = throttle(() => {
@@ -209,20 +216,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer
-    v-show="!dialogueStore.isOpenMultiSelect"
-    class="el-footer"
-    style="height: 200px"
-  >
-    <Editor @editor-event="onEditorEvent" :show_vote="talk_type == 2" />
-  </footer>
-
-  <footer
-    v-if="dialogueStore.isOpenMultiSelect"
-    class="el-footer"
-    style="height: 200px"
-  >
+  <footer v-if="dialogueStore.isOpenMultiSelect" class="el-footer">
     <MultiSelectFooter />
+  </footer>
+  <footer v-else class="el-footer">
+    <Editor @editor-event="onEditorEvent" :show_vote="talk_type == 2" />
   </footer>
 
   <HistoryRecord
@@ -232,3 +230,9 @@ onMounted(() => {
     @close="isShowHistory = false"
   />
 </template>
+
+<style lang="less">
+.el-footer {
+  height: 200px;
+}
+</style>

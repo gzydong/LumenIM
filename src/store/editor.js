@@ -5,6 +5,7 @@ import {
   ServeDeleteEmoticon,
 } from '@/api/emoticon'
 import { ServeCollectEmoticon } from '@/api/chat'
+import { defAvatar } from '@/constant/default'
 
 const message = window['$message']
 
@@ -37,9 +38,16 @@ export const useEditorStore = defineStore('editor', {
         return (this.mentions = [])
       }
 
-      this.mentions = [{ id: 0, name: '所有人' }]
+      this.mentions = [
+        { id: 0, name: '所有人', avatar: defAvatar, user_card: '' },
+      ]
       for (const o of data) {
-        this.mentions.push({ id: o.user_id, name: o.nickname })
+        this.mentions.push({
+          id: o.user_id,
+          name: o.nickname,
+          avatar: o.avatar || defAvatar,
+          user_card: o.user_card,
+        })
       }
     },
 

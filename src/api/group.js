@@ -39,6 +39,15 @@ export const ServeDismissGroup = data => {
   return post('/api/v1/group/dismiss', data)
 }
 
+export const ServeMuteGroup = data => {
+  return post('/api/v1/group/mute', data)
+}
+
+export const ServeOvertGroup = data => {
+  return post('/api/v1/group/overt', data)
+}
+
+
 // 用户退出群聊服务接口
 export const ServeSecedeGroup = data => {
   return post('/api/v1/group/secede', data)

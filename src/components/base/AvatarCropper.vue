@@ -102,7 +102,7 @@ const onSubmit = () => {
   <input
     id="upload-avatar"
     type="file"
-    accept="image/png, image/jpeg, image/jpg,image/webp"
+    accept="image/png, image/jpeg, image/jpg, image/webp"
     @change="onUpload"
   />
   <n-modal v-model:show="state.show" :on-after-leave="onMaskClick">

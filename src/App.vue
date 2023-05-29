@@ -7,6 +7,7 @@ import socket from '@/socket'
 import { listener } from './listener'
 import hljs from 'highlight.js/lib/core'
 import { overrides } from '@/constant/theme'
+import Favico from 'favico.js'
 import {
   NNotificationProvider,
   NMessageProvider,
@@ -57,9 +58,17 @@ watchEffect(() => {
   }
 })
 
-if (isElectronMode()) {
-  watchEffect(() => electron.setBadge(useTalk.talkUnreadNum))
-}
+let favicon = new Favico({
+  animation: 'none',
+})
+
+watchEffect(() => {
+  favicon.badge(useTalk.talkUnreadNum)
+
+  if (isElectronMode()) {
+    electron.setBadge(useTalk.talkUnreadNum)
+  }
+})
 </script>
 
 <template>

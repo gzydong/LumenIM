@@ -14,6 +14,7 @@ import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode } from '@/utils/common'
+import { downloadImage } from '@/utils/functions'
 import { formatTalkRecord } from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
@@ -200,6 +201,18 @@ const onMultiSelect = (data: any) => {
   dialogueStore.isOpenMultiSelect = true
 }
 
+const onDownloadFile = (data: any) => {
+  if (data.msg_type == 3) {
+    return downloadImage(data.extra.url, `${data.msg_id}.${data.extra.suffix}`)
+  }
+
+  if (data.msg_type == 4) {
+    return window['$message'].info('音频暂不支持下载!')
+  }
+
+  return window['$message'].info('视频暂不支持下载!')
+}
+
 // 会话列表右键显示菜单
 const onContextMenu = (e: any, item: any) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
@@ -218,6 +231,7 @@ const onContextMenuHandle = (key: string) => {
     revoke: onRevokeTalk,
     delete: onDeleteTalk,
     multiSelect: onMultiSelect,
+    download: onDownloadFile,
   }
 
   // 触发事件
@@ -382,7 +396,6 @@ onMounted(onReload)
         </div>
       </div>
     </div>
-
 
     <!-- AYsd@1234.# -->
     <!-- 新消息提示 -->

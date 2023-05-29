@@ -324,7 +324,7 @@ onLoadData()
           />
         </div>
         <div class="avatar pointer" @click="onUserInfo(member)">
-          <n-avatar :size="30" :src="member.avatar" :fallback-src="defAvatar" />
+          <n-avatar :size="40" :src="member.avatar" :fallback-src="defAvatar" />
         </div>
         <div
           class="content pointer o-hidden"
@@ -419,27 +419,29 @@ onLoadData()
     border: 1px dashed rgb(80 138 254);
   }
 
-  .avatar {
-    width: 30px;
+  > div {
     height: inherit;
-    border-radius: 5px;
+  }
+
+  .avatar {
+    width: 40px;
     flex-shrink: 0;
     user-select: none;
-    padding-top: 10px;
+    display: flex;
+    align-items: center;
   }
 
   .content {
     width: 100%;
-    height: inherit;
     margin-left: 10px;
 
     .item-title {
-      height: 30px;
+      height: 28px;
       width: inherit;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-weight: 500;
+      font-weight: 400;
 
       .nickname {
         margin-right: 5px;
@@ -455,8 +457,7 @@ onLoadData()
   }
 
   .tool {
-    width: 30px;
-    height: inherit;
+    width: 25px;
     flex-shrink: 0;
     margin-right: 10px;
   }

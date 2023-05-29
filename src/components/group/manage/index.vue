@@ -59,9 +59,11 @@ const onMaskClick = () => {
       </aside>
 
       <main class="el-main">
-        <KeepAlive>
-          <component :is="menus[tabIndex].component" :id="gid" />
-        </KeepAlive>
+        <component
+          :is="menus[tabIndex].component"
+          :id="gid"
+          @close="onMaskClick"
+        />
       </main>
     </section>
   </n-modal>

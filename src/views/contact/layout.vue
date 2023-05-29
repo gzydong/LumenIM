@@ -8,6 +8,8 @@ import {
   ChartGraph,
   ShareThree,
   PersonalCollection,
+  Peoples,
+  People
 } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
@@ -16,20 +18,20 @@ const menus = reactive([
   {
     name: '我的好友',
     path: '/contact/friend',
-    icon: markRaw(PersonalCollection),
+    icon: markRaw(People),
     size: 18,
     tips: computed(() => (userStore.isContactApply ? 'New' : '')),
   },
   {
     name: '我的群组',
     path: '/contact/group',
-    icon: markRaw(PeoplesTwo),
+    icon: markRaw(Peoples),
     size: 20,
   },
   {
     name: '公开群组',
     path: '/contact/group/open',
-    icon: markRaw(ShareThree),
+    icon: markRaw(PeoplesTwo),
     size: 18,
   },
   {
@@ -44,6 +46,6 @@ const menus = reactive([
 
 <template>
   <Layout :index="1">
-    <SubViewLayout title="通信录" :menus="menus" />
+    <SubViewLayout title="通讯录" :menus="menus" />
   </Layout>
 </template>

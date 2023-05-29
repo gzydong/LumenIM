@@ -1,7 +1,14 @@
 <script setup>
+import { reactive } from 'vue'
 import { NForm, NFormItem, NSwitch, NPopconfirm } from 'naive-ui'
-import { ServeDismissGroup } from '@/api/group'
+import {
+  ServeDismissGroup,
+  ServeMuteGroup,
+  ServeGroupDetail,
+  ServeOvertGroup,
+} from '@/api/group'
 
+const emit = defineEmits(['close'])
 const props = defineProps({
   id: {
     type: Number,
@@ -9,17 +16,75 @@ const props = defineProps({
   },
 })
 
+const detail = reactive({
+  is_mute: false,
+  mute_loading: false,
+
+  is_overt: false,
+  overt_loading: false,
+})
+
+const onLoadData = () => {
+  ServeGroupDetail({ group_id: props.id }).then(res => {
+    if (res.code == 200) {
+      detail.is_mute = res.data.is_mute == 1
+      detail.is_overt = res.data.is_overt == 1
+    }
+  })
+}
+
 const onDismiss = () => {
   ServeDismissGroup({
     group_id: props.id,
   }).then(res => {
     if (res.code == 200) {
       window['$message'].success('群组已解散！')
+      emit('close')
     } else {
       window['$message'].info(res.message)
     }
   })
 }
+
+const onMute = value => {
+  detail.mute_loading = true
+
+  ServeMuteGroup({
+    group_id: props.id,
+    mode: detail.is_mute ? 2 : 1,
+  })
+    .then(({ code, message }) => {
+      if (code == 200) {
+        detail.is_mute = value
+      } else {
+        window['$message'].info(message)
+      }
+    })
+    .finally(() => {
+      detail.mute_loading = false
+    })
+}
+
+const onOvert = value => {
+  detail.overt_loading = true
+
+  ServeOvertGroup({
+    group_id: props.id,
+    mode: detail.is_overt ? 2 : 1,
+  })
+    .then(({ code, message }) => {
+      if (code == 200) {
+        detail.is_overt = value
+      } else {
+        window['$message'].info(message)
+      }
+    })
+    .finally(() => {
+      detail.overt_loading = false
+    })
+}
+
+onLoadData()
 </script>
 <template>
   <section class="section el-container is-vertical height100">
@@ -46,14 +111,24 @@ const onDismiss = () => {
           </n-popconfirm>
         </n-form-item>
         <n-form-item label="公开可见:" feedback="开启后可在公开群组列表展示。">
-          <n-switch />
+          <n-switch
+            :rubber-band="false"
+            :value="detail.is_overt"
+            :loading="detail.overt_loading"
+            @update:value="onOvert"
+          />
         </n-form-item>
 
         <n-form-item
           label="全员禁言:"
           feedback="开启后除群主和管理员以外，其它成员禁止发言。"
         >
-          <n-switch />
+          <n-switch
+            :rubber-band="false"
+            :value="detail.is_mute"
+            :loading="detail.mute_loading"
+            @update:value="onMute"
+          />
         </n-form-item>
       </n-form>
     </main>

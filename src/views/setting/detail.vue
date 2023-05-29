@@ -76,13 +76,14 @@ const onChangeDetail = () => {
 const onUploadAvatar = avatar => {
   cropper.value = false
   detail.avatar = avatar
+  onChangeDetail()
 }
 </script>
 
 <template>
   <h3 class="title">个人信息</h3>
 
-  <section class="el-container">
+  <section class="el-container container">
     <aside class="el-aside el-aside-left">
       <n-avatar
         :size="200"
@@ -188,14 +189,17 @@ const onUploadAvatar = avatar => {
 <style lang="less" scoped>
 @import '@/assets/css/settting.less';
 
+.container {
+  height: auto;
+}
+
 .el-aside-left {
   width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 25px;
-  margin-right: 25px;
-  border-right: 1px solid #f7f5f5;
+  margin-top: 30px;
+  margin-right: 10px;
 }
 
 .avatar-box {

@@ -10,9 +10,6 @@ import AuthRouter from './modules/auth'
 import Home from '@/views/index/index.vue'
 
 const routes = [
-  SettingRouter,
-  ContactRouter,
-  AuthRouter,
   {
     path: '/',
     name: 'Home',
@@ -32,14 +29,17 @@ const routes = [
     component: () => import('@/views/note/index.vue'),
   },
   {
-    path: '/:pathMatch(.*)*',
-    name: '404 NotFound',
-    component: () => import('@/views/other/not-found.vue'),
-  },
-  {
     path: '/example/index',
     name: 'Example',
     component: () => import('@/views/example/example.vue'),
+  },
+  SettingRouter,
+  ContactRouter,
+  AuthRouter,
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404 NotFound',
+    component: () => import('@/views/other/not-found.vue'),
   },
 ]
 

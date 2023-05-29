@@ -13,7 +13,6 @@ import {
   FolderUpload,
   Ranking,
   History,
-  TipsOne,
 } from '@icon-park/vue-next'
 import { emitCall } from '@/utils/common'
 import MeEditorImage from './MeEditorImage.vue'
@@ -45,6 +44,17 @@ const tribute = new Tribute({
   noMatchTemplate: () => '',
   selectTemplate: item => {
     return ` <span class="tribute-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.name}</span>`
+  },
+  menuItemTemplate: item => {
+    let name = item.original.name
+
+    if (item.original.user_card) {
+      name += `(${item.original.user_card})`
+    }
+
+    return `
+    <img width="18" height="18" src="${item.original.avatar}" style="border-radius:50%;">
+    <span class="text-ellipsis">${name}</span>`
   },
   requireLeadingSpace: false,
   lookup: 'name',
@@ -335,20 +345,17 @@ const onDragPaste = e => {
             <p class="tip-title">{{ nav.title }}</p>
           </div>
         </div>
-        <div class="tips">
-          <n-icon size="18" class="pointer" :component="TipsOne" />
-          <!-- 按Enter发送 / Shift+Enter 换行 -->
-        </div>
       </header>
 
       <main class="el-main o-hidden height100">
         <div
           id="me-editor"
+          class="me-scrollbar"
           spellcheck="true"
           contenteditable="true"
           @keydown="onKeydownEvent($event)"
           @input="onInputEvent($event)"
-          placeholder="你想要说点什么呢..."
+          placeholder="你想要说点什么呢，按Enter发送 / Shift+Enter 换行"
           v-paste="onPaste"
           v-drag="onDragPaste"
         />
@@ -438,15 +445,6 @@ const onDragPaste = e => {
         }
       }
     }
-
-    .tips {
-      width: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 20px;
-      user-select: none;
-    }
   }
 }
 
@@ -471,7 +469,7 @@ const onDragPaste = e => {
 
 #me-editor[contenteditable]:empty:before {
   content: attr(placeholder);
-  color: #464545;
+  color: #a7a4a4;
   font-size: 12px;
   font-weight: 400;
 }
@@ -479,15 +477,27 @@ const onDragPaste = e => {
 #me-editor[contenteditable]:focus {
   content: none;
 }
-</style>
 
-<style lang="less">
-.tribute-container li.highlight {
+:global(.tribute-container ul) {
+  margin-top: 0;
+}
+
+:global(.tribute-container li) {
+  display: flex;
+  width: 150px;
+}
+
+:global(.tribute-container li span) {
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+:global(.tribute-container li.highlight) {
   background: #518afe;
   color: #ffffff;
 }
 
-.tribute-mention {
+:global(.tribute-mention) {
   color: #518afe;
   padding: 0 2px;
 }

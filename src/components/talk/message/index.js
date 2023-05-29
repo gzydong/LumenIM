@@ -17,6 +17,8 @@ import SysGroupMemberMutedMessage from './SysGroupMemberMutedMessage.vue'
 import SysGroupMemberCancelMutedMessage from './SysGroupMemberCancelMutedMessage.vue'
 import SysGroupTransferMessage from './SysGroupTransferMessage.vue'
 import SysGroupMemberQuitMessage from './SysGroupMemberQuitMessage.vue'
+import SysGroupMutedMessage from './SysGroupMutedMessage.vue'
+import SysGroupCancelMutedMessage from './SysGroupCancelMutedMessage.vue'
 
 export {
   CodeMessage,
@@ -38,4 +40,6 @@ export {
   SysGroupTransferMessage,
   SysGroupMemberQuitMessage,
   VideoMessage,
+  SysGroupMutedMessage,
+  SysGroupCancelMutedMessage
 }

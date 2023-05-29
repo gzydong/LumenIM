@@ -1,6 +1,5 @@
 <script setup>
 import { Remind } from '@icon-park/vue-next'
-
 import { useDialogueStore } from '@/store'
 
 const dialogueStore = useDialogueStore()

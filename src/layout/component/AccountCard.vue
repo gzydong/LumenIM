@@ -1,33 +1,42 @@
 <script setup>
 import { useUserStore } from '@/store/user'
-
+import { Male, Female } from '@icon-park/vue-next'
 const store = useUserStore()
 </script>
 
 <template>
   <section class="account-card">
     <div class="card-header">
-      <img :src="store.banner" />
+      <n-avatar round class="avatar" :size="100" :src="store.avatar" />
 
-      <div class="user-avatar">
-        <img :src="store.avatar" />
+      <div class="nickname text-ellipsis">
+        {{ store.nickname || '未设置昵称' }}
       </div>
 
-      <div class="user-nickname">
-        <span>{{ store.nickname }}</span>
+      <div class="gender" v-show="store.gender > 0">
+        <male
+          v-if="store.gender == 1"
+          theme="outline"
+          size="16"
+          fill="#ffffff"
+          :strokeWidth="2"
+        />
+        <female
+          v-else
+          theme="outline"
+          size="16"
+          fill="#ffffff"
+          :strokeWidth="2"
+        />
       </div>
     </div>
 
     <div class="card-main">
       <div class="usersign pointer">
-        <div class="arrow"></div>
-        <template v-if="store.motto">
-          <span style="font-weight: 600">个性签名</span>
-          <span>：{{ store.motto }}</span>
-        </template>
-        <template v-else>
-          <span> 编辑个签，展示我的独特态度。</span>
-        </template>
+        <span style="font-weight: 600">个性签名：</span>
+        <span>
+          {{ store.motto || ' 编辑个签，展示我的独特态度。' }}
+        </span>
       </div>
     </div>
   </section>
@@ -41,57 +50,35 @@ const store = useUserStore()
   padding-bottom: 20px;
 
   .card-header {
+    width: 100%;
     height: 230px;
-    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #247ec6, #73c1ff);
 
-    img {
-      width: 100%;
-      height: 180px;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear;
-
-      &:hover {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-        -webkit-filter: contrast(130%);
-        filter: contrast(130%);
-      }
-    }
-
-    .user-avatar {
-      height: 70px;
-      width: 70px;
-      border: 5px solid #fff;
-      background-color: #fff;
+    .gender {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      right: 102px;
+      bottom: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      position: relative;
-      top: -35px;
-      margin-left: 15px;
-
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        cursor: pointer;
-      }
     }
 
-    .user-nickname {
-      position: relative;
-      top: -72px;
-      text-align: left;
-      margin-left: 105px;
-      margin-right: 5px;
-      font-size: 14px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      span {
-        font-size: 16px;
-        font-weight: 400;
-        margin-left: 8px;
-      }
+    .nickname {
+      position: absolute;
+      bottom: 20px;
+      width: 50%;
+      height: 30px;
+      font-size: 16px;
+      line-height: 30px;
+      text-align: center;
+      color: #ffffff;
     }
   }
 }
@@ -110,21 +97,8 @@ const store = useUserStore()
     background: #f3f5f7;
     color: #7d7d7d;
     font-size: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 3px;
     position: relative;
-
-    .arrow {
-      position: absolute;
-      width: 0;
-      height: 0;
-      font-size: 0;
-      border: solid 5px;
-      top: 5px;
-      border-color: rgba(247, 247, 247, 0) rgba(247, 247, 247, 0) #f3f5f7
-        rgba(247, 247, 247, 0);
-      top: -10px;
-      left: 31px;
-    }
   }
 }
 </style>

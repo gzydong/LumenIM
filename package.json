@@ -16,6 +16,7 @@
     "@highlightjs/vue-plugin": "^2.1.0",
     "@kangc/v-md-editor": "^2.3.15",
     "axios": "^0.26.0",
+    "favico.js": "^0.3.10",
     "highlight.js": "^11.5.0",
     "js-audio-recorder": "^1.0.7",
     "pinia": "^2.0.35",

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { NIcon, NModal, NButton, NInput, NAvatar, NDropdown } from 'naive-ui'
-import { AddOne, CloseOne, Send } from '@icon-park/vue-next'
+import { CloseOne, SendEmail, Male, Female } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
@@ -130,6 +130,23 @@ onLoadData()
             :fallback-src="defAvatar"
           />
 
+          <div class="gender" v-show="state.gender > 0">
+            <male
+              v-if="state.gender == 1"
+              theme="outline"
+              size="16"
+              fill="#ffffff"
+              :strokeWidth="2"
+            />
+            <female
+              v-else
+              theme="outline"
+              size="16"
+              fill="#ffffff"
+              :strokeWidth="2"
+            />
+          </div>
+
           <div
             class="close"
             @click="
@@ -142,7 +159,7 @@ onLoadData()
           </div>
 
           <div class="nickname text-ellipsis">
-            {{ state.nickname || '未设置昵称' }}
+            {{ state.remark || state.nickname || '未设置昵称' }}
           </div>
         </header>
 
@@ -203,9 +220,10 @@ onLoadData()
             color="#1890ff"
             block
             @click="onToTalk"
+            style="width: 91%"
           >
             <template #icon>
-              <n-icon :component="Send" />
+              <n-icon :component="SendEmail" />
             </template>
             发送消息
           </n-button>
@@ -238,6 +256,7 @@ onLoadData()
               color="#1890ff"
               block
               round
+              style="width: 91%"
               @click="isOpenFrom = true"
             >
               + 添加好友
@@ -254,7 +273,6 @@ onLoadData()
   position: relative;
   width: 360px;
   height: 600px;
-  background-color: #ffffff;
   border-radius: 10px;
   overflow: hidden;
 
@@ -278,6 +296,18 @@ onLoadData()
       color: #ffffff;
     }
 
+    .gender {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      right: 122px;
+      bottom: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
     .close {
       position: absolute;
       right: 20px;
@@ -291,6 +321,7 @@ onLoadData()
 
   .main {
     padding: 20px 30px;
+    background-color: #ffffff;
 
     .motto {
       min-height: 26px;
@@ -305,93 +336,13 @@ onLoadData()
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 3;
       position: relative;
-
-      &::before {
-        content: ' ';
-        position: absolute;
-        width: 0;
-        height: 0;
-        font-size: 0;
-        border: 5px solid hsla(0, 0%, 96.9%, 0);
-        border-bottom-color: #f3f5f7;
-        left: 15px;
-        top: -9px;
-      }
     }
   }
 
   .footer {
     height: 60px;
     padding: 0 15px;
-  }
-}
-
-.user-header {
-  width: 100%;
-  height: 80px;
-  position: absolute;
-  bottom: -40px;
-  display: flex;
-  background-color: red;
-
-  .avatar {
-    flex-basis: 100px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-
-    .avatar-box {
-      width: 80px;
-      height: 80px;
-      background-color: white;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-
-      img {
-        height: 70px;
-        width: 70px;
-        border-radius: 50%;
-      }
-    }
-  }
-
-  .nickname {
-    flex: 1 1;
-    padding-top: 50px;
-    font-size: 16px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-
-    span {
-      margin-left: 5px;
-    }
-
-    background-color: rebeccapurple;
-
-    .share {
-      display: inline-flex;
-      width: 50px;
-      height: 22px;
-      background: #ff5722;
-      color: white;
-      align-items: center;
-      justify-content: center;
-      padding: 3px 8px;
-      border-radius: 20px;
-      transform: scale(0.7);
-      cursor: pointer;
-      i {
-        margin-top: 2px;
-      }
-      span {
-        font-size: 14px;
-        margin-left: 4px;
-      }
-    }
+    background-color: #ffffff;
   }
 }
 
