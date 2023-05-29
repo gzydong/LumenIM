@@ -44,7 +44,6 @@ const onSendEmoticon = (type, value) => {
   <section class="el-container is-vertical section height100">
     <header class="el-header em-header bdr-b">
       <span>{{ items[tabIndex].name }}</span>
-      <!-- <span class="sys-btn">系统表情</span> -->
     </header>
 
     <main class="el-main em-main me-scrollbar">
@@ -210,12 +209,12 @@ const onSendEmoticon = (type, value) => {
         height: 32px;
         width: 32px;
         margin: 2px;
-        border: 1px dashed #ccc;
         font-size: 24px;
         user-select: none;
+        transition: all 0.5s;
 
         &:hover {
-          border-color: #409eff;
+          transform: scale(1.5);
         }
       }
     }
