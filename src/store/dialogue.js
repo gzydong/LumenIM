@@ -4,6 +4,7 @@ import {
   ServeRevokeRecords,
   ServeForwardRecords,
 } from '@/api/chat'
+import { defAvatar } from '@/constant/default'
 
 // 键盘消息事件定时器
 let keyboardTimeout = null
@@ -38,6 +39,9 @@ export const useDialogueStore = defineStore('dialogue', {
 
       // 是否显示编辑器
       isShowEditor: false,
+
+      // 群成员列表
+      members: [],
 
       // 对话记录
       items: [
@@ -75,6 +79,22 @@ export const useDialogueStore = defineStore('dialogue', {
       this.records = []
       this.unreadBubble = 0
       this.isShowEditor = data.is_robot === 0
+    },
+
+    // 更新提及列表
+    updateGroupMembers(data = []) {
+      this.members = []
+      for (const o of data) {
+        this.members.push({
+          id: o.user_id,
+          nickname: o.nickname,
+          avatar: o.avatar || defAvatar,
+          gender: o.gender,
+          leader: o.leader,
+          remark: o.user_card,
+          online: false,
+        })
+      }
     },
 
     // 清空对话记录

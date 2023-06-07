@@ -273,14 +273,13 @@ onLoad()
   .friend-items {
     height: 100%;
     overflow-y: auto;
-    padding: 0 10px;
 
     .friend-item {
       height: 40px;
       box-sizing: border-box;
       display: flex;
       flex-direction: row;
-      margin: 5px 0;
+      margin: 5px 10px;
 
       > div {
         display: flex;

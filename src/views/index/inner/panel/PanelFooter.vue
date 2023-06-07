@@ -44,6 +44,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  members: {
+    default: () => [],
+  },
 })
 
 const isShowHistory = ref(false)
@@ -216,11 +219,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer v-if="dialogueStore.isOpenMultiSelect" class="el-footer">
-    <MultiSelectFooter />
-  </footer>
-  <footer v-else class="el-footer">
-    <Editor @editor-event="onEditorEvent" :show_vote="talk_type == 2" />
+  <footer class="el-footer">
+    <MultiSelectFooter v-if="dialogueStore.isOpenMultiSelect" />
+    <Editor
+      v-else
+      @editor-event="onEditorEvent"
+      :vote="talk_type == 2"
+      :members="members"
+    />
   </footer>
 
   <HistoryRecord

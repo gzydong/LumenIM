@@ -17,17 +17,7 @@ const model = reactive({
   mode: 0,
   anonymous: 0,
   title: '',
-  options: [
-    {
-      value: '',
-    },
-    {
-      value: '',
-    },
-    {
-      value: '',
-    },
-  ],
+  options: new Array(3).fill({ value: '' }),
 })
 
 const onMaskClick = () => {
@@ -69,7 +59,8 @@ const isCanSubmit = computed(() => {
     title="发起投票"
     size="huge"
     :bordered="false"
-    style="max-width: 450px; border-radius: 10px"
+    class="modal-radius"
+    :style="{ maxWidth: '450px' }"
     :on-after-leave="onMaskClick"
   >
     <n-form>
@@ -106,9 +97,9 @@ const isCanSubmit = computed(() => {
               v-model:value="option.value"
             >
               <template #prefix>
-                <span style="color: #ccc"
-                  >{{ String.fromCharCode(65 + i) }}.</span
-                >
+                <span style="color: #ccc">
+                  {{ String.fromCharCode(65 + i) }}.
+                </span>
               </template>
             </n-input>
 

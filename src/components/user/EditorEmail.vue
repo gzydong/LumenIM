@@ -95,7 +95,7 @@ const onValidate = e => {
     preset="card"
     title="修改邮箱？"
     size="huge"
-    style="max-width: 400px; border-radius: 10px"
+    class="me-modal"
     :on-update:show="
       value => {
         $emit('update:modelValue', value)

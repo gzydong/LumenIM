@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
-import { useDialogueStore, useEditorStore, useTalkStore } from '@/store'
+import { useDialogueStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import Tribute from 'tributejs'
 import 'tributejs/tribute.css'
@@ -15,6 +15,7 @@ import {
   History,
 } from '@icon-park/vue-next'
 import { emitCall } from '@/utils/common'
+import { defAvatar } from '@/constant/default'
 import MeEditorImage from './MeEditorImage.vue'
 import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
@@ -29,12 +30,14 @@ import {
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
-const editorStore = useEditorStore()
 const talkStore = useTalkStore()
 const props = defineProps({
-  show_vote: {
+  vote: {
     type: Boolean,
     default: false,
+  },
+  members: {
+    default: () => [],
   },
 })
 
@@ -42,14 +45,14 @@ const indexName = computed(() => dialogueStore.index_name)
 
 const tribute = new Tribute({
   noMatchTemplate: () => '',
-  selectTemplate: item => {
-    return ` <span class="tribute-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.name}</span>`
+  selectTemplate: (item: any) => {
+    return ` <span class="tribute-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.nickname}</span>`
   },
-  menuItemTemplate: item => {
-    let name = item.original.name
+  menuItemTemplate: (item: any) => {
+    let name = item.original.nickname
 
-    if (item.original.user_card) {
-      name += `(${item.original.user_card})`
+    if (item.original.remark) {
+      name += `(${item.original.remark})`
     }
 
     return `
@@ -58,7 +61,12 @@ const tribute = new Tribute({
   },
   requireLeadingSpace: false,
   lookup: 'name',
-  values: (_, cb) => cb(editorStore.mentions),
+  values: (_, cb) => {
+    return cb([
+      { id: 0, nickname: '所有人', avatar: defAvatar },
+      ...props.members,
+    ])
+  },
 })
 
 const loadEditorDraftText = () => {
@@ -107,8 +115,10 @@ const imagePreview = reactive({
 })
 
 // 键盘监听事件
+let pattern = /\<img src=".*?" class="emoji" data-text="(.*?)".*?\>/g
 const onKeydownEvent = (e: any) => {
-  let text = e.target.innerText.replace(/<br>/g, '/n').trim()
+  // let text = e.target.onMounted.toString().replace(pattern, '$1')
+  let text = e.target.innerText.toString().trim()
 
   // 空信息禁止换行
   if (e.keyCode == 13 && !text) {
@@ -160,7 +170,7 @@ const onVoteEvent = data => {
   emit('editor-event', msg)
 }
 
-function editorInsertText(text: string) {
+function editorInsertText(text: string, img: string) {
   let editor = document.getElementById('me-editor')
   let selection = window.getSelection()
 
@@ -169,7 +179,15 @@ function editorInsertText(text: string) {
 
     let range = selection.getRangeAt(0)
     range.deleteContents()
+
     let textNode = document.createTextNode(text)
+    // if (img.length) {
+    //   textNode = document.createElement('img')
+    //   textNode.src = img
+    //   textNode.className = 'emoji'
+    //   textNode.dataset['text'] = text
+    // }
+
     range.insertNode(textNode)
     range.setStartAfter(textNode)
     range.collapse(true)
@@ -181,7 +199,7 @@ function editorInsertText(text: string) {
 
 const onEmoticonEvent = (data: any) => {
   if (data.type == 1) {
-    editorInsertText(data.value)
+    editorInsertText(data.value, data.img)
   } else {
     emit(
       'editor-event',
@@ -270,7 +288,7 @@ const navs = reactive([
   {
     title: '群投票',
     icon: markRaw(Ranking),
-    show: computed(() => props.show_vote),
+    show: computed(() => props.vote),
     click: () => {
       isShowEditorVote.value = true
     },
@@ -316,11 +334,9 @@ const onDragPaste = e => {
             :width="300"
             ref="emoticonRef"
             style="
-              margin-bottom: 12px;
-              margin-left: -10px;
               width: 500px;
               height: 250px;
-              border-radius: 5px;
+              border-radius: 10px;
               overflow: hidden;
             "
           >

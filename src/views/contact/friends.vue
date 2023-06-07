@@ -1,28 +1,29 @@
-<script setup>
-import { ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, inject, reactive } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
-import { Search, More } from '@icon-park/vue-next'
-import UserCardModal from '@/components/user/UserCardModal.vue'
+import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
-import ApplyListModal from './inner/ApplyListModal.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
-import { modal } from '@/utils/common'
 import { toTalk } from '@/utils/talk'
-import { useUserStore } from '@/store/user'
-import { ServeGetContacts, ServeContactGroupList } from '@/api/contacts'
+import {
+  ServeGetContacts,
+  ServeDeleteContact,
+  ServeContactGroupList,
+} from '@/api/contacts'
+import { useFriendsMenu } from '@/composition/friends-menu'
 
-const userStore = useUserStore()
-const isShowDrawer = ref(false)
+const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
+const user = inject('showUserModal')
 const isShowUserSearch = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
 const index = ref(0)
 const items = ref([])
-const groups = ref([])
+const groups: any = ref([])
 
-const filter = computed(() => {
-  return items.value.filter(item => {
+const filter: any = computed(() => {
+  return items.value.filter((item: any) => {
     let value = item.remark || item.nickname
 
     let findIndex = value.toLowerCase().indexOf(keywords.value.toLowerCase())
@@ -34,13 +35,15 @@ const filter = computed(() => {
   })
 })
 
-const onLoadData = () => {
+const loadContactList = () => {
   ServeGetContacts().then(res => {
     if (res.code == 200) {
       items.value = res.data.items || []
     }
   })
+}
 
+const loadContactGroupList = () => {
   ServeContactGroupList().then(res => {
     if (res.code == 200) {
       groups.value = res.data.items || []
@@ -48,18 +51,54 @@ const onLoadData = () => {
   })
 }
 
-const onToTalk = item => {
+const onToTalk = (item: any) => {
   toTalk(1, item.id)
 }
 
-const onInfo = item => {
-  modal(UserCardModal, {
-    uid: item.id,
+const onInfo = (item: any) => {
+  user(item.id)
+}
+
+// 移除联系人
+const onDeleteContact = (data: any) => {
+  let name = data.remark || data.nickname
+  window['$dialog'].create({
+    showIcon: false,
+    title: `删除 [${name}] 联系人？`,
+    content: '删除后不在接收对方任何消息。',
+    positiveText: '确定',
+    negativeText: '取消',
+    class: 'me-dialog',
+    onPositiveClick: () => {
+      ServeDeleteContact({
+        friend_id: data.id,
+      }).then(({ code, message }) => {
+        if (code == 200) {
+          window['$message'].success('删除联系人成功！')
+          loadContactList()
+        } else {
+          window['$message'].error(message)
+        }
+      })
+    },
   })
 }
 
-const onShowApplyList = () => {
-  isShowDrawer.value = true
+const onContextMenu = (e, item) => {
+  showDropdownMenu(e, item)
+
+  e.preventDefault()
+}
+
+const onContextMenuHandle = (key = '') => {
+  const evnets = {
+    delete: onDeleteContact,
+  }
+
+  // 触发事件
+  evnets[key] && evnets[key](dropdown.item)
+
+  closeDropdownMenu()
 }
 
 const onToolsMenu = value => {
@@ -68,33 +107,28 @@ const onToolsMenu = value => {
       isShowUserSearch.value = true
       break
     case 'group':
-      window['$message'].info('待完善...')
-
       isShowGroupModal.value = true
       break
   }
 }
 
-onLoadData()
+onMounted(() => {
+  loadContactList()
+  loadContactGroupList()
+})
 </script>
 
 <template>
   <section class="el-container is-vertical height100">
     <header class="el-header from-header bdr-b">
-      <div>
-        <n-space>
-          <p>
-            <n-button text @click="onShowApplyList" color="#333">
-              好友申请列表
-            </n-button>
-            <span v-show="userStore.isContactApply" class="badge new-apply">
-              New
-            </span>
-          </p>
-        </n-space>
+      <div class="groups">
+        <n-tabs v-if="groups.length" v-model:value="index">
+          <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">
+            {{ tab.name }}({{ tab.count }})
+          </n-tab>
+        </n-tabs>
       </div>
-
-      <div>
+      <div class="tools">
         <n-space>
           <n-input
             v-model:value.trim="keywords"
@@ -126,20 +160,12 @@ onLoadData()
           >
             <n-button circle>
               <template #icon>
-                <n-icon :component="More" />
+                <n-icon :component="Plus" />
               </template>
             </n-button>
           </n-dropdown>
         </n-space>
       </div>
-    </header>
-
-    <header v-if="groups.length" class="el-header pd-10">
-      <n-tabs type="line" v-model:value="index">
-        <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">
-          {{ tab.name }}({{ tab.count }})
-        </n-tab>
-      </n-tabs>
     </header>
 
     <main
@@ -157,6 +183,7 @@ onLoadData()
           flag="查看"
           @click="onInfo(item)"
           @to-talk="onToTalk(item)"
+          @contextmenu.prevent="onContextMenu($event, item)"
         />
       </div>
     </main>
@@ -170,14 +197,25 @@ onLoadData()
     </main>
   </section>
 
-  <!-- 好友申请模态框 -->
-  <ApplyListModal v-if="isShowDrawer" @close="isShowDrawer = false" />
-
   <!-- 用户查询模态框 -->
   <UserSearchModal v-model:show="isShowUserSearch" />
 
   <!-- 分组管理 -->
-  <GroupManage v-if="isShowGroupModal" @close="isShowGroupModal = false" />
+  <GroupManage
+    v-if="isShowGroupModal"
+    @close="isShowGroupModal = false"
+    @relaod="loadContactGroupList"
+  />
+
+  <!-- 右键菜单 -->
+  <n-dropdown
+    :show="dropdown.show"
+    :x="dropdown.x"
+    :y="dropdown.y"
+    :options="dropdown.options"
+    @select="onContextMenuHandle"
+    @clickoutside="closeDropdownMenu"
+  />
 </template>
 
 <style lang="less" scoped>
@@ -186,7 +224,25 @@ onLoadData()
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
+
+  .groups {
+    display: flex;
+    align-items: center;
+    flex: 1 auto;
+    height: 100%;
+    margin-right: 30px;
+    overflow: hidden;
+    padding-left: 15px;
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 250px;
+    flex-shrink: 0;
+    padding-right: 10px;
+  }
 }
 
 #drawer-target {
@@ -196,12 +252,5 @@ onLoadData()
     grid-gap: 12px;
     gap: 12px;
   }
-}
-
-.new-apply {
-  background-color: red;
-  color: #ffffff;
-  margin-left: 5px;
-  cursor: pointer;
 }
 </style>

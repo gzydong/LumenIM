@@ -178,6 +178,8 @@ defineProps({
         font-size: 12px;
         color: #8f959e;
         flex: 1 auto;
+        display: flex;
+        align-items: center;
 
         .draft {
           color: red;

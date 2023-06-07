@@ -28,19 +28,13 @@ import {
 import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
-import {
-  findTalk,
-  findTalkIndex,
-  getCacheIndexName,
-  setCacheIndexName,
-} from '@/utils/talk'
+import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 
 const user = inject('showUserModal')
 
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
-const editorStore = useEditorStore()
 const isShowGroup = ref(false)
 const items = computed(() => talkStore.talkItems)
 const topItems = computed(() => talkStore.topItems)
@@ -103,11 +97,11 @@ const onTabTalk = (data: any, follow = false) => {
       group_id: data.receiver_id,
     }).then(({ code, data }) => {
       if (code == 200) {
-        editorStore.updateMentionItems(data || [])
+        dialogueStore.updateGroupMembers(data || [])
       }
     })
   } else {
-    editorStore.updateMentionItems([])
+    dialogueStore.updateGroupMembers([])
   }
 
   // 设置滚动条跟随
@@ -180,12 +174,15 @@ const onToTopTalk = (data: any) => {
 
 // 移除联系人
 const onDeleteContact = (data: any) => {
+  let name = data.remark || data.name
+
   window['$dialog'].create({
     showIcon: false,
-    title: `删除 [${data.name}] 联系人？`,
-    content: '删除后不在接收对方任何消息。',
+    title: `删除 [${name}] 联系人？`,
+    content: '删除后不再接收对方任何消息。',
     positiveText: '确定',
     negativeText: '取消',
+    class: 'me-dialog',
     onPositiveClick: () => {
       ServeDeleteContact({
         friend_id: data.receiver_id,
@@ -206,7 +203,7 @@ const onSignOutGroup = (data: any) => {
   window['$dialog'].create({
     showIcon: false,
     title: `退出 [${data.name}] 群聊？`,
-    content: '退出后不在接收任何群消息。',
+    content: '退出后不再接收任何群消息。',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {

@@ -80,7 +80,7 @@ const onJoinContact = () => {
   }
 
   ServeCreateContact({
-    friend_id: props.uid,
+    friend_id: parseInt(props.uid),
     remark: state.text,
   }).then(res => {
     if (res.code == 200) {
@@ -117,7 +117,6 @@ onLoadData()
         props.remove()
       }
     "
-    transform-origin="center"
   >
     <div class="section">
       <section class="el-container container is-vertical height100">
@@ -199,7 +198,7 @@ onLoadData()
               <span class="name">分组 :</span>
               <n-dropdown
                 trigger="click"
-                placement="bottom-start"
+                placement="top-start"
                 :show-arrow="true"
                 :options="options"
                 @select="handleSelectGroup"

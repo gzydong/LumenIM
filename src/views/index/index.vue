@@ -16,7 +16,7 @@ onUnmounted(() => {
 <template>
   <Layout>
     <section class="el-container">
-      <aside v-dropsize="{ max: 500, min: 250 }" class="el-aside bdr-r">
+      <aside class="el-aside bdr-r">
         <IndexSider />
       </aside>
 

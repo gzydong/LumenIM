@@ -97,7 +97,8 @@ onLoad()
     v-model:show="isShowBox"
     preset="card"
     title="选择联系人"
-    style="max-width: 650px; height: 550px; border-radius: 10px"
+    class="modal-radius"
+    style="max-width: 650px; height: 550px;"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

@@ -9,18 +9,25 @@ import {
   ShareThree,
   PersonalCollection,
   Peoples,
-  People
+  People,
+  AddUser,
 } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 
 const menus = reactive([
   {
+    name: '好友申请',
+    path: '/contact/apply',
+    icon: markRaw(AddUser),
+    size: 18,
+    tips: computed(() => (userStore.isContactApply ? 'New' : '')),
+  },
+  {
     name: '我的好友',
     path: '/contact/friend',
     icon: markRaw(People),
     size: 18,
-    tips: computed(() => (userStore.isContactApply ? 'New' : '')),
   },
   {
     name: '我的群组',

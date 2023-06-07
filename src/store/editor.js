@@ -5,16 +5,12 @@ import {
   ServeDeleteEmoticon,
 } from '@/api/emoticon'
 import { ServeCollectEmoticon } from '@/api/chat'
-import { defAvatar } from '@/constant/default'
 
 const message = window['$message']
 
 export const useEditorStore = defineStore('editor', {
   state: () => {
     return {
-      // 提及列表
-      mentions: [],
-
       // 表包相关
       emoticon: {
         items: [
@@ -32,26 +28,6 @@ export const useEditorStore = defineStore('editor', {
     }
   },
   actions: {
-    // 更新提及列表
-    updateMentionItems(data) {
-      if (data.length === 0) {
-        return (this.mentions = [])
-      }
-
-      this.mentions = [
-        { id: 0, name: '所有人', avatar: defAvatar, user_card: '' },
-      ]
-      for (const o of data) {
-        this.mentions.push({
-          id: o.user_id,
-          name: o.nickname,
-          avatar: o.avatar || defAvatar,
-          user_card: o.user_card,
-        })
-      }
-    },
-
-    // ==================== 表情包相关 ======================
     // 加载用户表情包
     loadUserEmoticon() {
       ServeFindUserEmoticon().then(res => {

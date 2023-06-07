@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import { UploadOne, Delete } from '@icon-park/vue-next'
-
 import { emojiList as emoji } from '@/utils/emojis'
 
 const emit = defineEmits(['on-select'])
@@ -32,8 +31,16 @@ const onTabs = index => {
   tabIndex.value = index
 }
 
-const onSendEmoticon = (type, value) => {
-  emit('on-select', { type, value })
+const onSendEmoticon = (type, value, img = '') => {
+  if (img) {
+    const imgSrcReg = /<img.*?src='(.*?)'/g
+    let match = imgSrcReg.exec(img)
+    if (match) {
+      emit('on-select', { type, value, img: match[1] })
+    }
+  } else {
+    emit('on-select', { type, value, img })
+  }
 }
 </script>
 <template>
@@ -53,7 +60,7 @@ const onSendEmoticon = (type, value) => {
           <div
             v-for="(img, key) in emoji.emojis"
             v-html="img"
-            @click="onSendEmoticon(1, key)"
+            @click="onSendEmoticon(1, key, img)"
             class="option pointer flex-center"
           />
         </div>
@@ -74,7 +81,7 @@ const onSendEmoticon = (type, value) => {
           class="item pointer upload-btn"
           @click="onTriggerUpload"
         >
-          <n-icon size="30" class="icon" :component="UploadOne" />
+          <n-icon size="28" class="icon" :component="UploadOne" />
           <span>自定义</span>
         </div>
 
@@ -143,7 +150,6 @@ const onSendEmoticon = (type, value) => {
 
   .em-footer {
     height: 32px;
-    background-color: #f5f5f5;
   }
 
   .tabs {
@@ -153,15 +159,15 @@ const onSendEmoticon = (type, value) => {
       position: relative;
       height: 26px;
       width: 26px;
-      background-color: white;
       margin: 2px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 50%;
 
       &.active {
-        background-color: transparent;
+        background-color: #f5f5f5;
       }
 
       .tip {
@@ -174,8 +180,7 @@ const onSendEmoticon = (type, value) => {
         padding: 0 5px;
         font-size: 12px;
         border-radius: 2px;
-        background-color: rgba(31, 35, 41, 0.9);
-        color: white;
+        background-color: #f5f5f5;
         display: none;
         align-items: center;
       }
@@ -185,7 +190,7 @@ const onSendEmoticon = (type, value) => {
           display: flex;
         }
 
-        background-color: #dfdcdc;
+        background-color: #f5f5f5;
       }
     }
   }
@@ -197,7 +202,7 @@ const onSendEmoticon = (type, value) => {
       line-height: 25px;
       color: #ccc;
       font-weight: 400;
-      padding-left: 3px;
+      padding-left: 8px;
       font-size: 12px;
     }
     .options {
@@ -229,6 +234,7 @@ const onSendEmoticon = (type, value) => {
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      color: #858585;
       span {
         font-size: 13px;
       }
@@ -240,6 +246,8 @@ const onSendEmoticon = (type, value) => {
       height: 65px;
       background-color: #eff1f7;
       margin: 2px;
+      border-radius: 5px;
+      overflow: hidden;
 
       .mask {
         display: none;
@@ -251,6 +259,7 @@ const onSendEmoticon = (type, value) => {
         background-color: #f5f5f5;
         align-items: center;
         justify-content: center;
+        border-radius: 3px;
       }
 
       &:hover {

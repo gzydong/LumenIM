@@ -58,15 +58,15 @@ watchEffect(() => {
   }
 })
 
-let favicon = new Favico({
+const favicon = new Favico({
   animation: 'none',
 })
 
 watchEffect(() => {
-  favicon.badge(useTalk.talkUnreadNum)
-
   if (isElectronMode()) {
     electron.setBadge(useTalk.talkUnreadNum)
+  } else {
+    favicon.badge(useTalk.talkUnreadNum)
   }
 })
 </script>
