@@ -24,7 +24,7 @@ import SkipBottom from './SkipBottom.vue'
 import UnreadBubble from './UnreadBubble.vue'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
-const user = inject('showUserModal')
+const user = inject('$user')
 const dialogueStore = useDialogueStore()
 const props = defineProps({
   uid: {

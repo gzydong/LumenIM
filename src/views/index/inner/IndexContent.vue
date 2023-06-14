@@ -11,7 +11,7 @@ import GroupNotice from '@/components/group/GroupNotice.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 import GroupList from './GroupList.vue'
 
-const user = inject('showUserModal')
+const user = inject('$user')
 const userStore = useUserStore()
 const dialogueStore = useDialogueStore()
 const uploadsStore = useUploadsStore()

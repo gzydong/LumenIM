@@ -1,6 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
-import { watchEffect, provide } from 'vue'
+import { watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
 import socket from '@/socket'
@@ -17,8 +17,7 @@ import {
 } from 'naive-ui'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import { isLoggedIn } from '@/utils/auth'
-import { modal, isElectronMode } from '@/utils/common'
-import UserCardModal from '@/components/user/UserCardModal.vue'
+import { isElectronMode } from '@/utils/common'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 
 IconProvider({
@@ -27,10 +26,6 @@ IconProvider({
   size: 24,
   strokeWidth: 3,
   strokeLinejoin: 'bevel',
-})
-
-provide('showUserModal', uid => {
-  modal(UserCardModal, { uid })
 })
 
 const notifyStore = useNotifyStore()

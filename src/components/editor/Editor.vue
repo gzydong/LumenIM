@@ -220,6 +220,7 @@ const onCodeEvent = data => {
 
 function uploadImageChange(e) {
   openImagePreview(e.target.files[0])
+  e.target.value = null
 }
 
 function openImagePreview(file) {
@@ -239,6 +240,7 @@ const onUploadFile = e => {
   }
 
   emit('editor-event', emitCall('file_event', file))
+  e.target.value = null
 }
 
 const onRecorderEvent = file => {

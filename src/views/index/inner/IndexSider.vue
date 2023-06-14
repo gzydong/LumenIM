@@ -2,7 +2,6 @@
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore } from '@/store/dialogue'
-import { useEditorStore } from '@/store/editor'
 import { useTalkStore } from '@/store/talk'
 import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip, NInput } from 'naive-ui'
 import {
@@ -31,7 +30,7 @@ import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 
-const user = inject('showUserModal')
+const user: any = inject('$user')
 
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()

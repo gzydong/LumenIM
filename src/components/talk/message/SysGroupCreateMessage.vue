@@ -6,7 +6,7 @@ defineProps({
   data: Object,
 })
 
-const showUserModal = inject('showUserModal')
+const showUserModal = inject('$user')
 </script>
 
 <template>

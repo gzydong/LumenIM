@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue'
-const showUserModal = inject('showUserModal')
+const showUserModal = inject('$user')
 
 defineProps({
   extra: Object,

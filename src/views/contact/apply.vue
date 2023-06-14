@@ -15,7 +15,7 @@ const userStore = useUserStore()
 
 const items = ref([])
 
-const user = inject('showUserModal')
+const user = inject('$user')
 
 const isContactApply = computed(() => userStore.isContactApply)
 

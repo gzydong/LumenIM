@@ -17,7 +17,7 @@ const filter: any = computed(() => {
 <template>
   <section class="el-container is-vertical section bdr-l">
     <header class="el-header header">
-      <span>成员</span>
+      <span>群成员</span>
       <span>{{ filter.length }}/{{ members.length }}</span>
     </header>
     <main class="el-main main me-scrollbar">

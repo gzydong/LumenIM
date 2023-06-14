@@ -16,7 +16,7 @@ const props = defineProps({
     default: 0,
   },
 })
-const showUserModal = inject('showUserModal')
+const showUserModal = inject('$user')
 const model = reactive({
   recordId: 0,
   limit: 30,
