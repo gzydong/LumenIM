@@ -24,18 +24,17 @@ import {
   ServeDeleteTalkList,
   ServeSetNotDisturb,
 } from '@/api/chat'
-import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
+import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
 import { defAvatar } from '@/constant/default'
 
 const user: any = inject('$user')
-
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
 const isShowGroup = ref(false)
-const items = computed(() => talkStore.talkItems)
+const searchKeyword = ref('')
 const topItems = computed(() => talkStore.topItems)
 const unreadNum = computed(() => talkStore.talkUnreadNum)
 
@@ -47,6 +46,20 @@ const state = reactive({
     dropdownY: 0,
     item: {},
   },
+})
+
+const items = computed(() => {
+  if (searchKeyword.value.length === 0) {
+    return talkStore.talkItems
+  }
+
+  return talkStore.talkItems.filter((item: any) => {
+    let keyword = item.remark_name || item.name
+
+    return (
+      keyword.toLowerCase().indexOf(searchKeyword.value.toLowerCase()) != -1
+    )
+  })
 })
 
 // 列表加载状态
@@ -75,6 +88,8 @@ const onTabTalk = (data: any, follow = false) => {
     return
   }
 
+  searchKeyword.value = ''
+
   // 更新编辑信息
   dialogueStore.setDialogue(data)
 
@@ -89,18 +104,6 @@ const onTabTalk = (data: any, follow = false) => {
         unread_num: 0,
       })
     })
-  }
-
-  if (data.talk_type == 2) {
-    ServeGetGroupMembers({
-      group_id: data.receiver_id,
-    }).then(({ code, data }) => {
-      if (code == 200) {
-        dialogueStore.updateGroupMembers(data || [])
-      }
-    })
-  } else {
-    dialogueStore.updateGroupMembers([])
   }
 
   // 设置滚动条跟随
@@ -373,7 +376,13 @@ onMounted(onInitialize)
   <section class="el-container is-vertical height100">
     <!-- 工具栏目 -->
     <header class="el-header tools-header">
-      <n-input placeholder="搜索聊天 / 好友 / 群组" round style="width: 78%">
+      <n-input
+        placeholder="搜索好友 / 群组"
+        v-model:value.trim="searchKeyword"
+        round
+        clearable
+        style="width: 78%"
+      >
         <template #prefix>
           <n-icon :component="Search" />
         </template>

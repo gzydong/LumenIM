@@ -1,5 +1,5 @@
 <script setup>
-import { onUnmounted, ref } from 'vue'
+import { onUnmounted } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
 import Layout from '@/layout/index.vue'
 import IndexContent from './inner/IndexContent.vue'

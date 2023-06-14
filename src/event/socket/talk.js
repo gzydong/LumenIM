@@ -137,7 +137,7 @@ class Talk extends Base {
         })
       }
     } else {
-      $notification.create({
+      window['$notification'].create({
         title: '消息通知',
         content: '您有新的消息请注意查收！！！',
         duration: 3000,
@@ -175,6 +175,10 @@ class Talk extends Base {
   insertTalkRecord() {
     let record = this.resource
 
+    if ([1102, 1103, 1104].includes(record.msg_type)) {
+      useDialogueStore().updateGroupMembers()
+    }
+
     useDialogueStore().addDialogueRecord(
       formatTalkRecord(this.getAccountId(), this.resource)
     )
@@ -191,6 +195,9 @@ class Talk extends Base {
 
     // 获取聊天面板元素节点
     let el = document.getElementById('lumenChatPanel')
+    if (!el) {
+      return
+    }
 
     // 判断的滚动条是否在底部
     let isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight
