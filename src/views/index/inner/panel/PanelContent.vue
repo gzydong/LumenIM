@@ -8,7 +8,7 @@ import {
   inject,
   ref,
 } from 'vue'
-import { NDropdown, NCheckbox } from 'naive-ui'
+import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading } from '@icon-park/vue-next'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store/dialogue'
@@ -275,127 +275,132 @@ onMounted(onReload)
 
 <template>
   <section class="section">
-    <div
-      id="lumenChatPanel"
-      class="me-scrollbar talk-container"
-      @scroll="onPanelScroll($event)"
-    >
-      <!-- 数据加载状态栏 -->
-      <div class="load-toolbar pointer">
-        <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
-        <span v-else-if="loadConfig.status == 1" @click="onLoadTalk">
-          查看更多消息 ...
-        </span>
-        <span v-else class="no-more"> 没有更多消息了 </span>
-      </div>
-
+    <n-image-group>
       <div
-        class="message-item"
-        v-for="(item, index) in records"
-        :key="item.msg_id"
+        id="lumenChatPanel"
+        class="me-scrollbar talk-container"
+        @scroll="onPanelScroll($event)"
       >
-        <!-- 系统消息 -->
-        <div v-if="item.msg_type >= 1000" class="message-box">
-          <component
-            :is="MessageComponents[item.msg_type] || 'unknown-message'"
-            :extra="item.extra"
-            :data="item"
-          />
-        </div>
-
-        <!-- 撤回消息 -->
-        <div v-else-if="item.is_revoke == 1" class="message-box">
-          <revoke-message
-            :login_uid="uid"
-            :user_id="item.user_id"
-            :nickname="item.nickname"
-            :talk_type="item.talk_type"
-            :datetime="item.created_at"
-          />
+        <!-- 数据加载状态栏 -->
+        <div class="load-toolbar pointer">
+          <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
+          <span v-else-if="loadConfig.status == 1" @click="onLoadTalk">
+            查看更多消息 ...
+          </span>
+          <span v-else class="no-more"> 没有更多消息了 </span>
         </div>
 
         <div
-          v-else
-          class="message-box record-box"
-          :class="{
-            'direction-rt': item.float == 'right',
-            'multi-select': dialogueStore.isOpenMultiSelect,
-            'multi-select-check': item.isCheck,
-          }"
+          class="message-item"
+          v-for="(item, index) in records"
+          :key="item.msg_id"
         >
-          <!-- 多选按钮 -->
-          <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
-            <n-checkbox
-              size="small"
-              :checked="item.isCheck"
-              @update:checked="item.isCheck = !item.isCheck"
+          <!-- 系统消息 -->
+          <div v-if="item.msg_type >= 1000" class="message-box">
+            <component
+              :is="MessageComponents[item.msg_type] || 'unknown-message'"
+              :extra="item.extra"
+              :data="item"
             />
-          </aside>
+          </div>
 
-          <!-- 头像信息 -->
-          <aside class="avatar-column">
-            <n-avatar
-              round
-              size="small"
-              class="pointer"
-              :src="item.avatar"
-              :fallback-src="defAvatar"
-              @click="user(item.user_id)"
+          <!-- 撤回消息 -->
+          <div v-else-if="item.is_revoke == 1" class="message-box">
+            <revoke-message
+              :login_uid="uid"
+              :user_id="item.user_id"
+              :nickname="item.nickname"
+              :talk_type="item.talk_type"
+              :datetime="item.created_at"
             />
-          </aside>
+          </div>
 
-          <!-- 主体信息 -->
-          <main class="main-column">
-            <div class="talk-title">
-              <span
-                class="nickname"
-                v-show="talk_type == 2 && item.float == 'left'"
-              >
-                {{ item.nickname }}
-              </span>
-              <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
-            </div>
-
-            <div
-              class="talk-content"
-              :class="{ pointer: dialogueStore.isOpenMultiSelect }"
-              @click="onRowClick(item)"
+          <div
+            v-else
+            class="message-box record-box"
+            :class="{
+              'direction-rt': item.float == 'right',
+              'multi-select': dialogueStore.isOpenMultiSelect,
+              'multi-select-check': item.isCheck,
+            }"
+          >
+            <!-- 多选按钮 -->
+            <aside
+              v-if="dialogueStore.isOpenMultiSelect"
+              class="checkbox-column"
             >
-              <component
-                :is="MessageComponents[item.msg_type] || 'unknown-message'"
-                :extra="item.extra"
-                :data="item"
-                :max-width="true"
-                @contextmenu.prevent="onContextMenu($event, item)"
+              <n-checkbox
+                size="small"
+                :checked="item.isCheck"
+                @update:checked="item.isCheck = !item.isCheck"
               />
+            </aside>
+
+            <!-- 头像信息 -->
+            <aside class="avatar-column">
+              <n-avatar
+                round
+                size="small"
+                class="pointer"
+                :src="item.avatar"
+                :fallback-src="defAvatar"
+                @click="user(item.user_id)"
+              />
+            </aside>
+
+            <!-- 主体信息 -->
+            <main class="main-column">
+              <div class="talk-title">
+                <span
+                  class="nickname"
+                  v-show="talk_type == 2 && item.float == 'left'"
+                >
+                  {{ item.nickname }}
+                </span>
+                <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
+              </div>
 
               <div
-                class="read-status"
-                v-if="talk_type == 1 && item.float == 'right'"
+                class="talk-content"
+                :class="{ pointer: dialogueStore.isOpenMultiSelect }"
+                @click="onRowClick(item)"
               >
-                <loading
-                  theme="outline"
-                  size="19"
-                  fill="#000"
-                  :strokeWidth="1"
-                  class="icon-rotate"
-                  v-show="item.send_status == 1"
+                <component
+                  :is="MessageComponents[item.msg_type] || 'unknown-message'"
+                  :extra="item.extra"
+                  :data="item"
+                  :max-width="true"
+                  @contextmenu.prevent="onContextMenu($event, item)"
                 />
 
-                <span v-show="item.send_status == 1"> 正在发送... </span>
-                <span v-show="item.send_status != 1">
-                  {{ item.is_read ? '已读' : '已送达' }}
-                </span>
-              </div>
-            </div>
-          </main>
-        </div>
+                <div
+                  class="read-status"
+                  v-if="talk_type == 1 && item.float == 'right'"
+                >
+                  <loading
+                    theme="outline"
+                    size="19"
+                    fill="#000"
+                    :strokeWidth="1"
+                    class="icon-rotate"
+                    v-show="item.send_status == 1"
+                  />
 
-        <div class="datetime" v-show="isShowTalkTime(index, item.created_at)">
-          {{ formatTime(item.created_at) }}
+                  <span v-show="item.send_status == 1"> 正在发送... </span>
+                  <span v-show="item.send_status != 1">
+                    {{ item.is_read ? '已读' : '已送达' }}
+                  </span>
+                </div>
+              </div>
+            </main>
+          </div>
+
+          <div class="datetime" v-show="isShowTalkTime(index, item.created_at)">
+            {{ formatTime(item.created_at) }}
+          </div>
         </div>
       </div>
-    </div>
+    </n-image-group>
 
     <!-- AYsd@1234.# -->
     <!-- 新消息提示 -->

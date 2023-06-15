@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
-import { useDialogueStore } from '@/store/dialogue'
-import { useTalkStore } from '@/store/talk'
+import { useDialogueStore, useTalkStore } from '@/store'
 import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip, NInput } from 'naive-ui'
 import {
   Search,
@@ -451,10 +450,10 @@ onMounted(onInitialize)
 
     <!-- 标题栏目 -->
     <header
-      v-show="loadStatus == 3 && items.length > 0"
+      v-show="loadStatus == 3 && talkStore.talkItems.length > 0"
       class="el-header notify-header"
     >
-      <p>会话记录({{ items.length }})</p>
+      <p>会话记录({{ talkStore.talkItems.length }})</p>
       <p>
         <span class="badge unread" v-show="unreadNum">{{ unreadNum }}未读</span>
       </p>

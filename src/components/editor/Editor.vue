@@ -62,10 +62,11 @@ const tribute = new Tribute({
   requireLeadingSpace: false,
   lookup: 'name',
   values: (_, cb) => {
-    return cb([
-      { id: 0, nickname: '所有人', avatar: defAvatar },
-      ...props.members,
-    ])
+    let items = !props.members.length
+      ? []
+      : [{ id: 0, nickname: '所有人', avatar: defAvatar }, ...props.members]
+
+    return cb(items)
   },
 })
 

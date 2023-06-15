@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
+import { NImageGroup } from 'naive-ui'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
 import { Down, Calendar } from '@icon-park/vue-next'
@@ -158,31 +159,33 @@ loadChatRecord()
       </main>
 
       <main v-else class="el-main me-scrollbar">
-        <div v-for="item in records" :key="item.id" class="message-item">
-          <div class="left-box">
-            <n-avatar
-              @click="showUserModal(item.user_id)"
-              :size="30"
-              :src="item.avatar"
-              class="pointer"
-            />
-          </div>
-
-          <div class="right-box">
-            <div class="msg-header">
-              <span class="name">{{ item.nickname }}</span>
-              <span class="time"> {{ item.created_at }}</span>
+        <n-image-group>
+          <div v-for="item in records" :key="item.id" class="message-item">
+            <div class="left-box">
+              <n-avatar
+                @click="showUserModal(item.user_id)"
+                :size="30"
+                :src="item.avatar"
+                class="pointer"
+              />
             </div>
 
-            <component
-              :is="
-                message.MessageComponents[item.msg_type] || 'unknown-message'
-              "
-              :extra="item.extra"
-              :data="item"
-            />
+            <div class="right-box">
+              <div class="msg-header">
+                <span class="name">{{ item.nickname }}</span>
+                <span class="time"> {{ item.created_at }}</span>
+              </div>
+
+              <component
+                :is="
+                  message.MessageComponents[item.msg_type] || 'unknown-message'
+                "
+                :extra="item.extra"
+                :data="item"
+              />
+            </div>
           </div>
-        </div>
+        </n-image-group>
 
         <div
           class="more pointer flex-center"
