@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, reactive, nextTick } from 'vue'
 import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
@@ -30,7 +30,7 @@ const batchDelete = ref(false)
 const items = ref([])
 
 const filterCheck = computed(() => {
-  return items.value.filter(item => item.is_delete)
+  return items.value.filter((item: any) => item.is_delete)
 })
 
 const filterSearch = computed(() => {
@@ -38,16 +38,16 @@ const filterSearch = computed(() => {
     return items.value
   }
 
-  return items.value.filter(item => {
+  return items.value.filter((item: any) => {
     return (
       item.nickname.match(keywords.value) != null ||
-      item.user_card.match(keywords.value) != null
+      item.remark.match(keywords.value) != null
     )
   })
 })
 
 const isAdmin = computed(() => {
-  return items.value.some(item => {
+  return items.value.some((item: any) => {
     return item.user_id == userStore.uid && item.leader == 2
   })
 })
@@ -65,7 +65,7 @@ const onLoadData = () => {
     group_id: props.id,
   }).then(res => {
     if (res.code == 200) {
-      let data = res.data || []
+      let data = res.data.items || []
 
       data.forEach(item => {
         item.is_delete = false
@@ -95,7 +95,7 @@ const onBatchDelete = () => {
 
   ServeRemoveMembersGroup({
     group_id: props.id,
-    members_ids: filterCheck.value.map(item => item.user_id).join(','),
+    members_ids: filterCheck.value.map((item: any) => item.user_id).join(','),
   }).then(res => {
     if (res.code == 200) {
       batchDelete.value = false
@@ -105,7 +105,7 @@ const onBatchDelete = () => {
   })
 }
 
-const onRowClick = item => {
+const onRowClick = (item: any) => {
   if (batchDelete.value == true) {
     if (item.leader < 2) {
       item.is_delete = !item.is_delete
@@ -118,26 +118,26 @@ const onRowClick = item => {
 }
 
 const onCancelDelete = () => {
-  items.value.forEach(item => {
+  items.value.forEach((item: any) => {
     item.is_delete = false
   })
 
   batchDelete.value = false
 }
 
-const onUserInfo = item => {
+const onUserInfo = (item: any) => {
   modal(UserCardModal, {
     uid: item.user_id,
   })
 }
 
-const onAssignAdmin = item => {
+const onAssignAdmin = (item: any) => {
   let title =
     item.leader == 0
       ? `确定要给 [${item.nickname}] 分配管理员权限吗？`
       : `确定解除 [${item.nickname}] 管理员权限吗？`
 
-  window.$dialog.create({
+  window['$dialog'].create({
     title: '温馨提示',
     content: title,
     positiveText: '确定',
@@ -160,7 +160,7 @@ const onAssignAdmin = item => {
 }
 
 const onTransfer = item => {
-  window.$dialog.create({
+  window['$dialog'].create({
     title: '温馨提示',
     content: `确定把群主权限转交给 [${item.nickname}] ？`,
     positiveText: '确定',
@@ -181,14 +181,14 @@ const onTransfer = item => {
   })
 }
 
-const onForbidden = item => {
+const onForbidden = (item: any) => {
   let content = `确定要禁言 [${item.nickname}] 此用户吗？`
 
   if (item.is_mute === 1) {
     content = `确定要解除 [${item.nickname}] 此用户的禁言吗？`
   }
 
-  window.$dialog.create({
+  window['$dialog'].create({
     title: '温馨提示',
     content: content,
     positiveText: '确定',
@@ -211,7 +211,7 @@ const onForbidden = item => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e, item) => {
+const onContextMenu = (e: any, item: any) => {
   if (batchDelete.value == true || item.leader == 2) {
     return
   }
@@ -256,7 +256,7 @@ const onContextMenu = (e, item) => {
   e.preventDefault()
 }
 
-const onContextMenuHandle = key => {
+const onContextMenuHandle = (key: string) => {
   // 注册回调事件
   const evnets = {
     info: onUserInfo,
@@ -264,7 +264,7 @@ const onContextMenuHandle = key => {
     transfer: onTransfer,
     forbidden: onForbidden,
     delete: onDelete,
-    batch_delete: data => {
+    batch_delete: (data: any) => {
       batchDelete.value = true
     },
   }

@@ -109,7 +109,7 @@ class Socket {
 
     // 好友申请事件
     this.socket.on('im.contact.apply', data => {
-      window.$notification.create({
+      window['$notification'].create({
         title: '好友申请通知',
         content: data.remark,
         description: `申请人: ${data.friend.nickname}`,

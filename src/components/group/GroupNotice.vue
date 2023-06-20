@@ -55,7 +55,7 @@ onLoadData()
     :title="title"
     size="huge"
     :bordered="false"
-    style="max-width: 550px; border-radius: 10px"
+    style="max-width: 500px; border-radius: 10px"
     class="o-hidden"
     :on-after-leave="onMaskClick"
     :segmented="{
@@ -97,7 +97,7 @@ onLoadData()
         </div>
 
         <div class="detail" v-show="item.isShow">
-          <span>#详情#</span> {{ item.content }}
+          {{ item.content }}
         </div>
       </div>
     </div>
@@ -110,6 +110,7 @@ onLoadData()
   width: 100%;
   padding: 15px;
   box-sizing: border-box;
+  overflow-y: auto;
 
   .items {
     min-height: 80px;
@@ -130,15 +131,6 @@ onLoadData()
       display: flex;
       align-items: center;
       position: relative;
-
-      .nickname {
-        margin-left: 8px;
-        color: #2196f3;
-        font-weight: 400;
-        font-size: 13px;
-        max-width: 100px;
-        cursor: pointer;
-      }
 
       .datetime {
         margin-left: 10px;

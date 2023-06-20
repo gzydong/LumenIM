@@ -146,14 +146,7 @@ onLoadData()
             />
           </div>
 
-          <div
-            class="close"
-            @click="
-              () => {
-                remove()
-              }
-            "
-          >
+          <div class="close" @click="remove()">
             <close-one theme="outline" size="22" fill="#fff" :strokeWidth="2" />
           </div>
 
@@ -186,7 +179,7 @@ onLoadData()
             </div>
             <div class="info-item" v-if="state.friend_status == 2">
               <span class="name">备注 :</span>
-              <span class="text edit pointer">
+              <span class="text edit pointer text-ellipsis">
                 {{ state.remark || '未设置' }}&nbsp;&nbsp;
               </span>
             </div>

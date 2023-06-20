@@ -42,8 +42,8 @@ onLoadData()
     :title="title"
     size="huge"
     :bordered="false"
-    style="max-width: 550px; border-radius: 10px"
-    class="o-hidden"
+    style="max-width: 500px"
+    class="o-hidden modal-radius"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

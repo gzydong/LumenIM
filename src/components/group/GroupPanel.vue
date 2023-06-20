@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { reactive, computed, watch, ref } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store/user'
@@ -47,10 +47,10 @@ const state = reactive({
 
 const search = computed(() => {
   if (state.keywords) {
-    return state.members.filter(item => {
+    return state.members.filter((item: any) => {
       return (
         item.nickname.match(state.keywords) != null ||
-        item.user_card.match(state.keywords) != null
+        item.remark.match(state.keywords) != null
       )
     })
   }
@@ -59,13 +59,13 @@ const search = computed(() => {
 })
 
 const isLeader = computed(() => {
-  return state.members.some(item => {
+  return state.members.some((item: any) => {
     return item.user_id == userStore.uid && item.leader >= 1
   })
 })
 
 const isAdmin = computed(() => {
-  return state.members.some(item => {
+  return state.members.some((item: any) => {
     return item.user_id == userStore.uid && item.leader == 2
   })
 })
@@ -108,7 +108,7 @@ function loadMembers() {
     group_id: props.gid,
   }).then(res => {
     if (res.code == 200) {
-      state.members = res.data
+      state.members = res.data.items
     }
   })
 }
@@ -282,7 +282,7 @@ loadMembers()
               >
             </div>
             <div class="card text-ellipsis grey">
-              {{ item.user_card ? item.user_card : '-' }}
+              {{ item.remark || '-' }}
             </div>
           </div>
 

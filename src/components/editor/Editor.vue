@@ -236,12 +236,13 @@ function closeImagePreview() {
 
 const onUploadFile = e => {
   let file = e.target.files[0]
+  e.target.value = null
   if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
+    e.target.value = null
     return openImagePreview(file)
   }
 
   emit('editor-event', emitCall('file_event', file))
-  e.target.value = null
 }
 
 const onRecorderEvent = file => {

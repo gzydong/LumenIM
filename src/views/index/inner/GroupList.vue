@@ -30,7 +30,7 @@ const filter: any = computed(() => {
         <n-avatar class="avatar" round :size="16" :src="item.avatar" />
 
         <span class="nickname online text-ellipsis">
-          {{ item.nickname }}
+          {{ item.remark || item.nickname }}
         </span>
       </div>
     </main>

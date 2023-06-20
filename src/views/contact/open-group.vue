@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { NAlert } from 'naive-ui'
 import { ServeGroupOvertList } from '@/api/group'
@@ -6,7 +6,6 @@ import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'
 import { Search, AddOne } from '@icon-park/vue-next'
 import { debounce } from '@/utils/common'
-import { toTalk } from '@/utils/talk'
 
 const apply = reactive({
   isShow: false,
@@ -61,15 +60,6 @@ const onSearchInput = debounce(value => {
   onLoadData()
 }, 300)
 
-const onToTalk = item => {
-  toTalk(2, item.id)
-}
-
-const onJoin = item => {
-  apply.groupId = item.id
-  apply.isShow = true
-}
-
 onLoadData()
 </script>
 
@@ -115,10 +105,6 @@ onLoadData()
               :gender="item.gender"
               :motto="item.profile"
               :flag="item.count + '/' + item.max_num"
-              :is-member="false"
-              @click="onInfo(item)"
-              @talk="onToTalk(item)"
-              @join="onJoin(item)"
             />
 
             <div
@@ -126,7 +112,7 @@ onLoadData()
               class="flex-center more"
               @click="onLoadMore"
             >
-              <n-icon :component="AddOne" @click.stop="emit('join')" />
+              <n-icon :component="AddOne" />
 
               &nbsp;加载更多
             </div>

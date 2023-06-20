@@ -1,13 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
-import { watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
-import socket from '@/socket'
-import { listener } from './listener'
-import hljs from 'highlight.js/lib/core'
-import { overrides } from '@/constant/theme'
-import Favico from 'favico.js'
+import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
   NMessageProvider,
@@ -15,10 +8,13 @@ import {
   zhCN,
   dateZhCN,
 } from 'naive-ui'
-import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
+import hljs from 'highlight.js/lib/core'
+import { useUserStore } from '@/store'
+import socket from '@/socket'
+import { listener } from '@/listener'
+import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'
-import { isElectronMode } from '@/utils/common'
-import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
+import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -28,10 +24,7 @@ IconProvider({
   strokeLinejoin: 'bevel',
 })
 
-const notifyStore = useNotifyStore()
 const userStore = useUserStore()
-const useTalk = useTalkStore()
-const router = useRouter()
 
 if (isLoggedIn()) {
   socket.connect()
@@ -39,31 +32,6 @@ if (isLoggedIn()) {
 }
 
 listener()
-
-watchEffect(() => {
-  if (notifyStore.isLeaveWeb) {
-    return
-  }
-
-  const pathname = router.currentRoute.value.path
-
-  let paths = ['/auth/login', '/auth/register', '/auth/forget']
-  if (!paths.includes(pathname) && isLoggedIn()) {
-    !socket.isConnect() && socket.connect()
-  }
-})
-
-const favicon = new Favico({
-  animation: 'none',
-})
-
-watchEffect(() => {
-  if (isElectronMode()) {
-    electron.setBadge(useTalk.talkUnreadNum)
-  } else {
-    favicon.badge(useTalk.talkUnreadNum)
-  }
-})
 </script>
 
 <template>

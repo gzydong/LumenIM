@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, computed, inject } from 'vue'
+import { NDrawer } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import { useDialogueStore } from '@/store/dialogue'
 import { useUploadsStore } from '@/store/uploads'
@@ -54,9 +55,9 @@ const onPanelHeaderEvent = eventType => {
 
 <template>
   <section class="el-container height100">
-    <main class="el-main bdr-r height100">
+    <main id="drawer-target" class="el-main bdr-r height100">
       <section class="el-container is-vertical">
-        <header class="el-header" style="height: 60px">
+        <header class="el-header">
           <!-- 头部区域 -->
           <PanelHeader
             @evnet="onPanelHeaderEvent"
@@ -99,7 +100,7 @@ const onPanelHeaderEvent = eventType => {
             <aside
               class="el-aside"
               v-show="talkParams.type == 2"
-              style="width: 140px"
+              style="width: 150px"
             >
               <GroupList :members="members" @user="user" />
             </aside>
@@ -117,7 +118,7 @@ const onPanelHeaderEvent = eventType => {
     </main>
 
     <!-- 侧边栏 -->
-    <aside
+    <!-- <aside
       class="el-aside aside"
       style="width: 380px"
       v-if="state.isShowGroupAside && talkParams.type == 2"
@@ -126,7 +127,7 @@ const onPanelHeaderEvent = eventType => {
         :gid="talkParams.receiver_id"
         @close="state.isShowGroupAside = false"
       />
-    </aside>
+    </aside> -->
   </section>
 
   <GroupNotice
@@ -134,6 +135,21 @@ const onPanelHeaderEvent = eventType => {
     :group-id="talkParams.receiver_id"
     @close="state.isShowGroupNotice = false"
   />
+
+  <n-drawer
+    v-model:show="state.isShowGroupAside"
+    :width="400"
+    placement="right"
+    :trap-focus="false"
+    :block-scroll="false"
+    show-mask="transparent"
+    to="#drawer-target"
+  >
+    <GroupPanel
+      :gid="talkParams.receiver_id"
+      @close="state.isShowGroupAside = false"
+    />
+  </n-drawer>
 </template>
 
 <style lang="less" scoped>

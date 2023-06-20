@@ -128,7 +128,7 @@ onMounted(() => {
   </section>
 
   <GroupLaunch
-    v-model:show="isShowCreateGroupBox"
+    v-if="isShowCreateGroupBox"
     @close="isShowCreateGroupBox = false"
     @on-submit="onGroupCallBack"
   />
@@ -140,15 +140,12 @@ onMounted(() => {
     :trap-focus="false"
     :block-scroll="false"
     to="#drawer-target"
+    show-mask="transparent"
   >
     <GroupPanel
       :gid="params.id"
       @close="params.isShow = false"
-      @to-talk="
-        () => {
-          toTalk(2, params.id)
-        }
-      "
+      @to-talk="toTalk(2, params.id)"
     />
   </n-drawer>
 </template>

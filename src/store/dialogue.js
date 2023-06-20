@@ -5,7 +5,7 @@ import {
   ServeForwardRecords,
 } from '@/api/chat'
 import { defAvatar } from '@/constant/default'
-import { ServeSecedeGroup, ServeGetGroupMembers } from '@/api/group'
+import { ServeGetGroupMembers } from '@/api/group'
 
 // 键盘消息事件定时器
 let keyboardTimeout = null
@@ -97,14 +97,14 @@ export const useDialogueStore = defineStore('dialogue', {
       if (code != 200) return
 
       this.members = []
-      for (const o of data) {
+      for (const o of data.items) {
         this.members.push({
           id: o.user_id,
           nickname: o.nickname,
           avatar: o.avatar || defAvatar,
           gender: o.gender,
           leader: o.leader,
-          remark: o.user_card,
+          remark: o.remark,
           online: false,
         })
       }

@@ -21,8 +21,7 @@ export const ChatMsgSysGroupMuted = 1107 // 群禁言
 export const ChatMsgSysGroupCancelMuted = 1108 // 群解除禁言
 export const ChatMsgSysGroupMemberMuted = 1109 // 群成员禁言
 export const ChatMsgSysGroupMemberCancelMuted = 1110 // 群成员解除禁言
-export const ChatMsgSysGroupNoticeCreate = 1111 // 创建群公告
-export const ChatMsgSysGroupNoticeUpdate = 1112 // 更新群公告
+export const ChatMsgSysGroupNotice = 1111 // 编辑群公告
 export const ChatMsgSysGroupTransfer = 1113 // 变更群主
 
 export const ChatMsgTypeMapping = {
@@ -48,6 +47,7 @@ export const ChatMsgTypeMapping = {
   [ChatMsgSysGroupCancelMuted]: '[群解除禁言消息]',
   [ChatMsgSysGroupMemberMuted]: '[群成员禁言消息]',
   [ChatMsgSysGroupMemberCancelMuted]: '[群成员解除禁言消息]',
+  [ChatMsgSysGroupNotice]: '[群公告]',
 }
 
 // 消息类型 - 消息组件 映射关系
@@ -75,6 +75,7 @@ export const MessageComponents = {
   [ChatMsgSysGroupMemberMuted]: 'sys-group-member-muted-message',
   [ChatMsgSysGroupMemberCancelMuted]: 'sys-group-member-cancel-muted-message',
   [ChatMsgSysGroupTransfer]: 'sys-group-transfer-message',
+  [ChatMsgSysGroupNotice]: 'Group-notice-message',
 }
 
 // 可转发的消息类型

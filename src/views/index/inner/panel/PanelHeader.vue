@@ -1,6 +1,5 @@
 <script setup>
-import { NDropdown } from 'naive-ui'
-import { More } from '@icon-park/vue-next'
+import { Peoples, Announcement } from '@icon-park/vue-next'
 
 defineProps({
   type: {
@@ -26,10 +25,6 @@ defineProps({
 })
 
 const emit = defineEmits(['evnet'])
-
-const onEvent = key => {
-  emit('evnet', key)
-}
 </script>
 
 <template>
@@ -51,26 +46,20 @@ const onEvent = key => {
     </div>
 
     <div class="module right-module">
-      <n-dropdown
-        trigger="hover"
-        :show-arrow="true"
-        :options="[
-          {
-            label: '群信息',
-            key: 'group',
-            disabled: type == 1,
-          },
-          {
-            label: '群公告',
-            key: 'notice',
-            disabled: type == 1,
-          },
-        ]"
-        placement="bottom-end"
-        @select="onEvent"
-      >
-        <n-icon :size="30" class="icon" :component="More" />
-      </n-dropdown>
+      <n-icon
+        v-show="type == 2"
+        :size="18"
+        class="icon"
+        @click="emit('evnet', 'notice')"
+        :component="Announcement"
+      />
+      <n-icon
+        v-show="type == 2"
+        :size="18"
+        class="icon"
+        @click="emit('evnet', 'group')"
+        :component="Peoples"
+      />
     </div>
   </header>
 </template>

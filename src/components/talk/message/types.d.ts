@@ -27,6 +27,13 @@ export interface ForwardExtra {
     user_id: number;
 }
 
+export interface GroupNoticeExtra {
+    owner_id: number;
+    owner_name: string;
+    title: number;
+    content: string;
+}
+
 export interface Data {
     float: string;
     content: string
