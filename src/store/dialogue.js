@@ -41,6 +41,9 @@ export const useDialogueStore = defineStore('dialogue', {
       // 是否显示编辑器
       isShowEditor: false,
 
+      // 是否显示会话列表
+      isShowSessionList: true,
+
       // 群成员列表
       members: [],
 

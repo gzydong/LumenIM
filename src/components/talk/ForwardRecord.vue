@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
@@ -7,6 +7,10 @@ import { defAvatar } from '@/constant/default'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
+  pid: {
+    type: String,
+    default: '',
+  },
   recordId: {
     type: Number,
     default: 0,
@@ -21,7 +25,10 @@ const onMaskClick = () => {
 }
 
 const onLoadData = () => {
+  console.log(props.pid)
+
   ServeGetForwardRecords({
+    pid: props.pid,
     record_id: props.recordId,
   }).then(res => {
     if (res.code == 200) {
@@ -73,6 +80,7 @@ onLoadData()
             :is="MessageComponents[item.msg_type] || 'unknown-message'"
             :extra="item.extra"
             :data="item"
+            :pid="pid"
           />
         </div>
       </div>
@@ -101,10 +109,11 @@ onLoadData()
   }
 
   .right-box {
-    flex: auto;
+    width: 100%;
     overflow-x: auto;
+    padding: 0px 5px 15px 5px;
+    box-sizing: border-box;
     height: fit-content;
-    margin-left: 10px;
 
     .msg-header {
       height: 30px;

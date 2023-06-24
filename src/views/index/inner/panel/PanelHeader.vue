@@ -1,5 +1,11 @@
 <script setup>
-import { Peoples, Announcement } from '@icon-park/vue-next'
+import {
+  Peoples,
+  Announcement,
+  MenuUnfoldOne,
+  MenuFoldOne,
+} from '@icon-park/vue-next'
+import { useDialogueStore } from '@/store/dialogue'
 
 defineProps({
   type: {
@@ -24,11 +30,33 @@ defineProps({
   },
 })
 
+const dialogueStore = useDialogueStore()
 const emit = defineEmits(['evnet'])
+
+const onSetMenu = () => {
+  dialogueStore.isShowSessionList = !dialogueStore.isShowSessionList
+}
 </script>
 
 <template>
   <header class="el-header box-header bdr-b">
+    <div class="menu bdr-r pointer" @click="onSetMenu">
+      <MenuUnfoldOne
+        v-if="dialogueStore.isShowSessionList"
+        theme="outline"
+        size="26"
+        fill="#4a4a4a"
+        :strokeWidth="2"
+      />
+      <MenuFoldOne
+        v-else
+        theme="outline"
+        size="26"
+        fill="#4a4a4a"
+        :strokeWidth="2"
+      />
+    </div>
+
     <div class="module left-module">
       <span class="tag" :class="{ red: type == 1 }">
         {{ type == 1 ? '好友' : '群组' }}
@@ -73,6 +101,17 @@ const emit = defineEmits(['evnet'])
   justify-content: space-between;
   box-sizing: border-box;
   -webkit-app-region: drag;
+  position: relative;
+
+  .menu {
+    width: 50px;
+    position: absolute;
+    // height: inherit;
+    display: flex;
+    align-items: center;
+    left: 0;
+    justify-content: center;
+  }
 
   .module {
     height: 100%;
@@ -83,6 +122,7 @@ const emit = defineEmits(['evnet'])
   .left-module {
     padding-right: 5px;
     width: 200px;
+    padding-left: 50px;
 
     .tag {
       background: rgb(81 139 254);

@@ -153,6 +153,11 @@ const onPanelHeaderEvent = eventType => {
 </template>
 
 <style lang="less" scoped>
+
+.drawer-target{
+  overflow: hidden;
+}
+
 .footer-editor {
   height: 200px;
 }

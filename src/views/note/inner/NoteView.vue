@@ -212,11 +212,11 @@ const onShare = () => {
 </script>
 
 <template>
-  <section class="el-container section flex-center" v-if="loadStatus == 0">
-    <Loading />
-  </section>
-
-  <section class="el-container section" :class="{ full: isFull }" v-else>
+  <section
+    class="el-container section"
+    :class="{ full: isFull }"
+    v-loading="loadStatus == 0"
+  >
     <main class="el-main" style="padding: 0 5px">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">

@@ -23,6 +23,7 @@ const model = reactive({
   name: '',
 })
 
+const loading = ref(true)
 const isShowBox = ref(true)
 
 const searchFilter = computed(() => {
@@ -57,18 +58,22 @@ const onReset = () => {
 const onLoad = () => {
   ServeGetInviteFriends({
     group_id: props.gid,
-  }).then(res => {
-    if (res.code == 200 && res.data) {
-      let list = res.data || []
-
-      items.value = list.map(item => {
-        return Object.assign(item, {
-          nickname: item.friend_remark ? item.friend_remark : item.nickname,
-          checked: false,
-        })
-      })
-    }
   })
+    .then(res => {
+      if (res.code == 200 && res.data) {
+        let list = res.data || []
+
+        items.value = list.map(item => {
+          return Object.assign(item, {
+            nickname: item.friend_remark ? item.friend_remark : item.nickname,
+            checked: false,
+          })
+        })
+      }
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const onMaskClick = () => {
@@ -142,9 +147,9 @@ onLoad()
     transform-origin="center"
   >
     <section class="el-container launch-box">
-      <aside class="el-aside bdr-r" style="width: 280px">
+      <aside class="el-aside bdr-r" style="width: 280px" v-loading="loading">
         <section class="el-container is-vertical height100">
-          <header class="el-header" style="height: 50px; padding: 10px">
+          <header class="el-header" style="height: 50px; padding: 16px">
             <n-input
               placeholder="搜索好友"
               v-model:value="model.keywords"
@@ -194,7 +199,7 @@ onLoad()
           <header
             v-if="props.gid === 0"
             class="el-header"
-            style="height: 90px; padding: 10px"
+            style="height: 90px; padding: 10px 15px"
           >
             <p style="margin: 8px 0px 10px; font-weight: 500">群名称(必填)：</p>
             <n-input
@@ -273,6 +278,7 @@ onLoad()
   .friend-items {
     height: 100%;
     overflow-y: auto;
+    padding: 0 6px;
 
     .friend-item {
       height: 40px;

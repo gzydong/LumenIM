@@ -170,7 +170,7 @@ loadChatRecord()
               />
             </div>
 
-            <div class="right-box">
+            <div class="right-box me-scrollbar">
               <div class="msg-header">
                 <span class="name">{{ item.nickname }}</span>
                 <span class="time"> {{ item.created_at }}</span>
@@ -265,9 +265,11 @@ loadChatRecord()
   }
 
   .right-box {
-    flex: auto;
+    width: 100%;
     overflow-x: auto;
     padding: 0px 5px 15px 5px;
+    box-sizing: border-box;
+    height: fit-content;
 
     .msg-header {
       height: 30px;

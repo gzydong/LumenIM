@@ -60,6 +60,11 @@ const onSearchInput = debounce(value => {
   onLoadData()
 }, 300)
 
+const onJoin = (item: any) => {
+  apply.isShow = true
+  apply.groupId = item.id
+}
+
 onLoadData()
 </script>
 
@@ -105,6 +110,7 @@ onLoadData()
               :gender="item.gender"
               :motto="item.profile"
               :flag="item.count + '/' + item.max_num"
+              @join="onJoin(item)"
             />
 
             <div

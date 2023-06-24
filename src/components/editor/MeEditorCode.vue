@@ -113,7 +113,7 @@ const onSubmit = () => {
 .preview {
   width: 100%;
   padding: 5px;
-  overflow: scroll;
+  overflow: hidden;
   border-radius: 10px;
 }
 

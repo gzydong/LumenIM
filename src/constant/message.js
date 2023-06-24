@@ -88,4 +88,5 @@ export const ForwardableMessageType = [
   ChatMsgTypeFile,
   ChatMsgTypeLocation,
   ChatMsgTypeCard,
+  // ChatMsgTypeForward
 ]

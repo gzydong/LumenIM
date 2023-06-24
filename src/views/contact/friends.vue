@@ -15,6 +15,7 @@ import { useFriendsMenu } from '@/composition/friends-menu'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 const user = inject('$user')
+const loading = ref(true)
 const isShowUserSearch = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')

@@ -6,6 +6,7 @@ import { ForwardExtra } from './types'
 const props = defineProps<{
   extra: ForwardExtra
   data: any
+  pid: string
   maxWidth: Boolean
 }>()
 
@@ -18,6 +19,14 @@ const title = computed(() => {
 const onClick = () => {
   isShowRecord.value = true
 }
+
+let pids = props.pid
+if (pids == '' || pids == undefined) {
+  pids = props.data.id
+} else {
+  pids = `${pids},${props.data.id}`
+}
+
 </script>
 <template>
   <section class="forward-message pointer" @click="onClick">
@@ -36,6 +45,7 @@ const onClick = () => {
     <ForwardRecord
       v-if="isShowRecord"
       :record-id="data.id"
+      :pid="pids"
       @close="isShowRecord = false"
     />
   </section>

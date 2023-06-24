@@ -122,7 +122,7 @@ const onSendCodeEvent = ({ data, callBack }) => {
 
 // 发送文件消息
 const onSendFileEvent = ({ data }) => {
-  let maxsize = 100 * 1024 * 1024
+  let maxsize = 200 * 1024 * 1024
   if (data.size > maxsize) {
     return window['$message'].info('上传文件不能超过100M!')
   }

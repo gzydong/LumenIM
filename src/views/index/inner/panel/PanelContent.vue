@@ -198,6 +198,11 @@ const onRevokeTalk = (data: any) => {
 
 // 多选事件
 const onMultiSelect = (data: any) => {
+  dialogueStore.updateDialogueRecord({
+    id: data.id,
+    isCheck: true,
+  })
+
   dialogueStore.isOpenMultiSelect = true
 }
 

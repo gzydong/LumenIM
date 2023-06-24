@@ -2,7 +2,7 @@
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NSkeleton, NEmpty, NIcon, NTooltip, NInput } from 'naive-ui'
+import { NDropdown, NSkeleton, NEmpty, NIcon, NInput, NPopover } from 'naive-ui'
 import {
   Search,
   ArrowUp,
@@ -155,7 +155,7 @@ const onSetDisturb = (data: any) => {
 // 置顶会话
 const onToTopTalk = (data: any) => {
   if (data.is_top == 0 && topItems.value.length >= 18) {
-    return window['$message'].info('指定最多不能超过18个会话！')
+    return window['$message'].info('置顶最多不能超过18个会话！')
   }
 
   ServeTopTalkList({
@@ -399,7 +399,7 @@ onMounted(onInitialize)
       class="el-header tops-header"
       v-show="loadStatus == 3 && topItems.length > 0"
     >
-      <n-tooltip
+      <n-popover
         v-for="item in topItems"
         :key="item.index_name"
         placement="bottom"
@@ -445,7 +445,7 @@ onMounted(onInitialize)
           </div>
         </template>
         <span> {{ item.remark_name || item.name }} </span>
-      </n-tooltip>
+      </n-popover>
     </header>
 
     <!-- 标题栏目 -->

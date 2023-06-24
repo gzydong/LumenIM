@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Draggable
+    <!-- <Draggable
       class="draggable-ul"
       animation="300"
       :list="demandList"
@@ -11,7 +11,9 @@
           <span class="ml-2">{{ element.name }}</span>
         </div>
       </template>
-    </Draggable>
+    </Draggable> -->
+
+    <div class="ids" v-loading="true"></div>
   </div>
 </template>
 
@@ -32,6 +34,11 @@ const demandList = reactive([
 </script>
 
 <style lang="less" scoped>
+.ids {
+  width: 300px;
+  height: 300px;
+}
+
 .draggable-ul {
   width: 100%;
   overflow: hidden;

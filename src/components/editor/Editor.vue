@@ -375,7 +375,7 @@ const onDragPaste = e => {
           contenteditable="true"
           @keydown="onKeydownEvent($event)"
           @input="onInputEvent($event)"
-          placeholder="你想要说点什么呢，按Enter发送 / Shift+Enter 换行"
+          placeholder="你想要说点什么呢..."
           v-paste="onPaste"
           v-drag="onDragPaste"
         />

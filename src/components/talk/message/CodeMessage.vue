@@ -51,7 +51,7 @@ const onClipboard = () => {
         />
       </p>
     </header>
-    <main class="el-main" :lineMumber="lineMumber">
+    <main class="el-main me-scrollbar" :lineMumber="lineMumber">
       <n-code :language="extra.lang" :code="extra.code" show-line-numbers />
       <div
         class="el-footer mask pointer"

@@ -13,9 +13,9 @@ function loadHtmlUrl() {
 function createWindow() {
   // 创建浏览器窗口
   const win = new BrowserWindow({
-    width: 900,
+    width: 1000,
     height: 700,
-    minWidth: 900,
+    minWidth: 1000,
     minHeight: 700,
     frame: false,
     titleBarStyle: 'hidden',
