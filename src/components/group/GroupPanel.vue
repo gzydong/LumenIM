@@ -108,7 +108,7 @@ function loadMembers() {
     group_id: props.gid,
   }).then(res => {
     if (res.code == 200) {
-      state.members = res.data.items
+      state.members = res.data
     }
   })
 }
