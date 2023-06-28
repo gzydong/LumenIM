@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
+import { useFriendsMenu } from '@/composition/group-list-menu'
+
+const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 
 const emit = defineEmits(['user'])
 
@@ -12,6 +16,21 @@ const props = defineProps({
 const filter: any = computed(() => {
   return props.members.filter((item: any) => item.online)
 })
+
+const onContextMenu = (e, item) => {
+  // showDropdownMenu(e, item)
+
+  e.preventDefault()
+}
+
+const onContextMenuHandle = (key = '') => {
+  const evnets = {}
+
+  // 触发事件
+  evnets[key] && evnets[key](dropdown.item)
+
+  closeDropdownMenu()
+}
 </script>
 
 <template>
@@ -26,6 +45,7 @@ const filter: any = computed(() => {
         v-for="item in members"
         :key="item.id"
         @click="emit('user', item.id)"
+        @contextmenu.prevent="onContextMenu($event, item)"
       >
         <n-avatar class="avatar" round :size="16" :src="item.avatar" />
 
@@ -34,6 +54,18 @@ const filter: any = computed(() => {
         </span>
       </div>
     </main>
+
+    <!-- 右键菜单 -->
+    <n-dropdown
+      :show="dropdown.show"
+      :show-arrow="true"
+      placement="left"
+      :x="dropdown.x"
+      :y="dropdown.y"
+      :options="dropdown.options"
+      @select="onContextMenuHandle"
+      @clickoutside="closeDropdownMenu"
+    />
   </section>
 </template>
 

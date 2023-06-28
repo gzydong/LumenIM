@@ -7,7 +7,9 @@
         <i class="ant-spin-dot-item"></i>
         <i class="ant-spin-dot-item"></i>
       </span>
-      <div class="ant-spin-text" style="color: #c2c2c2;">正在加载中...</div>
+      <div class="ant-spin-text" style="color: #9b9b9b; margin-top: 8px">
+        加载中...
+      </div>
     </div>
   </div>
 </template>
@@ -21,7 +23,7 @@
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  background: #fff;
+  background: rgb(255 255 255 / 89%);
   z-index: 1000;
   position: absolute;
   left: 0;
@@ -150,6 +152,7 @@
 .ant-spin.ant-spin-show-text .ant-spin-text {
   display: block;
 }
+
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   .ant-spin-blur {
     background: #fff;

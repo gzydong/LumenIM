@@ -8,7 +8,7 @@ let isShow = ref(false)
 let num = storage.get('reward', 0)
 
 setTimeout(() => {
-  // isShow.value = num <= 2
+  isShow.value = num <= 2
 }, 1000 * 60 * 2)
 
 const onClose = () => {

@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { useDialogueStore } from '@/store'
 import { DoubleDown } from '@icon-park/vue-next'
 defineProps(['modelValue'])
+
+const dialogueStore = useDialogueStore()
 </script>
 
 <template>
   <!-- 置底按钮 -->
   <div class="skip-bottom pointer" :class="{ show: modelValue }">
-    <span>回到底部</span>
+    <span v-if="dialogueStore.unreadBubble"
+      >{{ dialogueStore.unreadBubble }} 条未读消息</span
+    >
+    <span v-else>回到底部</span>
     <n-icon size="14" color="#fff" :component="DoubleDown" />
   </div>
 </template>
@@ -14,18 +20,14 @@ defineProps(['modelValue'])
 <style lang="less" scoped>
 .skip-bottom {
   position: absolute;
-  // right: -35px;
-  // top: 15%;
-  // right: -35px;
   right: 58px;
   bottom: -40px;
-  width: 100px;
+  min-width: 100px;
   height: 28px;
   font-size: 12px;
   background-color: #1ebafc;
   color: white;
   display: flex;
-  // flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 2px;

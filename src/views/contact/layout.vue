@@ -11,15 +11,16 @@ import {
   Peoples,
   People,
   AddUser,
+  Permissions,
 } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 
 const menus = reactive([
   {
-    name: '好友申请',
+    name: '申请管理',
     path: '/contact/apply',
-    icon: markRaw(AddUser),
+    icon: markRaw(Permissions),
     size: 18,
     tips: computed(() => (userStore.isContactApply ? 'New' : '')),
   },

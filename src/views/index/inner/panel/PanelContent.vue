@@ -21,7 +21,6 @@ import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
-import UnreadBubble from './UnreadBubble.vue'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user = inject('$user')
@@ -406,10 +405,6 @@ onMounted(onReload)
         </div>
       </div>
     </n-image-group>
-
-    <!-- AYsd@1234.# -->
-    <!-- 新消息提示 -->
-    <UnreadBubble @click="onSkipBottom" />
 
     <!-- 置底按钮 -->
     <SkipBottom v-model="skipBottom" @click="onSkipBottom" />

@@ -83,6 +83,11 @@ export const ServeGetGroupApplyList = data => {
   return get('/api/v1/group/apply/list', data)
 }
 
+export const ServeGetGroupApplyAll = data => {
+  return get('/api/v1/group/apply/all', data)
+}
+
+
 export const ServeDeleteGroupApply = data => {
   return post('/api/v1/group/apply/delete', data)
 }

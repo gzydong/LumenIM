@@ -2,37 +2,44 @@
 import Draggable from 'vuedraggable'
 import { reactive, computed, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
-import { DeleteMode, Drag } from '@icon-park/vue-next'
+import { Drag, Delete } from '@icon-park/vue-next'
 import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contacts'
 
 const emit = defineEmits(['close', 'relaod'])
 
-const isShow = ref(true)
+interface Item {
+  id: number
+  index: number
+  name: string
+}
 
-const options: any = reactive([])
+let index = 1
+const isShow = ref(true)
+const options = reactive<Item[]>([])
 
 const onMaskClick = () => {
   emit('close')
 }
 
-let index = 1
+const onLoadData = async () => {
+  let { code, data } = await ServeContactGroupList()
 
-const onLoadData = () => {
-  ServeContactGroupList().then(res => {
-    if (res.code == 200) {
-      let items = res.data.items || []
+  if (code != 200) return
 
-      for (const item of items) {
-        if (item.id) {
-          options.push({
-            id: item.id,
-            name: item.name,
-            index: index++,
-          })
-        }
-      }
+  let items = data.items || []
+  for (const item of items) {
+    if (item.id) {
+      options.push({
+        id: item.id,
+        name: item.name,
+        index: index++,
+      })
     }
-  })
+  }
+
+  if (!options.length) {
+    options.push({ id: 0, name: '', index: index++ })
+  }
 }
 
 const onSubmit = () => {
@@ -53,7 +60,7 @@ const addOption = () => {
   options.push({ name: '', id: 0, index: index++ })
 }
 
-const delOption = item => {
+const delOption = (item: Item) => {
   let i = options.findIndex(value => value.index == item.index)
   if (i >= 0) {
     options.length > 0 && options.splice(i, 1)
@@ -62,7 +69,7 @@ const delOption = item => {
 
 // 是否可提交
 const isCanSubmit = computed(() => {
-  return options.some(item => item.name.trim().length === 0)
+  return options.some((item: Item) => item.name.trim().length === 0)
 })
 
 onLoadData()
@@ -79,7 +86,7 @@ onLoadData()
     :on-after-leave="onMaskClick"
   >
     <n-form>
-      <n-form-item label="分组选项">
+      <n-form-item label="选项">
         <div class="options">
           <Draggable
             class="draggable-ul"
@@ -89,19 +96,18 @@ onLoadData()
             handle=".handle"
           >
             <template #item="{ element }">
-              <div style="display: flex; align-items: center; margin: 8px 0">
+              <div class="option">
                 <n-icon size="20" class="handle" :component="Drag" />
                 <n-input
                   placeholder="分组名必填"
                   v-model:value="element.name"
                   :maxlength="20"
-                  count-graphemes
                   style="margin: 0 10px"
                 />
                 <n-icon
                   size="20"
                   class="pointer"
-                  :component="DeleteMode"
+                  :component="Delete"
                   @click="delOption(element)"
                 />
               </div>
