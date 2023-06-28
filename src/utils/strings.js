@@ -33,7 +33,7 @@ export function textReplaceLink(text, color = '#409eff') {
     /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
   return text.replace(
     exp,
-    `<a href='$1' target="_blank" style="color:${color};text-decoration: revert;">$1</a >`
+    `<a href='$1' alt='link' style="color:${color};text-decoration: revert;">$1</a >`
   )
 }
 
