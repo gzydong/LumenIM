@@ -13,7 +13,7 @@
       </template>
     </Draggable> -->
 
-    <div class="ids" v-loading="true"></div>
+    <div class="ids" v-loading="true" @click="to"></div>
   </div>
 </template>
 
@@ -31,6 +31,66 @@ const demandList = reactive([
   { name: '用户头像上传，需要支持裁剪', id: 7 },
   { name: '据说Vue3.2发布了，setup啥时候支持？', id: 8 },
 ])
+
+function copyInfo(sets) {
+  let imgDiv = document.createElement('div')
+  imgDiv.id = '__imgDiv'
+  imgDiv.setAttribute('style', 'z-index: -1;position: fixed;')
+  let child = ''
+  if (sets.txts) {
+    if (typeof sets.txts === 'string') {
+      child += `<span>${sets.txts}</span>`
+    } else {
+      sets.txts.forEach(item => {
+        child += `<span>${item}</span>`
+      })
+    }
+  }
+  if (sets.imgs) {
+    if (typeof sets.imgs === 'string') {
+      sets.imgs =
+        sets.imgs.indexOf('https') > -1
+          ? sets.imgs.replace('https', 'http')
+          : sets.imgs
+      child += `<img src="${sets.imgs}" />`
+    } else {
+      sets.imgs.forEach(item => {
+        item = item.indexOf('https') > -1 ? item.replace('https', 'http') : item
+        child += `<img src="${item}" />`
+      })
+    }
+  }
+  imgDiv.innerHTML = child
+  document.body.insertBefore(imgDiv, document.body.lastChild)
+  let dom = document.getElementById('__imgDiv')
+  console.log(dom)
+  if (window.getSelection) {
+    //chrome等主流浏览器
+    let selection = window.getSelection()
+    let range = document.createRange()
+    range.selectNodeContents(dom)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  } else if (document.body.createTextRange) {
+    //ie
+    let range = document.body.createTextRange()
+    range.moveToElementText(dom)
+    range.select()
+  }
+  document.execCommand('copy')
+  window.getSelection().removeAllRanges()
+  imgDiv.parentNode.removeChild(imgDiv)
+}
+
+const to = () => {
+  copyInfo({
+    txts: '请复制我',
+    imgs: [
+      'https://img.shop.wusehaowu.com/20210407/da46894987254688af008a95ad121da9.png',
+      'https://t00img.yangkeduo.com/goods/images/2021-02-27/1e5bc93f957fefabc13d994a9f379dda.jpeg',
+    ],
+  })
+}
 </script>
 
 <style lang="less" scoped>

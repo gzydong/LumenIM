@@ -1,20 +1,37 @@
 <script setup lang="ts">
+import { NImage } from 'naive-ui'
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink } from '@/utils/strings'
-import { Data } from './types.d'
+import { Data, MixedExtra } from './types.d'
+import { getImageInfo } from '@/utils/functions'
 
 const props = defineProps<{
-  extra: any
+  extra: MixedExtra
   data: Data
   maxWidth: Boolean
 }>()
 
 const float = props.data.float
 
-let textContent = props.data.content
+const img = (src, width = 200) => {
+  const info = getImageInfo(src)
 
-textContent = textReplaceLink(textContent)
-textContent = textReplaceEmoji(textContent)
+  if (info.width == 0 || info.height == 0) {
+    return {}
+  }
+
+  if (info.width < width) {
+    return {
+      width: `${info.width}px`,
+      height: `${info.height}px`,
+    }
+  }
+
+  return {
+    width: width + 'px',
+    height: parseInt(info.height / (info.width / width)) + 'px',
+  }
+}
 </script>
 
 <template>
@@ -26,7 +43,17 @@ textContent = textReplaceEmoji(textContent)
       maxwidth: maxWidth,
     }"
   >
-    <pre v-html="textContent" />
+    <pre>
+      <template v-for="item in extra.items">
+        <template v-if="item.type === 1">
+            <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
+        </template>
+
+        <template v-else-if="item.type === 3">
+          <img :style="img(item.content, 350)" :src="item.content">
+        </template>
+      </template>
+    </pre>
   </div>
 </template>
 
@@ -49,7 +76,9 @@ textContent = textReplaceEmoji(textContent)
     max-width: 70%;
   }
 
-  > pre {
+  pre {
+    display: flex;
+    flex-direction: column;
     white-space: pre-wrap;
     overflow: hidden;
     word-break: break-word;
@@ -59,21 +88,15 @@ textContent = textReplaceEmoji(textContent)
     font-family: 'PingFang SC', 'Microsoft YaHei', 'Alibaba PuHuiTi 2.0 45';
     line-height: 25px;
 
-    :deep(.emoji) {
-      vertical-align: text-bottom;
-      margin: 0 5px;
-    }
-
-    :deep(img[alt='img']) {
-      max-width: 300px;
-      border-radius: 3px !important;
-      display: block;
-      cursor: pointer;
-    }
-
     :deep(a) {
       color: #2196f3;
       text-decoration: revert;
+    }
+
+    img {
+      margin-bottom: 3px;
+      border-radius: 3px;
+      object-fit: contain;
     }
   }
 }

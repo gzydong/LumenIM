@@ -7,6 +7,7 @@ import {
   NDialogProvider,
   zhCN,
   dateZhCN,
+  darkTheme
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
 import { useUserStore } from '@/store'
@@ -45,8 +46,8 @@ listener()
     :theme-overrides="overrides"
     :locale="zhCN"
     :date-locale="dateZhCN"
-    inline-theme-disabled
     :hljs="hljs"
+    :theme="darkTheme"
   >
     <n-message-provider>
       <message-api />

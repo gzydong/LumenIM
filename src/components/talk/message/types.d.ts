@@ -38,3 +38,11 @@ export interface Data {
     float: string;
     content: string
 }
+
+export interface MixedExtra {
+    items: {
+        type: number;
+        content: string;
+        link: string;
+    }[];
+}

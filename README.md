@@ -11,7 +11,7 @@ Lumen IM 是一个网页版即时聊天系统，界面简约美观
 - 支持编写笔记
 
 ### 项目预览
-- 地址： [http://im.gzydong.club](http://im.gzydong.club)
+- 地址： [http://im.gzydong.com](http://im.gzydong.com)
 - 账号： 18798272054 或 18798272055
 - 密码： admin123
 

@@ -83,14 +83,7 @@ export function clipboard(text, callback) {
   }
 }
 
-/**
- * 自定义 emit 回调数据
- *
- * @param {String} event
- * @param {Any} data
- * @param {Function|undefined} fn
- * @returns
- */
+
 export function emitCall(event, data, fn) {
   return { event: event, data: data, callBack: fn || function () {} }
 }

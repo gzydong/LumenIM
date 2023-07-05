@@ -20,6 +20,7 @@ import SysGroupMemberQuitMessage from './SysGroupMemberQuitMessage.vue'
 import SysGroupMutedMessage from './SysGroupMutedMessage.vue'
 import SysGroupCancelMutedMessage from './SysGroupCancelMutedMessage.vue'
 import GroupNoticeMessage from './GroupNoticeMessage.vue'
+import MixedMessage from './MixedMessage.vue'
 
 export {
   CodeMessage,
@@ -44,4 +45,5 @@ export {
   SysGroupMutedMessage,
   SysGroupCancelMutedMessage,
   GroupNoticeMessage,
+  MixedMessage
 }

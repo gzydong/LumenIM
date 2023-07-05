@@ -42,17 +42,17 @@ defineProps({
 .container {
   height: 100vh;
   width: 100vw;
-  background: url(@/assets/image/iTab-exSKJMg-_vI.jpeg);
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
+  // background: url(@/assets/image/iTab-exSKJMg-_vI.jpeg);
+  // background-position: center center;
+  // background-repeat: no-repeat;
+  // background-attachment: fixed;
+  // background-size: cover;
 
   .im-container {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    background-color: #ffffff;
+    // background-color: #ffffff;
 
     .el-aside {
       width: 70px;

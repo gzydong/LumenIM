@@ -10,6 +10,10 @@ defineProps({
 const img = (src, width = 200) => {
   const info = getImageInfo(src)
 
+  if (info.width == 0 || info.height == 0) {
+    return {}
+  }
+
   if (info.width < width) {
     return {
       width: `${info.width}px`,
@@ -22,6 +26,7 @@ const img = (src, width = 200) => {
     height: parseInt(info.height / (info.width / width)) + 'px',
   }
 }
+
 </script>
 <template>
   <section

@@ -6,6 +6,7 @@ import { useDialogueStore } from '@/store/dialogue'
 import { useNotifyStore } from '@/store/notify'
 import { useUploadsStore } from '@/store/uploads'
 import socket from '@/socket'
+import { ServePublishMessage } from '@/api/chat'
 import {
   ServeSendTalkText,
   ServeSendTalkImage,
@@ -87,21 +88,22 @@ const onSendTextEvent = throttle(value => {
 
 // 发送图片消息
 const onSendImageEvent = ({ data, callBack }) => {
-  let fileData = new FormData()
+  let response = ServePublishMessage({
+    type: 'image',
+    ...data,
+    receiver: {
+      receiver_id: props.receiver_id,
+      talk_type: props.talk_type,
+    },
+  })
 
-  fileData.append('talk_type', props.talk_type)
-  fileData.append('receiver_id', props.receiver_id)
-  fileData.append('image', data)
-
-  const resp = ServeSendTalkImage(fileData)
-  resp.then(({ code, message }) => {
+  response.then(({ code, message }) => {
     if (code == 200) {
       callBack(true)
     } else {
       window['$message'].info(message)
     }
   })
-  resp.finally(() => callBack(false))
 }
 
 // 发送代码消息
@@ -173,6 +175,25 @@ const onSendEmoticonEvent = ({ data, callBack }) => {
   })
 }
 
+const onSendMixedEvent = ({ data, callBack }) => {
+  let response = ServePublishMessage({
+    type: 'mixed',
+    items: data.items,
+    receiver: {
+      receiver_id: props.receiver_id,
+      talk_type: props.talk_type,
+    },
+  })
+
+  response.then(({ code, message }) => {
+    if (code == 200) {
+      callBack(true)
+    } else {
+      window['$message'].info(message)
+    }
+  })
+}
+
 const onKeyboardPush = throttle(() => {
   socket.emit('im.message.keyboard', {
     sender_id: props.uid,
@@ -206,6 +227,7 @@ const evnets = {
   history_event: () => {
     isShowHistory.value = true
   },
+  mixed_event: onSendMixedEvent,
 }
 
 // 编辑器事件

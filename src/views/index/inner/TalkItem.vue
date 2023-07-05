@@ -27,7 +27,7 @@ defineProps({
 
 <template>
   <div
-    class="talk pointer" 
+    class="talk pointer"
     :class="{ actived: active }"
     @click="emit('tab-talk', data)"
   >
@@ -60,7 +60,7 @@ defineProps({
         <div class="text">
           <template v-if="!active && data.draft_text">
             <span class="draft">[草稿]</span>
-            <span v-html="data.draft_text" />
+            <span class="draft-text" v-html="data.draft_text" />
           </template>
           <template v-else>
             <span
@@ -189,6 +189,14 @@ defineProps({
           color: #8bc34a;
           padding-right: 3px;
         }
+
+        .ed-image {
+          display: none !important;
+        }
+
+        .draft-text {
+          display: contents;
+        }
       }
 
       .unread {
@@ -240,5 +248,10 @@ defineProps({
   align-items: center;
   justify-content: center;
   width: 20px;
+}
+
+
+:global(.draft-text .ed-image) {
+  display: none;
 }
 </style>
