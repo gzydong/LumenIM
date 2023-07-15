@@ -44,6 +44,7 @@ export function useMenu() {
       dropdown.options.push({ label: `撤回`, key: 'revoke' })
     }
 
+    dropdown.options.push({ label: '引用', key: 'quote' })
     dropdown.options.push({ label: '删除', key: 'delete' })
     dropdown.options.push({ label: '多选', key: 'multiSelect' })
 

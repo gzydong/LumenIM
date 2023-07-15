@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import 'quill-image-uploader/dist/quill.imageUploader.min.css'
+import 'quill-mention/dist/quill.mention.min.css'
 import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
-import { useDialogueStore, useTalkStore } from '@/store'
+import { useDialogueStore, useTalkStore, useEditorStore } from '@/store'
 import { NPopover } from 'naive-ui'
-import Tribute from 'tributejs'
 import { getEditorNodeInfo } from './editor.ts'
 import { getImageInfo } from '@/utils/functions'
-import 'tributejs/tribute.css'
 import {
   Voice as IconVoice,
   SourceCode,
@@ -22,13 +23,20 @@ import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
-import { getPasteImgs, getDragPasteImg, pasteFilter } from '@/utils/editor'
 import { ServeUploadImage } from '@/api/upload'
-import { ServePublishMessage } from '@/api/chat'
+import { QuillEditor, Quill } from '@vueup/vue-quill'
+import EmojiBlot from './formats/emoji.ts'
+import QuoteBlot from './formats/quote.ts'
+import ImageUploader from 'quill-image-uploader'
+import 'quill-mention'
+Quill.register('formats/emoji', EmojiBlot)
+Quill.register('formats/quote', QuoteBlot)
+Quill.register('modules/imageUploader', ImageUploader)
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
+const editorStore = useEditorStore()
 const props = defineProps({
   vote: {
     type: Boolean,
@@ -39,13 +47,91 @@ const props = defineProps({
   },
 })
 
+const editor = ref()
+
+const getQuill = () => {
+  return editor.value.getQuill()
+}
+
 const indexName = computed(() => dialogueStore.index_name)
+const quote = computed(() => editorStore.quote)
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
 const isShowEditorRecorder = ref(false)
 const fileImageRef = ref()
 const uploadFileRef = ref()
 const emoticonRef = ref()
+
+const editorOption = {
+  debug: false,
+  modules: {
+    toolbar: false,
+
+    clipboard: {
+      // 粘贴版，处理粘贴时候的自带样式
+      matchers: [[Node.ELEMENT_NODE, handleCustomMatcher]],
+    },
+
+    keyboard: {
+      bindings: {
+        enter: {
+          key: 13,
+          handler: onSendMessage,
+        },
+      },
+    },
+
+    imageUploader: {
+      upload: (file: File) => {
+        const form = new FormData()
+        form.append('file', file)
+
+        return new Promise((resolve, reject) => {
+          ServeUploadImage(form).then(({ code, data, message }) => {
+            if (code == 200) {
+              resolve(data.src)
+            } else {
+              reject(message)
+              window['$message'].error(message)
+            }
+          })
+        })
+      },
+    },
+
+    mention: {
+      allowedChars: /^[\u4e00-\u9fa5]*$/,
+      mentionDenotationChars: ['@'],
+      positioningStrategy: 'fixed',
+      renderItem: (data: any) => {
+        return `
+              <div class="member-item">
+                  <image src=${data.avatar} class="member-avator"/>
+                  <span class="member-name">${data.nickname}</span>
+              </div>
+            `
+      },
+      source: function (searchTerm: string, renderList: any) {
+        if (!props.members.length) {
+          return renderList([])
+        }
+
+        let list = [
+          { id: 0, nickname: '所有人', avatar: defAvatar, value: '所有人' },
+          ...props.members,
+        ]
+
+        const items = list.filter(
+          (item: any) => item.nickname.indexOf(searchTerm) !== -1
+        )
+
+        renderList(items)
+      },
+    },
+  },
+  placeholder: '你想要说点什么呢...',
+  theme: 'snow',
+}
 
 const navs = reactive([
   {
@@ -104,100 +190,6 @@ const navs = reactive([
   },
 ])
 
-const tribute = new Tribute({
-  noMatchTemplate: () => '',
-  selectTemplate: (item: any) => {
-    return ` <span class="ed-mention" data-atid="${item.original.id}" contenteditable="false">@${item.original.nickname}</span>`
-  },
-  menuItemTemplate: (item: any) => {
-    let name = item.original.nickname
-
-    if (item.original.remark) {
-      name += `(${item.original.remark})`
-    }
-
-    return `
-    <img width="18" height="18" src="${item.original.avatar}" style="border-radius:50%;">
-    <span class="text-ellipsis">${name}</span>`
-  },
-  requireLeadingSpace: false,
-  lookup: 'name',
-  values: (_, cb) => {
-    let items = !props.members.length
-      ? []
-      : [{ id: 0, nickname: '所有人', avatar: defAvatar }, ...props.members]
-
-    return cb(items)
-  },
-})
-
-const onKeydownEvent = (e: any) => {
-  onInputEvent(e)
-
-  let data = getEditorNodeInfo(document.getElementById('me-editor'))
-
-  // 空信息禁止换行
-  if (e.keyCode == 13 && !data.items) {
-    return e.preventDefault()
-  }
-
-  let isOk =
-    e.keyCode == 13 && !tribute.isActive && e.shiftKey == false && data.items
-
-  // 回车发送消息
-  if (isOk) {
-    switch (data.msgType) {
-      case 1: // 文字消息
-        if (data.items[0].content.length > 1024) {
-          return window['$message'].info('发送内容超长，请分条发送')
-        }
-
-        let event = emitCall(
-          'text_event',
-          { text: data.items[0].content, uids: data.mentionUids },
-          (ok: any) => {
-            ok && (e.target.innerHTML = '')
-          }
-        )
-
-        emit('editor-event', event)
-        break
-      case 3: // 图片消息
-        let detail = getImageInfo(data.items[0].content)
-
-        emit(
-          'editor-event',
-          emitCall(
-            'image_event',
-            { ...detail, url: data.items[0].content, size: 10000 },
-            (ok: any) => {
-              ok && (e.target.innerHTML = '')
-            }
-          )
-        )
-        break
-      case 12: // 图文消息
-        emit(
-          'editor-event',
-          emitCall('mixed_event', { items: data.items }, (ok: any) => {
-            ok && (e.target.innerHTML = '')
-          })
-        )
-        break
-    }
-
-    return e.preventDefault()
-  }
-}
-
-// 输入事件监听
-const onInputEvent = (e: any) => {
-  emit(
-    'editor-event',
-    emitCall('input_event', e.target.innerHTML.toString(), () => {})
-  )
-}
-
 const onVoteEvent = (data: any) => {
   const msg = emitCall('vote_event', data, (ok: boolean) => {
     if (ok) {
@@ -208,91 +200,37 @@ const onVoteEvent = (data: any) => {
   emit('editor-event', msg)
 }
 
-function editorInsertText(text: string, img: string) {
-  let editor = document.getElementById('me-editor')
-  let selection = window.getSelection()
+const onEmoticonEvent = (data: any) => {
+  emoticonRef.value.setShow(false)
 
-  if (selection && editor) {
-    editor.focus()
+  if (data.type == 1) {
+    const quill = getQuill()
+    const index = (quill.getSelection() || {}).index || quill.getLength()
 
-    let range = selection.getRangeAt(0)
-    range.deleteContents()
-
-    let textNode: any = document.createTextNode(text)
-    if (img.length) {
-      textNode = document.createElement('img')
-      textNode.src = img
-      textNode.className = 'ed-emoji'
-      textNode.dataset['text'] = text
+    if (data.img) {
+      quill.insertEmbed(index, 'emoji', {
+        alt: data.value,
+        src: data.img,
+        width: '24px',
+        height: '24px',
+      })
+    } else {
+      quill.insertText(index, data.value)
     }
 
-    range.insertNode(textNode)
-    range.setStartAfter(textNode)
-    range.collapse(true)
-    selection.removeAllRanges()
-    selection.addRange(range)
-    editor.focus()
-  }
-}
-
-const onEmoticonEvent = (data: any) => {
-  if (data.type == 1) {
-    editorInsertText(data.value, data.img)
+    quill.setSelection(index + 1, 0, 'user')
   } else {
-    emit(
-      'editor-event',
-      emitCall('emoticon_event', data.value, () => {})
-    )
+    let fn = emitCall('emoticon_event', data.value, () => {})
+    emit('editor-event', fn)
   }
-
-  emoticonRef.value.setShow(false)
 }
 
 const onCodeEvent = (data: any) => {
-  const msg = emitCall('code_event', data, isok => {
+  const msg = emitCall('code_event', data, (ok: boolean) => {
     isShowEditorCode.value = false
   })
 
   emit('editor-event', msg)
-}
-
-const insertEditorImage = (file: File) => {
-  let imageNode = document.createElement('img')
-  imageNode.className = 'ed-image'
-
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = () => {
-    let editor = document.getElementById('me-editor')
-    let selection = window.getSelection()
-
-    if (selection && editor) {
-      editor.focus()
-
-      let range = selection.getRangeAt(0)
-      range.deleteContents()
-
-      imageNode.src = reader.result
-
-      range.insertNode(imageNode)
-      range.setStartAfter(imageNode)
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
-      editor.focus()
-    }
-  }
-	
-  const form = new FormData()
-  form.append('file', file)
-  ServeUploadImage(form).then(({ code, data, message }) => {
-    if (code == 200) {
-      // imageNode.src = data.src
-    } else {
-      imageNode.remove()
-      window['$message'].error(message)
-    }
-  })
 }
 
 const onUploadFile = (e: any) => {
@@ -301,13 +239,26 @@ const onUploadFile = (e: any) => {
   e.target.value = null
 
   if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
-    return insertEditorImage(file)
+    const quill = getQuill()
+    const index = (quill.getSelection() || {}).index || quill.getLength()
+
+    const form = new FormData()
+    form.append('file', file)
+
+    ServeUploadImage(form).then(({ code, data, message }) => {
+      if (code == 200) {
+        quill.insertEmbed(index, 'image', data.src)
+        quill.setSelection(index + 1)
+      } else {
+        window['$message'].error(message)
+      }
+    })
+
+    return
   }
 
-  emit(
-    'editor-event',
-    emitCall('file_event', file, () => {})
-  )
+  let fn = emitCall('file_event', file, () => {})
+  emit('editor-event', fn)
 }
 
 const onRecorderEvent = (file: any) => {
@@ -315,95 +266,139 @@ const onRecorderEvent = (file: any) => {
   isShowEditorRecorder.value = false
 }
 
-//复制粘贴图片回调方法
-const onPaste = (e: any) => {
-  try {
-    ;async () => {
-      const clipboardItems = await navigator.clipboard.read()
-      console.log(clipboardItems)
-      for (const clipboardItem of clipboardItems) {
-        for (const type of clipboardItem.types) {
-          const blob = await clipboardItem.getType(type)
+const loadEditorDraftText = () => {
+  if (!editor.value) {
+    return
+  }
 
-          if (blob.type == 'text/plain' || blob.type == 'text/html') {
-            console.log(await blob.text())
-          } else {
-            console.log(blob)
-          }
+  const quill = getQuill()
+
+  setTimeout(() => {
+    const talk = talkStore.findItem(dialogueStore.index_name)
+
+    let items = []
+
+    if (talk && talk.draft_data) {
+      let data = JSON.parse(talk.draft_data)
+      items = data.ops || []
+    }
+
+    quill.setContents(items)
+
+    quill.focus()
+  }, 0)
+}
+
+// 添加匹粘贴板事件禁止图片粘贴
+function handleCustomMatcher(node, Delta) {
+  const ops: any[] = []
+
+  Delta.ops.forEach(op => {
+    // 如果粘贴了图片，这里会是一个对象，所以可以这样处理
+    if (op.insert && typeof op.insert === 'string') {
+      ops.push({
+        insert: op.insert, // 文字内容
+        attributes: {}, //文字样式（包括背景色和文字颜色等）
+      })
+    } else {
+      ops.push(op)
+    }
+  })
+
+  Delta.ops = ops
+  return Delta
+}
+
+function onSendMessage() {
+  var delta = getQuill().getContents()
+  let data = getEditorNodeInfo(delta)
+
+  switch (data.msgType) {
+    case 1: // 文字消息
+      if (data.items[0].content.length > 1024) {
+        return window['$message'].info('发送内容超长，请分条发送')
+      }
+
+      let event = emitCall(
+        'text_event',
+        { text: data.items[0].content, uids: data.mentionUids },
+        (ok: any) => {
+          getQuill().setContents([])
         }
+      )
+
+      emit('editor-event', event)
+      break
+    case 3: // 图片消息
+      let detail = getImageInfo(data.items[0].content)
+
+      emit(
+        'editor-event',
+        emitCall(
+          'image_event',
+          { ...detail, url: data.items[0].content, size: 10000 },
+          (ok: any) => {
+            getQuill().setContents([])
+          }
+        )
+      )
+      break
+    case 12: // 图文消息
+      emit(
+        'editor-event',
+        emitCall('mixed_event', { items: data.items }, (ok: any) => {
+          getQuill().setContents([])
+        })
+      )
+      break
+  }
+}
+
+const onEditorChange = (data: any) => {
+  let delta = getQuill().getContents()
+
+  console.log(delta)
+
+  if (delta.ops && delta.ops[0].insert == '\n') {
+    delta.ops.shift()
+    getQuill().setContents(delta.ops)
+  }
+
+  if (delta.ops.length) {
+    while (true) {
+      let item = delta.ops.pop()
+
+      if (!(typeof item.insert === 'string' && item.insert == '\n')) {
+        delta.ops.push(item)
+        break
       }
     }
-  } catch (err) {
-    console.error(err)
   }
 
-  // let files = getPasteImgs(e)
-  // if (files.length > 0) {
-  //   insertEditorImage(files[0])
-  // } else {
-  //   pasteFilter(e)
-  // }
-
-  return e.preventDefault()
+  emit('editor-event', emitCall('input_event', delta))
 }
 
-//拖拽上传图片回调方法
-const onDragPaste = (e: any) => {
-  let files = getDragPasteImg(e)
+const onWatchQuote = (o: any, n: any) => {
+  if (o && o.id > 0) {
+    let delta = getQuill().getContents()
 
-  if (files.length == 0) return
+    for (let index = 0; index < delta.ops.length; index++) {
+      if (delta.ops[index].insert.quote) return
+    }
 
-  for (const file of files) {
-    insertEditorImage(file)
-  }
+    const quill = getQuill()
+    const index = (quill.getSelection() || {}).index || quill.getLength()
 
-  return e.preventDefault()
-}
-
-const onCopy = (e: any) => {
-  // let data = new Blob(['一文彻底掌握 Blob Web API'], { type: 'text/plain' })
-  // const clipboardItem = new ClipboardItem({ 'text/plain': data })
-  // const clipboardItem2 = new ClipboardItem({ 'text/plain': new Blob(['||||一文彻底掌握 Blob Web API'], { type: 'text/plain' }) })
-
-  // navigator.clipboard.write([clipboardItem,clipboardItem2])
-
-  var txt = window.getSelection
-    ? window.getSelection()
-    : document.selection.createRange()
-  console.log('onCopy', txt)
-  return e.preventDefault()
-}
-
-const loadEditorDraftText = () => {
-  const editor = document.getElementById('me-editor')
-  if (!editor) return
-
-  const talk = talkStore.findItem(dialogueStore.index_name)
-  if (talk) {
-    editor.innerHTML = talk.draft_text
-  }
-
-  editor.focus()
-
-  // 将光标移动到文本末尾
-  let selection = window.getSelection()
-  if (selection) {
-    let range = document.createRange()
-    range.selectNodeContents(editor)
-    range.collapse(false)
-    selection.removeAllRanges()
-    selection.addRange(range)
+    quill.insertEmbed(0, 'quote', o)
+    quill.setSelection(index + 1, 0, 'user')
+    editorStore.quote = {}
   }
 }
 
 watch(indexName, loadEditorDraftText, { immediate: true })
+watch(quote, onWatchQuote, { immediate: true })
 
 onMounted(() => {
-  const editor = document.getElementById('me-editor')
-  if (editor) {
-    tribute.attach(editor)
-  }
-
   loadEditorDraftText()
 })
 </script>
@@ -451,15 +446,12 @@ onMounted(() => {
       </header>
 
       <main class="el-main height100">
-        <div
-          id="me-editor"
-          class="me-scrollbar"
-          spellcheck="true"
-          contenteditable="true"
-          @keydown="onKeydownEvent($event)"
-          placeholder="你想要说点什么呢..."
-          v-paste="onPaste"
-          v-drag="onDragPaste"
+        <QuillEditor
+          ref="editor"
+          id="editor"
+          :options="editorOption"
+          @editorChange="onEditorChange"
+          style="height: 100%; border: none"
         />
       </main>
     </section>
@@ -530,6 +522,7 @@ onMounted(() => {
           border-radius: 2px;
           white-space: pre;
           user-select: none;
+          z-index: 999999999999;
         }
 
         &:hover {
@@ -544,81 +537,125 @@ onMounted(() => {
   }
 }
 
-#me-editor {
-  width: 100%;
-  height: inherit;
-  border: none;
-  outline: none;
-  resize: none;
-  font-size: 15px;
-  overflow-y: auto;
-  color: #464545;
+:global(.ql-editor) {
   padding: 8px;
-  box-sizing: border-box;
-  white-space: pre-wrap;
-  word-break: break-word;
-  word-wrap: break-word;
-  user-select: none;
-  cursor: text;
-  outline: none;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'Alibaba PuHuiTi 2.0 45';
 }
 
-:global(.ed-mention) {
-  color: #518afe;
+:global(.ql-editor.ql-blank::before) {
+  font-family: PingFang SC, Microsoft YaHei, 'Alibaba PuHuiTi 2.0 45' !important;
+  left: 8px;
 }
 
-:global(.ed-image) {
-  max-width: 100px;
-  object-fit: contain;
-  padding-right: 6px;
-  // display: block;
-  margin: 5px 0;
+:global(.ql-snow .ql-editor img) {
+  max-width: 80px;
+  border-radius: 3px;
+  background-color: #ccc;
+  margin: 0px 2px;
 }
 
-#me-editor[contenteditable]:empty:before {
-  content: attr(placeholder);
-  color: #a7a4a4;
-  font-size: 12px;
-  font-weight: 400;
-}
-
-#me-editor[contenteditable]:focus {
-  content: none;
-}
-
-:global(.tribute-container) {
-  border: 5px solid #f5f5f5;
-  box-sizing: border-box;
+:global(.image-uploading) {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  background: #f5f5f5;
   border-radius: 5px;
-  box-shadow: 0 0 20px 5px #ffffff;
-}
-:global(.tribute-container ul) {
-  margin-top: 0;
-  padding: 0 3px;
-  background-color: #f5f5f5;
 }
 
-:global(.tribute-container li) {
+:global(.image-uploading img) {
+  filter: unset;
+  display: none;
+}
+</style>
+
+<style lang="less">
+.ed-emoji {
+  background-color: unset !important;
+}
+
+.ql-editor.ql-blank::before {
+  font-style: unset;
+}
+
+.ql-mention-list-container {
+  width: 160px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 6px;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background-color: #e4e4e5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: #c0bebc;
+  }
+}
+
+.ql-mention-list-item {
+  padding: 0 10px;
+  overflow: hidden;
+}
+
+.ql-mention-list-item.selected {
+  background-color: #508afe;
+  color: #fff;
+  text-decoration: none;
+}
+
+.mention {
+  color: #409eff;
+  background-color: transparent;
+}
+
+.member-item {
+  height: 35px;
   display: flex;
   align-items: center;
-  width: 130px;
-  border-radius: 5px;
+
+  img {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+  }
+
+  .member-name {
+    margin-left: 5px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
-:global(.tribute-container li span) {
-  font-weight: 400;
-  margin-left: 10px;
-}
+.quote-card-content {
+  display: flex;
+  background-color: #f6f6f6;
+  flex-direction: column;
+  padding: 8px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  user-select: none;
 
-:global(.tribute-container li.highlight) {
-  // background: #daf3fd;
-  background-color: rgb(80, 138, 254);
-  color: #ffffff;
-}
+  .quote-card-title {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-:global(.tribute-mention) {
-  color: #518afe;
-  padding: 0 2px;
+  .quote-card-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 </style>

@@ -10,7 +10,7 @@ interface AnalysisResp {
     msgType: number // 1 文本；2：图片；3图文混合消息
 }
 
-export function getEditorNodeInfo(editor: HTMLElement | null): AnalysisResp {
+export function getEditorNodeInfo(delta): AnalysisResp {
     let resp: AnalysisResp = {
         items: [],
         mentions: [],
@@ -18,69 +18,86 @@ export function getEditorNodeInfo(editor: HTMLElement | null): AnalysisResp {
         msgType: 1,
     }
 
-    let nodes = editor ? editor.childNodes : []
-
-    for (const node of nodes) {
+    for (const iterator of delta.ops) {
         let preNode
         if (resp.items.length) {
             preNode = resp.items[resp.items.length - 1]
         }
 
-        if (node.nodeName == "#text") {
-            if (!node.textContent) continue
+        if (typeof (iterator.insert) === "string") {
+            if (!iterator.insert || iterator.insert == "\n") continue
 
             if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + node.textContent
+                preNode.content = preNode.content + iterator.insert
                 continue
             }
 
             resp.items.push({
                 "type": 1,
-                "content": node.textContent
+                "content": iterator.insert
             })
 
             continue
         }
 
-        if (node.nodeName == "IMG" && node.className == "ed-emoji") {
-            if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + node.dataset.text
-                continue
-            }
+        // @好友
+        if (iterator.insert.mention) {
+            console.log(iterator.insert.mention)
 
-            resp.items.push({
-                "type": 1,
-                "content": node.dataset.text
-            })
+            let mention = iterator.insert.mention
 
-            continue
-        }
-
-        if (node.nodeName == "SPAN" && node.className == "ed-mention") {
             resp.mentions.push({
-                "name": node.textContent,
-                "atid": node.dataset.atid,
+                "name": `${mention.denotationChar}${mention.value}`,
+                "atid": mention.id,
             })
 
             if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + node.textContent
+                preNode.content = preNode.content + ` ${mention.denotationChar}${mention.value}`
                 continue
             }
 
             resp.items.push({
                 "type": 1,
-                "content": node.textContent || ""
+                "content": `${mention.denotationChar}${mention.value}`
             })
 
             continue
         }
 
-        if (node.nodeName == "IMG" && node.className == "ed-image") {
+        // 图片
+        if (iterator.insert.image) {
             resp.items.push({
                 "type": 3,
-                "content": node.currentSrc
+                "content": iterator.insert.image
             })
             continue
+        }
+
+        // 表情
+        if (iterator.insert.emoji) {
+            let emoji = iterator.insert.emoji
+
+            if (preNode && preNode.type == 1) {
+                preNode.content = preNode.content + emoji.alt
+                continue
+            }
+
+            resp.items.push({
+                "type": 1,
+                "content": emoji.alt
+            })
+
+            continue
+        }
+    }
+
+    if (resp.items.length > 0) {
+        if (resp.items[0].type == 1 && resp.items[0].content == "\n") {
+            resp.items.shift()
+        }
+
+        if (resp.items[resp.items.length - 1].type == 1 && resp.items[resp.items.length - 1].content == "\n") {
+            resp.items.pop()
         }
     }
 
@@ -91,8 +108,6 @@ export function getEditorNodeInfo(editor: HTMLElement | null): AnalysisResp {
     if (resp.items.length == 1) {
         resp.msgType = resp.items[0].type
     }
-
-    // console.log(JSON.stringify(resp.items))
 
     return resp
 }

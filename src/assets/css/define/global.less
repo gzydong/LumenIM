@@ -159,15 +159,27 @@ textarea {
   }
 }
 
-.tribute-container {
+// 滚动条样式
+.me-scrollbar {
   &::-webkit-scrollbar {
     width: 3px;
-    background-color: #efefef;
+    height: 3px;
+    background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: #d6d5d3;
+    background-color: transparent;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar {
+      background-color: #e4e4e5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #c0bebc;
+    }
   }
 }
 
@@ -265,7 +277,6 @@ textarea {
   max-width: 400px;
 }
 
-
-.n-drawer-container{
+.n-drawer-container {
   overflow: hidden;
 }

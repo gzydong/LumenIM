@@ -44,7 +44,6 @@ class Socket {
       onOpen: evt => {
         // 更新 WebSocket 连接状态
         useUserStore().updateSocketStatus(true)
-
         useTalkStore().loadTalkList()
       },
       // Websocket 断开连接回调方法

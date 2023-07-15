@@ -11,7 +11,7 @@ import {
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading } from '@icon-park/vue-next'
 import socket from '@/socket'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore, useEditorStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
@@ -25,6 +25,7 @@ import SkipBottom from './SkipBottom.vue'
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user = inject('$user')
 const dialogueStore = useDialogueStore()
+const editorStore = useEditorStore()
 const props = defineProps({
   uid: {
     type: Number,
@@ -217,6 +218,56 @@ const onDownloadFile = (data: any) => {
   return window['$message'].info('视频暂不支持下载!')
 }
 
+const onQuoteMessage = (data: any) => {
+  let item = {
+    id: data.id,
+    title: `${data.nickname} ${data.created_at}`,
+    describe: '',
+    image: '',
+  }
+
+  switch (data.msg_type) {
+    case 1:
+      item.describe = data.content
+      break // 文本消息
+    case 2:
+      item.describe = '[代码消息]'
+      break // 代码消息
+    case 3:
+      item.image = data.extra.url
+      break // 图片文件
+    case 4:
+      item.describe = '[语音文件]'
+      break // 语音文件
+    case 5:
+      item.describe = '[视频文件]'
+      break // 视频文件
+    case 6:
+      item.describe = '[其它文件]'
+      break // 其它文件
+    case 7:
+      item.describe = '[位置消息]'
+      break // 位置消息
+    case 8:
+      item.describe = '[名片消息]'
+      break // 名片消息
+    case 9:
+      item.describe = '[转发消息]'
+      break // 转发消息
+    case 10:
+      item.describe = '[登录消息]'
+      break // 登录消息
+    case 11:
+      item.describe = '[投票消息]'
+      break // 投票消息
+    case 12:
+      item.describe = '[图文消息]'
+      break // 图文消息
+  }
+
+  editorStore.quote = item
+}
+
 // 会话列表右键显示菜单
 const onContextMenu = (e: any, item: any) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
@@ -236,6 +287,7 @@ const onContextMenuHandle = (key: string) => {
     delete: onDeleteTalk,
     multiSelect: onMultiSelect,
     download: onDownloadFile,
+    quote: onQuoteMessage,
   }
 
   // 触发事件

@@ -23,7 +23,7 @@ onUnmounted(() => {
         <IndexSider />
       </aside>
 
-      <main class="el-main test">
+      <main class="el-main">
         <IndexContent v-if="dialogueStore.index_name" />
         <IndexAmicable v-else />
       </main>
@@ -42,9 +42,15 @@ onUnmounted(() => {
   user-select: none;
 }
 
-@media screen and (max-width: 900px) {
+// @media screen and (max-width: 900px) {
+//   .el-aside {
+//     width: 280px;
+//   }
+// }
+
+@media screen and (max-width: 1000px) {
   .el-aside {
-    width: 280px;
+    width: 260px;
   }
 }
 </style>

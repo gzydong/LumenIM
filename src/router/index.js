@@ -33,6 +33,11 @@ const routes = [
     name: 'Example',
     component: () => import('@/views/example/example.vue'),
   },
+  {
+    path: '/example/editor',
+    name: 'editor',
+    component: () => import('@/views/example/example.vue'),
+  },
   SettingRouter,
   ContactRouter,
   AuthRouter,

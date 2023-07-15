@@ -1,4 +1,4 @@
-// import '@/assets/css/define/theme.less'
+import '@/assets/css/define/theme.less'
 import '@/assets/css/define/global.less'
 import './plugins/highlight.js'
 

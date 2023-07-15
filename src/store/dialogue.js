@@ -109,6 +109,7 @@ export const useDialogueStore = defineStore('dialogue', {
           leader: o.leader,
           remark: o.remark,
           online: false,
+          value: o.nickname,
         })
       }
     },

@@ -218,12 +218,6 @@ defineProps({
   &.actived {
     background-color: #ececec;
   }
-
-  &.actived {
-    .avatar-box {
-      border-radius: 5px;
-    }
-  }
 }
 
 .badge {
@@ -249,7 +243,6 @@ defineProps({
   justify-content: center;
   width: 20px;
 }
-
 
 :global(.draft-text .ed-image) {
   display: none;

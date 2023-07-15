@@ -5,6 +5,7 @@ import {
   NNotificationProvider,
   NMessageProvider,
   NDialogProvider,
+  NConfigProvider,
   zhCN,
   dateZhCN,
   darkTheme
@@ -47,7 +48,6 @@ listener()
     :locale="zhCN"
     :date-locale="dateZhCN"
     :hljs="hljs"
-    :theme="darkTheme"
   >
     <n-message-provider>
       <message-api />

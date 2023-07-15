@@ -13,24 +13,18 @@ const props = defineProps<{
 
 const float = props.data.float
 
-const img = (src, width = 200) => {
+const maxWidth = (src, width = 200) => {
   const info = getImageInfo(src)
 
-  if (info.width == 0 || info.height == 0) {
-    return {}
+  if (info.width == 0) {
+    return width
   }
 
   if (info.width < width) {
-    return {
-      width: `${info.width}px`,
-      height: `${info.height}px`,
-    }
+    return info.width
   }
 
-  return {
-    width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px',
-  }
+  return width
 }
 </script>
 
@@ -50,7 +44,11 @@ const img = (src, width = 200) => {
         </template>
 
         <template v-else-if="item.type === 3">
-          <img :style="img(item.content, 350)" :src="item.content">
+          <n-image :width="maxWidth(item.content, 500)" :src="item.content" object-fit="contain" :style="{
+            borderRadius: '10px',
+            margin: '5px 0',
+            overflow: 'hidden',
+          }" />
         </template>
       </template>
     </pre>
@@ -91,12 +89,6 @@ const img = (src, width = 200) => {
     :deep(a) {
       color: #2196f3;
       text-decoration: revert;
-    }
-
-    img {
-      margin-bottom: 3px;
-      border-radius: 3px;
-      object-fit: contain;
     }
   }
 }
