@@ -3,13 +3,14 @@ import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { Search, Plus } from '@icon-park/vue-next'
-import { useUserStore } from '@/store'
+import { useUserStore, useTalkStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
 import { toTalk } from '@/utils/talk'
 
 const userStore = useUserStore()
+const talkStore = useTalkStore()
 const isShowCreateGroupBox = ref(false)
 const keywords = ref('')
 const items = ref([])
@@ -63,6 +64,7 @@ const onToTalk = item => {
 const onGroupCallBack = data => {
   isShowCreateGroupBox.value = false
   onLoadData()
+  talkStore.loadTalkList()
 }
 
 onMounted(() => {

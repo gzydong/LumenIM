@@ -40,15 +40,20 @@ const maxWidth = (src, width = 200) => {
     <pre>
       <template v-for="item in extra.items">
         <template v-if="item.type === 1">
-            <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
+          <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
         </template>
 
         <template v-else-if="item.type === 3">
-          <n-image :width="maxWidth(item.content, 500)" :src="item.content" object-fit="contain" :style="{
-            borderRadius: '10px',
-            margin: '5px 0',
-            overflow: 'hidden',
-          }" />
+          <n-image
+            :width="maxWidth(item.content, 500)"
+            :src="item.content"
+            object-fit="contain"
+            :style="{
+              borderRadius: '10px',
+              margin: '5px 0',
+              overflow: 'hidden',
+            }"
+          ></n-image>
         </template>
       </template>
     </pre>

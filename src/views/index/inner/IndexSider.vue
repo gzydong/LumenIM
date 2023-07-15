@@ -352,7 +352,10 @@ const onInitialize = () => {
 
 // 路由更新事件
 onBeforeRouteUpdate(onInitialize)
-onMounted(onInitialize)
+
+onMounted(() => {
+  onInitialize()
+})
 </script>
 
 <template>

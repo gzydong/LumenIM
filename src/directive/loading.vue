@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .loading-content {
   width: 100%;
   height: 100%;

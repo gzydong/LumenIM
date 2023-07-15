@@ -42,11 +42,11 @@ onUnmounted(() => {
   user-select: none;
 }
 
-// @media screen and (max-width: 900px) {
-//   .el-aside {
-//     width: 280px;
-//   }
-// }
+.small-screen {
+  .el-aside {
+    width: 260px;
+  }
+}
 
 @media screen and (max-width: 1000px) {
   .el-aside {
