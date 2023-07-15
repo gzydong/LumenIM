@@ -9,7 +9,8 @@ import {
   ref,
 } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
-import { Loading } from '@icon-park/vue-next'
+import { Loading, MoreThree } from '@icon-park/vue-next'
+
 import socket from '@/socket'
 import { useDialogueStore, useEditorStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -23,7 +24,7 @@ import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
-const user = inject('$user')
+const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
 const editorStore = useEditorStore()
 const props = defineProps({
@@ -429,23 +430,31 @@ onMounted(onReload)
                   @contextmenu.prevent="onContextMenu($event, item)"
                 />
 
-                <div
-                  class="read-status"
-                  v-if="talk_type == 1 && item.float == 'right'"
-                >
-                  <loading
-                    theme="outline"
-                    size="19"
-                    fill="#000"
-                    :strokeWidth="1"
-                    class="icon-rotate"
-                    v-show="item.send_status == 1"
-                  />
+                <div class="talk-tools">
+                  <template v-if="talk_type == 1 && item.float == 'right'">
+                    <loading
+                      theme="outline"
+                      size="19"
+                      fill="#000"
+                      :strokeWidth="1"
+                      class="icon-rotate"
+                      v-show="item.send_status == 1"
+                    />
 
-                  <span v-show="item.send_status == 1"> 正在发送... </span>
-                  <span v-show="item.send_status != 1">
-                    {{ item.is_read ? '已读' : '已送达' }}
-                  </span>
+                    <span v-show="item.send_status == 1"> 正在发送... </span>
+                    <span v-show="item.send_status != 1">
+                      {{ item.is_read ? '已读' : '已送达' }}
+                    </span>
+                  </template>
+
+                  <more-three
+                    class="more-tools pointer"
+                    theme="outline"
+                    size="14"
+                    fill="#4a4a4a"
+                    :strokeWidth="2"
+                    @click="onContextMenu($event, item)"
+                  />
                 </div>
               </div>
             </main>
@@ -600,18 +609,29 @@ onMounted(onReload)
         box-sizing: border-box;
         width: 100%;
 
-        .read-status {
+        .talk-tools {
           display: flex;
           margin: 0 8px;
           color: #a79e9e;
           font-size: 12px;
           user-select: none;
+          align-items: center;
+          justify-content: space-around;
+
+          .more-tools {
+            display: none;
+            margin-left: 5px;
+          }
         }
       }
 
       &:hover {
         .talk-title {
           opacity: 1;
+        }
+
+        .more-tools {
+          display: flex !important;
         }
       }
     }

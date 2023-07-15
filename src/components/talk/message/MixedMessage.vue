@@ -26,6 +26,26 @@ const maxWidth = (src, width = 200) => {
 
   return width
 }
+
+const img = (src, width = 200) => {
+  const info = getImageInfo(src)
+
+  if (info.width == 0 || info.height == 0) {
+    return {}
+  }
+
+  if (info.width < width) {
+    return {
+      width: `${info.width}px`,
+      height: `${info.height}px`,
+    }
+  }
+
+  return {
+    width: width + 'px',
+    height: parseInt(info.height / (info.width / width)) + 'px',
+  }
+}
 </script>
 
 <template>
@@ -44,16 +64,12 @@ const maxWidth = (src, width = 200) => {
         </template>
 
         <template v-else-if="item.type === 3">
-          <n-image
-            :width="maxWidth(item.content, 500)"
-            :src="item.content"
-            object-fit="contain"
-            :style="{
-              borderRadius: '10px',
-              margin: '5px 0',
-              overflow: 'hidden',
-            }"
-          ></n-image>
+          <div
+            :style="img(item.content, 300)"
+            style="display: flex; margin: 5px 0;border-radius: 8px;overflow: hidden;;"
+          >
+            <n-image :src="item.content"></n-image>
+          </div>
         </template>
       </template>
     </pre>

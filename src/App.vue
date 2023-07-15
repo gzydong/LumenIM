@@ -1,5 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
+import { provide, ref } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
@@ -8,7 +9,7 @@ import {
   NConfigProvider,
   zhCN,
   dateZhCN,
-  darkTheme
+  darkTheme,
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
 import { useUserStore } from '@/store'
@@ -17,6 +18,7 @@ import { listener } from '@/listener'
 import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
+import UserCardModal from '@/components/user/UserCardModal.vue'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -24,6 +26,14 @@ IconProvider({
   size: 24,
   strokeWidth: 3,
   strokeLinejoin: 'bevel',
+})
+
+const isShowUser = ref(false)
+const showUserId = ref(0)
+
+provide('$user', uid => {
+  showUserId.value = uid
+  isShowUser.value = true
 })
 
 const userStore = useUserStore()
@@ -62,5 +72,7 @@ listener()
     </n-dialog-provider>
 
     <router-view />
+
+    <UserCardModal v-model:show="isShowUser" v-model:uid="showUserId" />
   </n-config-provider>
 </template>

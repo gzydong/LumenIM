@@ -1,27 +1,34 @@
-<script setup>
-import { ref, reactive, computed } from 'vue'
-import { NIcon, NModal, NButton, NInput, NAvatar, NDropdown } from 'naive-ui'
+<script setup lang="ts">
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import {
+  NIcon,
+  NModal,
+  NButton,
+  NInput,
+  NAvatar,
+  NDropdown,
+  NPopover,
+} from 'naive-ui'
 import { CloseOne, SendEmail, Male, Female } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
 import { defAvatar } from '@/constant/default'
-import { ServeContactGroupList, ServeContactMoveGroup } from '@/api/contacts'
+import {
+  ServeContactGroupList,
+  ServeContactMoveGroup,
+  ServeEditContactRemark,
+} from '@/api/contacts'
+
+const emit = defineEmits(['update:show', 'update:uid'])
 
 const props = defineProps({
-  uid: {
-    type: Number,
-    default: 0,
-  },
-  remove: {
-    type: Function,
-    default: () => {},
-  },
+  show: Boolean,
+  uid: Number,
 })
 
 const isOpenFrom = ref(false)
-const showModal = ref(false)
-const state = reactive({
+const state: any = reactive({
   id: 0,
   avatar: '',
   gender: 0,
@@ -34,9 +41,12 @@ const state = reactive({
   text: '',
 })
 
-const options = reactive([])
+const editCardPopover: any = ref(false)
+const modelRemark = ref('')
+
+const options = ref<any>([])
 const groupName = computed(() => {
-  const item = options.find(item => {
+  const item = options.value.find((item: any) => {
     return item.key == state.group_id
   })
 
@@ -53,7 +63,8 @@ const onLoadData = () => {
   }).then(({ code, data }) => {
     if (code == 200) {
       Object.assign(state, data)
-      showModal.value = true
+
+      modelRemark.value = state.remark
     } else {
       window['$message'].info('用户信息不存在！', { showIcon: false })
     }
@@ -62,8 +73,9 @@ const onLoadData = () => {
   ServeContactGroupList().then(res => {
     if (res.code == 200) {
       let items = res.data.items || []
+      options.value = []
       for (const iter of items) {
-        options.push({ label: iter.name, key: iter.id })
+        options.value.push({ label: iter.name, key: iter.id })
       }
     }
   })
@@ -71,7 +83,6 @@ const onLoadData = () => {
 
 const onToTalk = () => {
   toTalk(1, props.uid)
-  props.remove()
 }
 
 const onJoinContact = () => {
@@ -80,7 +91,7 @@ const onJoinContact = () => {
   }
 
   ServeCreateContact({
-    friend_id: parseInt(props.uid),
+    friend_id: props.uid,
     remark: state.text,
   }).then(res => {
     if (res.code == 200) {
@@ -88,6 +99,21 @@ const onJoinContact = () => {
       window['$message'].success('申请发送成功！')
     } else {
       window['$message'].error(res.message)
+    }
+  })
+}
+
+const onChangeRemark = () => {
+  ServeEditContactRemark({
+    friend_id: props.uid,
+    remark: modelRemark.value,
+  }).then(({ code, message }) => {
+    if (code == 200) {
+      editCardPopover.value.setShow(false)
+      window['$message'].success('备注成功！')
+      state.remark = modelRemark.value
+    } else {
+      window['$message'].error(message)
     }
   })
 }
@@ -106,20 +132,23 @@ const handleSelectGroup = value => {
   })
 }
 
-onLoadData()
+const onUpdate = value => {
+  emit('update:show', value)
+}
+
+const onAfterEnter = () => {
+  onLoadData()
+}
 </script>
 
 <template>
   <n-modal
-    v-model:show="showModal"
-    :on-mask-click="
-      () => {
-        props.remove()
-      }
-    "
+    :show="show"
+    :on-update:show="onUpdate"
+    :on-after-enter="onAfterEnter"
   >
     <div class="section">
-      <section class="el-container container is-vertical height100">
+      <section class="el-container container is-vertical">
         <header class="el-header header">
           <n-avatar
             round
@@ -146,7 +175,7 @@ onLoadData()
             />
           </div>
 
-          <div class="close" @click="remove()">
+          <div class="close" @click="onUpdate(false)">
             <close-one theme="outline" size="22" fill="#fff" :strokeWidth="2" />
           </div>
 
@@ -179,9 +208,37 @@ onLoadData()
             </div>
             <div class="info-item" v-if="state.friend_status == 2">
               <span class="name">备注 :</span>
-              <span class="text edit pointer text-ellipsis">
-                {{ state.remark || '未设置' }}&nbsp;&nbsp;
-              </span>
+              <n-popover
+                trigger="click"
+                placement="top-start"
+                ref="editCardPopover"
+              >
+                <template #trigger>
+                  <span class="text edit pointer text-ellipsis">
+                    {{ state.remark || '未设置' }}&nbsp;&nbsp;
+                  </span>
+                </template>
+
+                <template #header> 设置备注 </template>
+
+                <div style="display: flex">
+                  <n-input
+                    type="text"
+                    placeholder="设置备注..."
+                    :autofocus="true"
+                    maxlength="10"
+                    v-model:value="modelRemark"
+                    @keydown.enter.native="onChangeRemark"
+                  />
+                  <n-button
+                    type="primary"
+                    class="mt-l5"
+                    @click="onChangeRemark"
+                  >
+                    确定
+                  </n-button>
+                </div>
+              </n-popover>
             </div>
             <div class="info-item">
               <span class="name">邮箱 :</span>
@@ -267,6 +324,7 @@ onLoadData()
   height: 600px;
   border-radius: 10px;
   overflow: hidden;
+  background-color: #ffffff;
 
   .header {
     width: 100%;
@@ -347,7 +405,7 @@ onLoadData()
     align-items: center;
 
     .name {
-      width: 50px;
+      width: 45px;
       flex-shrink: 0;
       color: #cbc5c5;
     }
