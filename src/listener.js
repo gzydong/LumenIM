@@ -68,8 +68,9 @@ function registerClickListener() {
     const href = el.getAttribute('href')
 
     if (href) {
-      if (isElectronMode() || el.getAttribute('alt') === 'link') {
-        return window.open(href)
+
+      if (isElectronMode() && el.getAttribute('alt') === 'link') {
+        return electron().openLink(href)
       }
 
       window.location.href = href

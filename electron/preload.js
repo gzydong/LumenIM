@@ -14,6 +14,10 @@ contextBridge.exposeInMainWorld('electron', {
   getAppPlatform: () => {
     return ipcRenderer.sendSync('app-info', '')
   },
+
+  openLink: link => {
+    ipcRenderer.send('ipc:open-link', link)
+  },
 })
 
 // 窗口变化事件
