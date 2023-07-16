@@ -54,10 +54,10 @@ listener()
 
   <!-- 调整 naive-ui 的字重配置 -->
   <n-config-provider
-    :theme-overrides="overrides"
     :locale="zhCN"
     :date-locale="dateZhCN"
     :hljs="hljs"
+    :theme="darkTheme"
   >
     <n-message-provider>
       <message-api />

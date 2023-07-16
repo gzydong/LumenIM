@@ -203,19 +203,10 @@ const onKeyboardPush = throttle(() => {
 
 // 编辑器输入事件
 const onInputEvent = ({ data }) => {
-  if (data.ops.length) {
-    talkStore.updateItem({
-      index_name: props.index_name,
-      draft_text: '编辑草稿',
-      draft_data: JSON.stringify(data),
-    })
-  } else {
-    talkStore.updateItem({
-      index_name: props.index_name,
-      draft_text: '',
-      draft_data: '{}',
-    })
-  }
+  talkStore.updateItem({
+    index_name: props.index_name,
+    draft_text: data,
+  })
 
   // 判断对方是否在线和是否需要推送
   // 3秒时间内推送一次

@@ -1,3 +1,5 @@
+import { Delta } from 'quill'
+
 interface Item {
     type: number
     content: string
@@ -10,7 +12,16 @@ interface AnalysisResp {
     msgType: number // 1 文本；2：图片；3图文混合消息
 }
 
-export function getEditorNodeInfo(delta): AnalysisResp {
+function removeLeadingNewlines(str) {
+    return str.replace(/^[\n\s]+/, '');
+}
+
+
+function removeTrailingNewlines(str) {
+    return str.replace(/[\n\s]+$/, '');
+}
+
+export function deltaToMessage(delta: Delta): AnalysisResp {
     let resp: AnalysisResp = {
         items: [],
         mentions: [],
@@ -19,16 +30,16 @@ export function getEditorNodeInfo(delta): AnalysisResp {
     }
 
     for (const iterator of delta.ops) {
-        let preNode
+        let node: any = null
         if (resp.items.length) {
-            preNode = resp.items[resp.items.length - 1]
+            node = resp.items[resp.items.length - 1]
         }
 
         if (typeof (iterator.insert) === "string") {
             if (!iterator.insert || iterator.insert == "\n") continue
 
-            if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + iterator.insert
+            if (node && node.type == 1) {
+                node.content = node.content + iterator.insert
                 continue
             }
 
@@ -51,8 +62,8 @@ export function getEditorNodeInfo(delta): AnalysisResp {
                 "atid": mention.id,
             })
 
-            if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + ` ${mention.denotationChar}${mention.value}`
+            if (node && node.type == 1) {
+                node.content = node.content + ` ${mention.denotationChar}${mention.value}`
                 continue
             }
 
@@ -77,8 +88,8 @@ export function getEditorNodeInfo(delta): AnalysisResp {
         if (iterator.insert.emoji) {
             let emoji = iterator.insert.emoji
 
-            if (preNode && preNode.type == 1) {
-                preNode.content = preNode.content + emoji.alt
+            if (node && node.type == 1) {
+                node.content = node.content + emoji.alt
                 continue
             }
 
@@ -91,13 +102,14 @@ export function getEditorNodeInfo(delta): AnalysisResp {
         }
     }
 
-    if (resp.items.length > 0) {
-        if (resp.items[0].type == 1 && resp.items[0].content == "\n") {
-            resp.items.shift()
+    // 去除前后多余空格
+    if (resp.items.length) {
+        if (resp.items[0].type == 1) {
+            resp.items[0].content = removeLeadingNewlines(resp.items[0].content)
         }
 
-        if (resp.items[resp.items.length - 1].type == 1 && resp.items[resp.items.length - 1].content == "\n") {
-            resp.items.pop()
+        if (resp.items[resp.items.length - 1].type == 1) {
+            resp.items[resp.items.length - 1].content = removeTrailingNewlines(resp.items[resp.items.length - 1].content)
         }
     }
 
@@ -110,4 +122,39 @@ export function getEditorNodeInfo(delta): AnalysisResp {
     }
 
     return resp
+}
+
+
+export function deltaToString(delta: Delta): string {
+    let content = ''
+
+    for (const o of delta.ops) {
+        if (typeof (o.insert) === "string") {
+            if (!o.insert || o.insert == "\n") continue
+
+            content += o.insert
+            continue
+        }
+
+        // @好友
+        if (o.insert.mention) {
+            let mention = o.insert.mention
+            content += ` ${mention.denotationChar}${mention.value} `
+            continue
+        }
+
+        // 图片
+        if (o.insert.image) {
+            content += '[图片]'
+            continue
+        }
+
+        // 表情
+        if (o.insert.emoji) {
+            content += o.insert.emoji.alt
+            continue
+        }
+    }
+
+    return content
 }

@@ -3,10 +3,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import 'quill-image-uploader/dist/quill.imageUploader.min.css'
 import 'quill-mention/dist/quill.mention.min.css'
 import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
-import { useDialogueStore, useTalkStore, useEditorStore } from '@/store'
 import { NPopover } from 'naive-ui'
-import { getEditorNodeInfo } from './editor.ts'
-import { getImageInfo } from '@/utils/functions'
 import {
   Voice as IconVoice,
   SourceCode,
@@ -17,26 +14,31 @@ import {
   Ranking,
   History,
 } from '@icon-park/vue-next'
-import { emitCall } from '@/utils/common'
+import { QuillEditor, Quill } from '@vueup/vue-quill'
+import ImageUploader from 'quill-image-uploader'
+import 'quill-mention'
+import { useDialogueStore, useEditorStore, useEditorDraftStore } from '@/store'
+import { deltaToMessage, deltaToString } from './util.ts'
+import { getImageInfo } from '@/utils/functions'
+import { emitCall, debounce } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
-import { QuillEditor, Quill } from '@vueup/vue-quill'
+
 import EmojiBlot from './formats/emoji.ts'
 import QuoteBlot from './formats/quote.ts'
-import ImageUploader from 'quill-image-uploader'
-import 'quill-mention'
+
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)
 Quill.register('modules/imageUploader', ImageUploader)
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
-const talkStore = useTalkStore()
 const editorStore = useEditorStore()
+const editorDraftStore = useEditorDraftStore()
 const props = defineProps({
   vote: {
     type: Boolean,
@@ -66,10 +68,9 @@ const editorOption = {
   debug: false,
   modules: {
     toolbar: false,
-
     clipboard: {
       // 粘贴版，处理粘贴时候的自带样式
-      matchers: [[Node.ELEMENT_NODE, handleCustomMatcher]],
+      matchers: [[Node.ELEMENT_NODE, onClipboardMatcher]],
     },
 
     keyboard: {
@@ -190,7 +191,7 @@ const navs = reactive([
   },
 ])
 
-const onVoteEvent = (data: any) => {
+function onVoteEvent(data: any) {
   const msg = emitCall('vote_event', data, (ok: boolean) => {
     if (ok) {
       isShowEditorVote.value = false
@@ -200,7 +201,7 @@ const onVoteEvent = (data: any) => {
   emit('editor-event', msg)
 }
 
-const onEmoticonEvent = (data: any) => {
+function onEmoticonEvent(data: any) {
   emoticonRef.value.setShow(false)
 
   if (data.type == 1) {
@@ -225,7 +226,7 @@ const onEmoticonEvent = (data: any) => {
   }
 }
 
-const onCodeEvent = (data: any) => {
+function onCodeEvent(data: any) {
   const msg = emitCall('code_event', data, (ok: boolean) => {
     isShowEditorCode.value = false
   })
@@ -233,7 +234,7 @@ const onCodeEvent = (data: any) => {
   emit('editor-event', msg)
 }
 
-const onUploadFile = (e: any) => {
+function onUploadFile(e: any) {
   let file = e.target.files[0]
 
   e.target.value = null
@@ -261,36 +262,12 @@ const onUploadFile = (e: any) => {
   emit('editor-event', fn)
 }
 
-const onRecorderEvent = (file: any) => {
+function onRecorderEvent(file: any) {
   emit('editor-event', emitCall('file_event', file))
   isShowEditorRecorder.value = false
 }
 
-const loadEditorDraftText = () => {
-  if (!editor.value) {
-    return
-  }
-
-  const quill = getQuill()
-
-  setTimeout(() => {
-    const talk = talkStore.findItem(dialogueStore.index_name)
-
-    let items = []
-
-    if (talk && talk.draft_data) {
-      let data = JSON.parse(talk.draft_data)
-      items = data.ops || []
-    }
-
-    quill.setContents(items)
-
-    quill.focus()
-  }, 0)
-}
-
-// 添加匹粘贴板事件禁止图片粘贴
-function handleCustomMatcher(node, Delta) {
+function onClipboardMatcher(node, Delta) {
   const ops: any[] = []
 
   Delta.ops.forEach(op => {
@@ -311,7 +288,7 @@ function handleCustomMatcher(node, Delta) {
 
 function onSendMessage() {
   var delta = getQuill().getContents()
-  let data = getEditorNodeInfo(delta)
+  let data = deltaToMessage(delta)
 
   switch (data.msgType) {
     case 1: // 文字消息
@@ -354,45 +331,49 @@ function onSendMessage() {
   }
 }
 
-const onEditorChange = (data: any) => {
+const onEditorChange = debounce(() => {
   let delta = getQuill().getContents()
 
-  console.log(delta)
+  editorDraftStore.items[indexName.value || ''] = JSON.stringify(delta.ops)
 
-  if (delta.ops && delta.ops[0].insert == '\n') {
-    delta.ops.shift()
-    getQuill().setContents(delta.ops)
+  emit('editor-event', emitCall('input_event', deltaToString(delta)))
+}, 2000)
+
+function onWatchQuote(o: any) {
+  if (!(o && o.id > 0)) return
+
+  let delta = getQuill().getContents()
+
+  for (let index = 0; index < delta.ops.length; index++) {
+    if (delta.ops[index].insert.quote) return
   }
 
-  if (delta.ops.length) {
-    while (true) {
-      let item = delta.ops.pop()
+  const quill = getQuill()
+  const index = (quill.getSelection() || {}).index || quill.getLength()
 
-      if (!(typeof item.insert === 'string' && item.insert == '\n')) {
-        delta.ops.push(item)
-        break
-      }
-    }
-  }
-
-  emit('editor-event', emitCall('input_event', delta))
+  quill.insertEmbed(0, 'quote', o)
+  quill.setSelection(index + 1, 0, 'user')
+  editorStore.quote = null
 }
 
-const onWatchQuote = (o: any, n: any) => {
-  if (o && o.id > 0) {
-    let delta = getQuill().getContents()
+function loadEditorDraftText() {
+  if (!editor.value) return
 
-    for (let index = 0; index < delta.ops.length; index++) {
-      if (delta.ops[index].insert.quote) return
+  const quill = getQuill()
+
+  // 这里延迟处理，不然会有问题
+  setTimeout(() => {
+    // 从缓存中加载编辑器草稿
+    let draft = editorDraftStore.items[indexName.value || '']
+
+    if (draft) {
+      quill.setContents(JSON.parse(draft))
+    } else {
+      quill.setContents([])
     }
 
-    const quill = getQuill()
-    const index = (quill.getSelection() || {}).index || quill.getLength()
-
-    quill.insertEmbed(0, 'quote', o)
-    quill.setSelection(index + 1, 0, 'user')
-    editorStore.quote = {}
-  }
+    quill.focus()
+  }, 100)
 }
 
 watch(indexName, loadEditorDraftText, { immediate: true })
@@ -659,3 +640,4 @@ onMounted(() => {
   }
 }
 </style>
+./util.ts

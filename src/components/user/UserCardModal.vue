@@ -83,6 +83,7 @@ const onLoadData = () => {
 
 const onToTalk = () => {
   toTalk(1, props.uid)
+  emit('update:show', false)
 }
 
 const onJoinContact = () => {

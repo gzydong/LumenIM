@@ -19,7 +19,7 @@ const option = reactive({
   size: 1,
   full: false,
   outputType: 'png',
-  canMove: false,
+  canMove: true,
   fixedBox: true,
   original: false,
   canMoveBox: true,
