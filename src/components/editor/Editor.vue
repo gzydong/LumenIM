@@ -20,7 +20,7 @@ import 'quill-mention'
 import { useDialogueStore, useEditorStore, useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString } from './util.ts'
 import { getImageInfo } from '@/utils/functions'
-import { emitCall, debounce } from '@/utils/common'
+import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
@@ -331,13 +331,18 @@ function onSendMessage() {
   }
 }
 
-const onEditorChange = debounce(() => {
+function onEditorChange() {
   let delta = getQuill().getContents()
 
-  editorDraftStore.items[indexName.value || ''] = JSON.stringify(delta.ops)
+  let text = deltaToString(delta)
 
-  emit('editor-event', emitCall('input_event', deltaToString(delta)))
-}, 2000)
+  editorDraftStore.items[indexName.value || ''] = JSON.stringify({
+    text: text,
+    ops: delta.ops,
+  })
+
+  emit('editor-event', emitCall('input_event', text))
+}
 
 function onWatchQuote(o: any) {
   if (!(o && o.id > 0)) return
@@ -372,7 +377,8 @@ function loadEditorDraftText() {
       quill.setContents([])
     }
 
-    quill.focus()
+    const index = (quill.getSelection() || {}).index || quill.getLength()
+    quill.setSelection(index, 0, 'user')
   }, 100)
 }
 

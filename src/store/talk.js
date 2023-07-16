@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ServeGetTalkList } from '@/api/chat'
 import { formatTalkItem } from '@/utils/talk'
+import { useEditorDraftStore } from './editor-draft'
 
 const ttime = datetime => {
   if (datetime == undefined || datetime == '') {
@@ -41,7 +42,7 @@ export const useTalkStore = defineStore('talk', {
     },
   },
   actions: {
-    findItem(index_name){
+    findItem(index_name) {
       return this.items.find(item => item.index_name === index_name)
     },
 
@@ -87,9 +88,20 @@ export const useTalkStore = defineStore('talk', {
 
       const response = ServeGetTalkList()
 
+      const editorDraftStore = useEditorDraftStore()
+
       response.then(({ code, data }) => {
         if (code == 200) {
-          this.items = data.items.map(item => formatTalkItem(item))
+          this.items = data.items.map(item => {
+            let value = formatTalkItem(item)
+
+            let draft = editorDraftStore.items[value.index_name]
+            if (draft) {
+              value.draft_text = JSON.parse(draft).text || ''
+            }
+
+            return value
+          })
 
           this.loadStatus = 3
         } else {
