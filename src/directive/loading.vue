@@ -23,7 +23,7 @@
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  background: rgb(255 255 255 / 89%);
+  background: var(--im-hover-bg-color);
   z-index: 1000;
   position: absolute;
   left: 0;

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
+import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
 import { useNotifyStore } from '@/store/notify'
 import { isElectronMode } from '@/utils/common'
 
@@ -12,6 +13,29 @@ const isFullScreen = computed({
     notifyStore.setFullScreen(val)
   },
 })
+
+const darkTheme = computed({
+  get: () => !notifyStore.darkTheme,
+  set: val => {
+    notifyStore.setDarkTheme(!val)
+  },
+})
+
+const railStyle = ({ focused, checked }) => {
+  const style = {}
+  if (checked) {
+    style.background = '#d03050'
+    if (focused) {
+      style.boxShadow = '0 0 0 2px #d0305040'
+    }
+  } else {
+    style.background = '#2080f0'
+    if (focused) {
+      style.boxShadow = '0 0 0 2px #2080f040'
+    }
+  }
+  return style
+}
 </script>
 
 <template>
@@ -19,6 +43,18 @@ const isFullScreen = computed({
     <h3 class="title">个性设置</h3>
 
     <div class="view-box">
+      <div class="view-list">
+        <div class="content">
+          <div class="name">主题颜色</div>
+          <div class="desc">
+            当前主题颜色 ：{{ darkTheme ? '浅色' : '深色' }}
+          </div>
+        </div>
+        <div class="tools">
+          <n-switch v-model:value="darkTheme" size="medium" />
+        </div>
+      </div>
+
       <div v-show="!isElectronMode()" class="view-list">
         <div class="content">
           <div class="name">主题模式</div>

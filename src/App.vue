@@ -1,6 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
-import { provide, ref } from 'vue'
+import { provide, ref, computed } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
@@ -10,9 +10,13 @@ import {
   zhCN,
   dateZhCN,
   darkTheme,
+  NLayout,
+  NLayoutHeader,
+  NLayoutContent,
+  NLayoutFooter,
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
-import { useUserStore } from '@/store'
+import { useUserStore, useNotifyStore } from '@/store'
 import socket from '@/socket'
 import { listener } from '@/listener'
 import { overrides } from '@/constant/theme'
@@ -37,6 +41,23 @@ provide('$user', uid => {
 })
 
 const userStore = useUserStore()
+const notifyStore = useNotifyStore()
+
+const getDarkTheme = computed(() => {
+  document.querySelectorAll('html')[0].dataset.theme = notifyStore.darkTheme
+    ? 'dark'
+    : 'light'
+
+  return notifyStore.darkTheme ? darkTheme : undefined
+})
+
+const getThemeOverride = computed(() => {
+  if (getDarkTheme) {
+    overrides.common.bodyColor = '#1f1f23'
+  }
+
+  return overrides
+})
 
 if (isLoggedIn()) {
   socket.connect()
@@ -54,7 +75,8 @@ listener()
 
   <!-- 调整 naive-ui 的字重配置 -->
   <n-config-provider
-    :theme-overrides="overrides"
+    :theme="getDarkTheme"
+    :theme-overrides="getThemeOverride"
     :locale="zhCN"
     :date-locale="dateZhCN"
     :hljs="hljs"
@@ -71,7 +93,13 @@ listener()
       <dialog-api />
     </n-dialog-provider>
 
-    <router-view />
+    <n-layout>
+      <!-- <n-layout-header>颐和园路</n-layout-header> -->
+      <n-layout-content>
+        <router-view />
+      </n-layout-content>
+      <!-- <n-layout-footer>成府路</n-layout-footer> -->
+    </n-layout>
 
     <UserCardModal v-model:show="isShowUser" v-model:uid="showUserId" />
   </n-config-provider>

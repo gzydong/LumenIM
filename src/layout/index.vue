@@ -52,7 +52,7 @@ defineProps({
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: #fff;
 
     .el-aside {
       width: 65px;
@@ -66,6 +66,20 @@ defineProps({
       border-radius: 10px;
       transition: all 0.5s;
     }
+  }
+}
+
+html[data-theme='dark'] {
+  .container {
+    background: unset;
+
+    .im-container {
+      background-color: unset;
+    }
+  }
+
+  .small-screen {
+    box-shadow: 3px 0 17px 2px rgb(64 61 62);
   }
 }
 </style>

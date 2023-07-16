@@ -1,8 +1,7 @@
 <script setup>
 import { reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store/user'
-import { useTalkStore } from '@/store/talk'
+import { useUserStore, useTalkStore, useNotifyStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import { defAvatar } from '@/constant/default'
@@ -25,6 +24,12 @@ defineProps({
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const router = useRouter()
+
+const notifyStore = useNotifyStore()
+
+const color = computed(() => {
+  return notifyStore.darkTheme ? '#ffffff' : '#333'
+})
 
 const menus = reactive([
   {
@@ -112,7 +117,7 @@ const onClickMenu = menu => {
           <component
             :is="nav.icon"
             :theme="i == index ? 'filled' : 'outline'"
-            :fill="i == index ? '#4a90e2' : '#333'"
+            :fill="i == index ? '#4a90e2' : color"
             :strokeWidth="2"
             :size="22"
           />
@@ -129,7 +134,12 @@ const onClickMenu = menu => {
           href="https://github.com/gzydong/LumenIM"
           target="_blank"
         >
-          <github-one theme="outline" size="22" fill="#333" :strokeWidth="2" />
+          <github-one
+            theme="outline"
+            size="22"
+            :fill="color"
+            :strokeWidth="2"
+          />
         </a>
       </div>
       <div @click="onLogout" class="pointer">退出</div>
@@ -202,18 +212,18 @@ const onClickMenu = menu => {
   margin: 8px auto;
   border-radius: 10px;
 
-  &.active {
-    &::after {
-      position: absolute;
-      content: '';
-      width: 0;
-      height: 0;
-      right: -8px;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-right: 8px solid #ffffff;
-    }
-  }
+  // &.active {
+  //   &::after {
+  //     position: absolute;
+  //     content: '';
+  //     width: 0;
+  //     height: 0;
+  //     right: -8px;
+  //     border-top: 8px solid transparent;
+  //     border-bottom: 8px solid transparent;
+  //     border-right: 8px solid #ffffff;
+  //   }
+  // }
 
   .hotspot {
     width: 5px;

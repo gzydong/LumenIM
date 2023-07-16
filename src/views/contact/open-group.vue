@@ -151,7 +151,7 @@ onLoadData()
   gap: 12px;
 
   .more {
-    border: 1px solid #cccccc;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     cursor: pointer;
     min-height: 97px;

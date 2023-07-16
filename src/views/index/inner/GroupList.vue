@@ -94,6 +94,7 @@ const onContextMenuHandle = (key = '') => {
     align-items: center;
     transition: all 0.5s;
     padding: 0 8px;
+    color: var(--im-text-color);
 
     .avatar {
       flex-shrink: 0;
@@ -104,7 +105,7 @@ const onContextMenuHandle = (key = '') => {
     }
 
     &:hover {
-      background-color: #f5f5f5;
+      background-color: var(--im-hover-bg-color);
     }
   }
 }

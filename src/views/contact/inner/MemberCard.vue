@@ -66,7 +66,7 @@ defineProps({
   display: flex;
   width: 100%;
   min-height: 50px;
-  border: 1px solid #efefef;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 10px;
   box-sizing: border-box;

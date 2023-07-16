@@ -77,4 +77,11 @@ textContent = textReplaceEmoji(textContent)
     }
   }
 }
+
+html[data-theme='dark'] {
+  .text-message {
+    background: var(--im-message-bg-color);
+    color: var(--im-text-color);
+  }
+}
 </style>

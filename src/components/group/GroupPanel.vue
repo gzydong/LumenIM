@@ -248,7 +248,7 @@ loadMembers()
 
           <n-button @click="isShowGroup = true" circle class="mt-l15">
             <template #icon>
-              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+              <n-icon :component="Plus" color="rgb(165 165 170)" />
             </template>
           </n-button>
         </div>
@@ -314,6 +314,7 @@ loadMembers()
       <n-button
         class="btn"
         type="primary"
+        text-color="#ffffff"
         v-if="isLeader"
         @click="isShowManage = true"
       >
@@ -420,7 +421,7 @@ loadMembers()
       min-height: 180px;
       padding: 20px 15px;
       margin-bottom: 20px;
-      border: 1px solid #ecebeb;
+      border: 1px solid var(--border-color);
       border-radius: 10px;
 
       .table {

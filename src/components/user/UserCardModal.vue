@@ -233,6 +233,7 @@ const onAfterEnter = () => {
                   />
                   <n-button
                     type="primary"
+                    text-color="#ffffff"
                     class="mt-l5"
                     @click="onChangeRemark"
                   >
@@ -268,6 +269,7 @@ const onAfterEnter = () => {
             round
             type="primary"
             color="#1890ff"
+            text-color="#ffffff"
             block
             @click="onToTalk"
             style="width: 91%"
@@ -294,6 +296,7 @@ const onAfterEnter = () => {
             <n-button
               type="primary"
               color="#1890ff"
+              text-color="#ffffff"
               class="mt-l5"
               @click="isOpenFrom = false"
             >
@@ -304,6 +307,7 @@ const onAfterEnter = () => {
             <n-button
               type="primary"
               color="#1890ff"
+              text-color="#ffffff"
               block
               round
               style="width: 91%"
@@ -325,7 +329,7 @@ const onAfterEnter = () => {
   height: 600px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--im-bg-color);
 
   .header {
     width: 100%;
@@ -372,7 +376,6 @@ const onAfterEnter = () => {
 
   .main {
     padding: 20px 30px;
-    background-color: #ffffff;
 
     .motto {
       min-height: 26px;
@@ -393,7 +396,6 @@ const onAfterEnter = () => {
   .footer {
     height: 60px;
     padding: 0 15px;
-    background-color: #ffffff;
   }
 }
 
@@ -421,6 +423,18 @@ const onAfterEnter = () => {
       text-decoration: underline;
       text-decoration-style: dashed;
       text-underline-offset: 3px;
+    }
+  }
+}
+
+html[data-theme='dark'] {
+  .section {
+    .header {
+      background: linear-gradient(to bottom right, #373737, #1f1f23);
+    }
+
+    .motto {
+      background-color: rgb(44, 44, 50);
     }
   }
 }

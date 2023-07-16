@@ -15,10 +15,10 @@ function loadHtmlUrl() {
 function createWindow() {
   // 创建浏览器窗口
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    minWidth: 1000,
-    minHeight: 700,
+    width: 1200,
+    height: 800,
+    minWidth: 900,
+    minHeight: 600,
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {

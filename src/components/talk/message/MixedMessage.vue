@@ -113,4 +113,11 @@ const img = (src, width = 200) => {
     }
   }
 }
+
+html[data-theme='dark'] {
+  .text-message {
+    background: var(--im-message-bg-color);
+    color: var(--im-text-color);
+  }
+}
 </style>

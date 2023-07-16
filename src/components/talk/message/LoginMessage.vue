@@ -56,9 +56,10 @@ function getExploreOs(userAgent = '') {
 .login-message {
   width: 300px;
   min-height: 50px;
-  background: #f7f7f7;
+  background: var(--im-message-bg-color);
   border-radius: 5px;
   padding: 15px;
+  color: var(--im-text-color);
 
   p {
     font-size: 13px;

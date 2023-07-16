@@ -152,7 +152,7 @@ defineProps({
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          margin-right: 3px;
+          margin-right: 5px;
         }
       }
 
@@ -214,9 +214,11 @@ defineProps({
     }
   }
 
+  --actived-bg: #ececec;
+
   &:hover,
   &.actived {
-    background-color: #ececec;
+    background-color: var(--actived-bg);
   }
 }
 
@@ -246,5 +248,15 @@ defineProps({
 
 :global(.draft-text .ed-image) {
   display: none;
+}
+
+html[data-theme='dark'] {
+  .talk {
+    --actived-bg: rgb(44, 44, 50);
+
+    .nickname {
+      color: #979797;
+    }
+  }
 }
 </style>

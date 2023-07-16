@@ -393,7 +393,7 @@ onMounted(() => {
 <template>
   <section class="el-container editor">
     <section class="el-container is-vertical">
-      <header class="el-header toolbar bdr-t bdr-b">
+      <header class="el-header toolbar bdr-t">
         <div class="tools">
           <n-popover
             placement="top-start"
@@ -513,7 +513,7 @@ onMounted(() => {
         }
 
         &:hover {
-          background-color: #f5f5f5;
+          // background-color: #f5f5f5;
 
           .tip-title {
             display: block;
@@ -561,6 +561,7 @@ onMounted(() => {
 
 .ql-editor.ql-blank::before {
   font-style: unset;
+  color: var(--im-text-color);
 }
 
 .ql-mention-list-container {

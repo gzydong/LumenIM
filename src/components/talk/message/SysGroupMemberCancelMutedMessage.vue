@@ -59,7 +59,21 @@ defineProps({
     font-weight: 400;
 
     &:hover {
-      color: black;
+      color: #737678;
+    }
+  }
+}
+
+html[data-theme='dark'] {
+  .invite-message {
+    .sys-text {
+      background: unset;
+
+      a {
+        &:hover {
+          color: #03a9f4;
+        }
+      }
     }
   }
 }

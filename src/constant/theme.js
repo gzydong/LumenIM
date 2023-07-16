@@ -6,5 +6,7 @@ export const overrides = {
     primaryColorHover: '#1890ff',
     primaryColorPressed: '#1890ff',
     primaryColorSuppl: '#1890ff',
+
+    bodyColor: '#ffffff',
   },
 }

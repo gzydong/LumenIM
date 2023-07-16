@@ -9,6 +9,7 @@ export const useNotifyStore = defineStore('notify', {
       isLeaveWeb: false, // 是否离开网页
       isWebNotify: false, // 是否同意浏览器通知
       isFullScreen: storage.get('isFullScreen', true), // 是否客户端全屏
+      darkTheme: storage.get('darkTheme', false),
     }
   },
   actions: {
@@ -23,6 +24,10 @@ export const useNotifyStore = defineStore('notify', {
     setFullScreen(value) {
       this.isFullScreen = value
       storage.set('isFullScreen', value, null)
+    },
+    setDarkTheme(value) {
+      this.darkTheme = value
+      storage.set('darkTheme', value, null)
     },
   },
 })

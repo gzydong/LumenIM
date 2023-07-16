@@ -2,7 +2,7 @@
   height: 60px;
   line-height: 60px;
   padding-left: 15px;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--im-text-color);
   font-size: 20px;
   font-weight: 500;
   border-bottom: 1px solid var(--border-color);
@@ -15,12 +15,12 @@
   .view-list {
     height: 70px;
     margin: 5px 0;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 1px solid var(--border-color);
     padding: 5px;
     display: flex;
     padding-left: 0;
 
-    &:first-child{
+    &:first-child {
       margin-top: 0;
     }
 
@@ -31,9 +31,9 @@
 
     .content {
       flex: auto;
+      color: var(--im-text-color);
 
       .name {
-        color: rgba(0, 0, 0, 0.65);
         font-size: 15px;
         height: 40px;
         line-height: 40px;
@@ -43,7 +43,6 @@
       .desc {
         height: 30px;
         line-height: 30px;
-        color: rgba(0, 0, 0, 0.45);
         font-size: 14px;
       }
     }
