@@ -82,7 +82,7 @@ const onMaskClick = () => {
   margin: 16px 0px;
   font-weight: 400;
   font-size: 14px;
-  border-right: 3px solid white;
+  border-right: 3px solid transparent;
   text-align: center;
 
   &.selectd {

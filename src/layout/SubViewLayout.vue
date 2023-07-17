@@ -41,7 +41,7 @@ defineProps({
         </router-link>
       </aside>
       <main class="el-main router-view">
-        <router-view /> 
+        <router-view />
       </main>
     </section>
   </section>
@@ -78,8 +78,8 @@ defineProps({
       margin: 8px 2px;
       display: flex;
       align-items: center;
-      // color: rgb(38, 38, 38);
       color: var(--im-text-color);
+      transition: all 0.5s ease-in-out;
 
       > div {
         height: 100%;

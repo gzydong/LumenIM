@@ -32,10 +32,10 @@ defineProps<{
 <style lang="less" scoped>
 .file-message {
   width: 250px;
-  height: 85px;
-  padding: 10px 15px;
+  min-height: 85px;
+  padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgb(239 239 245);
+  border: 1px solid var(--im-message-border-color);
 
   .main {
     height: 45px;
@@ -67,7 +67,6 @@ defineProps<{
         align-items: center;
         overflow: hidden;
         height: 24px;
-        color: rgb(76, 76, 76);
         font-size: 14px;
 
         .name {
@@ -98,16 +97,17 @@ defineProps<{
   .footer {
     height: 30px;
     line-height: 37px;
-    color: #409eff;
+    // color: #409eff;
     text-align: right;
     font-size: 12px;
-    border-top: 1px solid #eff7ef;
+    border-top: 1px solid var(--border-color);
     margin-top: 10px;
 
     a {
       margin: 0 3px;
       user-select: none;
       cursor: pointer;
+      color: var(--im-text-color);
 
       &:hover {
         color: royalblue;

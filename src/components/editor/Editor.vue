@@ -580,17 +580,17 @@ onMounted(() => {
     border-radius: 3px;
     background-color: #c0bebc;
   }
-}
 
-.ql-mention-list-item {
-  padding: 0 10px;
-  overflow: hidden;
-}
+  .ql-mention-list-item {
+    padding: 0 10px;
+    overflow: hidden;
 
-.ql-mention-list-item.selected {
-  background-color: #508afe;
-  color: #fff;
-  text-decoration: none;
+    &.selected {
+      background-color: #508afe;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
 }
 
 .mention {
@@ -644,6 +644,25 @@ onMounted(() => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+html[data-theme='dark'] {
+  .ql-mention-list-container {
+    background-color: var(--im-message-bg-color);
+    color: #fff;
+    border: unset;
+    box-shadow: 5px 1px 10px #181818;
+
+    .ql-mention-list-item {
+      &.selected {
+        background-color: #1f1f23;
+      }
+    }
+  }
+
+  .quote-card-content {
+    background-color: var(--im-message-bg-color);
   }
 }
 </style>

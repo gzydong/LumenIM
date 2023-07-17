@@ -392,8 +392,8 @@ onMounted(() => {
 
       <n-button circle @click="isShowGroup = true">
         <template #icon>
-          <n-icon :component="Plus" color="rgb(165 165 170)" />
-        </template>
+            <n-icon :component="Plus" />
+          </template>
       </n-button>
     </header>
 

@@ -23,6 +23,7 @@ const onSearchInput = debounce(e => {
 
       <input
         type="text"
+        class="search"
         v-model="store.notes.params.keyword"
         placeholder="搜索我的笔记 ..."
         maxlength="30"
@@ -103,7 +104,9 @@ const onSearchInput = debounce(e => {
 .section {
   width: 100%;
   height: 100%;
-  background: #f4f6f9;
+  background: var(--im-note-list-bg-color);
+
+  --sub-header-border-color: #ece8e8;
 
   .search-header {
     height: 60px;
@@ -138,8 +141,8 @@ const onSearchInput = debounce(e => {
     line-height: 40px;
     position: relative;
     color: #7b7777;
-    border-top: 1px solid #ece8e8;
-    border-bottom: 1px solid #ece8e8;
+    border-top: 1px solid var(--sub-header-border-color);
+    border-bottom: 1px solid var(--sub-header-border-color);
     font-size: 13px;
     padding: 0 10px;
 
@@ -155,7 +158,7 @@ const onSearchInput = debounce(e => {
   min-height: 50px;
   padding: 10px 10px 5px 10px;
   position: relative;
-  background: white;
+  background: var(--im-bg-color);
   margin: 8px 5px;
   transition: border 0.1s;
 
@@ -226,6 +229,19 @@ const onSearchInput = debounce(e => {
     }
 
     border-left: 4px solid #2196f3;
+  }
+}
+
+html[data-theme='dark'] {
+  .section {
+    --sub-header-border-color: #1f1f23;
+
+    .search-header {
+      input {
+        background-color: unset;
+        color: #ffffff;
+      }
+    }
   }
 }
 </style>

@@ -56,4 +56,10 @@ const img = (src, width = 200) => {
     border-radius: 5px;
   }
 }
+
+html[data-theme='dark'] {
+  .image-message {
+    background: var(--im-message-bg-color);
+  }
+}
 </style>

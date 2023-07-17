@@ -365,15 +365,11 @@ loadWatchTagsMenu()
 </template>
 
 <style lang="less" scoped>
-.icon-spin {
-  animation: fadenum 1s infinite !important;
-}
 
-@keyframes fadenum {
-  100% {
-    transform: rotate(360deg);
-  }
-}
+
+
+
+
 
 .section {
   width: 100%;
@@ -393,7 +389,6 @@ loadWatchTagsMenu()
   .menu-subheader {
     height: 40px;
     line-height: 40px;
-    color: #353434;
     padding: 0 15px;
     font-size: 16px;
     font-weight: 300;
@@ -411,7 +406,7 @@ loadWatchTagsMenu()
       user-select: none;
 
       &:hover {
-        background: #f6f3f3;
+        background: var(--im-hover-bg-color);
       }
 
       .dot {
@@ -457,7 +452,7 @@ loadWatchTagsMenu()
     }
 
     .actived {
-      background: #f4f6f9;
+      background: var(--im-active-bg-color);
     }
   }
 }

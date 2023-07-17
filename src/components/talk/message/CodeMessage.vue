@@ -123,6 +123,8 @@ const onClipboard = () => {
 
 html[data-theme='dark'] {
   .code-message {
+    background: var(--im-message-bg-color);
+
     .mask {
       background: linear-gradient(
         to bottom,
@@ -132,4 +134,5 @@ html[data-theme='dark'] {
     }
   }
 }
+
 </style>

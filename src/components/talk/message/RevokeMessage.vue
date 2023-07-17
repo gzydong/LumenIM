@@ -62,16 +62,13 @@ defineProps({
     span {
       margin: 0 5px;
     }
+  }
+}
 
-    a {
-      color: #939596;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 400;
-
-      &:hover {
-        color: black;
-      }
+html[data-theme='dark'] {
+  .revoke-message {
+    .content {
+      background: unset;
     }
   }
 }

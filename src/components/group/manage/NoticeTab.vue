@@ -109,7 +109,7 @@ onLoadData()
 
           <n-button circle @click="onAdd">
             <template #icon>
-              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+              <n-icon :component="Plus" />
             </template>
           </n-button>
         </n-space>

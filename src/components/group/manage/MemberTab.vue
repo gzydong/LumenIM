@@ -295,7 +295,7 @@ onLoadData()
 
           <n-button circle @click="isGroupLaunch = true">
             <template #icon>
-              <plus theme="outline" size="21" fill="#333" :strokeWidth="2" />
+              <n-icon :component="Plus" />
             </template>
           </n-button>
         </n-space>
@@ -412,11 +412,11 @@ onLoadData()
   border-radius: 3px;
   border: 1px dashed transparent;
   padding: 3px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
 
   &:hover {
-    border: 1px dashed rgb(80 138 254);
+    border: 1px solid rgb(80 138 254);
   }
 
   > div {
