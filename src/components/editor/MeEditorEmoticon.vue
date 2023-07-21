@@ -53,7 +53,7 @@ const onSendEmoticon = (type, value, img = '') => {
       <span>{{ items[tabIndex].name }}</span>
     </header>
 
-    <main class="el-main em-main me-scrollbar">
+    <main class="el-main em-main me-scrollbar me-scrollbar-thumb">
       <div class="symbol-box" v-if="tabIndex == 0">
         <p class="title">QQ表情</p>
         <div class="options">
@@ -127,7 +127,7 @@ const onSendEmoticon = (type, value, img = '') => {
   width: 500px;
   height: 250px;
   overflow: hidden;
-  background-color: white;
+  background-color: var(--im-bg-color);
   border-radius: 3px;
 
   .em-header {
@@ -167,7 +167,7 @@ const onSendEmoticon = (type, value, img = '') => {
       border-radius: 50%;
 
       &.active {
-        background-color: #f5f5f5;
+        background-color: var(--im-active-bg-color);
       }
 
       .tip {
@@ -180,9 +180,10 @@ const onSendEmoticon = (type, value, img = '') => {
         padding: 0 5px;
         font-size: 12px;
         border-radius: 2px;
-        background-color: #f5f5f5;
+        background-color: var(--im-active-bg-color);
         display: none;
         align-items: center;
+        color: var(--im-text-color);
       }
 
       &:hover {
@@ -190,7 +191,7 @@ const onSendEmoticon = (type, value, img = '') => {
           display: flex;
         }
 
-        background-color: #f5f5f5;
+        background-color: var(--im-active-bg-color);
       }
     }
   }
@@ -228,6 +229,7 @@ const onSendEmoticon = (type, value, img = '') => {
   .collect-box {
     display: flex;
     flex-wrap: wrap;
+    padding: 5px;
 
     .upload-btn {
       display: flex;
@@ -242,10 +244,10 @@ const onSendEmoticon = (type, value, img = '') => {
 
     .item {
       position: relative;
-      width: 65px;
-      height: 65px;
+      width: 70px;
+      height: 70px;
       background-color: #eff1f7;
-      margin: 2px;
+      margin: 5px;
       border-radius: 5px;
       overflow: hidden;
 

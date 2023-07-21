@@ -83,6 +83,18 @@ export function clipboard(text, callback) {
   }
 }
 
+export function hashStrToHexColor(str) {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  let color = '#'
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff
+    color += value.toString(16).padStart(2, '0')
+  }
+  return color
+}
 
 export function emitCall(event, data, fn) {
   return { event: event, data: data, callBack: fn || function () {} }

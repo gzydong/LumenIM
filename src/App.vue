@@ -52,8 +52,11 @@ const getDarkTheme = computed(() => {
 })
 
 const getThemeOverride = computed(() => {
-  if (getDarkTheme) {
-    overrides.common.bodyColor = '#1f1f23'
+  if (notifyStore.darkTheme) {
+    // overrides.common.bodyColor = '#1f1f23'
+    // overrides.common.bodyColor = '#1e1e1e'
+    overrides.common.bodyColor = '#202124'
+    overrides.common.baseColor = '#ffffff'
   }
 
   return overrides

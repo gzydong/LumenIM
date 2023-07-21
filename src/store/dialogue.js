@@ -4,7 +4,6 @@ import {
   ServeRevokeRecords,
   ServeForwardRecords,
 } from '@/api/chat'
-import { defAvatar } from '@/constant/default'
 import { ServeGetGroupMembers } from '@/api/group'
 
 // 键盘消息事件定时器
@@ -104,7 +103,7 @@ export const useDialogueStore = defineStore('dialogue', {
         this.members.push({
           id: o.user_id,
           nickname: o.nickname,
-          avatar: o.avatar || defAvatar,
+          avatar: o.avatar,
           gender: o.gender,
           leader: o.leader,
           remark: o.remark,

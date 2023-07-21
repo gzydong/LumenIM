@@ -11,7 +11,7 @@ import {
   formatTalkRecord,
 } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { useTalkStore } from '@/store/talk'
+import { useTalkStore } from '@/store'
 import { useDialogueStore } from '@/store/dialogue'
 import { useNotifyStore } from '@/store/notify'
 

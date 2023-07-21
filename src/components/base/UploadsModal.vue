@@ -14,7 +14,7 @@ const statusItem = {
 </script>
 
 <template>
-  <div class="section me-scrollbar">
+  <div class="section me-scrollbar me-scrollbar-thumb">
     <div class="title bdr-b">
       <span
         >上传管理 ({{ uploadsStore.successCount }}/{{
@@ -76,18 +76,16 @@ const statusItem = {
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    background-color: #fafafa;
   }
 
   .file-item {
     width: 95%;
     min-height: 100px;
-    background-color: white;
     display: flex;
     flex-direction: column;
     margin: 15px auto;
     overflow: hidden;
-    border: 1px solid #f1eaea;
+    border: 1px solid var(--im-message-border-color);
     border-radius: 5px;
 
     .file-header {
@@ -96,7 +94,7 @@ const statusItem = {
       flex-direction: row;
       align-items: center;
       position: relative;
-      border-bottom: 1px solid #f7f4f4;
+      border-bottom: 1px solid var(--im-message-border-color);
 
       .type-icon {
         height: 30px;
@@ -142,7 +140,6 @@ const statusItem = {
         width: 80px;
         height: 80px;
         flex-shrink: 0;
-        background: #f9f6f6;
       }
 
       .detail {

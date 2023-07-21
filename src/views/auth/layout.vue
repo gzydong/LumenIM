@@ -32,4 +32,10 @@ body {
   -webkit-app-region: drag;
 }
 @import '@/assets/css/login.less';
+
+.section{
+  height: 100vh;
+  width: 100vw;
+  
+}
 </style>

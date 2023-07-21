@@ -41,19 +41,11 @@ const onSetMenu = () => {
 <template>
   <header class="el-header box-header bdr-b">
     <div class="menu bdr-r pointer" @click="onSetMenu">
-      <MenuUnfoldOne
-        v-if="dialogueStore.isShowSessionList"
-        theme="outline"
-        size="26"
-        fill="#4a4a4a"
-        :strokeWidth="2"
-      />
-      <MenuFoldOne
-        v-else
-        theme="outline"
-        size="26"
-        fill="#4a4a4a"
-        :strokeWidth="2"
+      <n-icon
+        size="22"
+        :component="
+          dialogueStore.isShowSessionList ? MenuUnfoldOne : MenuFoldOne
+        "
       />
     </div>
 

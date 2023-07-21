@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
 import { MessageComponents } from '@/constant/message'
-import { defAvatar } from '@/constant/default'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -62,12 +61,12 @@ onLoadData()
       padding: 0,
     }"
   >
-    <div class="main-box me-scrollbar">
+    <div class="main-box me-scrollbar me-scrollbar-thumb">
       <Loading v-if="records.length === 0" />
 
       <div v-for="item in records" :key="item.msg_id" class="message-item">
         <div class="left-box">
-          <n-avatar :size="30" :src="item.avatar || defAvatar" />
+          <im-avatar :src="item.avatar" :size="30" :username="item.nickname" />
         </div>
 
         <div class="right-box">

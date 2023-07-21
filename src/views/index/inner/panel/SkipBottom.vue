@@ -26,7 +26,7 @@ const dialogueStore = useDialogueStore()
   height: 28px;
   font-size: 12px;
   background-color: #1ebafc;
-  color: white;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,6 +40,12 @@ const dialogueStore = useDialogueStore()
 
   &.show {
     bottom: 0px;
+  }
+}
+
+html[data-theme='dark'] {
+  .skip-bottom {
+    background-color: #2c2c32;
   }
 }
 </style>

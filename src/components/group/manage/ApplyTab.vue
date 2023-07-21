@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { NSpace } from 'naive-ui'
+import { NSpace, NPopconfirm } from 'naive-ui'
 import { Search, RefreshOne, CheckSmall, Close } from '@icon-park/vue-next'
 import {
   ServeGetGroupApplyList,
@@ -105,12 +105,15 @@ onLoadData()
       </n-empty>
     </main>
 
-    <main v-else class="el-main main">
+    <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
       <div
         class="member-item"
         v-for="item in filterSearch"
         @click="onRowClick(item)"
       >
+        <div class="avatar pointer" @click="onUserInfo(member)">
+          <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
+        </div>
         <div class="content pointer o-hidden">
           <div class="item-title">
             <p class="nickname text-ellipsis">
@@ -128,24 +131,24 @@ onLoadData()
               strong
               secondary
               circle
-              type="info"
+              type="primary"
+              size="small"
             >
               <template #icon>
                 <n-icon :component="CheckSmall" />
               </template>
             </n-button>
 
-            <n-button
-              @click="onDelete(item)"
-              strong
-              secondary
-              circle
-              type="tertiary"
-            >
-              <template #icon>
-                <n-icon :component="Close" />
+            <n-popconfirm @positive-click="onDelete(item)" placement="top-end">
+              <template #trigger>
+                <n-button strong secondary circle type="tertiary" size="small">
+                  <template #icon>
+                    <n-icon :component="Close" />
+                  </template>
+                </n-button>
               </template>
-            </n-button>
+              确认要拒绝申请吗？
+            </n-popconfirm>
           </n-space>
         </div>
       </div>
@@ -162,41 +165,54 @@ onLoadData()
 }
 
 .main {
-  padding: 0 15px;
+  padding: 0 5px;
   box-sizing: border-box;
 }
 
 .member-item {
-  width: 100%;
-  height: 50px;
+  height: 58px;
   display: flex;
   align-items: center;
-  margin: 15px 0;
+  margin: 8px;
   user-select: none;
-  padding: 5px 0;
+  border-radius: 3px;
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: content-box;
+
+  > div {
+    height: inherit;
+  }
+
+  .avatar {
+    width: 40px;
+    flex-shrink: 0;
+    user-select: none;
+    display: flex;
+    padding-top: 8px;
+  }
 
   .content {
     width: 100%;
-    height: inherit;
+    margin-left: 10px;
 
     .item-title {
-      height: 30px;
+      height: 28px;
       width: inherit;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      font-weight: 400;
 
-      .date {
-        color: #989898;
-        font-size: 12px;
+      .nickname {
+        margin-right: 5px;
       }
     }
 
     .item-text {
       width: inherit;
       height: 20px;
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 14px;
+      color: rgb(255 255 255 / 52%);
+      font-size: 12px;
     }
   }
 

@@ -1,19 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
-import {
-  NIcon,
-  NModal,
-  NButton,
-  NInput,
-  NAvatar,
-  NDropdown,
-  NPopover,
-} from 'naive-ui'
+import { ref, reactive, computed } from 'vue'
+import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, SendEmail, Male, Female } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
-import { defAvatar } from '@/constant/default'
 import {
   ServeContactGroupList,
   ServeContactMoveGroup,
@@ -134,6 +125,7 @@ const handleSelectGroup = value => {
 }
 
 const onUpdate = value => {
+  state.text = ''
   emit('update:show', value)
 }
 
@@ -151,12 +143,11 @@ const onAfterEnter = () => {
     <div class="section">
       <section class="el-container container is-vertical">
         <header class="el-header header">
-          <n-avatar
-            round
+          <im-avatar
             class="avatar"
             :size="100"
-            :src="state.avatar || defAvatar"
-            :fallback-src="defAvatar"
+            :src="state.avatar"
+            :username="state.remark || state.nickname"
           />
 
           <div class="gender" v-show="state.gender > 0">
@@ -298,9 +289,9 @@ const onAfterEnter = () => {
               color="#1890ff"
               text-color="#ffffff"
               class="mt-l5"
-              @click="isOpenFrom = false"
+              @click="onJoinContact"
             >
-              取消
+              确定
             </n-button>
           </template>
           <template v-else>

@@ -158,15 +158,15 @@ loadChatRecord()
         </n-empty>
       </main>
 
-      <main v-else class="el-main me-scrollbar">
+      <main v-else class="el-main me-scrollbar me-scrollbar-thumb">
         <n-image-group>
           <div v-for="item in records" :key="item.id" class="message-item">
             <div class="left-box">
-              <n-avatar
-                @click="showUserModal(item.user_id)"
-                :size="30"
+              <im-avatar
                 :src="item.avatar"
-                class="pointer"
+                :size="30"
+                :username="item.nickname"
+                @click="showUserModal(item.user_id)"
               />
             </div>
 

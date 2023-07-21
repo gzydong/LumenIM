@@ -124,7 +124,7 @@ onLoadData()
       </n-empty>
     </main>
 
-    <main v-else class="el-main main">
+    <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
       <div
         class="member-item bdr-b"
         v-for="item in filterSearch"
@@ -214,8 +214,8 @@ onLoadData()
     .item-text {
       width: inherit;
       height: 20px;
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 14px;
+      color: rgb(255 255 255 / 52%);
+      font-size: 12px;
     }
   }
 

@@ -151,7 +151,7 @@ onMounted(() => {
       <!-- 笔记列表 -->
       <main
         v-if="tabIndex == 1"
-        class="el-main me-scrollbar"
+        class="el-main me-scrollbar me-scrollbar-thumb"
         :class="{
           'flex-center': state.note.items.length == 0,
           'main-bag': state.note.items.length > 0,

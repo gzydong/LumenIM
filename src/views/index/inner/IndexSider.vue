@@ -16,6 +16,8 @@ import {
   IdCard,
   Plus,
 } from '@icon-park/vue-next'
+import { RecycleScroller } from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import TalkItem from './TalkItem.vue'
 import {
   ServeTopTalkList,
@@ -27,7 +29,6 @@ import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
-import { defAvatar } from '@/constant/default'
 
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
@@ -107,14 +108,16 @@ const onTabTalk = (data: any, follow = false) => {
 
   // 设置滚动条跟随
   if (follow) {
-    let el = document.getElementById('talk-session-list')
-    if (el) {
-      let index = findTalkIndex(data.index_name)
-      el.scrollTo({
-        top: index * 66 + index * 5,
-        behavior: 'smooth',
-      })
-    }
+    setTimeout(() => {
+      let el = document.getElementById('talk-session-list')
+      if (el) {
+        let index = findTalkIndex(data.index_name)
+        el.scrollTo({
+          top: index * 66 + index * 5,
+          behavior: 'smooth',
+        })
+      }
+    }, 100)
   }
 }
 
@@ -392,8 +395,8 @@ onMounted(() => {
 
       <n-button circle @click="isShowGroup = true">
         <template #icon>
-            <n-icon :component="Plus" />
-          </template>
+          <n-icon :component="Plus" />
+        </template>
       </n-button>
     </header>
 
@@ -416,22 +419,7 @@ onMounted(() => {
               active: item.index_name == indexName,
             }"
           >
-            <n-avatar
-              v-if="item.avatar"
-              round
-              :src="item.avatar || defAvatar"
-              :fallback-src="defAvatar"
-            />
-            <n-avatar
-              v-else
-              round
-              :style="{
-                color: '#ffffff',
-                backgroundColor: '#508afe',
-              }"
-            >
-              {{ item.name && (item.name.substr(0, 1) || '') }}
-            </n-avatar>
+            <im-avatar :src="avatar" :size="34" :username="item.name" />
 
             <span class="icon-mark robot" v-show="item.is_robot == 1">
               助
@@ -455,6 +443,7 @@ onMounted(() => {
     <header
       v-show="loadStatus == 3 && talkStore.talkItems.length > 0"
       class="el-header notify-header"
+      :class="{ shadow: false }"
     >
       <p>会话记录({{ talkStore.talkItems.length }})</p>
       <p>
@@ -462,23 +451,31 @@ onMounted(() => {
       </p>
     </header>
 
-    <!-- 侧边栏目 -->
-    <main id="talk-session-list" class="el-main me-scrollbar">
-      <!-- 加载中模块 -->
-      <template v-if="loadStatus == 2">
-        <div class="skeleton flex-center" v-for="i in 10" :key="i">
-          <div class="avatar"><n-skeleton circle size="medium" /></div>
-          <div class="content">
-            <n-skeleton text :repeat="1" />
-            <n-skeleton text style="width: 60%" />
+    <template v-if="loadStatus == 2">
+      <main id="talk-session-list" class="el-main me-scrollbar">
+        <!-- 加载中模块 -->
+        <template v-if="loadStatus == 2">
+          <div class="skeleton flex-center" v-for="i in 10" :key="i">
+            <div class="avatar"><n-skeleton circle size="medium" /></div>
+            <div class="content">
+              <n-skeleton text :repeat="1" />
+              <n-skeleton text style="width: 60%" />
+            </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </main>
+    </template>
 
-      <!-- 加载成功模块 -->
-      <template v-if="loadStatus == 3">
+    <template v-else>
+      <RecycleScroller
+        id="talk-session-list"
+        class="el-main scroller me-scrollbar me-scrollbar-thumb"
+        :items="items"
+        :item-size="71"
+        key-field="index_name"
+        v-slot="{ item }"
+      >
         <TalkItem
-          v-for="item in items"
           :key="item.index_name"
           :data="item"
           :avatar="item.avatar"
@@ -488,25 +485,8 @@ onMounted(() => {
           @top-talk="onToTopTalk"
           @contextmenu.prevent="onContextMenuTalk($event, item)"
         />
-
-        <div class="empty-list" v-show="items.length === 0">
-          <img src="@/assets/image/no-data.svg" alt="" />
-          <p>暂无会话</p>
-        </div>
-      </template>
-
-      <!-- 加载失败模块 -->
-      <template v-if="loadStatus == 4">
-        <n-empty
-          description="数据加载异常，请点击重试..."
-          style="margin-top: 30%"
-        >
-          <template #extra>
-            <n-button size="small" text @click="onReload"> 加载数据 </n-button>
-          </template>
-        </n-empty>
-      </template>
-    </main>
+      </RecycleScroller>
+    </template>
   </section>
 
   <GroupLaunch
@@ -517,12 +497,6 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.me-scrollbar {
-  &::-webkit-scrollbar {
-    background-color: unset;
-  }
-}
-
 .tools-header {
   height: 60px;
   flex-shrink: 0;
@@ -607,8 +581,7 @@ onMounted(() => {
       display: inline-block;
       height: 20px;
       font-size: 12px;
-      color: #8f959e;
-      transform: scale(0.84);
+      transform: scale(0.9);
       text-align: center;
       line-height: 20px;
       word-break: break-all;
@@ -634,5 +607,13 @@ onMounted(() => {
   margin-top: 30%;
   width: 100%;
   text-align: center;
+}
+
+html[data-theme='dark'] {
+  .notify-header {
+    &.shadow {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+  }
 }
 </style>

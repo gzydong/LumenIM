@@ -17,7 +17,7 @@ const model = reactive({
   mode: 0,
   anonymous: 0,
   title: '',
-  options: new Array(3).fill({ value: '' }),
+  options: [{ value: '' }, { value: '' }, { value: '' }],
 })
 
 const onMaskClick = () => {

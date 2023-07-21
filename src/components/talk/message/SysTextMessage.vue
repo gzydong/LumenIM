@@ -31,4 +31,13 @@ defineProps({
     border-radius: 3px;
   }
 }
+
+html[data-theme='dark'] {
+  .system-text-message {
+    .content {
+      background: unset;
+      color: unset;
+    }
+  }
+}
 </style>

@@ -170,7 +170,7 @@ onMounted(() => {
 
     <main
       id="drawer-target"
-      class="el-main pd-10 me-scrollbar"
+      class="el-main pd-10 me-scrollbar me-scrollbar-thumb"
       v-if="filter.length"
     >
       <div class="cards">

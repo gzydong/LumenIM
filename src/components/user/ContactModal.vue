@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NCheckbox, NTabs, NTab } from 'naive-ui'
 import { Search, DeleteOne } from '@icon-park/vue-next'
-import { defAvatar } from '@/constant/default.js'
 import { ServeGetContacts } from '@/api/contacts'
 import { ServeGetGroups } from '@/api/group'
 
@@ -55,7 +54,7 @@ const onLoadContact = () => {
         items.value = list.map((item: any) => {
           return {
             id: item.id,
-            avatar: item.avatar || defAvatar,
+            avatar: item.avatar,
             type: 1,
             name: item.remark || item.nickname,
             keyword: item.remark + item.nickname,
@@ -84,7 +83,7 @@ const onLoadGroup = async () => {
   let list = data.items.map((item: any) => {
     return {
       id: item.id,
-      avatar: item.avatar || defAvatar,
+      avatar: item.avatar,
       type: 2,
       name: item.group_name,
       keyword: item.group_name,
@@ -185,10 +184,11 @@ onLoad()
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
-                    <n-avatar
-                      :size="25"
+                    <im-avatar
+                      class="pointer"
                       :src="item.avatar"
-                      :fallback-src="defAvatar"
+                      :size="25"
+                      :username="item.remark || item.name"
                     />
                   </div>
 
@@ -227,10 +227,11 @@ onLoad()
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
-                    <n-avatar
-                      :size="25"
+                    <im-avatar
+                      class="pointer"
                       :src="item.avatar"
-                      :fallback-src="defAvatar"
+                      :size="25"
+                      :username="item.remark || item.name"
                     />
                   </div>
 

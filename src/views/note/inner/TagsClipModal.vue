@@ -60,7 +60,7 @@ const onActive = item => {
   <section class="tag-box">
     <div class="header">
       <span>标签管理</span>
-      <!-- <n-button text type="info">添加标签</n-button> -->
+      <!-- <n-button text type="primary">添加标签</n-button> -->
     </div>
 
     <div class="tag-groups">

@@ -240,7 +240,7 @@ loadWatchTagsMenu()
   <section class="el-container is-vertical section">
     <header class="el-header menu-header">
       <n-button
-        type="info"
+        type="primary"
         round
         @click="
           () => {
@@ -279,7 +279,7 @@ loadWatchTagsMenu()
       <span>我的笔记</span>
       <span
         ><n-button
-          type="info"
+          type="primary"
           size="tiny"
           ghost
           round
@@ -365,12 +365,6 @@ loadWatchTagsMenu()
 </template>
 
 <style lang="less" scoped>
-
-
-
-
-
-
 .section {
   width: 100%;
   height: 100%;

@@ -13,7 +13,7 @@ let show = ref(false)
 <template>
   <section class="group-notice-message pointer" @click="show = !show">
     <div class="title">
-      <n-tag :bordered="false" size="small" type="info"> 群公告 </n-tag>
+      <n-tag :bordered="false" size="small" type="primary"> 群公告 </n-tag>
       {{ extra.title }}
     </div>
     <div class="content" :class="{ ellipsis: !show }">
@@ -28,16 +28,14 @@ let show = ref(false)
   min-height: 50px;
   border-radius: 10px;
   padding: 8px 10px;
-  border: 1px solid rgb(239 239 245);
+  border: 1px solid var(--im-message-border-color);
   user-select: none;
-  background-color: #ffffff;
   margin: 0 auto;
 
   .title {
     height: 30px;
     line-height: 30px;
     font-size: 14px;
-    color: #0d1a26;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

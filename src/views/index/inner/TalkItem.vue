@@ -1,7 +1,6 @@
 <script setup>
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
-import { defAvatar } from '@/constant/default'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
@@ -32,11 +31,7 @@ defineProps({
     @click="emit('tab-talk', data)"
   >
     <div class="avatar-box">
-      <n-avatar v-if="avatar" :src="avatar" :fallback-src="defAvatar" />
-      <n-avatar v-else :style="{ color: 'white', backgroundColor: '#508afe' }">
-        {{ username && username.substring(0, 1) }}
-      </n-avatar>
-
+      <im-avatar :src="avatar" :size="34" :username="username" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
         <n-icon :component="data.is_top == 1 ? ArrowDown : ArrowUp" />
       </div>
@@ -96,13 +91,11 @@ defineProps({
   .avatar-box {
     height: 34px;
     width: 34px;
-    background-color: #508afe;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 14px;
-    color: white;
     user-select: none;
     transition: ease 1s;
     position: relative;
@@ -255,8 +248,12 @@ html[data-theme='dark'] {
     --actived-bg: rgb(44, 44, 50);
 
     .nickname {
-      color: #979797;
+      color: #ffffff;
     }
+  }
+
+  .disturb {
+    color: #ffffff;
   }
 }
 </style>

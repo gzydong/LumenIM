@@ -3,7 +3,8 @@ import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { Search, Plus } from '@icon-park/vue-next'
-import { useUserStore, useTalkStore } from '@/store'
+import { useUserStore } from '@/store'
+import { useTalkStore } from '@/store/talk'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
@@ -114,7 +115,7 @@ onMounted(() => {
       </n-empty>
     </main>
 
-    <main v-else class="el-main me-scrollbar pd-10">
+    <main v-else class="el-main me-scrollbar me-scrollbar-thumb pd-10">
       <div class="cards">
         <GroupCard
           v-for="item in filter"

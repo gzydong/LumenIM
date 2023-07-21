@@ -1,6 +1,6 @@
 <script setup>
 import { Male, Female, ShareThree } from '@icon-park/vue-next'
-import { defAvatar } from '@/constant/default'
+
 const emit = defineEmits(['to-talk'])
 
 defineProps({
@@ -30,12 +30,7 @@ defineProps({
 <template>
   <div class="items-box pointer">
     <div class="left-item">
-      <div v-if="avatar" class="avatar flex-center">
-        <n-avatar :src="avatar" :size="40" round :fallback-src="defAvatar" />
-      </div>
-      <div v-else class="avatar flex-center">
-        {{ username.substring(0, 1) }}
-      </div>
+      <im-avatar :src="avatar" :size="40" :username="username" />
     </div>
 
     <div class="right-item">
@@ -104,6 +99,7 @@ defineProps({
       height: 20px;
       font-size: 12px;
       color: #8f959e;
+      margin-top: 3px;
     }
 
     .helper {

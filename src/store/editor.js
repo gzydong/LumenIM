@@ -25,9 +25,6 @@ export const useEditorStore = defineStore('editor', {
           },
         ],
       },
-
-      // 消息引用
-      quote: null,
     }
   },
   actions: {

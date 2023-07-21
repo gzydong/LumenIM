@@ -21,7 +21,7 @@ const state = reactive({
           <div class="desc">当前未绑定github账号</div>
         </div>
         <div class="tools">
-          <n-button type="info" text> 设置 </n-button>
+          <n-button type="primary" text> 设置 </n-button>
         </div>
       </div>
 
@@ -34,7 +34,7 @@ const state = reactive({
           <div class="desc">当前未绑定gitee账号</div>
         </div>
         <div class="tools">
-          <n-button type="info" text> 设置 </n-button>
+          <n-button type="primary" text> 设置 </n-button>
         </div>
       </div>
     </div>
@@ -49,7 +49,13 @@ const state = reactive({
     .image {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      width: 60px;
+
+      img {
+        border-radius: 50%;
+        overflow: hidden;
+      }
     }
   }
 }

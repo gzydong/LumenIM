@@ -2,7 +2,6 @@
 import { ref, reactive, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NDivider, NCheckbox } from 'naive-ui'
 import { Search, DeleteMode } from '@icon-park/vue-next'
-import { defAvatar } from '@/constant/default.js'
 import {
   ServeCreateGroup,
   ServeInviteGroup,
@@ -169,10 +168,11 @@ onLoad()
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
-                    <n-avatar
-                      :size="25"
+                    <im-avatar
+                      class="pointer"
                       :src="item.avatar"
-                      :fallback-src="defAvatar"
+                      :size="25"
+                      :username="item.nickname"
                     />
                   </div>
 
@@ -228,10 +228,11 @@ onLoad()
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
-                    <n-avatar
-                      :size="25"
+                    <im-avatar
+                      class="pointer"
                       :src="item.avatar"
-                      :fallback-src="defAvatar"
+                      :size="25"
+                      :username="item.nickname"
                     />
                   </div>
 

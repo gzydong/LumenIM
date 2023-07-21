@@ -108,7 +108,7 @@ const onUploadAvatar = avatar => {
           {{ hidePhone(detail.mobile) }}
           <n-button
             class="mt-l15"
-            type="info"
+            type="primary"
             text
             @click="router.push('/settings/security')"
           >
@@ -119,7 +119,7 @@ const onUploadAvatar = avatar => {
           {{ detail.email }}
           <n-button
             class="mt-l15"
-            type="info"
+            type="primary"
             text
             @click="router.push('/settings/security')"
           >

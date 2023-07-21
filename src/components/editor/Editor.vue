@@ -2,7 +2,15 @@
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import 'quill-image-uploader/dist/quill.imageUploader.min.css'
 import 'quill-mention/dist/quill.mention.min.css'
-import { reactive, watch, ref, markRaw, computed, onMounted } from 'vue'
+import {
+  reactive,
+  watch,
+  ref,
+  markRaw,
+  computed,
+  onMounted,
+  onUnmounted,
+} from 'vue'
 import { NPopover } from 'naive-ui'
 import {
   Voice as IconVoice,
@@ -17,9 +25,10 @@ import {
 import { QuillEditor, Quill } from '@vueup/vue-quill'
 import ImageUploader from 'quill-image-uploader'
 import 'quill-mention'
-import { useDialogueStore, useEditorStore, useEditorDraftStore } from '@/store'
+import { useDialogueStore, useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString } from './util.ts'
 import { getImageInfo } from '@/utils/functions'
+import { publisher } from '@/utils/publisher.ts'
 import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
@@ -37,7 +46,6 @@ Quill.register('modules/imageUploader', ImageUploader)
 
 const emit = defineEmits(['editor-event'])
 const dialogueStore = useDialogueStore()
-const editorStore = useEditorStore()
 const editorDraftStore = useEditorDraftStore()
 const props = defineProps({
   vote: {
@@ -56,7 +64,6 @@ const getQuill = () => {
 }
 
 const indexName = computed(() => dialogueStore.index_name)
-const quote = computed(() => editorStore.quote)
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
 const isShowEditorRecorder = ref(false)
@@ -106,9 +113,9 @@ const editorOption = {
       positioningStrategy: 'fixed',
       renderItem: (data: any) => {
         return `
-              <div class="member-item">
-                  <image src=${data.avatar} class="member-avator"/>
-                  <span class="member-name">${data.nickname}</span>
+              <div class="ed-member-item">
+                  <image src=${data.avatar} class="avator"/>
+                  <span class="nickname">${data.nickname}</span>
               </div>
             `
       },
@@ -290,6 +297,10 @@ function onSendMessage() {
   var delta = getQuill().getContents()
   let data = deltaToMessage(delta)
 
+  if (data.items.length === 0) {
+    return
+  }
+
   switch (data.msgType) {
     case 1: // 文字消息
       if (data.items[0].content.length > 1024) {
@@ -300,7 +311,7 @@ function onSendMessage() {
         'text_event',
         { text: data.items[0].content, uids: data.mentionUids },
         (ok: any) => {
-          getQuill().setContents([])
+          ok && getQuill().setContents([], Quill.sources.USER)
         }
       )
 
@@ -315,7 +326,7 @@ function onSendMessage() {
           'image_event',
           { ...detail, url: data.items[0].content, size: 10000 },
           (ok: any) => {
-            getQuill().setContents([])
+            ok && getQuill().setContents([])
           }
         )
       )
@@ -324,7 +335,7 @@ function onSendMessage() {
       emit(
         'editor-event',
         emitCall('mixed_event', { items: data.items }, (ok: any) => {
-          getQuill().setContents([])
+          ok && getQuill().setContents([])
         })
       )
       break
@@ -342,23 +353,6 @@ function onEditorChange() {
   })
 
   emit('editor-event', emitCall('input_event', text))
-}
-
-function onWatchQuote(o: any) {
-  if (!(o && o.id > 0)) return
-
-  let delta = getQuill().getContents()
-
-  for (let index = 0; index < delta.ops.length; index++) {
-    if (delta.ops[index].insert.quote) return
-  }
-
-  const quill = getQuill()
-  const index = (quill.getSelection() || {}).index || quill.getLength()
-
-  quill.insertEmbed(0, 'quote', o)
-  quill.setSelection(index + 1, 0, 'user')
-  editorStore.quote = null
 }
 
 function loadEditorDraftText() {
@@ -382,11 +376,39 @@ function loadEditorDraftText() {
   }, 100)
 }
 
+function onSubscribeMention(data: any) {
+  const quill = getQuill()
+
+  quill
+    .getModule('mention')
+    .insertItem({ id: data?.id, denotationChar: '@', value: data.value }, true)
+}
+
+function onSubscribeQuote(data: any) {
+  const delta = getQuill().getContents()
+  if (delta.ops.some((item: any) => item.insert.quote)) {
+    return
+  }
+
+  const quill = getQuill()
+  const index = (quill.getSelection() || {}).index || quill.getLength()
+
+  quill.insertEmbed(0, 'quote', data)
+  quill.setSelection(index + 1, 0, 'user')
+}
+
 watch(indexName, loadEditorDraftText, { immediate: true })
-watch(quote, onWatchQuote, { immediate: true })
 
 onMounted(() => {
   loadEditorDraftText()
+
+  publisher.subscribe('editor:mention', onSubscribeMention)
+  publisher.subscribe('editor:quote', onSubscribeQuote)
+})
+
+onUnmounted(() => {
+  publisher.unsubscribe('editor:mention', onSubscribeMention)
+  publisher.unsubscribe('editor:quote', onSubscribeQuote)
 })
 </script>
 
@@ -598,7 +620,7 @@ onMounted(() => {
   background-color: transparent;
 }
 
-.member-item {
+.ed-member-item {
   height: 35px;
   display: flex;
   align-items: center;
@@ -609,7 +631,7 @@ onMounted(() => {
     border-radius: 50%;
   }
 
-  .member-name {
+  .nickname {
     margin-left: 5px;
     font-size: 13px;
     white-space: nowrap;
@@ -658,6 +680,8 @@ html[data-theme='dark'] {
       &.selected {
         background-color: #1f1f23;
       }
+
+      color: var(--im-text-color-grey);
     }
   }
 

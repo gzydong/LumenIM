@@ -67,7 +67,7 @@ async function onUpload(e) {
     </div>
 
     <div class="annex-box">
-      <div class="annex-main me-scrollbar">
+      <div class="annex-main me-scrollbar me-scrollbar-thumb">
         <p v-show="detail.files.length == 0" class="empty-text">暂无附件</p>
 
         <div
@@ -86,7 +86,7 @@ async function onUpload(e) {
               <span>{{ formatTime(file.created_at) }}</span>
               <div class="tools">
                 <n-button
-                  type="info"
+                  type="primary"
                   size="tiny"
                   text
                   @click="onDownload(file.id)"

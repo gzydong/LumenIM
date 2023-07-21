@@ -117,9 +117,11 @@ onMounted(() => {
             </p>
             <p class="vote-progress">
               <n-progress
+                type="line"
                 :height="5"
                 :show-indicator="false"
                 :percentage="parseInt(option.progress)"
+                color="#1890ff"
               />
             </p>
           </div>
@@ -162,7 +164,7 @@ onMounted(() => {
 .vote-message {
   width: 300px;
   min-height: 150px;
-  border: 1px solid #eceff1;
+  border: 1px solid var(--border-color);
   box-sizing: border-box;
   border-radius: 10px;
   overflow: hidden;

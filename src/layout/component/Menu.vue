@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore, useNotifyStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
-import { defAvatar } from '@/constant/default'
 import {
   GithubOne,
   SettingTwo,
@@ -84,12 +83,11 @@ const onClickMenu = menu => {
         style="margin-left: 16px; border-radius: 8px; overflow: hidden"
       >
         <template #trigger>
-          <n-avatar
+          <im-avatar
             class="logo"
-            round
             :size="35"
             :src="userStore.avatar"
-            :fallback-src="defAvatar"
+            :username="userStore.nickname"
           />
         </template>
         <AccountCard />

@@ -28,13 +28,13 @@ const onClose = () => {
       <div class="main">
         <div class="pay-box">
           <img
-            src="https://im.gzydong.club/public/media/image/talk/20230226/dfc440a2bdb2ae852d57a2003b3b350b_737x742.png"
+            src="https://im.gzydong.com/public/media/image/talk/20230226/dfc440a2bdb2ae852d57a2003b3b350b_737x742.png"
           />
           <p>支付宝</p>
         </div>
         <div class="pay-box">
           <img
-            src="https://im.gzydong.club/public/media/image/talk/20230226/6493e01b44b6e5cb6a219cea863eb13e_621x620.png"
+            src="https://im.gzydong.com/public/media/image/talk/20230226/6493e01b44b6e5cb6a219cea863eb13e_621x620.png"
           />
           <p>微信</p>
         </div>
@@ -53,13 +53,12 @@ const onClose = () => {
   right: 20px;
   bottom: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 12px #ccc;
-  border: 1px solid rgb(228, 225, 225);
+  border: 1px solid var(--border-color);
   box-sizing: border-box;
   overflow: hidden;
   user-select: none;
   z-index: 9999;
-  background: white;
+  background: var(--im-bg-color);
 
   .title {
     height: 50px;
@@ -67,7 +66,6 @@ const onClose = () => {
     padding-left: 20px;
     width: 100%;
     font-size: 16px;
-    background: #f9f7f7;
     position: relative;
     box-sizing: border-box;
 
@@ -105,7 +103,7 @@ const onClose = () => {
 
       p {
         margin-top: 20px;
-        color: white;
+        color: #ffffff;
       }
 
       &:last-child {

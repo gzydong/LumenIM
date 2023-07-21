@@ -33,7 +33,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">当前密码强度 ：中</div>
         </div>
         <div class="tools">
-          <n-button type="info" text @click="isShowChangePassword = true">
+          <n-button type="primary" text @click="isShowChangePassword = true">
             修改
           </n-button>
         </div>
@@ -45,7 +45,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">已绑定手机 ：{{ hidePhone(userStore.mobile) }}</div>
         </div>
         <div class="tools">
-          <n-button type="info" text @click="isShowChangeMobile = true">
+          <n-button type="primary" text @click="isShowChangeMobile = true">
             修改
           </n-button>
         </div>
@@ -57,7 +57,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">已绑定邮箱 ：{{ userStore.email || '未设置' }}</div>
         </div>
         <div class="tools">
-          <n-button type="info" text @click="isShowChangeEmail = true">
+          <n-button type="primary" text @click="isShowChangeEmail = true">
             修改
           </n-button>
         </div>

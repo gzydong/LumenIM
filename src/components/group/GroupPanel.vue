@@ -11,7 +11,6 @@ import {
   ServeSecedeGroup,
   ServeUpdateGroupCard,
 } from '@/api/group'
-import { defAvatar } from '@/constant/default'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { modal } from '@/utils/common'
 
@@ -164,7 +163,7 @@ loadMembers()
       </div>
     </header>
 
-    <main class="el-main main me-scrollbar">
+    <main class="el-main main me-scrollbar me-scrollbar-thumb">
       <div class="info-box">
         <div class="b-box">
           <div class="block">
@@ -179,7 +178,7 @@ loadMembers()
             <div class="text">
               <n-popover trigger="click" placement="left" ref="editCardPopover">
                 <template #trigger>
-                  <n-button type="info" text> 设置 </n-button>
+                  <n-button type="primary" text> 设置 </n-button>
                 </template>
 
                 <template #header> 设置我的群名片 </template>
@@ -227,7 +226,9 @@ loadMembers()
         <div class="b-box">
           <div class="block">
             <div class="title">群公告：</div>
-            <div class="text"><n-button type="info" text> 更多 </n-button></div>
+            <div class="text">
+              <n-button type="primary" text> 更多 </n-button>
+            </div>
           </div>
           <div class="describe">暂无群公告</div>
         </div>
@@ -267,11 +268,10 @@ loadMembers()
             @click="onToInfo(item)"
           >
             <div class="avatar">
-              <n-avatar
-                round
+              <im-avatar
                 :size="20"
                 :src="item.avatar"
-                :fallback-src="defAvatar"
+                :username="item.nickname"
               />
             </div>
             <div class="nickname text-ellipsis">
@@ -427,10 +427,11 @@ loadMembers()
       .table {
         margin-top: 15px;
         .theader {
-          height: 30px;
-          border-bottom: 1px solid #ccc;
+          height: 36px;
+          border-bottom: 1px solid var(--border-color);
           margin-bottom: 15px;
         }
+
         .row {
           height: 30px;
           margin: 3px 0;

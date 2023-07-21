@@ -9,7 +9,6 @@ import {
 } from '@/api/group'
 import { debounce } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
-import { defAvatar } from '@/constant/default'
 
 const items = ref([])
 const loading = ref(true)
@@ -76,14 +75,14 @@ onMounted(() => {
     </n-empty>
 
     <div class="item bdr-b" v-for="item in items" :key="item.id">
-      <div class="avatar">
-        <n-avatar :size="45" :src="item.avatar || defAvatar" />
+      <div class="avatar" @click="onInfo(item)">
+        <im-avatar :size="42" :src="item.avatar" :username="item.nickname" />
       </div>
 
       <div class="content pointer o-hidden" @click="onInfo(item)">
         <div class="username">
           <span>
-            <n-tag :bordered="false" size="small" type="info">
+            <n-tag :bordered="false" size="small" type="primary">
               {{ item.group_name }}
             </n-tag>
             {{ item.nickname }}
@@ -102,14 +101,14 @@ onMounted(() => {
           secondary
           circle
           size="small"
-          type="info"
+          type="primary"
         >
           <template #icon>
             <n-icon :component="CheckSmall" />
           </template>
         </n-button>
 
-        <n-popconfirm @positive-click="onDelete(item)">
+        <n-popconfirm @positive-click.stop="onDelete(item)">
           <template #trigger>
             <n-button strong secondary circle type="tertiary" size="small">
               <template #icon>
@@ -117,7 +116,7 @@ onMounted(() => {
               </template>
             </n-button>
           </template>
-          确认要删除记录吗？
+          确认要拒绝申请吗？
         </n-popconfirm>
       </div>
     </div>
@@ -145,6 +144,8 @@ onMounted(() => {
 
   .avatar {
     width: 50px;
+    display: flex;
+    align-items: center;
   }
 
   .content {

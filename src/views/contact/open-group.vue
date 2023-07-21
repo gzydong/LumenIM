@@ -97,7 +97,7 @@ onLoadData()
           </n-empty>
         </main>
 
-        <main class="el-main me-scrollbar pd-10" v-else>
+        <main class="el-main me-scrollbar me-scrollbar-thumb pd-10" v-else>
           <n-alert type="info" :bordered="false" closable class="mt-b10">
             公开群组可自行添加入群申请，待群主（管理员）同意后方可入群！
           </n-alert>

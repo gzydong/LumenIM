@@ -136,10 +136,9 @@ function formatSeconds(value) {
   width: 200px;
   height: 60px;
   border-radius: 5px;
-  background: #ffffff;
   display: flex;
   align-items: center;
-  border: 1px solid #ff5722;
+  border: 1px solid var(--im-message-border-color);
   overflow: hidden;
 
   > div {

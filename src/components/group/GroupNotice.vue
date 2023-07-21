@@ -80,7 +80,7 @@ onLoadData()
       </n-empty>
     </div>
 
-    <div v-else class="main-box me-scrollbar">
+    <div v-else class="main-box me-scrollbar me-scrollbar-thumb">
       <div v-for="item in state.items" :key="item.id" class="items">
         <div class="title text-ellipsis">
           {{ item.title }}
@@ -116,7 +116,7 @@ onLoadData()
     min-height: 80px;
     width: 100%;
     margin-bottom: 15px;
-    border-bottom: 1px solid #f5eded;
+    border-bottom: 1px solid var(--border-color);
 
     .title {
       height: 30px;
@@ -155,6 +155,7 @@ onLoadData()
       min-height: 30px;
       width: 100%;
       margin: 15px 0;
+      font-size: 13px;
       span {
         color: #887f7f;
       }

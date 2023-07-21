@@ -1,15 +1,17 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useEditorStore } from '@/store/editor'
-import { useTalkStore } from '@/store/talk'
-import { useDialogueStore } from '@/store/dialogue'
-import { useNotifyStore } from '@/store/notify'
-import { useUploadsStore } from '@/store/uploads'
+import {
+  useTalkStore,
+  useDialogueStore,
+  useNotifyStore,
+  useUploadsStore,
+} from '@/store'
+
 import socket from '@/socket'
 import { ServePublishMessage } from '@/api/chat'
 import {
   ServeSendTalkText,
-  ServeSendTalkImage,
   ServeSendVote,
   ServeSendEmoticon,
   ServeSendTalkCodeBlock,

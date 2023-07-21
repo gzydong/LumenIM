@@ -105,7 +105,7 @@ onLoadData()
             @positive-click="onDismiss"
           >
             <template #trigger>
-              <n-button type="info" size="small" text> 点击解散 </n-button>
+              <n-button type="primary" size="small" text> 点击解散 </n-button>
             </template>
             确定要解散群聊吗？ 此操作是不可逆的！
           </n-popconfirm>

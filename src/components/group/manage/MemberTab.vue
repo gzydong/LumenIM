@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, reactive, nextTick } from 'vue'
+import { ref, computed, reactive, nextTick, inject } from 'vue'
 import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
-import { defAvatar } from '@/constant/default'
 import GroupLaunch from '../GroupLaunch.vue'
-import UserCardModal from '@/components/user/UserCardModal.vue'
 import { useUserStore } from '@/store/user'
-import { modal } from '@/utils/common'
 
 import {
   ServeGetGroupMembers,
@@ -23,6 +20,7 @@ const props = defineProps({
   },
 })
 
+const user: any = inject('$user')
 const userStore = useUserStore()
 const isGroupLaunch = ref(false)
 const keywords = ref('')
@@ -111,9 +109,7 @@ const onRowClick = (item: any) => {
       item.is_delete = !item.is_delete
     }
   } else {
-    modal(UserCardModal, {
-      uid: item.user_id,
-    })
+    user(item.user_id)
   }
 }
 
@@ -126,9 +122,7 @@ const onCancelDelete = () => {
 }
 
 const onUserInfo = (item: any) => {
-  modal(UserCardModal, {
-    uid: item.user_id,
-  })
+  user(item.user_id)
 }
 
 const onAssignAdmin = (item: any) => {
@@ -310,7 +304,7 @@ onLoadData()
       </n-empty>
     </main>
 
-    <main v-else class="el-main main me-scrollbar">
+    <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
       <div
         class="member-item"
         v-for="member in filterSearch"
@@ -318,13 +312,17 @@ onLoadData()
       >
         <div class="tool flex-center" v-show="batchDelete">
           <n-checkbox
-            v-show="member.leader < 2"
+            :disabled="member.leader === 2"
             size="small"
             :checked="member.is_delete"
           />
         </div>
         <div class="avatar pointer" @click="onUserInfo(member)">
-          <n-avatar :size="40" :src="member.avatar" :fallback-src="defAvatar" />
+          <im-avatar
+            :size="40"
+            :src="member.avatar"
+            :username="member.nickname"
+          />
         </div>
         <div
           class="content pointer o-hidden"
@@ -341,7 +339,9 @@ onLoadData()
               <span class="badge leader" v-show="member.leader == 1"
                 >管理员</span
               >
-              <span class="badge" v-show="member.is_mute == 1">已禁言</span>
+              <span class="badge muted" v-show="member.is_mute == 1"
+                >已禁言</span
+              >
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>
@@ -403,21 +403,14 @@ onLoadData()
 }
 
 .member-item {
-  width: 100%;
-  height: 50px;
+  height: 56px;
   display: flex;
   align-items: center;
-  margin: 10px 0;
+  margin: 8px;
   user-select: none;
   border-radius: 3px;
-  border: 1px dashed transparent;
-  padding: 3px;
   border-bottom: 1px solid var(--border-color);
-  box-sizing: border-box;
-
-  &:hover {
-    border: 1px solid rgb(80 138 254);
-  }
+  box-sizing: content-box;
 
   > div {
     height: inherit;
@@ -428,7 +421,7 @@ onLoadData()
     flex-shrink: 0;
     user-select: none;
     display: flex;
-    align-items: center;
+    padding-top: 8px;
   }
 
   .content {
@@ -451,8 +444,14 @@ onLoadData()
     .item-text {
       width: inherit;
       height: 20px;
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 13px;
+      color: rgb(255 255 255 / 52%);
+      font-size: 12px;
+    }
+  }
+
+  &:hover {
+    .item-title {
+      color: #2196f3;
     }
   }
 
@@ -491,6 +490,11 @@ onLoadData()
 
   &.qiye {
     background-color: #2196f3;
+    color: #ffffff;
+  }
+
+  &.muted {
+    background-color: red;
     color: #ffffff;
   }
 }

@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import { useTalkStore } from '@/store/talk'
+import { useTalkStore } from '@/store'
 import { useUserStore } from '@/store/user'
 import { useDialogueStore } from '@/store/dialogue'
 import { getAccessToken, isLoggedIn } from './utils/auth'

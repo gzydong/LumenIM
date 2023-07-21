@@ -46,7 +46,7 @@ const store = useUserStore()
 .account-card {
   width: 320px;
   min-height: 300px;
-  background: #ffffff;
+  background: var(--im-bg-color);
   padding-bottom: 20px;
 
   .card-header {
@@ -99,6 +99,16 @@ const store = useUserStore()
     font-size: 12px;
     margin-bottom: 3px;
     position: relative;
+  }
+}
+
+html[data-theme='dark'] {
+  .account-card .card-header {
+    background: linear-gradient(to bottom right, #373737, #1f1f23);
+  }
+
+  .account-card .card-main .usersign {
+    background-color: #2c2c32;
   }
 }
 </style>

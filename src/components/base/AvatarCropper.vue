@@ -162,7 +162,7 @@ const onSubmit = () => {
               padding: 0 5px;
             "
           >
-            <n-button @click="onTriggerUpload" type="info" ghost>
+            <n-button @click="onTriggerUpload" type="primary" ghost>
               上传图片
               <template #icon>
                 <n-icon :component="UploadOne" />
@@ -191,7 +191,7 @@ const onSubmit = () => {
             </n-button>
           </aside>
           <main class="el-main" style="text-align: center">
-            <n-button type="info" @click="onSubmit">保存图片</n-button>
+            <n-button type="primary" @click="onSubmit">保存图片</n-button>
           </main>
         </section>
       </template>

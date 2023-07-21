@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
+import { NDropdown } from 'naive-ui'
 import { useFriendsMenu } from '@/composition/group-list-menu'
-
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 
 const emit = defineEmits(['user'])
@@ -11,10 +9,6 @@ const props = defineProps({
   members: {
     default: () => [],
   },
-})
-
-const filter: any = computed(() => {
-  return props.members.filter((item: any) => item.online)
 })
 
 const onContextMenu = (e, item) => {
@@ -39,7 +33,7 @@ const onContextMenuHandle = (key = '') => {
       <span>群成员({{ members.length }})</span>
       <!-- <span>{{ members.length }}</span> -->
     </header>
-    <main class="el-main main me-scrollbar">
+    <main class="el-main main me-scrollbar me-scrollbar-thumb">
       <div
         class="item pointer"
         v-for="item in members"
@@ -47,7 +41,12 @@ const onContextMenuHandle = (key = '') => {
         @click="emit('user', item.id)"
         @contextmenu.prevent="onContextMenu($event, item)"
       >
-        <n-avatar class="avatar" round :size="16" :src="item.avatar" />
+        <im-avatar
+          class="avatar"
+          :src="item.avatar"
+          :size="24"
+          :username="item.remark || item.nickname"
+        />
 
         <span class="nickname online text-ellipsis">
           {{ item.remark || item.nickname }}

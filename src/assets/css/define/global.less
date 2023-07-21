@@ -140,45 +140,27 @@ textarea {
   &::-webkit-scrollbar {
     width: 3px;
     height: 3px;
-    background-color: transparent;
+    background-color: unset;
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: transparent;
+    background-color: unset;
   }
 
   &:hover {
     &::-webkit-scrollbar {
-      background-color: #e4e4e5;
+      background-color: var(--im-scrollbar);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: #c0bebc;
+      background-color: var(--im-scrollbar-thumb);
     }
   }
-}
 
-// 滚动条样式
-.me-scrollbar {
-  &::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    background-color: transparent;
-  }
-
-  &:hover {
+  &.me-scrollbar-thumb {
     &::-webkit-scrollbar {
-      background-color: #e4e4e5;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #c0bebc;
+      background-color: unset;
     }
   }
 }

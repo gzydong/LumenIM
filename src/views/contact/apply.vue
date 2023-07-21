@@ -28,7 +28,7 @@ const components = {
       </n-input> -->
     </header>
 
-    <main class="el-main me-scrollbar" style="padding: 15px;">
+    <main class="el-main me-scrollbar me-scrollbar-thumb" style="padding: 0 15px;">
       <component :is="components[tabIndex]" />
     </main>
   </section>

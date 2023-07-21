@@ -8,7 +8,6 @@ import {
   ServeApplyDecline,
 } from '@/api/contacts'
 import { parseTime } from '@/utils/datetime'
-import { defAvatar } from '@/constant/default'
 import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()
@@ -91,8 +90,8 @@ onMounted(() => {
     </n-empty>
 
     <div class="item bdr-b" v-for="item in items" :key="item.id">
-      <div class="avatar">
-        <n-avatar :size="45" :src="item.avatar || defAvatar" />
+      <div class="avatar" @click="onInfo(item)">
+        <im-avatar :size="45" :src="item.avatar" :username="item.nickname" />
       </div>
 
       <div class="content pointer o-hidden" @click="onInfo(item)">
@@ -111,7 +110,7 @@ onMounted(() => {
           strong
           secondary
           circle
-          type="info"
+          type="primary"
           size="small"
         >
           <template #icon>
@@ -127,7 +126,7 @@ onMounted(() => {
               </template>
             </n-button>
           </template>
-          确认要删除记录吗？
+          确认要拒绝申请吗？
         </n-popconfirm>
       </div>
     </div>

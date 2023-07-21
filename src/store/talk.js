@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ServeGetTalkList } from '@/api/chat'
 import { formatTalkItem } from '@/utils/talk'
-import { useEditorDraftStore } from './editor-draft'
+import { useEditorDraftStore } from './index'
 
 const ttime = datetime => {
   if (datetime == undefined || datetime == '') {
@@ -57,7 +57,7 @@ export const useTalkStore = defineStore('talk', {
 
     // 新增对话节点
     addItem(params) {
-      this.items.push(params)
+      this.items = [params, ...this.items]
     },
 
     // 移除对话节点
@@ -67,6 +67,8 @@ export const useTalkStore = defineStore('talk', {
       if (i >= 0) {
         this.items.splice(i, 1)
       }
+
+      this.items = [...this.items]
     },
 
     // 更新对话消息

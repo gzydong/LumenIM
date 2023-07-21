@@ -88,7 +88,7 @@ onMounted(() => {
             >{{ modelDetail.name.substring(0, 1) }}</n-avatar
           >
           <n-button
-            type="info"
+            type="primary"
             size="tiny"
             style="margin-left: 20px"
             dashed

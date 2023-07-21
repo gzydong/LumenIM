@@ -10,14 +10,13 @@ import {
 } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading, MoreThree } from '@icon-park/vue-next'
-
+import { publisher } from '@/utils/publisher.ts'
 import socket from '@/socket'
 import { useDialogueStore, useEditorStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
 import { formatTalkRecord } from '@/utils/talk'
-import { defAvatar } from '@/constant/default'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
@@ -266,7 +265,14 @@ const onQuoteMessage = (data: any) => {
       break // 图文消息
   }
 
-  editorStore.quote = item
+  publisher.publish('editor:quote', item)
+}
+
+const onClickNickname = (data: any) => {
+  publisher.publish('editor:mention', {
+    id: data.user_id,
+    value: data.nickname,
+  })
 }
 
 // 会话列表右键显示菜单
@@ -335,7 +341,7 @@ onMounted(onReload)
     <n-image-group>
       <div
         id="lumenChatPanel"
-        class="me-scrollbar talk-container"
+        class="me-scrollbar me-scrollbar-thumb talk-container"
         @scroll="onPanelScroll($event)"
       >
         <!-- 数据加载状态栏 -->
@@ -395,12 +401,11 @@ onMounted(onReload)
 
             <!-- 头像信息 -->
             <aside class="avatar-column">
-              <n-avatar
-                round
-                size="small"
+              <im-avatar
                 class="pointer"
                 :src="item.avatar"
-                :fallback-src="defAvatar"
+                :size="30"
+                :username="item.nickname"
                 @click="user(item.user_id)"
               />
             </aside>
@@ -409,8 +414,9 @@ onMounted(onReload)
             <main class="main-column">
               <div class="talk-title">
                 <span
-                  class="nickname"
+                  class="nickname pointer"
                   v-show="talk_type == 2 && item.float == 'left'"
+                  @click="onClickNickname(item)"
                 >
                   {{ item.nickname }}
                 </span>
@@ -447,12 +453,9 @@ onMounted(onReload)
                     </span>
                   </template>
 
-                  <more-three
+                  <n-icon
                     class="more-tools pointer"
-                    theme="outline"
-                    size="14"
-                    fill="#4a4a4a"
-                    :strokeWidth="2"
+                    :component="MoreThree"
                     @click="onContextMenu($event, item)"
                   />
                 </div>
@@ -498,16 +501,6 @@ onMounted(onReload)
   height: 100%;
   width: 100%;
   overflow: hidden;
-}
-
-.me-scrollbar {
-  &::-webkit-scrollbar {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #c0bebc;
-  }
 }
 
 .talk-container {
@@ -579,7 +572,7 @@ onMounted(onReload)
       .talk-title {
         display: flex;
         align-items: center;
-        height: 15px;
+        height: 24px;
         margin-bottom: 2px;
         font-size: 12px;
         user-select: none;
@@ -592,8 +585,8 @@ onMounted(onReload)
         }
 
         .nickname {
-          font-weight: bold;
-          color: #9e9e9e;
+          color: var(--im-text-color);
+          margin-right: 5px;
         }
 
         span {
