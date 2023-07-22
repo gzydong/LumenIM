@@ -33,9 +33,8 @@ body {
 }
 @import '@/assets/css/login.less';
 
-.section{
+.section {
   height: 100vh;
   width: 100vw;
-  
 }
 </style>

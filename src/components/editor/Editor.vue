@@ -137,7 +137,7 @@ const editorOption = {
       },
     },
   },
-  placeholder: '你想要说点什么呢...',
+  placeholder: '按Enter发送 / Shift+Enter 换行',
   theme: 'snow',
 }
 
@@ -580,6 +580,12 @@ onUnmounted(() => {
 #editor {
   overflow: hidden;
 }
+
+.mention {
+  color: #409eff;
+  background-color: transparent;
+}
+
 
 .ed-emoji {
   background-color: unset !important;

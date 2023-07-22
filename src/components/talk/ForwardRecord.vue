@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
 import { MessageComponents } from '@/constant/message'
@@ -15,6 +15,7 @@ const props = defineProps({
     default: 0,
   },
 })
+const user = inject('$user')
 const isShow = ref(true)
 const records = ref([])
 const title = ref('会话记录')
@@ -65,7 +66,7 @@ onLoadData()
       <Loading v-if="records.length === 0" />
 
       <div v-for="item in records" :key="item.msg_id" class="message-item">
-        <div class="left-box">
+        <div class="left-box pointer" @click="user(item.user_id)">
           <im-avatar :src="item.avatar" :size="30" :username="item.nickname" />
         </div>
 
