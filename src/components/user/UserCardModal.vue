@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
-import { CloseOne, SendEmail, Male, Female } from '@icon-park/vue-next'
+import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
 import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contacts'
@@ -20,7 +20,7 @@ const props = defineProps({
 
 const loading = ref(true)
 const isOpenFrom = ref(false)
-const state: any = ref({
+const state: any = reactive({
   id: 0,
   avatar: '',
   gender: 0,
@@ -54,7 +54,7 @@ const onLoadData = () => {
     user_id: props.uid,
   }).then(({ code, data }) => {
     if (code == 200) {
-      Object.assign(state.value, data)
+      Object.assign(state, data)
 
       modelRemark.value = state.remark
 
@@ -129,7 +129,8 @@ const handleSelectGroup = value => {
 
 const reset = () => {
   loading.value = true
-  state.value = {
+
+  Object.assign(state, {
     id: 0,
     avatar: '',
     gender: 0,
@@ -140,7 +141,7 @@ const reset = () => {
     email: '',
     status: 1,
     text: '',
-  }
+  })
 
   isOpenFrom.value = false
 }
@@ -286,7 +287,7 @@ const onAfterEnter = () => {
             style="width: 91%"
           >
             <template #icon>
-              <n-icon :component="SendEmail" />
+              <n-icon :component="SendOne" />
             </template>
             发送消息
           </n-button>
@@ -430,7 +431,7 @@ const onAfterEnter = () => {
 
     .edit {
       text-decoration: underline;
-      text-decoration-style: dashed;
+      text-decoration-style: solid;
       text-underline-offset: 3px;
     }
   }

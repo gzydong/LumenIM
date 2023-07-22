@@ -1,5 +1,5 @@
 <script setup>
-import { Male, Female, ShareThree } from '@icon-park/vue-next'
+import { Male, Female, SendOne } from '@icon-park/vue-next'
 
 const emit = defineEmits(['to-talk'])
 
@@ -50,7 +50,7 @@ defineProps({
       <div class="helper">
         <div class="status">{{ flag }}</div>
         <div class="tool">
-          <n-icon :component="ShareThree" @click.stop="emit('to-talk')" />
+          <n-icon :component="SendOne" @click.stop="emit('to-talk')" />
         </div>
       </div>
     </div>

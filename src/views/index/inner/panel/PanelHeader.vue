@@ -113,7 +113,6 @@ const onSetMenu = () => {
 
   .left-module {
     padding-right: 5px;
-    width: 200px;
     padding-left: 50px;
 
     .tag {
@@ -142,6 +141,8 @@ const onSetMenu = () => {
   .center-module {
     flex-direction: column;
     justify-content: center;
+
+    width: 100px;
 
     .online {
       color: #cccccc;

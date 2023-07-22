@@ -41,12 +41,9 @@ defineProps({
       <div class="header">
         <div class="title">
           <span class="nickname">{{ username }}</span>
-          <span class="badge top" v-show="data.is_top">TOP</span>
-          <span class="badge roboot" v-show="data.is_robot">BOT</span>
-          <span class="badge group" v-show="data.talk_type == 2">群组</span>
-          <span class="disturb" v-show="data.is_disturb">
-            <n-icon :component="CloseRemind" />
-          </span>
+          <span class="badge top" v-show="data.is_top">顶</span>
+          <span class="badge roboot" v-show="data.is_robot">助</span>
+          <span class="badge group" v-show="data.talk_type == 2">群</span>
         </div>
         <div class="datetime"><Xtime :time="data.updated_at" /></div>
       </div>
@@ -68,7 +65,12 @@ defineProps({
             <span v-html="data.msg_text" />
           </template>
         </div>
-        <div class="unread" v-show="data.unread_num">
+
+        <div v-if="data.is_disturb" class="disturb">
+          <n-icon :component="CloseRemind" />
+        </div>
+
+        <div v-else class="unread" v-show="data.unread_num">
           <span class="badge">
             {{ data.unread_num > 99 ? '99+' : data.unread_num }}
           </span>
@@ -204,6 +206,12 @@ defineProps({
           transform-origin: right;
         }
       }
+
+      .disturb {
+        color: #8f959e;
+        font-size: 12px;
+        user-select: none;
+      }
     }
   }
 
@@ -230,13 +238,6 @@ defineProps({
     color: #3370ff !important;
     background-color: #e1eaff !important;
   }
-}
-
-.disturb {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
 }
 
 :global(.draft-text .ed-image) {

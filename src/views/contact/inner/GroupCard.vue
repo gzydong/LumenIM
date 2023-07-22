@@ -1,5 +1,5 @@
 <script setup>
-import { ShareThree, AddOne, PeoplePlusOne } from '@icon-park/vue-next'
+import { SendOne, AddOne, PeoplePlusOne } from '@icon-park/vue-next'
 
 const emit = defineEmits(['talk', 'join'])
 defineProps({
@@ -54,7 +54,7 @@ defineProps({
         <div class="status">{{ flag }}</div>
         <div class="tool">
           <n-icon
-            :component="isMember ? ShareThree : PeoplePlusOne"
+            :component="isMember ? SendOne : PeoplePlusOne"
             @click.stop="emit(isMember ? 'talk' : 'join')"
           />
         </div>
