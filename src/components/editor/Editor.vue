@@ -577,6 +577,10 @@ onUnmounted(() => {
 </style>
 
 <style lang="less">
+#editor {
+  overflow: hidden;
+}
+
 .ed-emoji {
   background-color: unset !important;
 }

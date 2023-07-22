@@ -225,7 +225,7 @@ const onSubmit = () => {
       height: 180px;
       border-radius: 20px;
       overflow: hidden;
-      border: 1px solid #f1eaea;
+      border: 1px solid var(--border-color);
 
       img {
         width: 100%;

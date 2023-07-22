@@ -40,8 +40,8 @@ defineProps({
         </span>
 
         <div v-if="gender > 0">
+          <n-icon v-if="gender == 1" :component="Male" color="#508afe" />
           <n-icon v-if="gender == 2" :component="Female" color="#ff5722" />
-          <n-icon v-else :component="Male" color="#508afe" />
         </div>
       </div>
 

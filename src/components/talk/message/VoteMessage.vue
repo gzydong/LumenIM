@@ -99,7 +99,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="vote-message">
+  <section class="im-message-vote">
     <div class="vote-from">
       <div class="vheader">
         <p style="font-weight: bold">
@@ -161,7 +161,7 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.vote-message {
+.im-message-vote {
   width: 300px;
   min-height: 150px;
   border: 1px solid var(--border-color);

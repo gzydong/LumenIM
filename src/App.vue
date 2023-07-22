@@ -44,17 +44,15 @@ const userStore = useUserStore()
 const notifyStore = useNotifyStore()
 
 const getDarkTheme = computed(() => {
-  document.querySelectorAll('html')[0].dataset.theme = notifyStore.darkTheme
-    ? 'dark'
-    : 'light'
+  let theme = notifyStore.darkTheme ? 'dark' : 'light'
+
+  document.querySelectorAll('html')[0].dataset.theme = theme
 
   return notifyStore.darkTheme ? darkTheme : undefined
 })
 
 const getThemeOverride = computed(() => {
   if (notifyStore.darkTheme) {
-    // overrides.common.bodyColor = '#1f1f23'
-    // overrides.common.bodyColor = '#1e1e1e'
     overrides.common.bodyColor = '#202124'
     overrides.common.baseColor = '#ffffff'
   }
@@ -96,14 +94,10 @@ listener()
       <dialog-api />
     </n-dialog-provider>
 
-    <n-layout>
-      <!-- <n-layout-header>颐和园路</n-layout-header> -->
-      <n-layout-content>
-        <router-view />
-      </n-layout-content>
-      <!-- <n-layout-footer>成府路</n-layout-footer> -->
-    </n-layout>
+    <n-layout-content>
+      <router-view />
 
-    <UserCardModal v-model:show="isShowUser" v-model:uid="showUserId" />
+      <UserCardModal v-model:show="isShowUser" v-model:uid="showUserId" />
+    </n-layout-content>
   </n-config-provider>
 </template>

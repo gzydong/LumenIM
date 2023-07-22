@@ -24,8 +24,9 @@ onUnmounted(() => {
       </aside>
 
       <main class="el-main">
-        <IndexContent v-if="dialogueStore.index_name" />
-        <IndexAmicable v-else />
+        <component
+          :is="dialogueStore.index_name ? IndexContent : IndexAmicable"
+        />
       </main>
     </section>
   </Layout>

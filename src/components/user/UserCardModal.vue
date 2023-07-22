@@ -151,19 +151,15 @@ const onAfterEnter = () => {
           />
 
           <div class="gender" v-show="state.gender > 0">
-            <male
+            <n-icon
               v-if="state.gender == 1"
-              theme="outline"
-              size="16"
-              fill="#ffffff"
-              :strokeWidth="2"
+              :component="Male"
+              color="#508afe"
             />
-            <female
-              v-else
-              theme="outline"
-              size="16"
-              fill="#ffffff"
-              :strokeWidth="2"
+            <n-icon
+              v-if="state.gender == 2"
+              :component="Female"
+              color="#ff5722"
             />
           </div>
 
@@ -176,7 +172,7 @@ const onAfterEnter = () => {
           </div>
         </header>
 
-        <main class="el-main main me-scrollbar">
+        <main class="el-main main me-scrollbar me-scrollbar-thumb">
           <div class="motto">
             {{ state.motto || '编辑个签，展示我的独特态度。' }}
           </div>
@@ -258,10 +254,9 @@ const onAfterEnter = () => {
         >
           <n-button
             round
-            type="primary"
-            color="#1890ff"
-            text-color="#ffffff"
             block
+            type="primary"
+            text-color="#ffffff"
             @click="onToTalk"
             style="width: 91%"
           >
@@ -279,14 +274,13 @@ const onAfterEnter = () => {
           <template v-if="isOpenFrom">
             <n-input
               type="text"
-              placeholder="设置添加好友备注 (按 Enter 键提交)"
+              placeholder="设置添加好友备注"
               v-model:value="state.text"
               @keydown.enter.native="onJoinContact"
             />
 
             <n-button
               type="primary"
-              color="#1890ff"
               text-color="#ffffff"
               class="mt-l5"
               @click="onJoinContact"
@@ -297,7 +291,6 @@ const onAfterEnter = () => {
           <template v-else>
             <n-button
               type="primary"
-              color="#1890ff"
               text-color="#ffffff"
               block
               round
@@ -421,7 +414,7 @@ const onAfterEnter = () => {
 html[data-theme='dark'] {
   .section {
     .header {
-      background: linear-gradient(to bottom right, #373737, #1f1f23);
+      background: #2c2c32;
     }
 
     .motto {

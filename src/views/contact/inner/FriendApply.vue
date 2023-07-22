@@ -89,9 +89,9 @@ onMounted(() => {
       </template>
     </n-empty>
 
-    <div class="item bdr-b" v-for="item in items" :key="item.id">
+    <div class="item" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">
-        <im-avatar :size="45" :src="item.avatar" :username="item.nickname" />
+        <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
       </div>
 
       <div class="content pointer o-hidden" @click="onInfo(item)">
@@ -143,25 +143,35 @@ onMounted(() => {
 }
 
 .item {
-  height: 50px;
+  height: 60px;
   display: flex;
   align-items: center;
-  padding: 8px 0;
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+
+  &:first-child {
+    margin-top: 0;
+  }
 
   > div {
     height: inherit;
   }
 
   .avatar {
-    width: 50px;
+    width: 40px;
+    display: flex;
+    align-items: center;
   }
 
   .content {
     width: 100%;
     margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     .username {
-      height: 25px;
+      height: 30px;
       line-height: 25px;
       display: flex;
       align-items: center;
@@ -174,12 +184,13 @@ onMounted(() => {
     }
 
     .remark {
-      height: 25px;
+      height: 30px;
       line-height: 25px;
       font-size: 12px;
       color: #9a9292;
       overflow: hidden;
       width: inherit;
+      border-bottom: 1px solid var(--border-color);
     }
   }
 
@@ -188,6 +199,17 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-around;
+  }
+
+  &:hover {
+    background-color: var(--im-active-bg-color);
+
+    padding: 0 5px;
+    border-radius: 10px;
+
+    .remark {
+      border-bottom-color: transparent;
+    }
   }
 }
 </style>

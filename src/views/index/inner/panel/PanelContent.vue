@@ -656,7 +656,7 @@ onMounted(onReload)
 
       &:hover,
       &.multi-select-check {
-        background-color: #ececec;
+        background-color: var(--im-active-bg-color);
       }
     }
   }

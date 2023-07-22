@@ -40,7 +40,7 @@ function getExploreOs(userAgent = '') {
 }
 </script>
 <template>
-  <section class="login-message">
+  <section class="im-message-login">
     <h4>登录操作通知</h4>
     <p>登录时间：{{ extra.datetime }} (CST)</p>
     <p>IP 地址：{{ extra.ip }}</p>
@@ -53,7 +53,7 @@ function getExploreOs(userAgent = '') {
   </section>
 </template>
 <style lang="less" scoped>
-.login-message {
+.im-message-login {
   width: 300px;
   min-height: 50px;
   background: var(--im-message-bg-color);
@@ -64,6 +64,7 @@ function getExploreOs(userAgent = '') {
   p {
     font-size: 13px;
     margin: 10px 0;
+
     &:last-child {
       margin-bottom: 0;
     }

@@ -26,11 +26,10 @@ const img = (src, width = 200) => {
     height: parseInt(info.height / (info.width / width)) + 'px',
   }
 }
-
 </script>
 <template>
   <section
-    class="image-message"
+    class="im-message-image"
     :class="{ left: data.float === 'left' }"
     :style="img(extra.url, 350)"
   >
@@ -38,28 +37,22 @@ const img = (src, width = 200) => {
   </section>
 </template>
 <style lang="less" scoped>
-.image-message {
+.im-message-image {
   overflow: hidden;
   padding: 5px;
   border-radius: 5px;
-  background-color: #daf3fd;
+  background: var(--im-message-left-bg-color);
   min-width: 30px;
   min-height: 30px;
 
   &.left {
-    background-color: #eff0f1;
+    background: var(--im-message-right-bg-color);
   }
 
   :deep(.n-image img) {
     width: 100%;
     height: 100%;
     border-radius: 5px;
-  }
-}
-
-html[data-theme='dark'] {
-  .image-message {
-    background: var(--im-message-bg-color);
   }
 }
 </style>

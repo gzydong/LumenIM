@@ -85,7 +85,7 @@ function formatSeconds(value) {
 }
 </script>
 <template>
-  <div class="audio-message">
+  <div class="im-message-audio">
     <audio
       ref="audioRef"
       preload="auto"
@@ -132,7 +132,7 @@ function formatSeconds(value) {
   </div>
 </template>
 <style lang="less" scoped>
-.audio-message {
+.im-message-audio {
   width: 200px;
   height: 60px;
   border-radius: 5px;

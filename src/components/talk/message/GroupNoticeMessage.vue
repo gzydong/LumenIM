@@ -11,7 +11,7 @@ defineProps<{
 let show = ref(false)
 </script>
 <template>
-  <section class="group-notice-message pointer" @click="show = !show">
+  <section class="im-message-group-notice pointer" @click="show = !show">
     <div class="title">
       <n-tag :bordered="false" size="small" type="primary"> 群公告 </n-tag>
       {{ extra.title }}
@@ -23,7 +23,7 @@ let show = ref(false)
 </template>
 
 <style lang="less" scoped>
-.group-notice-message {
+.im-message-group-notice {
   max-width: 500px;
   min-height: 50px;
   border-radius: 10px;

@@ -50,7 +50,7 @@ const img = (src, width = 200) => {
 
 <template>
   <div
-    class="text-message"
+    class="im-message-mixed"
     :class="{
       left: float == 'left',
       right: float == 'right',
@@ -77,17 +77,17 @@ const img = (src, width = 200) => {
 </template>
 
 <style lang="less" scoped>
-.text-message {
-  position: relative;
+.im-message-mixed {
   min-width: 30px;
   min-height: 30px;
   padding: 3px;
-  color: #333;
-  background: #eff0f1;
+  color: var(--im-message-left-text-color);
+  background: var(--im-message-left-bg-color);
   border-radius: 0px 10px 10px 10px;
 
   &.right {
-    background-color: #daf3fd;
+    background-color: var(--im-message-right-bg-color);
+    color: var(--im-message-right-text-color);
     border-radius: 10px 0px 10px 10px;
   }
 
@@ -111,13 +111,6 @@ const img = (src, width = 200) => {
       color: #2196f3;
       text-decoration: revert;
     }
-  }
-}
-
-html[data-theme='dark'] {
-  .text-message {
-    background: var(--im-message-bg-color);
-    color: var(--im-text-color);
   }
 }
 </style>

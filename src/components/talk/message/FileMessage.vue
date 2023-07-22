@@ -97,7 +97,6 @@ defineProps<{
   .footer {
     height: 30px;
     line-height: 37px;
-    // color: #409eff;
     text-align: right;
     font-size: 12px;
     border-top: 1px solid var(--border-color);

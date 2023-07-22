@@ -1,5 +1,7 @@
 <script setup>
+import './sys-message.less'
 import { inject } from 'vue'
+
 const showUserModal = inject('$user')
 
 defineProps({
@@ -9,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="invite-message">
+  <div class="im-message-sys-text">
     <div class="sys-text">
       <a @click="showUserModal(extra.owner_id)">
         {{ extra.owner_name }}
@@ -26,55 +28,3 @@ defineProps({
     </div>
   </div>
 </template>
-
-<style lang="less" scoped>
-.invite-message {
-  display: flex;
-  justify-content: center;
-}
-
-.sys-text {
-  margin: 10px auto;
-  background-color: #f5f5f5;
-  font-size: 11px;
-  line-height: 30px;
-  padding: 0 8px;
-  word-wrap: break-word;
-  color: #979191;
-  user-select: none;
-  font-weight: 300;
-  display: inline-block;
-  border-radius: 3px;
-  max-width: 80%;
-  text-align: center;
-
-  span {
-    margin: 0 5px;
-  }
-
-  a {
-    color: #939596;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 400;
-
-    &:hover {
-      color: black;
-    }
-  }
-}
-
-html[data-theme='dark'] {
-  .invite-message {
-    .sys-text {
-      background: unset;
-
-      a {
-        &:hover {
-          color: #03a9f4;
-        }
-      }
-    }
-  }
-}
-</style>

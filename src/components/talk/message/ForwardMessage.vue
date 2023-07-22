@@ -28,7 +28,7 @@ if (pids == '' || pids == undefined) {
 }
 </script>
 <template>
-  <section class="forward-message pointer" @click="onClick">
+  <section class="im-message-forward pointer" @click="onClick">
     <div class="title">{{ title }} 的会话记录</div>
     <div class="list" v-for="(record, index) in extra.records" :key="index">
       <p>
@@ -51,7 +51,7 @@ if (pids == '' || pids == undefined) {
 </template>
 
 <style lang="less" scoped>
-.forward-message {
+.im-message-forward {
   width: 250px;
   min-height: 95px;
   max-height: 150px;

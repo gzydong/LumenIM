@@ -6,11 +6,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="text">[{{ data.msg_type }}] 未知消息类型</div>
+  <div class="im-message-unknown">[{{ data.msg_type }}] 未知消息类型</div>
 </template>
 
 <style lang="less" scoped>
-.text {
+.im-message-unknown {
   height: 35px;
   line-height: 35px;
   border-radius: 20px;

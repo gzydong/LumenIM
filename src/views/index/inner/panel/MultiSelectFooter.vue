@@ -132,7 +132,7 @@ const onContactModal = data => {
       .multi-icon {
         width: 50px;
         height: 50px;
-        background-color: #f5f5f5;
+        background-color: var(--im-active-bg-color);
         border-radius: 50%;
 
         &:hover {

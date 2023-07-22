@@ -7,6 +7,7 @@ defineProps({
 
 <template>
   <video
+    class="im-message-video"
     ref="video"
     height="300"
     controls
@@ -17,7 +18,7 @@ defineProps({
 </template>
 
 <style lang="less" scoped>
-video {
+.im-message-video {
   border-radius: 5px;
 }
 </style>

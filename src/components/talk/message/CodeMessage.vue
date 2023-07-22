@@ -23,7 +23,7 @@ const onClipboard = () => {
 </script>
 <template>
   <section
-    class="code-message el-container is-vertical"
+    class="im-message-code el-container is-vertical"
     :class="{
       maxwidth: maxWidth,
       full: full,
@@ -49,7 +49,7 @@ const onClipboard = () => {
   </section>
 </template>
 <style lang="less" scoped>
-.code-message {
+.im-message-code {
   min-width: 150px;
   border-radius: 10px;
   overflow-x: auto;
@@ -122,7 +122,7 @@ const onClipboard = () => {
 }
 
 html[data-theme='dark'] {
-  .code-message {
+  .im-message-code {
     background: var(--im-message-bg-color);
 
     .mask {
@@ -134,5 +134,4 @@ html[data-theme='dark'] {
     }
   }
 }
-
 </style>
