@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NCheckbox, NTabs, NTab } from 'naive-ui'
-import { Search, DeleteOne } from '@icon-park/vue-next'
+import { Search, Delete } from '@icon-park/vue-next'
 import { ServeGetContacts } from '@/api/contacts'
 import { ServeGetGroups } from '@/api/group'
 
@@ -241,8 +241,9 @@ onLoad()
                     </span>
                     <span v-if="item.type == 2" class="badge group">群</span>
                   </div>
+
                   <div class="checkbox">
-                    <n-icon :size="16" color="red" :component="DeleteOne" />
+                    <n-icon :size="16" :component="Delete" />
                   </div>
                 </div>
               </div>

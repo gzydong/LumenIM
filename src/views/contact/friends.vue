@@ -74,7 +74,7 @@ const onDeleteContact = (data: any) => {
         friend_id: data.id,
       }).then(({ code, message }) => {
         if (code == 200) {
-          window['$message'].success('删除联系人成功！')
+          window['$message'].success('删除联系人成功')
           loadContactList()
         } else {
           window['$message'].error(message)

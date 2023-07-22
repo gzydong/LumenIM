@@ -3,7 +3,6 @@ import { ServeGetUserSetting } from '@/api/user'
 import { ServeFindFriendApplyNum } from '@/api/contacts'
 import { delAccessToken } from '@/utils/auth'
 import { storage } from '@/utils/storage'
-import { defBanner } from '@/constant/default'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -13,7 +12,7 @@ export const useUserStore = defineStore('user', {
       gender: 0, // 性别
       motto: '', // 个性签名
       avatar: '',
-      banner: defBanner, // 名片背景
+      banner: '', // 名片背景
       online: false, // 在线状态
       isQiye: false,
       isContactApply: false,

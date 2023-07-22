@@ -46,7 +46,7 @@ const onAccept = item => {
   }).then(({ code, message }) => {
     if (code == 200) {
       onLoadData()
-      window['$message'].success('已同意！')
+      window['$message'].success('已同意')
     } else {
       window['$message'].info(message)
     }
@@ -60,7 +60,7 @@ const onDecline = item => {
   }).then(({ code, message }) => {
     if (code == 200) {
       onLoadData()
-      window['$message'].success('已拒绝！')
+      window['$message'].success('已拒绝')
     } else {
       window['$message'].info(message)
     }
@@ -77,12 +77,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <section v-loading="loading" style="min-height: 100%">
+  <section v-loading="loading" style="min-height: 300px">
     <n-empty
       v-show="items.length == 0"
-      style="margin-top: 10%"
       size="200"
       description="暂无相关数据"
+      style="margin-top: 10%"
     >
       <template #icon>
         <img src="@/assets/image/no-data.svg" alt="" />
@@ -134,19 +134,11 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-
 .item {
   height: 60px;
   display: flex;
   align-items: center;
-  margin: 5px 0;
+  margin: 15px;
   transition: all 0.3s ease-in-out;
 
   &:first-child {
@@ -205,7 +197,7 @@ onMounted(() => {
     background-color: var(--im-active-bg-color);
 
     padding: 0 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 
     .remark {
       border-bottom-color: transparent;

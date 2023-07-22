@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, SendEmail, Male, Female } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contacts'
@@ -18,8 +18,9 @@ const props = defineProps({
   uid: Number,
 })
 
+const loading = ref(true)
 const isOpenFrom = ref(false)
-const state: any = reactive({
+const state: any = ref({
   id: 0,
   avatar: '',
   gender: 0,
@@ -53,11 +54,13 @@ const onLoadData = () => {
     user_id: props.uid,
   }).then(({ code, data }) => {
     if (code == 200) {
-      Object.assign(state, data)
+      Object.assign(state.value, data)
 
       modelRemark.value = state.remark
+
+      loading.value = false
     } else {
-      window['$message'].info('用户信息不存在！', { showIcon: false })
+      window['$message'].info('用户信息不存在', { showIcon: false })
     }
   })
 
@@ -79,7 +82,7 @@ const onToTalk = () => {
 
 const onJoinContact = () => {
   if (!state.text.length) {
-    return window['$message'].info('备注信息不能为空！')
+    return window['$message'].info('备注信息不能为空')
   }
 
   ServeCreateContact({
@@ -88,7 +91,7 @@ const onJoinContact = () => {
   }).then(res => {
     if (res.code == 200) {
       isOpenFrom.value = false
-      window['$message'].success('申请发送成功！')
+      window['$message'].success('申请发送成功')
     } else {
       window['$message'].error(res.message)
     }
@@ -102,7 +105,7 @@ const onChangeRemark = () => {
   }).then(({ code, message }) => {
     if (code == 200) {
       editCardPopover.value.setShow(false)
-      window['$message'].success('备注成功！')
+      window['$message'].success('备注成功')
       state.remark = modelRemark.value
     } else {
       window['$message'].error(message)
@@ -117,15 +120,36 @@ const handleSelectGroup = value => {
   }).then(({ code, message }) => {
     if (code == 200) {
       state.group_id = value
-      window['$message'].success('分组修改成功！')
+      window['$message'].success('分组修改成功')
     } else {
       window['$message'].error(message)
     }
   })
 }
 
+const reset = () => {
+  loading.value = true
+  state.value = {
+    id: 0,
+    avatar: '',
+    gender: 0,
+    mobile: '',
+    motto: '',
+    nickname: '',
+    remark: '',
+    email: '',
+    status: 1,
+    text: '',
+  }
+
+  isOpenFrom.value = false
+}
+
 const onUpdate = value => {
-  state.text = ''
+  if (!value) {
+    setTimeout(reset, 100)
+  }
+
   emit('update:show', value)
 }
 
@@ -140,7 +164,7 @@ const onAfterEnter = () => {
     :on-update:show="onUpdate"
     :on-after-enter="onAfterEnter"
   >
-    <div class="section">
+    <div class="section" v-loading="loading">
       <section class="el-container container is-vertical">
         <header class="el-header header">
           <im-avatar
@@ -148,6 +172,7 @@ const onAfterEnter = () => {
             :size="100"
             :src="state.avatar"
             :username="state.remark || state.nickname"
+            :font-size="30"
           />
 
           <div class="gender" v-show="state.gender > 0">
@@ -297,7 +322,7 @@ const onAfterEnter = () => {
               style="width: 91%"
               @click="isOpenFrom = true"
             >
-              + 添加好友
+              添加好友
             </n-button>
           </template>
         </footer>

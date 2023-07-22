@@ -68,12 +68,11 @@ function registerClickListener() {
     const href = el.getAttribute('href')
 
     if (href) {
-
       if (isElectronMode() && el.getAttribute('alt') === 'link') {
         return electron().openLink(href)
       }
-
-      window.location.href = href
+      
+      return window.open(href)
     }
   }
 
@@ -89,6 +88,7 @@ function registerClickListener() {
         window.event.returnValue = false
       }
 
+      console.log('====')
       // 处理完 a 标签的内容，重新触发跳转，根据原来 a 标签页 target 来判断是否需要新窗口打开
       push(target)
     }

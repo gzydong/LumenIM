@@ -15,6 +15,10 @@ defineProps({
     type: Number,
     default: 30,
   },
+  fontSize: {
+    type: Number,
+    default: 14,
+  },
 })
 </script>
 
@@ -33,6 +37,7 @@ defineProps({
     :style="{
       color: '#ffffff',
       backgroundColor: hashStrToHexColor(username || ''),
+      fontSize: fontSize + 'px',
     }"
     :size="size"
   >

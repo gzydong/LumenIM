@@ -15,7 +15,7 @@ const components = {
 
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header from-header bdr-b">
+    <header class="el-header header bdr-b">
       <n-tabs v-model:value="tabIndex">
         <n-tab name="friend"> 好友申请 </n-tab>
         <n-tab name="group"> 入群申请 </n-tab>
@@ -28,17 +28,14 @@ const components = {
       </n-input> -->
     </header>
 
-    <main
-      class="el-main me-scrollbar me-scrollbar-thumb"
-      style="padding: 0px 15px"
-    >
+    <main class="el-main me-scrollbar me-scrollbar-thumb">
       <component :is="components[tabIndex]" />
     </main>
   </section>
 </template>
 
 <style lang="less" scoped>
-.from-header {
+.header {
   height: 60px;
   display: flex;
   align-items: center;

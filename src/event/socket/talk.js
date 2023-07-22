@@ -133,13 +133,13 @@ class Talk extends Base {
         WebNotify('LumenIM 在线聊天', {
           dir: 'auto',
           lang: 'zh-CN',
-          body: '您有新的消息请注意查收！！！',
+          body: '您有新的消息请注意查收',
         })
       }
     } else {
       window['$notification'].create({
         title: '消息通知',
-        content: '您有新的消息请注意查收！！！',
+        content: '您有新的消息请注意查收',
         duration: 3000,
       })
     }

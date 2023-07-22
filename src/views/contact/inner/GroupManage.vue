@@ -47,7 +47,7 @@ const onSubmit = () => {
     items: options,
   }).then(({ code, message }) => {
     if (code == 200) {
-      window['$message'].success('保存成功！')
+      window['$message'].success('保存成功')
       emit('relaod')
       emit('close')
     } else {

@@ -62,7 +62,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section v-loading="loading" style="min-height: 100%">
+  <section v-loading="loading" style="min-height: 300px">
     <n-empty
       v-show="items.length == 0"
       style="margin-top: 10%"
@@ -124,19 +124,11 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-
 .item {
   height: 60px;
   display: flex;
   align-items: center;
-  margin: 5px 0;
+  margin: 15px;
   transition: all 0.3s ease-in-out;
 
   &:first-child {
@@ -195,7 +187,7 @@ onMounted(() => {
     background-color: var(--im-active-bg-color);
 
     padding: 0 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 
     .remark {
       border-bottom-color: transparent;

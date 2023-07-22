@@ -120,7 +120,7 @@ const onSave = isCloseEditMode => {
         store.setEditorMode('preview')
       }
 
-      window['$message'].success('保存成功！', {
+      window['$message'].success('保存成功', {
         duration: 1000,
       })
     })

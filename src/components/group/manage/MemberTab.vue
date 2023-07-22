@@ -81,7 +81,7 @@ const onDelete = item => {
   }).then(res => {
     if (res.code == 200) {
       onLoadData()
-      window['$message'].success('删除成功！')
+      window['$message'].success('删除成功')
     }
   })
 }
@@ -98,7 +98,7 @@ const onBatchDelete = () => {
     if (res.code == 200) {
       batchDelete.value = false
       onLoadData()
-      window['$message'].success('删除成功！')
+      window['$message'].success('删除成功')
     }
   })
 }
@@ -143,7 +143,7 @@ const onAssignAdmin = (item: any) => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window['$message'].success('操作成功！')
+          window['$message'].success('操作成功')
           onLoadData()
         } else {
           window['$message'].error(res.message)
@@ -165,7 +165,7 @@ const onTransfer = item => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window['$message'].success('操作成功！')
+          window['$message'].success('操作成功')
           onLoadData()
         } else {
           window['$message'].error(res.message)
@@ -194,7 +194,7 @@ const onForbidden = (item: any) => {
         user_id: parseInt(item.user_id),
       }).then(res => {
         if (res.code == 200) {
-          window['$message'].success('操作成功！')
+          window['$message'].success('操作成功')
           onLoadData()
         } else {
           window['$message'].error(res.message)

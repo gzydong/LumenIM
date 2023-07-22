@@ -74,7 +74,7 @@ export const useEditorStore = defineStore('editor', {
       }).then(res => {
         if (res.code == 200) {
           this.emoticon.items[1].children.splice(resoure.index, 1)
-          message.success('删除成功！')
+          message.success('删除成功')
         } else {
           message.warning(res.message)
         }

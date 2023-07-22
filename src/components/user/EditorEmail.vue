@@ -54,7 +54,7 @@ const onSendEmail = () => {
   response.then(({ code, message }) => {
     if (code == 200) {
       lock.start()
-      window['$message'].success('邮件发送成功！')
+      window['$message'].success('邮件发送成功')
     } else {
       window['$message'].warning(message)
     }

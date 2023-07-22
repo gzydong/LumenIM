@@ -104,7 +104,7 @@ const store = useUserStore()
 
 html[data-theme='dark'] {
   .account-card .card-header {
-    background: linear-gradient(to bottom right, #373737, #1f1f23);
+    background: #2c2c32;
   }
 
   .account-card .card-main .usersign {

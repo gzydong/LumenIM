@@ -31,7 +31,7 @@ defineProps({
     @click="emit('tab-talk', data)"
   >
     <div class="avatar-box">
-      <im-avatar :src="avatar" :size="34" :username="username" />
+      <im-avatar :src="avatar" :size="34" :username="data.name" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
         <n-icon :component="data.is_top == 1 ? ArrowDown : ArrowUp" />
       </div>

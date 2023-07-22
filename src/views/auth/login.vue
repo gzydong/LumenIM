@@ -42,7 +42,7 @@ const onLogin = () => {
 
   response.then(async res => {
     if (res.code == 200) {
-      window['$message'].success('登录成功！')
+      window['$message'].success('登录成功')
       setAccessToken(res.data.access_token, res.data.expires_in)
       socket.connect()
       userStore.loadSetting()

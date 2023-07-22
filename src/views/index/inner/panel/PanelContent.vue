@@ -326,7 +326,7 @@ const onRowClick = (item: any) => {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
     } else {
-      window['$message'].info('此类消息不支持转发！！！')
+      window['$message'].info('此类消息不支持转发')
     }
   }
 }

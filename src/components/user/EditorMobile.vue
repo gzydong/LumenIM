@@ -49,7 +49,7 @@ const lock = new SmsLock(
 
 const onSendSms = () => {
   if (!isMobile(model.mobile)) {
-    window['$message'].warning('请正确填写手机号！')
+    window['$message'].warning('请正确填写手机号')
     return
   }
 
@@ -64,9 +64,9 @@ const onSendSms = () => {
 
       if (data.is_debug) {
         model.sms_code = data.sms_code
-        window['$message'].success('已开启验证码自动填充！')
+        window['$message'].success('已开启验证码自动填充')
       } else {
-        window['$message'].success('短信发送成功！')
+        window['$message'].success('短信发送成功')
       }
     } else {
       window['$message'].warning(message)

@@ -46,7 +46,7 @@ ServeGetUserDetail().then(({ data }) => {
 // 修改用户信息
 const onChangeDetail = () => {
   if (!detail.nickname.trim()) {
-    return window['$message'].warning('昵称不能为空！')
+    return window['$message'].warning('昵称不能为空')
   }
 
   detail.loading = true
@@ -60,12 +60,12 @@ const onChangeDetail = () => {
   })
 
   response.then(() => {
-    window['$message'].success('信息保存成功！')
+    window['$message'].success('信息保存成功')
     userStore.loadSetting()
   })
 
   response.catch(() => {
-    window['$message'].warning('信息保存失败！')
+    window['$message'].warning('信息保存失败')
   })
 
   response.finally(() => {

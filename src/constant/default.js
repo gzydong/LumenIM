@@ -14,14 +14,9 @@ export const GenderOptions = [
 ]
 
 export const defAvatar = new URL(
-  `../assets/image/default-avatar.jpg`,
+  `../assets/image/notify.png`,
   import.meta.url
 ).href
 
 export const notifyIcon = new URL(`../assets/image/notify.png`, import.meta.url)
   .href
-
-export const defBanner = new URL(
-  `../assets/image/default-user-banner.png`,
-  import.meta.url
-).href

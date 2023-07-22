@@ -2,7 +2,7 @@
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NSkeleton, NEmpty, NIcon, NInput, NPopover } from 'naive-ui'
+import { NDropdown, NSkeleton, NIcon, NInput, NPopover } from 'naive-ui'
 import {
   Search,
   ArrowUp,
@@ -158,7 +158,7 @@ const onSetDisturb = (data: any) => {
 // 置顶会话
 const onToTopTalk = (data: any) => {
   if (data.is_top == 0 && topItems.value.length >= 18) {
-    return window['$message'].info('置顶最多不能超过18个会话！')
+    return window['$message'].info('置顶最多不能超过18个会话')
   }
 
   ServeTopTalkList({
@@ -192,7 +192,7 @@ const onDeleteContact = (data: any) => {
         friend_id: data.receiver_id,
       }).then(({ code, message }) => {
         if (code == 200) {
-          window['$message'].success('删除联系人成功！')
+          window['$message'].success('删除联系人成功')
           onDeleteTalk(data.index_name)
         } else {
           window['$message'].error(message)
@@ -215,7 +215,7 @@ const onSignOutGroup = (data: any) => {
         group_id: data.receiver_id,
       }).then(({ code, message }) => {
         if (code == 200) {
-          window['$message'].success('已退出群组！')
+          window['$message'].success('已退出群组')
           onDeleteTalk(data.index_name)
         } else {
           window['$message'].error(message)
@@ -247,7 +247,7 @@ const onChangeRemark = (data: any) => {
         remark: remark,
       }).then(({ code, message }) => {
         if (code == 200) {
-          window['$message'].success('备注成功！')
+          window['$message'].success('备注成功')
           talkStore.updateItem({
             index_name: data.index_name,
             remark_name: remark,
@@ -419,7 +419,7 @@ onMounted(() => {
               active: item.index_name == indexName,
             }"
           >
-            <im-avatar :src="avatar" :size="34" :username="item.name" />
+            <im-avatar :src="item.avatar" :size="34" :username="item.name" />
 
             <span class="icon-mark robot" v-show="item.is_robot == 1">
               助
@@ -525,7 +525,6 @@ onMounted(() => {
 }
 
 .tops-header {
-  // background: #f0f8ff;
   padding: 5px 8px;
   padding-right: 0;
   padding-right: 8px;

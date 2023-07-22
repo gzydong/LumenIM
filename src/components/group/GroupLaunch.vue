@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NDivider, NCheckbox } from 'naive-ui'
-import { Search, DeleteMode } from '@icon-park/vue-next'
+import { Search, Delete } from '@icon-park/vue-next'
 import {
   ServeCreateGroup,
   ServeInviteGroup,
@@ -97,7 +97,7 @@ const onCreateSubmit = ids => {
     if (res.code == 200) {
       onReset()
       emit('on-submit', res.data)
-      window['$message'].success('创建成功！')
+      window['$message'].success('创建成功')
       isShowBox.value = false
     }
   })
@@ -110,7 +110,7 @@ const onInviteSubmit = ids => {
   }).then(res => {
     if (res.code == 200) {
       emit('on-invite')
-      window['$message'].success('邀请成功！')
+      window['$message'].success('邀请成功')
       isShowBox.value = false
     }
   })
@@ -239,8 +239,9 @@ onLoad()
                   <div class="content">
                     <span class="text-ellipsis">{{ item.nickname }}</span>
                   </div>
+
                   <div class="checkbox">
-                    <n-icon :size="16" color="red" :component="DeleteMode" />
+                    <n-icon :size="16" :component="Delete" />
                   </div>
                 </div>
               </div>
