@@ -98,14 +98,6 @@ const onPanelHeaderEvent = eventType => {
               </section>
             </main>
             <aside
-              class="el-aside"
-              v-show="talkParams.type == 2"
-              style="width: 150px"
-            >
-              <GroupList :members="members" @user="user" />
-            </aside>
-
-            <aside
               class="el-aside bdr-l me-scrollbar"
               style="width: 350px"
               v-if="uploadsStore.isShow"
@@ -116,18 +108,6 @@ const onPanelHeaderEvent = eventType => {
         </main>
       </section>
     </main>
-
-    <!-- 侧边栏 -->
-    <!-- <aside
-      class="el-aside aside"
-      style="width: 380px"
-      v-if="state.isShowGroupAside && talkParams.type == 2"
-    >
-      <GroupPanel
-        :gid="talkParams.receiver_id"
-        @close="state.isShowGroupAside = false"
-      />
-    </aside> -->
   </section>
 
   <GroupNotice
@@ -153,8 +133,7 @@ const onPanelHeaderEvent = eventType => {
 </template>
 
 <style lang="less" scoped>
-
-.drawer-target{
+.drawer-target {
   overflow: hidden;
 }
 

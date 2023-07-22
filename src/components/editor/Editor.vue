@@ -619,11 +619,6 @@ onUnmounted(() => {
   }
 }
 
-.mention {
-  color: #409eff;
-  background-color: transparent;
-}
-
 .ed-member-item {
   height: 35px;
   display: flex;

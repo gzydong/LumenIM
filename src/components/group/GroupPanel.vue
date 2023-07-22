@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, watch, ref } from 'vue'
+import { reactive, computed, watch, ref, inject } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import GroupLaunch from './GroupLaunch.vue'
@@ -11,10 +11,10 @@ import {
   ServeSecedeGroup,
   ServeUpdateGroupCard,
 } from '@/api/group'
-import UserCardModal from '@/components/user/UserCardModal.vue'
-import { modal } from '@/utils/common'
 
 const userStore = useUserStore()
+
+const user: any = inject('$user')
 
 const emit = defineEmits(['close', 'to-talk'])
 const props = defineProps({
@@ -71,10 +71,8 @@ const isAdmin = computed(() => {
 
 const onGroupCallBack = () => {}
 
-const onToInfo = item => {
-  modal(UserCardModal, {
-    uid: item.user_id,
-  })
+const onToInfo = (item: any) => {
+  user(item.user_id)
 }
 
 /**
@@ -159,7 +157,7 @@ loadMembers()
         <span>群信息</span>
       </div>
       <div class="right-icon">
-        <n-icon size="24" :component="Close" @click="onClose" />
+        <n-icon size="21" :component="Close" @click="onClose" />
       </div>
     </header>
 
@@ -470,7 +468,7 @@ loadMembers()
             justify-content: flex-end;
 
             &.grey {
-              color: #908989;
+              font-size: 13px;
               font-weight: 300;
             }
           }

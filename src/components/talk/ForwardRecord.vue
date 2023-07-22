@@ -118,15 +118,10 @@ onLoadData()
       height: 30px;
       line-height: 30px;
       font-size: 12px;
-      color: #a09a9a;
       position: relative;
       user-select: none;
       display: flex;
       justify-content: space-between;
-
-      .name {
-        color: #333;
-      }
     }
   }
 }
