@@ -6,21 +6,23 @@ import ForwardMessage from './ForwardMessage.vue'
 import ImageMessage from './ImageMessage.vue'
 import VoteMessage from './VoteMessage.vue'
 import RevokeMessage from './RevokeMessage.vue'
-import SysTextMessage from './SysTextMessage.vue'
 import AudioMessage from './AudioMessage.vue'
 import VideoMessage from './VideoMessage.vue'
 import UnknownMessage from './UnknownMessage.vue'
-import SysGroupCreateMessage from './SysGroupJoinMessage.vue'
-import SysGroupJoinMessage from './SysGroupJoinMessage.vue'
-import SysGroupMemberKickedMessage from './SysGroupMemberKickedMessage.vue'
-import SysGroupMemberMutedMessage from './SysGroupMemberMutedMessage.vue'
-import SysGroupMemberCancelMutedMessage from './SysGroupMemberCancelMutedMessage.vue'
-import SysGroupTransferMessage from './SysGroupTransferMessage.vue'
-import SysGroupMemberQuitMessage from './SysGroupMemberQuitMessage.vue'
-import SysGroupMutedMessage from './SysGroupMutedMessage.vue'
-import SysGroupCancelMutedMessage from './SysGroupCancelMutedMessage.vue'
 import GroupNoticeMessage from './GroupNoticeMessage.vue'
 import MixedMessage from './MixedMessage.vue'
+
+// 系统消息
+import SysTextMessage from './system/SysTextMessage.vue'
+import SysGroupCreateMessage from './system/SysGroupJoinMessage.vue'
+import SysGroupJoinMessage from './system/SysGroupJoinMessage.vue'
+import SysGroupMemberKickedMessage from './system/SysGroupMemberKickedMessage.vue'
+import SysGroupMemberMutedMessage from './system/SysGroupMemberMutedMessage.vue'
+import SysGroupMemberCancelMutedMessage from './system/SysGroupMemberCancelMutedMessage.vue'
+import SysGroupTransferMessage from './system/SysGroupTransferMessage.vue'
+import SysGroupMemberQuitMessage from './system/SysGroupMemberQuitMessage.vue'
+import SysGroupMutedMessage from './system/SysGroupMutedMessage.vue'
+import SysGroupCancelMutedMessage from './system/SysGroupCancelMutedMessage.vue'
 
 export {
   CodeMessage,
@@ -45,5 +47,5 @@ export {
   SysGroupMutedMessage,
   SysGroupCancelMutedMessage,
   GroupNoticeMessage,
-  MixedMessage
+  MixedMessage,
 }
