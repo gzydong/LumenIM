@@ -65,7 +65,7 @@ const onDeleteContact = (data: any) => {
   window['$dialog'].create({
     showIcon: false,
     title: `删除 [${name}] 联系人？`,
-    content: '删除后不在接收对方任何消息。',
+    content: '删除后不再接收对方任何消息。',
     positiveText: '确定',
     negativeText: '取消',
     class: 'me-dialog',

@@ -111,7 +111,7 @@ const onValidate = e => {
         />
       </n-form-item>
 
-      <n-form-item label="设置新邮箱" path="email">
+      <n-form-item label="新邮箱" path="email">
         <n-input
           placeholder="请填写新邮箱"
           type="text"
@@ -147,7 +147,7 @@ const onValidate = e => {
           :loading="loading"
           @click="onValidate"
         >
-          立即修改
+          保存修改
         </n-button>
       </div>
     </template>

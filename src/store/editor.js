@@ -15,7 +15,7 @@ export const useEditorStore = defineStore('editor', {
       emoticon: {
         items: [
           {
-            name: 'QQ表情/符号表情',
+            name: '系统表情',
             icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAzFBMVEUAAAD7ywP7ywT80wH6wwb6xgX80wH6wwb7zwL7zgP5xAb7ywT5xAb5wgf7ywT80gH80gL7ywP80gH7ywT7zgP6yAX80wH5wQf80QL80wH6xgb81AH5wgf6xwX81AH5wQf81AH5wwb80gL5wQf7zgP5wgf80gH7zAP5wwb6ygT6xwX70AL7zgOudAD6xQb2wgXVnwLwvwPRmgLDigG1ewCxdwDgqQTcpgPYoQPrvALhsAG6gQHosgTntAP1yAPMlQLJkgLJkQK/hgG3fgAADXCMAAAAJnRSTlMATgT7znJxcHAM/fnz7uzs09HMqS4mJfry8u3t1tXVqqpcWy0tD14bIcIAAAGzSURBVDjLnZTXcsIwEEUdcAFCCy290GwgLHKld/7/n6IVljBGDgznxbtXZzSz9niVO+noP+X3dPq9/KN3kq2s/mVG+NKzUi2VKZkxSpnUpdeomBIqjbj38GpKeX0491ppM4F06+w+9JLMyJ2NF/MfXhpiXjGHnAqfPfN7hUz4nkvXxFKWiboI5u7sdDpz56LWmVgehswBgjVv1gHAnDdl9GpDjg0AM97MaGOLoxqOIjrHB8/ijeWB74gjHKdqCfqOFcHpn+oqFZ+sG3iiYvEWsUjFx1vERxT7N4Bi8VgOpAKPizgMFuQQrGTeKjgQfOIwVSyWAP5Acp8PwC7A16MNKCQAsAcX2AABwULDT8iiKQBM4t6EhlNW1RTKJys9Gm5IVCMbGnms/FQQ7RjvaezbDtcc26fBnrBGY2L2bYSQLSCLnTudursFIFvCjt7ClWGMjowXcMZiHB4Y/OdSw6A39kDgjXthrIrFUs/3OGQ5sV3XniyJiPL1yALI9RLJnS2VZi7Ra8aWVF7u5fl9groq89S6ZJEahbhWMFKKjK72EdU+tK6SSNv4VgvPzwX122gr9/EHUym1IM88uoYAAAAASUVORK5CYII=',
           },
           {

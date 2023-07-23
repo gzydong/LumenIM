@@ -46,7 +46,8 @@ const notifyStore = useNotifyStore()
 const getDarkTheme = computed(() => {
   let theme = notifyStore.darkTheme ? 'dark' : 'light'
 
-  document.querySelectorAll('html')[0].dataset.theme = theme
+  document.querySelector('html').dataset.theme = theme
+  document.querySelector('html').style = ''
 
   return notifyStore.darkTheme ? darkTheme : undefined
 })

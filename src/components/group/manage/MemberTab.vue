@@ -270,7 +270,7 @@ const onContextMenuHandle = (key: string) => {
 onLoadData()
 </script>
 <template>
-  <section class="section el-container is-vertical height100">
+  <section class="el-container is-vertical height100">
     <header class="el-header header bdr-b">
       <p>成员管理({{ filterSearch.length }})</p>
       <div>
@@ -372,6 +372,7 @@ onLoadData()
     :show="dropdown.show"
     :x="dropdown.dropdownX"
     :y="dropdown.dropdownY"
+    placement="right"
     :options="dropdown.options"
     @select="onContextMenuHandle"
     @clickoutside="

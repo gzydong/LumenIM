@@ -55,21 +55,11 @@ const onSendEmoticon = (type, value, img = '') => {
 
     <main class="el-main em-main me-scrollbar me-scrollbar-thumb">
       <div class="symbol-box" v-if="tabIndex == 0">
-        <p class="title">QQ表情</p>
         <div class="options">
           <div
             v-for="(img, key) in emoji.emojis"
             v-html="img"
             @click="onSendEmoticon(1, key, img)"
-            class="option pointer flex-center"
-          />
-        </div>
-        <p class="title">符号表情</p>
-        <div class="options">
-          <div
-            v-for="img in emoji.symbol"
-            v-text="img"
-            @click="onSendEmoticon(1, img)"
             class="option pointer flex-center"
           />
         </div>
@@ -278,6 +268,12 @@ const onSendEmoticon = (type, value, img = '') => {
         object-fit: cover;
       }
     }
+  }
+}
+
+html[data-theme='dark'] {
+  .collect-box .item {
+    background-color: #2c2c32;
   }
 }
 </style>

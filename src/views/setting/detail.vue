@@ -137,7 +137,7 @@ const onUploadAvatar = avatar => {
         <n-form-item label="我的性别：">
           <n-radio-group v-model:value="detail.gender" name="gender">
             <n-space>
-              <n-radio key="0" value="0"> 未知 </n-radio>
+              <n-radio key="0" value="0"> 保密 </n-radio>
               <n-radio key="1" value="1"> 男 </n-radio>
               <n-radio key="2" value="2"> 女 </n-radio>
             </n-space>

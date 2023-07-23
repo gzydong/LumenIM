@@ -586,14 +586,13 @@ onUnmounted(() => {
   background-color: transparent;
 }
 
-
 .ed-emoji {
   background-color: unset !important;
 }
 
 .ql-editor.ql-blank::before {
   font-style: unset;
-  color: var(--im-text-color);
+  color: rgb(145 124 124 / 82%);
 }
 
 .ql-mention-list-container {

@@ -124,9 +124,9 @@ const onValidate = e => {
         />
       </n-form-item>
 
-      <n-form-item label="设置手机号" path="mobile">
+      <n-form-item label="新手机号码" path="mobile">
         <n-input
-          placeholder="请填写手机号"
+          placeholder="请填写新手机号码"
           type="text"
           v-model:value="model.mobile"
         />
@@ -160,7 +160,7 @@ const onValidate = e => {
           :loading="loading"
           @click="onValidate"
         >
-          立即修改
+          保存修改
         </n-button>
       </div>
     </template>

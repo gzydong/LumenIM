@@ -238,7 +238,7 @@ const onAfterEnter = () => {
                 <div style="display: flex">
                   <n-input
                     type="text"
-                    placeholder="设置备注..."
+                    placeholder="请填写备注"
                     :autofocus="true"
                     maxlength="10"
                     v-model:value="modelRemark"
@@ -300,7 +300,7 @@ const onAfterEnter = () => {
           <template v-if="isOpenFrom">
             <n-input
               type="text"
-              placeholder="设置添加好友备注"
+              placeholder="请填写申请备注"
               v-model:value="state.text"
               @keydown.enter.native="onJoinContact"
             />

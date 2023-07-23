@@ -52,28 +52,29 @@ defineProps({
         <div class="text">
           <template v-if="!active && data.draft_text">
             <span class="draft">[草稿]</span>
-            <span class="draft-text" v-html="data.draft_text" />
+            <span class="detail" v-html="data.draft_text" />
           </template>
           <template v-else>
             <span
               class="online"
-              v-show="
-                data.is_robot == 0 && data.talk_type == 1 && data.is_online == 1
-              "
-              >[在线]</span
+              v-show="data.talk_type == 1 && data.is_online == 1"
             >
-            <span v-html="data.msg_text" />
+              [在线]
+            </span>
+            <span class="detail" v-html="data.msg_text" />
           </template>
         </div>
 
-        <div v-if="data.is_disturb" class="disturb">
-          <n-icon :component="CloseRemind" />
-        </div>
+        <div class="tip">
+          <div v-if="data.is_disturb" class="disturb">
+            <n-icon :component="CloseRemind" />
+          </div>
 
-        <div v-else class="unread" v-show="data.unread_num">
-          <span class="badge">
-            {{ data.unread_num > 99 ? '99+' : data.unread_num }}
-          </span>
+          <div v-else class="unread" v-show="data.unread_num">
+            <span class="badge">
+              {{ data.unread_num > 99 ? '99+' : data.unread_num }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -110,7 +111,7 @@ defineProps({
       position: absolute;
       top: 0;
       left: 0;
-      color: white;
+      color: #ffffff;
       display: none;
       align-items: center;
       justify-content: center;
@@ -164,53 +165,56 @@ defineProps({
       height: 20px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
 
       .text {
-        font-weight: 300;
-        white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+        font-weight: 300;
         font-size: 12px;
         color: #8f959e;
-        flex: 1 auto;
         display: flex;
-        align-items: center;
 
         .draft {
           color: red;
           padding-right: 3px;
         }
+
         .online {
           color: #8bc34a;
           padding-right: 3px;
         }
 
-        .ed-image {
-          display: none !important;
-        }
-
-        .draft-text {
-          display: contents;
+        .detail {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 
-      .unread {
-        color: #8f959e;
-        font-size: 12px;
-        user-select: none;
+      .tip {
+        height: inherit;
+        display: flex;
+        padding-left: 5px;
+        align-items: center;
 
-        .badge {
-          background-color: #f44336;
-          color: #ffffff;
-          border-radius: 3px;
-          transform-origin: right;
+        .unread {
+          color: #8f959e;
+          font-size: 12px;
+          user-select: none;
+
+          .badge {
+            background-color: #f44336;
+            color: #ffffff;
+            border-radius: 3px;
+            transform-origin: right;
+          }
         }
-      }
 
-      .disturb {
-        color: #8f959e;
-        font-size: 12px;
-        user-select: none;
+        .disturb {
+          color: #8f959e;
+          font-size: 12px;
+          user-select: none;
+        }
       }
     }
   }
@@ -238,10 +242,6 @@ defineProps({
     color: #3370ff !important;
     background-color: #e1eaff !important;
   }
-}
-
-:global(.draft-text .ed-image) {
-  display: none;
 }
 
 html[data-theme='dark'] {
