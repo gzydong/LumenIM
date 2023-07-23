@@ -12,7 +12,7 @@ import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading, MoreThree } from '@icon-park/vue-next'
 import { publisher } from '@/utils/publisher.ts'
 import socket from '@/socket'
-import { useDialogueStore, useEditorStore } from '@/store'
+import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
@@ -25,7 +25,6 @@ import SkipBottom from './SkipBottom.vue'
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
-const editorStore = useEditorStore()
 const props = defineProps({
   uid: {
     type: Number,

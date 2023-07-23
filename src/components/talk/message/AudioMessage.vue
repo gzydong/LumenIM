@@ -9,6 +9,8 @@ defineProps({
 })
 
 const audioRef = ref()
+
+const durationDesc = ref('-')
 const state = reactive({
   isAudioPlay: false,
   progress: 0,
@@ -18,10 +20,6 @@ const state = reactive({
 })
 
 const onPlay = () => {
-  if (!audioRef.value) {
-    return window['$message'].error('播放异常')
-  }
-
   if (state.isAudioPlay) {
     audioRef.value.pause()
   } else {
@@ -38,10 +36,13 @@ const onPlayEnd = () => {
 
 const onCanplay = () => {
   state.duration = audioRef.value.duration
+  durationDesc.value = formatTime(parseInt(audioRef.value.duration))
   state.loading = false
 }
 
-const onError = () => {}
+const onError = e => {
+  console.log('音频播放异常===>', e)
+}
 
 const onTimeUpdate = () => {
   let audio = audioRef.value
@@ -51,6 +52,20 @@ const onTimeUpdate = () => {
     state.currentTime = audio.currentTime
     state.progress = (audio.currentTime / audio.duration) * 100
   }
+}
+
+const formatTime = (value = 0) => {
+  if (value == 0) {
+    return '0'
+  }
+
+  let minutes = parseInt(value / 60)
+  let seconds = value
+  if (minutes > 0) {
+    seconds = parseInt(value - minutes * 60)
+  }
+
+  return `${minutes}'${seconds}"`
 }
 </script>
 <template>
@@ -82,7 +97,7 @@ const onTimeUpdate = () => {
         v-show="state.progress > 0"
       ></span>
     </div>
-    <div class="time">9'59"</div>
+    <div class="time">{{ durationDesc }}</div>
   </div>
 </template>
 <style lang="less" scoped>

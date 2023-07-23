@@ -171,7 +171,7 @@ const onUploadAvatar = avatar => {
             :loading="detail.loading"
             style="margin-left: 94px"
           >
-            保存信息
+            保存修改
           </n-button>
         </n-form-item>
       </n-form>

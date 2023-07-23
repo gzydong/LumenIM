@@ -10,6 +10,7 @@ interface AnalysisResp {
     mentions: any[]
     mentionUids: number[]
     msgType: number // 1 文本；2：图片；3图文混合消息
+    quoteId: number // 引用的消息ID
 }
 
 function removeLeadingNewlines(str) {
@@ -26,6 +27,7 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
         items: [],
         mentions: [],
         mentionUids: [],
+        quoteId: 0,
         msgType: 1,
     }
 
@@ -53,13 +55,11 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
 
         // @好友
         if (iterator.insert.mention) {
-            console.log(iterator.insert.mention)
-
             let mention = iterator.insert.mention
 
             resp.mentions.push({
                 "name": `${mention.denotationChar}${mention.value}`,
-                "atid": mention.id,
+                "atid": parseInt(mention.id),
             })
 
             if (node && node.type == 1) {
@@ -100,6 +100,10 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
 
             continue
         }
+
+        if (iterator.insert.quote) {
+            resp.quoteId = parseInt(iterator.insert.quote.id)
+        }
     }
 
     // 去除前后多余空格
@@ -120,6 +124,8 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
     if (resp.items.length == 1) {
         resp.msgType = resp.items[0].type
     }
+
+    resp.mentionUids = resp.mentions.map(item => item.atid)
 
     return resp
 }

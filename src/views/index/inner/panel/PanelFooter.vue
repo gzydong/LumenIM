@@ -10,12 +10,7 @@ import {
 
 import socket from '@/socket'
 import { ServePublishMessage } from '@/api/chat'
-import {
-  ServeSendTalkText,
-  ServeSendVote,
-  ServeSendEmoticon,
-  ServeSendTalkCodeBlock,
-} from '@/api/chat'
+import { ServeSendVote } from '@/api/chat'
 import { throttle } from '@/utils/common'
 import Editor from '@/components/editor/Editor.vue'
 import MultiSelectFooter from './MultiSelectFooter.vue'
@@ -54,81 +49,70 @@ const props = defineProps({
 
 const isShowHistory = ref(false)
 
-// 发送文本消息
-const onSendTextEvent = throttle(value => {
-  let { data, callBack } = value
-
-  const res = ServeSendTalkText({
-    receiver_id: props.receiver_id,
-    talk_type: props.talk_type,
-    text: data.text,
-  })
-
-  res.then(({ code, message }) => {
-    if (code == 200) {
-      talkStore.updateItem({
-        index_name: props.index_name,
-        draft_text: '',
-      })
-
-      let el = document.getElementById('talk-session-list')
-      if (el) {
-        // 对话列表滚动条置顶
-        el.scrollTop = 0
-      }
-
-      callBack(true)
-    } else {
-      window['$message'].warning(message)
-    }
-  })
-
-  res.catch(() => {
-    window['$message'].warning('网络繁忙,请稍后重试!')
-  })
-}, 1000)
-
-// 发送图片消息
-const onSendImageEvent = ({ data, callBack }) => {
-  let response = ServePublishMessage({
-    type: 'image',
+const onSendMessage = (data = {}, callBack: any) => {
+  let message = {
     ...data,
     receiver: {
       receiver_id: props.receiver_id,
       talk_type: props.talk_type,
     },
-  })
+  }
 
-  response.then(({ code, message }) => {
-    if (code == 200) {
-      callBack(true)
-    } else {
-      window['$message'].info(message)
+  ServePublishMessage(message)
+    .then(({ code, message }) => {
+      if (code == 200) {
+        callBack(true)
+      } else {
+        window['$message'].warning(message)
+      }
+    })
+    .catch(() => {
+      window['$message'].warning('网络繁忙,请稍后重试!')
+    })
+}
+
+// 发送文本消息
+const onSendTextEvent = throttle((value: any) => {
+  let { data, callBack } = value
+
+  let message = {
+    type: 'text',
+    content: data.items[0].content,
+    quote_id: data.quoteId,
+    mention: {
+      all: data.mentions.find((v: any) => v.atid == 0) ? 1 : 0,
+      uids: data.mentionUids,
+    },
+  }
+
+  onSendMessage(message, (ok: boolean) => {
+    if (!ok) return
+
+    let el = document.getElementById('talk-session-list')
+    if (el) {
+      // 对话列表滚动条置顶
+      el.scrollTop = 0
     }
+
+    callBack(true)
   })
+}, 1000)
+
+// 发送图片消息
+const onSendImageEvent = ({ data, callBack }) => {
+  onSendMessage({ type: 'image', ...data }, callBack)
 }
 
 // 发送代码消息
 const onSendCodeEvent = ({ data, callBack }) => {
-  ServeSendTalkCodeBlock({
-    receiver_id: props.receiver_id,
-    talk_type: props.talk_type,
-    code: data.code,
-    lang: data.lang,
-  }).then(({ code, message }) => {
-    if (code == 200) {
-      callBack(true)
-    } else {
-      window['$message'].warning(message)
-    }
-  })
+  onSendMessage({ type: 'code', code: data.code, lang: data.lang }, callBack)
 }
 
 // 发送文件消息
 const onSendFileEvent = ({ data }) => {
   let maxsize = 200 * 1024 * 1024
   if (data.size > maxsize) {
-    return window['$message'].info('上传文件不能超过100M!')
+    return window['$message'].warning('上传文件不能超过100M!')
   }
 
   uploadsStore.initUploadFile(
@@ -153,7 +137,7 @@ const onSendVoteEvent = ({ data, callBack }) => {
     if (code == 200) {
       callBack(true)
     } else {
-      window['$message'].info(message)
+      window['$message'].warning(message)
     }
   })
 
@@ -162,38 +146,16 @@ const onSendVoteEvent = ({ data, callBack }) => {
 
 // 发送表情消息
 const onSendEmoticonEvent = ({ data, callBack }) => {
-  let response = ServeSendEmoticon({
-    receiver_id: props.receiver_id,
-    talk_type: props.talk_type,
-    emoticon_id: data,
-  })
-
-  response.then(({ code, message }) => {
-    if (code == 200) {
-      callBack(true)
-    } else {
-      window['$message'].info(message)
-    }
-  })
+  onSendMessage({ type: 'emoticon', emoticon_id: data }, callBack)
 }
 
 const onSendMixedEvent = ({ data, callBack }) => {
-  let response = ServePublishMessage({
+  let message = {
     type: 'mixed',
     items: data.items,
-    receiver: {
-      receiver_id: props.receiver_id,
-      talk_type: props.talk_type,
-    },
-  })
+  }
 
-  response.then(({ code, message }) => {
-    if (code == 200) {
-      callBack(true)
-    } else {
-      window['$message'].info(message)
-    }
-  })
+  onSendMessage(message, callBack)
 }
 
 const onKeyboardPush = throttle(() => {

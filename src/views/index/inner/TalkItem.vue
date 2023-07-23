@@ -177,11 +177,13 @@ defineProps({
         .draft {
           color: red;
           padding-right: 3px;
+          flex-shrink: 0;
         }
 
         .online {
           color: #8bc34a;
           padding-right: 3px;
+          flex-shrink: 0;
         }
 
         .detail {

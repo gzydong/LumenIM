@@ -274,7 +274,7 @@ function onRecorderEvent(file: any) {
   isShowEditorRecorder.value = false
 }
 
-function onClipboardMatcher(node, Delta) {
+function onClipboardMatcher(node: any, Delta) {
   const ops: any[] = []
 
   Delta.ops.forEach(op => {
@@ -307,13 +307,9 @@ function onSendMessage() {
         return window['$message'].info('发送内容超长，请分条发送')
       }
 
-      let event = emitCall(
-        'text_event',
-        { text: data.items[0].content, uids: data.mentionUids },
-        (ok: any) => {
-          ok && getQuill().setContents([], Quill.sources.USER)
-        }
-      )
+      let event = emitCall('text_event', data, (ok: any) => {
+        ok && getQuill().setContents([], Quill.sources.USER)
+      })
 
       emit('editor-event', event)
       break
@@ -377,16 +373,17 @@ function loadEditorDraftText() {
 }
 
 function onSubscribeMention(data: any) {
-  const quill = getQuill()
+  const mention = getQuill().getModule('mention')
 
-  quill
-    .getModule('mention')
-    .insertItem({ id: data?.id, denotationChar: '@', value: data.value }, true)
+  mention.insertItem(
+    { id: data?.id, denotationChar: '@', value: data.value },
+    true
+  )
 }
 
 function onSubscribeQuote(data: any) {
   const delta = getQuill().getContents()
-  if (delta.ops.some((item: any) => item.insert.quote)) {
+  if (delta.ops?.some((item: any) => item.insert.quote)) {
     return
   }
 
