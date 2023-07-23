@@ -18,6 +18,10 @@ const state = reactive({
 })
 
 const onPlay = () => {
+  if (!audioRef.value) {
+    return window['$message'].error('播放异常')
+  }
+
   if (state.isAudioPlay) {
     audioRef.value.pause()
   } else {
@@ -48,41 +52,6 @@ const onTimeUpdate = () => {
     state.progress = (audio.currentTime / audio.duration) * 100
   }
 }
-
-const getCurrDuration = computed(() => formatSeconds(state.currentTime))
-
-const getTotalDuration = computed(() => formatSeconds(state.duration))
-
-function formatSeconds(value) {
-  var theTime = parseInt(value) // 秒
-  var theTime1 = 0 // 分
-  var theTime2 = 0 // 小时
-  if (theTime > 60) {
-    theTime1 = parseInt(theTime / 60)
-    theTime = parseInt(theTime % 60)
-    if (theTime1 > 60) {
-      theTime2 = parseInt(theTime1 / 60)
-      theTime1 = parseInt(theTime1 % 60)
-    }
-  }
-
-  var result = '' + parseInt(theTime) //秒
-  if (10 > theTime > 0) {
-    result = '0' + parseInt(theTime) //秒
-  } else {
-    result = '' + parseInt(theTime) //秒
-  }
-
-  if (10 > theTime1 > 0) {
-    result = '0' + parseInt(theTime1) + ':' + result //分，不足两位数，首位补充0，
-  } else {
-    result = '' + parseInt(theTime1) + ':' + result //分
-  }
-  if (theTime2 > 0) {
-    result = '' + parseInt(theTime2) + ':' + result //时
-  }
-  return result
-}
 </script>
 <template>
   <div class="im-message-audio">
@@ -97,124 +66,181 @@ function formatSeconds(value) {
       @error="onError"
     />
 
-    <div class="videodisc">
-      <div
-        v-if="state.loading"
-        class="disc"
-        :class="{ play: state.isAudioPlay }"
-      >
-        <n-icon size="24" :component="LoadingOne" />
-      </div>
-
-      <div
-        v-else
-        class="disc"
-        :class="{ play: state.isAudioPlay }"
-        @click.stop="onPlay"
-      >
-        <n-icon size="24" v-if="state.isAudioPlay" :component="PauseOne" />
-        <n-icon v-else :component="PlayOne" />
-      </div>
-    </div>
-    <div class="detail">
-      <div class="text">
-        <n-icon :component="HeadsetOne" />
-        <span>{{ getCurrDuration }} / {{ getTotalDuration }}</span>
-      </div>
-      <div class="process">
-        <n-progress
-          :percentage="parseInt(state.progress)"
-          :height="5"
-          :show-indicator="false"
+    <div class="play">
+      <div class="btn pointer" @click.stop="onPlay">
+        <n-icon
+          :size="18"
+          :component="state.isAudioPlay ? PauseOne : PlayOne"
         />
       </div>
     </div>
+    <div class="desc">
+      <span class="line" v-for="i in 23"></span>
+      <span
+        class="indicator"
+        :style="{ left: state.progress + '%' }"
+        v-show="state.progress > 0"
+      ></span>
+    </div>
+    <div class="time">9'59"</div>
   </div>
 </template>
 <style lang="less" scoped>
 .im-message-audio {
+  --audio-bg-color: #f5f5f5;
+  --audio-btn-bg-color: #ffffff;
+
   width: 200px;
-  height: 60px;
-  border-radius: 5px;
+  height: 45px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  border: 1px solid var(--im-message-border-color);
   overflow: hidden;
+  background-color: var(--audio-bg-color);
 
   > div {
-    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .videodisc {
-    flex-basis: 60px;
+  .play {
+    width: 45px;
+    height: inherit;
     flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-    .disc {
-      width: 42px;
-      height: 42px;
-      background: #ff5722;
+    .btn {
+      width: 26px;
+      height: 26px;
+      background-color: var(--audio-btn-bg-color);
       border-radius: 50%;
+      color: rgb(24, 24, 24);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      cursor: pointer;
-
-      &.play {
-        background: #ff5722;
-        animation: spin 3s linear infinite;
-      }
-
-      i {
-        font-size: 24px;
-      }
     }
   }
 
-  .detail {
+  .desc {
     flex: 1 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10px;
+    height: inherit;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
 
-    .text {
-      width: 90%;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      i {
-        margin-right: 5px;
+    .line {
+      justify-content: space-between;
+      height: 30px;
+      width: 2px;
+      background-color: rgb(40, 39, 39);
+      margin-left: 3px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:nth-child(1) {
+        height: 16px;
+      }
+      &:nth-child(2) {
+        height: 10px;
+      }
+      &:nth-child(3) {
+        height: 8px;
+      }
+      &:nth-child(4) {
+        height: 6px;
+      }
+      &:nth-child(5) {
+        height: 2px;
+      }
+      &:nth-child(6) {
+        height: 10px;
+      }
+      &:nth-child(7) {
+        height: 20px;
+      }
+
+      &:nth-child(8) {
+        height: 16px;
+      }
+      &:nth-child(9) {
+        height: 10px;
+      }
+      &:nth-child(10) {
+        height: 13px;
+      }
+      &:nth-child(11) {
+        height: 10px;
+      }
+      &:nth-child(12) {
+        height: 8px;
+      }
+      &:nth-child(13) {
+        height: 15px;
+      }
+      &:nth-child(14) {
+        height: 16px;
+      }
+      &:nth-child(15) {
+        height: 16px;
+      }
+      &:nth-child(16) {
+        height: 15px;
+      }
+      &:nth-child(17) {
+        height: 14px;
+      }
+      &:nth-child(18) {
+        height: 12px;
+      }
+      &:nth-child(19) {
+        height: 8px;
+      }
+      &:nth-child(20) {
+        height: 3px;
+      }
+      &:nth-child(21) {
+        height: 6px;
+      }
+      &:nth-child(22) {
+        height: 10px;
+      }
+      &:nth-child(23) {
+        height: 16px;
       }
     }
 
-    .process {
-      padding-top: 10px;
-      height: 20px;
-      width: 90%;
+    .indicator {
+      position: absolute;
+      height: 70%;
+      width: 1px;
+      background-color: #9b9595;
     }
   }
+
+  .time {
+    width: 50px;
+    height: inherit;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
 }
 
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
+html[data-theme='dark'] {
+  .im-message-audio {
+    --audio-bg-color: #2c2c32;
+    --audio-btn-bg-color: rgb(78, 75, 75);
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+    .btn {
+      color: #ffffff;
+    }
+
+    .desc {
+      .line {
+        background-color: rgb(169, 167, 167);
+      }
+    }
   }
 }
 </style>
