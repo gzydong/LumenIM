@@ -38,7 +38,7 @@ const onDismiss = () => {
     group_id: props.id,
   }).then(res => {
     if (res.code == 200) {
-      window['$message'].success('群组已解散')
+      window['$message'].success('群聊已解散')
       emit('close')
     } else {
       window['$message'].info(res.message)
@@ -98,7 +98,7 @@ onLoadData()
         label-width="auto"
         require-mark-placement="right-hanging"
       >
-        <n-form-item label="解散群组:">
+        <n-form-item label="解散群聊:">
           <n-popconfirm
             negative-text="取消"
             positive-text="确定"
@@ -110,7 +110,7 @@ onLoadData()
             确定要解散群聊吗？ 此操作是不可逆的！
           </n-popconfirm>
         </n-form-item>
-        <n-form-item label="公开可见:" feedback="开启后可在公开群组列表展示。">
+        <n-form-item label="公开可见:" feedback="开启后可在公开群聊列表展示。">
           <n-switch
             :rubber-band="false"
             :value="detail.is_overt"

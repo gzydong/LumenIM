@@ -157,7 +157,7 @@ onLoad()
               @update:value="onTabs"
             >
               <n-tab name="1"> 好友 </n-tab>
-              <n-tab name="2"> 群组 </n-tab>
+              <n-tab name="2"> 群聊 </n-tab>
               <!-- <n-tab name="企业"> 企业 </n-tab> -->
             </n-tabs>
           </header>

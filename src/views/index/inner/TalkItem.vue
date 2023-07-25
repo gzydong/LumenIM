@@ -59,7 +59,7 @@ defineProps({
               class="online"
               v-show="data.talk_type == 1 && data.is_online == 1"
             >
-              [在线]
+              [在线]
             </span>
             <span class="detail" v-html="data.msg_text" />
           </template>

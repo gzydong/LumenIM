@@ -75,14 +75,24 @@ const onLoadData = () => {
 }
 
 const onDelete = item => {
-  ServeRemoveMembersGroup({
-    group_id: props.id,
-    members_ids: `${item.user_id}`,
-  }).then(res => {
-    if (res.code == 200) {
-      onLoadData()
-      window['$message'].success('删除成功')
-    }
+  let title = `删除 [${item.nickname}] 群成员？`
+
+  window['$dialog'].create({
+    title: '温馨提示',
+    content: title,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      ServeRemoveMembersGroup({
+        group_id: props.id,
+        members_ids: `${item.user_id}`,
+      }).then(res => {
+        if (res.code == 200) {
+          onLoadData()
+          window['$message'].success('删除成功')
+        }
+      })
+    },
   })
 }
 
@@ -91,15 +101,25 @@ const onBatchDelete = () => {
     return
   }
 
-  ServeRemoveMembersGroup({
-    group_id: props.id,
-    members_ids: filterCheck.value.map((item: any) => item.user_id).join(','),
-  }).then(res => {
-    if (res.code == 200) {
-      batchDelete.value = false
-      onLoadData()
-      window['$message'].success('删除成功')
-    }
+  window['$dialog'].create({
+    title: '温馨提示',
+    content: `批量删除群成员？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      ServeRemoveMembersGroup({
+        group_id: props.id,
+        members_ids: filterCheck.value
+          .map((item: any) => item.user_id)
+          .join(','),
+      }).then(res => {
+        if (res.code == 200) {
+          batchDelete.value = false
+          onLoadData()
+          window['$message'].success('删除成功')
+        }
+      })
+    },
   })
 }
 
@@ -359,7 +379,7 @@ onLoadData()
           <n-button type="primary" ghost size="small" @click="onCancelDelete">
             取消
           </n-button>
-          <n-button type="error" size="small" @click="onBatchDelete">
+          <n-button color="red" size="small" @click="onBatchDelete">
             批量删除
           </n-button>
         </n-space>
@@ -469,7 +489,6 @@ onLoadData()
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
-  background-color: #fdf9f9;
   border-bottom-right-radius: 15px;
 
   .tips {
@@ -480,8 +499,8 @@ onLoadData()
 .badge {
   margin-left: 3px;
   &.master {
-    background-color: #ffe699;
-    color: red;
+    color: #dc9b04 !important;
+    background-color: #faf1d1 !important;
   }
 
   &.leader {
@@ -495,8 +514,17 @@ onLoadData()
   }
 
   &.muted {
-    background-color: red;
+    background-color: #a9a9ae;
     color: #ffffff;
+  }
+}
+
+html[data-theme='dark'] {
+  .badge {
+    &.muted {
+      background-color: #777782;
+      color: #ffffff;
+    }
   }
 }
 </style>

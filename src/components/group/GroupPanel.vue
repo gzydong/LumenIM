@@ -119,7 +119,7 @@ const onSignOut = () => {
     group_id: props.gid,
   }).then(res => {
     if (res.code == 200) {
-      window['$message'].success('已退出群组')
+      window['$message'].success('已退出群聊')
       onClose()
     } else {
       window['$message'].error(res.message)
@@ -303,9 +303,9 @@ loadMembers()
           @positive-click="onSignOut"
         >
           <template #trigger>
-            <n-button class="btn" type="error" ghost> 退出群组 </n-button>
+            <n-button class="btn" type="error" ghost> 退出群聊 </n-button>
           </template>
-          确定要退出群吗？ 退出后不在接收群消息！
+          确定要退出群吗？ 退出后不再接收此群消息！
         </n-popconfirm>
       </template>
 
@@ -316,7 +316,7 @@ loadMembers()
         v-if="isLeader"
         @click="isShowManage = true"
       >
-        群组管理
+        群聊管理
       </n-button>
     </footer>
   </section>
@@ -492,8 +492,8 @@ loadMembers()
 .badge {
   margin-left: 3px;
   &.master {
-    background-color: #ffe699;
-    color: red;
+    color: #dc9b04 !important;
+    background-color: #faf1d1 !important;
   }
 
   &.leader {

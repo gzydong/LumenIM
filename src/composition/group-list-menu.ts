@@ -51,7 +51,7 @@ export function useFriendsMenu() {
         dropdown.options = []
 
         dropdown.options.push({ label: '添加好友', key: 'delete2' })
-        dropdown.options.push({ label: '移出群组', key: 'delete1' })
+        dropdown.options.push({ label: '移出群聊', key: 'delete1' })
         dropdown.options.push({ label: '禁止发言', key: 'delete3' })
         dropdown.options.push({ label: '权限分配', key: 'delete4' })
         dropdown.options.push({ label: '@群成员', key: 'delete5' })

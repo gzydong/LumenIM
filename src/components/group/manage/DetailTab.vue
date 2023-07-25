@@ -22,6 +22,8 @@ const modelDetail = reactive({
 const onUploadAvatar = avatar => {
   cropper.value = false
   modelDetail.avatar = avatar
+
+  onSubmitBaseInfo()
 }
 
 const onLoadData = () => {

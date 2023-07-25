@@ -25,7 +25,7 @@ let show = ref(false)
 <style lang="less" scoped>
 .im-message-group-notice {
   max-width: 500px;
-  min-height: 50px;
+  min-height: 10px;
   border-radius: 10px;
   padding: 8px 10px;
   border: 1px solid var(--im-message-border-color);
@@ -41,6 +41,18 @@ let show = ref(false)
     white-space: nowrap;
     font-weight: 400;
     margin-bottom: 5px;
+    position: relative;
+
+    // &::after {
+    //   content: '详情 >';
+    //   position: absolute;
+    //   right: 0;
+    //   top: 3px;
+    //   width: 80px;
+    //   height: 30px;
+    //   font-size: 12px;
+    //   text-align: right;
+    // }
   }
 
   .content {

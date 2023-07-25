@@ -78,7 +78,7 @@ onMounted(() => {
     <header class="el-header from-header bdr-b">
       <div>
         <n-tabs v-model:value="tabIndex">
-          <n-tab name="all"> 全部群组({{ items.length }}) </n-tab>
+          <n-tab name="all"> 全部群聊({{ items.length }}) </n-tab>
           <n-tab name="create"> 我创建的({{ filterCreator.length }}) </n-tab>
           <n-tab name="join">
             我加入的({{ items.length - filterCreator.length }})

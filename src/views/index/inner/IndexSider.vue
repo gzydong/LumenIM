@@ -215,7 +215,7 @@ const onSignOutGroup = (data: any) => {
         group_id: data.receiver_id,
       }).then(({ code, message }) => {
         if (code == 200) {
-          window['$message'].success('已退出群组')
+          window['$message'].success('已退出群聊')
           onDeleteTalk(data.index_name)
         } else {
           window['$message'].error(message)
@@ -341,7 +341,7 @@ const onReload = () => {
   talkStore.loadTalkList()
 }
 
-// 创建群组回调事件
+// 创建群聊回调事件
 const onGroupCallBack = (data: any) => {
   onReload()
 }
@@ -382,7 +382,7 @@ onMounted(() => {
     <!-- 工具栏目 -->
     <header class="el-header tools-header">
       <n-input
-        placeholder="搜索好友 / 群组"
+        placeholder="搜索好友 / 群聊"
         v-model:value.trim="searchKeyword"
         round
         clearable
@@ -467,15 +467,12 @@ onMounted(() => {
     </template>
 
     <template v-else>
-      <RecycleScroller
+      <div
         id="talk-session-list"
         class="el-main scroller me-scrollbar me-scrollbar-thumb"
-        :items="items"
-        :item-size="71"
-        key-field="index_name"
-        v-slot="{ item }"
       >
         <TalkItem
+          v-for="item in items"
           :key="item.index_name"
           :data="item"
           :avatar="item.avatar"
@@ -485,7 +482,29 @@ onMounted(() => {
           @top-talk="onToTopTalk"
           @contextmenu.prevent="onContextMenuTalk($event, item)"
         />
-      </RecycleScroller>
+      </div>
+
+      <!-- <RecycleScroller
+        id="talk-session-list"
+        class="el-main scroller me-scrollbar me-scrollbar-thumb"
+        :items="items"
+        :item-size="72"
+        key-field="index_name"
+        v-slot="{ item }"
+      >
+        <div style="height: 72px">
+          <TalkItem
+            :key="item.index_name"
+            :data="item"
+            :avatar="item.avatar"
+            :username="item.remark_name || item.name"
+            :active="item.index_name == indexName"
+            @tab-talk="onTabTalk"
+            @top-talk="onToTopTalk"
+            @contextmenu.prevent="onContextMenuTalk($event, item)"
+          />
+        </div>
+      </RecycleScroller> -->
     </template>
   </section>
 

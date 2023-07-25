@@ -133,7 +133,7 @@ onLoad()
   <n-modal
     v-model:show="isShowBox"
     preset="card"
-    :title="gid == 0 ? '创建群组' : '请选择需要邀请的好友'"
+    :title="gid == 0 ? '创建群聊' : '请选择需要邀请的好友'"
     style="max-width: 650px; height: 550px; border-radius: 10px"
     :on-after-leave="onMaskClick"
     :segmented="{
@@ -201,7 +201,7 @@ onLoad()
             class="el-header"
             style="height: 90px; padding: 10px 15px"
           >
-            <p style="margin: 8px 0px 10px; font-weight: 500">群名称(必填)：</p>
+            <p style="margin: 8px 0px 10px; font-weight: 500">群聊名称(必填)：</p>
             <n-input
               v-model:value="model.name"
               placeholder="请填写群名称"

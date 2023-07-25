@@ -135,6 +135,8 @@ const editorOption = {
 
         renderList(items)
       },
+      mentionContainerClass:
+        'ql-mention-list-container me-scrollbar me-scrollbar-thumb',
     },
   },
   placeholder: '按Enter发送 / Shift+Enter 换行',
@@ -358,9 +360,10 @@ function loadEditorDraftText() {
 
   // 这里延迟处理，不然会有问题
   setTimeout(() => {
+    hideMentionDom()
+
     // 从缓存中加载编辑器草稿
     let draft = editorDraftStore.items[indexName.value || '']
-
     if (draft) {
       quill.setContents(JSON.parse(draft))
     } else {
@@ -394,6 +397,13 @@ function onSubscribeQuote(data: any) {
   quill.setSelection(index + 1, 0, 'user')
 }
 
+function hideMentionDom() {
+  let el = document.querySelector('.ql-mention-list-container')
+  if (el) {
+    document.querySelector('body')?.removeChild(el)
+  }
+}
+
 watch(indexName, loadEditorDraftText, { immediate: true })
 
 onMounted(() => {
@@ -406,6 +416,8 @@ onMounted(() => {
 onUnmounted(() => {
   publisher.unsubscribe('editor:mention', onSubscribeMention)
   publisher.unsubscribe('editor:quote', onSubscribeQuote)
+
+  hideMentionDom()
 })
 </script>
 
@@ -494,6 +506,8 @@ onUnmounted(() => {
 
 <style lang="less" scoped>
 .editor {
+  --tip-bg-color: rgb(241 241 241 / 90%);
+
   height: 100%;
 
   .toolbar {
@@ -520,8 +534,8 @@ onUnmounted(() => {
           top: 40px;
           left: 0px;
           line-height: 26px;
-          background-color: rgb(241 241 241 / 90%);
-          color: #484848;
+          background-color: var(--tip-bg-color);
+          color: var(--im-text-color);
           min-width: 20px;
           font-size: 12px;
           padding: 0 5px;
@@ -532,8 +546,6 @@ onUnmounted(() => {
         }
 
         &:hover {
-          // background-color: #f5f5f5;
-
           .tip-title {
             display: block;
           }
@@ -541,6 +553,18 @@ onUnmounted(() => {
       }
     }
   }
+}
+
+html[data-theme='dark'] {
+  .editor {
+    --tip-bg-color: #48484d;
+  }
+}
+</style>
+
+<style lang="less">
+#editor {
+  overflow: hidden;
 }
 
 :global(.ql-editor) {
@@ -555,7 +579,7 @@ onUnmounted(() => {
 :global(.ql-snow .ql-editor img) {
   max-width: 80px;
   border-radius: 3px;
-  background-color: #ccc;
+  background-color: #48484d;
   margin: 0px 2px;
 }
 
@@ -571,12 +595,6 @@ onUnmounted(() => {
   filter: unset;
   display: none;
 }
-</style>
-
-<style lang="less">
-#editor {
-  overflow: hidden;
-}
 
 .mention {
   color: #409eff;
@@ -589,7 +607,7 @@ onUnmounted(() => {
 
 .ql-editor.ql-blank::before {
   font-style: unset;
-  color: rgb(145 124 124 / 82%);
+  color: #b8b3b3;
 }
 
 .ql-mention-list-container {
@@ -597,17 +615,6 @@ onUnmounted(() => {
   max-height: 200px;
   overflow-y: auto;
   border-radius: 6px;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    background-color: #e4e4e5;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    background-color: #c0bebc;
-  }
 
   .ql-mention-list-item {
     padding: 0 10px;
@@ -671,6 +678,10 @@ onUnmounted(() => {
 }
 
 html[data-theme='dark'] {
+  .ql-editor.ql-blank::before {
+    color: #57575a;
+  }
+
   .ql-mention-list-container {
     background-color: var(--im-message-bg-color);
     color: #fff;
@@ -691,4 +702,3 @@ html[data-theme='dark'] {
   }
 }
 </style>
-./util.ts

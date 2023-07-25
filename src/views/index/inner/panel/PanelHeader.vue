@@ -51,7 +51,7 @@ const onSetMenu = () => {
 
     <div class="module left-module">
       <span class="tag" :class="{ red: type == 1 }">
-        {{ type == 1 ? '好友' : '群组' }}
+        {{ type == 1 ? '好友' : '群聊' }}
       </span>
       <span class="nickname">{{ username }}</span>
       <span class="num" v-show="type == 2 && num">({{ num }})</span>

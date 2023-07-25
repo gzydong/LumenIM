@@ -79,7 +79,7 @@ defineProps({
       display: flex;
       align-items: center;
       color: var(--im-text-color);
-      transition: all 0.5s ease-in-out;
+      // transition: all 0.5s ease-in-out;
 
       > div {
         height: 100%;

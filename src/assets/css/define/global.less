@@ -140,12 +140,12 @@ textarea {
   &::-webkit-scrollbar {
     width: 3px;
     height: 3px;
-    background-color: unset;
+    background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: unset;
+    background-color: transparent;
   }
 
   &:hover {
@@ -167,19 +167,19 @@ textarea {
 
 // 全局边框
 .bdr-t {
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--line-border-color);
 }
 
 .bdr-r {
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid var(--line-border-color);
 }
 
 .bdr-b {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--line-border-color);
 }
 
 .bdr-l {
-  border-left: 1px solid var(--border-color);
+  border-left: 1px solid var(--line-border-color);
 }
 
 .badge {
@@ -193,7 +193,7 @@ textarea {
   cursor: default;
   user-select: none;
   background-color: #dee0e3;
-  transform: scale(0.83);
+  transform: scale(0.84);
   transform-origin: left;
   flex-shrink: 0;
 }

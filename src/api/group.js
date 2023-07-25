@@ -58,17 +58,17 @@ export const ServeUpdateGroupCard = data => {
   return post('/api/v1/group/member/remark', data)
 }
 
-// 获取用户可邀请加入群组的好友列表
+// 获取用户可邀请加入群聊的好友列表
 export const ServeGetInviteFriends = data => {
   return get('/api/v1/group/member/invites', data)
 }
 
-//  获取群组成员列表
+//  获取群聊成员列表
 export const ServeGetGroupMembers = data => {
   return get('/api/v1/group/member/list', data)
 }
 
-//  获取群组公告列表
+//  获取群聊公告列表
 export const ServeGetGroupNotices = data => {
   return get('/api/v1/group/notice/list', data)
 }

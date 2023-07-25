@@ -73,7 +73,7 @@ onLoadData()
     <main class="el-main">
       <section class="el-container is-vertical height100">
         <header class="el-header from-header bdr-b">
-          <div>公开群列表({{ items.length }})</div>
+          <div>公开群聊({{ items.length }})</div>
           <div>
             <n-input
               placeholder="搜索"
@@ -99,7 +99,7 @@ onLoadData()
 
         <main class="el-main me-scrollbar me-scrollbar-thumb pd-10" v-else>
           <n-alert type="info" :bordered="false" closable class="mt-b10">
-            公开群组可自行添加入群申请，待群主（管理员）同意后方可入群！
+            公开群聊可自行添加入群申请，待群主（管理员）同意后方可入群！
           </n-alert>
 
           <div class="cards">

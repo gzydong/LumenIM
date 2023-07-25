@@ -124,8 +124,6 @@ const emojis = {
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/60.gif'>",
   '[饭]':
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/61.gif'>",
-  '[猪头]':
-    "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/62.gif'>",
   '[玫瑰]':
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/63.gif'>",
   '[凋谢]':

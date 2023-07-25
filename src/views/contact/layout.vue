@@ -31,13 +31,13 @@ const menus = reactive([
     size: 18,
   },
   {
-    name: '我的群组',
+    name: '我的群聊',
     path: '/contact/group',
     icon: markRaw(Peoples),
     size: 20,
   },
   {
-    name: '公开群组',
+    name: '公开群聊',
     path: '/contact/group/open',
     icon: markRaw(PeoplesTwo),
     size: 18,

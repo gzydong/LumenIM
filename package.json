@@ -1,5 +1,5 @@
 {
-  "name": "lumenim",
+  "name": "LumenIM",
   "private": true,
   "version": "0.0.0",
   "main": "electron/main.js",
@@ -54,8 +54,8 @@
   },
   "build": {
     "appId": "com.gzydong.lumenim",
-    "productName": "lumenim",
-    "copyright": "Copyright © 2022 lumenim",
+    "productName": "LumenIM",
+    "copyright": "Copyright © 2022 LumenIM",
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "build/icons/lumen-im-mac.png"

@@ -88,6 +88,7 @@ const onSubmit = () => {
     if (res.code == 200) {
       updateStatistics(res.data)
       props.extra.vote_users.push(userStore.uid)
+      props.extra.detail.answered_num++
     }
   })
 }

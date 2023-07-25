@@ -170,7 +170,7 @@ const onSubmit = () => {
             </n-button>
 
             <n-button @click="refreshCrop">
-              刷新
+              重置
               <template #icon>
                 <n-icon :component="RefreshOne" />
               </template>
@@ -191,7 +191,7 @@ const onSubmit = () => {
             </n-button>
           </aside>
           <main class="el-main" style="text-align: center">
-            <n-button type="primary" @click="onSubmit">保存图片</n-button>
+            <n-button type="primary" @click="onSubmit">保存头像</n-button>
           </main>
         </section>
       </template>
