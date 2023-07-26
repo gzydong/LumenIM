@@ -11,10 +11,11 @@ import {
 import socket from '@/socket'
 import { ServePublishMessage } from '@/api/chat'
 import { ServeSendVote } from '@/api/chat'
-import { throttle } from '@/utils/common'
+import { throttle, getVideoImage } from '@/utils/common'
 import Editor from '@/components/editor/Editor.vue'
 import MultiSelectFooter from './MultiSelectFooter.vue'
 import HistoryRecord from '@/components/talk/HistoryRecord.vue'
+import { ServeUploadImage } from '@/api/upload'
 
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
@@ -103,6 +104,33 @@ const onSendImageEvent = ({ data, callBack }) => {
   onSendMessage({ type: 'image', ...data }, callBack)
 }
 
+// 发送图片消息
+const onSendVideoEvent = async ({ data }) => {
+  let resp = await getVideoImage(data)
+
+  const coverForm = new FormData()
+  coverForm.append('file', resp.file)
+
+  let cover = await ServeUploadImage(coverForm)
+  if (cover.code != 200) return
+
+  const form = new FormData()
+  form.append('file', data)
+
+  let video = await ServeUploadImage(form)
+  if (video.code != 200) return
+
+  let message = {
+    type: 'video',
+    url: video.data.src,
+    cover: cover.data.src,
+    duration: parseInt(resp.duration),
+    size: data.size,
+  }
+
+  onSendMessage(message, () => {})
+}
+
 // 发送代码消息
 const onSendCodeEvent = ({ data, callBack }) => {
   onSendMessage({ type: 'code', code: data.code, lang: data.lang }, callBack)
@@ -183,6 +211,7 @@ const onInputEvent = ({ data }) => {
 const evnets = {
   text_event: onSendTextEvent,
   image_event: onSendImageEvent,
+  video_event: onSendVideoEvent,
   code_event: onSendCodeEvent,
   file_event: onSendFileEvent,
   input_event: onInputEvent,

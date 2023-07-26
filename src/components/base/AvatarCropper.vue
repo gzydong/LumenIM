@@ -50,6 +50,8 @@ const onUpload = e => {
     if (typeof e.target.result === 'object') {
       // 把Array Buffer转化为blob 如果是base64不需要
       data = window.URL.createObjectURL(new Blob([e.target.result]))
+
+      console.log(data,e.target.result)
     } else {
       data = e.target.result
     }

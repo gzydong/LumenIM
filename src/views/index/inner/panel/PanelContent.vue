@@ -356,6 +356,7 @@ onMounted(onReload)
           class="message-item"
           v-for="(item, index) in records"
           :key="item.msg_id"
+          :data-msgid="item.msg_id"
         >
           <!-- 系统消息 -->
           <div v-if="item.msg_type >= 1000" class="message-box">

@@ -39,6 +39,13 @@ export interface Data {
     content: string
 }
 
+export interface VideoExtra {
+    cover: string;
+    url: string
+    duration: number
+    size: number
+}
+
 export interface MixedExtra {
     items: {
         type: number;

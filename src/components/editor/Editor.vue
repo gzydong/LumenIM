@@ -267,6 +267,11 @@ function onUploadFile(e: any) {
     return
   }
 
+  if (file && file.type.indexOf('video/') == 0) {
+    let fn = emitCall('video_event', file, () => {})
+    return emit('editor-event', fn)
+  }
+
   let fn = emitCall('file_event', file, () => {})
   emit('editor-event', fn)
 }

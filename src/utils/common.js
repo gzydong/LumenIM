@@ -145,3 +145,42 @@ export function htmlDecode(input) {
     return htmlEntityMap[match] || match
   })
 }
+
+// 文件转 图片 关键函数  异步
+export function getVideoImage(file) {
+  return new Promise((resolve, reject) => {
+    let video = document.createElement('video')
+
+    video.src = URL.createObjectURL(file)
+
+    video.addEventListener('loadeddata', function () {
+      this.currentTime = 1
+    })
+
+    video.addEventListener('seeked', function () {
+      this.width = this.videoWidth
+      this.height = this.videoHeight
+      var canvas = document.createElement('canvas')
+      var ctx = canvas.getContext('2d')
+      canvas.width = this.width
+      canvas.height = this.height
+      ctx?.drawImage(this, 0, 0, canvas.width, canvas.height)
+
+      let image = {
+        url: canvas.toDataURL('image/jpeg', 1),
+        width: this.width,
+        height: this.height,
+        duration: this.duration,
+      }
+
+      canvas.toBlob(function (blob) {
+        image.file = new File([blob], 'video_image.jpeg', {
+          type: blob.type,
+          lastModified: Date.now(),
+        })
+
+        resolve(image)
+      }, 'image/jpeg')
+    })
+  })
+}
