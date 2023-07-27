@@ -9,7 +9,7 @@ import {
   NSpace,
   NRadio,
 } from 'naive-ui'
-import { DeleteMode } from '@icon-park/vue-next'
+import { Delete } from '@icon-park/vue-next'
 const emit = defineEmits(['close', 'submit'])
 
 const isShow = ref(true)
@@ -104,7 +104,7 @@ const isCanSubmit = computed(() => {
             </n-input>
 
             <div class="btn flex-center pointer" @click="delOption(i)">
-              <n-icon size="20" :component="DeleteMode" />
+              <n-icon size="16" :component="Delete" />
             </div>
           </div>
 
@@ -114,7 +114,7 @@ const isCanSubmit = computed(() => {
             @click="addOption"
             v-if="model.options.length < 6"
           >
-            +添加选项
+            添加选项
           </n-button>
         </div>
       </n-form-item>

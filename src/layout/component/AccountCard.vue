@@ -83,7 +83,7 @@ const store = useUserStore()
     padding: 8px;
     line-height: 25px;
     background: #f3f5f7;
-    color: #7d7d7d;
+    color: var(--im-text-color);
     font-size: 12px;
     margin-bottom: 3px;
     position: relative;

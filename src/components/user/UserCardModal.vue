@@ -393,7 +393,7 @@ const onAfterEnter = () => {
       padding: 5px 8px;
       line-height: 25px;
       background: #f3f5f7;
-      color: #7d7d7d;
+      color: var(--im-text-color);
       font-size: 12px;
       margin-bottom: 20px;
       display: -webkit-box;
@@ -420,13 +420,12 @@ const onAfterEnter = () => {
     .name {
       width: 45px;
       flex-shrink: 0;
-      color: #cbc5c5;
+      color: #625f5f;
     }
 
     .text {
       flex: 1 auto;
       margin-left: 5px;
-      color: #736f6f;
     }
 
     .edit {
@@ -445,6 +444,14 @@ html[data-theme='dark'] {
 
     .motto {
       background-color: rgb(44, 44, 50);
+    }
+  }
+
+  .infos {
+    .info-item {
+      .name {
+        color: #afabab;
+      }
     }
   }
 }

@@ -111,6 +111,7 @@ async function onPlay() {
     left: calc(50% - 15px);
     top: calc(50% - 10px);
     cursor: pointer;
+    color: #ffffff;
   }
 
   &:hover {

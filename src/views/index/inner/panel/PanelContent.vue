@@ -449,7 +449,8 @@ onMounted(onReload)
 
                     <span v-show="item.send_status == 1"> 正在发送... </span>
                     <span v-show="item.send_status != 1">
-                      {{ item.is_read ? '已读' : '已送达' }}
+                      <!-- {{ item.is_read ? '已读' : '已送达' }} -->
+                      已送达
                     </span>
                   </template>
 

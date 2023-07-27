@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { textReplaceEmoji } from '@/utils/emojis'
-import { textReplaceLink } from '@/utils/strings'
+import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 import { Data } from './types.d'
 
 const props = defineProps<{
@@ -14,6 +14,7 @@ const float = props.data.float
 let textContent = props.data.content
 
 textContent = textReplaceLink(textContent)
+textContent = textReplaceMention(textContent, '#1890ff')
 textContent = textReplaceEmoji(textContent)
 </script>
 

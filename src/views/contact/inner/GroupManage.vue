@@ -11,6 +11,7 @@ interface Item {
   id: number
   index: number
   name: string
+  count: number
 }
 
 let index = 1
@@ -33,12 +34,13 @@ const onLoadData = async () => {
         id: item.id,
         name: item.name,
         index: index++,
+        count: item.count,
       })
     }
   }
 
   if (!options.length) {
-    options.push({ id: 0, name: '', index: index++ })
+    options.push({ id: 0, name: '', index: index++, count: 0 })
   }
 }
 
@@ -57,13 +59,27 @@ const onSubmit = () => {
 }
 
 const addOption = () => {
-  options.push({ name: '', id: 0, index: index++ })
+  options.push({ name: '', id: 0, index: index++, count: 0 })
 }
 
 const delOption = (item: Item) => {
-  let i = options.findIndex(value => value.index == item.index)
-  if (i >= 0) {
-    options.length > 0 && options.splice(i, 1)
+  let fn = () => {
+    let i = options.findIndex(value => value.index == item.index)
+    if (i >= 0) {
+      options.length > 0 && options.splice(i, 1)
+    }
+  }
+
+  if (item.count > 0) {
+    window['$dialog'].create({
+      title: '温馨提示',
+      content: `【${item.name}】分组下有${item.count}个好友，确定要删除吗？`,
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: fn,
+    })
+  } else {
+    fn()
   }
 }
 
@@ -85,8 +101,14 @@ onLoadData()
     style="max-width: 450px; border-radius: 10px"
     :on-after-leave="onMaskClick"
   >
-    <n-form>
-      <n-form-item label="选项">
+    <n-empty v-show="options.length == 0" size="50" description="暂未设置分组">
+      <template #icon>
+        <img src="@/assets/image/no-data.svg" alt="" />
+      </template>
+    </n-empty>
+
+    <n-form v-show="options.length > 0">
+      <n-form-item label="分组列表">
         <div class="options">
           <Draggable
             class="draggable-ul"
@@ -99,15 +121,16 @@ onLoadData()
               <div class="option">
                 <n-icon size="20" class="handle" :component="Drag" />
                 <n-input
-                  placeholder="分组名必填"
+                  placeholder="必填"
                   v-model:value="element.name"
                   :maxlength="20"
                   style="margin: 0 10px"
                 />
                 <n-icon
-                  size="20"
+                  size="16"
                   class="pointer"
                   :component="Delete"
+                  color="red"
                   @click="delOption(element)"
                 />
               </div>
@@ -126,7 +149,7 @@ onLoadData()
             @click="addOption"
             v-if="options.length < 6"
           >
-            +添加分组
+            添加分组
           </n-button>
         </div>
 

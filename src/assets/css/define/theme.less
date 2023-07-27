@@ -1,5 +1,6 @@
 // 默认主题
 html {
+  --im-primary-color: #1890ff;
   --im-bg-color: #ffffff;
   --line-border-color: #f5f5f5;
   --border-color: #eeeaea;
@@ -28,6 +29,7 @@ html {
 
 // 黑色主题
 html[data-theme='dark'] {
+  --im-primary-color: #1890ff;
   --im-bg-color: #202124;
   --line-border-color: rgb(255 255 255 / 9%);
   --border-color: rgb(255 255 255 / 9%);
@@ -48,11 +50,19 @@ html[data-theme='dark'] {
   // message
   --im-message-bg-color: #28282c;
   --im-message-border-color: rgb(255 255 255 / 9%);
-  --im-message-left-bg-color: rgb(255 255 255 / 10%);
+  --im-message-left-bg-color: #2c2c31;
   --im-message-left-text-color: var(--im-text-color);
-  --im-message-right-bg-color: rgb(255 255 255 / 10%);
+  --im-message-right-bg-color: #2f2f38;
+  --im-message-right-bg-color: #35353f;
   --im-message-right-text-color: var(--im-text-color);
+
+  ::selection { background:#d3d3d3; color:#555; } 
+  ::-moz-selection { background:#d3d3d3; color:#555; } 
+  ::-webkit-selection { background:#d3d3d3; color:#555; }
 }
+
+
+
 
 body{
   background-color: var(--im-bg-color);

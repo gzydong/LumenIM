@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, inject, reactive } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'

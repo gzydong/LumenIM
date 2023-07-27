@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import 'quill-image-uploader/dist/quill.imageUploader.min.css'
-import 'quill-mention/dist/quill.mention.min.css'
+import '@/assets/css/editor-mention.less'
 import {
   reactive,
   watch,
@@ -572,38 +572,50 @@ html[data-theme='dark'] {
   overflow: hidden;
 }
 
-:global(.ql-editor) {
+.ql-editor {
   padding: 8px;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background-color: unset;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: transparent;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--im-scrollbar-thumb);
+    }
+  }
 }
 
-:global(.ql-editor.ql-blank::before) {
+.ql-editor.ql-blank::before {
   font-family: PingFang SC, Microsoft YaHei, 'Alibaba PuHuiTi 2.0 45' !important;
   left: 8px;
 }
 
-:global(.ql-snow .ql-editor img) {
-  max-width: 80px;
+.ql-snow .ql-editor img {
+  max-width: 100px;
   border-radius: 3px;
   background-color: #48484d;
   margin: 0px 2px;
 }
 
-:global(.image-uploading) {
+.image-uploading {
   display: flex;
   width: 100px;
   height: 100px;
   background: #f5f5f5;
   border-radius: 5px;
-}
 
-:global(.image-uploading img) {
-  filter: unset;
-  display: none;
-}
-
-.mention {
-  color: #409eff;
-  background-color: transparent;
+  img {
+    filter: unset;
+    display: none;
+  }
 }
 
 .ed-emoji {
@@ -613,44 +625,6 @@ html[data-theme='dark'] {
 .ql-editor.ql-blank::before {
   font-style: unset;
   color: #b8b3b3;
-}
-
-.ql-mention-list-container {
-  width: 160px;
-  max-height: 200px;
-  overflow-y: auto;
-  border-radius: 6px;
-
-  .ql-mention-list-item {
-    padding: 0 10px;
-    overflow: hidden;
-
-    &.selected {
-      background-color: #508afe;
-      color: #fff;
-      text-decoration: none;
-    }
-  }
-}
-
-.ed-member-item {
-  height: 35px;
-  display: flex;
-  align-items: center;
-
-  img {
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-  }
-
-  .nickname {
-    margin-left: 5px;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
 
 .quote-card-content {
@@ -685,21 +659,6 @@ html[data-theme='dark'] {
 html[data-theme='dark'] {
   .ql-editor.ql-blank::before {
     color: #57575a;
-  }
-
-  .ql-mention-list-container {
-    background-color: var(--im-message-bg-color);
-    color: #fff;
-    border: unset;
-    box-shadow: 5px 1px 10px #181818;
-
-    .ql-mention-list-item {
-      &.selected {
-        background-color: #1f1f23;
-      }
-
-      color: var(--im-text-color-grey);
-    }
   }
 
   .quote-card-content {

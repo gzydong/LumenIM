@@ -1,9 +1,9 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, inject } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeSearchContact } from '@/api/contacts'
-import UserCardModal from '@/components/user/UserCardModal.vue'
-import { modal } from '@/utils/common'
+
+const user = inject('$user')
 
 const emit = defineEmits(['update:show'])
 
@@ -32,9 +32,7 @@ const onSubmit = () => {
     onShowError(res.code != 200)
 
     if (res.code == 200) {
-      modal(UserCardModal, {
-        uid: res.data.id,
-      })
+      user(res.data.id)
     }
   })
 }
@@ -63,9 +61,9 @@ const onShowUpdate = () => {
     transform-origin="center"
   >
     <n-form>
-      <n-form-item label="请输入查询手机号" :required="true">
+      <n-form-item label="请输入手机号" :required="true">
         <n-input
-          placeholder="手机号(必填)"
+          placeholder="必填"
           :maxlength="30"
           v-model:value="keyword"
           @keydown.enter.native="onSubmit"

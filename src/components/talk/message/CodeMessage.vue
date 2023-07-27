@@ -36,7 +36,10 @@ const onClipboard = () => {
         <n-icon class="icon" :component="Copy" @click="onClipboard" />
       </p>
     </header>
-    <main class="el-main me-scrollbar" :lineMumber="lineMumber">
+    <main
+      class="el-main me-scrollbar me-scrollbar-thumb"
+      :lineMumber="lineMumber"
+    >
       <n-code :language="extra.lang" :code="extra.code" show-line-numbers />
       <div
         class="el-footer mask pointer"
@@ -117,7 +120,7 @@ const onClipboard = () => {
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 1) 100%
     );
-    color: #696363;
+    color: var(--im-text-color);
   }
 }
 

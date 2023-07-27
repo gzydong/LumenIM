@@ -115,7 +115,7 @@ const onClickMenu = menu => {
           <component
             :is="nav.icon"
             :theme="i == index ? 'filled' : 'outline'"
-            :fill="i == index ? '#4a90e2' : color"
+            :fill="i == index ? '#1890ff' : color"
             :strokeWidth="2"
             :size="22"
           />

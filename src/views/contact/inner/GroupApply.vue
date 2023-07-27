@@ -91,7 +91,7 @@ onMounted(() => {
             parseTime(item.created_at, '{m}/{d} {h}:{i}')
           }}</span>
         </div>
-        <div class="remark text-ellipsis">[备注] {{ item.remark }}</div>
+        <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
       </div>
 
       <div class="tools">

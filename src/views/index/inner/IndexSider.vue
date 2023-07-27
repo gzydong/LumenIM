@@ -207,7 +207,7 @@ const onSignOutGroup = (data: any) => {
   window['$dialog'].create({
     showIcon: false,
     title: `退出 [${data.name}] 群聊？`,
-    content: '退出后不再接收任何群消息。',
+    content: '退出后不再接收此群的任何消息。',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
@@ -540,6 +540,7 @@ onMounted(() => {
   .unread {
     background-color: #ff4d4f;
     color: white;
+    cursor: pointer;
   }
 }
 

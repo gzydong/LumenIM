@@ -1,6 +1,14 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { NModal, NInput, NScrollbar, NDivider, NCheckbox } from 'naive-ui'
+import {
+  NModal,
+  NInput,
+  NScrollbar,
+  NDivider,
+  NCheckbox,
+  NForm,
+  NFormItem,
+} from 'naive-ui'
 import { Search, Delete } from '@icon-park/vue-next'
 import {
   ServeCreateGroup,
@@ -133,7 +141,7 @@ onLoad()
   <n-modal
     v-model:show="isShowBox"
     preset="card"
-    :title="gid == 0 ? '创建群聊' : '请选择需要邀请的好友'"
+    :title="gid == 0 ? '创建群聊' : '邀请新的联系人'"
     style="max-width: 650px; height: 550px; border-radius: 10px"
     :on-after-leave="onMaskClick"
     :segmented="{
@@ -150,7 +158,7 @@ onLoad()
         <section class="el-container is-vertical height100">
           <header class="el-header" style="height: 50px; padding: 16px">
             <n-input
-              placeholder="搜索好友"
+              placeholder="搜索"
               v-model:value="model.keywords"
               clearable
             >
@@ -201,13 +209,16 @@ onLoad()
             class="el-header"
             style="height: 90px; padding: 10px 15px"
           >
-            <p style="margin: 8px 0px 10px; font-weight: 500">群聊名称(必填)：</p>
-            <n-input
-              v-model:value="model.name"
-              placeholder="请填写群名称"
-              maxlength="20"
-              show-count
-            />
+            <n-form>
+              <n-form-item label="群聊名称" :required="true">
+                <n-input
+                  v-model:value="model.name"
+                  placeholder="必填"
+                  maxlength="20"
+                  show-count
+                />
+              </n-form-item>
+            </n-form>
           </header>
 
           <header class="el-header" style="height: 50px">
