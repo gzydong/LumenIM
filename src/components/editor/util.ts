@@ -10,7 +10,7 @@ interface AnalysisResp {
     mentions: any[]
     mentionUids: number[]
     msgType: number // 1 文本；2：图片；3图文混合消息
-    quoteId: number // 引用的消息ID
+    quoteId: string // 引用的消息ID
 }
 
 function removeLeadingNewlines(str) {
@@ -27,7 +27,7 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
         items: [],
         mentions: [],
         mentionUids: [],
-        quoteId: 0,
+        quoteId: "",
         msgType: 1,
     }
 
@@ -102,7 +102,8 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
         }
 
         if (iterator.insert.quote) {
-            resp.quoteId = parseInt(iterator.insert.quote.id)
+            resp.quoteId = iterator.insert.quote.id
+            continue
         }
     }
 

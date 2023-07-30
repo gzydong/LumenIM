@@ -180,6 +180,7 @@ const onSendEmoticonEvent = ({ data, callBack }) => {
 const onSendMixedEvent = ({ data, callBack }) => {
   let message = {
     type: 'mixed',
+    quote_id: data.quoteId,
     items: data.items,
   }
 

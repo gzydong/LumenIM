@@ -9,13 +9,14 @@ import {
   ref,
 } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
-import { Loading, MoreThree } from '@icon-park/vue-next'
+import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
 import { publisher } from '@/utils/publisher.ts'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
-import { clipboard, htmlDecode } from '@/utils/common'
+import { clipboard, htmlDecode,clipboardImage } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
+import { addClass, removeClass } from '@/utils/dom'
 import { formatTalkRecord } from '@/utils/talk'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
@@ -38,7 +39,13 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  index_name: {
+    type: String,
+    default: '',
+  },
 })
+
+let locationMessage: any = null
 
 // 对话记录
 const records = computed(() => dialogueStore.records)
@@ -61,6 +68,10 @@ const onLoadTalk = () => {
     limit: 30,
   }
 
+  if (locationMessage) {
+    data.limit = 100
+  }
+
   let scrollHeight = 0
   let el = document.getElementById('lumenChatPanel')
   if (el) {
@@ -76,6 +87,7 @@ const onLoadTalk = () => {
       data.talk_type != props.talk_type ||
       data.receiver_id != props.receiver_id
     ) {
+      locationMessage = null
       return
     }
 
@@ -104,6 +116,10 @@ const onLoadTalk = () => {
         el.scrollTop = el.scrollHeight
       } else {
         el.scrollTop = el.scrollHeight - scrollHeight
+      }
+
+      if (locationMessage) {
+        onJumpMessage(locationMessage.msgid)
       }
     })
   })
@@ -176,6 +192,10 @@ const onPanelScroll = (e: any) => {
 
 // 复制文本信息
 const onCopyText = (data: any) => {
+  // clipboardImage(data.extra.url, () => {
+  //   console.log(data.extra.url)
+  // })
+
   if (!data.content) {
     return
   }
@@ -219,7 +239,7 @@ const onDownloadFile = (data: any) => {
 
 const onQuoteMessage = (data: any) => {
   let item = {
-    id: data.id,
+    id: data.msg_id,
     title: `${data.nickname} ${data.created_at}`,
     describe: '',
     image: '',
@@ -313,9 +333,51 @@ const onSkipBottom = () => {
   }
 }
 
+const onJumpMessage = (msgid: string) => {
+  let element = document.getElementById(msgid)
+  if (!element) {
+    if (locationMessage === null) {
+      locationMessage = {
+        msgid: msgid,
+        num: 3,
+      }
+    } else {
+      locationMessage.num--
+
+      if (locationMessage.num === 0) {
+        locationMessage = null
+
+        window['$message'].info('仅支持查看最近300条的记录')
+        return
+      }
+    }
+
+    let el = document.getElementById('lumenChatPanel')
+
+    el?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    return
+  }
+
+  locationMessage = null
+
+  element?.scrollIntoView({
+    behavior: 'smooth',
+  })
+
+  addClass(element, 'border')
+
+  setTimeout(() => {
+    removeClass(element, 'border')
+  }, 3000)
+}
+
 const onReload = () => {
   loadConfig.status = 0
   loadConfig.minRecord = 0
+  locationMessage = null
 
   onLoadTalk()
 }
@@ -356,7 +418,7 @@ onMounted(onReload)
           class="message-item"
           v-for="(item, index) in records"
           :key="item.msg_id"
-          :data-msgid="item.msg_id"
+          :id="item.msg_id"
         >
           <!-- 系统消息 -->
           <div v-if="item.msg_type >= 1000" class="message-box">
@@ -448,10 +510,7 @@ onMounted(onReload)
                     />
 
                     <span v-show="item.send_status == 1"> 正在发送... </span>
-                    <span v-show="item.send_status != 1">
-                      <!-- {{ item.is_read ? '已读' : '已送达' }} -->
-                      已送达
-                    </span>
+                    <span v-show="item.send_status != 1"> 已送达 </span>
                   </template>
 
                   <n-icon
@@ -460,6 +519,18 @@ onMounted(onReload)
                     @click="onContextMenu($event, item)"
                   />
                 </div>
+              </div>
+
+              <div
+                v-if="item.extra.reply"
+                class="talk-reply pointer"
+                @click="onJumpMessage(item.extra?.reply?.msg_id)"
+              >
+                <n-icon :component="ToTop" size="14" class="icon-top" />
+                <span class="ellipsis">
+                  回复 {{ item.extra?.reply?.nickname }}:
+                  {{ item.extra?.reply?.content }}
+                </span>
               </div>
             </main>
           </div>
@@ -520,6 +591,13 @@ onMounted(onReload)
     font-size: 13px;
     .no-more {
       color: #b9b3b3;
+    }
+  }
+
+  .message-item {
+    &.border {
+      border-radius: 10px;
+      border: 1px solid var(--im-primary-color);
     }
   }
 
@@ -600,6 +678,7 @@ onMounted(onReload)
         display: flex;
         justify-content: flex-start;
         align-items: flex-end;
+
         box-sizing: border-box;
         width: 100%;
 
@@ -616,6 +695,35 @@ onMounted(onReload)
             display: none;
             margin-left: 5px;
           }
+        }
+      }
+
+      .talk-reply {
+        display: flex;
+        align-items: flex-start;
+        align-items: center;
+        width: fit-content;
+        padding: 4px;
+        margin-top: 3px;
+        margin-right: auto;
+        font-size: 12px;
+        color: #8f8f8f;
+        word-break: break-all;
+        background-color: var(--im-message-left-bg-color);
+        border-radius: 5px;
+        max-width: 300px;
+        overflow: hidden;
+        user-select: none;
+
+        .icon-top {
+          margin-right: 3px;
+        }
+
+        .ellipsis {
+          display: -webkit-inline-box;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
         }
       }
 
@@ -648,6 +756,11 @@ onMounted(onReload)
 
         .talk-content {
           flex-direction: row-reverse;
+        }
+
+        .talk-reply {
+          margin-right: 0;
+          margin-left: auto;
         }
       }
     }

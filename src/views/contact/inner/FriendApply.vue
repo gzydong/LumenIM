@@ -7,6 +7,7 @@ import {
   ServeApplyAccept,
   ServeApplyDecline,
 } from '@/api/contacts'
+import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 import { useUserStore } from '@/store/user'
 
@@ -39,11 +40,14 @@ const onInfo = item => {
   user(item.user_id)
 }
 
-const onAccept = item => {
+const onAccept = throttle(item => {
+  let loading = window['$message'].loading('请稍等，正在处理')
+
   ServeApplyAccept({
     apply_id: item.id,
     remark: item.nickname,
   }).then(({ code, message }) => {
+    loading.destroy()
     if (code == 200) {
       onLoadData()
       window['$message'].success('已同意')
@@ -51,13 +55,16 @@ const onAccept = item => {
       window['$message'].info(message)
     }
   })
-}
+}, 1000)
 
-const onDecline = item => {
+const onDecline = throttle(item => {
+  let loading = window['$message'].loading('请稍等，正在处理')
+
   ServeApplyDecline({
     apply_id: item.id,
     remark: '拒绝',
   }).then(({ code, message }) => {
+    loading.destroy()
     if (code == 200) {
       onLoadData()
       window['$message'].success('已拒绝')
@@ -65,7 +72,7 @@ const onDecline = item => {
       window['$message'].info(message)
     }
   })
-}
+}, 1000)
 
 watch(isContactApply, () => {
   onLoadData(false)

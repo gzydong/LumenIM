@@ -114,7 +114,7 @@ const editorOption = {
       renderItem: (data: any) => {
         return `
               <div class="ed-member-item">
-                  <image src=${data.avatar} class="avator"/>
+                  <img src="${data.avatar}" class="avator"/>
                   <span class="nickname">${data.nickname}</span>
               </div>
             `
@@ -337,7 +337,7 @@ function onSendMessage() {
     case 12: // 图文消息
       emit(
         'editor-event',
-        emitCall('mixed_event', { items: data.items }, (ok: any) => {
+        emitCall('mixed_event', data, (ok: any) => {
           ok && getQuill().setContents([])
         })
       )

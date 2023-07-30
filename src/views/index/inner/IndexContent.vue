@@ -78,6 +78,7 @@ const onPanelHeaderEvent = eventType => {
                     :uid="talkParams.uid"
                     :talk_type="talkParams.type"
                     :receiver_id="talkParams.receiver_id"
+                    :index_name="talkParams.index_name"
                   />
                 </main>
                 <footer

@@ -52,35 +52,52 @@ export function throttle(fn, delay, call = function () {}) {
  * @param {Function} callback 复制成功回调方法
  */
 export function clipboard(text, callback) {
-  if (navigator.clipboard) {
-    return navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        callback && callback()
-      })
-      .catch(() => {
-        alert('Oops, unable to copy')
-      })
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      callback && callback()
+    })
+    .catch(() => {
+      alert('Oops, unable to copy')
+    })
+}
+
+export async function clipboardImage(src, callback) {
+  const { state } = await navigator.permissions.query({
+    name: 'clipboard-write',
+  })
+
+  console.log(state)
+
+  if (state != 'granted') {
+    console.log('没权限')
+    return
   }
 
-  let textArea = document.createElement('textarea')
-  textArea.style.background = 'transparent'
-  textArea.value = text
+  let image = new Image()
+  image.setAttribute('crossOrigin', 'anonymous')
+  image.onload = function () {
+    let canvas = document.createElement('canvas')
+    canvas.width = image.width
+    canvas.height = image.height
+    let context = canvas.getContext('2d')
+    context.drawImage(image, 0, 0, image.width, image.height)
 
-  document.body.appendChild(textArea)
+    canvas.toBlob(async function (blob) {
+      try {
+        await navigator.clipboard.write(
+          new ClipboardItem({
+            'image/jpeg': blob,
+          })
+        )
 
-  textArea.select()
-
-  try {
-    document.execCommand('copy')
-    callback && callback()
-  } catch (err) {
-    alert('Oops, unable to copy')
-  } finally {
-    document.body.removeChild(textArea)
-
-    console.log(err)
+        console.log('页面地址已经被拷贝到剪贴板中')
+      } catch (err) {
+        console.error('页面地址拷贝失败: ', err)
+      }
+    }, 'image/jpeg')
   }
+  image.src = src
 }
 
 export function hashStrToHexColor(str) {

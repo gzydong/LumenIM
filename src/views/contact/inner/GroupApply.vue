@@ -7,7 +7,7 @@ import {
   ServeDeleteGroupApply,
   ServeAgreeGroupApply,
 } from '@/api/group'
-import { debounce } from '@/utils/common'
+import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 
 const items = ref([])
@@ -31,10 +31,13 @@ const onInfo = item => {
   user(item.user_id)
 }
 
-const onAgree = debounce(item => {
+const onAgree = throttle(item => {
+  let loading = window['$message'].loading('请稍等，正在处理')
+
   ServeAgreeGroupApply({
     apply_id: item.id,
   }).then(res => {
+    loading.destroy()
     if (res.code == 200) {
       window['$message'].success('已同意')
       onLoadData()
@@ -44,17 +47,20 @@ const onAgree = debounce(item => {
   })
 }, 1000)
 
-const onDelete = item => {
+const onDelete = throttle(item => {
+  let loading = window['$message'].loading('请稍等，正在处理')
+
   ServeDeleteGroupApply({
     apply_id: item.id,
   }).then(res => {
+    loading.destroy()
     if (res.code == 200) {
       onLoadData()
     } else {
       window['$message'].info(res.message)
     }
   })
-}
+}, 1000)
 
 onMounted(() => {
   onLoadData(true)
