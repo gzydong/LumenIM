@@ -6,7 +6,7 @@ import {
   ServeGetContactApplyRecords,
   ServeApplyAccept,
   ServeApplyDecline,
-} from '@/api/contacts'
+} from '@/api/contact'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 import { useUserStore } from '@/store/user'

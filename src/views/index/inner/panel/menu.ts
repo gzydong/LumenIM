@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 
 interface IDropdown {
-  options: DropdownOption[]
+  options: any[]
   show: boolean
   x: number
   y: number
@@ -36,7 +36,7 @@ export function useMenu() {
     dropdown.item = Object.assign({}, item)
 
     dropdown.options = []
-    if (item.content) {
+    if ([1, 3].includes(item.msg_type)) {
       dropdown.options.push({ label: '复制', key: 'copy' })
     }
 
@@ -44,7 +44,7 @@ export function useMenu() {
       dropdown.options.push({ label: `撤回`, key: 'revoke' })
     }
 
-    dropdown.options.push({ label: '引用', key: 'quote' })
+    dropdown.options.push({ label: '回复', key: 'quote' })
     dropdown.options.push({ label: '删除', key: 'delete' })
     dropdown.options.push({ label: '多选', key: 'multiSelect' })
 

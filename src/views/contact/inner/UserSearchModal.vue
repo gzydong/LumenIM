@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, inject } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
-import { ServeSearchContact } from '@/api/contacts'
+import { ServeSearchContact } from '@/api/contact'
 
 const user = inject('$user')
 

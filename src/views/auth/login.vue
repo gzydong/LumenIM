@@ -83,7 +83,9 @@ const onClickAccount = type => {
 
 <template>
   <section class="el-container is-vertical login-box login">
-    <header class="el-header box-header">快捷登录</header>
+    <header class="el-header box-header">
+       快捷登录
+      </header>
 
     <main class="el-main" style="padding: 3px">
       <n-form ref="formRef" size="large" :model="model" :rules="rules">

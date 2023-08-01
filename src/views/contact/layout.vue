@@ -22,7 +22,9 @@ const menus = reactive([
     path: '/contact/apply',
     icon: markRaw(Permissions),
     size: 18,
-    tips: computed(() => (userStore.isContactApply ? 'New' : '')),
+    tips: computed(() =>
+      userStore.isContactApply || userStore.isGroupApply ? 'New' : ''
+    ),
   },
   {
     name: '我的好友',

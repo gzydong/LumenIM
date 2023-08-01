@@ -10,7 +10,7 @@ import {
   ServeGetContacts,
   ServeDeleteContact,
   ServeContactGroupList,
-} from '@/api/contacts'
+} from '@/api/contact'
 import { useFriendsMenu } from '@/composition/friends-menu'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()

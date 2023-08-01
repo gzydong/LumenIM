@@ -67,37 +67,31 @@ export async function clipboardImage(src, callback) {
     name: 'clipboard-write',
   })
 
-  console.log(state)
-
-  if (state != 'granted') {
-    console.log('没权限')
-    return
-  }
+  if (state != 'granted') return
 
   let image = new Image()
-  image.setAttribute('crossOrigin', 'anonymous')
-  image.onload = function () {
+  image.src = src
+  image.onload = () => {
     let canvas = document.createElement('canvas')
     canvas.width = image.width
     canvas.height = image.height
     let context = canvas.getContext('2d')
     context.drawImage(image, 0, 0, image.width, image.height)
 
-    canvas.toBlob(async function (blob) {
+    canvas.toBlob(async blob => {
       try {
-        await navigator.clipboard.write(
-          new ClipboardItem({
-            'image/jpeg': blob,
-          })
-        )
+        let item = new ClipboardItem({
+          [blob.type]: blob,
+        })
 
-        console.log('页面地址已经被拷贝到剪贴板中')
+        await navigator.clipboard.write([item])
+
+        callback()
       } catch (err) {
-        console.error('页面地址拷贝失败: ', err)
+        console.error('图片复制失败: ', err)
       }
-    }, 'image/jpeg')
+    }, 'image/png')
   }
-  image.src = src
 }
 
 export function hashStrToHexColor(str) {

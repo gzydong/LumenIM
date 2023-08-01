@@ -151,7 +151,6 @@ onLoad()
     :content-style="{
       padding: 0,
     }"
-    transform-origin="center"
   >
     <section class="el-container launch-box">
       <aside class="el-aside bdr-r" style="width: 280px" v-loading="loading">

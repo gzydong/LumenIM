@@ -26,7 +26,7 @@ import {
   ServeSetNotDisturb,
 } from '@/api/chat'
 import { ServeSecedeGroup } from '@/api/group'
-import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contacts'
+import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
 

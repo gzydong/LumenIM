@@ -2,6 +2,7 @@
 import { ref, onMounted, inject } from 'vue'
 import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
+import { useUserStore } from '@/store'
 import {
   ServeGetGroupApplyAll,
   ServeDeleteGroupApply,
@@ -10,9 +11,9 @@ import {
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 
+const userStore = useUserStore()
 const items = ref([])
 const loading = ref(true)
-
 const user = inject('$user')
 
 const onLoadData = (isClearTip = false) => {
@@ -20,6 +21,7 @@ const onLoadData = (isClearTip = false) => {
     .then(res => {
       if (res.code == 200) {
         items.value = res.data.items || []
+        userStore.isGroupApply = false
       }
     })
     .finally(() => {

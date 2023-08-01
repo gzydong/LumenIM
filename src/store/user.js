@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { ServeGetUserSetting } from '@/api/user'
-import { ServeFindFriendApplyNum } from '@/api/contacts'
+import { ServeFindFriendApplyNum } from '@/api/contact'
+import { ServeGroupApplyUnread } from '@/api/group'
 import { delAccessToken } from '@/utils/auth'
 import { storage } from '@/utils/storage'
 
 export const useUserStore = defineStore('user', {
+  persist: true,
   state: () => {
     return {
       uid: 0, // 用户ID
@@ -16,6 +18,7 @@ export const useUserStore = defineStore('user', {
       online: false, // 在线状态
       isQiye: false,
       isContactApply: false,
+      isGroupApply: false,
     }
   },
   getters: {},
@@ -51,6 +54,12 @@ export const useUserStore = defineStore('user', {
       ServeFindFriendApplyNum().then(({ code, data }) => {
         if (code == 200) {
           this.isContactApply = data.unread_num > 0
+        }
+      })
+
+      ServeGroupApplyUnread().then(({ code, data }) => {
+        if (code == 200) {
+          this.isGroupApply = data.unread_num > 0
         }
       })
     },

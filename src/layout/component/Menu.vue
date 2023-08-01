@@ -41,7 +41,7 @@ const menus = reactive([
     link: '/contact/friend',
     icon: People,
     title: '通讯录',
-    hotspot: computed(() => userStore.isContactApply),
+    hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply),
   },
   {
     link: '/note',

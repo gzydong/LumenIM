@@ -2,14 +2,14 @@
 import { ref, computed, reactive } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
-import { ServeSearchUser } from '@/api/contacts'
+import { ServeSearchUser } from '@/api/contact'
 import { toTalk } from '@/utils/talk'
-import { ServeCreateContact } from '@/api/contacts'
+import { ServeCreateContact } from '@/api/contact'
 import {
   ServeContactGroupList,
   ServeContactMoveGroup,
   ServeEditContactRemark,
-} from '@/api/contacts'
+} from '@/api/contact'
 
 const emit = defineEmits(['update:show', 'update:uid'])
 

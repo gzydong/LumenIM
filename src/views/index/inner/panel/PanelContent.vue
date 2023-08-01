@@ -14,7 +14,7 @@ import { publisher } from '@/utils/publisher.ts'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
-import { clipboard, htmlDecode,clipboardImage } from '@/utils/common'
+import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
 import { addClass, removeClass } from '@/utils/dom'
 import { formatTalkRecord } from '@/utils/talk'
@@ -192,17 +192,17 @@ const onPanelScroll = (e: any) => {
 
 // 复制文本信息
 const onCopyText = (data: any) => {
-  // clipboardImage(data.extra.url, () => {
-  //   console.log(data.extra.url)
-  // })
-
-  if (!data.content) {
-    return
+  if (data.content && data.content.length > 0) {
+    return clipboard(htmlDecode(data.content), () =>
+      window['$message'].success('复制成功')
+    )
   }
 
-  clipboard(htmlDecode(data.content), () =>
-    window['$message'].success('复制成功!')
-  )
+  if (data.extra?.url) {
+    return clipboardImage(data.extra.url, () => {
+      window['$message'].success('复制成功')
+    })
+  }
 }
 
 // 删除对话消息

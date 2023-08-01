@@ -3,7 +3,7 @@ import Draggable from 'vuedraggable'
 import { reactive, computed, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { Drag, Delete } from '@icon-park/vue-next'
-import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contacts'
+import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contact'
 
 const emit = defineEmits(['close', 'relaod'])
 

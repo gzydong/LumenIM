@@ -125,6 +125,23 @@ class Socket {
       useUserStore().isContactApply = true
     })
 
+    this.socket.on('im.group.apply', data => {
+      window['$notification'].create({
+        title: '入群申请通知',
+        content: '有新的入群申请，请注意查收',
+        avatar: () =>
+          h(NAvatar, {
+            size: 'small',
+            round: true,
+            src: notifyIcon,
+            style: 'background-color:#fff;',
+          }),
+        duration: 30000,
+      })
+
+      useUserStore().isGroupApply = true
+    })
+
     this.socket.on('event_error', data => {
       window['$message'].error(JSON.stringify(data))
     })

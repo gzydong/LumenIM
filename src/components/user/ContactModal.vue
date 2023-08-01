@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NCheckbox, NTabs, NTab } from 'naive-ui'
 import { Search, Delete } from '@icon-park/vue-next'
-import { ServeGetContacts } from '@/api/contacts'
+import { ServeGetContacts } from '@/api/contact'
 import { ServeGetGroups } from '@/api/group'
 
 const emit = defineEmits(['close', 'on-submit'])
