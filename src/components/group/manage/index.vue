@@ -36,7 +36,8 @@ const onMaskClick = () => {
     v-model:show="isShowBox"
     preset="card"
     title="群管理"
-    style="max-width: 800px; border-radius: 10px"
+    class="modal-radius"
+    style="max-width: 800px"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

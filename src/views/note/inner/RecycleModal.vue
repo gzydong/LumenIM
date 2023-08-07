@@ -117,10 +117,8 @@ onMounted(() => {
     v-model:show="isShow"
     preset="card"
     title="回收站管理"
-    size="huge"
-    :bordered="false"
-    style="max-width: 750px; border-radius: 10px"
-    class="o-hidden"
+    class="modal-radius"
+    style="max-width: 750px"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,
@@ -131,7 +129,6 @@ onMounted(() => {
     :content-style="{
       padding: 0,
     }"
-    :hoverable="true"
   >
     <section class="main-box el-container is-vertical o-hidden">
       <header class="el-header bdr-b header" style="height: 50px">

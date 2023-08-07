@@ -48,8 +48,8 @@ const onSubmit = () => {
     v-model:show="isShow"
     preset="card"
     title="入群申请"
-    size="huge"
-    style="max-width: 450px;border-radius: 10px;"
+    class="modal-radius"
+    style="max-width: 450px"
     :on-after-leave="onMaskClick"
   >
     <n-form>

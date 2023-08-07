@@ -186,7 +186,6 @@ const onDeleteContact = (data: any) => {
     content: '删除后不再接收对方任何消息。',
     positiveText: '确定',
     negativeText: '取消',
-    class: 'me-dialog',
     onPositiveClick: () => {
       ServeDeleteContact({
         friend_id: data.receiver_id,

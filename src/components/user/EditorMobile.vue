@@ -107,8 +107,8 @@ const onValidate = e => {
     :show="modelValue"
     preset="card"
     title="换绑手机？"
-    size="huge"
-    class="me-modal"
+    class="modal-radius"
+    style="max-width: 400px;"
     :on-update:show="
       value => {
         $emit('update:modelValue', value)

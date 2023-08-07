@@ -86,7 +86,7 @@ export const ServeGetGroupApplyAll = data => {
 }
 
 export const ServeDeleteGroupApply = data => {
-  return post('/api/v1/group/apply/delete', data)
+  return post('/api/v1/group/apply/decline', data)
 }
 
 export const ServeAgreeGroupApply = data => {

@@ -29,6 +29,7 @@ export const useUserStore = defineStore('user', {
     },
 
     logoutLogin() {
+      this.$reset()
       storage.remove('user_info')
       delAccessToken()
       location.reload()

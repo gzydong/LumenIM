@@ -142,7 +142,8 @@ onLoad()
     v-model:show="isShowBox"
     preset="card"
     :title="gid == 0 ? '创建群聊' : '邀请新的联系人'"
-    style="max-width: 650px; height: 550px; border-radius: 10px"
+    class="modal-radius"
+    style="max-width: 650px; height: 550px"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

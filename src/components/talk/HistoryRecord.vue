@@ -96,10 +96,8 @@ loadChatRecord()
     v-model:show="isShow"
     preset="card"
     title="消息管理"
-    size="huge"
-    :bordered="false"
-    style="max-width: 750px; border-radius: 10px"
-    class="o-hidden"
+    style="max-width: 750px"
+    class="modal-radius"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,
@@ -110,7 +108,6 @@ loadChatRecord()
     :content-style="{
       padding: 0,
     }"
-    :hoverable="true"
   >
     <section class="main-box el-container is-vertical o-hidden">
       <header class="el-header bdr-b search" style="height: 50px">

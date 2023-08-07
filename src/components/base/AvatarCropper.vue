@@ -51,7 +51,7 @@ const onUpload = e => {
       // 把Array Buffer转化为blob 如果是base64不需要
       data = window.URL.createObjectURL(new Blob([e.target.result]))
 
-      console.log(data,e.target.result)
+      console.log(data, e.target.result)
     } else {
       data = e.target.result
     }
@@ -109,12 +109,10 @@ const onSubmit = () => {
   />
   <n-modal v-model:show="state.show" :on-after-leave="onMaskClick">
     <n-card
-      style="width: 800px; border-radius: 10px"
+      style="width: 800px"
       title="选择头像"
       :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
+      class="modal-radius"
     >
       <template #header-extra>
         <n-icon

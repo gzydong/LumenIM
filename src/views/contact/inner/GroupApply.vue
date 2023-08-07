@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue'
-import { NPopconfirm } from 'naive-ui'
+import { ref, onMounted, inject, h } from 'vue'
+import { NPopconfirm, NInput } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
 import {
@@ -21,7 +21,6 @@ const onLoadData = (isClearTip = false) => {
     .then(res => {
       if (res.code == 200) {
         items.value = res.data.items || []
-        userStore.isGroupApply = false
       }
     })
     .finally(() => {
@@ -42,30 +41,58 @@ const onAgree = throttle(item => {
     loading.destroy()
     if (res.code == 200) {
       window['$message'].success('已同意')
-      onLoadData()
     } else {
       window['$message'].info(res.message)
     }
+
+    onLoadData()
   })
 }, 1000)
 
-const onDelete = throttle(item => {
-  let loading = window['$message'].loading('请稍等，正在处理')
+const onDelete = item => {
+  let remark = ''
+  let dialog = window['$dialog'].create({
+    title: '拒绝加入群聊',
+    content: () => {
+      return h(NInput, {
+        defaultValue: '',
+        placeholder: '请填写拒绝原因',
+        style: { marginTop: '20px' },
+        onInput: value => (remark = value),
+        autofocus: true,
+      })
+    },
+    negativeText: '取消',
+    positiveText: '提交',
+    onPositiveClick: () => {
+      if (!remark.length) return false
 
-  ServeDeleteGroupApply({
-    apply_id: item.id,
-  }).then(res => {
-    loading.destroy()
-    if (res.code == 200) {
-      onLoadData()
-    } else {
-      window['$message'].info(res.message)
-    }
+      dialog.loading = true
+
+      ServeDeleteGroupApply({
+        apply_id: item.id,
+        remark: remark,
+      }).then(res => {
+        dialog.destroy()
+
+        if (res.code == 200) {
+          window['$message'].success('已拒绝')
+        } else {
+          window['$message'].info(res.message)
+        }
+
+        onLoadData()
+      })
+
+      return false
+    },
   })
-}, 1000)
+}
 
 onMounted(() => {
   onLoadData(true)
+
+  userStore.isGroupApply = false
 })
 </script>
 
@@ -116,16 +143,18 @@ onMounted(() => {
           </template>
         </n-button>
 
-        <n-popconfirm @positive-click.stop="onDelete(item)">
-          <template #trigger>
-            <n-button strong secondary circle type="tertiary" size="small">
-              <template #icon>
-                <n-icon :component="Close" />
-              </template>
-            </n-button>
+        <n-button
+          @click="onDelete(item)"
+          strong
+          secondary
+          circle
+          type="tertiary"
+          size="small"
+        >
+          <template #icon>
+            <n-icon :component="Close" />
           </template>
-          确认要拒绝申请吗？
-        </n-popconfirm>
+        </n-button>
       </div>
     </div>
   </section>
@@ -137,7 +166,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   margin: 15px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in;
 
   &:first-child {
     margin-top: 0;

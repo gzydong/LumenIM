@@ -98,7 +98,8 @@ onLoadData()
     title="联系人分组"
     size="huge"
     :bordered="false"
-    style="max-width: 450px; border-radius: 10px"
+    class="modal-radius"
+    style="max-width: 450px"
     :on-after-leave="onMaskClick"
   >
     <n-empty v-show="options.length == 0" size="50" description="暂未设置分组">

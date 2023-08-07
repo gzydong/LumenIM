@@ -47,10 +47,8 @@ onLoadData()
     v-model:show="isShow"
     preset="card"
     :title="title"
-    size="huge"
-    :bordered="false"
     style="max-width: 500px"
-    class="o-hidden modal-radius"
+    class="modal-radius"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,

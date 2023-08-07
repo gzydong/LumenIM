@@ -57,8 +57,6 @@ const isCanSubmit = computed(() => {
     v-model:show="isShow"
     preset="card"
     title="发起投票"
-    size="huge"
-    :bordered="false"
     class="modal-radius"
     :style="{ maxWidth: '450px' }"
     :on-after-leave="onMaskClick"
