@@ -1,3 +1,5 @@
+const cache = new Set()
+
 class WsSocket {
   /**
    * Websocket 连接
@@ -20,8 +22,8 @@ class WsSocket {
     reconnect: {
       lockReconnect: false,
       setTimeout: null, // 计时器对象
-      time: 5000, // 重连间隔时间
-      number: 1000, // 重连次数
+      time: 3000, // 重连间隔时间
+      number: 10000000, // 重连次数
     },
   }
 
@@ -57,6 +59,7 @@ class WsSocket {
       this.config.heartbeat.pingInterval = data.ping_interval * 1000
       this.config.heartbeat.pingTimeout = data.ping_timeout * 1000
       this.heartbeat()
+      this.connect.send('{"event":"ping"}')
     })
   }
 
@@ -114,9 +117,10 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onParse(evt) {
-    const { event, content } = JSON.parse(evt.data)
+    const { sid, event, content } = JSON.parse(evt.data)
 
     return {
+      sid: sid,
       event: event,
       data: content,
       orginData: evt.data,
@@ -144,7 +148,7 @@ class WsSocket {
   onClose(evt) {
     this.events.onClose(evt)
 
-    this.connect.close()
+    this.connect && this.connect.close()
 
     this.connect = null
 
@@ -173,6 +177,15 @@ class WsSocket {
 
     let result = this.onParse(evt)
 
+    if (result.sid) {
+      if (cache.has(result.sid)) {
+        return
+      }
+
+      cache.add(result.sid)
+      this.connect.send(`{"event":"ack","sid":"${result.sid}"}`)
+    }
+
     // 判断消息事件是否被绑定
     if (this.onCallBacks.hasOwnProperty(result.event)) {
       this.onCallBacks[result.event](result.data, result.orginData)
@@ -189,8 +202,7 @@ class WsSocket {
       let t = new Date().getTime()
 
       if (t - this.lastTime > this.config.heartbeat.pingTimeout) {
-        
-        if(this.connect){
+        if (this.connect) {
           this.connect.close()
         }
 
@@ -202,7 +214,7 @@ class WsSocket {
   }
 
   ping() {
-    this.connect.send('{"event":"heartbeat","content":"ping"}')
+    this.connect.send('{"event":"ping"}')
   }
 
   /**
@@ -211,7 +223,11 @@ class WsSocket {
    * @param {Object} mesage
    */
   send(mesage) {
-    this.connect.send(JSON.stringify(mesage))
+    if (typeof mesage == 'string') {
+      this.connect.send(mesage)
+    } else {
+      this.connect.send(JSON.stringify(mesage))
+    }
   }
 
   /**
@@ -228,12 +244,11 @@ class WsSocket {
    * @param {Object} data 数据
    */
   emit(event, data) {
-    const content = JSON.stringify({ event, data })
+    const content = JSON.stringify({ event, content: data })
 
     if (this.connect && this.connect.readyState === 1) {
       this.connect.send(content)
     } else {
-      alert('WebSocket 连接已关闭...')
       console.error('WebSocket 连接已关闭...', this.connect)
     }
   }

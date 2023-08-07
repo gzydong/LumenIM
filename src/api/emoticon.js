@@ -24,3 +24,7 @@ export const ServeDelCollectEmoticon = data => {
 export const ServeUploadEmoticon = data => {
   return upload('/api/v1/emoticon/customize/create', data)
 }
+
+export const ServeDeleteEmoticon = data => {
+  return upload('/api/v1/emoticon/customize/delete', data)
+}

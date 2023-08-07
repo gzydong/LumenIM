@@ -1,88 +1,37 @@
-import JsBase64 from 'js-base64'
+import { storage } from './storage'
 
-const USER_TOKEN = 'LUMNEIM-TOKEN'
-const USER_INFO = 'LUMNEIM-USERINFO'
-const USER_SETTING = 'LUMENIM_SETTING'
+const AccessToken = 'AUTH_TOKEN'
 
 /**
- * 设置用户授权token
+ * 验证是否登录
  *
- * @param {String} token
- * @param {Number} expires
+ * @returns token
  */
-export function setToken(token, expires) {
-  expires = new Date().getTime() + expires * 1000 - 100 * 1000
-
-  return localStorage.setItem(
-    USER_TOKEN,
-    JSON.stringify({
-      token,
-      expires,
-    })
-  )
+export function isLoggedIn() {
+  return getAccessToken() != ''
 }
 
 /**
- * 获取授权token
- */
-export function getToken() {
-  const result = JSON.parse(
-    localStorage.getItem(USER_TOKEN) ||
-      JSON.stringify({
-        token: '',
-        expires: 0,
-      })
-  )
-
-  let t = new Date().getTime()
-
-  if (result.expires <= t) {
-    localStorage.removeItem(USER_TOKEN)
-    return ''
-  }
-
-  return result.token
-}
-
-/**
- * 设置用户信息
+ * 获取登录授权 Token
  *
- * @param {Object} data
+ * @returns token
  */
-export function setUserInfo(data) {
-  localStorage.setItem(USER_INFO, JsBase64.Base64.encode(JSON.stringify(data)))
+export function getAccessToken() {
+  return storage.get(AccessToken) || ''
 }
 
 /**
- * 获取用户信息
- */
-export function getUserInfo() {
-  const data = JsBase64.Base64.decode(localStorage.getItem(USER_INFO) || '')
-  return data ? JSON.parse(data) : {}
-}
-
-/**
- * 获取用户本地缓存的设置信息
- */
-export function getUserSettingCache() {
-  const data = localStorage.getItem(USER_SETTING)
-  return data ? JSON.parse(data) : {}
-}
-
-/**
- * 用户设置保存到浏览器缓存中
+ * 设置登录授权 Token
  *
- * @param {Object} state 用户设置相关信息
+ * @returns token
  */
-export function setUserSettingCache(state) {
-  localStorage.setItem(USER_SETTING, JSON.stringify(state))
+export function setAccessToken(token = '', expire = 60 * 60 * 2) {
+  return storage.set(AccessToken, token, expire) || ''
 }
 
 /**
- * 删除用户相关缓存信息
+ * 删除登录授权 Token
  */
-export function removeAll() {
-  localStorage.removeItem(USER_TOKEN)
-  localStorage.removeItem(USER_INFO)
-  localStorage.removeItem(USER_SETTING)
+export function delAccessToken() {
+  storage.remove(AccessToken)
 }
