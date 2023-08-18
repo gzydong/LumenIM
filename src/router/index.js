@@ -56,11 +56,6 @@ const router = createRouter({
 
 // 设置中间件，权限验证
 router.beforeEach((to, from) => {
-
-  let s = window['$loadingBar']
-
-  console.log(s)
-
   if (to.meta.requiresAuth && !isLoggedIn()) {
     return {
       path: '/auth/login',

@@ -52,7 +52,7 @@ const onAgree = throttle(item => {
 const onDelete = item => {
   let remark = ''
   let dialog = window['$dialog'].create({
-    title: '拒绝加入群聊',
+    title: '拒绝入群申请',
     content: () => {
       return h(NInput, {
         defaultValue: '',
