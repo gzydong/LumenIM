@@ -11,7 +11,7 @@ import {
   ServeEditContactRemark,
 } from '@/api/contact'
 
-const emit = defineEmits(['update:show', 'update:uid'])
+const emit = defineEmits(['update:show', 'update:uid',"changeRemark"])
 
 const props = defineProps({
   show: Boolean,
@@ -107,6 +107,11 @@ const onChangeRemark = () => {
       editCardPopover.value.setShow(false)
       window['$message'].success('备注成功')
       state.remark = modelRemark.value
+
+      emit('changeRemark', {
+        user_id: props.uid,
+        remark: modelRemark.value,
+      })
     } else {
       window['$message'].error(message)
     }

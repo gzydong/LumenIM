@@ -53,8 +53,8 @@ export function formatTalkItem(params) {
     id: 0,
     talk_type: 1,
     receiver_id: 0,
-    name: '未设置昵称',
-    remark_name: '',
+    name: '未设置',
+    remark: '',
     avatar: '',
     is_disturb: 0,
     is_top: 0,
@@ -68,8 +68,7 @@ export function formatTalkItem(params) {
     created_at: parseTime(new Date()),
   }
 
-  Object.assign(options, params)
-
+  options = { ...options, ...params }
   options.msg_text = options.msg_text
   options.index_name = `${options.talk_type}_${options.receiver_id}`
 

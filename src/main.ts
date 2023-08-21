@@ -10,12 +10,12 @@ import App from '@/App.vue'
 import * as plugins from '@/plugins'
 
 async function bootstrap() {
-  const app = createApp(App)
-
   const pinia = createPinia();
   pinia.use(piniaPluginPersistedstate);
-  app.use(pinia)
 
+  const app = createApp(App)
+
+  app.use(pinia)
   app.use(router)
 
   plugins.setHljsVuePlugin(app)

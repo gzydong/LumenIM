@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, inject } from 'vue'
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
+import { publisher } from '@/utils/publisher.ts'
 import { toTalk } from '@/utils/talk'
 import {
   ServeGetContacts,
@@ -14,7 +15,7 @@ import {
 import { useFriendsMenu } from '@/composition/friends-menu'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
-const user = inject('$user')
+const user: any = inject('$user')
 const isShowUserSearch = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
@@ -111,9 +112,20 @@ const onToolsMenu = value => {
   }
 }
 
+const onChangeRemark = (data: any) => {
+  let item: any = items.value.find((item: any) => item.id == data.user_id)
+  item && (item.remark = data.remark)
+}
+
 onMounted(() => {
   loadContactList()
   loadContactGroupList()
+
+  publisher.subscribe('contact:change-remark', onChangeRemark)
+})
+
+onUnmounted(() => {
+  publisher.unsubscribe('contact:change-remark', onChangeRemark)
 })
 </script>
 

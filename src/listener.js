@@ -136,7 +136,7 @@ function registerConnectListener() {
 
 export function listener() {
   registerNotificationAuth()
-  // registerVisitorNotice()
+  registerVisitorNotice()
   registerOnceExpireNotice()
   registerLeaveWebListener()
   registerClickListener()

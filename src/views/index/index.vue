@@ -18,6 +18,7 @@ onUnmounted(() => {
     <section class="el-container">
       <aside
         v-show="dialogueStore.isShowSessionList"
+        v-dropsize="{ min: 200, max: 500, direction: 'width' }"
         class="el-aside bdr-r session-list"
       >
         <IndexSider />

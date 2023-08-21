@@ -16,6 +16,7 @@ function mousemove_(e) {
     element.style.width = min + 'px'
   }
 }
+
 function mouseup_() {
   console.log('mouseup_')
   if (!touch.init) return
@@ -27,6 +28,7 @@ function mouseup_() {
 export default {
   mounted: function (el, binding) {
     if (el) {
+      // direction : width,height
       element = el
       max = binding.value.max
       min = binding.value.min

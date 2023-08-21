@@ -84,6 +84,15 @@ export const useTalkStore = defineStore('talk', {
       }
     },
 
+    // 更新联系人备注
+    setRemark(params) {
+      const item = this.items.find(
+        item => item.index_name === `1_${params.user_id}`
+      )
+
+      item && (item.remark = params.remark)
+    },
+
     // 加载会话列表
     loadTalkList() {
       this.loadStatus = 2

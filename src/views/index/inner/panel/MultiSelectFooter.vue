@@ -53,10 +53,10 @@ const onContactModal = data => {
   }
 
   dialogueStore.ApiForwardRecord({
-    forward_mode: forwardMode.value,
-    records_ids: ids.join(','),
-    receive_user_ids: user_ids.join(','),
-    receive_group_ids: group_ids.join(','),
+    mode: forwardMode.value,
+    message_ids: ids,
+    uids: user_ids,
+    gids: group_ids,
   })
 
   isShowContactModal.value = false

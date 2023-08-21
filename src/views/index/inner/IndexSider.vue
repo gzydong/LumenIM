@@ -54,7 +54,7 @@ const items = computed(() => {
   }
 
   return talkStore.talkItems.filter((item: any) => {
-    let keyword = item.remark_name || item.name
+    let keyword = item.remark || item.name
 
     return (
       keyword.toLowerCase().indexOf(searchKeyword.value.toLowerCase()) != -1
@@ -231,7 +231,7 @@ const onChangeRemark = (data: any) => {
     title: '修改备注',
     content: () => {
       return h(NInput, {
-        defaultValue: data.remark_name,
+        defaultValue: data.remark,
         placeholder: '请输入备注信息',
         style: { marginTop: '20px' },
         onInput: value => (remark = value),
@@ -249,7 +249,7 @@ const onChangeRemark = (data: any) => {
           window['$message'].success('备注成功')
           talkStore.updateItem({
             index_name: data.index_name,
-            remark_name: remark,
+            remark: remark,
           })
         } else {
           window['$message'].error(message)
@@ -431,10 +431,10 @@ onMounted(() => {
               群
             </span>
 
-            <span class="text">{{ item.remark_name || item.name }}</span>
+            <span class="text">{{ item.remark || item.name }}</span>
           </div>
         </template>
-        <span> {{ item.remark_name || item.name }} </span>
+        <span> {{ item.remark || item.name }} </span>
       </n-popover>
     </header>
 
@@ -475,7 +475,7 @@ onMounted(() => {
           :key="item.index_name"
           :data="item"
           :avatar="item.avatar"
-          :username="item.remark_name || item.name"
+          :username="item.remark || item.name"
           :active="item.index_name == indexName"
           @tab-talk="onTabTalk"
           @top-talk="onToTopTalk"
@@ -496,7 +496,7 @@ onMounted(() => {
             :key="item.index_name"
             :data="item"
             :avatar="item.avatar"
-            :username="item.remark_name || item.name"
+            :username="item.remark || item.name"
             :active="item.index_name == indexName"
             @tab-talk="onTabTalk"
             @top-talk="onToTopTalk"

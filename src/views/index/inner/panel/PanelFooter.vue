@@ -225,7 +225,7 @@ const evnets = {
 }
 
 // 编辑器事件
-const onEditorEvent = msg => {
+const onEditorEvent = (msg: any) => {
   evnets[msg.event] && evnets[msg.event](msg)
 }
 
@@ -255,6 +255,6 @@ onMounted(() => {
 
 <style lang="less">
 .el-footer {
-  height: 200px;
+  height: inherit;
 }
 </style>

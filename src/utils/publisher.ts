@@ -16,7 +16,7 @@ class Publisher {
       return;
     }
     // 遍历频道的订阅者列表，并依次调用回调函数
-    this.channels[channel].forEach(callback => {
+    this.channels[channel].forEach((callback: Function) => {
       callback(data);
     });
   }

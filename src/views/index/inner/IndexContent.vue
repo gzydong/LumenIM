@@ -1,9 +1,7 @@
 <script setup>
 import { reactive, computed, inject } from 'vue'
 import { NDrawer } from 'naive-ui'
-import { useUserStore } from '@/store/user'
-import { useDialogueStore } from '@/store/dialogue'
-import { useUploadsStore } from '@/store/uploads'
+import { useUserStore, useDialogueStore } from '@/store'
 import PanelHeader from './panel/PanelHeader.vue'
 import PanelContent from './panel/PanelContent.vue'
 import PanelFooter from './panel/PanelFooter.vue'
@@ -11,13 +9,14 @@ import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 import GroupList from './GroupList.vue'
+import { inputHeight, startResizeTop } from '@/composition/mouse-event'
 
 const user = inject('$user')
 const userStore = useUserStore()
 const dialogueStore = useDialogueStore()
-const uploadsStore = useUploadsStore()
 
 const members = computed(() => dialogueStore.members)
+const isShowEditor = computed(() => dialogueStore.isShowEditor)
 
 // 当前对话参数
 const talkParams = reactive({
@@ -28,7 +27,7 @@ const talkParams = reactive({
   username: computed(() => dialogueStore.talk.username),
   online: computed(() => dialogueStore.online),
   keyboard: computed(() => dialogueStore.keyboard),
-  num: 0,
+  num: computed(() => dialogueStore.members.length),
 })
 
 const state = reactive({
@@ -54,68 +53,61 @@ const onPanelHeaderEvent = eventType => {
 </script>
 
 <template>
-  <section class="el-container height100">
-    <main id="drawer-target" class="el-main bdr-r height100">
-      <section class="el-container is-vertical">
-        <header class="el-header">
-          <!-- 头部区域 -->
-          <PanelHeader
-            @evnet="onPanelHeaderEvent"
-            :type="talkParams.type"
-            :username="talkParams.username"
-            :online="talkParams.online"
-            :keyboard="talkParams.keyboard"
-            :num="talkParams.num"
-          />
-        </header>
-        <main class="el-main">
-          <section class="el-container">
-            <main class="el-main">
-              <section class="el-container is-vertical">
-                <main class="el-main">
-                  <!-- 聊天区域 -->
-                  <PanelContent
-                    :uid="talkParams.uid"
-                    :talk_type="talkParams.type"
-                    :receiver_id="talkParams.receiver_id"
-                    :index_name="talkParams.index_name"
-                  />
-                </main>
-                <footer
-                  v-if="dialogueStore.isShowEditor"
-                  class="el-footer footer-editor"
-                >
-                  <!-- 编辑器区域 -->
-                  <PanelFooter
-                    v-if="dialogueStore.isShowEditor"
-                    :uid="talkParams.uid"
-                    :index_name="talkParams.index_name"
-                    :talk_type="talkParams.type"
-                    :receiver_id="talkParams.receiver_id"
-                    :online="talkParams.online"
-                    :members="members"
-                  />
-                </footer>
-              </section>
-            </main>
-            <aside
-              class="el-aside bdr-l me-scrollbar"
-              style="width: 350px"
-              v-if="uploadsStore.isShow"
-            >
-              <UploadsModal />
-            </aside>
-          </section>
-        </main>
-      </section>
+  <section id="drawer-container" class="el-container is-vertical">
+    <!-- 头部区域 -->
+    <header class="el-header">
+      <PanelHeader
+        :type="talkParams.type"
+        :username="talkParams.username"
+        :online="talkParams.online"
+        :keyboard="talkParams.keyboard"
+        :num="talkParams.num"
+        @evnet="onPanelHeaderEvent"
+      />
+    </header>
+
+    <!-- 聊天区域 -->
+    <main class="el-main">
+      <PanelContent
+        :uid="talkParams.uid"
+        :talk_type="talkParams.type"
+        :receiver_id="talkParams.receiver_id"
+        :index_name="talkParams.index_name"
+      />
     </main>
+
+    <!-- 编辑器区域 -->
+    <footer
+      class="el-footer footer"
+      :style="{ height: inputHeight + 'px' }"
+      v-if="isShowEditor"
+    >
+      <div class="resizer-top" @mousedown="startResizeTop"></div>
+      <PanelFooter
+        :uid="talkParams.uid"
+        :index_name="talkParams.index_name"
+        :talk_type="talkParams.type"
+        :receiver_id="talkParams.receiver_id"
+        :online="talkParams.online"
+        :members="members"
+      />
+    </footer>
   </section>
 
-  <GroupNotice
-    v-if="state.isShowGroupNotice"
-    :group-id="talkParams.receiver_id"
-    @close="state.isShowGroupNotice = false"
-  />
+  <n-drawer
+    v-model:show="state.isShowGroupNotice"
+    :width="400"
+    placement="right"
+    :trap-focus="false"
+    :block-scroll="false"
+    show-mask="transparent"
+    to="#drawer-container"
+  >
+    <GroupNotice
+      :group-id="talkParams.receiver_id"
+      @close="state.isShowGroupNotice = false"
+    />
+  </n-drawer>
 
   <n-drawer
     v-model:show="state.isShowGroupAside"
@@ -124,7 +116,7 @@ const onPanelHeaderEvent = eventType => {
     :trap-focus="false"
     :block-scroll="false"
     show-mask="transparent"
-    to="#drawer-target"
+    to="#drawer-container"
   >
     <GroupPanel
       :gid="talkParams.receiver_id"
@@ -138,7 +130,20 @@ const onPanelHeaderEvent = eventType => {
   overflow: hidden;
 }
 
-.footer-editor {
-  height: 200px;
+.footer {
+  position: relative;
+}
+
+.resizer-top {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  cursor: ns-resize;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 }
 </style>

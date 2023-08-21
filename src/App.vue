@@ -16,8 +16,9 @@ import {
   NLayoutFooter,
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
-import { useUserStore, useNotifyStore } from '@/store'
+import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
 import socket from '@/socket'
+import { publisher } from '@/utils/publisher.ts'
 import { listener } from '@/listener'
 import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'
@@ -42,6 +43,7 @@ provide('$user', uid => {
 
 const userStore = useUserStore()
 const notifyStore = useNotifyStore()
+const talkStore = useTalkStore()
 
 const getDarkTheme = computed(() => {
   let theme = notifyStore.darkTheme ? 'dark' : 'light'
@@ -60,6 +62,11 @@ const getThemeOverride = computed(() => {
 
   return overrides
 })
+
+const onChangeRemark = value => {
+  publisher.publish('contact:change-remark', value)
+  talkStore.setRemark(value)
+}
 
 if (isLoggedIn()) {
   socket.connect()
@@ -98,7 +105,11 @@ listener()
     <n-layout-content>
       <router-view />
 
-      <UserCardModal v-model:show="isShowUser" v-model:uid="showUserId" />
+      <UserCardModal
+        v-model:show="isShowUser"
+        v-model:uid="showUserId"
+        @change-remark="onChangeRemark"
+      />
     </n-layout-content>
   </n-config-provider>
 </template>

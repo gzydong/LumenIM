@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import {
   ServeRemoveRecords,
   ServeRevokeRecords,
-  ServeForwardRecords,
+  ServePublishMessage,
 } from '@/api/chat'
 import { ServeGetGroupMembers } from '@/api/group'
 
@@ -47,14 +47,14 @@ export const useDialogueStore = defineStore('dialogue', {
       members: [],
 
       // 对话记录
-      items: [
-        {
+      items: {
+        '1_1': {
           talk_type: 1, // 对话类型
           receiver_id: 0, // 接收者ID
           read_sequence: 0, // 当前已读的最后一条记录
           records: [],
         },
-      ],
+      },
     }
   },
   getters: {
@@ -73,7 +73,7 @@ export const useDialogueStore = defineStore('dialogue', {
     setDialogue(data = {}) {
       this.online = data.is_online == 1
       this.talk = {
-        username: data.remark_name || data.name,
+        username: data.remark || data.name,
         talk_type: data.talk_type,
         receiver_id: data.receiver_id,
       }
@@ -83,10 +83,9 @@ export const useDialogueStore = defineStore('dialogue', {
       this.unreadBubble = 0
       this.isShowEditor = data.is_robot === 0
 
+      this.members = []
       if (data.talk_type == 2) {
         this.updateGroupMembers()
-      } else {
-        this.members = []
       }
     },
 
@@ -98,19 +97,16 @@ export const useDialogueStore = defineStore('dialogue', {
 
       if (code != 200) return
 
-      this.members = []
-      for (const o of data.items) {
-        this.members.push({
-          id: o.user_id,
-          nickname: o.nickname,
-          avatar: o.avatar,
-          gender: o.gender,
-          leader: o.leader,
-          remark: o.remark,
-          online: false,
-          value: o.nickname,
-        })
-      }
+      this.members = data.items.map(o => ({
+        id: o.user_id,
+        nickname: o.nickname,
+        avatar: o.avatar,
+        gender: o.gender,
+        leader: o.leader,
+        remark: o.remark,
+        online: false,
+        value: o.nickname,
+      }))
     },
 
     // 清空对话记录
@@ -203,15 +199,16 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 转发聊天记录
     ApiForwardRecord(options) {
-      let data = Object.assign(
-        {
+      let data = {
+        type: 'forward',
+        receiver: {
           talk_type: this.talk.talk_type,
           receiver_id: this.talk.receiver_id,
         },
-        options
-      )
+        ...options,
+      }
 
-      ServeForwardRecords(data).then(res => {
+      ServePublishMessage(data).then(res => {
         if (res.code == 200) {
           this.closeMultiSelect()
         }
