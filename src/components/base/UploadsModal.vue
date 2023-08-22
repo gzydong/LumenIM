@@ -71,7 +71,7 @@ const statusItem = {
   width: 100%;
 
   .title {
-    height: 50px;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;

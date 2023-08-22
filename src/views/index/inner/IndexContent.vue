@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, computed, inject } from 'vue'
 import { NDrawer } from 'naive-ui'
-import { useUserStore, useDialogueStore } from '@/store'
+import { useUserStore, useDialogueStore, useUploadsStore } from '@/store'
 import PanelHeader from './panel/PanelHeader.vue'
 import PanelContent from './panel/PanelContent.vue'
 import PanelFooter from './panel/PanelFooter.vue'
@@ -14,6 +14,7 @@ import { inputHeight, startResizeTop } from '@/composition/mouse-event'
 const user = inject('$user')
 const userStore = useUserStore()
 const dialogueStore = useDialogueStore()
+const uploadsStore = useUploadsStore()
 
 const members = computed(() => dialogueStore.members)
 const isShowEditor = computed(() => dialogueStore.isShowEditor)
@@ -93,6 +94,18 @@ const onPanelHeaderEvent = eventType => {
       />
     </footer>
   </section>
+
+  <n-drawer
+    v-model:show="uploadsStore.isShow"
+    :width="400"
+    placement="right"
+    :trap-focus="false"
+    :block-scroll="false"
+    show-mask="transparent"
+    to="#drawer-container"
+  >
+    <UploadsModal />
+  </n-drawer>
 
   <n-drawer
     v-model:show="state.isShowGroupNotice"
