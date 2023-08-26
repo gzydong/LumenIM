@@ -1,66 +1,103 @@
-const touch = { lastTime: 0, interval: 300, startX: 0 }
-let move = 0,
-  element,
-  min = 200,
-  max = 230
+import { storage } from '@/utils/storage'
 
-//move 是鼠标移动的距离，min和max是可拖动范围
-function mousemove_(e) {
-  if (!touch.init) return
-  move = e.pageX - touch.startX
-  element.style.width = touch.width + move + 'px'
-  if (touch.width + move > max) {
-    element.style.width = max + 'px'
-  }
-  if (touch.width + move < min) {
-    element.style.width = min + 'px'
-  }
-}
+function getCacheKey(key, direction) {
+  if (!key.length) return ''
 
-function mouseup_() {
-  console.log('mouseup_')
-  if (!touch.init) return
-  touch.init = false
-  document.removeEventListener('mousemove', mousemove_)
-  document.removeEventListener('mouseup', mouseup_)
+  return `dropsize_${direction}_${key}`
 }
 
 export default {
+  // binding.value = {min:10,max:100,direction:"top",name:""}
   mounted: function (el, binding) {
-    if (el) {
-      // direction : width,height
-      element = el
-      max = binding.value.max
-      min = binding.value.min
-      el.style.position = 'relative'
-      const dom = document.createElement('DIV')
-      dom.style.height = '100%'
-      dom.style.width = '3px'
-      dom.style.position = 'absolute'
-      dom.style.top = '0px'
-      dom.style.right = '0px'
-      dom.style.cursor = 'col-resize'
-      dom.style.backgroundColor = 'transparent'
-      dom.style.userSelect = 'none'
-      dom.style.touchAction = 'none'
-      dom.addEventListener('mousedown', function (e) {
-        const now = +new Date()
-        if (now - touch.lastTime < touch.interval) {
-          return (touch.init = false)
-        }
+    let { min, max, direction = 'right', key = '' } = binding.value
 
-        touch.init = true
-        touch.startX = e.pageX
-        touch.width = el.offsetWidth
-        document.addEventListener('mousemove', mousemove_, { passive: false })
-        document.addEventListener('mouseup', mouseup_)
-      })
+    const cacheKey = getCacheKey(key, direction)
 
-      el.appendChild(dom)
+    el.style.position = 'relative'
+    el.touch = { status: false, pageX: 0, pageY: 0, width: 0, height: 0 }
+
+    let linedom = document.createElement('div')
+    linedom.className = `dropsize-line dropsize-line-${direction}`
+
+    el.linedomMouseup = function (e) {
+      if (!el.touch.status) return
+      el.touch.status = false
+
+      document.querySelector('body').style.cursor = ''
     }
+
+    el.linedomMousemove = function (e) {
+      if (!el.touch.status) return
+
+      let width,
+        height = 0
+      switch (direction) {
+        case 'left':
+        case 'right':
+          if (direction == 'left') {
+            width = el.touch.width + el.touch.pageX - e.pageX
+          } else {
+            width = el.touch.width + e.pageX - el.touch.pageX
+          }
+
+          if (width < min) width = min
+          if (width > max) width = max
+
+          el.style.width = `${width}px`
+
+          cacheKey && storage.set(cacheKey, width)
+          break
+        case 'top':
+        case 'bottom':
+          if (direction == 'top') {
+            height = el.touch.height + el.touch.pageY - e.pageY
+          } else {
+            height = el.touch.height + e.pageY - el.touch.pageY
+          }
+
+          if (height < min) height = min
+          if (height > max) height = max
+
+          el.style.height = `${height}px`
+
+          cacheKey && storage.set(cacheKey, height)
+          break
+      }
+    }
+
+    linedom.addEventListener('mousedown', function (e) {
+      el.touch = {
+        status: true,
+        pageX: e.pageX,
+        pageY: e.pageY,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+      }
+
+      let cursor = ['left', 'right'].includes(direction)
+        ? 'col-resize'
+        : 'row-resize'
+
+      document.querySelector('body').style.cursor = cursor
+
+      document.addEventListener('mouseup', el.linedomMouseup)
+      document.addEventListener('mousemove', el.linedomMousemove)
+    })
+
+    if (cacheKey) {
+      let value = storage.get(cacheKey)
+
+      if (direction == 'left' || direction == 'right') {
+        el.style.width = `${value}px`
+      } else {
+        el.style.height = `${value}px`
+      }
+    }
+
+    el.appendChild(linedom)
   },
   unmounted: function (el, binding) {
-    document.removeEventListener('mousemove', mousemove_)
-    document.removeEventListener('mouseup', mouseup_)
+    document.removeEventListener('mousemove', el.linedomMouseup)
+    document.removeEventListener('mouseup', el.linedomMousemove)
   },
 }

@@ -1,5 +1,6 @@
 import '@/assets/css/define/theme.less'
 import '@/assets/css/define/global.less'
+import '@/assets/css/dropsize.less'
 import './plugins/highlight.js'
 
 import { createApp } from 'vue'

@@ -9,7 +9,6 @@ import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 import GroupList from './GroupList.vue'
-import { inputHeight, startResizeTop } from '@/composition/mouse-event'
 
 const user = inject('$user')
 const userStore = useUserStore()
@@ -80,10 +79,9 @@ const onPanelHeaderEvent = eventType => {
     <!-- 编辑器区域 -->
     <footer
       class="el-footer footer"
-      :style="{ height: inputHeight + 'px' }"
       v-if="isShowEditor"
+      v-dropsize="{ min: 200, max: 600, direction: 'top', key: 'editor' }"
     >
-      <div class="resizer-top" @mousedown="startResizeTop"></div>
       <PanelFooter
         :uid="talkParams.uid"
         :index_name="talkParams.index_name"
@@ -145,18 +143,6 @@ const onPanelHeaderEvent = eventType => {
 
 .footer {
   position: relative;
-}
-
-.resizer-top {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  cursor: ns-resize;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
+  height: 200px;
 }
 </style>

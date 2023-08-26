@@ -91,10 +91,10 @@ const editorOption = {
 
     imageUploader: {
       upload: (file: File) => {
-        const form = new FormData()
-        form.append('file', file)
-
         return new Promise((resolve, reject) => {
+          const form = new FormData()
+          form.append('file', file)
+
           ServeUploadImage(form).then(({ code, data, message }) => {
             if (code == 200) {
               resolve(data.src)

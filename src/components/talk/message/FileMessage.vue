@@ -79,6 +79,7 @@ defineProps<{
         .size {
           font-size: 12px;
           color: #cac6c6;
+          flex-shrink: 0;
         }
       }
 

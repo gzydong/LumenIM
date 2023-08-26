@@ -16,11 +16,7 @@ const loadId = computed(() => noteStore.view.loadId)
   <Layout :index="2">
     <section class="el-container height100">
       <aside class="el-aside" style="width: 230px"><NoteMenu /></aside>
-      <aside
-        class="el-aside"
-        style="width: 350px"
-        v-dropsize="{ max: 500, min: 250 }"
-      >
+      <aside class="el-aside" style="width: 350px" v-dropsize="{ min: 200, max: 500, direction: 'right' }">
         <NoteList />
       </aside>
       <main class="el-main" v-if="loadId > 0"><NoteView /></main>
