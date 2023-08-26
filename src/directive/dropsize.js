@@ -7,7 +7,7 @@ function getCacheKey(key, direction) {
 }
 
 export default {
-  // binding.value = {min:10,max:100,direction:"top",name:""}
+  // binding.value = {min:10,max:100,direction:"top",key:""}
   mounted: function (el, binding) {
     let { min, max, direction = 'right', key = '' } = binding.value
 

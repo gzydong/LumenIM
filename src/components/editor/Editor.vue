@@ -90,21 +90,7 @@ const editorOption = {
     },
 
     imageUploader: {
-      upload: (file: File) => {
-        return new Promise((resolve, reject) => {
-          const form = new FormData()
-          form.append('file', file)
-
-          ServeUploadImage(form).then(({ code, data, message }) => {
-            if (code == 200) {
-              resolve(data.src)
-            } else {
-              reject(message)
-              window['$message'].error(message)
-            }
-          })
-        })
-      },
+      upload: onUpload,
     },
 
     mention: {
@@ -199,6 +185,36 @@ const navs = reactive([
     },
   },
 ])
+
+function onUpload(file: File) {
+  return new Promise((resolve, reject) => {
+    if (file.type.indexOf('image/') === 0) {
+      const form = new FormData()
+      form.append('file', file)
+
+      ServeUploadImage(form).then(({ code, data, message }) => {
+        if (code == 200) {
+          resolve(data.src)
+        } else {
+          reject(message)
+          window['$message'].error(message)
+        }
+      })
+
+      return
+    }
+
+    reject()
+
+    if (file.type.indexOf('video/') === 0) {
+      let fn = emitCall('video_event', file, () => {})
+      emit('editor-event', fn)
+    } else {
+      let fn = emitCall('file_event', file, () => {})
+      emit('editor-event', fn)
+    }
+  })
+}
 
 function onVoteEvent(data: any) {
   const msg = emitCall('vote_event', data, (ok: boolean) => {
