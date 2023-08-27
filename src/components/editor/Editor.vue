@@ -90,7 +90,7 @@ const editorOption = {
     },
 
     imageUploader: {
-      upload: onUpload,
+      upload: onEditorUpload,
     },
 
     mention: {
@@ -186,33 +186,39 @@ const navs = reactive([
   },
 ])
 
-function onUpload(file: File) {
-  return new Promise((resolve, reject) => {
-    if (file.type.indexOf('image/') === 0) {
+function onUploadImage(file: File) {
+  return new Promise(resolve => {
+    let image = new Image()
+    image.src = URL.createObjectURL(file)
+    image.onload = () => {
       const form = new FormData()
       form.append('file', file)
+      form.append('width', image.width.toString())
+      form.append('height', image.height.toString())
 
       ServeUploadImage(form).then(({ code, data, message }) => {
         if (code == 200) {
           resolve(data.src)
         } else {
-          reject(message)
+          resolve('')
           window['$message'].error(message)
         }
       })
+    }
+  })
+}
 
+function onEditorUpload(file: File) {
+  return new Promise(async (resolve, reject) => {
+    if (file.type.indexOf('image/') === 0) {
+      resolve(await onUploadImage(file))
       return
     }
 
     reject()
 
-    if (file.type.indexOf('video/') === 0) {
-      let fn = emitCall('video_event', file, () => {})
-      emit('editor-event', fn)
-    } else {
-      let fn = emitCall('file_event', file, () => {})
-      emit('editor-event', fn)
-    }
+    let fn = emitCall('file_event', file, () => {})
+    emit('editor-event', fn)
   })
 }
 
@@ -259,33 +265,22 @@ function onCodeEvent(data: any) {
   emit('editor-event', msg)
 }
 
-function onUploadFile(e: any) {
+async function onUploadFile(e: any) {
   let file = e.target.files[0]
 
   e.target.value = null
 
-  if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
+  if (file.type.indexOf('image/') === 0) {
     const quill = getQuill()
     const index = (quill.getSelection() || {}).index || quill.getLength()
 
-    const form = new FormData()
-    form.append('file', file)
-
-    ServeUploadImage(form).then(({ code, data, message }) => {
-      if (code == 200) {
-        quill.insertEmbed(index, 'image', data.src)
-        quill.setSelection(index + 1)
-      } else {
-        window['$message'].error(message)
-      }
-    })
+    let src = await onUploadImage(file)
+    if (src) {
+      quill.insertEmbed(index, 'image', src)
+      quill.setSelection(index + 1)
+    }
 
     return
-  }
-
-  if (file && file.type.indexOf('video/') == 0) {
-    let fn = emitCall('video_event', file, () => {})
-    return emit('editor-event', fn)
   }
 
   let fn = emitCall('file_event', file, () => {})
