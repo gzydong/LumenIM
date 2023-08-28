@@ -60,7 +60,7 @@ const props = defineProps({
 const editor = ref()
 
 const getQuill = () => {
-  return editor.value.getQuill()
+  return editor.value?.getQuill()
 }
 
 const getQuillSelectionIndex = () => {
@@ -398,23 +398,25 @@ function onEditorChange() {
 function loadEditorDraftText() {
   if (!editor.value) return
 
-  const quill = getQuill()
-
   // 这里延迟处理，不然会有问题
   setTimeout(() => {
     hideMentionDom()
 
+    const quill = getQuill()
+
+    if (!quill) return
+
     // 从缓存中加载编辑器草稿
     let draft = editorDraftStore.items[indexName.value || '']
     if (draft) {
-      quill.setContents(JSON.parse(draft))
+      quill.setContents(JSON.parse(draft)?.ops || [])
     } else {
       quill.setContents([])
     }
 
     const index = getQuillSelectionIndex()
     quill.setSelection(index, 0, 'user')
-  }, 100)
+  }, 0)
 }
 
 function onSubscribeMention(data: any) {
