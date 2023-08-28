@@ -248,7 +248,12 @@ function onEmoticonEvent(data: any) {
 
   if (data.type == 1) {
     const quill = getQuill()
-    const index = getQuillSelectionIndex()
+    let index = getQuillSelectionIndex()
+
+    if (index == 1 && quill.getContents().ops.length == 1) {
+      quill.setContents([])
+      index = 0
+    }
 
     if (data.img) {
       quill.insertEmbed(index, 'emoji', {
@@ -283,7 +288,12 @@ async function onUploadFile(e: any) {
 
   if (file.type.indexOf('image/') === 0) {
     const quill = getQuill()
-    const index = getQuillSelectionIndex()
+    let index = getQuillSelectionIndex()
+
+    if (index == 1 && quill.getContents().ops.length == 1) {
+      quill.setContents([])
+      index = 0
+    }
 
     let src = await onUploadImage(file)
     if (src) {

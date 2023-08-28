@@ -27,38 +27,15 @@ import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
-
-interface TalkItem {
-  index_name: string
-  id: number
-  talk_type: number
-  receiver_id: number
-  name: string
-  avatar: string
-  remark: string
-  is_disturb: number
-  is_online: number
-  is_robot: number
-  is_top: number
-  msg_text: string
-  unread_num: number
-  updated_at: string
-}
-
-interface StateDropdown {
-  options: any[]
-  show: boolean
-  dropdownX: number
-  dropdownY: number
-  item: any
-}
+import { ISessionRecord } from '@/types/chat.ts'
+import { StateDropdown } from '@/types/global.ts'
 
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
 const isShowGroup = ref(false)
 const searchKeyword = ref('')
-const topItems = computed((): TalkItem[] => talkStore.topItems)
+const topItems = computed((): ISessionRecord[] => talkStore.topItems)
 const unreadNum = computed(() => talkStore.talkUnreadNum)
 
 const dropdown: StateDropdown = reactive({
@@ -69,7 +46,7 @@ const dropdown: StateDropdown = reactive({
   item: {},
 })
 
-const items = computed((): TalkItem[] => {
+const items = computed((): ISessionRecord[] => {
   if (searchKeyword.value.length === 0) {
     return talkStore.talkItems
   }
@@ -158,7 +135,7 @@ const onRemoveTalk = (data: any) => {
 }
 
 // 设置消息免打扰
-const onSetDisturb = (data: TalkItem) => {
+const onSetDisturb = (data: ISessionRecord) => {
   ServeSetNotDisturb({
     talk_type: data.talk_type,
     receiver_id: data.receiver_id,
@@ -177,7 +154,7 @@ const onSetDisturb = (data: TalkItem) => {
 }
 
 // 置顶会话
-const onToTopTalk = (data: TalkItem) => {
+const onToTopTalk = (data: ISessionRecord) => {
   if (data.is_top == 0 && topItems.value.length >= 18) {
     return window['$message'].info('置顶最多不能超过18个会话')
   }
@@ -198,7 +175,7 @@ const onToTopTalk = (data: TalkItem) => {
 }
 
 // 移除联系人
-const onDeleteContact = (data: TalkItem) => {
+const onDeleteContact = (data: ISessionRecord) => {
   let name = data.remark || data.name
 
   window['$dialog'].create({
@@ -223,7 +200,7 @@ const onDeleteContact = (data: TalkItem) => {
 }
 
 // 退出群聊
-const onSignOutGroup = (data: TalkItem) => {
+const onSignOutGroup = (data: ISessionRecord) => {
   window['$dialog'].create({
     showIcon: false,
     title: `退出 [${data.name}] 群聊？`,
@@ -245,7 +222,7 @@ const onSignOutGroup = (data: TalkItem) => {
   })
 }
 
-const onChangeRemark = (data: TalkItem) => {
+const onChangeRemark = (data: ISessionRecord) => {
   let remark = ''
   window['$dialog'].create({
     showIcon: false,
@@ -281,7 +258,7 @@ const onChangeRemark = (data: TalkItem) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenuTalk = (e: any, item: TalkItem) => {
+const onContextMenuTalk = (e: any, item: ISessionRecord) => {
   dropdown.show = false
   dropdown.item = Object.assign({}, item)
   dropdown.options = []

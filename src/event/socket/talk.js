@@ -194,7 +194,7 @@ class Talk extends Base {
     }
 
     // 获取聊天面板元素节点
-    let el = document.getElementById('lumenChatPanel')
+    let el = document.getElementById('imChatPanel')
     if (!el) {
       return
     }

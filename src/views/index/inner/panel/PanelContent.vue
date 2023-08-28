@@ -22,10 +22,12 @@ import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
+import { IMessageRecord } from '@/types/chat.ts'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
+
 const props = defineProps({
   uid: {
     type: Number,
@@ -47,29 +49,8 @@ const props = defineProps({
 
 let locationMessage: any = null
 
-export interface Message {
-  id: number
-  sequence: number
-  msg_id: string
-  talk_type: number
-  msg_type: number
-  user_id: number
-  receiver_id: number
-  nickname: string
-  avatar: string
-  is_revoke: number
-  is_mark: number
-  is_read: number
-  content: string
-  created_at: string
-  extra: any
-  isCheck: boolean
-  send_status: number
-  float: string
-}
-
 // 对话记录
-const records = computed((): Message[] => dialogueStore.records)
+const records = computed((): IMessageRecord[] => dialogueStore.records)
 
 // 加载配置
 const loadConfig = reactive({
@@ -94,7 +75,7 @@ const onLoadTalk = () => {
   }
 
   let scrollHeight = 0
-  let el = document.getElementById('lumenChatPanel')
+  let el = document.getElementById('imChatPanel')
   if (el) {
     scrollHeight = el.scrollHeight
   }
@@ -114,7 +95,7 @@ const onLoadTalk = () => {
 
     const records = res.data.items || []
 
-    records.map((item: Message) => formatTalkRecord(props.uid, item))
+    records.map((item: IMessageRecord) => formatTalkRecord(props.uid, item))
 
     // 判断是否是初次加载
     if (data.record_id == 0) {
@@ -150,7 +131,7 @@ const onLoadTalk = () => {
   })
 }
 
-function onAfterRead(records: Message[]) {
+function onAfterRead(records: IMessageRecord[]) {
   let ids: number[] = []
 
   for (const record of records) {
@@ -212,7 +193,7 @@ const onPanelScroll = (e: any) => {
 }
 
 // 复制文本信息
-const onCopyText = (data: Message) => {
+const onCopyText = (data: IMessageRecord) => {
   if (data.content && data.content.length > 0) {
     return clipboard(htmlDecode(data.content), () =>
       window['$message'].success('复制成功')
@@ -227,17 +208,17 @@ const onCopyText = (data: Message) => {
 }
 
 // 删除对话消息
-const onDeleteTalk = (data: Message) => {
+const onDeleteTalk = (data: IMessageRecord) => {
   dialogueStore.ApiDeleteRecord([data.id])
 }
 
 // 撤销对话消息
-const onRevokeTalk = (data: Message) => {
+const onRevokeTalk = (data: IMessageRecord) => {
   dialogueStore.ApiRevokeRecord(data.id)
 }
 
 // 多选事件
-const onMultiSelect = (data: Message) => {
+const onMultiSelect = (data: IMessageRecord) => {
   dialogueStore.updateDialogueRecord({
     id: data.id,
     isCheck: true,
@@ -246,7 +227,7 @@ const onMultiSelect = (data: Message) => {
   dialogueStore.isOpenMultiSelect = true
 }
 
-const onDownloadFile = (data: Message) => {
+const onDownloadFile = (data: IMessageRecord) => {
   if (data.msg_type == 3) {
     return downloadImage(data.extra.url, `${data.msg_id}.${data.extra.suffix}`)
   }
@@ -258,7 +239,7 @@ const onDownloadFile = (data: Message) => {
   return window['$message'].info('视频暂不支持下载!')
 }
 
-const onQuoteMessage = (data: Message) => {
+const onQuoteMessage = (data: IMessageRecord) => {
   let item = {
     id: data.msg_id,
     title: `${data.nickname} ${data.created_at}`,
@@ -308,7 +289,7 @@ const onQuoteMessage = (data: Message) => {
   publisher.publish('editor:quote', item)
 }
 
-const onClickNickname = (data: Message) => {
+const onClickNickname = (data: IMessageRecord) => {
   publisher.publish('editor:mention', {
     id: data.user_id,
     value: data.nickname,
@@ -316,7 +297,7 @@ const onClickNickname = (data: Message) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e: any, item: Message) => {
+const onContextMenu = (e: any, item: IMessageRecord) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
     return e.preventDefault()
   }
@@ -345,7 +326,7 @@ const onContextMenuHandle = (key: string) => {
 
 // 聊天版本滚动到底部
 const onSkipBottom = () => {
-  let el = document.getElementById('lumenChatPanel')
+  let el = document.getElementById('imChatPanel')
   if (el) {
     el.scrollTo({
       top: el.scrollHeight + 1000,
@@ -373,7 +354,7 @@ const onJumpMessage = (msgid: string) => {
       }
     }
 
-    let el = document.getElementById('lumenChatPanel')
+    let el = document.getElementById('imChatPanel')
 
     el?.scrollTo({
       top: 0,
@@ -391,7 +372,7 @@ const onJumpMessage = (msgid: string) => {
   addClass(element, 'border')
 
   setTimeout(() => {
-    removeClass(element, 'border')
+    element && removeClass(element, 'border')
   }, 3000)
 }
 
@@ -403,7 +384,7 @@ const onReload = () => {
   onLoadTalk()
 }
 
-const onRowClick = (item: Message) => {
+const onRowClick = (item: IMessageRecord) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
@@ -420,9 +401,9 @@ onMounted(onReload)
 
 <template>
   <section class="section">
-    <n-image-group>
+    <NImageGroup>
       <div
-        id="lumenChatPanel"
+        id="imChatPanel"
         class="me-scrollbar me-scrollbar-thumb talk-container"
         @scroll="onPanelScroll($event)"
       >
@@ -531,7 +512,7 @@ onMounted(onReload)
                     />
 
                     <span v-show="item.send_status == 1"> 正在发送... </span>
-                    <span v-show="item.send_status != 1"> 已送达 </span>
+                    <!-- <span v-show="item.send_status != 1"> 已送达 </span> -->
                   </template>
 
                   <n-icon
@@ -561,7 +542,7 @@ onMounted(onReload)
           </div>
         </div>
       </div>
-    </n-image-group>
+    </NImageGroup>
 
     <!-- 置底按钮 -->
     <SkipBottom v-model="skipBottom" @click="onSkipBottom" />
