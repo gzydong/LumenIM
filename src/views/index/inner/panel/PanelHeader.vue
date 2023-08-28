@@ -39,7 +39,7 @@ const onSetMenu = () => {
 </script>
 
 <template>
-  <header class="el-header box-header bdr-b">
+  <header class="el-header box-header">
     <div class="menu bdr-r pointer" @click="onSetMenu">
       <n-icon
         size="22"

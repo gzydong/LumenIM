@@ -63,6 +63,12 @@ const getQuill = () => {
   return editor.value.getQuill()
 }
 
+const getQuillSelectionIndex = () => {
+  let quill = getQuill()
+
+  return (quill.getSelection() || {}).index || quill.getLength()
+}
+
 const indexName = computed(() => dialogueStore.index_name)
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
@@ -217,8 +223,13 @@ function onEditorUpload(file: File) {
 
     reject()
 
-    let fn = emitCall('file_event', file, () => {})
-    emit('editor-event', fn)
+    if (file.type.indexOf('video/') === 0) {
+      let fn = emitCall('video_event', file, () => {})
+      emit('editor-event', fn)
+    } else {
+      let fn = emitCall('file_event', file, () => {})
+      emit('editor-event', fn)
+    }
   })
 }
 
@@ -237,7 +248,7 @@ function onEmoticonEvent(data: any) {
 
   if (data.type == 1) {
     const quill = getQuill()
-    const index = (quill.getSelection() || {}).index || quill.getLength()
+    const index = getQuillSelectionIndex()
 
     if (data.img) {
       quill.insertEmbed(index, 'emoji', {
@@ -272,7 +283,7 @@ async function onUploadFile(e: any) {
 
   if (file.type.indexOf('image/') === 0) {
     const quill = getQuill()
-    const index = (quill.getSelection() || {}).index || quill.getLength()
+    const index = getQuillSelectionIndex()
 
     let src = await onUploadImage(file)
     if (src) {
@@ -283,8 +294,13 @@ async function onUploadFile(e: any) {
     return
   }
 
-  let fn = emitCall('file_event', file, () => {})
-  emit('editor-event', fn)
+  if (file.type.indexOf('video/') === 0) {
+    let fn = emitCall('video_event', file, () => {})
+    emit('editor-event', fn)
+  } else {
+    let fn = emitCall('file_event', file, () => {})
+    emit('editor-event', fn)
+  }
 }
 
 function onRecorderEvent(file: any) {
@@ -386,7 +402,7 @@ function loadEditorDraftText() {
       quill.setContents([])
     }
 
-    const index = (quill.getSelection() || {}).index || quill.getLength()
+    const index = getQuillSelectionIndex()
     quill.setSelection(index, 0, 'user')
   }, 100)
 }
@@ -407,7 +423,7 @@ function onSubscribeQuote(data: any) {
   }
 
   const quill = getQuill()
-  const index = (quill.getSelection() || {}).index || quill.getLength()
+  const index = getQuillSelectionIndex()
 
   quill.insertEmbed(0, 'quote', data)
   quill.setSelection(index + 1, 0, 'user')

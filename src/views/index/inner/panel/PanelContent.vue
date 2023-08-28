@@ -47,8 +47,29 @@ const props = defineProps({
 
 let locationMessage: any = null
 
+export interface Message {
+  id: number
+  sequence: number
+  msg_id: string
+  talk_type: number
+  msg_type: number
+  user_id: number
+  receiver_id: number
+  nickname: string
+  avatar: string
+  is_revoke: number
+  is_mark: number
+  is_read: number
+  content: string
+  created_at: string
+  extra: any
+  isCheck: boolean
+  send_status: number
+  float: string
+}
+
 // 对话记录
-const records = computed(() => dialogueStore.records)
+const records = computed((): Message[] => dialogueStore.records)
 
 // 加载配置
 const loadConfig = reactive({
@@ -93,7 +114,7 @@ const onLoadTalk = () => {
 
     const records = res.data.items || []
 
-    records.map((item: any) => formatTalkRecord(props.uid, item))
+    records.map((item: Message) => formatTalkRecord(props.uid, item))
 
     // 判断是否是初次加载
     if (data.record_id == 0) {
@@ -129,7 +150,7 @@ const onLoadTalk = () => {
   })
 }
 
-function onAfterRead(records: any) {
+function onAfterRead(records: Message[]) {
   let ids: number[] = []
 
   for (const record of records) {
@@ -191,7 +212,7 @@ const onPanelScroll = (e: any) => {
 }
 
 // 复制文本信息
-const onCopyText = (data: any) => {
+const onCopyText = (data: Message) => {
   if (data.content && data.content.length > 0) {
     return clipboard(htmlDecode(data.content), () =>
       window['$message'].success('复制成功')
@@ -206,17 +227,17 @@ const onCopyText = (data: any) => {
 }
 
 // 删除对话消息
-const onDeleteTalk = (data: any) => {
+const onDeleteTalk = (data: Message) => {
   dialogueStore.ApiDeleteRecord([data.id])
 }
 
 // 撤销对话消息
-const onRevokeTalk = (data: any) => {
+const onRevokeTalk = (data: Message) => {
   dialogueStore.ApiRevokeRecord(data.id)
 }
 
 // 多选事件
-const onMultiSelect = (data: any) => {
+const onMultiSelect = (data: Message) => {
   dialogueStore.updateDialogueRecord({
     id: data.id,
     isCheck: true,
@@ -225,7 +246,7 @@ const onMultiSelect = (data: any) => {
   dialogueStore.isOpenMultiSelect = true
 }
 
-const onDownloadFile = (data: any) => {
+const onDownloadFile = (data: Message) => {
   if (data.msg_type == 3) {
     return downloadImage(data.extra.url, `${data.msg_id}.${data.extra.suffix}`)
   }
@@ -237,7 +258,7 @@ const onDownloadFile = (data: any) => {
   return window['$message'].info('视频暂不支持下载!')
 }
 
-const onQuoteMessage = (data: any) => {
+const onQuoteMessage = (data: Message) => {
   let item = {
     id: data.msg_id,
     title: `${data.nickname} ${data.created_at}`,
@@ -287,7 +308,7 @@ const onQuoteMessage = (data: any) => {
   publisher.publish('editor:quote', item)
 }
 
-const onClickNickname = (data: any) => {
+const onClickNickname = (data: Message) => {
   publisher.publish('editor:mention', {
     id: data.user_id,
     value: data.nickname,
@@ -295,7 +316,7 @@ const onClickNickname = (data: any) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e: any, item: any) => {
+const onContextMenu = (e: any, item: Message) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
     return e.preventDefault()
   }
@@ -382,7 +403,7 @@ const onReload = () => {
   onLoadTalk()
 }
 
-const onRowClick = (item: any) => {
+const onRowClick = (item: Message) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onUnmounted } from 'vue'
 import { useDialogueStore } from '@/store/dialogue'
 import Layout from '@/layout/index.vue'
@@ -50,12 +50,6 @@ onUnmounted(() => {
 }
 
 .small-screen {
-  .el-aside {
-    width: 260px;
-  }
-}
-
-@media screen and (max-width: 1000px) {
   .el-aside {
     width: 260px;
   }

@@ -65,7 +65,7 @@ export function formatTalkItem(params) {
     draft_text: '',
     msg_text: '',
     index_name: '',
-    created_at: parseTime(new Date()),
+    updated_at: parseTime(new Date()),
   }
 
   options = { ...options, ...params }

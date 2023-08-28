@@ -16,8 +16,6 @@ import {
   IdCard,
   Plus,
 } from '@icon-park/vue-next'
-import { RecycleScroller } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import TalkItem from './TalkItem.vue'
 import {
   ServeTopTalkList,
@@ -30,25 +28,48 @@ import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
 
+interface TalkItem {
+  index_name: string
+  id: number
+  talk_type: number
+  receiver_id: number
+  name: string
+  avatar: string
+  remark: string
+  is_disturb: number
+  is_online: number
+  is_robot: number
+  is_top: number
+  msg_text: string
+  unread_num: number
+  updated_at: string
+}
+
+interface StateDropdown {
+  options: any[]
+  show: boolean
+  dropdownX: number
+  dropdownY: number
+  item: any
+}
+
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
 const isShowGroup = ref(false)
 const searchKeyword = ref('')
-const topItems = computed(() => talkStore.topItems)
+const topItems = computed((): TalkItem[] => talkStore.topItems)
 const unreadNum = computed(() => talkStore.talkUnreadNum)
 
-const state = reactive({
-  dropdown: {
-    options: [],
-    show: false,
-    dropdownX: 0,
-    dropdownY: 0,
-    item: {},
-  },
+const dropdown: StateDropdown = reactive({
+  options: [],
+  show: false,
+  dropdownX: 0,
+  dropdownY: 0,
+  item: {},
 })
 
-const items = computed(() => {
+const items = computed((): TalkItem[] => {
   if (searchKeyword.value.length === 0) {
     return talkStore.talkItems
   }
@@ -137,7 +158,7 @@ const onRemoveTalk = (data: any) => {
 }
 
 // 设置消息免打扰
-const onSetDisturb = (data: any) => {
+const onSetDisturb = (data: TalkItem) => {
   ServeSetNotDisturb({
     talk_type: data.talk_type,
     receiver_id: data.receiver_id,
@@ -156,7 +177,7 @@ const onSetDisturb = (data: any) => {
 }
 
 // 置顶会话
-const onToTopTalk = (data: any) => {
+const onToTopTalk = (data: TalkItem) => {
   if (data.is_top == 0 && topItems.value.length >= 18) {
     return window['$message'].info('置顶最多不能超过18个会话')
   }
@@ -177,7 +198,7 @@ const onToTopTalk = (data: any) => {
 }
 
 // 移除联系人
-const onDeleteContact = (data: any) => {
+const onDeleteContact = (data: TalkItem) => {
   let name = data.remark || data.name
 
   window['$dialog'].create({
@@ -202,7 +223,7 @@ const onDeleteContact = (data: any) => {
 }
 
 // 退出群聊
-const onSignOutGroup = (data: any) => {
+const onSignOutGroup = (data: TalkItem) => {
   window['$dialog'].create({
     showIcon: false,
     title: `退出 [${data.name}] 群聊？`,
@@ -224,7 +245,7 @@ const onSignOutGroup = (data: any) => {
   })
 }
 
-const onChangeRemark = (data: any) => {
+const onChangeRemark = (data: TalkItem) => {
   let remark = ''
   window['$dialog'].create({
     showIcon: false,
@@ -260,60 +281,65 @@ const onChangeRemark = (data: any) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenuTalk = (e, item) => {
-  state.dropdown.show = false
-  state.dropdown.item = Object.assign({}, item)
-  state.dropdown.options = []
+const onContextMenuTalk = (e: any, item: TalkItem) => {
+  dropdown.show = false
+  dropdown.item = Object.assign({}, item)
+  dropdown.options = []
+
+  let options: any[] = []
 
   if (item.talk_type == 1) {
-    state.dropdown.options.push({
+    options.push({
       icon: renderIcon(IdCard),
       label: '好友信息',
       key: 'info',
     })
-    state.dropdown.options.push({
+
+    options.push({
       icon: renderIcon(EditTwo),
       label: '修改备注',
       key: 'remark',
     })
   }
 
-  state.dropdown.options.push({
+  options.push({
     icon: renderIcon(item.is_top ? ArrowDown : ArrowUp),
     label: item.is_top ? '取消置顶' : '会话置顶',
     key: 'top',
   })
 
-  state.dropdown.options.push({
+  options.push({
     icon: renderIcon(item.is_disturb ? Remind : CloseRemind),
     label: item.is_disturb ? '关闭免打扰' : '开启免打扰',
     key: 'disturb',
   })
 
-  state.dropdown.options.push({
+  options.push({
     icon: renderIcon(Clear),
     label: '移除会话',
     key: 'remove',
   })
 
   if (item.talk_type == 1) {
-    state.dropdown.options.push({
+    options.push({
       icon: renderIcon(Delete),
       label: '删除好友',
       key: 'delete_contact',
     })
   } else {
-    state.dropdown.options.push({
+    options.push({
       icon: renderIcon(Logout),
       label: '退出群聊',
       key: 'signout_group',
     })
   }
 
+  dropdown.options = [...options]
+
   nextTick(() => {
-    state.dropdown.show = true
-    state.dropdown.dropdownX = e.clientX
-    state.dropdown.dropdownY = e.clientY
+    dropdown.show = true
+    dropdown.dropdownX = e.clientX
+    dropdown.dropdownY = e.clientY
   })
 
   e.preventDefault()
@@ -332,8 +358,8 @@ const onContextMenuTalkHandle = (key: string) => {
     remark: onChangeRemark,
   }
 
-  state.dropdown.show = false
-  evnets[key] && evnets[key](state.dropdown.item)
+  dropdown.show = false
+  evnets[key] && evnets[key](dropdown.item)
 }
 
 const onReload = () => {
@@ -341,7 +367,7 @@ const onReload = () => {
 }
 
 // 创建群聊回调事件
-const onGroupCallBack = (data: any) => {
+const onGroupCallBack = () => {
   onReload()
 }
 
@@ -364,15 +390,15 @@ onMounted(() => {
   <!-- 右键菜单 -->
   <n-dropdown
     class="dropdown-menus"
-    :show="state.dropdown.show"
-    :x="state.dropdown.dropdownX"
-    :y="state.dropdown.dropdownY"
-    :options="state.dropdown.options"
+    :show="dropdown.show"
+    :x="dropdown.dropdownX"
+    :y="dropdown.dropdownY"
+    :options="dropdown.options"
     @select="onContextMenuTalkHandle"
     @clickoutside="
       () => {
-        state.dropdown.show = false
-        state.dropdown.item = {}
+        dropdown.show = false
+        dropdown.item = {}
       }
     "
   />
@@ -482,28 +508,6 @@ onMounted(() => {
           @contextmenu.prevent="onContextMenuTalk($event, item)"
         />
       </div>
-
-      <!-- <RecycleScroller
-        id="talk-session-list"
-        class="el-main scroller me-scrollbar me-scrollbar-thumb"
-        :items="items"
-        :item-size="72"
-        key-field="index_name"
-        v-slot="{ item }"
-      >
-        <div style="height: 72px">
-          <TalkItem
-            :key="item.index_name"
-            :data="item"
-            :avatar="item.avatar"
-            :username="item.remark || item.name"
-            :active="item.index_name == indexName"
-            @tab-talk="onTabTalk"
-            @top-talk="onToTopTalk"
-            @contextmenu.prevent="onContextMenuTalk($event, item)"
-          />
-        </div>
-      </RecycleScroller> -->
     </template>
   </section>
 

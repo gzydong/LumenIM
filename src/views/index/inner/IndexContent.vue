@@ -8,7 +8,6 @@ import PanelFooter from './panel/PanelFooter.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
-import GroupList from './GroupList.vue'
 
 const user = inject('$user')
 const userStore = useUserStore()
@@ -55,7 +54,7 @@ const onPanelHeaderEvent = eventType => {
 <template>
   <section id="drawer-container" class="el-container is-vertical">
     <!-- 头部区域 -->
-    <header class="el-header">
+    <header class="el-header bdr-b">
       <PanelHeader
         :type="talkParams.type"
         :username="talkParams.username"
@@ -78,8 +77,9 @@ const onPanelHeaderEvent = eventType => {
 
     <!-- 编辑器区域 -->
     <footer
-      class="el-footer footer"
       v-if="isShowEditor"
+      class="el-footer"
+      :style="{ height: 200 + 'px' }"
       v-dropsize="{ min: 200, max: 600, direction: 'top', key: 'editor' }"
     >
       <PanelFooter
@@ -139,10 +139,5 @@ const onPanelHeaderEvent = eventType => {
 <style lang="less" scoped>
 .drawer-target {
   overflow: hidden;
-}
-
-.footer {
-  position: relative;
-  height: 200px;
 }
 </style>
