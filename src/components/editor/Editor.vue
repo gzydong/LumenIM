@@ -250,8 +250,8 @@ function onEmoticonEvent(data: any) {
     const quill = getQuill()
     let index = getQuillSelectionIndex()
 
-    if (index == 1 && quill.getContents().ops.length == 1) {
-      quill.setContents([])
+    if (index == 1 && quill.getLength() == 1 && quill.getText(0, 1) == '\n') {
+      quill.deleteText(0, 1)
       index = 0
     }
 
@@ -290,8 +290,8 @@ async function onUploadFile(e: any) {
     const quill = getQuill()
     let index = getQuillSelectionIndex()
 
-    if (index == 1 && quill.getContents().ops.length == 1) {
-      quill.setContents([])
+    if (index == 1 && quill.getLength() == 1 && quill.getText(0, 1) == '\n') {
+      quill.deleteText(0, 1)
       index = 0
     }
 
