@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - chatflow-mqtt
-
+  create:
+    tags:
+      - '*'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
