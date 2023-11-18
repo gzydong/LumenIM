@@ -2,8 +2,8 @@
 import { reactive, ref } from 'vue'
 import { NModal, NCard } from 'naive-ui'
 import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
-import { VueCropper } from 'vue-cropper'
 import 'vue-cropper/dist/index.css'
+import { VueCropper }  from "vue-cropper";
 import { ServeUploadAvatar } from '@/api/upload'
 
 const emit = defineEmits(['close', 'success'])
