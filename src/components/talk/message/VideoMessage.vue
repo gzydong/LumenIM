@@ -22,6 +22,12 @@ const img = (src: string, width = 200) => {
     return {}
   }
 
+  if (info.height > 300) {
+    return {
+      height: '300px',
+    }
+  }
+
   if (info.width < width) {
     return {
       width: `${info.width}px`,

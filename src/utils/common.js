@@ -158,40 +158,39 @@ export function htmlDecode(input) {
 }
 
 // 文件转 图片 关键函数  异步
-export function getVideoImage(file) {
+export function getVideoImage(file, time = 1) {
   return new Promise((resolve, reject) => {
     let video = document.createElement('video')
 
     video.src = URL.createObjectURL(file)
+    video.currentTime = time
+    video.autoplay = true
+    video.muted = true
 
-    video.addEventListener('loadeddata', function () {
-      this.currentTime = 1
-    })
+    video.oncanplay = () => {
+      let canvas = document.createElement('canvas')
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
 
-    video.addEventListener('seeked', function () {
-      this.width = this.videoWidth
-      this.height = this.videoHeight
-      var canvas = document.createElement('canvas')
-      var ctx = canvas.getContext('2d')
-      canvas.width = this.width
-      canvas.height = this.height
-      ctx?.drawImage(this, 0, 0, canvas.width, canvas.height)
+      let ctx = canvas.getContext('2d')
+      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height)
 
-      let image = {
+      let data = {
         url: canvas.toDataURL('image/jpeg', 1),
-        width: this.width,
-        height: this.height,
-        duration: this.duration,
+        width: video.videoWidth,
+        height: video.videoHeight,
+        duration: video.duration,
+        file: null,
       }
 
-      canvas.toBlob(function (blob) {
-        image.file = new File([blob], 'video_image.jpeg', {
+      canvas.toBlob(blob => {
+        data.file = new File([blob], 'image.jpeg', {
           type: blob.type,
           lastModified: Date.now(),
         })
 
-        resolve(image)
+        resolve(data)
       }, 'image/jpeg')
-    })
+    }
   })
 }

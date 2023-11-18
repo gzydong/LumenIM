@@ -190,6 +190,31 @@ const onPanelScroll = (e: any) => {
   if (!skipBottom.value && dialogueStore.unreadBubble) {
     dialogueStore.setUnreadBubble(0)
   }
+
+  // 检测是否到达底部
+  if (skipBottom.value == false) {
+    let len = dialogueStore.records.length
+
+    if (len > 100) {
+      // 为了优化数据过多页面卡顿，页面最多只显示100条数据
+      // 目前没有用虚拟列表只能这么干
+      dialogueStore.records.splice(0, len - 100)
+
+      let minid = 0
+      dialogueStore.records.forEach((item: IMessageRecord) => {
+        if (minid == 0) {
+          minid = item.sequence
+        } else {
+          if (item.sequence < minid) {
+            minid = item.sequence
+          }
+        }
+      })
+
+      loadConfig.minRecord = minid
+      loadConfig.status = 1
+    }
+  }
 }
 
 // 复制文本信息
