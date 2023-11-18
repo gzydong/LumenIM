@@ -42,7 +42,7 @@
     "@vue/tsconfig": "^0.4.0",
     "concurrently": "^7.3.0",
     "cross-env": "^7.0.3",
-    "electron": "^19.1.9",
+    "electron": "^27.1.0",
     "electron-builder": "^23.6.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
