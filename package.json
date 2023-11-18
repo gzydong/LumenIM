@@ -48,14 +48,14 @@
     "less-loader": "^10.2.0",
     "naive-ui": "^2.34.4",
     "typescript": "^5.0.4",
-    "vite": "^4.3.2",
+    "vite": "^4.5.0",
     "vite-plugin-compression": "^0.5.1",
     "wait-on": "^6.0.1"
   },
   "build": {
     "appId": "com.gzydong.lumenim",
     "productName": "LumenIM",
-    "copyright": "Copyright © 2022 LumenIM",
+    "copyright": "Copyright © 2023 LumenIM",
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "build/icons/lumen-im-mac.png"
