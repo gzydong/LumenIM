@@ -1,0 +1,38 @@
+.dropsize-line {
+  position: absolute;
+  cursor: col-resize;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  &.dropsize-line-top {
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    cursor: row-resize;
+  }
+
+  &.dropsize-line-bottom {
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    cursor: row-resize;
+  }
+
+  &.dropsize-line-left {
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+  }
+
+  &.dropsize-line-right {
+    right: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+  }
+}
