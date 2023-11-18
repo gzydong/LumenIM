@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 
 interface IDropdown {
-  options: DropdownOption[]
+  options: any[]
   show: boolean
   x: number
   y: number

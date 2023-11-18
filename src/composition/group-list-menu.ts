@@ -1,39 +1,11 @@
-import { reactive, h } from 'vue'
+import { reactive } from 'vue'
 
 interface IDropdown {
-    options: DropdownOption[]
+    options: any[]
     show: boolean
     x: number
     y: number
     item: any
-}
-
-import { useMessage, NAvatar, NText } from "naive-ui";
-
-function renderCustomHeader() {
-    return h(
-        "div",
-        {
-            style: "display: flex;  padding: 8px 12px;width:200px;"
-        },
-        [
-            h(NAvatar, {
-                round: true,
-                style: "margin-right: 12px;",
-                src: "https://07akioni.oss-cn-beijing.aliyuncs.com/demo1.JPG"
-            }),
-            h("div", null, [
-                h("div", null, [h(NText, { depth: 2 }, { default: () => "打工仔" })]),
-                h("div", { style: "font-size: 12px;" }, [
-                    h(
-                        NText,
-                        { depth: 3 },
-                        { default: () => "毫无疑问，你是办公室里最亮的星" }
-                    )
-                ])
-            ])
-        ]
-    );
 }
 
 export function useFriendsMenu() {
