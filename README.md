@@ -2,7 +2,7 @@
 <img alt="GitHub stars badge" src="https://img.shields.io/github/stars/gzydong/LumenIM"> <img alt="GitHub forks badge" src="https://img.shields.io/github/forks/gzydong/LumenIM"> <img alt="GitHub license badge" src="https://img.shields.io/github/license/gzydong/LumenIM">
 
 ###  项目介绍
-Lumen IM 是一个网页版即时聊天系统，界面简约美观
+Lumen IM 是一个网页版在线聊天项目，前端使用 Naive UI + Vue3，后端采用 GO 开发。
 
 ### 功能模块
 - 支持私聊及群聊
@@ -15,11 +15,6 @@ Lumen IM 是一个网页版即时聊天系统，界面简约美观
 
 ### 项目安装(部署)
 
-###### 设置 npm 镜像源
-```language
-npm config set registry https://registry.npm.taobao.org
-```
-
 ###### 下载安装
 ```bash
 ## 克隆项目源码包
@@ -28,18 +23,18 @@ git clone https://gitee.com/gzydong/LumenIM.git
 git clone https://github.com/gzydong/LumenIM.git
 
 ## 安装项目依赖扩展组件
-npm install
+yarn install
 
 # 启动本地开发环境
-npm run dev
+yarn dev
 # 启动本地开发环境桌面客户端
-npm run electron:dev
+yarn electron:dev
 
 ## 生产环境构建项目
-npm run build
+yarn build
 
 ## 生产环境桌面客户端打包
-npm run electron:build
+yarn electron:build
 ```
 
 ###### 修改 .env 配置信息
