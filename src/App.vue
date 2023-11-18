@@ -64,7 +64,7 @@ const getThemeOverride = computed(() => {
 })
 
 const onChangeRemark = value => {
-  publisher.publish('contact:change-remark', value)
+  publisher.emit('contact:change-remark', value)
   talkStore.setRemark(value)
 }
 

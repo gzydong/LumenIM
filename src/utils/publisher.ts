@@ -10,7 +10,7 @@ class Publisher {
     this.channels[channel].push(callback);
   }
   // 定义发布方法
-  publish(channel: string, data: any) {
+  emit(channel: string, data: any) {
     // 如果频道不存在，则直接返回
     if (!this.channels[channel]) {
       return;

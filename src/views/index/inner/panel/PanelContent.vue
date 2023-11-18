@@ -311,11 +311,11 @@ const onQuoteMessage = (data: IMessageRecord) => {
       break // 图文消息
   }
 
-  publisher.publish('editor:quote', item)
+  publisher.emit('editor:quote', item)
 }
 
 const onClickNickname = (data: IMessageRecord) => {
-  publisher.publish('editor:mention', {
+  publisher.emit('editor:mention', {
     id: data.user_id,
     value: data.nickname,
   })

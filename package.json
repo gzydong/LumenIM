@@ -46,7 +46,7 @@
     "electron-builder": "^23.6.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
-    "naive-ui": "^2.34.4",
+    "naive-ui": "^2.35.0",
     "typescript": "^5.0.4",
     "vite": "^4.5.0",
     "vite-plugin-compression": "^0.5.1",

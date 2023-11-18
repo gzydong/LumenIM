@@ -468,7 +468,7 @@
 
 "@icon-park/vue-next@^1.4.2":
   version "1.4.2"
-  resolved "https://registry.npmmirror.com/@icon-park/vue-next/-/vue-next-1.4.2.tgz"
+  resolved "https://registry.npmmirror.com/@icon-park/vue-next/-/vue-next-1.4.2.tgz#818c048100401620e8112beb2636f10171b195cc"
   integrity sha512-+QklF255wkfBOabY+xw6FAI0Bwln/RhdwCunNy/9sKdKuChtaU67QZqU67KGAvZUTeeBgsL+yaHHxqfQeGZXEQ==
 
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
@@ -3860,9 +3860,9 @@ muggle-string@^0.3.1:
   resolved "https://registry.npmmirror.com/muggle-string/-/muggle-string-0.3.1.tgz"
   integrity sha512-ckmWDJjphvd/FvZawgygcUeQCxzvohjFO5RxTjj4eq8kw359gFF3E1brjfI+viLMxss5JrHTDRHZvu2/tuy0Qg==
 
-naive-ui@^2.34.4:
+naive-ui@^2.35.0:
   version "2.35.0"
-  resolved "https://registry.npmmirror.com/naive-ui/-/naive-ui-2.35.0.tgz"
+  resolved "https://registry.npmmirror.com/naive-ui/-/naive-ui-2.35.0.tgz#fe1fc2404694b4114486fa31e609e35714e8ed25"
   integrity sha512-PdnLpOip1LQaKs5+rXLZoPDPQkTq26TnHWeABvUA2eOQjtHxE4+TQvj0Jq/W8clM2On/7jptoGmenLt48G3Bhg==
   dependencies:
     "@css-render/plugin-bem" "^0.15.12"
