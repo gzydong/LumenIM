@@ -1,162 +1,147 @@
-<template>
-  <div id="login-box">
-    <div class="header">快捷登录</div>
-    <div class="main">
-      <el-form ref="form" :model="form" :rules="rules">
-        <el-form-item prop="username">
-          <el-input
-            v-model="form.username"
-            placeholder="手机号"
-            class="cuborder-radius"
-            maxlength="11"
-            @keyup.enter.native="onSubmit('form')"
-          />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="密码"
-            class="cuborder-radius"
-            @keyup.enter.native="onSubmit('form')"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            class="submit-btn"
-            :loading="loginLoading"
-            @click="onSubmit('form')"
-            >立即登录
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <div class="links">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="toLink('/auth/forget')"
-              >找回密码
-            </el-link>
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="toLink('/auth/register')"
-              >还没有账号？立即注册
-            </el-link>
-          </div>
-        </el-form-item>
-
-        <p style="margin-top: 50px">
-          <el-divider>
-            <span style="color: rgb(181, 176, 176); font-weight: 200">
-              <i class="el-icon-mobile-phone" /> 预览账号
-            </span>
-          </el-divider>
-        </p>
-        <el-form-item class="preview-account">
-          <p>预览账号:18798272054 / 密码: admin123</p>
-          <p>预览账号:18798272055 / 密码: admin123</p>
-        </el-form-item>
-      </el-form>
-    </div>
-  </div>
-</template>
-<script>
-import { setToken } from '@/utils/auth'
+<script setup>
+import { reactive, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
+import { setAccessToken } from '@/utils/auth'
+import { palyMusic } from '@/utils/talk'
+import socket from '@/socket'
+import { useUserStore } from '@/store/user'
 
-export default {
-  data() {
-    return {
-      loginLoading: false,
-      form: {
-        username: '',
-        password: '',
-      },
-      rules: {
-        username: [
-          {
-            required: true,
-            message: '登录账号不能为空!',
-            trigger: 'blur',
-          },
-        ],
-        password: [
-          {
-            required: true,
-            message: '登录密码不能为空!',
-            trigger: 'blur',
-          },
-        ],
-      },
-    }
+const userStore = useUserStore()
+const route = useRoute()
+const router = useRouter()
+const formRef = ref()
+const rules = {
+  username: {
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '账号不能为空',
   },
-  methods: {
-    onSubmit(formName) {
-      if (this.loginLoading) return false
-
-      this.$refs[formName].validate(valid => {
-        if (!valid) return false
-        this.loginLoading = true
-        this.login()
-      })
-    },
-
-    login() {
-      ServeLogin({
-        mobile: this.form.username,
-        password: this.form.password,
-        platform: 'web',
-      })
-        .then(res => {
-          if (res.code == 200) {
-            let result = res.data
-
-            // 保存授权信息到本地缓存
-            setToken(result.access_token, result.expires_in)
-
-            this.$store.commit('UPDATE_USER_INFO', result.userInfo)
-            this.$store.commit('UPDATE_LOGIN_STATUS')
-            this.$store.dispatch('LOAD_TALK_ITEMS')
-
-            // 登录成功后连接 WebSocket 服务器
-            this.$root.initialize()
-
-            this.toLink('/')
-            
-            this.showNotice()
-          } else {
-            this.$notify.info({
-              title: '提示',
-              message: '登录密码不正确或账号不存在...',
-            })
-          }
-        })
-        .finally(() => {
-          this.loginLoading = false
-        })
-    },
-
-    toLink(url) {
-      this.$router.push({
-        path: url,
-      })
-    },
-
-    showNotice() {
-      setTimeout(() => {
-        this.$notify({
-          title: '友情提示',
-          message:
-            '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
-          duration: 0,
-        })
-      }, 3000)
-    },
+  password: {
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '密码不能为空',
   },
 }
+
+const model = reactive({
+  username: '',
+  password: '',
+  loading: false,
+})
+
+const onLogin = () => {
+  model.loading = true
+
+  const response = ServeLogin({
+    mobile: model.username,
+    password: model.password,
+    platform: 'web',
+  })
+
+  response.then(async res => {
+    if (res.code == 200) {
+      window['$message'].success('登录成功')
+      setAccessToken(res.data.access_token, res.data.expires_in)
+      socket.connect()
+      userStore.loadSetting()
+      router.push(route.query.redirect || '/')
+    } else {
+      window['$message'].warning(res.message)
+    }
+  })
+
+  response.finally(() => {
+    model.loading = false
+  })
+}
+
+const onValidate = e => {
+  e.preventDefault()
+
+  // 谷歌浏览器提示音需要用户主动交互才能播放，登录入口主动交互一次，后面消息提示音就能正常播放了
+  palyMusic(true)
+
+  formRef.value.validate(errors => {
+    !errors && onLogin()
+  })
+}
+
+const onClickAccount = type => {
+  if (type == 1) {
+    model.username = '18798272054'
+    model.password = 'admin123'
+  } else {
+    model.username = '18798272055'
+    model.password = 'admin123'
+  }
+
+  onLogin()
+}
 </script>
+
+<template>
+  <section class="el-container is-vertical login-box login">
+    <header class="el-header box-header">
+       快捷登录
+      </header>
+
+    <main class="el-main" style="padding: 3px">
+      <n-form ref="formRef" size="large" :model="model" :rules="rules">
+        <n-form-item path="username" :show-label="false">
+          <n-input
+            placeholder="请输入手机号"
+            v-model:value="model.username"
+            :maxlength="11"
+            @keydown.enter.native="onValidate"
+          />
+        </n-form-item>
+
+        <n-form-item path="password" :show-label="false">
+          <n-input
+            placeholder="请输入密码"
+            type="password"
+            show-password-on="click"
+            v-model:value="model.password"
+            @keydown.enter.native="onValidate"
+          />
+        </n-form-item>
+
+        <n-button
+          type="primary"
+          size="large"
+          block
+          class="mt-t20"
+          @click="onValidate"
+          :loading="model.loading"
+        >
+          立即登录
+        </n-button>
+      </n-form>
+
+      <div class="helper">
+        <n-button text color="#409eff" @click="router.push('/auth/forget')">
+          找回密码
+        </n-button>
+        <n-button text color="#409eff" @click="router.push('/auth/register')">
+          还没有账号？立即注册
+        </n-button>
+      </div>
+    </main>
+
+    <footer class="el-footer" style="height: 90px">
+      <n-divider style="height: 30px; margin: 0">
+        <span style="color: #ccc; font-weight: 300"> 预览账号</span>
+      </n-divider>
+      <div class="preview-account">
+        <p @click="onClickAccount(1)">预览账号:18798272054 / 密码: admin123</p>
+        <p @click="onClickAccount(2)">预览账号:18798272055 / 密码: admin123</p>
+      </div>
+    </footer>
+  </section>
+</template>
+
 <style lang="less" scoped>
-@import '~@/assets/css/page/login-auth.less';
+@import '@/assets/css/login.less';
 </style>

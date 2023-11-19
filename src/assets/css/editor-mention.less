@@ -1,0 +1,96 @@
+.ql-mention-list-container {
+  width: 160px;
+  max-height: 200px;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 12px 0 rgba(30, 30, 30, 0.08);
+  z-index: 9001;
+  overflow: auto;
+  padding: 3px;
+  padding-left: 6px;
+}
+
+.ql-mention-loading {
+  line-height: 44px;
+  padding: 0 20px;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.ql-mention-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ql-mention-list-item {
+  cursor: pointer;
+  line-height: 44px;
+  font-size: 16px;
+  vertical-align: middle;
+  padding: 0 10px;
+  overflow: hidden;
+}
+
+.ql-mention-list-item.disabled {
+  cursor: auto;
+}
+
+.ql-mention-list-item.selected {
+  background-color: var(--im-primary-color);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+}
+
+.mention {
+  height: 24px;
+  width: 65px;
+  border-radius: 6px;
+  background-color: #d3e1eb;
+  padding: 3px 0;
+  margin-right: 2px;
+  user-select: all;
+}
+
+.mention {
+  color: var(--im-primary-color);
+  background-color: transparent;
+
+  > span {
+    margin: 0 3px;
+  }
+}
+
+.ed-member-item {
+  height: 35px;
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+  }
+
+  .nickname {
+    margin-left: 10px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+html[data-theme='dark'] {
+  .ql-mention-list-container {
+    background-color: rgb(44 44 49);
+    color: #fff;
+    border: unset;
+
+    .ql-mention-list-item {
+      color: var(--im-text-color-grey);
+    }
+  }
+}

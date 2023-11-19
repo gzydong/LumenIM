@@ -1,0 +1,289 @@
+<script setup>
+import { ref, reactive, inject } from 'vue'
+import { NImageGroup } from 'naive-ui'
+import Loading from '@/components/base/Loading.vue'
+import { ServeFindTalkRecords } from '@/api/chat'
+import { Down, Calendar } from '@icon-park/vue-next'
+import * as message from '@/constant/message'
+
+const emit = defineEmits(['close'])
+const props = defineProps({
+  talkType: {
+    type: Number,
+    default: 0,
+  },
+  receiverId: {
+    type: Number,
+    default: 0,
+  },
+})
+const showUserModal = inject('$user')
+const model = reactive({
+  recordId: 0,
+  limit: 30,
+  msgType: 0,
+  loading: false,
+  loadMore: false,
+  isLoadMore: true,
+})
+
+const isShow = ref(true)
+const records = ref([])
+
+const tabs = [
+  { name: '全部', type: 0, show: true },
+  { name: '图片', type: message.ChatMsgTypeImage, show: true },
+  { name: '音频', type: message.ChatMsgTypeAudio, show: true },
+  { name: '视频', type: message.ChatMsgTypeVideo, show: true },
+  { name: '文件', type: message.ChatMsgTypeFile, show: true },
+  { name: '会话', type: message.ChatMsgTypeForward, show: true },
+  { name: '代码', type: message.ChatMsgTypeCode, show: true },
+  { name: '位置', type: message.ChatMsgTypeLocation, show: true },
+  { name: '群投票', type: message.ChatMsgTypeVote, show: props.talkType == 2 },
+]
+
+const onMaskClick = () => {
+  emit('close')
+}
+
+const loadChatRecord = () => {
+  let data = {
+    talk_type: props.talkType,
+    receiver_id: props.receiverId,
+    record_id: model.recordId,
+    msg_type: model.msgType,
+    limit: model.limit,
+  }
+
+  if (model.recordId === 0) {
+    model.loading = true
+  } else {
+    model.loadMore = true
+  }
+
+  ServeFindTalkRecords(data).then(res => {
+    if (res.code != 200) return
+
+    if (data.record_id === 0) {
+      records.value = []
+    }
+
+    let items = res.data.items || []
+
+    records.value.push(...items)
+
+    if (items.length) {
+      model.recordId = res.data.record_id
+    }
+
+    model.loading = false
+    model.loadMore = false
+    model.isLoadMore = items.length >= model.limit
+  })
+}
+
+const triggerType = type => {
+  model.msgType = type
+  model.recordId = 0
+  loadChatRecord()
+}
+
+loadChatRecord()
+</script>
+
+<template>
+  <n-modal
+    v-model:show="isShow"
+    preset="card"
+    title="消息管理"
+    style="max-width: 750px"
+    class="modal-radius"
+    :on-after-leave="onMaskClick"
+    :segmented="{
+      content: true,
+    }"
+    :header-style="{
+      padding: '20px 15px',
+    }"
+    :content-style="{
+      padding: 0,
+    }"
+  >
+    <section class="main-box el-container is-vertical o-hidden">
+      <header class="el-header bdr-b search" style="height: 50px">
+        <div class="type-items">
+          <span
+            v-for="tab in tabs"
+            class="pointer"
+            :class="{ active: model.msgType == tab.type }"
+            @click="triggerType(tab.type)"
+            v-show="tab.show"
+          >
+            {{ tab.name }}
+          </span>
+        </div>
+        <div style="display: flex; align-items: center">
+          <!-- <n-popover placement="bottom-end" trigger="click" :show-arrow="false">
+            <template #trigger>
+              <n-icon
+                :size="20"
+                class="pointer"
+                :component="Calendar"
+              />
+            </template>
+            <n-date-picker
+              panel
+              type="date"
+              :is-date-disabled="disablePreviousDate"
+              :on-update:value="datefunc"
+            />
+          </n-popover> -->
+
+          <n-icon :size="20" class="pointer" :component="Calendar" />
+        </div>
+      </header>
+
+      <main v-if="model.loading" class="el-main flex-center">
+        <Loading />
+      </main>
+
+      <main v-else-if="records.length === 0" class="el-main flex-center">
+        <n-empty size="200" description="暂无相关数据">
+          <template #icon>
+            <img src="@/assets/image/no-data.svg" alt="" />
+          </template>
+        </n-empty>
+      </main>
+
+      <main v-else class="el-main me-scrollbar me-scrollbar-thumb">
+        <n-image-group>
+          <div v-for="item in records" :key="item.id" class="message-item">
+            <div class="left-box">
+              <im-avatar
+                :src="item.avatar"
+                :size="30"
+                :username="item.nickname"
+                @click="showUserModal(item.user_id)"
+              />
+            </div>
+
+            <div class="right-box me-scrollbar">
+              <div class="msg-header">
+                <span class="name">{{ item.nickname }}</span>
+                <span class="time"> {{ item.created_at }}</span>
+              </div>
+
+              <component
+                :is="
+                  message.MessageComponents[item.msg_type] || 'unknown-message'
+                "
+                :extra="item.extra"
+                :data="item"
+              />
+            </div>
+          </div>
+        </n-image-group>
+
+        <div
+          class="more pointer flex-center"
+          @click="loadChatRecord"
+          v-show="model.isLoadMore"
+        >
+          <n-icon
+            v-show="!model.loadMore"
+            :size="20"
+            class="icon"
+            :component="Down"
+          />
+          <span>
+            &nbsp;{{ model.loadMore ? '数据加载中...' : '加载更多' }}
+          </span>
+        </div>
+      </main>
+    </section>
+  </n-modal>
+</template>
+
+<style lang="less" scoped>
+.main-box {
+  height: 550px;
+
+  .search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px 0 5px;
+
+    .type-items {
+      line-height: 40px;
+      user-select: none;
+
+      .active {
+        color: #03a9f4;
+        font-weight: 500;
+      }
+
+      span {
+        height: 40px;
+        width: 45px;
+        margin: 0 10px;
+        font-size: 13px;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.message-item {
+  min-height: 30px;
+  display: flex;
+  margin-bottom: 5px;
+  flex-direction: row;
+  padding: 5px 15px;
+
+  &:first-child {
+    margin-top: 10px;
+  }
+
+  .left-box {
+    width: 30px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    user-select: none;
+    padding-top: 8px;
+    margin-right: 10px;
+
+    img {
+      height: 30px;
+      width: 30px;
+      border-radius: 3px;
+    }
+  }
+
+  .right-box {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0px 5px 15px 5px;
+    box-sizing: border-box;
+    height: fit-content;
+
+    .msg-header {
+      height: 30px;
+      line-height: 30px;
+      font-size: 12px;
+      position: relative;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.more {
+  margin: 10px auto 20px;
+  width: 150px;
+  height: 30px;
+}
+</style>

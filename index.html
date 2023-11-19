@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="./src/assets/image/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumen IM</title>
+  <style>
+    .outer,
+    .middle,
+    .inner {
+      border: 3px solid transparent;
+      border-top-color: #dedada;
+      border-right-color: #dedada;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
+
+    .outer {
+      width: 3.5em;
+      height: 3.5em;
+      margin-left: -1.75em;
+      margin-top: -1.75em;
+      animation: spin 2s linear infinite;
+    }
+
+    .middle {
+      width: 2.1em;
+      height: 2.1em;
+      margin-left: -1.05em;
+      margin-top: -1.05em;
+      animation: spin 1.75s linear reverse infinite;
+    }
+
+    .inner {
+      width: 0.8em;
+      height: 0.8em;
+      margin-left: -0.4em;
+      margin-top: -0.4em;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <script>
+    // 这里为了处理首屏加载慢，设置缓存的主题
+    let cache = localStorage.getItem('IM_DARKTHEME')
+    if (cache) {
+      cache = JSON.parse(cache).value || false
+      if (cache) {
+        document.querySelector('html').style = 'background:#202124'
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="app-loading">
+      <div class="loader">
+        <div class="outer"></div>
+        <div class="middle"></div>
+        <div class="inner"></div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

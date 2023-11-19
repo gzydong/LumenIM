@@ -1,17 +1,16 @@
 import axios from 'axios'
-import config from '@/config/config'
-import { getToken, removeAll } from '@/utils/auth'
-
-import { Notification } from 'element-ui'
+import { delAccessToken, getAccessToken } from '@/utils/auth'
 
 // 创建 axios 实例
 const request = axios.create({
   // API 请求的默认前缀
-  baseURL: config.BASE_API_URL,
+  baseURL: import.meta.env.VITE_BASE_API,
 
   // 请求超时时间
-  timeout: 20000,
+  timeout: 10000,
 })
+
+let once = false
 
 /**
  * 异常拦截处理器
@@ -22,20 +21,20 @@ const errorHandler = error => {
   // 判断是否是响应错误信息
   if (error.response) {
     if (error.response.status == 401) {
-      removeAll()
-      location.reload()
-    } else if (error.response.status == 403) {
-      Notification({
-        title: '警告',
-        type: 'warning',
-        message: '无权限操作 ...',
-        position: 'top-right',
-      })
-    } else {
-      Notification({
-        message: '网络异常,请稍后再试...',
-        position: 'top-right',
-      })
+      delAccessToken()
+
+      if (!once) {
+        once = true
+        window['$dialog'].info({
+          title: '友情提示',
+          content: '当前登录已失效，请重新登录？',
+          positiveText: '立即登录?',
+          maskClosable: false,
+          onPositiveClick: () => {
+            location.reload()
+          },
+        })
+      }
     }
   }
 
@@ -44,7 +43,8 @@ const errorHandler = error => {
 
 // 请求拦截器
 request.interceptors.request.use(config => {
-  const token = getToken()
+  const token = getAccessToken()
+
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
   }
@@ -53,9 +53,7 @@ request.interceptors.request.use(config => {
 }, errorHandler)
 
 // 响应拦截器
-request.interceptors.response.use(response => {
-  return response.data
-}, errorHandler)
+request.interceptors.response.use(response => response.data, errorHandler)
 
 /**
  * GET 请求
