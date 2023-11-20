@@ -11,6 +11,9 @@ export default defineComponent({
 
       ctx.appContext.config.globalProperties.$message = message
     }
+  },
+  render() {
+    return null
   }
 })
 </script>
