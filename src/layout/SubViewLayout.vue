@@ -73,7 +73,7 @@ defineProps({
     .menu {
       height: 35px;
       padding: 0 5px;
-      font-size: 14px;
+      font-size: 13px;
       border-radius: 5px;
       margin: 8px 2px;
       display: flex;

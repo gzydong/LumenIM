@@ -14,7 +14,7 @@ let show = ref(false)
   <section class="im-message-group-notice pointer" @click="show = !show">
     <div class="title">
       <n-tag :bordered="false" size="small" type="primary"> 群公告 </n-tag>
-      {{ extra.title }}
+      《{{ extra.title }}》
     </div>
     <div class="content" :class="{ ellipsis: !show }">
       {{ extra.content }}
@@ -30,7 +30,6 @@ let show = ref(false)
   padding: 8px 10px;
   border: 1px solid var(--im-message-border-color);
   user-select: none;
-  margin: 0 auto;
 
   .title {
     height: 30px;
@@ -42,17 +41,6 @@ let show = ref(false)
     font-weight: 400;
     margin-bottom: 5px;
     position: relative;
-
-    // &::after {
-    //   content: '详情 >';
-    //   position: absolute;
-    //   right: 0;
-    //   top: 3px;
-    //   width: 80px;
-    //   height: 30px;
-    //   font-size: 12px;
-    //   text-align: right;
-    // }
   }
 
   .content {

@@ -10,6 +10,7 @@ export const ChatMsgTypeForward = 9 // 转发消息
 export const ChatMsgTypeLogin = 10 // 登录消息
 export const ChatMsgTypeVote = 11 // 投票消息
 export const ChatMsgTypeMixed = 12 // 混合消息
+export const ChatMsgTypeGroupNotice = 13 // 群公告消息
 
 export const ChatMsgSysText = 1000 // 系统文本消息
 export const ChatMsgSysGroupCreate = 1101 // 创建群聊消息
@@ -38,6 +39,7 @@ export const ChatMsgTypeMapping = {
   [ChatMsgTypeVote]: '[投票消息]',
   [ChatMsgTypeCode]: '[代码消息]',
   [ChatMsgTypeMixed]: '[图文消息]',
+  [ChatMsgTypeGroupNotice]: '[群公告]',
   [ChatMsgSysText]: '[系统消息]',
   [ChatMsgSysGroupCreate]: '[创建群消息]',
   [ChatMsgSysGroupMemberJoin]: '[加入群消息]',
@@ -66,6 +68,7 @@ export const MessageComponents = {
   [ChatMsgTypeVote]: 'vote-message',
   [ChatMsgTypeCode]: 'code-message',
   [ChatMsgTypeMixed]: 'mixed-message',
+  [ChatMsgTypeGroupNotice]: 'group-notice-message',
   [ChatMsgSysText]: 'sys-text-message',
   [ChatMsgSysGroupCreate]: 'sys-group-create-message',
   [ChatMsgSysGroupMemberJoin]: 'sys-group-join-message',
@@ -78,7 +81,6 @@ export const MessageComponents = {
   [ChatMsgSysGroupMemberMuted]: 'sys-group-member-muted-message',
   [ChatMsgSysGroupMemberCancelMuted]: 'sys-group-member-cancel-muted-message',
   [ChatMsgSysGroupTransfer]: 'sys-group-transfer-message',
-  [ChatMsgSysGroupNotice]: 'Group-notice-message',
 }
 
 // 可转发的消息类型

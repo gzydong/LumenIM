@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
-    "@kangc/v-md-editor": "^2.3.15",
+    "@kangc/v-md-editor": "^2.3.18",
     "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.6.2",
     "highlight.js": "^11.5.0",

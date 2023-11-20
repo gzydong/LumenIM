@@ -165,3 +165,7 @@ export function deltaToString(delta: Delta): string {
 
     return content
 }
+
+export function isEmptyDelta(delta: Delta): boolean {
+    return delta.ops.length == 1 && delta.ops[0].insert == '\n'
+}

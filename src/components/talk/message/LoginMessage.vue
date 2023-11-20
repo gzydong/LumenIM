@@ -46,8 +46,8 @@ function getExploreOs(userAgent = '') {
     <p>IP 地址：{{ extra.ip }}</p>
     <p>登录地点：{{ extra.address }}</p>
     <p>
-      登录设备：{{ getExploreName(extra.platform) }} /
-      {{ getExploreOs(extra.platform) }}
+      登录设备：{{ getExploreName(extra.agent) }} /
+      {{ getExploreOs(extra.agent) }}
     </p>
     <p>异常原因：{{ extra.reason }}</p>
   </section>

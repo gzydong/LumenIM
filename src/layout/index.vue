@@ -79,7 +79,7 @@ html[data-theme='dark'] {
   }
 
   .small-screen {
-    box-shadow: 3px 0 17px 2px rgb(64 61 62);
+    border: 1px solid #494949;
   }
 }
 </style>

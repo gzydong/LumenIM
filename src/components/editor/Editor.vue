@@ -26,7 +26,7 @@ import { QuillEditor, Quill } from '@vueup/vue-quill'
 import ImageUploader from 'quill-image-uploader'
 import 'quill-mention'
 import { useDialogueStore, useEditorDraftStore } from '@/store'
-import { deltaToMessage, deltaToString } from './util.ts'
+import { deltaToMessage, deltaToString,isEmptyDelta } from './util.ts'
 import { getImageInfo } from '@/utils/functions'
 import { publisher } from '@/utils/publisher.ts'
 import { emitCall } from '@/utils/common'
@@ -386,11 +386,16 @@ function onEditorChange() {
   let delta = getQuill().getContents()
 
   let text = deltaToString(delta)
-
-  editorDraftStore.items[indexName.value || ''] = JSON.stringify({
-    text: text,
-    ops: delta.ops,
-  })
+  
+  if (!isEmptyDelta(delta)) {
+    editorDraftStore.items[indexName.value || ''] = JSON.stringify({
+      text: text,
+      ops: delta.ops,
+    })
+  }else{
+    // 删除 editorDraftStore.items 下的元素
+    delete editorDraftStore.items[indexName.value || '']
+  }
 
   emit('editor-event', emitCall('input_event', text))
 }
