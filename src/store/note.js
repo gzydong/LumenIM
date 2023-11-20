@@ -7,7 +7,7 @@ import {
   ServeEditArticleClass,
   ServeEditArticleTag,
   ServeDeleteArticleClass,
-  ServeDeleteArticleTag,
+  ServeDeleteArticleTag
 } from '@/api/article'
 
 export const useNoteStore = defineStore('note', {
@@ -19,7 +19,7 @@ export const useNoteStore = defineStore('note', {
       notes: {
         loadStatus: 0,
         params: { page: 1, keyword: '', find_type: 1, cid: 0 },
-        items: [],
+        items: []
       },
 
       view: {
@@ -37,9 +37,9 @@ export const useNoteStore = defineStore('note', {
           content: '',
           md_content: '',
           created_at: '',
-          class_name: '',
-        },
-      },
+          class_name: ''
+        }
+      }
     }
   },
 
@@ -59,7 +59,7 @@ export const useNoteStore = defineStore('note', {
         md_content: '',
         status: 1,
         tags: [],
-        title: '请编辑标题！！！',
+        title: '请编辑标题！！！'
       }
 
       this.view.loadId = 1
@@ -88,19 +88,14 @@ export const useNoteStore = defineStore('note', {
 
     loadNoteList(params = {}, isReset = true) {
       if (isReset) {
-        Object.assign(
-          this.notes.params,
-          { page: 1, keyword: '', find_type: 1, cid: 0 },
-          params
-        )
+        Object.assign(this.notes.params, { page: 1, keyword: '', find_type: 1, cid: 0 }, params)
       } else {
         Object.assign(this.notes.params, params)
       }
 
       this.notes.loadStatus = 0
       this.notes.items = []
-      ServeGetArticleList(this.notes.params).then(res => {
-
+      ServeGetArticleList(this.notes.params).then((res) => {
         this.notes.items = res.data.items
 
         this.notes.loadStatus = 1
@@ -108,7 +103,7 @@ export const useNoteStore = defineStore('note', {
     },
 
     updateNoteItem(id, params = {}) {
-      const item = this.notes.items.find(item => item.id == id)
+      const item = this.notes.items.find((item) => item.id == id)
 
       item && Object.assign(item, params)
     },
@@ -121,7 +116,7 @@ export const useNoteStore = defineStore('note', {
       this.setEditorMode('preview')
 
       ServeGetArticleDetail({
-        article_id: id,
+        article_id: id
       }).then(({ code, data }) => {
         if (code != 200 && data.id != this.view.loadId) {
           return
@@ -132,7 +127,7 @@ export const useNoteStore = defineStore('note', {
         data.class_name = ''
         this.view.detail = data
 
-        let node = this.class.find(item => {
+        let node = this.class.find((item) => {
           return item.id == data.class_id
         })
 
@@ -158,7 +153,7 @@ export const useNoteStore = defineStore('note', {
         if (class_id === 0) {
           this.class.unshift({ class_name, count: 0, id: res.data.id })
         } else {
-          const item = this.class.find(item => item.id === class_id)
+          const item = this.class.find((item) => item.id === class_id)
           item && Object.assign(item, { class_name })
         }
       }
@@ -168,7 +163,7 @@ export const useNoteStore = defineStore('note', {
       const res = await ServeDeleteArticleClass({ class_id })
 
       if (res && res.code == 200) {
-        const index = this.class.findIndex(item => item.id === class_id)
+        const index = this.class.findIndex((item) => item.id === class_id)
 
         if (index >= 0) {
           this.class.splice(index, 1)
@@ -186,7 +181,7 @@ export const useNoteStore = defineStore('note', {
         if (tag_id === 0) {
           this.tags.unshift({ tag_name, count: 0, id: res.data.id })
         } else {
-          const item = this.tags.find(item => item.id === tag_id)
+          const item = this.tags.find((item) => item.id === tag_id)
           item && Object.assign(item, { tag_name })
         }
       }
@@ -196,7 +191,7 @@ export const useNoteStore = defineStore('note', {
       const res = await ServeDeleteArticleTag({ tag_id })
 
       if (res && res.code == 200) {
-        const index = this.tags.findIndex(item => item.id === tag_id)
+        const index = this.tags.findIndex((item) => item.id === tag_id)
 
         if (index >= 0) {
           this.tags.splice(index, 1)
@@ -204,6 +199,6 @@ export const useNoteStore = defineStore('note', {
       } else {
         window['$message'].info(res.message)
       }
-    },
-  },
+    }
+  }
 })

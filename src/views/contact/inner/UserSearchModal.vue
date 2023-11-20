@@ -11,7 +11,7 @@ const isShow = ref(true)
 const keyword = ref('')
 const isShowError = ref(false)
 
-const onShowError = isBool => {
+const onShowError = (isBool) => {
   isShowError.value = isBool
 
   if (isBool) {
@@ -27,8 +27,8 @@ const onSubmit = () => {
   }
 
   ServeSearchContact({
-    mobile: keyword.value,
-  }).then(res => {
+    mobile: keyword.value
+  }).then((res) => {
     onShowError(res.code != 200)
 
     if (res.code == 200) {
@@ -67,23 +67,16 @@ const onShowUpdate = () => {
           placeholder="必填"
           :maxlength="30"
           v-model:value="keyword"
-          @keydown.enter.native="onSubmit"
+          @keydown.enter="onSubmit"
         />
       </n-form-item>
-      <p v-show="isShowError" style="color: red">
-        无法找到该用户，请检查搜索内容并重试!
-      </p>
+      <p v-show="isShowError" style="color: red">无法找到该用户，请检查搜索内容并重试!</p>
     </n-form>
 
     <template #footer>
       <div style="width: 100%; text-align: right">
         <n-button type="tertiary" @click="onShowUpdate"> 取消 </n-button>
-        <n-button
-          type="primary"
-          @click="onSubmit"
-          class="mt-l15"
-          :disabled="isCanSubmit"
-        >
+        <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
           查询
         </n-button>
       </div>

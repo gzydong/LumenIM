@@ -22,7 +22,7 @@ onUnmounted(() => {
           min: 200,
           max: 500,
           direction: 'right',
-          key: 'session-list',
+          key: 'session-list'
         }"
         class="el-aside bdr-r session-list"
       >
@@ -30,9 +30,7 @@ onUnmounted(() => {
       </aside>
 
       <main class="el-main">
-        <component
-          :is="dialogueStore.index_name ? IndexContent : IndexAmicable"
-        />
+        <component :is="dialogueStore.index_name ? IndexContent : IndexAmicable" />
       </main>
     </section>
   </Layout>

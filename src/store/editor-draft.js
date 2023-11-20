@@ -6,8 +6,8 @@ export const useEditorDraftStore = defineStore('editor-draft', {
   persist: true,
   state: () => {
     return {
-      items: {},
+      items: {}
     }
   },
-  actions: {},
+  actions: {}
 })

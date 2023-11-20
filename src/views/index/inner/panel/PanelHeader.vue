@@ -1,33 +1,28 @@
 <script setup>
-import {
-  Peoples,
-  Announcement,
-  MenuUnfoldOne,
-  MenuFoldOne,
-} from '@icon-park/vue-next'
+import { Peoples, Announcement, MenuUnfoldOne, MenuFoldOne } from '@icon-park/vue-next'
 import { useDialogueStore } from '@/store/dialogue'
 
 defineProps({
   type: {
     type: Number,
-    default: 1,
+    default: 1
   },
   username: {
     type: String,
-    default: '',
+    default: ''
   },
   online: {
     type: Boolean,
-    default: false,
+    default: false
   },
   keyboard: {
     type: Boolean,
-    default: false,
+    default: false
   },
   num: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const dialogueStore = useDialogueStore()
@@ -43,9 +38,7 @@ const onSetMenu = () => {
     <div class="menu bdr-r pointer" @click="onSetMenu">
       <n-icon
         size="22"
-        :component="
-          dialogueStore.isShowSessionList ? MenuUnfoldOne : MenuFoldOne
-        "
+        :component="dialogueStore.isShowSessionList ? MenuUnfoldOne : MenuFoldOne"
       />
     </div>
 

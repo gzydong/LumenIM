@@ -12,8 +12,8 @@ const emit = defineEmits(['close'])
 const props = defineProps({
   gid: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const isShowBox = ref(true)
@@ -23,7 +23,7 @@ const menus = [
   { name: '群成员', component: MemberTab },
   { name: '群公告', component: NoticeTab },
   { name: '群申请', component: ApplyTab },
-  { name: '群设置', component: ConfigTab },
+  { name: '群设置', component: ConfigTab }
 ]
 
 const onMaskClick = () => {
@@ -40,10 +40,10 @@ const onMaskClick = () => {
     style="max-width: 800px"
     :on-after-leave="onMaskClick"
     :segmented="{
-      content: true,
+      content: true
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <section class="el-container container-box">
@@ -59,11 +59,7 @@ const onMaskClick = () => {
       </aside>
 
       <main class="el-main">
-        <component
-          :is="menus[tabIndex].component"
-          :id="gid"
-          @close="onMaskClick"
-        />
+        <component :is="menus[tabIndex].component" :id="gid" @close="onMaskClick" />
       </main>
     </section>
   </n-modal>

@@ -7,30 +7,30 @@ const notifyStore = useNotifyStore()
 
 const isPromptTone = computed({
   get: () => notifyStore.isPromptTone,
-  set: val => {
+  set: (val) => {
     notifyStore.setPromptTone(val)
-  },
+  }
 })
 
 const isKeyboard = computed({
   get: () => notifyStore.isKeyboard,
-  set: val => {
+  set: (val) => {
     notifyStore.setKeyboard(val)
-  },
+  }
 })
 
 const isWebNotify = computed({
   get: () => notifyStore.isWebNotify,
-  set: val => {
+  set: (val) => {
     if (val === false) {
       notifyStore.isWebNotify = false
     } else {
-      window.Notification.requestPermission(res => {
+      window.Notification.requestPermission((res) => {
         console.log(res)
         notifyStore.isWebNotify = 'granted' === res
       })
     }
-  },
+  }
 })
 </script>
 

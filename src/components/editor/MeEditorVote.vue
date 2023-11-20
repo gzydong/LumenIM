@@ -1,14 +1,6 @@
 <script setup>
 import { reactive, computed, ref } from 'vue'
-import {
-  NModal,
-  NForm,
-  NFormItem,
-  NInput,
-  NRadioGroup,
-  NSpace,
-  NRadio,
-} from 'naive-ui'
+import { NModal, NForm, NFormItem, NInput, NRadioGroup, NSpace, NRadio } from 'naive-ui'
 import { Delete } from '@icon-park/vue-next'
 const emit = defineEmits(['close', 'submit'])
 
@@ -17,7 +9,7 @@ const model = reactive({
   mode: 0,
   anonymous: 0,
   title: '',
-  options: [{ value: '' }, { value: '' }, { value: '' }],
+  options: [{ value: '' }, { value: '' }, { value: '' }]
 })
 
 const onMaskClick = () => {
@@ -29,7 +21,7 @@ const onSubmit = () => {
     title: model.title,
     mode: model.mode,
     anonymous: model.anonymous,
-    options: model.options.map(item => item.value),
+    options: model.options.map((item) => item.value)
   }
 
   emit('submit', data)
@@ -39,15 +31,14 @@ const addOption = () => {
   model.options.push({ value: '' })
 }
 
-const delOption = index => {
+const delOption = (index) => {
   model.options.length > 2 && model.options.splice(index, 1)
 }
 
 // 是否可提交
 const isCanSubmit = computed(() => {
   return (
-    model.title.trim().length == 0 ||
-    model.options.some(item => item.value.trim().length === 0)
+    model.title.trim().length == 0 || model.options.some((item) => item.value.trim().length === 0)
   )
 })
 </script>
@@ -81,23 +72,15 @@ const isCanSubmit = computed(() => {
       </n-form-item>
 
       <n-form-item label="投票主题" :required="true">
-        <n-input
-          placeholder="请输入投票主题，最多50字"
-          v-model:value="model.title"
-        />
+        <n-input placeholder="请输入投票主题，最多50字" v-model:value="model.title" />
       </n-form-item>
 
       <n-form-item label="投票选项" :required="true">
         <div class="options">
-          <div v-for="(option, i) in model.options" class="option">
-            <n-input
-              placeholder="&nbsp;请输入选项内容"
-              v-model:value="option.value"
-            >
+          <div v-for="(option, i) in model.options" :key="i" class="option">
+            <n-input placeholder="&nbsp;请输入选项内容" v-model:value="option.value">
               <template #prefix>
-                <span style="color: #ccc">
-                  {{ String.fromCharCode(65 + i) }}.
-                </span>
+                <span style="color: #ccc"> {{ String.fromCharCode(65 + i) }}. </span>
               </template>
             </n-input>
 
@@ -106,12 +89,7 @@ const isCanSubmit = computed(() => {
             </div>
           </div>
 
-          <n-button
-            text
-            type="primary"
-            @click="addOption"
-            v-if="model.options.length < 6"
-          >
+          <n-button text type="primary" @click="addOption" v-if="model.options.length < 6">
             添加选项
           </n-button>
         </div>
@@ -121,12 +99,7 @@ const isCanSubmit = computed(() => {
     <template #footer>
       <div style="width: 100%; text-align: right">
         <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
-        <n-button
-          type="primary"
-          @click="onSubmit"
-          class="mt-l15"
-          :disabled="isCanSubmit"
-        >
+        <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
           发起投票
         </n-button>
       </div>

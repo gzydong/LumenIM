@@ -6,24 +6,24 @@ const emit = defineEmits(['to-talk'])
 defineProps({
   avatar: {
     type: String,
-    default: '',
+    default: ''
   },
   username: {
     type: String,
-    default: '',
+    default: ''
   },
   gender: {
     type: Number,
-    default: 0,
+    default: 0
   },
   motto: {
     type: String,
-    default: '',
+    default: ''
   },
   flag: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 </script>
 

@@ -9,9 +9,7 @@ const dialogueStore = useDialogueStore()
 <template>
   <!-- 置底按钮 -->
   <div class="skip-bottom pointer" :class="{ show: modelValue }">
-    <span v-if="dialogueStore.unreadBubble"
-      >{{ dialogueStore.unreadBubble }} 条未读消息</span
-    >
+    <span v-if="dialogueStore.unreadBubble">{{ dialogueStore.unreadBubble }} 条未读消息</span>
     <span v-else>回到底部</span>
     <n-icon size="14" color="#fff" :component="DoubleDown" />
   </div>

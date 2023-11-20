@@ -3,7 +3,7 @@ import { ServeGetTalkList } from '@/api/chat'
 import { formatTalkItem } from '@/utils/talk'
 import { useEditorDraftStore } from './index'
 
-const ttime = datetime => {
+const ttime = (datetime) => {
   if (datetime == undefined || datetime == '') {
     return new Date().getTime()
   }
@@ -18,39 +18,37 @@ export const useTalkStore = defineStore('talk', {
       loadStatus: 2,
 
       // 会话列表
-      items: [],
+      items: []
     }
   },
   getters: {
     // 过滤所有置顶对话列表
-    topItems: state => {
-      return state.items.filter(item => item.is_top == 1)
+    topItems: (state) => {
+      return state.items.filter((item) => item.is_top == 1)
     },
 
     // 对话列表
-    talkItems: state => {
+    talkItems: (state) => {
       return state.items.sort((a, b) => {
         return ttime(b.updated_at) - ttime(a.updated_at)
       })
     },
 
     // 消息未读数总计
-    talkUnreadNum: state => {
+    talkUnreadNum: (state) => {
       return state.items.reduce((total, item) => {
         return total + parseInt(item.unread_num)
       }, 0)
-    },
+    }
   },
   actions: {
     findItem(index_name) {
-      return this.items.find(item => item.index_name === index_name)
+      return this.items.find((item) => item.index_name === index_name)
     },
 
     // 更新对话节点
     updateItem(params) {
-      const item = this.items.find(
-        item => item.index_name === params.index_name
-      )
+      const item = this.items.find((item) => item.index_name === params.index_name)
 
       item && Object.assign(item, params)
     },
@@ -62,7 +60,7 @@ export const useTalkStore = defineStore('talk', {
 
     // 移除对话节点
     delItem(index_name) {
-      const i = this.items.findIndex(item => item.index_name === index_name)
+      const i = this.items.findIndex((item) => item.index_name === index_name)
 
       if (i >= 0) {
         this.items.splice(i, 1)
@@ -73,9 +71,7 @@ export const useTalkStore = defineStore('talk', {
 
     // 更新对话消息
     updateMessage(params) {
-      const item = this.items.find(
-        item => item.index_name === params.index_name
-      )
+      const item = this.items.find((item) => item.index_name === params.index_name)
 
       if (item) {
         item.unread_num++
@@ -86,9 +82,7 @@ export const useTalkStore = defineStore('talk', {
 
     // 更新联系人备注
     setRemark(params) {
-      const item = this.items.find(
-        item => item.index_name === `1_${params.user_id}`
-      )
+      const item = this.items.find((item) => item.index_name === `1_${params.user_id}`)
 
       item && (item.remark = params.remark)
     },
@@ -103,7 +97,7 @@ export const useTalkStore = defineStore('talk', {
 
       response.then(({ code, data }) => {
         if (code == 200) {
-          this.items = data.items.map(item => {
+          this.items = data.items.map((item) => {
             let value = formatTalkItem(item)
 
             let draft = editorDraftStore.items[value.index_name]
@@ -127,6 +121,6 @@ export const useTalkStore = defineStore('talk', {
       response.catch(() => {
         this.loadStatus = 4
       })
-    },
-  },
+    }
+  }
 })

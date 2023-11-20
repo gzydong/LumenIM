@@ -23,7 +23,7 @@ class Base {
     return {
       talk_type,
       receiver_id,
-      index_name: dialogueStore.index_name,
+      index_name: dialogueStore.index_name
     }
   }
 
@@ -39,10 +39,7 @@ class Base {
 
     if (talk_type != params.talk_type) {
       return false
-    } else if (
-      params.receiver_id == receiver_id ||
-      params.receiver_id == sender_id
-    ) {
+    } else if (params.receiver_id == receiver_id || params.receiver_id == sender_id) {
       return true
     }
 

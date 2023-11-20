@@ -14,7 +14,7 @@ export function useFriendsMenu() {
     show: false,
     x: 0,
     y: 0,
-    item: {},
+    item: {}
   })
 
   const showDropdownMenu = (e: any, item: any) => {

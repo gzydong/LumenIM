@@ -8,12 +8,12 @@ const emit = defineEmits(['close'])
 const props = defineProps({
   pid: {
     type: String,
-    default: '',
+    default: ''
   },
   recordId: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 const user = inject('$user')
 const isShow = ref(true)
@@ -29,8 +29,8 @@ const onLoadData = () => {
 
   ServeGetForwardRecords({
     pid: props.pid,
-    record_id: props.recordId,
-  }).then(res => {
+    record_id: props.recordId
+  }).then((res) => {
     if (res.code == 200) {
       records.value = res.data.items || []
 
@@ -51,13 +51,13 @@ onLoadData()
     class="modal-radius"
     :on-after-leave="onMaskClick"
     :segmented="{
-      content: true,
+      content: true
     }"
     :header-style="{
-      padding: '20px 15px',
+      padding: '20px 15px'
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <div class="main-box me-scrollbar me-scrollbar-thumb">

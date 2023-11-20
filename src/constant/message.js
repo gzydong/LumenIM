@@ -51,7 +51,7 @@ export const ChatMsgTypeMapping = {
   [ChatMsgSysGroupCancelMuted]: '[群解除禁言消息]',
   [ChatMsgSysGroupMemberMuted]: '[群成员禁言消息]',
   [ChatMsgSysGroupMemberCancelMuted]: '[群成员解除禁言消息]',
-  [ChatMsgSysGroupNotice]: '[群公告]',
+  [ChatMsgSysGroupNotice]: '[群公告]'
 }
 
 // 消息类型 - 消息组件 映射关系
@@ -80,7 +80,7 @@ export const MessageComponents = {
   [ChatMsgSysGroupCancelMuted]: 'sys-group-cancel-muted-message',
   [ChatMsgSysGroupMemberMuted]: 'sys-group-member-muted-message',
   [ChatMsgSysGroupMemberCancelMuted]: 'sys-group-member-cancel-muted-message',
-  [ChatMsgSysGroupTransfer]: 'sys-group-transfer-message',
+  [ChatMsgSysGroupTransfer]: 'sys-group-transfer-message'
 }
 
 // 可转发的消息类型
@@ -92,6 +92,6 @@ export const ForwardableMessageType = [
   ChatMsgTypeVideo,
   ChatMsgTypeFile,
   ChatMsgTypeLocation,
-  ChatMsgTypeCard,
+  ChatMsgTypeCard
   // ChatMsgTypeForward
 ]

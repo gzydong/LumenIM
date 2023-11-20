@@ -24,20 +24,20 @@ const img = (src: string, width = 200) => {
 
   if (info.height > 300) {
     return {
-      height: '300px',
+      height: '300px'
     }
   }
 
   if (info.width < width) {
     return {
       width: `${info.width}px`,
-      height: `${info.height}px`,
+      height: `${info.height}px`
     }
   }
 
   return {
     width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px',
+    height: parseInt(info.height / (info.width / width)) + 'px'
   }
 }
 
@@ -53,7 +53,7 @@ async function onPlay() {
     url: props.extra.url,
     fluid: true,
     autoplay: true,
-    lang: 'zh-cn',
+    lang: 'zh-cn'
   })
 }
 </script>
@@ -72,12 +72,7 @@ async function onPlay() {
 
     <n-modal v-model:show="open">
       <n-card
-        style="
-          width: 800px;
-          min-height: 300px;
-          background-color: #ffffff;
-          position: relative;
-        "
+        style="width: 800px; min-height: 300px; background-color: #ffffff; position: relative"
         role="dialog"
         aria-modal="true"
       >

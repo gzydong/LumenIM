@@ -1,19 +1,14 @@
 <script setup>
 import { reactive } from 'vue'
 import { NForm, NFormItem, NSwitch, NPopconfirm } from 'naive-ui'
-import {
-  ServeDismissGroup,
-  ServeMuteGroup,
-  ServeGroupDetail,
-  ServeOvertGroup,
-} from '@/api/group'
+import { ServeDismissGroup, ServeMuteGroup, ServeGroupDetail, ServeOvertGroup } from '@/api/group'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const detail = reactive({
@@ -21,11 +16,11 @@ const detail = reactive({
   mute_loading: false,
 
   is_overt: false,
-  overt_loading: false,
+  overt_loading: false
 })
 
 const onLoadData = () => {
-  ServeGroupDetail({ group_id: props.id }).then(res => {
+  ServeGroupDetail({ group_id: props.id }).then((res) => {
     if (res.code == 200) {
       detail.is_mute = res.data.is_mute == 1
       detail.is_overt = res.data.is_overt == 1
@@ -35,8 +30,8 @@ const onLoadData = () => {
 
 const onDismiss = () => {
   ServeDismissGroup({
-    group_id: props.id,
-  }).then(res => {
+    group_id: props.id
+  }).then((res) => {
     if (res.code == 200) {
       window['$message'].success('群聊已解散')
       emit('close')
@@ -46,12 +41,12 @@ const onDismiss = () => {
   })
 }
 
-const onMute = value => {
+const onMute = (value) => {
   detail.mute_loading = true
 
   ServeMuteGroup({
     group_id: props.id,
-    mode: detail.is_mute ? 2 : 1,
+    mode: detail.is_mute ? 2 : 1
   })
     .then(({ code, message }) => {
       if (code == 200) {
@@ -65,12 +60,12 @@ const onMute = value => {
     })
 }
 
-const onOvert = value => {
+const onOvert = (value) => {
   detail.overt_loading = true
 
   ServeOvertGroup({
     group_id: props.id,
-    mode: detail.is_overt ? 2 : 1,
+    mode: detail.is_overt ? 2 : 1
   })
     .then(({ code, message }) => {
       if (code == 200) {
@@ -93,17 +88,9 @@ onLoadData()
     </header>
 
     <main class="el-main main">
-      <n-form
-        label-placement="left"
-        label-width="auto"
-        require-mark-placement="right-hanging"
-      >
+      <n-form label-placement="left" label-width="auto" require-mark-placement="right-hanging">
         <n-form-item label="解散群聊:">
-          <n-popconfirm
-            negative-text="取消"
-            positive-text="确定"
-            @positive-click="onDismiss"
-          >
+          <n-popconfirm negative-text="取消" positive-text="确定" @positive-click="onDismiss">
             <template #trigger>
               <n-button type="primary" size="small" text> 点击解散 </n-button>
             </template>
@@ -119,10 +106,7 @@ onLoadData()
           />
         </n-form-item>
 
-        <n-form-item
-          label="全员禁言:"
-          feedback="开启后除群主和管理员以外，其它成员禁止发言。"
-        >
+        <n-form-item label="全员禁言:" feedback="开启后除群主和管理员以外，其它成员禁止发言。">
           <n-switch
             :rubber-band="false"
             :value="detail.is_mute"

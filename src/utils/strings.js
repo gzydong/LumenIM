@@ -29,8 +29,7 @@ export function hidePhone(phone) {
  * @param {String} color 超链接颜色
  */
 export function textReplaceLink(text, color = '#409eff') {
-  let exp =
-    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+  let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi
   return text.replace(
     exp,
     `<a href='$1' alt='link' style="color:${color};text-decoration: revert;">$1</a >`

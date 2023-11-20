@@ -24,7 +24,7 @@ textContent = textReplaceEmoji(textContent)
     :class="{
       left: float == 'left',
       right: float == 'right',
-      maxwidth: maxWidth,
+      maxwidth: maxWidth
     }"
   >
     <pre v-html="textContent" />

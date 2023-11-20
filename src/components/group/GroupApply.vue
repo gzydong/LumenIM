@@ -7,8 +7,8 @@ const remark = ref('')
 const props = defineProps({
   gid: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const emit = defineEmits(['close'])
@@ -25,10 +25,10 @@ const onSubmit = () => {
 
   let response = ServeCreateGroupApply({
     group_id: props.gid,
-    remark: remark.value,
+    remark: remark.value
   })
 
-  response.then(res => {
+  response.then((res) => {
     if (res.code == 200) {
       window['$message'].success('入群申请提交成功...')
       onMaskClick()
@@ -54,11 +54,7 @@ const onSubmit = () => {
   >
     <n-form>
       <n-form-item label="申请备注" required>
-        <n-input
-          placeholder="请填写申请备注"
-          type="textarea"
-          v-model:value="remark"
-        />
+        <n-input placeholder="请填写申请备注" type="textarea" v-model:value="remark" />
       </n-form-item>
     </n-form>
 

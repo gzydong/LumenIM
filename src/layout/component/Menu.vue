@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore, useNotifyStore } from '@/store'
 import { NPopover } from 'naive-ui'
@@ -10,14 +10,14 @@ import {
   Message,
   NotebookAndPen,
   People,
-  SmartOptimization,
+  SmartOptimization
 } from '@icon-park/vue-next'
 
 defineProps({
   index: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const userStore = useUserStore()
@@ -33,20 +33,20 @@ const color = computed(() => {
 const menus = reactive([
   {
     link: '/message',
-    icon: Message,
+    icon: markRaw(Message),
     title: '消息',
-    hotspot: computed(() => talkStore.talkUnreadNum > 0),
+    hotspot: computed(() => talkStore.talkUnreadNum > 0)
   },
   {
     link: '/contact/friend',
-    icon: People,
+    icon: markRaw(People),
     title: '通讯录',
-    hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply),
+    hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply)
   },
   {
     link: '/note',
-    icon: NotebookAndPen,
-    title: '笔记',
+    icon: markRaw(NotebookAndPen),
+    title: '笔记'
   },
   // {
   //   link: '/settings/detail',
@@ -55,16 +55,16 @@ const menus = reactive([
   // },
   {
     link: '/settings/detail',
-    icon: SettingTwo,
-    title: '设置',
-  },
+    icon: markRaw(SettingTwo),
+    title: '设置'
+  }
 ])
 
 const onLogout = () => {
   userStore.logoutLogin()
 }
 
-const onClickMenu = menu => {
+const onClickMenu = (menu) => {
   if (menu.external) {
     window.open(menu.link)
   } else {
@@ -104,7 +104,7 @@ const onClickMenu = menu => {
         v-for="(nav, i) in menus"
         :key="nav.link"
         :class="{
-          active: i == index,
+          active: i == index
         }"
         @click="onClickMenu(nav)"
       >
@@ -127,17 +127,8 @@ const onClickMenu = menu => {
 
     <footer class="menu-footer">
       <div>
-        <a
-          class="pointer"
-          href="https://github.com/gzydong/LumenIM"
-          target="_blank"
-        >
-          <github-one
-            theme="outline"
-            size="22"
-            :fill="color"
-            :strokeWidth="2"
-          />
+        <a class="pointer" href="https://github.com/gzydong/LumenIM" target="_blank">
+          <github-one theme="outline" size="22" :fill="color" :strokeWidth="2" />
         </a>
       </div>
       <div @click="onLogout" class="pointer">退出</div>

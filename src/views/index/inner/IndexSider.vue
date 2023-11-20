@@ -14,14 +14,14 @@ import {
   CloseRemind,
   EditTwo,
   IdCard,
-  Plus,
+  Plus
 } from '@icon-park/vue-next'
 import TalkItem from './TalkItem.vue'
 import {
   ServeTopTalkList,
   ServeClearTalkUnreadNum,
   ServeDeleteTalkList,
-  ServeSetNotDisturb,
+  ServeSetNotDisturb
 } from '@/api/chat'
 import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
@@ -43,7 +43,7 @@ const dropdown: StateDropdown = reactive({
   show: false,
   dropdownX: 0,
   dropdownY: 0,
-  item: {},
+  item: {}
 })
 
 const items = computed((): ISessionRecord[] => {
@@ -54,9 +54,7 @@ const items = computed((): ISessionRecord[] => {
   return talkStore.talkItems.filter((item: any) => {
     let keyword = item.remark || item.name
 
-    return (
-      keyword.toLowerCase().indexOf(searchKeyword.value.toLowerCase()) != -1
-    )
+    return keyword.toLowerCase().indexOf(searchKeyword.value.toLowerCase()) != -1
   })
 })
 
@@ -69,7 +67,7 @@ const indexName = computed(() => dialogueStore.index_name)
 const renderIcon = (icon: any) => {
   return () => {
     return h(NIcon, null, {
-      default: () => h(icon),
+      default: () => h(icon)
     })
   }
 }
@@ -95,11 +93,11 @@ const onTabTalk = (data: any, follow = false) => {
   if (data.unread_num > 0) {
     ServeClearTalkUnreadNum({
       talk_type: data.talk_type,
-      receiver_id: data.receiver_id,
+      receiver_id: data.receiver_id
     }).then(() => {
       talkStore.updateItem({
         index_name: data.index_name,
-        unread_num: 0,
+        unread_num: 0
       })
     })
   }
@@ -112,7 +110,7 @@ const onTabTalk = (data: any, follow = false) => {
         let index = findTalkIndex(data.index_name)
         el.scrollTo({
           top: index * 66 + index * 5,
-          behavior: 'smooth',
+          behavior: 'smooth'
         })
       }
     }, 100)
@@ -126,7 +124,7 @@ const onUserInfo = (data: any) => {
 // 移除会话
 const onRemoveTalk = (data: any) => {
   ServeDeleteTalkList({
-    list_id: data.id,
+    list_id: data.id
   }).then(({ code }) => {
     if (code == 200) {
       onDeleteTalk(data.index_name)
@@ -139,13 +137,13 @@ const onSetDisturb = (data: ISessionRecord) => {
   ServeSetNotDisturb({
     talk_type: data.talk_type,
     receiver_id: data.receiver_id,
-    is_disturb: data.is_disturb == 0 ? 1 : 0,
+    is_disturb: data.is_disturb == 0 ? 1 : 0
   }).then(({ code, message }) => {
     if (code == 200) {
       window['$message'].success('设置成功!')
       talkStore.updateItem({
         index_name: data.index_name,
-        is_disturb: data.is_disturb == 0 ? 1 : 0,
+        is_disturb: data.is_disturb == 0 ? 1 : 0
       })
     } else {
       window['$message'].error(message)
@@ -161,12 +159,12 @@ const onToTopTalk = (data: ISessionRecord) => {
 
   ServeTopTalkList({
     list_id: data.id,
-    type: data.is_top == 0 ? 1 : 2,
+    type: data.is_top == 0 ? 1 : 2
   }).then(({ code, message }) => {
     if (code == 200) {
       talkStore.updateItem({
         index_name: data.index_name,
-        is_top: data.is_top == 0 ? 1 : 0,
+        is_top: data.is_top == 0 ? 1 : 0
       })
     } else {
       window['$message'].error(message)
@@ -186,7 +184,7 @@ const onDeleteContact = (data: ISessionRecord) => {
     negativeText: '取消',
     onPositiveClick: () => {
       ServeDeleteContact({
-        friend_id: data.receiver_id,
+        friend_id: data.receiver_id
       }).then(({ code, message }) => {
         if (code == 200) {
           window['$message'].success('删除联系人成功')
@@ -195,7 +193,7 @@ const onDeleteContact = (data: ISessionRecord) => {
           window['$message'].error(message)
         }
       })
-    },
+    }
   })
 }
 
@@ -209,7 +207,7 @@ const onSignOutGroup = (data: ISessionRecord) => {
     negativeText: '取消',
     onPositiveClick: () => {
       ServeSecedeGroup({
-        group_id: data.receiver_id,
+        group_id: data.receiver_id
       }).then(({ code, message }) => {
         if (code == 200) {
           window['$message'].success('已退出群聊')
@@ -218,7 +216,7 @@ const onSignOutGroup = (data: ISessionRecord) => {
           window['$message'].error(message)
         }
       })
-    },
+    }
   })
 }
 
@@ -232,8 +230,8 @@ const onChangeRemark = (data: ISessionRecord) => {
         defaultValue: data.remark,
         placeholder: '请输入备注信息',
         style: { marginTop: '20px' },
-        onInput: value => (remark = value),
-        autofocus: true,
+        onInput: (value) => (remark = value),
+        autofocus: true
       })
     },
     negativeText: '取消',
@@ -241,19 +239,19 @@ const onChangeRemark = (data: ISessionRecord) => {
     onPositiveClick: () => {
       ServeEditContactRemark({
         friend_id: data.receiver_id,
-        remark: remark,
+        remark: remark
       }).then(({ code, message }) => {
         if (code == 200) {
           window['$message'].success('备注成功')
           talkStore.updateItem({
             index_name: data.index_name,
-            remark: remark,
+            remark: remark
           })
         } else {
           window['$message'].error(message)
         }
       })
-    },
+    }
   })
 }
 
@@ -269,45 +267,45 @@ const onContextMenuTalk = (e: any, item: ISessionRecord) => {
     options.push({
       icon: renderIcon(IdCard),
       label: '好友信息',
-      key: 'info',
+      key: 'info'
     })
 
     options.push({
       icon: renderIcon(EditTwo),
       label: '修改备注',
-      key: 'remark',
+      key: 'remark'
     })
   }
 
   options.push({
     icon: renderIcon(item.is_top ? ArrowDown : ArrowUp),
     label: item.is_top ? '取消置顶' : '会话置顶',
-    key: 'top',
+    key: 'top'
   })
 
   options.push({
     icon: renderIcon(item.is_disturb ? Remind : CloseRemind),
     label: item.is_disturb ? '关闭免打扰' : '开启免打扰',
-    key: 'disturb',
+    key: 'disturb'
   })
 
   options.push({
     icon: renderIcon(Clear),
     label: '移除会话',
-    key: 'remove',
+    key: 'remove'
   })
 
   if (item.talk_type == 1) {
     options.push({
       icon: renderIcon(Delete),
       label: '删除好友',
-      key: 'delete_contact',
+      key: 'delete_contact'
     })
   } else {
     options.push({
       icon: renderIcon(Logout),
       label: '退出群聊',
-      key: 'signout_group',
+      key: 'signout_group'
     })
   }
 
@@ -332,7 +330,7 @@ const onContextMenuTalkHandle = (key: string) => {
     disturb: onSetDisturb,
     signout_group: onSignOutGroup,
     delete_contact: onDeleteContact,
-    remark: onChangeRemark,
+    remark: onChangeRemark
   }
 
   dropdown.show = false
@@ -403,34 +401,21 @@ onMounted(() => {
     </header>
 
     <!-- 置顶栏目 -->
-    <header
-      class="el-header tops-header"
-      v-show="loadStatus == 3 && topItems.length > 0"
-    >
-      <n-popover
-        v-for="item in topItems"
-        :key="item.index_name"
-        placement="bottom"
-        trigger="hover"
-      >
+    <header class="el-header tops-header" v-show="loadStatus == 3 && topItems.length > 0">
+      <n-popover v-for="item in topItems" :key="item.index_name" placement="bottom" trigger="hover">
         <template #trigger>
           <div
             class="top-item pointer"
             @click="onTabTalk(item, true)"
             :class="{
-              active: item.index_name == indexName,
+              active: item.index_name == indexName
             }"
           >
             <im-avatar :src="item.avatar" :size="34" :username="item.name" />
 
-            <span class="icon-mark robot" v-show="item.is_robot == 1">
-              助
-            </span>
+            <span class="icon-mark robot" v-show="item.is_robot == 1"> 助 </span>
 
-            <span
-              class="icon-mark group"
-              v-show="item.talk_type == 2 && item.is_robot == 0"
-            >
+            <span class="icon-mark group" v-show="item.talk_type == 2 && item.is_robot == 0">
               群
             </span>
 
@@ -469,10 +454,7 @@ onMounted(() => {
     </template>
 
     <template v-else>
-      <div
-        id="talk-session-list"
-        class="el-main scroller me-scrollbar me-scrollbar-thumb"
-      >
+      <div id="talk-session-list" class="el-main scroller me-scrollbar me-scrollbar-thumb">
         <TalkItem
           v-for="item in items"
           :key="item.index_name"
@@ -488,11 +470,7 @@ onMounted(() => {
     </template>
   </section>
 
-  <GroupLaunch
-    v-if="isShowGroup"
-    @close="isShowGroup = false"
-    @on-submit="onGroupCallBack"
-  />
+  <GroupLaunch v-if="isShowGroup" @close="isShowGroup = false" @on-submit="onGroupCallBack" />
 </template>
 
 <style lang="less" scoped>

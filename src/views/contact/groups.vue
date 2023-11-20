@@ -18,7 +18,7 @@ const items = ref([])
 
 const params = reactive({
   isShow: false,
-  id: 0,
+  id: 0
 })
 
 const tabIndex = ref('all')
@@ -39,30 +39,28 @@ const filter = computed(() => {
       return false
     }
 
-    return (
-      item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
-    )
+    return item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
   })
 })
 
 const onLoadData = () => {
-  ServeGetGroups().then(res => {
+  ServeGetGroups().then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []
     }
   })
 }
 
-const onShowGroup = item => {
+const onShowGroup = (item) => {
   params.isShow = true
   params.id = item.id
 }
 
-const onToTalk = item => {
+const onToTalk = (item) => {
   toTalk(2, item.id)
 }
 
-const onGroupCallBack = data => {
+const onGroupCallBack = (data) => {
   isShowCreateGroupBox.value = false
   onLoadData()
   talkStore.loadTalkList()
@@ -80,9 +78,7 @@ onMounted(() => {
         <n-tabs v-model:value="tabIndex">
           <n-tab name="all"> 全部群聊({{ items.length }}) </n-tab>
           <n-tab name="create"> 我创建的({{ filterCreator.length }}) </n-tab>
-          <n-tab name="join">
-            我加入的({{ items.length - filterCreator.length }})
-          </n-tab>
+          <n-tab name="join"> 我加入的({{ items.length - filterCreator.length }}) </n-tab>
         </n-tabs>
       </div>
 
@@ -119,6 +115,7 @@ onMounted(() => {
       <div class="cards">
         <GroupCard
           v-for="item in filter"
+          :key="item.id"
           :avatar="item.avatar"
           :username="item.group_name"
           :gender="item.gender"
@@ -147,11 +144,7 @@ onMounted(() => {
     to="#drawer-target"
     show-mask="transparent"
   >
-    <GroupPanel
-      :gid="params.id"
-      @close="params.isShow = false"
-      @to-talk="toTalk(2, params.id)"
-    />
+    <GroupPanel :gid="params.id" @close="params.isShow = false" @to-talk="toTalk(2, params.id)" />
   </n-drawer>
 </template>
 

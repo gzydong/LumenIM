@@ -9,8 +9,8 @@ const notifyStore = useNotifyStore()
 defineProps({
   index: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 </script>
 
@@ -19,13 +19,13 @@ defineProps({
     <section
       class="el-container im-container"
       :class="{
-        'small-screen': !notifyStore.isFullScreen,
+        'small-screen': !notifyStore.isFullScreen
       }"
     >
       <aside
         class="el-aside"
         :class="{
-          'pd-t15': isElectronMode(),
+          'pd-t15': isElectronMode()
         }"
       >
         <Menu :index="index" />

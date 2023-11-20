@@ -6,7 +6,7 @@ import { useUserStore } from '@/store/user'
 
 const props = defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 
 const userStore = useUserStore()
@@ -15,12 +15,12 @@ const state = reactive({ options: [] })
 
 // 是否可提交
 const isCanSubmit = computed(() => {
-  return state.options.some(item => item.is_checked)
+  return state.options.some((item) => item.is_checked)
 })
 
 // 是否已投票
 const isVoted = computed(() => {
-  return props.extra.vote_users.some(item => item == userStore.uid)
+  return props.extra.vote_users.some((item) => item == userStore.uid)
 })
 
 /**
@@ -33,7 +33,7 @@ function setOptions(options) {
       value: option.value,
       is_checked: false,
       num: 0,
-      progress: 0,
+      progress: 0
     })
   }
 }
@@ -46,7 +46,7 @@ function setOptions(options) {
 function updateStatistics(data) {
   let count = data.count
 
-  state.options.forEach(option => {
+  state.options.forEach((option) => {
     option.num = data.options[option.key]
 
     if (count > 0) {
@@ -63,7 +63,7 @@ function updateStatistics(data) {
  */
 function change(data, option) {
   if (mode == 0) {
-    state.options.forEach(option => (option.is_checked = false))
+    state.options.forEach((option) => (option.is_checked = false))
   }
 
   option.is_checked = data
@@ -77,14 +77,14 @@ const onSubmit = () => {
 
   let items = []
 
-  state.options.forEach(item => {
+  state.options.forEach((item) => {
     item.is_checked && items.push(item.key)
   })
 
   ServeConfirmVoteHandle({
     record_id: props.data.id,
-    options: items.join(','),
-  }).then(res => {
+    options: items.join(',')
+  }).then((res) => {
     if (res.code == 200) {
       updateStatistics(res.data)
       props.extra.vote_users.push(userStore.uid)
@@ -111,11 +111,9 @@ onMounted(() => {
 
       <template v-if="isVoted">
         <div class="vbody">
-          <div class="vote-view" v-for="option in state.options">
+          <div class="vote-view" v-for="option in state.options" :key="option.key">
             <p class="vote-option">{{ option.key }}、 {{ option.value }}</p>
-            <p class="vote-census">
-              {{ option.num }} 票 {{ option.progress }}%
-            </p>
+            <p class="vote-census">{{ option.num }} 票 {{ option.progress }}%</p>
             <p class="vote-progress">
               <n-progress
                 type="line"

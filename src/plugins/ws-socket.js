@@ -17,14 +17,14 @@ class WsSocket {
     heartbeat: {
       setInterval: null,
       pingInterval: 20000,
-      pingTimeout: 60000,
+      pingTimeout: 60000
     },
     reconnect: {
       lockReconnect: false,
       setTimeout: null, // 计时器对象
       time: 3000, // 重连间隔时间
-      number: 10000000, // 重连次数
-    },
+      number: 10000000 // 重连次数
+    }
   }
 
   // 最后心跳时间
@@ -38,9 +38,15 @@ class WsSocket {
   onCallBacks = []
 
   defaultEvent = {
-    onError: evt => {},
-    onOpen: evt => {},
-    onClose: evt => {},
+    onError: (evt) => {
+      console.log(evt)
+    },
+    onOpen: (evt) => {
+      console.log(evt)
+    },
+    onClose: (evt) => {
+      console.log(evt)
+    }
   }
 
   /**
@@ -55,7 +61,7 @@ class WsSocket {
     // 定义 WebSocket 原生方法
     this.events = Object.assign({}, this.defaultEvent, events)
 
-    this.on('connect', data => {
+    this.on('connect', (data) => {
       this.config.heartbeat.pingInterval = data.ping_interval * 1000
       this.config.heartbeat.pingTimeout = data.ping_timeout * 1000
       this.heartbeat()
@@ -123,7 +129,7 @@ class WsSocket {
       sid: sid,
       event: event,
       data: content,
-      orginData: evt.data,
+      orginData: evt.data
     }
   }
 
@@ -187,7 +193,7 @@ class WsSocket {
     }
 
     // 判断消息事件是否被绑定
-    if (this.onCallBacks.hasOwnProperty(result.event)) {
+    if (Object.prototype.hasOwnProperty.call(this.onCallBacks, result.event)) {
       this.onCallBacks[result.event](result.data, result.orginData)
     } else {
       console.warn(`WsSocket 消息事件[${result.event}]未绑定...`)

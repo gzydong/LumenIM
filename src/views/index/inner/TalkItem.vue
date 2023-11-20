@@ -7,29 +7,25 @@ const emit = defineEmits(['tab-talk', 'top-talk'])
 defineProps({
   data: {
     type: Object,
-    default: () => {},
+    default: () => {}
   },
   avatar: {
     type: String,
-    default: '',
+    default: ''
   },
   username: {
     type: String,
-    default: '',
+    default: ''
   },
   active: {
     type: Boolean,
-    default: '',
-  },
+    default: false
+  }
 })
 </script>
 
 <template>
-  <div
-    class="talk pointer"
-    :class="{ actived: active }"
-    @click="emit('tab-talk', data)"
-  >
+  <div class="talk pointer" :class="{ actived: active }" @click="emit('tab-talk', data)">
     <div class="avatar-box">
       <im-avatar :src="avatar" :size="34" :username="data.name" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
@@ -55,12 +51,7 @@ defineProps({
             <span class="detail" v-html="data.draft_text" />
           </template>
           <template v-else>
-            <span
-              class="online"
-              v-show="data.talk_type == 1 && data.is_online == 1"
-            >
-              [在线]
-            </span>
+            <span class="online" v-show="data.talk_type == 1 && data.is_online == 1"> [在线] </span>
             <span class="detail" v-html="data.msg_text" />
           </template>
         </div>

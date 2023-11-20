@@ -10,12 +10,12 @@ const emit = defineEmits(['close'])
 const props = defineProps({
   talkType: {
     type: Number,
-    default: 0,
+    default: 0
   },
   receiverId: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 const showUserModal = inject('$user')
 const model = reactive({
@@ -24,7 +24,7 @@ const model = reactive({
   msgType: 0,
   loading: false,
   loadMore: false,
-  isLoadMore: true,
+  isLoadMore: true
 })
 
 const isShow = ref(true)
@@ -39,7 +39,7 @@ const tabs = [
   { name: '会话', type: message.ChatMsgTypeForward, show: true },
   { name: '代码', type: message.ChatMsgTypeCode, show: true },
   { name: '位置', type: message.ChatMsgTypeLocation, show: true },
-  { name: '群投票', type: message.ChatMsgTypeVote, show: props.talkType == 2 },
+  { name: '群投票', type: message.ChatMsgTypeVote, show: props.talkType == 2 }
 ]
 
 const onMaskClick = () => {
@@ -52,7 +52,7 @@ const loadChatRecord = () => {
     receiver_id: props.receiverId,
     record_id: model.recordId,
     msg_type: model.msgType,
-    limit: model.limit,
+    limit: model.limit
   }
 
   if (model.recordId === 0) {
@@ -61,7 +61,7 @@ const loadChatRecord = () => {
     model.loadMore = true
   }
 
-  ServeFindTalkRecords(data).then(res => {
+  ServeFindTalkRecords(data).then((res) => {
     if (res.code != 200) return
 
     if (data.record_id === 0) {
@@ -82,7 +82,7 @@ const loadChatRecord = () => {
   })
 }
 
-const triggerType = type => {
+const triggerType = (type) => {
   model.msgType = type
   model.recordId = 0
   loadChatRecord()
@@ -100,13 +100,13 @@ loadChatRecord()
     class="modal-radius"
     :on-after-leave="onMaskClick"
     :segmented="{
-      content: true,
+      content: true
     }"
     :header-style="{
-      padding: '20px 15px',
+      padding: '20px 15px'
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <section class="main-box el-container is-vertical o-hidden">
@@ -114,6 +114,7 @@ loadChatRecord()
         <div class="type-items">
           <span
             v-for="tab in tabs"
+            :key="tab.name"
             class="pointer"
             :class="{ active: model.msgType == tab.type }"
             @click="triggerType(tab.type)"
@@ -174,9 +175,7 @@ loadChatRecord()
               </div>
 
               <component
-                :is="
-                  message.MessageComponents[item.msg_type] || 'unknown-message'
-                "
+                :is="message.MessageComponents[item.msg_type] || 'unknown-message'"
                 :extra="item.extra"
                 :data="item"
               />
@@ -184,20 +183,9 @@ loadChatRecord()
           </div>
         </n-image-group>
 
-        <div
-          class="more pointer flex-center"
-          @click="loadChatRecord"
-          v-show="model.isLoadMore"
-        >
-          <n-icon
-            v-show="!model.loadMore"
-            :size="20"
-            class="icon"
-            :component="Down"
-          />
-          <span>
-            &nbsp;{{ model.loadMore ? '数据加载中...' : '加载更多' }}
-          </span>
+        <div class="more pointer flex-center" @click="loadChatRecord" v-show="model.isLoadMore">
+          <n-icon v-show="!model.loadMore" :size="20" class="icon" :component="Down" />
+          <span> &nbsp;{{ model.loadMore ? '数据加载中...' : '加载更多' }} </span>
         </div>
       </main>
     </section>

@@ -1,9 +1,5 @@
 import { defineStore } from 'pinia'
-import {
-  ServeRemoveRecords,
-  ServeRevokeRecords,
-  ServePublishMessage,
-} from '@/api/chat'
+import { ServeRemoveRecords, ServeRevokeRecords, ServePublishMessage } from '@/api/chat'
 import { ServeGetGroupMembers } from '@/api/group'
 
 // 键盘消息事件定时器
@@ -19,7 +15,7 @@ export const useDialogueStore = defineStore('dialogue', {
       talk: {
         username: '',
         talk_type: 0, // 对话来源[1:私聊;2:群聊]
-        receiver_id: 0,
+        receiver_id: 0
       },
 
       // 好友是否正在输入文字
@@ -52,16 +48,16 @@ export const useDialogueStore = defineStore('dialogue', {
           talk_type: 1, // 对话类型
           receiver_id: 0, // 接收者ID
           read_sequence: 0, // 当前已读的最后一条记录
-          records: [],
-        },
-      },
+          records: []
+        }
+      }
     }
   },
   getters: {
     // 多选列表
-    selectItems: state => state.records.filter(item => item.isCheck),
+    selectItems: (state) => state.records.filter((item) => item.isCheck),
     // 当前对话是否是群聊
-    isGroupTalk: state => state.talk.talk_type === 2,
+    isGroupTalk: (state) => state.talk.talk_type === 2
   },
   actions: {
     // 更新在线状态
@@ -75,7 +71,7 @@ export const useDialogueStore = defineStore('dialogue', {
       this.talk = {
         username: data.remark || data.name,
         talk_type: data.talk_type,
-        receiver_id: data.receiver_id,
+        receiver_id: data.receiver_id
       }
 
       this.index_name = data.talk_type + '_' + data.receiver_id
@@ -92,12 +88,12 @@ export const useDialogueStore = defineStore('dialogue', {
     // 更新提及列表
     async updateGroupMembers() {
       let { code, data } = await ServeGetGroupMembers({
-        group_id: this.talk.receiver_id,
+        group_id: this.talk.receiver_id
       })
 
       if (code != 200) return
 
-      this.members = data.items.map(o => ({
+      this.members = data.items.map((o) => ({
         id: o.user_id,
         nickname: o.nickname,
         avatar: o.avatar,
@@ -105,7 +101,7 @@ export const useDialogueStore = defineStore('dialogue', {
         leader: o.leader,
         remark: o.remark,
         online: false,
-        value: o.nickname,
+        value: o.nickname
       }))
     },
 
@@ -129,15 +125,15 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新对话记录
     updateDialogueRecord(params) {
-      const item = this.records.find(item => item.id === params.id)
+      const item = this.records.find((item) => item.id === params.id)
 
       item && Object.assign(item, params)
     },
 
     // 批量删除对话记录
     batchDelDialogueRecord(ids) {
-      ids.forEach(id => {
-        const index = this.records.findIndex(item => item.id === id)
+      ids.forEach((id) => {
+        const index = this.records.findIndex((item) => item.id === id)
 
         if (index >= 0) this.records.splice(index, 1)
       })
@@ -176,8 +172,8 @@ export const useDialogueStore = defineStore('dialogue', {
       ServeRemoveRecords({
         talk_type: this.talk.talk_type,
         receiver_id: this.talk.receiver_id,
-        record_id: ids.join(','),
-      }).then(res => {
+        record_id: ids.join(',')
+      }).then((res) => {
         if (res.code == 200) {
           this.batchDelDialogueRecord(ids)
         } else {
@@ -188,7 +184,7 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 撤销聊天记录
     ApiRevokeRecord(record_id) {
-      ServeRevokeRecords({ record_id }).then(res => {
+      ServeRevokeRecords({ record_id }).then((res) => {
         if (res.code == 200) {
           this.updateDialogueRecord({ id: record_id, is_revoke: 1 })
         } else {
@@ -203,18 +199,18 @@ export const useDialogueStore = defineStore('dialogue', {
         type: 'forward',
         receiver: {
           talk_type: this.talk.talk_type,
-          receiver_id: this.talk.receiver_id,
+          receiver_id: this.talk.receiver_id
         },
-        ...options,
+        ...options
       }
 
-      ServePublishMessage(data).then(res => {
+      ServePublishMessage(data).then((res) => {
         if (res.code == 200) {
           this.closeMultiSelect()
         }
       })
     },
 
-    ApiSendTextMessage(options) {},
-  },
+    ApiSendTextMessage(options) {}
+  }
 })

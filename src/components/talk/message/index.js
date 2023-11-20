@@ -47,5 +47,5 @@ export {
   SysGroupMutedMessage,
   SysGroupCancelMutedMessage,
   GroupNoticeMessage,
-  MixedMessage,
+  MixedMessage
 }

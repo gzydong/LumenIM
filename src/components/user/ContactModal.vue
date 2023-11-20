@@ -26,9 +26,7 @@ const loadGroupStatus = ref(false)
 
 const searchFilter = computed(() => {
   return items.value.filter((item: Item) => {
-    return (
-      tabsIndex.value == item.type && item.keyword.match(keywords.value) != null
-    )
+    return tabsIndex.value == item.type && item.keyword.match(keywords.value) != null
   })
 })
 
@@ -47,7 +45,7 @@ const onLoad = () => {
 const onLoadContact = () => {
   loading.value = true
   ServeGetContacts()
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
         let list = res.data.items || []
 
@@ -59,7 +57,7 @@ const onLoadContact = () => {
             name: item.remark || item.nickname,
             keyword: item.remark + item.nickname,
             remark: item.remark,
-            checked: false,
+            checked: false
           }
         })
       }
@@ -88,7 +86,7 @@ const onLoadGroup = async () => {
       name: item.group_name,
       keyword: item.group_name,
       remark: '',
-      checked: false,
+      checked: false
     }
   })
 
@@ -114,7 +112,7 @@ const onSubmit = () => {
   let data = checkedFilter.value.map((item: any) => {
     return {
       id: item.id,
-      type: item.type,
+      type: item.type
     }
   })
 
@@ -141,21 +139,17 @@ onLoad()
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,
-      footer: true,
+      footer: true
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <section class="el-container launch-box">
       <aside class="el-aside bdr-r" style="width: 240px">
         <section class="el-container is-vertical height100">
           <header class="el-header tabs">
-            <n-tabs
-              type="line"
-              justify-content="space-around"
-              @update:value="onTabs"
-            >
+            <n-tabs type="line" justify-content="space-around" @update:value="onTabs">
               <n-tab name="1"> 好友 </n-tab>
               <n-tab name="2"> 群聊 </n-tab>
               <!-- <n-tab name="企业"> 企业 </n-tab> -->
@@ -163,12 +157,7 @@ onLoad()
           </header>
 
           <header class="el-header sub-header">
-            <n-input
-              placeholder="搜索"
-              v-model:value="keywords"
-              clearable
-              size="small"
-            >
+            <n-input placeholder="搜索" v-model:value="keywords" clearable size="small">
               <template #prefix>
                 <n-icon :component="Search" />
               </template>
@@ -181,6 +170,7 @@ onLoad()
                 <div
                   class="friend-item pointer"
                   v-for="item in searchFilter"
+                  :key="item.id"
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
@@ -193,9 +183,7 @@ onLoad()
                   </div>
 
                   <div class="content">
-                    <span class="text-ellipsis">{{
-                      item.remark || item.name
-                    }}</span>
+                    <span class="text-ellipsis">{{ item.remark || item.name }}</span>
                   </div>
 
                   <div class="checkbox">
@@ -224,6 +212,7 @@ onLoad()
                 <div
                   class="friend-item pointer"
                   v-for="item in checkedFilter"
+                  :key="item.id"
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
@@ -261,12 +250,7 @@ onLoad()
 
         <div>
           <n-button type="tertiary" @click="isShowBox = false"> 取消 </n-button>
-          <n-button
-            type="primary"
-            class="mt-l15"
-            @click="onSubmit"
-            :disabled="isCanSubmit"
-          >
+          <n-button type="primary" class="mt-l15" @click="onSubmit" :disabled="isCanSubmit">
             确定
           </n-button>
         </div>

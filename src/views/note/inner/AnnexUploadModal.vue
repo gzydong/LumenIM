@@ -2,10 +2,7 @@
 import { ref, computed } from 'vue'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { fileFormatSize } from '@/utils/strings'
-import {
-  ServeUploadArticleAnnex,
-  ServeDownloadAnnex as onDownload,
-} from '@/api/article'
+import { ServeUploadArticleAnnex, ServeDownloadAnnex as onDownload } from '@/api/article'
 import { useNoteStore } from '@/store/note'
 import { UploadOne } from '@icon-park/vue-next'
 
@@ -36,9 +33,7 @@ async function onUpload(e) {
 
   loading.value = true
 
-  let res = await ServeUploadArticleAnnex(from).finally(
-    () => (loading.value = false)
-  )
+  let res = await ServeUploadArticleAnnex(from).finally(() => (loading.value = false))
 
   if (res && res.code == 200) {
     let { data } = res
@@ -47,19 +42,14 @@ async function onUpload(e) {
       original_name: data.original_name,
       created_at: parseTime(new Date()),
       size: data.size,
-      suffix: data.suffix,
+      suffix: data.suffix
     })
   }
 }
 </script>
 
 <template>
-  <input
-    type="file"
-    id="upload-annex"
-    @change="onUpload"
-    style="display: none"
-  />
+  <input type="file" id="upload-annex" @change="onUpload" style="display: none" />
 
   <section class="section">
     <div class="title">
@@ -70,11 +60,7 @@ async function onUpload(e) {
       <div class="annex-main me-scrollbar me-scrollbar-thumb">
         <p v-show="detail.files.length == 0" class="empty-text">暂无附件</p>
 
-        <div
-          v-for="file in detail.files"
-          :key="file.id"
-          class="file-item pointer"
-        >
+        <div v-for="file in detail.files" :key="file.id" class="file-item pointer">
           <div class="suffix">{{ file.suffix }}</div>
 
           <div class="content">
@@ -85,12 +71,7 @@ async function onUpload(e) {
               </span>
               <span>{{ formatTime(file.created_at) }}</span>
               <div class="tools">
-                <n-button
-                  type="primary"
-                  size="tiny"
-                  text
-                  @click="onDownload(file.id)"
-                >
+                <n-button type="primary" size="tiny" text @click="onDownload(file.id)">
                   下载
                 </n-button>
               </div>
@@ -101,12 +82,7 @@ async function onUpload(e) {
 
       <div class="annex-footer">
         <p class="notice-text">文件大小在5M以内<br />最多可支持上传10个附件</p>
-        <n-button
-          type="primary"
-          size="medium"
-          :loading="loading"
-          @click="onTriggerUpload"
-        >
+        <n-button type="primary" size="medium" :loading="loading" @click="onTriggerUpload">
           <template #icon>
             <n-icon :component="UploadOne" />
           </template>

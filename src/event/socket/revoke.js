@@ -72,7 +72,7 @@ class Revoke extends Base {
 
     useDialogueStore().updateDialogueRecord({
       id: this.record_id,
-      is_revoke: 1,
+      is_revoke: 1
     })
   }
 }

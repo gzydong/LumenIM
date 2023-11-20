@@ -4,7 +4,7 @@ import { getImageInfo } from '@/utils/functions'
 
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 
 const img = (src, width = 200) => {
@@ -17,13 +17,13 @@ const img = (src, width = 200) => {
   if (info.width < width) {
     return {
       width: `${info.width}px`,
-      height: `${info.height}px`,
+      height: `${info.height}px`
     }
   }
 
   return {
     width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px',
+    height: parseInt(info.height / (info.width / width)) + 'px'
   }
 }
 </script>

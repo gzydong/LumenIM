@@ -31,7 +31,7 @@ export function palyMusic(muted = false) {
  * @param {String} index_name
  */
 export function findTalkIndex(index_name) {
-  return useTalkStore().items.findIndex(item => item.index_name === index_name)
+  return useTalkStore().items.findIndex((item) => item.index_name === index_name)
 }
 
 /**
@@ -40,7 +40,7 @@ export function findTalkIndex(index_name) {
  * @param {String} index_name
  */
 export function findTalk(index_name) {
-  return useTalkStore().items.find(item => item.index_name === index_name)
+  return useTalkStore().items.find((item) => item.index_name === index_name)
 }
 
 /**
@@ -65,11 +65,10 @@ export function formatTalkItem(params) {
     draft_text: '',
     msg_text: '',
     index_name: '',
-    updated_at: parseTime(new Date()),
+    updated_at: parseTime(new Date())
   }
 
   options = { ...options, ...params }
-  options.msg_text = options.msg_text
   options.index_name = `${options.talk_type}_${options.receiver_id}`
 
   return options
@@ -87,14 +86,14 @@ export function toTalk(talk_type, receiver_id) {
     return router.push({
       path: '/message',
       query: {
-        v: new Date().getTime(),
-      },
+        v: new Date().getTime()
+      }
     })
   }
 
   ServeCreateTalkList({
     talk_type: parseInt(talk_type),
-    receiver_id: parseInt(receiver_id),
+    receiver_id: parseInt(receiver_id)
   }).then(({ code, data, message }) => {
     if (code == 200) {
       sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
@@ -106,8 +105,8 @@ export function toTalk(talk_type, receiver_id) {
       router.push({
         path: '/message',
         query: {
-          v: new Date().getTime(),
-        },
+          v: new Date().getTime()
+        }
       })
     } else {
       window['$message'].info(message)

@@ -9,11 +9,11 @@ const isShowBox = ref(true)
 
 const model = reactive({
   lang: '',
-  code: '',
+  code: ''
 })
 
 const langText = computed(() => {
-  let data = options.find(item => {
+  let data = options.find((item) => {
     return item.value == model.lang
   })
 
@@ -35,7 +35,7 @@ const onMaskClick = () => {
 const onSubmit = () => {
   let data = {
     lang: model.lang,
-    code: model.code,
+    code: model.code
   }
 
   if (model.lang == 'json') {
@@ -59,7 +59,7 @@ const onSubmit = () => {
     style="max-width: 800px; height: 600px"
     :on-after-leave="onMaskClick"
     :segmented="{
-      content: true,
+      content: true
     }"
     :mask-closable="false"
   >
@@ -67,12 +67,7 @@ const onSubmit = () => {
       <div class="popselect">
         <span>语言类型:</span>
 
-        <n-popselect
-          v-model:value="model.lang"
-          :options="options"
-          size="medium"
-          scrollable
-        >
+        <n-popselect v-model:value="model.lang" :options="options" size="medium" scrollable>
           <n-button text type="primary">
             {{ langText }}
           </n-button>
@@ -96,12 +91,7 @@ const onSubmit = () => {
       <div class="footer">
         <div>
           <n-button type="tertiary" @click="isShowBox = false"> 取消 </n-button>
-          <n-button
-            type="primary"
-            class="mt-l15"
-            @click="onSubmit"
-            :disabled="isCanSubmit"
-          >
+          <n-button type="primary" class="mt-l15" @click="onSubmit" :disabled="isCanSubmit">
             发送
           </n-button>
         </div>

@@ -19,7 +19,7 @@ export default {
     let linedom = document.createElement('div')
     linedom.className = `dropsize-line dropsize-line-${direction}`
 
-    el.linedomMouseup = function (e) {
+    el.linedomMouseup = function () {
       if (!el.touch.status) return
       el.touch.status = false
 
@@ -71,12 +71,10 @@ export default {
         pageX: e.pageX,
         pageY: e.pageY,
         width: el.offsetWidth,
-        height: el.offsetHeight,
+        height: el.offsetHeight
       }
 
-      let cursor = ['left', 'right'].includes(direction)
-        ? 'col-resize'
-        : 'row-resize'
+      let cursor = ['left', 'right'].includes(direction) ? 'col-resize' : 'row-resize'
 
       document.querySelector('body').style.cursor = cursor
 
@@ -96,8 +94,8 @@ export default {
 
     el.appendChild(linedom)
   },
-  unmounted: function (el, binding) {
+  unmounted: function (el) {
     document.removeEventListener('mousemove', el.linedomMouseup)
     document.removeEventListener('mouseup', el.linedomMousemove)
-  },
+  }
 }

@@ -7,11 +7,11 @@ import { useEditorDraftStore } from '@/store/editor-draft'
 import { useUploadsStore } from '@/store/uploads'
 
 export {
-    useUserStore,
-    useNotifyStore,
-    useTalkStore,
-    useEditorStore,
-    useDialogueStore,
-    useEditorDraftStore,
-    useUploadsStore
+  useUserStore,
+  useNotifyStore,
+  useTalkStore,
+  useEditorStore,
+  useDialogueStore,
+  useEditorDraftStore,
+  useUploadsStore
 }

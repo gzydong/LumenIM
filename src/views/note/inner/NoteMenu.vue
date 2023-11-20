@@ -13,12 +13,12 @@ const menus = reactive([
   {
     name: '近期编辑',
     indexName: '0-0',
-    submenus: [],
+    submenus: []
   },
   {
     name: '我的收藏',
     indexName: '1-0',
-    submenus: [],
+    submenus: []
   },
   {
     name: '笔记分类',
@@ -26,7 +26,7 @@ const menus = reactive([
     isShowSub: true,
     isShowCount: true,
     isSubNode: true,
-    submenus: [],
+    submenus: []
   },
   {
     name: '笔记标签',
@@ -34,8 +34,8 @@ const menus = reactive([
     isShowSub: false,
     isShowCount: true,
     isSubNode: true,
-    submenus: [],
-  },
+    submenus: []
+  }
 ])
 
 const isShowRecycleModal = ref(false)
@@ -44,7 +44,7 @@ const dropdownMenu = reactive({
   show: false,
   dropdownX: 0,
   dropdownY: 0,
-  item: {},
+  item: {}
 })
 
 const loadWatchClassMenu = () => {
@@ -58,14 +58,14 @@ const loadWatchClassMenu = () => {
           name: item.class_name,
           count: item.count,
           isEdit: false,
-          indexName: '2-' + item.id,
+          indexName: '2-' + item.id
         })
       }
 
       menus[2].submenus = items
     },
     {
-      deep: true,
+      deep: true
     }
   )
 }
@@ -82,14 +82,14 @@ const loadWatchTagsMenu = () => {
           name: item.tag_name,
           count: item.count,
           isEdit: false,
-          indexName: '3-' + item.id,
+          indexName: '3-' + item.id
         })
       }
 
       menus[3].submenus = items
     },
     {
-      deep: true,
+      deep: true
     }
   )
 }
@@ -139,14 +139,14 @@ const onMenuLevel2Event = (submenu, index) => {
   activedMenu.value = submenu.indexName
 }
 
-const onToolsMenu = value => {
+const onToolsMenu = (value) => {
   if (value == 'class') {
     menus[2].isShowSub = true
     menus[2].submenus.unshift({
       id: -1,
       name: '',
       isEdit: true,
-      indexName: '2--1',
+      indexName: '2--1'
     })
   } else if (value == 'tag') {
     menus[3].isShowSub = true
@@ -154,7 +154,7 @@ const onToolsMenu = value => {
       id: -1,
       name: '',
       isEdit: true,
-      indexName: '3--1',
+      indexName: '3--1'
     })
   }
 }
@@ -185,18 +185,18 @@ const onContextMenu = (e, i, i2, submenu) => {
   dropdownMenu.item = {
     index: i,
     index2: i2,
-    submenu: submenu,
+    submenu: submenu
   }
 
   dropdownMenu.options = [
     {
       label: '重命名',
-      key: 'rename',
+      key: 'rename'
     },
     {
       label: '删除',
-      key: 'delete',
-    },
+      key: 'delete'
+    }
   ]
 
   nextTick(() => {
@@ -208,9 +208,8 @@ const onContextMenu = (e, i, i2, submenu) => {
   e.preventDefault()
 }
 
-const onContextMenuHandle = value => {
-  let submenu =
-    menus[dropdownMenu.item.index].submenus[dropdownMenu.item.index2]
+const onContextMenuHandle = (value) => {
+  let submenu = menus[dropdownMenu.item.index].submenus[dropdownMenu.item.index2]
 
   if (value == 'rename') {
     submenu.isEdit = true
@@ -261,12 +260,12 @@ loadWatchTagsMenu()
         :options="[
           {
             label: '创建分类',
-            key: 'class',
+            key: 'class'
           },
           {
             label: '创建标签',
-            key: 'tag',
-          },
+            key: 'tag'
+          }
         ]"
       >
         <n-button circle>
@@ -303,17 +302,10 @@ loadWatchTagsMenu()
 
             <span>
               {{ menu.name }}
-              <template v-if="menu.isShowCount">
-                ({{ menu.submenus.length }})
-              </template>
+              <template v-if="menu.isShowCount"> ({{ menu.submenus.length }}) </template>
             </span>
 
-            <n-icon
-              v-show="menu.submenus.length"
-              class="nav-icon"
-              size="18"
-              :component="Down"
-            />
+            <n-icon v-show="menu.submenus.length" class="nav-icon" size="18" :component="Down" />
           </div>
 
           <div
@@ -333,10 +325,7 @@ loadWatchTagsMenu()
                 type="text"
               />
             </p>
-            <p
-              v-else
-              @contextmenu.prevent="onContextMenu($event, i, i2, submenu)"
-            >
+            <p v-else @contextmenu.prevent="onContextMenu($event, i, i2, submenu)">
               <span>|- {{ submenu.name }}</span>
               <span v-if="submenu.count">({{ submenu.count }})</span>
             </p>

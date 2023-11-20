@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
-import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
+// import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
 import { useNotifyStore } from '@/store/notify'
 import { isElectronMode } from '@/utils/common'
 
@@ -9,16 +9,16 @@ const notifyStore = useNotifyStore()
 
 const isFullScreen = computed({
   get: () => notifyStore.isFullScreen,
-  set: val => {
+  set: (val) => {
     notifyStore.setFullScreen(val)
-  },
+  }
 })
 
 const darkTheme = computed({
   get: () => !notifyStore.darkTheme,
-  set: val => {
+  set: (val) => {
     notifyStore.setDarkTheme(!val)
-  },
+  }
 })
 
 const railStyle = ({ focused, checked }) => {
@@ -46,9 +46,7 @@ const railStyle = ({ focused, checked }) => {
       <div class="view-list">
         <div class="content">
           <div class="name">主题颜色</div>
-          <div class="desc">
-            当前主题颜色 ：{{ darkTheme ? '浅色' : '深色' }}
-          </div>
+          <div class="desc">当前主题颜色 ：{{ darkTheme ? '浅色' : '深色' }}</div>
         </div>
         <div class="tools">
           <n-switch v-model:value="darkTheme" size="medium" />
@@ -58,9 +56,7 @@ const railStyle = ({ focused, checked }) => {
       <div v-show="!isElectronMode()" class="view-list">
         <div class="content">
           <div class="name">主题模式</div>
-          <div class="desc">
-            当前主题模式 ：{{ isFullScreen ? '全屏模式' : '居中模式' }}
-          </div>
+          <div class="desc">当前主题模式 ：{{ isFullScreen ? '全屏模式' : '居中模式' }}</div>
         </div>
         <div class="tools">
           <n-switch size="medium" v-model:value="isFullScreen" />

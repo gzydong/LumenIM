@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useEditorStore } from '@/store/editor'
-import {
-  useTalkStore,
-  useDialogueStore,
-  useNotifyStore,
-  useUploadsStore,
-} from '@/store'
+import { useTalkStore, useDialogueStore, useNotifyStore, useUploadsStore } from '@/store'
 
 import socket from '@/socket'
 import { ServePublishMessage } from '@/api/chat'
@@ -25,27 +20,27 @@ const dialogueStore = useDialogueStore()
 const props = defineProps({
   uid: {
     type: Number,
-    default: 0,
+    default: 0
   },
   talk_type: {
     type: Number,
-    default: 0,
+    default: 0
   },
   receiver_id: {
     type: Number,
-    default: 0,
+    default: 0
   },
   index_name: {
     type: String,
-    default: '',
+    default: ''
   },
   online: {
     type: Boolean,
-    default: false,
+    default: false
   },
   members: {
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const isShowHistory = ref(false)
@@ -55,8 +50,8 @@ const onSendMessage = (data = {}, callBack: any) => {
     ...data,
     receiver: {
       receiver_id: props.receiver_id,
-      talk_type: props.talk_type,
-    },
+      talk_type: props.talk_type
+    }
   }
 
   ServePublishMessage(message)
@@ -82,8 +77,8 @@ const onSendTextEvent = throttle((value: any) => {
     quote_id: data.quoteId,
     mention: {
       all: data.mentions.find((v: any) => v.atid == 0) ? 1 : 0,
-      uids: data.mentionUids,
-    },
+      uids: data.mentionUids
+    }
   }
 
   onSendMessage(message, (ok: boolean) => {
@@ -125,7 +120,7 @@ const onSendVideoEvent = async ({ data }) => {
     url: video.data.src,
     cover: cover.data.src,
     duration: parseInt(resp.duration),
-    size: data.size,
+    size: data.size
   }
 
   onSendMessage(message, () => {})
@@ -143,12 +138,7 @@ const onSendFileEvent = ({ data }) => {
     return window['$message'].warning('上传文件不能超过100M!')
   }
 
-  uploadsStore.initUploadFile(
-    data,
-    props.talk_type,
-    props.receiver_id,
-    dialogueStore.talk.username
-  )
+  uploadsStore.initUploadFile(data, props.talk_type, props.receiver_id, dialogueStore.talk.username)
 }
 
 // 发送投票消息
@@ -158,7 +148,7 @@ const onSendVoteEvent = ({ data, callBack }) => {
     mode: data.mode,
     anonymous: data.anonymous,
     title: data.title,
-    options: data.options,
+    options: data.options
   })
 
   response.then(({ code, message }) => {
@@ -181,7 +171,7 @@ const onSendMixedEvent = ({ data, callBack }) => {
   let message = {
     type: 'mixed',
     quote_id: data.quoteId,
-    items: data.items,
+    items: data.items
   }
 
   onSendMessage(message, callBack)
@@ -190,7 +180,7 @@ const onSendMixedEvent = ({ data, callBack }) => {
 const onKeyboardPush = throttle(() => {
   socket.emit('im.message.keyboard', {
     sender_id: props.uid,
-    receiver_id: props.receiver_id,
+    receiver_id: props.receiver_id
   })
 }, 3000)
 
@@ -198,7 +188,7 @@ const onKeyboardPush = throttle(() => {
 const onInputEvent = ({ data }) => {
   talkStore.updateItem({
     index_name: props.index_name,
-    draft_text: data,
+    draft_text: data
   })
 
   // 判断对方是否在线和是否需要推送
@@ -221,7 +211,7 @@ const evnets = {
   history_event: () => {
     isShowHistory.value = true
   },
-  mixed_event: onSendMixedEvent,
+  mixed_event: onSendMixedEvent
 }
 
 // 编辑器事件
@@ -237,12 +227,7 @@ onMounted(() => {
 <template>
   <footer class="el-footer">
     <MultiSelectFooter v-if="dialogueStore.isOpenMultiSelect" />
-    <Editor
-      v-else
-      @editor-event="onEditorEvent"
-      :vote="talk_type == 2"
-      :members="members"
-    />
+    <Editor v-else @editor-event="onEditorEvent" :vote="talk_type == 2" :members="members" />
   </footer>
 
   <HistoryRecord

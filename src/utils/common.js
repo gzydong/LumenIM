@@ -1,4 +1,4 @@
-import { createApp, h } from 'vue'
+import { createApp } from 'vue'
 
 /**
  * 防抖函数
@@ -64,7 +64,7 @@ export function clipboard(text, callback) {
 
 export async function clipboardImage(src, callback) {
   const { state } = await navigator.permissions.query({
-    name: 'clipboard-write',
+    name: 'clipboard-write'
   })
 
   if (state != 'granted') return
@@ -78,10 +78,10 @@ export async function clipboardImage(src, callback) {
     let context = canvas.getContext('2d')
     context.drawImage(image, 0, 0, image.width, image.height)
 
-    canvas.toBlob(async blob => {
+    canvas.toBlob(async (blob) => {
       try {
         let item = new ClipboardItem({
-          [blob.type]: blob,
+          [blob.type]: blob
         })
 
         await navigator.clipboard.write([item])
@@ -121,7 +121,7 @@ export function modal(Constructor, props = {}) {
     remove() {
       mountNode.remove()
       app.unmount(mountNode)
-    },
+    }
   })
 
   return app.mount(mountNode, true)
@@ -148,7 +148,7 @@ export function htmlDecode(input) {
     '&quot;': '"',
     '&nbsp;': ' ',
     '&copy;': '\u00A9', // 版权符号
-    '&reg;': '\u00AE', // 注册商标符号
+    '&reg;': '\u00AE' // 注册商标符号
     // ... 添加其他实体的映射
   }
   // 使用正则表达式和映射替换输入中的实体
@@ -159,7 +159,7 @@ export function htmlDecode(input) {
 
 // 文件转 图片 关键函数  异步
 export function getVideoImage(file, time = 1) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let video = document.createElement('video')
 
     video.src = URL.createObjectURL(file)
@@ -180,13 +180,13 @@ export function getVideoImage(file, time = 1) {
         width: video.videoWidth,
         height: video.videoHeight,
         duration: video.duration,
-        file: null,
+        file: null
       }
 
-      canvas.toBlob(blob => {
+      canvas.toBlob((blob) => {
         data.file = new File([blob], 'image.jpeg', {
           type: blob.type,
-          lastModified: Date.now(),
+          lastModified: Date.now()
         })
 
         resolve(data)

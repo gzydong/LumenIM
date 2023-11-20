@@ -1,7 +1,6 @@
 export * from './directive'
 export * from './highlight'
 export * from './hljs'
-export * from './icon-park'
 export * from './me-core'
 export * from './md-editor'
 export * from './naive-ui'

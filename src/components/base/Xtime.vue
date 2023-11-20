@@ -8,8 +8,8 @@ export default defineComponent({
   props: {
     time: {
       type: String,
-      default: '2022-03-06 21:20:00',
-    },
+      default: '2022-03-06 21:20:00'
+    }
   },
   setup(props) {
     let timeout = null
@@ -36,6 +36,6 @@ export default defineComponent({
     format()
 
     return () => h('span', [text.value])
-  },
+  }
 })
 </script>

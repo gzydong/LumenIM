@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import {
-  reactive,
-  watch,
-  computed,
-  nextTick,
-  onMounted,
-  inject,
-  ref,
-} from 'vue'
+import { reactive, watch, computed, nextTick, onMounted, inject, ref } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
 import { publisher } from '@/utils/publisher.ts'
@@ -31,20 +23,20 @@ const dialogueStore = useDialogueStore()
 const props = defineProps({
   uid: {
     type: Number,
-    default: 0,
+    default: 0
   },
   talk_type: {
     type: Number,
-    default: 0,
+    default: 0
   },
   receiver_id: {
     type: Number,
-    default: 0,
+    default: 0
   },
   index_name: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 let locationMessage: any = null
@@ -55,7 +47,7 @@ const records = computed((): IMessageRecord[] => dialogueStore.records)
 // 加载配置
 const loadConfig = reactive({
   status: 0,
-  minRecord: 0,
+  minRecord: 0
 })
 
 // 置底按钮
@@ -67,7 +59,7 @@ const onLoadTalk = () => {
     record_id: loadConfig.minRecord,
     receiver_id: props.receiver_id,
     talk_type: props.talk_type,
-    limit: 30,
+    limit: 30
   }
 
   if (locationMessage) {
@@ -83,12 +75,9 @@ const onLoadTalk = () => {
   loadConfig.status = 0
 
   const response = ServeTalkRecords(data)
-  response.then(res => {
+  response.then((res) => {
     // 防止对话切换过快，数据渲染错误
-    if (
-      data.talk_type != props.talk_type ||
-      data.receiver_id != props.receiver_id
-    ) {
+    if (data.talk_type != props.talk_type || data.receiver_id != props.receiver_id) {
       locationMessage = null
       return
     }
@@ -143,7 +132,7 @@ function onAfterRead(records: IMessageRecord[]) {
   if (ids.length) {
     socket.emit('im.message.read', {
       receiver_id: props.receiver_id,
-      msg_id: ids,
+      msg_id: ids
     })
   }
 }
@@ -220,9 +209,7 @@ const onPanelScroll = (e: any) => {
 // 复制文本信息
 const onCopyText = (data: IMessageRecord) => {
   if (data.content && data.content.length > 0) {
-    return clipboard(htmlDecode(data.content), () =>
-      window['$message'].success('复制成功')
-    )
+    return clipboard(htmlDecode(data.content), () => window['$message'].success('复制成功'))
   }
 
   if (data.extra?.url) {
@@ -246,7 +233,7 @@ const onRevokeTalk = (data: IMessageRecord) => {
 const onMultiSelect = (data: IMessageRecord) => {
   dialogueStore.updateDialogueRecord({
     id: data.id,
-    isCheck: true,
+    isCheck: true
   })
 
   dialogueStore.isOpenMultiSelect = true
@@ -269,7 +256,7 @@ const onQuoteMessage = (data: IMessageRecord) => {
     id: data.msg_id,
     title: `${data.nickname} ${data.created_at}`,
     describe: '',
-    image: '',
+    image: ''
   }
 
   switch (data.msg_type) {
@@ -317,7 +304,7 @@ const onQuoteMessage = (data: IMessageRecord) => {
 const onClickNickname = (data: IMessageRecord) => {
   publisher.emit('editor:mention', {
     id: data.user_id,
-    value: data.nickname,
+    value: data.nickname
   })
 }
 
@@ -340,7 +327,7 @@ const onContextMenuHandle = (key: string) => {
     delete: onDeleteTalk,
     multiSelect: onMultiSelect,
     download: onDownloadFile,
-    quote: onQuoteMessage,
+    quote: onQuoteMessage
   }
 
   // 触发事件
@@ -355,7 +342,7 @@ const onSkipBottom = () => {
   if (el) {
     el.scrollTo({
       top: el.scrollHeight + 1000,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
   }
 }
@@ -366,7 +353,7 @@ const onJumpMessage = (msgid: string) => {
     if (locationMessage === null) {
       locationMessage = {
         msgid: msgid,
-        num: 3,
+        num: 3
       }
     } else {
       locationMessage.num--
@@ -383,7 +370,7 @@ const onJumpMessage = (msgid: string) => {
 
     el?.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     return
   }
@@ -391,7 +378,7 @@ const onJumpMessage = (msgid: string) => {
   locationMessage = null
 
   element?.scrollIntoView({
-    behavior: 'smooth',
+    behavior: 'smooth'
   })
 
   addClass(element, 'border')
@@ -435,9 +422,7 @@ onMounted(onReload)
         <!-- 数据加载状态栏 -->
         <div class="load-toolbar pointer">
           <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
-          <span v-else-if="loadConfig.status == 1" @click="onLoadTalk">
-            查看更多消息 ...
-          </span>
+          <span v-else-if="loadConfig.status == 1" @click="onLoadTalk"> 查看更多消息 ... </span>
           <span v-else class="no-more"> 没有更多消息了 </span>
         </div>
 
@@ -473,14 +458,11 @@ onMounted(onReload)
             :class="{
               'direction-rt': item.float == 'right',
               'multi-select': dialogueStore.isOpenMultiSelect,
-              'multi-select-check': item.isCheck,
+              'multi-select-check': item.isCheck
             }"
           >
             <!-- 多选按钮 -->
-            <aside
-              v-if="dialogueStore.isOpenMultiSelect"
-              class="checkbox-column"
-            >
+            <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
               <n-checkbox
                 size="small"
                 :checked="item.isCheck"

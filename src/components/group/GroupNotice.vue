@@ -9,8 +9,8 @@ const emit = defineEmits(['close'])
 const props = defineProps({
   groupId: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const isShow = ref(true)
@@ -18,7 +18,7 @@ const title = ref('群公告')
 
 const state = reactive({
   loading: false,
-  items: [],
+  items: []
 })
 
 const onClose = () => {
@@ -28,12 +28,12 @@ const onClose = () => {
 const onLoadData = () => {
   state.loading = true
   ServeGetGroupNotices({
-    group_id: props.groupId,
-  }).then(res => {
+    group_id: props.groupId
+  }).then((res) => {
     if (res.code == 200) {
       let items = res.data.items || []
 
-      items.forEach(item => {
+      items.forEach((item) => {
         item.isShow = false
       })
 

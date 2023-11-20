@@ -16,19 +16,19 @@ const rules = {
   username: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '账号不能为空',
+    message: '账号不能为空'
   },
   password: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '密码不能为空',
-  },
+    message: '密码不能为空'
+  }
 }
 
 const model = reactive({
   username: '',
   password: '',
-  loading: false,
+  loading: false
 })
 
 const onLogin = () => {
@@ -37,10 +37,10 @@ const onLogin = () => {
   const response = ServeLogin({
     mobile: model.username,
     password: model.password,
-    platform: 'web',
+    platform: 'web'
   })
 
-  response.then(async res => {
+  response.then(async (res) => {
     if (res.code == 200) {
       window['$message'].success('登录成功')
       setAccessToken(res.data.access_token, res.data.expires_in)
@@ -57,18 +57,18 @@ const onLogin = () => {
   })
 }
 
-const onValidate = e => {
+const onValidate = (e) => {
   e.preventDefault()
 
   // 谷歌浏览器提示音需要用户主动交互才能播放，登录入口主动交互一次，后面消息提示音就能正常播放了
   palyMusic(true)
 
-  formRef.value.validate(errors => {
+  formRef.value.validate((errors) => {
     !errors && onLogin()
   })
 }
 
-const onClickAccount = type => {
+const onClickAccount = (type) => {
   if (type == 1) {
     model.username = '18798272054'
     model.password = 'admin123'
@@ -83,9 +83,7 @@ const onClickAccount = type => {
 
 <template>
   <section class="el-container is-vertical login-box login">
-    <header class="el-header box-header">
-       快捷登录
-      </header>
+    <header class="el-header box-header">快捷登录</header>
 
     <main class="el-main" style="padding: 3px">
       <n-form ref="formRef" size="large" :model="model" :rules="rules">
@@ -94,7 +92,7 @@ const onClickAccount = type => {
             placeholder="请输入手机号"
             v-model:value="model.username"
             :maxlength="11"
-            @keydown.enter.native="onValidate"
+            @keydown.enter="onValidate"
           />
         </n-form-item>
 
@@ -104,7 +102,7 @@ const onClickAccount = type => {
             type="password"
             show-password-on="click"
             v-model:value="model.password"
-            @keydown.enter.native="onValidate"
+            @keydown.enter="onValidate"
           />
         </n-form-item>
 
@@ -121,9 +119,7 @@ const onClickAccount = type => {
       </n-form>
 
       <div class="helper">
-        <n-button text color="#409eff" @click="router.push('/auth/forget')">
-          找回密码
-        </n-button>
+        <n-button text color="#409eff" @click="router.push('/auth/forget')"> 找回密码 </n-button>
         <n-button text color="#409eff" @click="router.push('/auth/register')">
           还没有账号？立即注册
         </n-button>

@@ -23,11 +23,11 @@ export default {
     if (binding.value !== binding.oldValue) {
       binding.value ? appendEl(el) : removeEl(el)
     }
-  },
+  }
 }
 
 // 插入元素
-const appendEl = el => {
+const appendEl = (el) => {
   // 给父元素加个定位，让loading元素定位
   el.style.position = 'relative'
   el.style.overflow = 'hidden'
@@ -36,7 +36,7 @@ const appendEl = el => {
 }
 
 // 移除元素
-const removeEl = el => {
+const removeEl = (el) => {
   if (el.dataset['position']) {
     el.style.position = ''
   }

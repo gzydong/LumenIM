@@ -6,5 +6,5 @@ import { MessageApi } from 'naive-ui'
  * @returns MessageApi
  */
 export const message = function (): MessageApi {
-    return window.$message
+  return window.$message
 }

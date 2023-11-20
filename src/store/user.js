@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', {
       online: false, // 在线状态
       isQiye: false,
       isContactApply: false,
-      isGroupApply: false,
+      isGroupApply: false
     }
   },
   getters: {},
@@ -63,6 +63,6 @@ export const useUserStore = defineStore('user', {
           this.isGroupApply = data.unread_num > 0
         }
       })
-    },
-  },
+    }
+  }
 })

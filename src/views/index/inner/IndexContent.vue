@@ -26,25 +26,25 @@ const talkParams = reactive({
   username: computed(() => dialogueStore.talk.username),
   online: computed(() => dialogueStore.online),
   keyboard: computed(() => dialogueStore.keyboard),
-  num: computed(() => dialogueStore.members.length),
+  num: computed(() => dialogueStore.members.length)
 })
 
 const state = reactive({
   // 是否显示群面板
   isShowGroupAside: false,
 
-  isShowGroupNotice: false,
+  isShowGroupNotice: false
 })
 
 // Header 工具栏事件
-const onPanelHeaderEvent = eventType => {
+const onPanelHeaderEvent = (eventType) => {
   const events = {
     notice: () => {
       state.isShowGroupNotice = !state.isShowGroupNotice
     },
     group: () => {
       state.isShowGroupAside = !state.isShowGroupAside
-    },
+    }
   }
 
   events[eventType] && events[eventType]()
@@ -114,10 +114,7 @@ const onPanelHeaderEvent = eventType => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupNotice
-      :group-id="talkParams.receiver_id"
-      @close="state.isShowGroupNotice = false"
-    />
+    <GroupNotice :group-id="talkParams.receiver_id" @close="state.isShowGroupNotice = false" />
   </n-drawer>
 
   <n-drawer
@@ -129,10 +126,7 @@ const onPanelHeaderEvent = eventType => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupPanel
-      :gid="talkParams.receiver_id"
-      @close="state.isShowGroupAside = false"
-    />
+    <GroupPanel :gid="talkParams.receiver_id" @close="state.isShowGroupAside = false" />
   </n-drawer>
 </template>
 

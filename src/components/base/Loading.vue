@@ -48,11 +48,11 @@
   text-align: center;
   vertical-align: middle;
   opacity: 0;
-  -webkit-transition: -webkit-transform 0.3s
-    cubic-bezier(0.78, 0.14, 0.15, 0.86);
+  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
   transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
   transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
-  transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86),
+  transition:
+    transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86),
     -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
 }
 

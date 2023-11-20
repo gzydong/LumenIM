@@ -9,14 +9,14 @@ import { debounce } from '@/utils/common'
 
 const apply = reactive({
   isShow: false,
-  groupId: 0,
+  groupId: 0
 })
 
 const search = reactive({
   page: 1,
   next: false,
   name: '',
-  loading: false,
+  loading: false
 })
 
 const items = ref([])
@@ -28,9 +28,9 @@ const onLoadData = () => {
 
   ServeGroupOvertList({
     page: search.page,
-    name: search.name,
+    name: search.name
   })
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
         let list = res.data.items || []
 
@@ -53,7 +53,7 @@ const onLoadMore = () => {
   onLoadData()
 }
 
-const onSearchInput = debounce(value => {
+const onSearchInput = debounce((value) => {
   search.page = 1
   search.name = value
 
@@ -105,6 +105,7 @@ onLoadData()
           <div class="cards">
             <GroupCard
               v-for="item in items"
+              :key="item.id"
               :avatar="item.avatar"
               :username="item.name"
               :gender="item.gender"
@@ -113,11 +114,7 @@ onLoadData()
               @join="onJoin(item)"
             />
 
-            <div
-              v-show="search.next"
-              class="flex-center more"
-              @click="onLoadMore"
-            >
+            <div v-show="search.next" class="flex-center more" @click="onLoadMore">
               <n-icon :component="AddOne" />
 
               &nbsp;加载更多
@@ -128,11 +125,7 @@ onLoadData()
     </main>
   </section>
 
-  <GroupApply
-    v-if="apply.isShow"
-    :gid="apply.groupId"
-    @close="apply.isShow = false"
-  />
+  <GroupApply v-if="apply.isShow" :gid="apply.groupId" @close="apply.isShow = false" />
 </template>
 
 <style lang="less" scoped>

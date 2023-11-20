@@ -7,9 +7,7 @@
         <i class="ant-spin-dot-item"></i>
         <i class="ant-spin-dot-item"></i>
       </span>
-      <div class="ant-spin-text" style="color: #9b9b9b; margin-top: 8px">
-        加载中...
-      </div>
+      <div class="ant-spin-text" style="color: #9b9b9b; margin-top: 8px">加载中...</div>
     </div>
   </div>
 </template>

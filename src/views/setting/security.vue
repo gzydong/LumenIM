@@ -11,12 +11,12 @@ const isShowChangePassword = ref(false)
 const isShowChangeMobile = ref(false)
 const isShowChangeEmail = ref(false)
 
-const onChangeMobileSuccess = value => {
+const onChangeMobileSuccess = (value) => {
   isShowChangeMobile.value = false
   userStore.mobile = value
 }
 
-const onChangeEmailSuccess = value => {
+const onChangeEmailSuccess = (value) => {
   isShowChangeEmail.value = false
   userStore.email = value
 }
@@ -33,9 +33,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">当前密码强度 ：中</div>
         </div>
         <div class="tools">
-          <n-button type="primary" text @click="isShowChangePassword = true">
-            修改
-          </n-button>
+          <n-button type="primary" text @click="isShowChangePassword = true"> 修改 </n-button>
         </div>
       </div>
 
@@ -45,9 +43,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">已绑定手机 ：{{ hidePhone(userStore.mobile) }}</div>
         </div>
         <div class="tools">
-          <n-button type="primary" text @click="isShowChangeMobile = true">
-            修改
-          </n-button>
+          <n-button type="primary" text @click="isShowChangeMobile = true"> 修改 </n-button>
         </div>
       </div>
 
@@ -57,9 +53,7 @@ const onChangeEmailSuccess = value => {
           <div class="desc">已绑定邮箱 ：{{ userStore.email || '未设置' }}</div>
         </div>
         <div class="tools">
-          <n-button type="primary" text @click="isShowChangeEmail = true">
-            修改
-          </n-button>
+          <n-button type="primary" text @click="isShowChangeEmail = true"> 修改 </n-button>
         </div>
       </div>
     </div>

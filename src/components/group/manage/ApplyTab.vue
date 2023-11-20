@@ -2,18 +2,14 @@
 import { ref, computed, h } from 'vue'
 import { NSpace, NPopconfirm, NInput } from 'naive-ui'
 import { Search, RefreshOne, CheckSmall, Close } from '@icon-park/vue-next'
-import {
-  ServeGetGroupApplyList,
-  ServeDeleteGroupApply,
-  ServeAgreeGroupApply,
-} from '@/api/group'
+import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { throttle } from '@/utils/common'
 
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const keywords = ref('')
@@ -25,15 +21,15 @@ const filterSearch = computed(() => {
     return items.value
   }
 
-  return items.value.filter(item => {
+  return items.value.filter((item) => {
     return item.nickname.match(keywords.value) != null
   })
 })
 
 const onLoadData = () => {
   ServeGetGroupApplyList({
-    group_id: props.id,
-  }).then(res => {
+    group_id: props.id
+  }).then((res) => {
     if (res.code == 200) {
       let data = res.data.items || []
       items.value = data
@@ -41,17 +37,18 @@ const onLoadData = () => {
   })
 }
 
-const onRowClick = item => {
+const onRowClick = (item) => {
   if (batchDelete.value == true) {
+    console.log(item)
   }
 }
 
-const onAgree = throttle(item => {
+const onAgree = throttle((item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeAgreeGroupApply({
-    apply_id: item.id,
-  }).then(res => {
+    apply_id: item.id
+  }).then((res) => {
     loading.destroy()
     if (res.code == 200) {
       window['$message'].success('已同意')
@@ -63,7 +60,7 @@ const onAgree = throttle(item => {
   })
 }, 1000)
 
-const onDelete = item => {
+const onDelete = (item) => {
   let remark = ''
   let dialog = window['$dialog'].create({
     title: '拒绝入群申请',
@@ -72,8 +69,8 @@ const onDelete = item => {
         defaultValue: '',
         placeholder: '请填写拒绝原因',
         style: { marginTop: '20px' },
-        onInput: value => (remark = value),
-        autofocus: true,
+        onInput: (value) => (remark = value),
+        autofocus: true
       })
     },
     negativeText: '取消',
@@ -85,8 +82,8 @@ const onDelete = item => {
 
       ServeDeleteGroupApply({
         apply_id: item.id,
-        remark: remark,
-      }).then(res => {
+        remark: remark
+      }).then((res) => {
         dialog.destroy()
 
         if (res.code == 200) {
@@ -99,7 +96,7 @@ const onDelete = item => {
       })
 
       return false
-    },
+    }
   })
 }
 
@@ -142,6 +139,7 @@ onLoadData()
       <div
         class="member-item"
         v-for="item in filterSearch"
+        :key="item.id"
         @click="onRowClick(item)"
       >
         <div class="avatar pointer" @click="onUserInfo(member)">
@@ -159,27 +157,13 @@ onLoadData()
 
         <div class="tool flex-center">
           <n-space>
-            <n-button
-              @click="onAgree(item)"
-              strong
-              secondary
-              circle
-              type="primary"
-              size="small"
-            >
+            <n-button @click="onAgree(item)" strong secondary circle type="primary" size="small">
               <template #icon>
                 <n-icon :component="CheckSmall" />
               </template>
             </n-button>
 
-            <n-button
-              @click="onDelete(item)"
-              strong
-              secondary
-              circle
-              type="tertiary"
-              size="small"
-            >
+            <n-button @click="onDelete(item)" strong secondary circle type="tertiary" size="small">
               <template #icon>
                 <n-icon :component="Close" />
               </template>

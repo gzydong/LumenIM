@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('electron', {
 
 // 窗口变化事件
 ipcRenderer.on('full-screen', function (event, value) {
-  isFullScreenStatus = value == 'enter'
+  // isFullScreenStatus = value == 'enter'
 
   document.dispatchEvent(
     new CustomEvent('full-screen-event', { detail: value })

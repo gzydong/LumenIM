@@ -16,7 +16,7 @@ const onTriggerUpload = () => {
 }
 
 // 上传表情包
-const onUpload = e => {
+const onUpload = (e) => {
   let file = e.target.files[0]
 
   editorStore.uploadUserEmoticon(file)
@@ -27,7 +27,7 @@ const onDelete = (index, id) => {
   editorStore.removeUserEmoticon({ index, id })
 }
 
-const onTabs = index => {
+const onTabs = (index) => {
   tabIndex.value = index
 }
 
@@ -59,6 +59,7 @@ const onSendEmoticon = (type, value, img = '') => {
           <div
             v-for="(img, key) in emoji.emojis"
             v-html="img"
+            :key="key"
             @click="onSendEmoticon(1, key, img)"
             class="option pointer flex-center"
           />
@@ -66,33 +67,16 @@ const onSendEmoticon = (type, value, img = '') => {
       </div>
 
       <div class="collect-box" v-else>
-        <div
-          v-if="tabIndex == 1"
-          class="item pointer upload-btn"
-          @click="onTriggerUpload"
-        >
+        <div v-if="tabIndex == 1" class="item pointer upload-btn" @click="onTriggerUpload">
           <n-icon size="28" class="icon" :component="UploadOne" />
           <span>自定义</span>
         </div>
 
-        <div
-          class="item pointer"
-          v-for="(item, index) in items[tabIndex].children"
-          :key="index"
-        >
+        <div class="item pointer" v-for="(item, index) in items[tabIndex].children" :key="index">
           <img :src="item.src" @click="onSendEmoticon(2, item.media_id)" />
 
-          <div
-            v-if="tabIndex == 1"
-            class="mask"
-            @click="onDelete(index, item.media_id)"
-          >
-            <n-icon
-              size="18"
-              color="#ff5722"
-              class="icon"
-              :component="Delete"
-            />
+          <div v-if="tabIndex == 1" class="mask" @click="onDelete(index, item.media_id)">
+            <n-icon size="18" color="#ff5722" class="icon" :component="Delete" />
           </div>
         </div>
       </div>

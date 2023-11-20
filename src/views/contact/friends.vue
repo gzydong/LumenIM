@@ -7,11 +7,7 @@ import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
 import { publisher } from '@/utils/publisher.ts'
 import { toTalk } from '@/utils/talk'
-import {
-  ServeGetContacts,
-  ServeDeleteContact,
-  ServeContactGroupList,
-} from '@/api/contact'
+import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
 import { useFriendsMenu } from '@/composition/friends-menu'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
@@ -37,7 +33,7 @@ const filter: any = computed(() => {
 })
 
 const loadContactList = () => {
-  ServeGetContacts().then(res => {
+  ServeGetContacts().then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []
     }
@@ -45,7 +41,7 @@ const loadContactList = () => {
 }
 
 const loadContactGroupList = () => {
-  ServeContactGroupList().then(res => {
+  ServeContactGroupList().then((res) => {
     if (res.code == 200) {
       groups.value = res.data.items || []
     }
@@ -71,7 +67,7 @@ const onDeleteContact = (data: any) => {
     negativeText: '取消',
     onPositiveClick: () => {
       ServeDeleteContact({
-        friend_id: data.id,
+        friend_id: data.id
       }).then(({ code, message }) => {
         if (code == 200) {
           window['$message'].success('删除联系人成功')
@@ -80,7 +76,7 @@ const onDeleteContact = (data: any) => {
           window['$message'].error(message)
         }
       })
-    },
+    }
   })
 }
 
@@ -92,7 +88,7 @@ const onContextMenu = (e, item) => {
 
 const onContextMenuHandle = (key = '') => {
   const evnets = {
-    delete: onDeleteContact,
+    delete: onDeleteContact
   }
 
   // 触发事件
@@ -101,7 +97,7 @@ const onContextMenuHandle = (key = '') => {
   closeDropdownMenu()
 }
 
-const onToolsMenu = value => {
+const onToolsMenu = (value) => {
   switch (value) {
     case 'add':
       isShowUserSearch.value = true
@@ -161,12 +157,12 @@ onUnmounted(() => {
             :options="[
               {
                 label: '添加好友',
-                key: 'add',
+                key: 'add'
               },
               {
                 label: '分组管理',
-                key: 'group',
-              },
+                key: 'group'
+              }
             ]"
           >
             <n-button circle>
@@ -187,6 +183,7 @@ onUnmounted(() => {
       <div class="cards">
         <MemberCard
           v-for="item in filter"
+          :key="item.id"
           :avatar="item.avatar"
           :username="item.remark || item.nickname"
           :gender="item.gender"

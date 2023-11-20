@@ -17,11 +17,10 @@ const items = ref([])
 
 // 过滤器
 const filter = computed(() => {
-  return items.value.filter(item => {
+  return items.value.filter((item) => {
     return (
       item.nickname.match(keywords.value) != null &&
-      (dept.value == -1 ||
-        item.dept_items.some(item => item.dept_id == dept.value))
+      (dept.value == -1 || item.dept_items.some((item) => item.dept_id == dept.value))
     )
   })
 })
@@ -29,7 +28,7 @@ const filter = computed(() => {
 const tree = ref([])
 const breadcrumb = ref('全体成员')
 
-const onToTalk = item => {
+const onToTalk = (item) => {
   if (userStore.uid != item.user_id) {
     toTalk(1, item.user_id)
   } else {
@@ -39,12 +38,12 @@ const onToTalk = item => {
 
 function toTree(data) {
   const map = {}
-  data.forEach(item => (map[item.dept_id] = item))
+  data.forEach((item) => (map[item.dept_id] = item))
 
-  const ancestors = value => {
+  const ancestors = (value) => {
     let list = []
 
-    value.split(',').forEach(id => {
+    value.split(',').forEach((id) => {
       map[parseInt(id)] && list.push(map[parseInt(id)].dept_name)
     })
 
@@ -52,7 +51,7 @@ function toTree(data) {
   }
 
   const tree = []
-  data.forEach(item => {
+  data.forEach((item) => {
     const parent = map[item.parent_id]
 
     item.breadcrumb = ancestors(item.ancestors || '').join(' / ')
@@ -69,9 +68,9 @@ function toTree(data) {
   return tree
 }
 
-const onInfo = item => {
+const onInfo = (item) => {
   modal(UserCardModal, {
-    uid: item.user_id,
+    uid: item.user_id
   })
 }
 
@@ -80,19 +79,19 @@ const onNodeProps = ({ option }) => {
     onClick() {
       breadcrumb.value = option.breadcrumb || '全部成员'
       dept.value = option.dept_id
-    },
+    }
   }
 }
 
 function onLoadDepartment() {
-  ServeDepartmentList().then(res => {
+  ServeDepartmentList().then((res) => {
     const items = res.data.items || []
 
     items.unshift({
       dept_id: -1,
       dept_name: '全部成员',
       parent_id: 0,
-      ancestors: '0',
+      ancestors: '0'
     })
 
     for (const item of items) {
@@ -114,7 +113,7 @@ async function onLoadData() {
 
   let users = res.data.items || []
 
-  users.map(item => {
+  users.map((item) => {
     item.online = false
     item.sort = 1000000
 
@@ -159,9 +158,7 @@ onLoadDepartment()
     <main class="el-main">
       <section class="el-container is-vertical height100">
         <header class="el-header from-header bdr-b">
-          <div style="font-weight: 500">
-            {{ breadcrumb }} ({{ filter.length }})
-          </div>
+          <div style="font-weight: 500">{{ breadcrumb }} ({{ filter.length }})</div>
           <n-input
             v-model:value.trim="keywords"
             placeholder="搜索"
@@ -179,6 +176,7 @@ onLoadDepartment()
           <div class="cards">
             <MemberCard
               v-for="item in filter"
+              :key="item.id"
               :username="item.nickname"
               :gender="item.gender"
               :motto="item.position"

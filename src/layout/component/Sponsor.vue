@@ -7,9 +7,12 @@ let isShow = ref(false)
 
 let num = storage.get('reward', 0)
 
-setTimeout(() => {
-  isShow.value = num <= 2
-}, 1000 * 60 * 2)
+setTimeout(
+  () => {
+    isShow.value = num <= 2
+  },
+  1000 * 60 * 2
+)
 
 const onClose = () => {
   isShow.value = false
@@ -39,9 +42,7 @@ const onClose = () => {
           <p>微信</p>
         </div>
       </div>
-      <div class="footer">
-        开源不易，如果你觉得项目对你有帮助，可以请作者喝杯咖啡☕️！鼓励下...
-      </div>
+      <div class="footer">开源不易，如果你觉得项目对你有帮助，可以请作者喝杯咖啡☕️！鼓励下...</div>
     </div>
   </div>
 </template>

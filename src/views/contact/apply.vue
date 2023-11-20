@@ -9,7 +9,7 @@ const tabIndex = ref('friend')
 
 const components = {
   friend: FriendApply,
-  group: GroupApply,
+  group: GroupApply
 }
 </script>
 

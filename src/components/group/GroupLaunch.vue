@@ -1,33 +1,21 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import {
-  NModal,
-  NInput,
-  NScrollbar,
-  NDivider,
-  NCheckbox,
-  NForm,
-  NFormItem,
-} from 'naive-ui'
+import { NModal, NInput, NScrollbar, NDivider, NCheckbox, NForm, NFormItem } from 'naive-ui'
 import { Search, Delete } from '@icon-park/vue-next'
-import {
-  ServeCreateGroup,
-  ServeInviteGroup,
-  ServeGetInviteFriends,
-} from '@/api/group'
+import { ServeCreateGroup, ServeInviteGroup, ServeGetInviteFriends } from '@/api/group'
 
 const emit = defineEmits(['close', 'on-submit'])
 const props = defineProps({
   gid: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const items = ref([])
 const model = reactive({
   keywords: '',
-  name: '',
+  name: ''
 })
 
 const loading = ref(true)
@@ -35,7 +23,7 @@ const isShowBox = ref(true)
 
 const searchFilter = computed(() => {
   if (model.keywords) {
-    return items.value.filter(item => {
+    return items.value.filter((item) => {
       return item.nickname.match(model.keywords) != null
     })
   }
@@ -44,7 +32,7 @@ const searchFilter = computed(() => {
 })
 
 const checkedFilter = computed(() => {
-  return items.value.filter(item => item.checked)
+  return items.value.filter((item) => item.checked)
 })
 
 const isCanSubmit = computed(() => {
@@ -57,23 +45,22 @@ const isCanSubmit = computed(() => {
 
 const onReset = () => {
   model.name = ''
-  items.value.forEach(item => {
+  items.value.forEach((item) => {
     item.checked = false
   })
 }
 
 const onLoad = () => {
   ServeGetInviteFriends({
-    group_id: props.gid,
+    group_id: props.gid
   })
-    .then(res => {
+    .then((res) => {
       if (res.code == 200 && res.data) {
         let list = res.data || []
-
-        items.value = list.map(item => {
+        items.value = list.map((item) => {
           return Object.assign(item, {
             nickname: item.friend_remark ? item.friend_remark : item.nickname,
-            checked: false,
+            checked: false
           })
         })
       }
@@ -87,21 +74,21 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const onTriggerContact = item => {
-  let data = items.value.find(val => {
+const onTriggerContact = (item) => {
+  let data = items.value.find((val) => {
     return val.id === item.id
   })
 
   data && (data.checked = !data.checked)
 }
 
-const onCreateSubmit = ids => {
+const onCreateSubmit = (ids) => {
   ServeCreateGroup({
     avatar: '',
     name: model.name,
     profile: '',
-    ids: ids.join(','),
-  }).then(res => {
+    ids: ids.join(',')
+  }).then((res) => {
     if (res.code == 200) {
       onReset()
       emit('on-submit', res.data)
@@ -111,11 +98,11 @@ const onCreateSubmit = ids => {
   })
 }
 
-const onInviteSubmit = ids => {
+const onInviteSubmit = (ids) => {
   ServeInviteGroup({
     group_id: props.gid,
-    ids: ids.join(','),
-  }).then(res => {
+    ids: ids.join(',')
+  }).then((res) => {
     if (res.code == 200) {
       emit('on-invite')
       window['$message'].success('邀请成功')
@@ -125,7 +112,7 @@ const onInviteSubmit = ids => {
 }
 
 const onSubmit = () => {
-  let ids = checkedFilter.value.map(item => item.id)
+  let ids = checkedFilter.value.map((item) => item.id)
 
   if (props.gid == 0) {
     onCreateSubmit(ids)
@@ -147,21 +134,17 @@ onLoad()
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,
-      footer: true,
+      footer: true
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <section class="el-container launch-box">
       <aside class="el-aside bdr-r" style="width: 280px" v-loading="loading">
         <section class="el-container is-vertical height100">
           <header class="el-header" style="height: 50px; padding: 16px">
-            <n-input
-              placeholder="搜索"
-              v-model:value="model.keywords"
-              clearable
-            >
+            <n-input placeholder="搜索" v-model:value="model.keywords" clearable>
               <template #prefix>
                 <n-icon :component="Search" />
               </template>
@@ -173,6 +156,7 @@ onLoad()
                 <div
                   class="friend-item pointer"
                   v-for="item in searchFilter"
+                  :key="item.id"
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
@@ -204,19 +188,10 @@ onLoad()
 
       <main class="el-main">
         <section class="el-container is-vertical height100">
-          <header
-            v-if="props.gid === 0"
-            class="el-header"
-            style="height: 90px; padding: 10px 15px"
-          >
+          <header v-if="props.gid === 0" class="el-header" style="height: 90px; padding: 10px 15px">
             <n-form>
               <n-form-item label="群聊名称" :required="true">
-                <n-input
-                  v-model:value="model.name"
-                  placeholder="必填"
-                  maxlength="20"
-                  show-count
-                />
+                <n-input v-model:value="model.name" placeholder="必填" maxlength="20" show-count />
               </n-form-item>
             </n-form>
           </header>
@@ -236,6 +211,7 @@ onLoad()
                 <div
                   class="friend-item pointer"
                   v-for="item in checkedFilter"
+                  :key="item.id"
                   @click="onTriggerContact(item)"
                 >
                   <div class="avatar">
@@ -265,12 +241,7 @@ onLoad()
     <template #footer>
       <div class="footer">
         <n-button type="tertiary" @click="isShowBox = false"> 取消 </n-button>
-        <n-button
-          type="primary"
-          class="mt-l15"
-          @click="onSubmit"
-          :disabled="isCanSubmit"
-        >
+        <n-button type="primary" class="mt-l15" @click="onSubmit" :disabled="isCanSubmit">
           提交
         </n-button>
       </div>

@@ -5,7 +5,7 @@ export function useContextMenu() {
   const menus = reactive([])
 
   const showContextMenu = () => {
-    isShow = true
+    isShow.value = true
   }
 
   const closeContextMenu = () => {}
@@ -23,6 +23,6 @@ export function useContextMenu() {
   return {
     showContextMenu,
     closeContextMenu,
-    renderContextMenu,
+    renderContextMenu
   }
 }

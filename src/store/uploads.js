@@ -31,18 +31,18 @@ export const useUploadsStore = defineStore('uploads', {
   state: () => {
     return {
       isShow: false,
-      items: [],
+      items: []
     }
   },
   getters: {
     successCount: (state) => {
-      return state.items.filter(item => {
+      return state.items.filter((item) => {
         return item.status === 2
       }).length
-    },
+    }
   },
   actions: {
-    close(){
+    close() {
       this.isShow = false
     },
 
@@ -50,8 +50,8 @@ export const useUploadsStore = defineStore('uploads', {
     initUploadFile(file, talkType, receiverId, username) {
       ServeFindFileSplitInfo({
         file_name: file.name,
-        file_size: file.size,
-      }).then(res => {
+        file_size: file.size
+      }).then((res) => {
         if (res.code == 200) {
           const { upload_id, split_size } = res.data
 
@@ -65,7 +65,7 @@ export const useUploadsStore = defineStore('uploads', {
             status: 0, // 文件上传状态 0:等待上传 1:上传中 2:上传完成 3:网络异常
             files: fileSlice(file, upload_id, split_size),
             avatar: '',
-            username: username,
+            username: username
           })
 
           this.triggerUpload(upload_id)
@@ -78,7 +78,7 @@ export const useUploadsStore = defineStore('uploads', {
 
     // 获取分片文件数组索引
     findItem(uploadId) {
-      return this.items.find(item => item.upload_id === uploadId)
+      return this.items.find((item) => item.upload_id === uploadId)
     },
 
     // 触发上传
@@ -90,7 +90,7 @@ export const useUploadsStore = defineStore('uploads', {
       item.status = 1
 
       ServeFileSubareaUpload(form)
-        .then(res => {
+        .then((res) => {
           if (res.code == 200) {
             item.uploadIndex++
 
@@ -117,8 +117,8 @@ export const useUploadsStore = defineStore('uploads', {
       ServeSendTalkFile({
         upload_id: item.upload_id,
         receiver_id: item.receiver_id,
-        talk_type: item.talk_type,
+        talk_type: item.talk_type
       })
-    },
-  },
+    }
+  }
 })

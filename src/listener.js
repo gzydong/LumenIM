@@ -34,7 +34,7 @@ function registerOnceExpireNotice() {
       onPositiveClick: () => {
         once = false
         useRouter().push('/auth/login')
-      },
+      }
     })
   })
 }
@@ -44,9 +44,8 @@ function registerVisitorNotice() {
   setTimeout(() => {
     window['$notification'].create({
       title: '友情提示',
-      content:
-        '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
-      duration: 30000,
+      content: '此站点仅供演示、学习所用，请勿进行非法操作、上传或发布违法资讯。',
+      duration: 30000
     })
   }, 3000)
 }
@@ -58,25 +57,25 @@ function registerLeaveWebListener() {
 }
 
 function registerNotificationAuth() {
-  applyNotificationAuth(value => {
+  applyNotificationAuth((value) => {
     useNotifyStore().isWebNotify = value
   })
 }
 
 function registerClickListener() {
-  const push = el => {
+  const push = (el) => {
     const href = el.getAttribute('href')
 
     if (href) {
       if (isElectronMode() && el.getAttribute('alt') === 'link') {
         return electron().openLink(href)
       }
-      
+
       return window.open(href)
     }
   }
 
-  document.body.addEventListener('click', event => {
+  document.body.addEventListener('click', (event) => {
     let target = event.target
 
     if (target.nodeName.toLocaleLowerCase() === 'a') {

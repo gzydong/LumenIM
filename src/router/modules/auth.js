@@ -7,17 +7,17 @@ export default {
     {
       path: '/auth/login',
       meta: { requiresAuth: false },
-      component: () => import('@/views/auth/login.vue'),
+      component: () => import('@/views/auth/login.vue')
     },
     {
       path: '/auth/register',
       meta: { requiresAuth: false },
-      component: () => import('@/views/auth/register.vue'),
+      component: () => import('@/views/auth/register.vue')
     },
     {
       path: '/auth/forget',
       meta: { requiresAuth: false },
-      component: () => import('@/views/auth/forget.vue'),
-    },
-  ],
+      component: () => import('@/views/auth/forget.vue')
+    }
+  ]
 }

@@ -6,11 +6,11 @@ import { debounce } from '@/utils/common'
 import Loading from '@/components/base/Loading.vue'
 const store = useNoteStore()
 
-const onCatDetail = item => {
+const onCatDetail = (item) => {
   store.loadDetail(item.id)
 }
 
-const onSearchInput = debounce(e => {
+const onSearchInput = debounce((e) => {
   store.loadNoteList({}, false)
 }, 500)
 </script>
@@ -38,17 +38,11 @@ const onSearchInput = debounce(e => {
       </div>
     </header>
 
-    <main
-      class="el-main height100 flex-center"
-      v-if="store.notes.loadStatus == 0"
-    >
+    <main class="el-main height100 flex-center" v-if="store.notes.loadStatus == 0">
       <Loading />
     </main>
 
-    <main
-      class="el-main height100 flex-center"
-      v-else-if="!store.notes.items.length"
-    >
+    <main class="el-main height100 flex-center" v-else-if="!store.notes.items.length">
       <n-empty size="200" description="暂无相关数据">
         <template #icon>
           <img src="@/assets/image/no-data.svg" alt="" />
@@ -76,11 +70,7 @@ const onSearchInput = debounce(e => {
                 <span>{{ note.class_name }}</span>
               </div>
               <div class="abstract">
-                {{
-                  note.abstract
-                    .replace(/[\r\n]/g, '')
-                    .replace(/(<([^>]+)>)/gi, '')
-                }}
+                {{ note.abstract.replace(/[\r\n]/g, '').replace(/(<([^>]+)>)/gi, '') }}
               </div>
             </div>
 

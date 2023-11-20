@@ -11,8 +11,8 @@ import App from '@/App.vue'
 import * as plugins from '@/plugins'
 
 async function bootstrap() {
-  const pinia = createPinia();
-  pinia.use(piniaPluginPersistedstate);
+  const pinia = createPinia()
+  pinia.use(piniaPluginPersistedstate)
 
   const app = createApp(App)
 

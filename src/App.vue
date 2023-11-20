@@ -10,10 +10,7 @@ import {
   zhCN,
   dateZhCN,
   darkTheme,
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
-  NLayoutFooter,
+  NLayoutContent
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
@@ -30,13 +27,13 @@ IconProvider({
   theme: 'outline',
   size: 24,
   strokeWidth: 3,
-  strokeLinejoin: 'bevel',
+  strokeLinejoin: 'bevel'
 })
 
 const isShowUser = ref(false)
 const showUserId = ref(0)
 
-provide('$user', uid => {
+provide('$user', (uid) => {
   showUserId.value = uid
   isShowUser.value = true
 })
@@ -63,7 +60,7 @@ const getThemeOverride = computed(() => {
   return overrides
 })
 
-const onChangeRemark = value => {
+const onChangeRemark = (value) => {
   publisher.emit('contact:change-remark', value)
   talkStore.setRemark(value)
 }

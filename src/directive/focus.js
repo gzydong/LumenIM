@@ -3,5 +3,5 @@ export default {
     setTimeout(() => {
       el.focus()
     }, 0)
-  },
+  }
 }

@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const float = props.data.float
 
-const maxWidth = (src, width = 200) => {
+const maxWidth = (src: string, width = 200) => {
   const info = getImageInfo(src)
 
   if (info.width == 0) {
@@ -37,13 +37,15 @@ const img = (src, width = 200) => {
   if (info.width < width) {
     return {
       width: `${info.width}px`,
-      height: `${info.height}px`,
+      height: `${info.height}px`
     }
   }
 
+  let h = info.height / (info.width / width)
+
   return {
     width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px',
+    height: h + 'px'
   }
 }
 </script>
@@ -54,13 +56,13 @@ const img = (src, width = 200) => {
     :class="{
       left: float == 'left',
       right: float == 'right',
-      maxwidth: maxWidth,
+      maxwidth: maxWidth
     }"
   >
     <pre>
-      <template v-for="item in extra.items">
+      <template v-for="(item) in extra.items">
         <template v-if="item.type === 1">
-          <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
+               <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
         </template>
 
         <template v-else-if="item.type === 3">

@@ -7,8 +7,8 @@ import { ServeGroupDetail, ServeEditGroup } from '@/api/group'
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const cropper = ref(false)
@@ -16,10 +16,10 @@ const cropper = ref(false)
 const modelDetail = reactive({
   name: '',
   avatar: '',
-  profile: '',
+  profile: ''
 })
 
-const onUploadAvatar = avatar => {
+const onUploadAvatar = (avatar) => {
   cropper.value = false
   modelDetail.avatar = avatar
 
@@ -27,7 +27,7 @@ const onUploadAvatar = avatar => {
 }
 
 const onLoadData = () => {
-  ServeGroupDetail({ group_id: props.id }).then(res => {
+  ServeGroupDetail({ group_id: props.id }).then((res) => {
     if (res.code == 200) {
       modelDetail.name = res.data.group_name
       modelDetail.avatar = res.data.avatar
@@ -45,8 +45,8 @@ function onSubmitBaseInfo() {
     group_id: props.id,
     group_name: modelDetail.name,
     avatar: modelDetail.avatar,
-    profile: modelDetail.profile,
-  }).then(res => {
+    profile: modelDetail.profile
+  }).then((res) => {
     if (res.code == 200) {
       window['$message'].success('群信息更新成功')
     } else {
@@ -70,22 +70,18 @@ onMounted(() => {
         ref="formRef"
         :style="{
           minWinth: '350px',
-          maxWidth: '350px',
+          maxWidth: '350px'
         }"
       >
         <n-form-item label="群头像" path="name">
-          <n-avatar
-            v-if="modelDetail.avatar"
-            :size="60"
-            :src="modelDetail.avatar"
-          />
+          <n-avatar v-if="modelDetail.avatar" :size="60" :src="modelDetail.avatar" />
           <n-avatar
             v-else
             :size="60"
             :style="{
               color: 'white',
               backgroundColor: '#508afe',
-              fontSize: '18px',
+              fontSize: '18px'
             }"
             >{{ modelDetail.name.substring(0, 1) }}</n-avatar
           >
@@ -101,35 +97,21 @@ onMounted(() => {
         </n-form-item>
 
         <n-form-item label="群名称" required path="name">
-          <n-input
-            placeholder="必填"
-            type="text"
-            v-model:value="modelDetail.name"
-          />
+          <n-input placeholder="必填" type="text" v-model:value="modelDetail.name" />
         </n-form-item>
 
         <n-form-item label="群简介" path="profile">
-          <n-input
-            placeholder="选填"
-            type="textarea"
-            v-model:value="modelDetail.profile"
-          />
+          <n-input placeholder="选填" type="textarea" v-model:value="modelDetail.profile" />
         </n-form-item>
         <n-form-item label="">
-          <n-button type="primary" @click="onSubmitBaseInfo">
-            保存信息
-          </n-button>
+          <n-button type="primary" @click="onSubmitBaseInfo"> 保存信息 </n-button>
         </n-form-item>
       </n-form>
     </main>
   </section>
 
   <!-- 头像裁剪组件 -->
-  <AvatarCropper
-    v-if="cropper"
-    @close="cropper = false"
-    @success="onUploadAvatar"
-  />
+  <AvatarCropper v-if="cropper" @close="cropper = false" @success="onUploadAvatar" />
 </template>
 <style lang="less" scoped>
 .header {

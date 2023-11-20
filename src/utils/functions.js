@@ -8,7 +8,7 @@ import { getAccessToken } from '@/utils/auth'
 export function getImageInfo(imgsrc) {
   let data = {
     width: 0,
-    height: 0,
+    height: 0
   }
 
   let arr = imgsrc.split('_')
@@ -21,7 +21,7 @@ export function getImageInfo(imgsrc) {
 
   return {
     width: parseInt(info[0]),
-    height: parseInt(info[1]),
+    height: parseInt(info[1])
   }
 }
 
@@ -39,25 +39,21 @@ export function download(cr_id) {
       import.meta.env.VITE_BASE_API
     }/api/v1/talk/records/file/download?cr_id=${cr_id}&token=${token}`
     link.click()
-  } catch (e) {}
+  } catch (e) {
+    console.warn(e)
+  }
 }
 
 export function insertText(obj, str) {
   if (document.selection) {
     let sel = document.selection.createRange()
     sel.text = str
-  } else if (
-    typeof obj.selectionStart === 'number' &&
-    typeof obj.selectionEnd === 'number'
-  ) {
+  } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
     let startPos = obj.selectionStart,
       endPos = obj.selectionEnd,
       cursorPos = startPos,
       tmpStr = obj.value
-    obj.value =
-      tmpStr.substring(0, startPos) +
-      str +
-      tmpStr.substring(endPos, tmpStr.length)
+    obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length)
     cursorPos += str.length
     obj.selectionStart = obj.selectionEnd = cursorPos
 

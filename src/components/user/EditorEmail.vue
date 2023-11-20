@@ -12,43 +12,39 @@ const emit = defineEmits(['update:modelValue', 'success'])
 const lockTime = ref(0)
 
 // 初始化短信按钮锁
-const lock = new SmsLock(
-  'CHANGE_EMAIL_SMS',
-  120,
-  time => (lockTime.value = time)
-)
+const lock = new SmsLock('CHANGE_EMAIL_SMS', 120, (time) => (lockTime.value = time))
 
 const formRef = ref()
 
 const model = reactive({
   password: '',
   email: '',
-  code: '',
+  code: ''
 })
 
 const rules = {
   password: {
     required: true,
     trigger: ['input'],
-    message: '账号密码不能为空！',
+    message: '账号密码不能为空！'
   },
   email: {
     required: true,
     trigger: ['input'],
-    message: '邮箱不能为空！',
+    message: '邮箱不能为空！'
   },
   code: {
     required: true,
     trigger: ['change'],
-    message: '验证码不能为空！',
-  },
+    message: '验证码不能为空！'
+  }
 }
 
 const loading = ref(false)
 
 const onSendEmail = () => {
   const response = ServeSendEmailCode({
-    email: model.email,
+    email: model.email
   })
 
   response.then(({ code, message }) => {
@@ -80,10 +76,10 @@ const onSubmit = () => {
   })
 }
 
-const onValidate = e => {
+const onValidate = (e) => {
   e.preventDefault()
 
-  formRef.value.validate(errors => {
+  formRef.value.validate((errors) => {
     !errors && onSubmit()
   })
 }
@@ -97,40 +93,23 @@ const onValidate = e => {
     class="modal-radius"
     style="max-width: 400px"
     :on-update:show="
-      value => {
+      (value) => {
         $emit('update:modelValue', value)
       }
     "
   >
     <n-form ref="formRef" :model="model" :rules="rules">
       <n-form-item label="登录密码" path="password">
-        <n-input
-          placeholder="请填写登录密码"
-          type="password"
-          v-model:value="model.password"
-        />
+        <n-input placeholder="请填写登录密码" type="password" v-model:value="model.password" />
       </n-form-item>
 
       <n-form-item label="新邮箱" path="email">
-        <n-input
-          placeholder="请填写新邮箱"
-          type="text"
-          v-model:value="model.email"
-        />
+        <n-input placeholder="请填写新邮箱" type="text" v-model:value="model.email" />
       </n-form-item>
 
       <n-form-item label="邮箱验证码" path="code">
-        <n-input
-          placeholder="请填写验证码"
-          type="text"
-          v-model:value="model.code"
-        />
-        <n-button
-          tertiary
-          class="mt-l5"
-          @click="onSendEmail"
-          :disabled="lockTime > 0"
-        >
+        <n-input placeholder="请填写验证码" type="text" v-model:value="model.code" />
+        <n-button tertiary class="mt-l5" @click="onSendEmail" :disabled="lockTime > 0">
           获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
         </n-button>
       </n-form-item>
@@ -138,15 +117,8 @@ const onValidate = e => {
 
     <template #footer>
       <div style="width: 100%; text-align: right">
-        <n-button type="tertiary" @click="$emit('update:modelValue', false)">
-          取消
-        </n-button>
-        <n-button
-          type="primary"
-          class="mt-l15"
-          :loading="loading"
-          @click="onValidate"
-        >
+        <n-button type="tertiary" @click="$emit('update:modelValue', false)"> 取消 </n-button>
+        <n-button type="primary" class="mt-l15" :loading="loading" @click="onValidate">
           保存修改
         </n-button>
       </div>

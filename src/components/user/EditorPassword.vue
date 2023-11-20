@@ -11,19 +11,19 @@ const formRef = ref()
 const model = reactive({
   oldPassword: '',
   newPassword: '',
-  newPassword2: '',
+  newPassword2: ''
 })
 
 const rules = {
   oldPassword: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '登录密码不能为空！',
+    message: '登录密码不能为空！'
   },
   newPassword: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '新密码不能为空！',
+    message: '新密码不能为空！'
   },
   newPassword2: {
     required: true,
@@ -36,8 +36,8 @@ const rules = {
       }
 
       return true
-    },
-  },
+    }
+  }
 }
 
 const loading = ref(false)
@@ -47,10 +47,10 @@ const onSubmit = () => {
 
   let response = ServeUpdatePassword({
     old_password: model.oldPassword,
-    new_password: model.newPassword,
+    new_password: model.newPassword
   })
 
-  response.then(res => {
+  response.then((res) => {
     if (res.code == 200) {
       window['$message'].success('密码修改成功')
       emit('update:modelValue', false)
@@ -64,10 +64,10 @@ const onSubmit = () => {
   })
 }
 
-const onValidate = e => {
+const onValidate = (e) => {
   e.preventDefault()
 
-  formRef.value.validate(errors => {
+  formRef.value.validate((errors) => {
     !errors && onSubmit()
   })
 }
@@ -79,28 +79,20 @@ const onValidate = e => {
     preset="card"
     title="修改密码？"
     class="modal-radius"
-    style="max-width: 400px;"
+    style="max-width: 400px"
     :on-update:show="
-      value => {
+      (value) => {
         $emit('update:modelValue', value)
       }
     "
   >
     <n-form ref="formRef" :model="model" :rules="rules">
       <n-form-item label="登录密码" path="oldPassword">
-        <n-input
-          placeholder="请填写登录密码"
-          type="password"
-          v-model:value="model.oldPassword"
-        />
+        <n-input placeholder="请填写登录密码" type="password" v-model:value="model.oldPassword" />
       </n-form-item>
 
       <n-form-item label="设置新密码" path="newPassword">
-        <n-input
-          placeholder="请填写新密码"
-          type="password"
-          v-model:value="model.newPassword"
-        />
+        <n-input placeholder="请填写新密码" type="password" v-model:value="model.newPassword" />
       </n-form-item>
 
       <n-form-item label="确认新密码" path="newPassword2">
@@ -114,15 +106,8 @@ const onValidate = e => {
 
     <template #footer>
       <div style="width: 100%; text-align: right">
-        <n-button type="tertiary" @click="$emit('update:modelValue', false)">
-          取消
-        </n-button>
-        <n-button
-          type="primary"
-          class="mt-l15"
-          :loading="loading"
-          @click="onValidate"
-        >
+        <n-button type="tertiary" @click="$emit('update:modelValue', false)"> 取消 </n-button>
+        <n-button type="primary" class="mt-l15" :loading="loading" @click="onValidate">
           保存修改
         </n-button>
       </div>
