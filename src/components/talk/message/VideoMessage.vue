@@ -2,7 +2,7 @@
 import 'xgplayer/dist/index.min.css'
 
 import { ref, nextTick } from 'vue'
-import { NImage, NModal } from 'naive-ui'
+import { NImage, NModal, NCard } from 'naive-ui'
 import { Play, Close } from '@icon-park/vue-next'
 import { getImageInfo } from '@/utils/functions'
 import Player from 'xgplayer'
