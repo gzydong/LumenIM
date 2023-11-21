@@ -13,20 +13,6 @@ const props = defineProps<{
 
 const float = props.data.float
 
-const maxWidth = (src: string, width = 200) => {
-  const info = getImageInfo(src)
-
-  if (info.width == 0) {
-    return width
-  }
-
-  if (info.width < width) {
-    return info.width
-  }
-
-  return width
-}
-
 const img = (src, width = 200) => {
   const info = getImageInfo(src)
 
@@ -60,7 +46,8 @@ const img = (src, width = 200) => {
     }"
   >
     <pre>
-      <template v-for="(item) in extra.items">
+      <template v-for="(item) in extra.items" :key="item.id">
+   
         <template v-if="item.type === 1">
                <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
         </template>

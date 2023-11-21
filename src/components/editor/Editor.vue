@@ -204,7 +204,7 @@ function onUploadImage(file: File) {
 }
 
 function onEditorUpload(file: File) {
-  return new Promise(async (resolve, reject) => {
+  async function fn(file: File, resolve, reject) {
     if (file.type.indexOf('image/') === 0) {
       resolve(await onUploadImage(file))
       return
@@ -219,6 +219,10 @@ function onEditorUpload(file: File) {
       let fn = emitCall('file_event', file, () => {})
       emit('editor-event', fn)
     }
+  }
+
+  return new Promise((resolve, reject) => {
+    fn(file, resolve, reject)
   })
 }
 

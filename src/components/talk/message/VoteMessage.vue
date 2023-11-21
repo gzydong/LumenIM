@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed, onMounted } from 'vue'
+import { reactive, computed, onMounted, ref } from 'vue'
 import { NCheckbox, NProgress } from 'naive-ui'
 import { ServeConfirmVoteHandle } from '@/api/chat'
 import { useUserStore } from '@/store/user'
@@ -9,8 +9,9 @@ const props = defineProps({
   data: Object
 })
 
+const extra = ref(props.extra)
 const userStore = useUserStore()
-const mode = props.extra.detail.answer_mode
+const mode = extra.value.detail.answer_mode
 const state = reactive({ options: [] })
 
 // 是否可提交
@@ -20,7 +21,7 @@ const isCanSubmit = computed(() => {
 
 // 是否已投票
 const isVoted = computed(() => {
-  return props.extra.vote_users.some((item) => item == userStore.uid)
+  return extra.value.vote_users.some((item) => item == userStore.uid)
 })
 
 /**
@@ -87,15 +88,15 @@ const onSubmit = () => {
   }).then((res) => {
     if (res.code == 200) {
       updateStatistics(res.data)
-      props.extra.vote_users.push(userStore.uid)
-      props.extra.detail.answered_num++
+      extra.value.vote_users.push(userStore.uid)
+      extra.value.detail.answered_num++
     }
   })
 }
 
 onMounted(() => {
-  setOptions(props.extra.detail.answer_option)
-  updateStatistics(props.extra.statistics)
+  setOptions(extra.value.detail.answer_option)
+  updateStatistics(extra.value.statistics)
 })
 </script>
 
