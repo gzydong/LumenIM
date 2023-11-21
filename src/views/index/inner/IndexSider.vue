@@ -27,8 +27,8 @@ import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
-import { ISessionRecord } from '@/types/chat.ts'
-import { StateDropdown } from '@/types/global.ts'
+import { ISessionRecord } from '@/types/chat'
+import { StateDropdown } from '@/types/global'
 
 const user: any = inject('$user')
 const dialogueStore = useDialogueStore()

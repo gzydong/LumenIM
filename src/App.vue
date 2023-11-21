@@ -15,7 +15,7 @@ import {
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
 import socket from '@/socket'
-import { publisher } from '@/utils/publisher.ts'
+import { publisher } from '@/utils/publisher'
 import { listener } from '@/listener'
 import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'

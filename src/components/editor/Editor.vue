@@ -18,9 +18,9 @@ import { QuillEditor, Quill } from '@vueup/vue-quill'
 import ImageUploader from 'quill-image-uploader'
 import 'quill-mention'
 import { useDialogueStore, useEditorDraftStore } from '@/store'
-import { deltaToMessage, deltaToString, isEmptyDelta } from './util.ts'
+import { deltaToMessage, deltaToString, isEmptyDelta } from './util'
 import { getImageInfo } from '@/utils/functions'
-import { publisher } from '@/utils/publisher.ts'
+import { publisher } from '@/utils/publisher'
 import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
@@ -29,8 +29,8 @@ import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
 
-import EmojiBlot from './formats/emoji.ts'
-import QuoteBlot from './formats/quote.ts'
+import EmojiBlot from './formats/emoji'
+import QuoteBlot from './formats/quote'
 
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)

@@ -1,5 +1,6 @@
 class Publisher {
-  private channels: Channels = {}
+  private channels = {}
+
   // 定义订阅方法
   subscribe(channel: string, callback: Function) {
     // 如果频道不存在，则创建一个新的频道
@@ -9,6 +10,7 @@ class Publisher {
     // 将回调函数添加到频道的订阅者列表中
     this.channels[channel].push(callback)
   }
+
   // 定义发布方法
   emit(channel: string, data: any) {
     // 如果频道不存在，则直接返回

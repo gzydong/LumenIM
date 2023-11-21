@@ -7,7 +7,7 @@ import { Play, Close } from '@icon-park/vue-next'
 import { getImageInfo } from '@/utils/functions'
 import Player from 'xgplayer'
 
-import { Data, VideoExtra } from './types.d'
+import { Data, VideoExtra } from './types'
 
 const props = defineProps<{
   extra: VideoExtra
@@ -37,7 +37,7 @@ const img = (src: string, width = 200) => {
 
   return {
     width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px'
+    height: info.height / (info.width / width) + 'px'
   }
 }
 

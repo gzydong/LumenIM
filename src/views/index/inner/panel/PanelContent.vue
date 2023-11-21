@@ -2,7 +2,7 @@
 import { reactive, watch, computed, nextTick, onMounted, inject, ref } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
-import { publisher } from '@/utils/publisher.ts'
+import { publisher } from '@/utils/publisher'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -14,7 +14,7 @@ import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
-import { IMessageRecord } from '@/types/chat.ts'
+import { IMessageRecord } from '@/types/chat'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user: any = inject('$user')

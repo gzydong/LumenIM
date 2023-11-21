@@ -5,10 +5,10 @@ import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
-import { publisher } from '@/utils/publisher.ts'
+import { publisher } from '@/utils/publisher'
 import { toTalk } from '@/utils/talk'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
-import { useFriendsMenu } from '@/composition/friends-menu'
+import { useFriendsMenu } from '@/hooks/friends-menu'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 const user: any = inject('$user')
@@ -262,3 +262,4 @@ onUnmounted(() => {
   }
 }
 </style>
+@/hooks/friends-menu
