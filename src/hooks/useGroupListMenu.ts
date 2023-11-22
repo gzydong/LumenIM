@@ -8,7 +8,7 @@ interface IDropdown {
   item: any
 }
 
-export function useFriendsMenu() {
+export function useGroupListMenu() {
   const dropdown: IDropdown = reactive({
     options: [],
     show: false,
