@@ -1,6 +1,7 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
 import { provide, ref, computed } from 'vue'
+import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
   NMessageProvider,
@@ -8,51 +9,32 @@ import {
   NConfigProvider,
   zhCN,
   dateZhCN,
-  darkTheme,
   NLayoutContent
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
-import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
+import { useUserStore, useTalkStore } from '@/store'
 import socket from '@/socket'
 import { publisher } from '@/utils/publisher'
 import { listener } from '@/listener'
-import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
-import { useIconProvider } from '@/hooks/useIconProvider'
+import { useUserModal } from '@/hooks/useUserModal'
+import { useThemeMode } from '@/hooks/useThemeMode'
 
-useIconProvider()
-
-const isShowUser = ref(false)
-const showUserId = ref(0)
-
-provide('$user', (uid) => {
-  showUserId.value = uid
-  isShowUser.value = true
+IconProvider({
+  ...DEFAULT_ICON_CONFIGS,
+  theme: 'outline',
+  size: 24,
+  strokeWidth: 3,
+  strokeLinejoin: 'bevel'
 })
+
+const { uid: showUserId, isShow: isShowUser } = useUserModal()
+const { getDarkTheme, getThemeOverride } = useThemeMode()
 
 const userStore = useUserStore()
-const notifyStore = useNotifyStore()
 const talkStore = useTalkStore()
-
-const getDarkTheme = computed(() => {
-  let theme = notifyStore.darkTheme ? 'dark' : 'light'
-
-  document.querySelector('html').dataset.theme = theme
-  document.querySelector('html').style = ''
-
-  return notifyStore.darkTheme ? darkTheme : undefined
-})
-
-const getThemeOverride = computed(() => {
-  if (notifyStore.darkTheme) {
-    overrides.common.bodyColor = '#202124'
-    overrides.common.baseColor = '#ffffff'
-  }
-
-  return overrides
-})
 
 const onChangeRemark = (value) => {
   publisher.emit('contact:change-remark', value)

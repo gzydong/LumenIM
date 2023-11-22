@@ -1,5 +1,4 @@
 <script setup>
-import Layout from '@/layout/index.vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { Tool, Protect, Remind, LinkThree, User } from '@icon-park/vue-next'
 
@@ -33,7 +32,5 @@ const menus = [
 </script>
 
 <template>
-  <Layout :index="3">
-    <SubViewLayout title="我的设置" :menus="menus" />
-  </Layout>
+  <SubViewLayout title="我的设置" :menus="menus" />
 </template>

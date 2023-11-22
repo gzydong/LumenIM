@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { isLoggedIn } from '@/utils/auth'
+import MainLayout from '@/layout/MainLayout.vue'
 import SettingRouter from './modules/setting'
 import ContactRouter from './modules/contact'
 import AuthRouter from './modules/auth'
@@ -8,29 +9,32 @@ import Home from '@/views/index/index.vue'
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     meta: { requiresAuth: true },
-    component: Home
+    component: MainLayout,
+    redirect: '/message',
+    children: [
+      {
+        path: '/message',
+        name: 'message',
+        meta: { requiresAuth: true },
+        component: () => import('@/views/index/index.vue')
+      },
+      {
+        path: '/note',
+        name: 'note',
+        meta: { requiresAuth: true },
+        component: () => import('@/views/note/index.vue')
+      },
+      {
+        path: '/example',
+        name: 'example',
+        component: () => import('@/views/example/example.vue')
+      },
+      SettingRouter,
+      ContactRouter
+    ]
   },
-  {
-    path: '/message',
-    name: 'Message',
-    meta: { requiresAuth: true },
-    component: () => import('@/views/index/index.vue')
-  },
-  {
-    path: '/note',
-    name: 'Note',
-    meta: { requiresAuth: true },
-    component: () => import('@/views/note/index.vue')
-  },
-  {
-    path: '/example/index',
-    name: 'Example',
-    component: () => import('@/views/example/example.vue')
-  },
-  SettingRouter,
-  ContactRouter,
   AuthRouter,
   {
     path: '/:pathMatch(.*)*',
@@ -45,7 +49,8 @@ const getHistoryMode = () => {
 
 const router = createRouter({
   history: getHistoryMode(),
-  routes
+  routes,
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 // 设置中间件，权限验证

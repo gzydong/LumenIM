@@ -1,6 +1,5 @@
 <script setup>
 import { reactive, computed, markRaw } from 'vue'
-import Layout from '@/layout/index.vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store/user'
 import {
@@ -53,7 +52,5 @@ const menus = reactive([
 </script>
 
 <template>
-  <Layout :index="1">
-    <SubViewLayout title="通讯录" :menus="menus" />
-  </Layout>
+  <SubViewLayout title="通讯录" :menus="menus" />
 </template>

@@ -38,7 +38,7 @@ const menus = reactive([
     hotspot: computed(() => talkStore.talkUnreadNum > 0)
   },
   {
-    link: '/contact/friend',
+    link: '/contact',
     icon: markRaw(People),
     title: '通讯录',
     hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply)
@@ -49,12 +49,12 @@ const menus = reactive([
     title: '笔记'
   },
   // {
-  //   link: '/settings/detail',
-  //   icon: SmartOptimization,
-  //   title: 'Ai助手',
+  //   link: '/settings',
+  //   icon: markRaw(SmartOptimization),
+  //   title: 'Ai助手'
   // },
   {
-    link: '/settings/detail',
+    link: '/settings',
     icon: markRaw(SettingTwo),
     title: '设置'
   }
@@ -71,11 +71,15 @@ const onClickMenu = (menu) => {
     router.push(menu.link)
   }
 }
+
+const isActive = (menu) => {
+  return router.currentRoute.value.path.indexOf(menu.link) >= 0
+}
 </script>
 
 <template>
   <section class="menu">
-    <header class="menu-header">
+    <header class="menu-header" :url="router.currentRoute.value.path">
       <n-popover
         placement="right"
         trigger="hover"
@@ -104,7 +108,7 @@ const onClickMenu = (menu) => {
         v-for="(nav, i) in menus"
         :key="nav.link"
         :class="{
-          active: i == index
+          active: isActive(nav)
         }"
         @click="onClickMenu(nav)"
       >
@@ -114,8 +118,8 @@ const onClickMenu = (menu) => {
         <p>
           <component
             :is="nav.icon"
-            :theme="i == index ? 'filled' : 'outline'"
-            :fill="i == index ? '#1890ff' : color"
+            :theme="isActive(nav) ? 'filled' : 'outline'"
+            :fill="isActive(nav) ? '#1890ff' : color"
             :strokeWidth="2"
             :size="22"
           />

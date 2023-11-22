@@ -1,4 +1,4 @@
-import { useTalkStore } from '@/store'
+import { useTalkStore } from '@/store/talk'
 import router from '@/router'
 import { parseTime } from '@/utils/datetime'
 import { ServeCreateTalkList } from '@/api/chat'

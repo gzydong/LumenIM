@@ -6,7 +6,7 @@ import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
 import { formatTalkItem, findTalkIndex, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { useTalkStore } from '@/store'
+import { useTalkStore } from '@/store/talk'
 import { useDialogueStore } from '@/store/dialogue'
 import { useNotifyStore } from '@/store/notify'
 

@@ -24,5 +24,8 @@ export default defineConfig(({ mode }) => {
     define: {
       __APP_ENV__: env.APP_ENV,
     },
+    build:{
+      chunkSizeWarningLimit:1000
+    },
   }
 })

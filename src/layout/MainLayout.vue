@@ -28,10 +28,11 @@ defineProps({
           'pd-t15': isElectronMode()
         }"
       >
-        <Menu :index="index" />
+        <Menu />
       </aside>
       <main class="el-main">
-        <slot></slot>
+        <!-- <slot></slot> -->
+        <router-view />
       </main>
     </section>
   </section>
