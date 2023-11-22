@@ -1,7 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
 import { provide, ref, computed } from 'vue'
-import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
   NMessageProvider,
@@ -21,14 +20,9 @@ import { overrides } from '@/constant/theme'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
+import { useIconProvider } from '@/hooks/useIconProvider'
 
-IconProvider({
-  ...DEFAULT_ICON_CONFIGS,
-  theme: 'outline',
-  size: 24,
-  strokeWidth: 3,
-  strokeLinejoin: 'bevel'
-})
+useIconProvider()
 
 const isShowUser = ref(false)
 const showUserId = ref(0)
