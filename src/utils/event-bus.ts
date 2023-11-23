@@ -1,4 +1,4 @@
-class Publisher {
+class EventBus {
   private channels = {}
 
   // 定义订阅方法
@@ -7,6 +7,7 @@ class Publisher {
     if (!this.channels[channel]) {
       this.channels[channel] = []
     }
+
     // 将回调函数添加到频道的订阅者列表中
     this.channels[channel].push(callback)
   }
@@ -17,6 +18,7 @@ class Publisher {
     if (!this.channels[channel]) {
       return
     }
+
     // 遍历频道的订阅者列表，并依次调用回调函数
     this.channels[channel].forEach((callback: Function) => {
       callback(data)
@@ -37,6 +39,6 @@ class Publisher {
   }
 }
 
-export default Publisher
+export default EventBus
 
-export const publisher = new Publisher()
+export const bus = new EventBus()

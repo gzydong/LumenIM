@@ -16,11 +16,14 @@ import {
 } from '@icon-park/vue-next'
 import { QuillEditor, Quill } from '@vueup/vue-quill'
 import ImageUploader from 'quill-image-uploader'
+import EmojiBlot from './formats/emoji'
+import QuoteBlot from './formats/quote'
 import 'quill-mention'
 import { useDialogueStore, useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString, isEmptyDelta } from './util'
 import { getImageInfo } from '@/utils/functions'
-import { publisher } from '@/utils/publisher'
+import { bus } from '@/utils/event-bus'
+import { EditorConst } from '@/constant/event-bus'
 import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
@@ -28,10 +31,6 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
-import { EditorConst } from '@/constant/eventBus'
-
-import EmojiBlot from './formats/emoji'
-import QuoteBlot from './formats/quote'
 
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)
@@ -448,13 +447,13 @@ watch(indexName, loadEditorDraftText, { immediate: true })
 onMounted(() => {
   loadEditorDraftText()
 
-  publisher.subscribe(EditorConst.Mention, onSubscribeMention)
-  publisher.subscribe(EditorConst.Quote, onSubscribeQuote)
+  bus.subscribe(EditorConst.Mention, onSubscribeMention)
+  bus.subscribe(EditorConst.Quote, onSubscribeQuote)
 })
 
 onUnmounted(() => {
-  publisher.unsubscribe(EditorConst.Mention, onSubscribeMention)
-  publisher.unsubscribe(EditorConst.Quote, onSubscribeQuote)
+  bus.unsubscribe(EditorConst.Mention, onSubscribeMention)
+  bus.unsubscribe(EditorConst.Quote, onSubscribeQuote)
 
   hideMentionDom()
 })
@@ -689,3 +688,4 @@ html[data-theme='dark'] {
   }
 }
 </style>
+@/utils/event-bus @/constant/event-bus

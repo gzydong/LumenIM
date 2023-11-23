@@ -15,14 +15,14 @@ import {
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useTalkStore } from '@/store'
 import socket from '@/socket'
-import { publisher } from '@/utils/publisher'
+import { bus } from '@/utils/event-bus'
 import { listener } from '@/listener'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { useUserModal } from '@/hooks/useUserModal'
 import { useThemeMode } from '@/hooks/useThemeMode'
-import { ContactConst } from '@/constant/eventBus'
+import { ContactConst } from '@/constant/event-bus'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -39,7 +39,7 @@ const userStore = useUserStore()
 const talkStore = useTalkStore()
 
 const onChangeRemark = (value) => {
-  publisher.emit(ContactConst.UpdateRemark, value)
+  bus.emit(ContactConst.UpdateRemark, value)
   talkStore.setRemark(value)
 }
 
@@ -88,3 +88,4 @@ listener()
     </n-layout-content>
   </n-config-provider>
 </template>
+@/utils/event-bus @/constant/event-bus

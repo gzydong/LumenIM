@@ -2,7 +2,7 @@
 import { reactive, watch, computed, nextTick, onMounted, inject, ref } from 'vue'
 import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
-import { publisher } from '@/utils/publisher'
+import { bus } from '@/utils/event-bus'
 import socket from '@/socket'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -15,7 +15,7 @@ import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 import { IMessageRecord } from '@/types/chat'
-import { EditorConst } from '@/constant/eventBus'
+import { EditorConst } from '@/constant/event-bus'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user: any = inject('$user')
@@ -299,11 +299,11 @@ const onQuoteMessage = (data: IMessageRecord) => {
       break // 图文消息
   }
 
-  publisher.emit('editor:quote', item)
+  bus.emit('editor:quote', item)
 }
 
 const onClickNickname = (data: IMessageRecord) => {
-  publisher.emit(EditorConst.Mention, {
+  bus.emit(EditorConst.Mention, {
     id: data.user_id,
     value: data.nickname
   })
@@ -786,3 +786,4 @@ onMounted(onReload)
   }
 }
 </style>
+@/utils/event-bus @/constant/event-bus
