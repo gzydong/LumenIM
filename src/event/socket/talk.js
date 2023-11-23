@@ -8,7 +8,7 @@ import { formatTalkItem, findTalkIndex, palyMusic, formatTalkRecord } from '@/ut
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
 import { useTalkStore } from '@/store/talk'
 import { useDialogueStore } from '@/store/dialogue'
-import { useNotifyStore } from '@/store/notify'
+import { useSettingsStore } from '@/store/settings'
 
 /**
  * 好友状态事件
@@ -93,7 +93,7 @@ class Talk extends Base {
       return
     }
 
-    useNotifyStore().isPromptTone && palyMusic()
+    useSettingsStore().isPromptTone && palyMusic()
   }
 
   handle() {
@@ -123,8 +123,8 @@ class Talk extends Base {
    * @returns
    */
   showMessageNocice() {
-    if (useNotifyStore().isLeaveWeb) {
-      if (useNotifyStore().isWebNotify) {
+    if (useSettingsStore().isLeaveWeb) {
+      if (useSettingsStore().isWebNotify) {
         WebNotify('LumenIM 在线聊天', {
           dir: 'auto',
           lang: 'zh-CN',

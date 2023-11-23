@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore, useTalkStore, useNotifyStore } from '@/store'
+import { useUserStore, useTalkStore, useSettingsStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import {
@@ -24,10 +24,10 @@ const userStore = useUserStore()
 const talkStore = useTalkStore()
 const router = useRouter()
 
-const notifyStore = useNotifyStore()
+const settingsStore = useSettingsStore()
 
 const color = computed(() => {
-  return notifyStore.darkTheme ? '#ffffff' : '#333'
+  return settingsStore.darkTheme ? '#ffffff' : '#333'
 })
 
 const menus = reactive([
@@ -104,10 +104,10 @@ const isActive = (menu) => {
 
     <main class="menu-main">
       <div
-        class="menu-items"
-        v-for="(nav, i) in menus"
+        v-for="nav in menus"
         :key="nav.link"
         :class="{
+          'menu-items': true,
           active: isActive(nav)
         }"
         @click="onClickMenu(nav)"

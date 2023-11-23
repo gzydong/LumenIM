@@ -1,17 +1,10 @@
 <script setup>
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
-import { useNotifyStore } from '@/store/notify'
+import { useSettingsStore } from '@/store/settings'
 import { isElectronMode } from '@/utils/common'
 
-const notifyStore = useNotifyStore()
-
-defineProps({
-  index: {
-    type: Number,
-    default: 0
-  }
-})
+const settingsStore = useSettingsStore()
 </script>
 
 <template>
@@ -19,7 +12,7 @@ defineProps({
     <section
       class="el-container im-container"
       :class="{
-        'small-screen': !notifyStore.isFullScreen
+        'small-screen': !settingsStore.isFullScreen
       }"
     >
       <aside
@@ -31,7 +24,6 @@ defineProps({
         <Menu />
       </aside>
       <main class="el-main">
-        <!-- <slot></slot> -->
         <router-view />
       </main>
     </section>

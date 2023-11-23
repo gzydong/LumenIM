@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { storage } from '@/utils/storage'
 
-export const useNotifyStore = defineStore('notify', {
+export const useSettingsStore = defineStore('settings', {
   state: () => {
     return {
       isPromptTone: storage.get('isPromptTone', true), // 新消息提示音

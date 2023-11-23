@@ -1,6 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
-import { provide, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
@@ -11,6 +11,7 @@ import {
   dateZhCN,
   NLayoutContent
 } from 'naive-ui'
+
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useTalkStore } from '@/store'
 import socket from '@/socket'

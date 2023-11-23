@@ -2,22 +2,22 @@
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
 // import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
-import { useNotifyStore } from '@/store/notify'
+import { useSettingsStore } from '@/store/settings'
 import { isElectronMode } from '@/utils/common'
 
-const notifyStore = useNotifyStore()
+const settingsStore = useSettingsStore()
 
 const isFullScreen = computed({
-  get: () => notifyStore.isFullScreen,
+  get: () => settingsStore.isFullScreen,
   set: (val) => {
-    notifyStore.setFullScreen(val)
+    settingsStore.setFullScreen(val)
   }
 })
 
 const darkTheme = computed({
-  get: () => !notifyStore.darkTheme,
+  get: () => !settingsStore.darkTheme,
   set: (val) => {
-    notifyStore.setDarkTheme(!val)
+    settingsStore.setDarkTheme(!val)
   }
 })
 

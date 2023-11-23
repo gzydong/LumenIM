@@ -1,35 +1,35 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { isLoggedIn } from '@/utils/auth'
 import MainLayout from '@/layout/MainLayout.vue'
+
 import SettingRouter from './modules/setting'
 import ContactRouter from './modules/contact'
 import AuthRouter from './modules/auth'
-import Home from '@/views/index/index.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    meta: { requiresAuth: true },
+    meta: { auth: true },
     component: MainLayout,
     redirect: '/message',
     children: [
       {
         path: '/message',
         name: 'message',
-        meta: { requiresAuth: true },
-        component: () => import('@/views/index/index.vue')
+        meta: { auth: true },
+        component: () => import('@/views/message/index.vue')
       },
       {
         path: '/note',
         name: 'note',
-        meta: { requiresAuth: true },
+        meta: { auth: true },
         component: () => import('@/views/note/index.vue')
       },
       {
         path: '/example',
         name: 'example',
-        component: () => import('@/views/example/example.vue')
+        component: () => import('@/views/example/index.vue')
       },
       SettingRouter,
       ContactRouter
@@ -50,12 +50,13 @@ const getHistoryMode = () => {
 const router = createRouter({
   history: getHistoryMode(),
   routes,
+  strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 // 设置中间件，权限验证
 router.beforeEach((to) => {
-  if (to.meta.requiresAuth && !isLoggedIn()) {
+  if (to.meta?.auth && !isLoggedIn()) {
     return {
       path: '/auth/login',
       query: { redirect: to.fullPath }

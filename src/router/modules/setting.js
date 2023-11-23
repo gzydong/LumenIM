@@ -6,27 +6,27 @@ export default {
   children: [
     {
       path: '/settings/detail',
-      meta: { requiresAuth: true },
+      meta: { auth: true },
       component: () => import('@/views/setting/detail.vue')
     },
     {
       path: '/settings/security',
-      meta: { requiresAuth: true },
+      meta: { auth: true },
       component: () => import('@/views/setting/security.vue')
     },
     {
       path: '/settings/binding',
-      meta: { requiresAuth: true },
+      meta: { auth: true },
       component: () => import('@/views/setting/binding.vue')
     },
     {
       path: '/settings/personalize',
-      meta: { requiresAuth: true },
+      meta: { auth: true },
       component: () => import('@/views/setting/personalize.vue')
     },
     {
       path: '/settings/notification',
-      meta: { requiresAuth: true },
+      meta: { auth: true },
       component: () => import('@/views/setting/notification.vue')
     }
   ]

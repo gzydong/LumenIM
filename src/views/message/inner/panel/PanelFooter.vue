@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useEditorStore } from '@/store/editor'
-import { useTalkStore, useDialogueStore, useNotifyStore, useUploadsStore } from '@/store'
+import { useTalkStore, useDialogueStore, useSettingsStore, useUploadsStore } from '@/store'
 
 import socket from '@/socket'
 import { ServePublishMessage } from '@/api/chat'
@@ -14,7 +14,7 @@ import { ServeUploadImage } from '@/api/upload'
 
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
-const notifyStore = useNotifyStore()
+const settingsStore = useSettingsStore()
 const uploadsStore = useUploadsStore()
 const dialogueStore = useDialogueStore()
 const props = defineProps({
@@ -193,7 +193,7 @@ const onInputEvent = ({ data }) => {
 
   // 判断对方是否在线和是否需要推送
   // 3秒时间内推送一次
-  if (notifyStore.isKeyboard && props.online) {
+  if (settingsStore.isKeyboard && props.online) {
     onKeyboardPush()
   }
 }

@@ -1,33 +1,33 @@
 <script setup>
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
-import { useNotifyStore } from '@/store/notify'
+import { useSettingsStore } from '@/store/settings'
 
-const notifyStore = useNotifyStore()
+const settingsStore = useSettingsStore()
 
 const isPromptTone = computed({
-  get: () => notifyStore.isPromptTone,
+  get: () => settingsStore.isPromptTone,
   set: (val) => {
-    notifyStore.setPromptTone(val)
+    settingsStore.setPromptTone(val)
   }
 })
 
 const isKeyboard = computed({
-  get: () => notifyStore.isKeyboard,
+  get: () => settingsStore.isKeyboard,
   set: (val) => {
-    notifyStore.setKeyboard(val)
+    settingsStore.setKeyboard(val)
   }
 })
 
 const isWebNotify = computed({
-  get: () => notifyStore.isWebNotify,
+  get: () => settingsStore.isWebNotify,
   set: (val) => {
     if (val === false) {
-      notifyStore.isWebNotify = false
+      settingsStore.isWebNotify = false
     } else {
       window.Notification.requestPermission((res) => {
         console.log(res)
-        notifyStore.isWebNotify = 'granted' === res
+        settingsStore.isWebNotify = 'granted' === res
       })
     }
   }

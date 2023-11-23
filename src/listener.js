@@ -1,6 +1,6 @@
 import { watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
-import { useNotifyStore, useTalkStore } from '@/store'
+import { useSettingsStore, useTalkStore } from '@/store'
 import { applyNotificationAuth } from '@/utils/notification'
 import { isElectronMode, electron } from '@/utils/common'
 import { isLoggedIn } from '@/utils/auth'
@@ -52,13 +52,13 @@ function registerVisitorNotice() {
 
 function registerLeaveWebListener() {
   document.addEventListener('visibilitychange', () => {
-    useNotifyStore().isLeaveWeb = document.visibilityState === 'hidden'
+    useSettingsStore().isLeaveWeb = document.visibilityState === 'hidden'
   })
 }
 
 function registerNotificationAuth() {
   applyNotificationAuth((value) => {
-    useNotifyStore().isWebNotify = value
+    useSettingsStore().isWebNotify = value
   })
 }
 
@@ -115,11 +115,11 @@ function registerUnreadListener() {
 }
 
 function registerConnectListener() {
-  const notifyStore = useNotifyStore()
+  const settingsStore = useSettingsStore()
   const router = useRouter()
 
   watchEffect(() => {
-    if (notifyStore.isLeaveWeb) {
+    if (settingsStore.isLeaveWeb) {
       return
     }
 

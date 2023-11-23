@@ -1,22 +1,22 @@
 import { computed } from 'vue'
-import { useNotifyStore } from '@/store'
+import { useSettingsStore } from '@/store'
 import { overrides } from '@/constant/theme'
 import { darkTheme } from 'naive-ui'
 
 export function useThemeMode() {
-  const notifyStore = useNotifyStore()
+  const settingsStore = useSettingsStore()
 
   const getDarkTheme = computed(() => {
-    let theme = notifyStore.darkTheme ? 'dark' : 'light'
+    const theme = settingsStore.darkTheme ? 'dark' : 'light'
 
     document.getElementsByTagName('html')[0].dataset.theme = theme
     document.getElementsByTagName('html')[0].style = ''
 
-    return notifyStore.darkTheme ? darkTheme : undefined
+    return settingsStore.darkTheme ? darkTheme : undefined
   })
 
   const getThemeOverride = computed(() => {
-    if (notifyStore.darkTheme) {
+    if (settingsStore.darkTheme) {
       overrides.common.bodyColor = '#202124'
       overrides.common.baseColor = '#ffffff'
     }
