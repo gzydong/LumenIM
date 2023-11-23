@@ -7,7 +7,7 @@ import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contact'
 import { ServeContactGroupList, ServeContactMoveGroup, ServeEditContactRemark } from '@/api/contact'
 
-const emit = defineEmits(['update:show', 'update:uid', 'changeRemark'])
+const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
 
 const props = defineProps({
   show: Boolean,
@@ -104,7 +104,7 @@ const onChangeRemark = () => {
       window['$message'].success('备注成功')
       state.remark = modelRemark.value
 
-      emit('changeRemark', {
+      emit('updateRemark', {
         user_id: props.uid,
         remark: modelRemark.value
       })
@@ -358,7 +358,7 @@ const onAfterEnter = () => {
 
   .main {
     padding: 20px 30px;
-
+    max-height: 300px;
     .motto {
       min-height: 26px;
       border-radius: 5px;

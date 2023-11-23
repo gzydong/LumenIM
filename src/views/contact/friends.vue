@@ -9,6 +9,7 @@ import { publisher } from '@/utils/publisher'
 import { toTalk } from '@/utils/talk'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
 import { useFriendsMenu } from '@/hooks/useFriendsMenu'
+import { ContactConst } from '@/constant/eventBus'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 const user: any = inject('$user')
@@ -117,11 +118,11 @@ onMounted(() => {
   loadContactList()
   loadContactGroupList()
 
-  publisher.subscribe('contact:change-remark', onChangeRemark)
+  publisher.subscribe(ContactConst.UpdateRemark, onChangeRemark)
 })
 
 onUnmounted(() => {
-  publisher.unsubscribe('contact:change-remark', onChangeRemark)
+  publisher.unsubscribe(ContactConst.UpdateRemark, onChangeRemark)
 })
 </script>
 

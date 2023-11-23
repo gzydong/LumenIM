@@ -22,6 +22,7 @@ import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { useUserModal } from '@/hooks/useUserModal'
 import { useThemeMode } from '@/hooks/useThemeMode'
+import { ContactConst } from '@/constant/eventBus'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -38,7 +39,7 @@ const userStore = useUserStore()
 const talkStore = useTalkStore()
 
 const onChangeRemark = (value) => {
-  publisher.emit('contact:change-remark', value)
+  publisher.emit(ContactConst.UpdateRemark, value)
   talkStore.setRemark(value)
 }
 
@@ -82,7 +83,7 @@ listener()
       <UserCardModal
         v-model:show="isShowUser"
         v-model:uid="showUserId"
-        @change-remark="onChangeRemark"
+        @update-remark="onChangeRemark"
       />
     </n-layout-content>
   </n-config-provider>

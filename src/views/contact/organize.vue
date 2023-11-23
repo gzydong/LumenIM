@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
 import { useUserStore } from '@/store/user'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
-import { Search } from '@icon-park/vue-next'
+import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
 import { toTalk } from '@/utils/talk'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
@@ -11,8 +11,10 @@ import { modal } from '@/utils/common'
 
 const userStore = useUserStore()
 
+const user = inject('$user')
 const dept = ref(-1)
 const keywords = ref('')
+const isShowOrganize = ref(true)
 const items = ref([])
 
 // 过滤器
@@ -69,9 +71,7 @@ function toTree(data) {
 }
 
 const onInfo = (item) => {
-  modal(UserCardModal, {
-    uid: item.user_id
-  })
+  user(item.user_id)
 }
 
 const onNodeProps = ({ option }) => {
@@ -141,24 +141,12 @@ onLoadDepartment()
 </script>
 
 <template>
-  <section class="el-container height100 o-hidden">
-    <aside class="el-aside bdr-r aside">
-      <n-tree
-        key-field="dept_id"
-        label-field="dept_name"
-        block-line
-        :data="tree"
-        :default-expand-all="true"
-        :cancelable="true"
-        :default-selected-keys="[-1]"
-        :node-props="onNodeProps"
-      />
-    </aside>
+  <section class="el-container is-vertical height100">
+    <header class="el-header from-header bdr-b">
+      <div style="font-weight: 500">{{ breadcrumb }} ({{ filter.length }})</div>
 
-    <main class="el-main">
-      <section class="el-container is-vertical height100">
-        <header class="el-header from-header bdr-b">
-          <div style="font-weight: 500">{{ breadcrumb }} ({{ filter.length }})</div>
+      <div>
+        <n-space style="display: flex; align-items: center">
           <n-input
             v-model:value.trim="keywords"
             placeholder="搜索"
@@ -170,32 +158,54 @@ onLoadDepartment()
               <n-icon :component="Search" />
             </template>
           </n-input>
-        </header>
 
-        <main class="el-main me-scrollbar pd-10" v-if="filter.length">
-          <div class="cards">
-            <MemberCard
-              v-for="item in filter"
-              :key="item.id"
-              :username="item.nickname"
-              :gender="item.gender"
-              :motto="item.position"
-              :flag="'状态/离线'"
-              @click="onInfo(item)"
-              @to-talk="onToTalk(item)"
-            />
-          </div>
-        </main>
+          <all-application
+            class="mt-5 pointer"
+            theme="outline"
+            size="21"
+            fill="#000000"
+            :strokeWidth="2"
+            @click="isShowOrganize = !isShowOrganize"
+          />
+        </n-space>
+      </div>
+    </header>
 
-        <main class="el-main flex-center" v-else>
-          <n-empty size="200" description="暂无相关数据">
-            <template #icon>
-              <img src="@/assets/image/no-data.svg" alt="" />
-            </template>
-          </n-empty>
-        </main>
-      </section>
-    </main>
+    <section class="el-container">
+      <main class="el-main me-scrollbar pd-10" v-if="filter.length">
+        <div class="cards">
+          <MemberCard
+            v-for="item in filter"
+            :key="item.id"
+            :username="item.nickname"
+            :gender="item.gender"
+            :motto="item.position"
+            :flag="'查看'"
+            @click="onInfo(item)"
+            @to-talk="onToTalk(item)"
+          />
+        </div>
+      </main>
+
+      <main class="el-main flex-center" v-else>
+        <n-empty size="200" description="暂无相关数据">
+          <template #icon>
+            <img src="@/assets/image/no-data.svg" alt="" />
+          </template>
+        </n-empty>
+      </main>
+      <aside v-if="isShowOrganize" class="el-aside aside bdr-l">
+        <n-tree
+          key-field="dept_id"
+          label-field="dept_name"
+          :data="tree"
+          :default-expand-all="true"
+          :cancelable="true"
+          :default-selected-keys="[-1]"
+          :node-props="onNodeProps"
+        />
+      </aside>
+    </section>
   </section>
 </template>
 
@@ -203,7 +213,6 @@ onLoadDepartment()
 .aside {
   width: 250px;
   padding: 8px;
-  // background-color: #f4f6f9;
 }
 
 .cards {
@@ -228,6 +237,5 @@ onLoadDepartment()
 
 :deep(.n-tree-node--selected) {
   background-color: #e8f4ff !important;
-  // color: rgb(120, 120, 178) !important;
 }
 </style>

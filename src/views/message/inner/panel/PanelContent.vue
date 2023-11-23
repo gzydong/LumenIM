@@ -15,6 +15,7 @@ import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 import { IMessageRecord } from '@/types/chat'
+import { EditorConst } from '@/constant/eventBus'
 
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
 const user: any = inject('$user')
@@ -302,7 +303,7 @@ const onQuoteMessage = (data: IMessageRecord) => {
 }
 
 const onClickNickname = (data: IMessageRecord) => {
-  publisher.emit('editor:mention', {
+  publisher.emit(EditorConst.Mention, {
     id: data.user_id,
     value: data.nickname
   })

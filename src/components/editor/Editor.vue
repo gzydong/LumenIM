@@ -28,6 +28,7 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
+import { EditorConst } from '@/constant/eventBus'
 
 import EmojiBlot from './formats/emoji'
 import QuoteBlot from './formats/quote'
@@ -447,13 +448,13 @@ watch(indexName, loadEditorDraftText, { immediate: true })
 onMounted(() => {
   loadEditorDraftText()
 
-  publisher.subscribe('editor:mention', onSubscribeMention)
-  publisher.subscribe('editor:quote', onSubscribeQuote)
+  publisher.subscribe(EditorConst.Mention, onSubscribeMention)
+  publisher.subscribe(EditorConst.Quote, onSubscribeQuote)
 })
 
 onUnmounted(() => {
-  publisher.unsubscribe('editor:mention', onSubscribeMention)
-  publisher.unsubscribe('editor:quote', onSubscribeQuote)
+  publisher.unsubscribe(EditorConst.Mention, onSubscribeMention)
+  publisher.unsubscribe(EditorConst.Quote, onSubscribeQuote)
 
   hideMentionDom()
 })
