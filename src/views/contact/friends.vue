@@ -266,4 +266,3 @@ onUnmounted(() => {
   }
 }
 </style>
-@/hooks/friends-menu @/utils/event-bus @/constant/event-bus

@@ -786,4 +786,3 @@ onMounted(onReload)
   }
 }
 </style>
-@/utils/event-bus @/constant/event-bus
