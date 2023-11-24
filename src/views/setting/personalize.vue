@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
 // import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
-import { useSettingsStore } from '@/store/settings'
+import { useSettingsStore } from '@/store'
 import { isElectronMode } from '@/utils/common'
 
 const settingsStore = useSettingsStore()

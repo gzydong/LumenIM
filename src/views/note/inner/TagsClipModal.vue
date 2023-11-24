@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 import { ServeUpdateArticleTag } from '@/api/article'
 import { Close } from '@icon-park/vue-next'
 

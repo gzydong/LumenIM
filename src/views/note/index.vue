@@ -4,7 +4,7 @@ import NoteMenu from './inner/NoteMenu.vue'
 import NoteList from './inner/NoteList.vue'
 import NoteView from './inner/NoteView.vue'
 import NoteEmpty from './inner/NoteEmpty.vue'
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 
 const noteStore = useNoteStore()
 
@@ -21,8 +21,10 @@ const loadId = computed(() => noteStore.view.loadId)
     >
       <NoteList />
     </aside>
-    <main class="el-main" v-if="loadId > 0"><NoteView /></main>
-    <main class="el-main" v-else><NoteEmpty /></main>
+
+    <main class="el-main">
+      <component :is="loadId > 0 ? NoteView : NoteEmpty" />
+    </main>
   </section>
 </template>
 

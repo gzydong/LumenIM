@@ -1,6 +1,6 @@
 import Base from './base'
 
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 
 /**
  * 键盘输入事件

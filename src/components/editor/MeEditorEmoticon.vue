@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useEditorStore } from '@/store/editor'
+import { useEditorStore } from '@/store'
 import { UploadOne, Delete } from '@icon-park/vue-next'
 import { emojiList as emoji } from '@/utils/emojis'
 

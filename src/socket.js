@@ -1,7 +1,5 @@
 import { h } from 'vue'
-import { useTalkStore } from '@/store'
-import { useUserStore } from '@/store/user'
-import { useDialogueStore } from '@/store/dialogue'
+import { useTalkStore, useUserStore, useDialogueStore } from '@/store'
 import { getAccessToken, isLoggedIn } from './utils/auth'
 import WsSocket from './plugins/ws-socket'
 import EventTalk from './event/socket/talk'

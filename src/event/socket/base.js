@@ -1,6 +1,5 @@
 import router from '@/router'
-import { useUserStore } from '@/store/user'
-import { useDialogueStore } from '@/store/dialogue'
+import { useUserStore, useDialogueStore } from '@/store'
 
 class Base {
   /**

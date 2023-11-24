@@ -5,7 +5,7 @@ import { NForm, NFormItem, NInput, NDatePicker, NRadio, NRadioGroup, NSpace } fr
 import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { hidePhone } from '@/utils/strings'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 const router = useRouter()

@@ -1,5 +1,5 @@
 import Base from './base'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 
 /**
  * 好友状态事件

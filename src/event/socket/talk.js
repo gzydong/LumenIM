@@ -4,11 +4,10 @@ import socket from '@/socket'
 import { parseTime } from '@/utils/datetime'
 import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
-import { formatTalkItem, findTalkIndex, palyMusic, formatTalkRecord } from '@/utils/talk'
+import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { useTalkStore } from '@/store/talk'
-import { useDialogueStore } from '@/store/dialogue'
-import { useSettingsStore } from '@/store/settings'
+import { useDialogueStore, useSettingsStore } from '@/store'
+import { useTalkStore } from '@/store'
 
 /**
  * 好友状态事件
@@ -105,7 +104,7 @@ class Talk extends Base {
     }
 
     // 判断会话列表是否存在，不存在则创建
-    if (findTalkIndex(this.getIndexName()) == -1) {
+    if (useTalkStore().findTalkIndex(this.getIndexName()) == -1) {
       return this.addTalkItem()
     }
 

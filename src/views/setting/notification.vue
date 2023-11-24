@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
-import { useSettingsStore } from '@/store/settings'
+import { useSettingsStore } from '@/store'
 
 const settingsStore = useSettingsStore()
 

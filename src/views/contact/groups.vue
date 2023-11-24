@@ -4,11 +4,10 @@ import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { Search, Plus } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
-import { useTalkStore } from '@/store/talk'
+import { useTalkStore } from '@/store/modules/talk'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
-import { toTalk } from '@/utils/talk'
 
 const userStore = useUserStore()
 const talkStore = useTalkStore()
@@ -57,7 +56,7 @@ const onShowGroup = (item) => {
 }
 
 const onToTalk = (item) => {
-  toTalk(2, item.id)
+  talkStore.toTalk(2, item.id)
 }
 
 const onGroupCallBack = (data) => {
@@ -144,7 +143,11 @@ onMounted(() => {
     to="#drawer-target"
     show-mask="transparent"
   >
-    <GroupPanel :gid="params.id" @close="params.isShow = false" @to-talk="toTalk(2, params.id)" />
+    <GroupPanel
+      :gid="params.id"
+      @close="params.isShow = false"
+      @to-talk="talkStore.toTalk(2, params.id)"
+    />
   </n-drawer>
 </template>
 

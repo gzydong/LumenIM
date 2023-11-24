@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore, useTalkStore, useSettingsStore } from '@/store'
+import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import {

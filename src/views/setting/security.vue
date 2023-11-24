@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import EditPassword from '@/components/user/EditorPassword.vue'
 import EditMobile from '@/components/user/EditorMobile.vue'
 import EditEmail from '@/components/user/EditorEmail.vue'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 import { hidePhone } from '@/utils/strings'
 
 const userStore = useUserStore()

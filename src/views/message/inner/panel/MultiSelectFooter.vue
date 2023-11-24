@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 import { Share, ShareThree, Delete, Close } from '@icon-park/vue-next'
 
 import ContactModal from '@/components/user/ContactModal.vue'

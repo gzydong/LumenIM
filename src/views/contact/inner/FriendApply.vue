@@ -5,7 +5,7 @@ import { Close, CheckSmall } from '@icon-park/vue-next'
 import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 

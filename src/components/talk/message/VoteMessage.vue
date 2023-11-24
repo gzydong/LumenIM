@@ -2,7 +2,7 @@
 import { reactive, computed, onMounted, ref } from 'vue'
 import { NCheckbox, NProgress } from 'naive-ui'
 import { ServeConfirmVoteHandle } from '@/api/chat'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const props = defineProps({
   extra: Object,

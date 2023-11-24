@@ -1,5 +1,5 @@
 <script setup>
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 import { Male, Female } from '@icon-park/vue-next'
 const store = useUserStore()
 </script>

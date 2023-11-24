@@ -1,6 +1,6 @@
 <script setup>
 import { Peoples, Announcement, MenuUnfoldOne, MenuFoldOne } from '@icon-park/vue-next'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 
 defineProps({
   type: {

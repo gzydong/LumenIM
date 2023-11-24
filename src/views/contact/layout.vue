@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, computed, markRaw } from 'vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 import {
   PeoplesTwo,
   ChartGraph,

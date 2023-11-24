@@ -23,7 +23,7 @@ import {
   ServeDeleteArticle
 } from '@/api/article'
 
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 
 const store = useNoteStore()
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, computed, watch, ref, inject } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
 import { Comment, Search, Close, Plus } from '@icon-park/vue-next'

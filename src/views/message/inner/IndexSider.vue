@@ -26,7 +26,7 @@ import {
 import { ServeSecedeGroup } from '@/api/group'
 import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
-import { findTalk, findTalkIndex, getCacheIndexName } from '@/utils/talk'
+import { getCacheIndexName } from '@/utils/talk'
 import { ISessionRecord } from '@/types/chat'
 import { StateDropdown } from '@/types/global'
 
@@ -107,7 +107,7 @@ const onTabTalk = (data: any, follow = false) => {
     setTimeout(() => {
       let el = document.getElementById('talk-session-list')
       if (el) {
-        let index = findTalkIndex(data.index_name)
+        let index = talkStore.findTalkIndex(data.index_name)
         el.scrollTo({
           top: index * 66 + index * 5,
           behavior: 'smooth'
@@ -350,7 +350,7 @@ const onGroupCallBack = () => {
 const onInitialize = () => {
   let index_name = getCacheIndexName()
 
-  index_name && onTabTalk(findTalk(index_name), true)
+  index_name && onTabTalk(talkStore.findItem(index_name), true)
 }
 
 // 路由更新事件

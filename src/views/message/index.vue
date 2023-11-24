@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onUnmounted } from 'vue'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 import IndexContent from './inner/IndexContent.vue'
 import IndexSider from './inner/IndexSider.vue'
 import IndexAmicable from './inner/IndexAmicable.vue'

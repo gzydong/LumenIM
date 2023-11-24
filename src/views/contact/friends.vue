@@ -6,11 +6,12 @@ import MemberCard from './inner/MemberCard.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
 import { bus } from '@/utils/event-bus'
-import { toTalk } from '@/utils/talk'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
 import { useFriendsMenu } from '@/hooks/useFriendsMenu'
 import { ContactConst } from '@/constant/event-bus'
+import { useTalkStore } from '@/store/modules/talk'
 
+const talkStore = useTalkStore()
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 const user: any = inject('$user')
 const isShowUserSearch = ref(false)
@@ -50,7 +51,7 @@ const loadContactGroupList = () => {
 }
 
 const onToTalk = (item: any) => {
-  toTalk(1, item.id)
+  talkStore.toTalk(1, item.id)
 }
 
 const onInfo = (item: any) => {

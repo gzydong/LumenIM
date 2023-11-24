@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { fileFormatSize } from '@/utils/strings'
 import { ServeUploadArticleAnnex, ServeDownloadAnnex as onDownload } from '@/api/article'
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 import { UploadOne } from '@icon-park/vue-next'
 
 const store = useNoteStore()

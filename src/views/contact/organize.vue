@@ -1,15 +1,16 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
+import { useTalkStore } from '@/store/modules/talk'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
-import { toTalk } from '@/utils/talk'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import { modal } from '@/utils/common'
 
 const userStore = useUserStore()
+const talkStore = useTalkStore()
 
 const user = inject('$user')
 const dept = ref(-1)
@@ -32,7 +33,7 @@ const breadcrumb = ref('全体成员')
 
 const onToTalk = (item) => {
   if (userStore.uid != item.user_id) {
-    toTalk(1, item.user_id)
+    talkStore.toTalk(1, item.user_id)
   } else {
     window['$message'].info('禁止给自己发送消息!!!')
   }
@@ -159,12 +160,11 @@ onLoadDepartment()
             </template>
           </n-input>
 
-          <all-application
-            class="mt-5 pointer"
-            theme="outline"
-            size="21"
-            fill="#000000"
-            :strokeWidth="2"
+          <n-icon
+            class="pointer"
+            style="margin-top: 5px"
+            :component="AllApplication"
+            :size="18"
             @click="isShowOrganize = !isShowOrganize"
           />
         </n-space>

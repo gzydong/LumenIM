@@ -3,9 +3,11 @@ import { ref, computed, reactive } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contact'
-import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contact'
 import { ServeContactGroupList, ServeContactMoveGroup, ServeEditContactRemark } from '@/api/contact'
+import { useTalkStore } from '@/store'
+
+const talkStore = useTalkStore()
 
 const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
 
@@ -72,7 +74,7 @@ const onLoadData = () => {
 }
 
 const onToTalk = () => {
-  toTalk(1, props.uid)
+  talkStore.toTalk(1, props.uid)
   emit('update:show', false)
 }
 
@@ -316,11 +318,25 @@ const onAfterEnter = () => {
   .header {
     width: 100%;
     height: 230px;
-    position: relative;
-    display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom right, #247ec6, #73c1ff);
+    background: linear-gradient(to right, rgb(137, 104, 255), rgb(175, 152, 255));
+    display: flex;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      width: 150px;
+      height: 150px;
+      content: '';
+      background: linear-gradient(to right, rgb(142, 110, 255), rgb(208, 195, 255));
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      right: -25%;
+      top: -25%;
+    }
 
     .nickname {
       position: absolute;
@@ -349,6 +365,7 @@ const onAfterEnter = () => {
       position: absolute;
       right: 20px;
       top: 20px;
+      z-index: 1;
       &:hover {
         cursor: pointer;
         transform: scale(1.1);

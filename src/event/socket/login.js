@@ -1,6 +1,5 @@
 import Base from './base'
-import { useTalkStore } from '@/store'
-import { useDialogueStore } from '@/store/dialogue'
+import { useTalkStore, useDialogueStore } from '@/store'
 
 /**
  * 好友状态事件

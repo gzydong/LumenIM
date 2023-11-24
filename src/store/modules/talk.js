@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import { ServeGetTalkList } from '@/api/chat'
+import router from '@/router'
+import { ServeGetTalkList, ServeCreateTalkList } from '@/api/chat'
 import { formatTalkItem } from '@/utils/talk'
-import { useEditorDraftStore } from './index'
+import { useEditorDraftStore } from './editor-draft'
+const KEY_INDEX_NAME = 'send_message_index_name'
 
 const ttime = (datetime) => {
   if (datetime == undefined || datetime == '') {
@@ -93,14 +95,12 @@ export const useTalkStore = defineStore('talk', {
 
       const response = ServeGetTalkList()
 
-      const editorDraftStore = useEditorDraftStore()
-
       response.then(({ code, data }) => {
         if (code == 200) {
           this.items = data.items.map((item) => {
             let value = formatTalkItem(item)
 
-            let draft = editorDraftStore.items[value.index_name]
+            let draft = useEditorDraftStore().items[value.index_name]
             if (draft) {
               value.draft_text = JSON.parse(draft).text || ''
             }
@@ -120,6 +120,44 @@ export const useTalkStore = defineStore('talk', {
 
       response.catch(() => {
         this.loadStatus = 4
+      })
+    },
+
+    findTalkIndex(index_name) {
+      return this.items.findIndex((item) => item.index_name === index_name)
+    },
+
+    toTalk(talk_type, receiver_id) {
+      if (this.findTalkIndex(`${talk_type}_${receiver_id}`) >= 0) {
+        sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+        return router.push({
+          path: '/message',
+          query: {
+            v: new Date().getTime()
+          }
+        })
+      }
+
+      ServeCreateTalkList({
+        talk_type: parseInt(talk_type),
+        receiver_id: parseInt(receiver_id)
+      }).then(({ code, data, message }) => {
+        if (code == 200) {
+          sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+
+          if (this.findTalkIndex(`${talk_type}_${receiver_id}`) === -1) {
+            this.addItem(formatTalkItem(data))
+          }
+
+          router.push({
+            path: '/message',
+            query: {
+              v: new Date().getTime()
+            }
+          })
+        } else {
+          window['$message'].info(message)
+        }
       })
     }
   }

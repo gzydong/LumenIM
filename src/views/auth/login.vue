@@ -6,7 +6,7 @@ import { ServeLogin } from '@/api/auth'
 import { setAccessToken } from '@/utils/auth'
 import { palyMusic } from '@/utils/talk'
 import socket from '@/socket'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 const route = useRoute()

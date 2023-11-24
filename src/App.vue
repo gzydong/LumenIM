@@ -88,4 +88,3 @@ listener()
     </n-layout-content>
   </n-config-provider>
 </template>
-@/utils/event-bus @/constant/event-bus

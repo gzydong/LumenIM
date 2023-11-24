@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useEditorStore } from '@/store/editor'
-import { useTalkStore, useDialogueStore, useSettingsStore, useUploadsStore } from '@/store'
-
+import {
+  useTalkStore,
+  useDialogueStore,
+  useSettingsStore,
+  useUploadsStore,
+  useEditorStore
+} from '@/store'
 import socket from '@/socket'
-import { ServePublishMessage } from '@/api/chat'
-import { ServeSendVote } from '@/api/chat'
+import { ServePublishMessage, ServeSendVote } from '@/api/chat'
 import { throttle, getVideoImage } from '@/utils/common'
 import Editor from '@/components/editor/Editor.vue'
 import MultiSelectFooter from './MultiSelectFooter.vue'
