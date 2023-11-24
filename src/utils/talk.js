@@ -1,4 +1,4 @@
-import { parseTime } from '@/utils/datetime'
+import { parseTime } from './datetime'
 
 const KEY_INDEX_NAME = 'send_message_index_name'
 

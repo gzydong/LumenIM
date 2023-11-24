@@ -6,8 +6,7 @@ import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
 import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { useDialogueStore, useSettingsStore } from '@/store'
-import { useTalkStore } from '@/store'
+import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
 
 /**
  * 好友状态事件

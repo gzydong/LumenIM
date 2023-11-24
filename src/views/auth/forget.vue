@@ -4,8 +4,11 @@ import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeForgetPassword } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
-import SmsLock from '@/plugins/sms-lock'
 import { isMobile } from '@/utils/validate'
+import { useSmsLock } from '@/hooks/useSmsLock'
+
+// 初始化短信按钮锁
+const { lockTime, start } = useSmsLock('FORGET_PSW_SMS', 120)
 
 const router = useRouter()
 const formRef = ref()
@@ -34,12 +37,6 @@ const rules = {
     message: '密码不能为空！'
   }
 }
-
-// 短信按钮倒计时
-const lockTime = ref(0)
-
-// 初始化短信按钮锁
-const lock = new SmsLock('FORGET_PSW_SMS', 120, (time) => (lockTime.value = time))
 
 const model = reactive({
   username: '',
@@ -96,7 +93,7 @@ const onSendSms = () => {
 
   response.then((res) => {
     if (res.code == 200) {
-      lock.start()
+      start()
       window['$message'].success('短信发送成功')
     } else {
       window['$message'].warning(res.message)
@@ -107,10 +104,6 @@ const onSendSms = () => {
     model.loading = false
   })
 }
-
-onUnmounted(() => {
-  lock.clear()
-})
 </script>
 
 <template>

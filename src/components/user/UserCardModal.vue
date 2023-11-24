@@ -6,7 +6,9 @@ import { ServeSearchUser } from '@/api/contact'
 import { ServeCreateContact } from '@/api/contact'
 import { ServeContactGroupList, ServeContactMoveGroup, ServeEditContactRemark } from '@/api/contact'
 import { useTalkStore } from '@/store'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const talkStore = useTalkStore()
 
 const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
@@ -74,7 +76,7 @@ const onLoadData = () => {
 }
 
 const onToTalk = () => {
-  talkStore.toTalk(1, props.uid)
+  talkStore.toTalk(1, props.uid, router)
   emit('update:show', false)
 }
 

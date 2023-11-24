@@ -3,12 +3,14 @@ import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { Search, Plus } from '@icon-park/vue-next'
-import { useUserStore } from '@/store'
-import { useTalkStore } from '@/store/modules/talk'
+import { useUserStore, useTalkStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
 
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const isShowCreateGroupBox = ref(false)
@@ -50,16 +52,16 @@ const onLoadData = () => {
   })
 }
 
-const onShowGroup = (item) => {
+const onShowGroup = (item: any) => {
   params.isShow = true
   params.id = item.id
 }
 
-const onToTalk = (item) => {
-  talkStore.toTalk(2, item.id)
+const onToTalk = (item: any) => {
+  talkStore.toTalk(2, item.id, router)
 }
 
-const onGroupCallBack = (data) => {
+const onGroupCallBack = () => {
   isShowCreateGroupBox.value = false
   onLoadData()
   talkStore.loadTalkList()
@@ -146,7 +148,7 @@ onMounted(() => {
     <GroupPanel
       :gid="params.id"
       @close="params.isShow = false"
-      @to-talk="talkStore.toTalk(2, params.id)"
+      @to-talk="talkStore.toTalk(2, params.id, router)"
     />
   </n-drawer>
 </template>

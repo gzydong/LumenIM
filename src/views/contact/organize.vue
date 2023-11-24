@@ -1,14 +1,15 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
-import { useUserStore } from '@/store'
-import { useTalkStore } from '@/store/modules/talk'
+import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import { modal } from '@/utils/common'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 
@@ -33,7 +34,7 @@ const breadcrumb = ref('全体成员')
 
 const onToTalk = (item) => {
   if (userStore.uid != item.user_id) {
-    talkStore.toTalk(1, item.user_id)
+    talkStore.toTalk(1, item.user_id, router)
   } else {
     window['$message'].info('禁止给自己发送消息!!!')
   }

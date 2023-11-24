@@ -19,8 +19,6 @@ class Keyboard extends Base {
   constructor(resource) {
     super()
 
-    console.log(resource)
-
     this.resource = resource
 
     this.handle()

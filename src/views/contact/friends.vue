@@ -9,8 +9,10 @@ import { bus } from '@/utils/event-bus'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
 import { useFriendsMenu } from '@/hooks/useFriendsMenu'
 import { ContactConst } from '@/constant/event-bus'
-import { useTalkStore } from '@/store/modules/talk'
+import { useTalkStore } from '@/store'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const talkStore = useTalkStore()
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
 const user: any = inject('$user')
@@ -51,7 +53,7 @@ const loadContactGroupList = () => {
 }
 
 const onToTalk = (item: any) => {
-  talkStore.toTalk(1, item.id)
+  talkStore.toTalk(1, item.id, router)
 }
 
 const onInfo = (item: any) => {

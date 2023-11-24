@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import router from '@/router'
 import { ServeGetTalkList, ServeCreateTalkList } from '@/api/chat'
 import { formatTalkItem } from '@/utils/talk'
 import { useEditorDraftStore } from './editor-draft'
@@ -127,7 +126,7 @@ export const useTalkStore = defineStore('talk', {
       return this.items.findIndex((item) => item.index_name === index_name)
     },
 
-    toTalk(talk_type, receiver_id) {
+    toTalk(talk_type, receiver_id, router) {
       if (this.findTalkIndex(`${talk_type}_${receiver_id}`) >= 0) {
         sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
         return router.push({
@@ -144,7 +143,6 @@ export const useTalkStore = defineStore('talk', {
       }).then(({ code, data, message }) => {
         if (code == 200) {
           sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
-
           if (this.findTalkIndex(`${talk_type}_${receiver_id}`) === -1) {
             this.addItem(formatTalkItem(data))
           }
