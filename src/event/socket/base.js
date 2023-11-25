@@ -1,4 +1,5 @@
 import { useUserStore, useDialogueStore } from '@/store'
+import router from '@/router'
 
 class Base {
   /**

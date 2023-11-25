@@ -20,33 +20,28 @@ const menus = reactive([
     name: '申请管理',
     path: '/contact/apply',
     icon: markRaw(Permissions),
-    size: 18,
     tips: computed(() => (userStore.isContactApply || userStore.isGroupApply ? 'New' : ''))
   },
   {
     name: '我的好友',
     path: '/contact/friend',
-    icon: markRaw(People),
-    size: 18
+    icon: markRaw(People)
   },
   {
     name: '我的群聊',
     path: '/contact/group',
-    icon: markRaw(Peoples),
-    size: 20
+    icon: markRaw(Peoples)
   },
   {
     name: '公开群聊',
     path: '/contact/group/open',
-    icon: markRaw(PeoplesTwo),
-    size: 18
+    icon: markRaw(PeoplesTwo)
   },
   {
     name: '组织架构',
     path: '/contact/organize',
     icon: markRaw(ChartGraph),
-    show: computed(() => userStore.isQiye),
-    size: 18
+    show: computed(() => userStore.isQiye)
   }
 ])
 </script>

@@ -10,13 +10,13 @@ export const useEventBus = (items: Event[]) => {
   if (!items.length) return
 
   onMounted(() => {
-    for (let item of items) {
+    for (const item of items) {
       bus.subscribe(item.name, item.event)
     }
   })
 
   onUnmounted(() => {
-    for (let item of items) {
+    for (const item of items) {
       bus.unsubscribe(item.name, item.event)
     }
   })

@@ -11,17 +11,21 @@ import {
   dateZhCN,
   NLayoutContent
 } from 'naive-ui'
-
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useTalkStore } from '@/store'
 import socket from '@/socket'
 import { bus } from '@/utils/event-bus'
-import { listener } from '@/listener'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { useUserModal } from '@/hooks/useUserModal'
 import { useThemeMode } from '@/hooks/useThemeMode'
+import { useVisibilityChange } from '@/hooks/useVisibilityChange'
+import { useAccessPrompt } from '@/hooks/useAccessPrompt'
+import { useNotifyAuth } from '@/hooks/useNotifyAuth'
+import { useUnreadMessage } from '@/hooks/useUnreadMessage'
+import { useConnectStatus } from '@/hooks/useConnectStatus'
+import { useClickEvent } from '@/hooks/useClickEvent'
 import { ContactConst } from '@/constant/event-bus'
 
 IconProvider({
@@ -43,12 +47,20 @@ const onChangeRemark = (value) => {
   talkStore.setRemark(value)
 }
 
-if (isLoggedIn()) {
+const init = () => {
+  if (!isLoggedIn()) return
+
   socket.connect()
   userStore.loadSetting()
 }
 
-listener()
+init()
+useVisibilityChange()
+useAccessPrompt()
+useNotifyAuth()
+useUnreadMessage()
+useConnectStatus()
+useClickEvent()
 </script>
 
 <template>

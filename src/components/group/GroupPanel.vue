@@ -161,6 +161,18 @@ loadMembers()
     </header>
 
     <main class="el-main main me-scrollbar me-scrollbar-thumb">
+      <!-- <div class="member-items">
+        <div v-for="i in 20" :key="i" class="member-item">
+          <div class="member-avatar"></div>
+          <div class="member-nickname text-ellipsis" v-if="i == 0">你</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 1">你是</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 2">你是你</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 3">你是你是</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 4">你是你是你</div>
+          <div class="member-nickname text-ellipsis" v-else>你是你是你</div>
+        </div>
+      </div> -->
+
       <div class="info-box">
         <div class="b-box">
           <div class="block">
@@ -339,6 +351,40 @@ loadMembers()
 
   .main {
     padding: 15px;
+
+    .member-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+      gap: 2px 0px;
+
+      .member-item {
+        height: 55px;
+        width: 55px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        // background-color: red;
+
+        .member-avatar {
+          display: flex;
+          width: 35px;
+          height: 35px;
+          background-color: rebeccapurple;
+          border-radius: 5px;
+          margin: 0 auto;
+        }
+
+        .member-nickname {
+          height: 20px;
+          width: 100%;
+          font-size: 12px;
+          transform: scale(0.8);
+          transform-origin: right;
+        }
+      }
+    }
+
     .info-box {
       .b-box {
         display: flex;
