@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { NAlert } from 'naive-ui'
-import { ServeGroupOvertList } from '@/api/group'
+import { Search, AddOne } from '@icon-park/vue-next'
 import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'
-import { Search, AddOne } from '@icon-park/vue-next'
+import { ServeGroupOvertList } from '@/api/group'
 import { debounce } from '@/utils/common'
 
 const apply = reactive({
@@ -72,7 +72,7 @@ onLoadData()
   <section class="el-container height100">
     <main class="el-main">
       <section class="el-container is-vertical height100">
-        <header class="el-header from-header bdr-b">
+        <header class="el-header me-view-header bdr-b">
           <div>公开群聊({{ items.length }})</div>
           <div>
             <n-input
@@ -129,14 +129,6 @@ onLoadData()
 </template>
 
 <style lang="less" scoped>
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  justify-content: space-between;
-}
-
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

@@ -5,13 +5,11 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 let second = ref(6)
 
-let timer = null
-
 onMounted(() => {
-  timer = setInterval(() => {
+  let timer = setInterval(() => {
     second.value--
 
-    if (second.value === 0) {
+    if (second.value <= 0) {
       clearInterval(timer)
       router.push('/')
     }
@@ -26,7 +24,7 @@ onMounted(() => {
     </div>
     <div class="not-found-right">
       <h1>404</h1>
-      <p>抱歉，你访问的页面不存在或仍在开发中...</p>
+      <p>抱歉，你访问的页面不存在...</p>
       <div>
         <n-button type="primary" size="medium"> 返回首页 ({{ second }}S) </n-button>
       </div>

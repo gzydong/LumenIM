@@ -30,7 +30,7 @@ const filterCreator = computed(() => {
   return items.value.filter((item: any) => item.creator_id == uid)
 })
 
-const filter = computed(() => {
+const filter = computed((): any[] => {
   return items.value.filter((item: any) => {
     if (tabIndex.value == 'create' && item.creator_id != uid) {
       return false
@@ -74,7 +74,7 @@ onMounted(() => {
 
 <template>
   <section id="drawer-target" class="el-container is-vertical height100">
-    <header class="el-header from-header bdr-b">
+    <header class="el-header me-view-header bdr-b">
       <div>
         <n-tabs v-model:value="tabIndex">
           <n-tab name="all"> 全部群聊({{ items.length }}) </n-tab>
@@ -154,14 +154,6 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

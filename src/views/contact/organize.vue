@@ -1,13 +1,13 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import { modal } from '@/utils/common'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -144,7 +144,7 @@ onLoadDepartment()
 
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header from-header bdr-b">
+    <header class="el-header me-view-header bdr-b">
       <div style="font-weight: 500">{{ breadcrumb }} ({{ filter.length }})</div>
 
       <div>
@@ -221,14 +221,6 @@ onLoadDepartment()
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   grid-gap: 12px;
   gap: 12px;
-}
-
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  justify-content: space-between;
 }
 
 :deep(.n-tree-node) {

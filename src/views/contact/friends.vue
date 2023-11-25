@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
-import { bus } from '@/utils/event-bus'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
 import { useFriendsMenu } from '@/hooks/useFriendsMenu'
+import { useEventBus } from '@/hooks/useEventBus'
 import { ContactConst } from '@/constant/event-bus'
 import { useTalkStore } from '@/store'
 import { useRouter } from 'vue-router'
@@ -120,13 +120,9 @@ const onChangeRemark = (data: any) => {
 onMounted(() => {
   loadContactList()
   loadContactGroupList()
-
-  bus.subscribe(ContactConst.UpdateRemark, onChangeRemark)
 })
 
-onUnmounted(() => {
-  bus.unsubscribe(ContactConst.UpdateRemark, onChangeRemark)
-})
+useEventBus([{ name: ContactConst.UpdateRemark, event: onChangeRemark }])
 </script>
 
 <template>

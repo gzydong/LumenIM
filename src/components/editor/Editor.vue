@@ -22,7 +22,6 @@ import 'quill-mention'
 import { useDialogueStore, useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString, isEmptyDelta } from './util'
 import { getImageInfo } from '@/utils/functions'
-import { bus } from '@/utils/event-bus'
 import { EditorConst } from '@/constant/event-bus'
 import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
@@ -31,6 +30,7 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
+import { useEventBus } from '@/hooks/useEventBus'
 
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)
@@ -446,17 +446,16 @@ watch(indexName, loadEditorDraftText, { immediate: true })
 
 onMounted(() => {
   loadEditorDraftText()
-
-  bus.subscribe(EditorConst.Mention, onSubscribeMention)
-  bus.subscribe(EditorConst.Quote, onSubscribeQuote)
 })
 
 onUnmounted(() => {
-  bus.unsubscribe(EditorConst.Mention, onSubscribeMention)
-  bus.unsubscribe(EditorConst.Quote, onSubscribeQuote)
-
   hideMentionDom()
 })
+
+useEventBus([
+  { name: EditorConst.Mention, event: onSubscribeMention },
+  { name: EditorConst.Quote, event: onSubscribeQuote }
+])
 </script>
 
 <template>
