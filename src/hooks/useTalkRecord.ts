@@ -29,7 +29,7 @@ export const useTalkRecord = (uid: number) => {
   })
 
   const onJumpMessage = (msgid: string) => {
-    let element = document.getElementById(msgid)
+    const element = document.getElementById(msgid)
     if (!element) {
       if (location.msgid == '') {
         location.msgid = msgid
@@ -45,7 +45,7 @@ export const useTalkRecord = (uid: number) => {
         }
       }
 
-      let el = document.getElementById('imChatPanel')
+      const el = document.getElementById('imChatPanel')
 
       el?.scrollTo({
         top: 0,
@@ -79,7 +79,7 @@ export const useTalkRecord = (uid: number) => {
     loadConfig.status = 0
 
     let scrollHeight = 0
-    let el = document.getElementById('imChatPanel')
+    const el = document.getElementById('imChatPanel')
     if (el) {
       scrollHeight = el.scrollHeight
     }
