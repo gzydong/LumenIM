@@ -42,8 +42,6 @@ function onTriggerUpload() {
 const onUpload = (e) => {
   let file = e.target.files[0]
 
-  console.log(file)
-
   let reader = new FileReader()
   reader.onload = (e) => {
     let data

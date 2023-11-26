@@ -1,25 +1,18 @@
 <script setup lang="ts">
-import { reactive, watch, computed, nextTick, onMounted, inject, ref } from 'vue'
-import { NDropdown, NCheckbox, NImageGroup } from 'naive-ui'
+import { watch, onMounted, inject, ref } from 'vue'
+import { NDropdown, NCheckbox } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
 import { bus } from '@/utils/event-bus'
-import socket from '@/socket'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'
 import { downloadImage } from '@/utils/functions'
-import { addClass, removeClass } from '@/utils/dom'
-import { formatTalkRecord } from '@/utils/talk'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
-import { ServeTalkRecords } from '@/api/chat'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 import { IMessageRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
-
-const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
-const user: any = inject('$user')
-const dialogueStore = useDialogueStore()
+import { useTalkRecord } from '@/hooks/useTalkRecord'
 
 const props = defineProps({
   uid: {
@@ -40,103 +33,14 @@ const props = defineProps({
   }
 })
 
-let locationMessage: any = null
+const { loadConfig, records, onLoad, onRefreshLoad, onJumpMessage } = useTalkRecord(props.uid)
 
-// 对话记录
-const records = computed((): IMessageRecord[] => dialogueStore.records)
-
-// 加载配置
-const loadConfig = reactive({
-  status: 0,
-  minRecord: 0
-})
+const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
+const user: any = inject('$user')
+const dialogueStore = useDialogueStore()
 
 // 置底按钮
 const skipBottom = ref(false)
-
-// 加载会话记录
-const onLoadTalk = () => {
-  const data = {
-    record_id: loadConfig.minRecord,
-    receiver_id: props.receiver_id,
-    talk_type: props.talk_type,
-    limit: 30
-  }
-
-  if (locationMessage) {
-    data.limit = 100
-  }
-
-  let scrollHeight = 0
-  let el = document.getElementById('imChatPanel')
-  if (el) {
-    scrollHeight = el.scrollHeight
-  }
-
-  loadConfig.status = 0
-
-  const response = ServeTalkRecords(data)
-  response.then((res) => {
-    // 防止对话切换过快，数据渲染错误
-    if (data.talk_type != props.talk_type || data.receiver_id != props.receiver_id) {
-      locationMessage = null
-      return
-    }
-
-    const records = res.data.items || []
-
-    records.map((item: IMessageRecord) => formatTalkRecord(props.uid, item))
-
-    // 判断是否是初次加载
-    if (data.record_id == 0) {
-      dialogueStore.clearDialogueRecord()
-    }
-
-    if (props.talk_type == 1) {
-      onAfterRead(records)
-    }
-
-    dialogueStore.unshiftDialogueRecord(records.reverse())
-
-    loadConfig.status = records.length >= res.data.limit ? 1 : 2
-    loadConfig.minRecord = res.data.record_id
-
-    nextTick(() => {
-      if (!el) return
-
-      if (data.record_id == 0) {
-        el.scrollTop = el.scrollHeight
-      } else {
-        el.scrollTop = el.scrollHeight - scrollHeight
-      }
-
-      if (locationMessage) {
-        onJumpMessage(locationMessage.msgid)
-      }
-    })
-  })
-
-  response.catch(() => {
-    loadConfig.status = 1
-  })
-}
-
-function onAfterRead(records: IMessageRecord[]) {
-  let ids: number[] = []
-
-  for (const record of records) {
-    if (props.receiver_id === record.user_id && record.is_read === 0) {
-      ids.push(record.id)
-    }
-  }
-
-  if (ids.length) {
-    socket.emit('im.message.read', {
-      receiver_id: props.receiver_id,
-      msg_id: ids
-    })
-  }
-}
 
 // 是否显示消息时间
 const isShowTalkTime = (index: number, datetime: string) => {
@@ -170,8 +74,8 @@ const isShowTalkTime = (index: number, datetime: string) => {
 
 // 窗口滚动事件
 const onPanelScroll = (e: any) => {
-  if (e.target.scrollTop == 0 && loadConfig.status == 1) {
-    onLoadTalk()
+  if (e.target.scrollTop == 0) {
+    onRefreshLoad()
   }
 
   const height = e.target.scrollTop + e.target.clientHeight
@@ -192,12 +96,8 @@ const onPanelScroll = (e: any) => {
 
       let minid = 0
       dialogueStore.records.forEach((item: IMessageRecord) => {
-        if (minid == 0) {
+        if (minid == 0 || item.sequence < minid) {
           minid = item.sequence
-        } else {
-          if (item.sequence < minid) {
-            minid = item.sequence
-          }
         }
       })
 
@@ -337,66 +237,6 @@ const onContextMenuHandle = (key: string) => {
   closeDropdownMenu()
 }
 
-// 聊天版本滚动到底部
-const onSkipBottom = () => {
-  let el = document.getElementById('imChatPanel')
-  if (el) {
-    el.scrollTo({
-      top: el.scrollHeight + 1000,
-      behavior: 'smooth'
-    })
-  }
-}
-
-const onJumpMessage = (msgid: string) => {
-  let element = document.getElementById(msgid)
-  if (!element) {
-    if (locationMessage === null) {
-      locationMessage = {
-        msgid: msgid,
-        num: 3
-      }
-    } else {
-      locationMessage.num--
-
-      if (locationMessage.num === 0) {
-        locationMessage = null
-
-        window['$message'].info('仅支持查看最近300条的记录')
-        return
-      }
-    }
-
-    let el = document.getElementById('imChatPanel')
-
-    el?.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-    return
-  }
-
-  locationMessage = null
-
-  element?.scrollIntoView({
-    behavior: 'smooth'
-  })
-
-  addClass(element, 'border')
-
-  setTimeout(() => {
-    element && removeClass(element, 'border')
-  }, 3000)
-}
-
-const onReload = () => {
-  loadConfig.status = 0
-  loadConfig.minRecord = 0
-  locationMessage = null
-
-  onLoadTalk()
-}
-
 const onRowClick = (item: IMessageRecord) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
@@ -407,153 +247,155 @@ const onRowClick = (item: IMessageRecord) => {
   }
 }
 
-watch(props, onReload)
+watch(props, () => {
+  onLoad({ ...props, limit: 30 })
+})
 
-onMounted(onReload)
+onMounted(() => {
+  onLoad({ ...props, limit: 30 })
+})
 </script>
 
 <template>
   <section class="section">
-    <NImageGroup>
+    <div
+      id="imChatPanel"
+      class="me-scrollbar me-scrollbar-thumb talk-container"
+      @scroll="onPanelScroll($event)"
+    >
+      <!-- 数据加载状态栏 -->
+      <div class="load-toolbar pointer">
+        <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
+        <span v-else-if="loadConfig.status == 1" @click="onRefreshLoad"> 查看更多消息 ... </span>
+        <span v-else class="no-more"> 没有更多消息了 </span>
+      </div>
+
       <div
-        id="imChatPanel"
-        class="me-scrollbar me-scrollbar-thumb talk-container"
-        @scroll="onPanelScroll($event)"
+        class="message-item"
+        v-for="(item, index) in records"
+        :key="item.msg_id"
+        :id="item.msg_id"
       >
-        <!-- 数据加载状态栏 -->
-        <div class="load-toolbar pointer">
-          <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
-          <span v-else-if="loadConfig.status == 1" @click="onLoadTalk"> 查看更多消息 ... </span>
-          <span v-else class="no-more"> 没有更多消息了 </span>
+        <!-- 系统消息 -->
+        <div v-if="item.msg_type >= 1000" class="message-box">
+          <component
+            :is="MessageComponents[item.msg_type] || 'unknown-message'"
+            :extra="item.extra"
+            :data="item"
+          />
+        </div>
+
+        <!-- 撤回消息 -->
+        <div v-else-if="item.is_revoke == 1" class="message-box">
+          <revoke-message
+            :login_uid="uid"
+            :user_id="item.user_id"
+            :nickname="item.nickname"
+            :talk_type="item.talk_type"
+            :datetime="item.created_at"
+          />
         </div>
 
         <div
-          class="message-item"
-          v-for="(item, index) in records"
-          :key="item.msg_id"
-          :id="item.msg_id"
+          v-else
+          class="message-box record-box"
+          :class="{
+            'direction-rt': item.float == 'right',
+            'multi-select': dialogueStore.isOpenMultiSelect,
+            'multi-select-check': item.isCheck
+          }"
         >
-          <!-- 系统消息 -->
-          <div v-if="item.msg_type >= 1000" class="message-box">
-            <component
-              :is="MessageComponents[item.msg_type] || 'unknown-message'"
-              :extra="item.extra"
-              :data="item"
+          <!-- 多选按钮 -->
+          <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
+            <n-checkbox
+              size="small"
+              :checked="item.isCheck"
+              @update:checked="item.isCheck = !item.isCheck"
             />
-          </div>
+          </aside>
 
-          <!-- 撤回消息 -->
-          <div v-else-if="item.is_revoke == 1" class="message-box">
-            <revoke-message
-              :login_uid="uid"
-              :user_id="item.user_id"
-              :nickname="item.nickname"
-              :talk_type="item.talk_type"
-              :datetime="item.created_at"
+          <!-- 头像信息 -->
+          <aside class="avatar-column">
+            <im-avatar
+              class="pointer"
+              :src="item.avatar"
+              :size="30"
+              :username="item.nickname"
+              @click="user(item.user_id)"
             />
-          </div>
+          </aside>
 
-          <div
-            v-else
-            class="message-box record-box"
-            :class="{
-              'direction-rt': item.float == 'right',
-              'multi-select': dialogueStore.isOpenMultiSelect,
-              'multi-select-check': item.isCheck
-            }"
-          >
-            <!-- 多选按钮 -->
-            <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
-              <n-checkbox
-                size="small"
-                :checked="item.isCheck"
-                @update:checked="item.isCheck = !item.isCheck"
-              />
-            </aside>
-
-            <!-- 头像信息 -->
-            <aside class="avatar-column">
-              <im-avatar
-                class="pointer"
-                :src="item.avatar"
-                :size="30"
-                :username="item.nickname"
-                @click="user(item.user_id)"
-              />
-            </aside>
-
-            <!-- 主体信息 -->
-            <main class="main-column">
-              <div class="talk-title">
-                <span
-                  class="nickname pointer"
-                  v-show="talk_type == 2 && item.float == 'left'"
-                  @click="onClickNickname(item)"
-                >
-                  {{ item.nickname }}
-                </span>
-                <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
-              </div>
-
-              <div
-                class="talk-content"
-                :class="{ pointer: dialogueStore.isOpenMultiSelect }"
-                @click="onRowClick(item)"
+          <!-- 主体信息 -->
+          <main class="main-column">
+            <div class="talk-title">
+              <span
+                class="nickname pointer"
+                v-show="talk_type == 2 && item.float == 'left'"
+                @click="onClickNickname(item)"
               >
-                <component
-                  :is="MessageComponents[item.msg_type] || 'unknown-message'"
-                  :extra="item.extra"
-                  :data="item"
-                  :max-width="true"
-                  @contextmenu.prevent="onContextMenu($event, item)"
-                />
+                <span class="at">@</span>{{ item.nickname }}
+              </span>
+              <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
+            </div>
 
-                <div class="talk-tools">
-                  <template v-if="talk_type == 1 && item.float == 'right'">
-                    <loading
-                      theme="outline"
-                      size="19"
-                      fill="#000"
-                      :strokeWidth="1"
-                      class="icon-rotate"
-                      v-show="item.send_status == 1"
-                    />
+            <div
+              class="talk-content"
+              :class="{ pointer: dialogueStore.isOpenMultiSelect }"
+              @click="onRowClick(item)"
+            >
+              <component
+                :is="MessageComponents[item.msg_type] || 'unknown-message'"
+                :extra="item.extra"
+                :data="item"
+                :max-width="true"
+                @contextmenu.prevent="onContextMenu($event, item)"
+              />
 
-                    <span v-show="item.send_status == 1"> 正在发送... </span>
-                    <!-- <span v-show="item.send_status != 1"> 已送达 </span> -->
-                  </template>
-
-                  <n-icon
-                    class="more-tools pointer"
-                    :component="MoreThree"
-                    @click="onContextMenu($event, item)"
+              <div class="talk-tools">
+                <template v-if="talk_type == 1 && item.float == 'right'">
+                  <loading
+                    theme="outline"
+                    size="19"
+                    fill="#000"
+                    :strokeWidth="1"
+                    class="icon-rotate"
+                    v-show="item.send_status == 1"
                   />
-                </div>
-              </div>
 
-              <div
-                v-if="item.extra.reply"
-                class="talk-reply pointer"
-                @click="onJumpMessage(item.extra?.reply?.msg_id)"
-              >
-                <n-icon :component="ToTop" size="14" class="icon-top" />
-                <span class="ellipsis">
-                  回复 {{ item.extra?.reply?.nickname }}:
-                  {{ item.extra?.reply?.content }}
-                </span>
-              </div>
-            </main>
-          </div>
+                  <span v-show="item.send_status == 1"> 正在发送... </span>
+                  <!-- <span v-show="item.send_status != 1"> 已送达 </span> -->
+                </template>
 
-          <div class="datetime" v-show="isShowTalkTime(index, item.created_at)">
-            {{ formatTime(item.created_at) }}
-          </div>
+                <n-icon
+                  class="more-tools pointer"
+                  :component="MoreThree"
+                  @click="onContextMenu($event, item)"
+                />
+              </div>
+            </div>
+
+            <div
+              v-if="item.extra.reply"
+              class="talk-reply pointer"
+              @click="onJumpMessage(item.extra?.reply?.msg_id)"
+            >
+              <n-icon :component="ToTop" size="14" class="icon-top" />
+              <span class="ellipsis">
+                回复 {{ item.extra?.reply?.nickname }}:
+                {{ item.extra?.reply?.content }}
+              </span>
+            </div>
+          </main>
+        </div>
+
+        <div class="datetime" v-show="isShowTalkTime(index, item.created_at)">
+          {{ formatTime(item.created_at) }}
         </div>
       </div>
-    </NImageGroup>
+    </div>
 
     <!-- 置底按钮 -->
-    <SkipBottom v-model="skipBottom" @click="onSkipBottom" />
+    <SkipBottom v-model="skipBottom" />
   </section>
 
   <!-- 右键菜单 -->
@@ -568,16 +410,6 @@ onMounted(onReload)
 </template>
 
 <style lang="less" scoped>
-.icon-rotate {
-  animation: rotate 1s linear infinite;
-}
-
-@keyframes rotate {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .section {
   position: relative;
   height: 100%;
@@ -676,6 +508,18 @@ onMounted(onReload)
         .nickname {
           color: var(--im-text-color);
           margin-right: 5px;
+
+          .at {
+            display: none;
+          }
+
+          &:hover {
+            color: var(--im-primary-color);
+
+            .at {
+              display: inline-block;
+            }
+          }
         }
 
         span {

@@ -1,3 +1,6 @@
+import avatar from '../assets/image/notify.png'
+import notify from '../assets/image/notify.png'
+
 export const GenderOptions = [
   {
     label: '未知',
@@ -13,6 +16,6 @@ export const GenderOptions = [
   }
 ]
 
-export const defAvatar = new URL(`../assets/image/notify.png`, import.meta.url).href
+export const defAvatar = avatar
 
-export const notifyIcon = new URL(`../assets/image/notify.png`, import.meta.url).href
+export const notifyIcon = notify
