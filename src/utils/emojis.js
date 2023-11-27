@@ -167,7 +167,7 @@ const emojis = {
   '[NO]':
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/88.gif'>",
   '[OK]':
-    "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/89.gif'>",
+    "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/89.gif'>"
 }
 
 /**
@@ -226,18 +226,18 @@ const symbol = [
   '👋',
   '👏',
   '👌',
-  '👎',
+  '👎'
 ]
 
 const emojisKeys = Object.keys(emojis)
 
 export const emojiList = {
   symbol,
-  emojis,
+  emojis
 }
 
 const regEmoji = emojisKeys
-  .map(value => '|\\' + value)
+  .map((value) => '|\\' + value)
   .join('')
   .replace('|', '')
 

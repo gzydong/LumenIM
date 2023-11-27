@@ -10,7 +10,7 @@ import {
   ServeGetRecoverAnnexList,
   ServeDownloadAnnex as onDownload,
   ServeForeverDeleteAnnex,
-  ServeRecoverArticleAnnex,
+  ServeRecoverArticleAnnex
 } from '@/api/article'
 
 const emit = defineEmits(['close'])
@@ -19,12 +19,12 @@ const isShow = ref(true)
 const state = reactive({
   note: {
     loading: false,
-    items: [],
+    items: []
   },
   annex: {
     loading: false,
-    items: [],
-  },
+    items: []
+  }
 })
 
 const tabIndex = ref(1)
@@ -33,7 +33,7 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const triggerType = index => {
+const triggerType = (index) => {
   tabIndex.value = index
 }
 
@@ -42,9 +42,9 @@ const loadNoteList = () => {
   state.note.loading = true
   ServeGetArticleList({
     page: 1,
-    find_type: 5,
+    find_type: 5
   })
-    .then(res => {
+    .then((res) => {
       state.note.items = res.data.items
     })
     .finally(() => {
@@ -55,7 +55,7 @@ const loadNoteList = () => {
 const loadAnnexList = () => {
   state.annex.loading = true
   ServeGetRecoverAnnexList()
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
         state.annex.items = res.data.items || []
       }
@@ -68,8 +68,8 @@ const loadAnnexList = () => {
 // 永久删除笔记
 const onDeleteArticle = (index, id) => {
   ServeForeverDeleteArticle({
-    article_id: id,
-  }).then(res => {
+    article_id: id
+  }).then((res) => {
     if (res.code == 200) {
       state.note.items.splice(index, 1)
     }
@@ -79,8 +79,8 @@ const onDeleteArticle = (index, id) => {
 // 恢复已删除笔记
 const onRecoverArticle = (index, id) => {
   ServeRecoverArticle({
-    article_id: id,
-  }).then(res => {
+    article_id: id
+  }).then((res) => {
     if (res.code == 200) {
       state.note.items.splice(index, 1)
     }
@@ -89,8 +89,8 @@ const onRecoverArticle = (index, id) => {
 
 const onRecoverAnnex = (index, id) => {
   ServeRecoverArticleAnnex({
-    annex_id: data.id,
-  }).then(res => {
+    annex_id: data.id
+  }).then((res) => {
     if (res.code == 200) {
       state.annex.items.splice(index, 1)
     }
@@ -98,8 +98,8 @@ const onRecoverAnnex = (index, id) => {
 }
 const onDeleteAnnex = (index, id) => {
   ServeForeverDeleteAnnex({
-    annex_id: id,
-  }).then(res => {
+    annex_id: id
+  }).then((res) => {
     if (res.code == 200) {
       state.annex.items.splice(index, 1)
     }
@@ -121,24 +121,20 @@ onMounted(() => {
     style="max-width: 750px"
     :on-after-leave="onMaskClick"
     :segmented="{
-      content: true,
+      content: true
     }"
     :header-style="{
-      padding: '20px 15px',
+      padding: '20px 15px'
     }"
     :content-style="{
-      padding: 0,
+      padding: 0
     }"
   >
     <section class="main-box el-container is-vertical o-hidden">
       <header class="el-header bdr-b header" style="height: 50px">
         <div class="type-items">
-          <span :class="{ active: tabIndex == 1 }" @click="triggerType(1)">
-            笔记列表
-          </span>
-          <span :class="{ active: tabIndex == 2 }" @click="triggerType(2)">
-            附件列表
-          </span>
+          <span :class="{ active: tabIndex == 1 }" @click="triggerType(1)"> 笔记列表 </span>
+          <span :class="{ active: tabIndex == 2 }" @click="triggerType(2)"> 附件列表 </span>
         </div>
         <div style="display: flex; align-items: center">
           <n-icon :size="20" class="pointer" :component="CalendarThirty" />
@@ -151,7 +147,7 @@ onMounted(() => {
         class="el-main me-scrollbar me-scrollbar-thumb"
         :class="{
           'flex-center': state.note.items.length == 0,
-          'main-bag': state.note.items.length > 0,
+          'main-bag': state.note.items.length > 0
         }"
       >
         <template v-if="state.note.loading">
@@ -165,11 +161,7 @@ onMounted(() => {
           </n-empty>
         </template>
         <template v-else>
-          <div
-            class="article"
-            v-for="(note, index) in state.note.items"
-            :key="note.id"
-          >
+          <div class="article" v-for="(note, index) in state.note.items" :key="note.id">
             <div class="at-header">
               <div class="at-name">
                 <span class="text-ellipsis">{{ note.title }}</span>
@@ -202,11 +194,7 @@ onMounted(() => {
                   <span>{{ note.class_name }}</span>
                 </div>
                 <div class="abstract">
-                  {{
-                    note.abstract
-                      .replace(/[\r\n]/g, '')
-                      .replace(/(<([^>]+)>)/gi, '')
-                  }}
+                  {{ note.abstract.replace(/[\r\n]/g, '').replace(/(<([^>]+)>)/gi, '') }}
                 </div>
               </div>
 
@@ -230,7 +218,7 @@ onMounted(() => {
         class="el-main me-scrollbar"
         :class="{
           'flex-center': state.annex.items.length == 0,
-          'main-bag': state.annex.items.length > 0,
+          'main-bag': state.annex.items.length > 0
         }"
       >
         <template v-if="state.annex.loading">
@@ -246,11 +234,7 @@ onMounted(() => {
         </template>
 
         <template v-else>
-          <div
-            class="article"
-            v-for="(annex, index) in state.annex.items"
-            :key="annex.id"
-          >
+          <div class="article" v-for="(annex, index) in state.annex.items" :key="annex.id">
             <div class="at-header">
               <div class="at-name">
                 <span class="text-ellipsis">{{ annex.original_name }}</span>
@@ -292,9 +276,7 @@ onMounted(() => {
         </template>
       </main>
 
-      <footer class="el-footer footer">
-        移动至回收站的笔记及附件，将在 30 天后自动清除。
-      </footer>
+      <footer class="el-footer footer">移动至回收站的笔记及附件，将在 30 天后自动清除。</footer>
     </section>
   </n-modal>
 </template>

@@ -2,14 +2,10 @@
 import { ref, onMounted, inject, watch, computed } from 'vue'
 import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
-import {
-  ServeGetContactApplyRecords,
-  ServeApplyAccept,
-  ServeApplyDecline,
-} from '@/api/contact'
+import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 
@@ -22,7 +18,7 @@ const isContactApply = computed(() => userStore.isContactApply)
 
 const onLoadData = (isClearTip = false) => {
   ServeGetContactApplyRecords()
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
         items.value = res.data.items || []
 
@@ -36,16 +32,16 @@ const onLoadData = (isClearTip = false) => {
     })
 }
 
-const onInfo = item => {
+const onInfo = (item) => {
   user(item.user_id)
 }
 
-const onAccept = throttle(item => {
+const onAccept = throttle((item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeApplyAccept({
     apply_id: item.id,
-    remark: item.nickname,
+    remark: item.nickname
   }).then(({ code, message }) => {
     loading.destroy()
     if (code == 200) {
@@ -57,12 +53,12 @@ const onAccept = throttle(item => {
   })
 }, 1000)
 
-const onDecline = throttle(item => {
+const onDecline = throttle((item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeApplyDecline({
     apply_id: item.id,
-    remark: '拒绝',
+    remark: '拒绝'
   }).then(({ code, message }) => {
     loading.destroy()
     if (code == 200) {
@@ -104,22 +100,13 @@ onMounted(() => {
       <div class="content pointer o-hidden" @click="onInfo(item)">
         <div class="username">
           <span>{{ item.nickname }}</span>
-          <span class="time">{{
-            parseTime(item.created_at, '{m}/{d} {h}:{i}')
-          }}</span>
+          <span class="time">{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
         </div>
         <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
       </div>
 
       <div class="tools">
-        <n-button
-          @click="onAccept(item)"
-          strong
-          secondary
-          circle
-          type="primary"
-          size="small"
-        >
+        <n-button @click="onAccept(item)" strong secondary circle type="primary" size="small">
           <template #icon>
             <n-icon :component="CheckSmall" />
           </template>

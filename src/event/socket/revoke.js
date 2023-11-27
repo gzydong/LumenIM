@@ -1,5 +1,5 @@
 import Base from './base'
-import { useDialogueStore } from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 
 /**
  * 好友状态事件
@@ -72,7 +72,7 @@ class Revoke extends Base {
 
     useDialogueStore().updateDialogueRecord({
       id: this.record_id,
-      is_revoke: 1,
+      is_revoke: 1
     })
   }
 }

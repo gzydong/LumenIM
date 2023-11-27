@@ -1,7 +1,5 @@
 import { h } from 'vue'
-import { useTalkStore } from '@/store'
-import { useUserStore } from '@/store/user'
-import { useDialogueStore } from '@/store/dialogue'
+import { useTalkStore, useUserStore, useDialogueStore } from '@/store'
 import { getAccessToken, isLoggedIn } from './utils/auth'
 import WsSocket from './plugins/ws-socket'
 import EventTalk from './event/socket/talk'
@@ -37,20 +35,20 @@ class Socket {
    */
   constructor() {
     this.socket = new WsSocket(urlCallback, {
-      onError: evt => {
-        console.log('Websocket 连接失败回调方法')
+      onError: (evt) => {
+        console.log('Websocket 连接失败回调方法', evt)
       },
       // Websocket 连接成功回调方法
-      onOpen: evt => {
+      onOpen: (evt) => {
         // 更新 WebSocket 连接状态
         useUserStore().updateSocketStatus(true)
         useTalkStore().loadTalkList()
       },
       // Websocket 断开连接回调方法
-      onClose: evt => {
+      onClose: (evt) => {
         // 更新 WebSocket 连接状态
         useUserStore().updateSocketStatus(false)
-      },
+      }
     })
 
     this.register()
@@ -78,16 +76,16 @@ class Socket {
    * 注册回调消息处理事件
    */
   register() {
-    this.socket.on('ping', data => {
+    this.socket.on('ping', (data) => {
       this.emit('pong', '')
     })
 
-    this.socket.on('pong', data => {})
+    this.socket.on('pong', (data) => {})
 
     // 对话消息事件
-    this.socket.on('im.message', data => new EventTalk(data))
+    this.socket.on('im.message', (data) => new EventTalk(data))
 
-    this.socket.on('im.message.read', data => {
+    this.socket.on('im.message.read', (data) => {
       const dialogueStore = useDialogueStore()
 
       if (dialogueStore.index_name == `1_${data.sender_id}`) {
@@ -98,16 +96,16 @@ class Socket {
     })
 
     // 好友在线状态事件
-    this.socket.on('im.contact.status', data => new EventLogin(data))
+    this.socket.on('im.contact.status', (data) => new EventLogin(data))
 
     // 好友键盘输入事件
-    this.socket.on('im.message.keyboard', data => new EventKeyboard(data))
+    this.socket.on('im.message.keyboard', (data) => new EventKeyboard(data))
 
     // 消息撤回事件
-    this.socket.on('im.message.revoke', data => new EventRevoke(data))
+    this.socket.on('im.message.revoke', (data) => new EventRevoke(data))
 
     // 好友申请事件
-    this.socket.on('im.contact.apply', data => {
+    this.socket.on('im.contact.apply', (data) => {
       window['$notification'].create({
         title: '好友申请通知',
         content: data.remark,
@@ -118,14 +116,14 @@ class Socket {
             size: 'small',
             round: true,
             src: notifyIcon,
-            style: 'background-color:#fff;',
+            style: 'background-color:#fff;'
           }),
-        duration: 3000,
+        duration: 3000
       })
       useUserStore().isContactApply = true
     })
 
-    this.socket.on('im.group.apply', data => {
+    this.socket.on('im.group.apply', (data) => {
       window['$notification'].create({
         title: '入群申请通知',
         content: '有新的入群申请，请注意查收',
@@ -134,15 +132,15 @@ class Socket {
             size: 'small',
             round: true,
             src: notifyIcon,
-            style: 'background-color:#fff;',
+            style: 'background-color:#fff;'
           }),
-        duration: 30000,
+        duration: 30000
       })
 
       useUserStore().isGroupApply = true
     })
 
-    this.socket.on('event_error', data => {
+    this.socket.on('event_error', (data) => {
       window['$message'].error(JSON.stringify(data))
     })
   }

@@ -9,13 +9,13 @@ const tabIndex = ref('friend')
 
 const components = {
   friend: FriendApply,
-  group: GroupApply,
+  group: GroupApply
 }
 </script>
 
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header header bdr-b">
+    <header class="el-header me-view-header bdr-b">
       <n-tabs v-model:value="tabIndex">
         <n-tab name="friend"> 好友申请 </n-tab>
         <n-tab name="group"> 入群申请 </n-tab>
@@ -34,12 +34,4 @@ const components = {
   </section>
 </template>
 
-<style lang="less" scoped>
-.header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-</style>
+<style lang="less" scoped></style>

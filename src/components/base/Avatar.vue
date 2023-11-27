@@ -5,31 +5,25 @@ import { defAvatar } from '@/constant/default'
 defineProps({
   src: {
     type: String,
-    default: '',
+    default: ''
   },
   username: {
     type: String,
-    default: '',
+    default: ''
   },
   size: {
     type: Number,
-    default: 30,
+    default: 30
   },
   fontSize: {
     type: Number,
-    default: 14,
-  },
+    default: 14
+  }
 })
 </script>
 
 <template>
-  <n-avatar
-    v-if="src.length"
-    round
-    :src="src"
-    :size="size"
-    :fallback-src="defAvatar"
-  />
+  <n-avatar v-if="src.length" round :src="src" :size="size" :fallback-src="defAvatar" />
 
   <n-avatar
     v-else
@@ -37,7 +31,7 @@ defineProps({
     :style="{
       color: '#ffffff',
       backgroundColor: hashStrToHexColor(username || ''),
-      fontSize: fontSize + 'px',
+      fontSize: fontSize + 'px'
     }"
     :size="size"
   >

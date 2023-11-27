@@ -10,7 +10,7 @@ import {
   Star as IconStar,
   EditOne,
   FullScreen,
-  OffScreen,
+  OffScreen
 } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import AnnexUploadModal from './AnnexUploadModal.vue'
@@ -20,10 +20,10 @@ import {
   ServeSetAsteriskArticle,
   ServeUploadArticleImg,
   ServeEditArticle,
-  ServeDeleteArticle,
+  ServeDeleteArticle
 } from '@/api/article'
 
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 
 const store = useNoteStore()
 
@@ -33,7 +33,7 @@ const detail = computed(() => store.view.detail)
 const editor = reactive({
   title: detail.value.title,
   markdown: detail.value.md_content,
-  html: detail.value.content,
+  html: detail.value.content
 })
 
 watch(
@@ -50,9 +50,7 @@ const loadStatus = computed(() => store.view.loadStatus)
 
 const loading = ref(false)
 
-const editorMode = computed(() =>
-  store.view.editorMode == 'preview' ? false : 'plaintext-only'
-)
+const editorMode = computed(() => (store.view.editorMode == 'preview' ? false : 'plaintext-only'))
 
 const onFull = () => {
   isFull.value = !isFull.value
@@ -65,11 +63,11 @@ const onUploadImage = (event, insertImage, files) => {
   let formdata = new FormData()
   formdata.append('image', files[0])
 
-  ServeUploadArticleImg(formdata).then(res => {
+  ServeUploadArticleImg(formdata).then((res) => {
     if (res.code == 200) {
       insertImage({
         url: res.data.url,
-        desc: files[0].name,
+        desc: files[0].name
       })
     } else {
       window['$message'].info(res.message)
@@ -84,7 +82,7 @@ const onChange = (text, html) => {
 }
 
 // 保存笔记
-const onSave = isCloseEditMode => {
+const onSave = (isCloseEditMode) => {
   let data = detail.value
 
   if (editor.markdown == '' && data.id == 0) {
@@ -98,9 +96,9 @@ const onSave = isCloseEditMode => {
     class_id: data.class_id,
     title: editor.title,
     md_content: editor.markdown,
-    content: editor.html,
+    content: editor.html
   })
-    .then(res => {
+    .then((res) => {
       if (res.code != 200) {
         return window['$message'].info(res.message)
       }
@@ -121,7 +119,7 @@ const onSave = isCloseEditMode => {
       }
 
       window['$message'].success('保存成功', {
-        duration: 1000,
+        duration: 1000
       })
     })
     .finally(() => {
@@ -130,12 +128,12 @@ const onSave = isCloseEditMode => {
 }
 
 // 防抖的保存事件
-const onSaveDebounce = debounce(isCloseEditMode => {
+const onSaveDebounce = debounce((isCloseEditMode) => {
   onSave(isCloseEditMode)
 }, 500)
 
 // 标题输入键盘事件
-const onTitle = e => {
+const onTitle = (e) => {
   if (e.keyCode == 13) {
     e.preventDefault()
     return
@@ -155,8 +153,8 @@ const onCollection = () => {
 
   ServeSetAsteriskArticle({
     article_id: detail.value.id,
-    type: type,
-  }).then(res => {
+    type: type
+  }).then((res) => {
     if (res.code !== 200) return false
 
     store.setCollectionStatus(type == 1)
@@ -167,7 +165,7 @@ const onCollection = () => {
 const onDownload = () => {
   let title = store.view.detail.title + '.md'
   let blob = new Blob([store.view.detail.md_content], {
-    type: 'text/plain',
+    type: 'text/plain'
   })
 
   let reader = new FileReader()
@@ -196,13 +194,13 @@ const onDelete = () => {
     negativeText: '取消',
     onPositiveClick: () => {
       ServeDeleteArticle({
-        article_id: detail.value.id,
-      }).then(res => {
+        article_id: detail.value.id
+      }).then((res) => {
         if (res.code !== 200) return false
 
         store.close()
       })
-    },
+    }
   })
 }
 
@@ -212,20 +210,12 @@ const onShare = () => {
 </script>
 
 <template>
-  <section
-    class="el-container section"
-    :class="{ full: isFull }"
-    v-loading="loadStatus == 0"
-  >
+  <section class="el-container section" :class="{ full: isFull }" v-loading="loadStatus == 0">
     <main class="el-main" style="padding: 0 5px">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">
           <img src="@/assets/image/md.svg" class="icon-svg" />
-          <h4
-            :contenteditable="editorMode"
-            v-text="editor.title"
-            @keydown="onTitle"
-          />
+          <h4 :contenteditable="editorMode" v-text="editor.title" @keydown="onTitle" />
         </header>
 
         <header
@@ -263,11 +253,7 @@ const onShare = () => {
 
     <aside class="el-aside nav-tools">
       <div class="nav-item" @click="onFull">
-        <n-icon
-          class="icon"
-          size="18"
-          :component="!isFull ? FullScreen : OffScreen"
-        />
+        <n-icon class="icon" size="18" :component="!isFull ? FullScreen : OffScreen" />
         <p>全屏</p>
       </div>
 
@@ -280,11 +266,7 @@ const onShare = () => {
         <p>编辑</p>
       </div>
 
-      <div
-        v-show="store.view.editorMode == 'edit'"
-        class="nav-item"
-        @click="onSave(true)"
-      >
+      <div v-show="store.view.editorMode == 'edit'" class="nav-item" @click="onSave(true)">
         <n-icon class="icon" size="18" :component="EditOne" />
         <p v-if="detail.id == 0 && editor.markdown.length === 0">取消</p>
         <p v-else>{{ loading ? '保存中..' : '保存' }}</p>
@@ -321,12 +303,7 @@ const onShare = () => {
         <TagsClipModal />
       </n-popover>
 
-      <n-popover
-        placement="left"
-        trigger="click"
-        :show-arrow="true"
-        :raw="true"
-      >
+      <n-popover placement="left" trigger="click" :show-arrow="true" :raw="true">
         <template #trigger>
           <div
             v-show="detail.id"

@@ -1,7 +1,7 @@
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore, useTalkStore, useNotifyStore } from '@/store'
+import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import {
@@ -10,72 +10,76 @@ import {
   Message,
   NotebookAndPen,
   People,
-  SmartOptimization,
+  SmartOptimization
 } from '@icon-park/vue-next'
 
 defineProps({
   index: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const router = useRouter()
 
-const notifyStore = useNotifyStore()
+const settingsStore = useSettingsStore()
 
 const color = computed(() => {
-  return notifyStore.darkTheme ? '#ffffff' : '#333'
+  return settingsStore.darkTheme ? '#ffffff' : '#333'
 })
 
 const menus = reactive([
   {
     link: '/message',
-    icon: Message,
+    icon: markRaw(Message),
     title: '消息',
-    hotspot: computed(() => talkStore.talkUnreadNum > 0),
+    hotspot: computed(() => talkStore.talkUnreadNum > 0)
   },
   {
-    link: '/contact/friend',
-    icon: People,
+    link: '/contact',
+    icon: markRaw(People),
     title: '通讯录',
-    hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply),
+    hotspot: computed(() => userStore.isContactApply || userStore.isGroupApply)
   },
   {
     link: '/note',
-    icon: NotebookAndPen,
-    title: '笔记',
+    icon: markRaw(NotebookAndPen),
+    title: '笔记'
   },
   // {
-  //   link: '/settings/detail',
-  //   icon: SmartOptimization,
-  //   title: 'Ai助手',
+  //   link: '/settings',
+  //   icon: markRaw(SmartOptimization),
+  //   title: 'Ai助手'
   // },
   {
-    link: '/settings/detail',
-    icon: SettingTwo,
-    title: '设置',
-  },
+    link: '/settings',
+    icon: markRaw(SettingTwo),
+    title: '设置'
+  }
 ])
 
 const onLogout = () => {
   userStore.logoutLogin()
 }
 
-const onClickMenu = menu => {
+const onClickMenu = (menu) => {
   if (menu.external) {
     window.open(menu.link)
   } else {
     router.push(menu.link)
   }
 }
+
+const isActive = (menu) => {
+  return router.currentRoute.value.path.indexOf(menu.link) >= 0
+}
 </script>
 
 <template>
   <section class="menu">
-    <header class="menu-header">
+    <header class="menu-header" :url="router.currentRoute.value.path">
       <n-popover
         placement="right"
         trigger="hover"
@@ -100,11 +104,11 @@ const onClickMenu = menu => {
 
     <main class="menu-main">
       <div
-        class="menu-items"
-        v-for="(nav, i) in menus"
+        v-for="nav in menus"
         :key="nav.link"
         :class="{
-          active: i == index,
+          'menu-items': true,
+          active: isActive(nav)
         }"
         @click="onClickMenu(nav)"
       >
@@ -114,8 +118,8 @@ const onClickMenu = menu => {
         <p>
           <component
             :is="nav.icon"
-            :theme="i == index ? 'filled' : 'outline'"
-            :fill="i == index ? '#1890ff' : color"
+            :theme="isActive(nav) ? 'filled' : 'outline'"
+            :fill="isActive(nav) ? '#1890ff' : color"
             :strokeWidth="2"
             :size="22"
           />
@@ -127,17 +131,8 @@ const onClickMenu = menu => {
 
     <footer class="menu-footer">
       <div>
-        <a
-          class="pointer"
-          href="https://github.com/gzydong/LumenIM"
-          target="_blank"
-        >
-          <github-one
-            theme="outline"
-            size="22"
-            :fill="color"
-            :strokeWidth="2"
-          />
+        <a class="pointer" href="https://github.com/gzydong/LumenIM" target="_blank">
+          <github-one theme="outline" size="22" :fill="color" :strokeWidth="2" />
         </a>
       </div>
       <div @click="onLogout" class="pointer">退出</div>

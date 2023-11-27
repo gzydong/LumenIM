@@ -4,12 +4,12 @@ import { markRaw } from 'vue'
 defineProps({
   title: {
     type: String,
-    default: '未定义标题',
+    default: '未定义标题'
   },
   menus: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 </script>
 
@@ -23,7 +23,7 @@ defineProps({
             v-if="menu.show !== false"
             class="menu pointer"
             :class="{
-              selectd: $route.path == menu.path,
+              selectd: $route.path == menu.path
             }"
           >
             <div class="icon">
@@ -73,7 +73,7 @@ defineProps({
     .menu {
       height: 35px;
       padding: 0 5px;
-      font-size: 14px;
+      font-size: 13px;
       border-radius: 5px;
       margin: 8px 2px;
       display: flex;

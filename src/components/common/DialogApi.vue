@@ -13,6 +13,8 @@ export default defineComponent({
       ctx.appContext.config.globalProperties.$dialog = dialog
     }
   },
-  render() {},
+  render() {
+    return null
+  }
 })
 </script>

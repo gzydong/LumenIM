@@ -7,7 +7,7 @@ const request = axios.create({
   baseURL: import.meta.env.VITE_BASE_API,
 
   // 请求超时时间
-  timeout: 10000,
+  timeout: 10000
 })
 
 let once = false
@@ -17,7 +17,7 @@ let once = false
  *
  * @param {*} error
  */
-const errorHandler = error => {
+const errorHandler = (error) => {
   // 判断是否是响应错误信息
   if (error.response) {
     if (error.response.status == 401) {
@@ -32,7 +32,7 @@ const errorHandler = error => {
           maskClosable: false,
           onPositiveClick: () => {
             location.reload()
-          },
+          }
         })
       }
     }
@@ -42,7 +42,7 @@ const errorHandler = error => {
 }
 
 // 请求拦截器
-request.interceptors.request.use(config => {
+request.interceptors.request.use((config) => {
   const token = getAccessToken()
 
   if (token) {
@@ -53,7 +53,7 @@ request.interceptors.request.use(config => {
 }, errorHandler)
 
 // 响应拦截器
-request.interceptors.response.use(response => response.data, errorHandler)
+request.interceptors.response.use((response) => response.data, errorHandler)
 
 /**
  * GET 请求
@@ -68,7 +68,7 @@ export const get = (url, data = {}, options = {}) => {
     url,
     params: data,
     method: 'get',
-    ...options,
+    ...options
   })
 }
 
@@ -85,7 +85,7 @@ export const post = (url, data = {}, options = {}) => {
     url,
     method: 'post',
     data: data,
-    ...options,
+    ...options
   })
 }
 
@@ -102,6 +102,6 @@ export const upload = (url, data = {}, options = {}) => {
     url,
     method: 'post',
     data: data,
-    ...options,
+    ...options
   })
 }

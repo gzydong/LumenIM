@@ -5,7 +5,7 @@ const showUserModal = inject('$user')
 
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 </script>
 

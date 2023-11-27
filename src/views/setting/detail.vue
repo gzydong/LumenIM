@@ -1,19 +1,11 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  NForm,
-  NFormItem,
-  NInput,
-  NDatePicker,
-  NRadio,
-  NRadioGroup,
-  NSpace,
-} from 'naive-ui'
+import { NForm, NFormItem, NInput, NDatePicker, NRadio, NRadioGroup, NSpace } from 'naive-ui'
 import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { hidePhone } from '@/utils/strings'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -27,7 +19,7 @@ const detail = reactive({
   gender: '0',
   motto: '0',
   birthday: ref(),
-  loading: false,
+  loading: false
 })
 
 // 加载用户信息
@@ -56,7 +48,7 @@ const onChangeDetail = () => {
     avatar: detail.avatar,
     motto: detail.motto,
     gender: parseInt(detail.gender),
-    birthday: detail.birthday,
+    birthday: detail.birthday
   })
 
   response.then(() => {
@@ -73,7 +65,7 @@ const onChangeDetail = () => {
   })
 }
 
-const onUploadAvatar = avatar => {
+const onUploadAvatar = (avatar) => {
   cropper.value = false
   detail.avatar = avatar
   onChangeDetail()
@@ -106,23 +98,13 @@ const onUploadAvatar = avatar => {
       >
         <n-form-item label="登录账号：">
           {{ hidePhone(detail.mobile) }}
-          <n-button
-            class="mt-l15"
-            type="primary"
-            text
-            @click="router.push('/settings/security')"
-          >
+          <n-button class="mt-l15" type="primary" text @click="router.push('/settings/security')">
             修改
           </n-button>
         </n-form-item>
         <n-form-item label="电子邮箱：">
           {{ detail.email }}
-          <n-button
-            class="mt-l15"
-            type="primary"
-            text
-            @click="router.push('/settings/security')"
-          >
+          <n-button class="mt-l15" type="primary" text @click="router.push('/settings/security')">
             修改
           </n-button>
         </n-form-item>
@@ -159,7 +141,7 @@ const onUploadAvatar = avatar => {
             v-model:value="detail.motto"
             :autosize="{
               minRows: 3,
-              maxRows: 5,
+              maxRows: 5
             }"
           />
         </n-form-item>
@@ -179,11 +161,7 @@ const onUploadAvatar = avatar => {
   </section>
 
   <!-- 头像裁剪组件 -->
-  <AvatarCropper
-    v-if="cropper"
-    @close="cropper = false"
-    @success="onUploadAvatar"
-  />
+  <AvatarCropper v-if="cropper" @close="cropper = false" @success="onUploadAvatar" />
 </template>
 
 <style lang="less" scoped>

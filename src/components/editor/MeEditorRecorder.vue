@@ -29,7 +29,7 @@ const onSubmit = () => {
 
   let file = new File([blob], '在线录音.wav', {
     type: blob.type,
-    lastModified: Date.now(),
+    lastModified: Date.now()
   })
 
   emit('on-submit', file)
@@ -44,12 +44,12 @@ const onStart = () => {
       animation.value = true
       status.value = 1
     },
-    error => {
+    (error) => {
       console.log(`${error.name} : ${error.message}`)
     }
   )
 
-  recorder.onprocess = value => {
+  recorder.onprocess = (value) => {
     duration.value = parseInt(value)
   }
 }
@@ -87,9 +87,7 @@ onUnmounted(() => {
 
       <div class="tip">
         <p>
-          <span v-show="status">{{
-            status == 1 ? '正在录音' : '已暂停录音'
-          }}</span>
+          <span v-show="status">{{ status == 1 ? '正在录音' : '已暂停录音' }}</span>
           {{ countDownTime(duration) }}
         </p>
       </div>
@@ -97,13 +95,7 @@ onUnmounted(() => {
 
     <template #footer>
       <div class="footer">
-        <n-button
-          v-show="status == 0"
-          type="primary"
-          ghost
-          round
-          @click="onStart"
-        >
+        <n-button v-show="status == 0" type="primary" ghost round @click="onStart">
           <n-icon :component="Voice" />
           &nbsp;开始录音
         </n-button>
@@ -113,19 +105,11 @@ onUnmounted(() => {
           &nbsp;结束录音
         </n-button>
 
-        <n-button
-          v-show="status == 2"
-          type="primary"
-          ghost
-          round
-          @click="onStart"
-        >
+        <n-button v-show="status == 2" type="primary" ghost round @click="onStart">
           重新录音
         </n-button>
 
-        <n-button v-show="status == 2" type="primary" round @click="onSubmit">
-          发送录音
-        </n-button>
+        <n-button v-show="status == 2" type="primary" round @click="onSubmit"> 发送录音 </n-button>
       </div>
     </template>
   </n-modal>

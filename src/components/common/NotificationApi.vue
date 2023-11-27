@@ -13,6 +13,8 @@ export default defineComponent({
       ctx.appContext.config.globalProperties.$notification = notification
     }
   },
-  render() {},
+  render() {
+    return null
+  }
 })
 </script>

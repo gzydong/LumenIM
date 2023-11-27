@@ -5,7 +5,7 @@ const showUserModal = inject('$user')
 
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 </script>
 
@@ -18,7 +18,7 @@ defineProps({
 
       <span>解除了</span>
 
-      <template v-for="(user, index) in extra.members">
+      <template v-for="(user, index) in extra.members" :key="index">
         <a @click="showUserModal(user.user_id)">{{ user.nickname }}</a>
         <em v-show="index < extra.members.length - 1">、</em>
       </template>

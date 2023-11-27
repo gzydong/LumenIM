@@ -5,7 +5,7 @@ import { inject } from 'vue'
 
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 
 const showUserModal = inject('$user')
@@ -20,7 +20,7 @@ const showUserModal = inject('$user')
 
       <span>创建了群聊，并邀请了</span>
 
-      <template v-for="(user, index) in extra.members">
+      <template v-for="(user, index) in extra.members" :key="index">
         <a @click="showUserModal(user.user_id)">{{ user.nickname }}</a>
         <em v-show="index < extra.members.length - 1">、</em>
       </template>

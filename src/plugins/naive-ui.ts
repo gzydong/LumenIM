@@ -35,7 +35,7 @@ const naive = create({
     NModal,
     NTag,
     NSpace
-  ],
+  ]
 })
 
 export function setupNaive(app) {

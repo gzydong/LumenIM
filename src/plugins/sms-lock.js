@@ -20,7 +20,7 @@ class SmsLock {
    * @param {String} purpose 唯一标识
    * @param {Number} time
    */
-  constructor(purpose, lockTime = 60, fn = time => {}) {
+  constructor(purpose, lockTime = 60, fn = (time) => {}) {
     this.lockTime = lockTime
 
     this.lockName = `SMSLOCK_${purpose}`

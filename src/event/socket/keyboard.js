@@ -1,6 +1,6 @@
 import Base from './base'
 
-import {useDialogueStore} from '@/store/dialogue'
+import { useDialogueStore } from '@/store'
 
 /**
  * 键盘输入事件
@@ -18,8 +18,6 @@ class Keyboard extends Base {
    */
   constructor(resource) {
     super()
-
-    console.log(resource)
 
     this.resource = resource
 

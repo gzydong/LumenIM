@@ -5,7 +5,7 @@ import { LoadingOne, PlayOne, HeadsetOne, PauseOne } from '@icon-park/vue-next'
 
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 
 const audioRef = ref()
@@ -16,7 +16,7 @@ const state = reactive({
   progress: 0,
   duration: 0,
   currentTime: 0,
-  loading: true,
+  loading: true
 })
 
 const onPlay = () => {
@@ -40,7 +40,7 @@ const onCanplay = () => {
   state.loading = false
 }
 
-const onError = e => {
+const onError = (e) => {
   console.log('音频播放异常===>', e)
 }
 
@@ -83,14 +83,11 @@ const formatTime = (value = 0) => {
 
     <div class="play">
       <div class="btn pointer" @click.stop="onPlay">
-        <n-icon
-          :size="18"
-          :component="state.isAudioPlay ? PauseOne : PlayOne"
-        />
+        <n-icon :size="18" :component="state.isAudioPlay ? PauseOne : PlayOne" />
       </div>
     </div>
     <div class="desc">
-      <span class="line" v-for="i in 23"></span>
+      <span class="line" v-for="i in 23" :key="i"></span>
       <span
         class="indicator"
         :style="{ left: state.progress + '%' }"

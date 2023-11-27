@@ -1,6 +1,5 @@
 import Base from './base'
-import { useTalkStore } from '@/store'
-import { useDialogueStore } from '@/store/dialogue'
+import { useTalkStore, useDialogueStore } from '@/store'
 
 /**
  * 好友状态事件
@@ -27,7 +26,7 @@ class Login extends Base {
   handle() {
     useTalkStore().updateItem({
       index_name: `1_${this.resource.user_id}`,
-      is_online: this.resource.status,
+      is_online: this.resource.status
     })
 
     if (this.isTalk(1, this.resource.user_id, this.getAccountId())) {

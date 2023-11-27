@@ -26,7 +26,7 @@ const onClipboard = () => {
     class="im-message-code el-container is-vertical"
     :class="{
       maxwidth: maxWidth,
-      full: full,
+      full: full
     }"
   >
     <header class="el-header tools">
@@ -36,16 +36,9 @@ const onClipboard = () => {
         <n-icon class="icon" :component="Copy" @click="onClipboard" />
       </p>
     </header>
-    <main
-      class="el-main me-scrollbar me-scrollbar-thumb"
-      :lineMumber="lineMumber"
-    >
+    <main class="el-main me-scrollbar me-scrollbar-thumb" :lineMumber="lineMumber">
       <n-code :language="extra.lang" :code="extra.code" show-line-numbers />
-      <div
-        class="el-footer mask pointer"
-        v-show="lineMumber > 20"
-        @click="full = !full"
-      >
+      <div class="el-footer mask pointer" v-show="lineMumber > 20" @click="full = !full">
         查看更多
       </div>
     </main>
@@ -115,11 +108,7 @@ const onClipboard = () => {
     position: sticky;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 1) 100%
-    );
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
     color: var(--im-text-color);
   }
 }
@@ -129,11 +118,7 @@ html[data-theme='dark'] {
     background: var(--im-message-bg-color);
 
     .mask {
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        var(--im-bg-color) 100%
-      );
+      background: linear-gradient(to bottom, transparent 0%, var(--im-bg-color) 100%);
     }
   }
 }

@@ -8,15 +8,15 @@ const emit = defineEmits(['close', 'submit'])
 const props = defineProps({
   file: {
     type: File,
-    default: null,
-  },
+    default: null
+  }
 })
 
 const state = reactive({
   show: true,
   src: '',
   size: '',
-  loading: false,
+  loading: false
 })
 
 const onMaskClick = () => {
@@ -26,7 +26,7 @@ const onMaskClick = () => {
 const onSendClick = () => {
   state.loading = true
 
-  let call = emitCall(null, null, value => {
+  let call = emitCall(null, null, (value) => {
     state.loading = false
     value && onMaskClick()
   })
@@ -59,14 +59,14 @@ onMounted(() => {
     title="图片预览"
     size="huge"
     :bordered="false"
-    style="max-width: 455px;border-radius: 10px"
+    style="max-width: 455px; border-radius: 10px"
     :on-after-leave="onMaskClick"
   >
     <div class="preview">
       <img :src="state.src" />
     </div>
 
-    <template style="text-align: center" #footer>
+    <template #footer>
       <div style="width: 100%; text-align: center">
         <n-button type="primary" @click="onSendClick" :loading="state.loading">
           发送图片({{ fileFormatSize(state.size) }})

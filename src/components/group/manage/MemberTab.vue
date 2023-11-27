@@ -3,21 +3,21 @@ import { ref, computed, reactive, nextTick, inject } from 'vue'
 import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import GroupLaunch from '../GroupLaunch.vue'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 
 import {
   ServeGetGroupMembers,
   ServeRemoveMembersGroup,
   ServeGroupAssignAdmin,
   ServeGroupHandover,
-  ServeGroupNoSpeak,
+  ServeGroupNoSpeak
 } from '@/api/group'
 
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const user: any = inject('$user')
@@ -37,10 +37,7 @@ const filterSearch = computed(() => {
   }
 
   return items.value.filter((item: any) => {
-    return (
-      item.nickname.match(keywords.value) != null ||
-      item.remark.match(keywords.value) != null
-    )
+    return item.nickname.match(keywords.value) != null || item.remark.match(keywords.value) != null
   })
 })
 
@@ -55,17 +52,17 @@ const dropdown = reactive({
   show: false,
   dropdownX: 0,
   dropdownY: 0,
-  item: {},
+  item: {}
 })
 
 const onLoadData = () => {
   ServeGetGroupMembers({
-    group_id: props.id,
-  }).then(res => {
+    group_id: props.id
+  }).then((res) => {
     if (res.code == 200) {
       let data = res.data.items || []
 
-      data.forEach(item => {
+      data.forEach((item) => {
         item.is_delete = false
       })
 
@@ -74,7 +71,7 @@ const onLoadData = () => {
   })
 }
 
-const onDelete = item => {
+const onDelete = (item) => {
   let title = `删除 [${item.nickname}] 群成员？`
 
   window['$dialog'].create({
@@ -85,14 +82,14 @@ const onDelete = item => {
     onPositiveClick: () => {
       ServeRemoveMembersGroup({
         group_id: props.id,
-        members_ids: `${item.user_id}`,
-      }).then(res => {
+        members_ids: `${item.user_id}`
+      }).then((res) => {
         if (res.code == 200) {
           onLoadData()
           window['$message'].success('删除成功')
         }
       })
-    },
+    }
   })
 }
 
@@ -109,17 +106,15 @@ const onBatchDelete = () => {
     onPositiveClick: () => {
       ServeRemoveMembersGroup({
         group_id: props.id,
-        members_ids: filterCheck.value
-          .map((item: any) => item.user_id)
-          .join(','),
-      }).then(res => {
+        members_ids: filterCheck.value.map((item: any) => item.user_id).join(',')
+      }).then((res) => {
         if (res.code == 200) {
           batchDelete.value = false
           onLoadData()
           window['$message'].success('删除成功')
         }
       })
-    },
+    }
   })
 }
 
@@ -160,8 +155,8 @@ const onAssignAdmin = (item: any) => {
       ServeGroupAssignAdmin({
         mode: item.leader == 0 ? 1 : 2,
         group_id: props.id,
-        user_id: parseInt(item.user_id),
-      }).then(res => {
+        user_id: parseInt(item.user_id)
+      }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
           onLoadData()
@@ -169,11 +164,11 @@ const onAssignAdmin = (item: any) => {
           window['$message'].error(res.message)
         }
       })
-    },
+    }
   })
 }
 
-const onTransfer = item => {
+const onTransfer = (item) => {
   window['$dialog'].create({
     title: '温馨提示',
     content: `确定把群主权限转交给 [${item.nickname}] ？`,
@@ -182,8 +177,8 @@ const onTransfer = item => {
     onPositiveClick: () => {
       ServeGroupHandover({
         group_id: props.id,
-        user_id: parseInt(item.user_id),
-      }).then(res => {
+        user_id: parseInt(item.user_id)
+      }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
           onLoadData()
@@ -191,7 +186,7 @@ const onTransfer = item => {
           window['$message'].error(res.message)
         }
       })
-    },
+    }
   })
 }
 
@@ -211,8 +206,8 @@ const onForbidden = (item: any) => {
       ServeGroupNoSpeak({
         mode: item.is_mute == 0 ? 1 : 2,
         group_id: props.id,
-        user_id: parseInt(item.user_id),
-      }).then(res => {
+        user_id: parseInt(item.user_id)
+      }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
           onLoadData()
@@ -220,7 +215,7 @@ const onForbidden = (item: any) => {
           window['$message'].error(res.message)
         }
       })
-    },
+    }
   })
 }
 
@@ -235,20 +230,20 @@ const onContextMenu = (e: any, item: any) => {
   dropdown.options = [
     {
       label: '查看成员',
-      key: 'info',
+      key: 'info'
     },
     {
       label: item.is_mute ? '解除禁言' : '禁止发言',
-      key: 'forbidden',
+      key: 'forbidden'
     },
     {
       label: '删除成员',
-      key: 'delete',
+      key: 'delete'
     },
     {
       label: '批量删除',
-      key: 'batch_delete',
-    },
+      key: 'batch_delete'
+    }
   ]
 
   if (isAdmin.value) {
@@ -280,7 +275,7 @@ const onContextMenuHandle = (key: string) => {
     delete: onDelete,
     batch_delete: (data: any) => {
       batchDelete.value = true
-    },
+    }
   }
 
   dropdown.show = false
@@ -325,24 +320,12 @@ onLoadData()
     </main>
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
-      <div
-        class="member-item"
-        v-for="member in filterSearch"
-        :key="member.user_id"
-      >
+      <div class="member-item" v-for="member in filterSearch" :key="member.user_id">
         <div class="tool flex-center" v-show="batchDelete">
-          <n-checkbox
-            :disabled="member.leader === 2"
-            size="small"
-            :checked="member.is_delete"
-          />
+          <n-checkbox :disabled="member.leader === 2" size="small" :checked="member.is_delete" />
         </div>
         <div class="avatar pointer" @click="onUserInfo(member)">
-          <im-avatar
-            :size="40"
-            :src="member.avatar"
-            :username="member.nickname"
-          />
+          <im-avatar :size="40" :src="member.avatar" :username="member.nickname" />
         </div>
         <div
           class="content pointer o-hidden"
@@ -356,12 +339,8 @@ onLoadData()
             </p>
             <p>
               <span class="badge master" v-show="member.leader == 2">群主</span>
-              <span class="badge leader" v-show="member.leader == 1"
-                >管理员</span
-              >
-              <span class="badge muted" v-show="member.is_mute == 1"
-                >已禁言</span
-              >
+              <span class="badge leader" v-show="member.leader == 1">管理员</span>
+              <span class="badge muted" v-show="member.is_mute == 1">已禁言</span>
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>
@@ -376,12 +355,8 @@ onLoadData()
       <div class="tips">已选({{ filterCheck.length }})</div>
       <div>
         <n-space>
-          <n-button type="primary" ghost size="small" @click="onCancelDelete">
-            取消
-          </n-button>
-          <n-button color="red" size="small" @click="onBatchDelete">
-            批量删除
-          </n-button>
+          <n-button type="primary" ghost size="small" @click="onCancelDelete"> 取消 </n-button>
+          <n-button color="red" size="small" @click="onBatchDelete"> 批量删除 </n-button>
         </n-space>
       </div>
     </footer>

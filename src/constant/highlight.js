@@ -1,66 +1,66 @@
 export const options = [
   {
     label: 'PHP',
-    value: 'php',
+    value: 'php'
   },
   {
     label: 'Java',
-    value: 'java',
+    value: 'java'
   },
   {
     label: 'Python',
-    value: 'python',
+    value: 'python'
   },
   {
     label: 'Golang',
-    value: 'go',
+    value: 'go'
   },
   {
     label: 'JavaScript',
-    value: 'javascript',
+    value: 'javascript'
   },
   {
     label: 'TypeScript',
-    value: 'typescript',
+    value: 'typescript'
   },
   {
     label: 'Json',
-    value: 'json',
+    value: 'json'
   },
   {
     label: 'Sql',
-    value: 'sql',
+    value: 'sql'
   },
   {
     label: 'Rust',
-    value: 'rust',
+    value: 'rust'
   },
   {
     label: 'Markdown',
-    value: 'markdown',
+    value: 'markdown'
   },
   {
     label: 'Nginx',
-    value: 'nginx',
+    value: 'nginx'
   },
   {
     label: 'Yaml',
-    value: 'yaml',
+    value: 'yaml'
   },
   {
     label: 'Protobuf',
-    value: 'protobuf',
+    value: 'protobuf'
   },
   {
     label: 'Shell',
-    value: 'shell',
+    value: 'shell'
   },
   {
     label: 'Makefile',
-    value: 'makefile',
+    value: 'makefile'
   },
   {
     label: 'Ini',
-    value: 'ini',
-  },
+    value: 'ini'
+  }
 ]

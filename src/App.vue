@@ -1,6 +1,6 @@
 <script setup>
 import '@icon-park/vue-next/styles/index.css'
-import { provide, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
@@ -9,71 +9,58 @@ import {
   NConfigProvider,
   zhCN,
   dateZhCN,
-  darkTheme,
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
-  NLayoutFooter,
+  NLayoutContent
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
-import { useUserStore, useNotifyStore, useTalkStore } from '@/store'
+import { useUserStore, useTalkStore } from '@/store'
 import socket from '@/socket'
-import { publisher } from '@/utils/publisher.ts'
-import { listener } from '@/listener'
-import { overrides } from '@/constant/theme'
+import { bus } from '@/utils/event-bus'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
+import { useUserModal } from '@/hooks/useUserModal'
+import { useThemeMode } from '@/hooks/useThemeMode'
+import { useVisibilityChange } from '@/hooks/useVisibilityChange'
+import { useAccessPrompt } from '@/hooks/useAccessPrompt'
+import { useNotifyAuth } from '@/hooks/useNotifyAuth'
+import { useUnreadMessage } from '@/hooks/useUnreadMessage'
+import { useConnectStatus } from '@/hooks/useConnectStatus'
+import { useClickEvent } from '@/hooks/useClickEvent'
+import { ContactConst } from '@/constant/event-bus'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
   theme: 'outline',
   size: 24,
   strokeWidth: 3,
-  strokeLinejoin: 'bevel',
+  strokeLinejoin: 'bevel'
 })
 
-const isShowUser = ref(false)
-const showUserId = ref(0)
-
-provide('$user', uid => {
-  showUserId.value = uid
-  isShowUser.value = true
-})
+const { uid: showUserId, isShow: isShowUser } = useUserModal()
+const { getDarkTheme, getThemeOverride } = useThemeMode()
 
 const userStore = useUserStore()
-const notifyStore = useNotifyStore()
 const talkStore = useTalkStore()
 
-const getDarkTheme = computed(() => {
-  let theme = notifyStore.darkTheme ? 'dark' : 'light'
-
-  document.querySelector('html').dataset.theme = theme
-  document.querySelector('html').style = ''
-
-  return notifyStore.darkTheme ? darkTheme : undefined
-})
-
-const getThemeOverride = computed(() => {
-  if (notifyStore.darkTheme) {
-    overrides.common.bodyColor = '#202124'
-    overrides.common.baseColor = '#ffffff'
-  }
-
-  return overrides
-})
-
-const onChangeRemark = value => {
-  publisher.emit('contact:change-remark', value)
+const onChangeRemark = (value) => {
+  bus.emit(ContactConst.UpdateRemark, value)
   talkStore.setRemark(value)
 }
 
-if (isLoggedIn()) {
+const init = () => {
+  if (!isLoggedIn()) return
+
   socket.connect()
   userStore.loadSetting()
 }
 
-listener()
+init()
+useVisibilityChange()
+useAccessPrompt()
+useNotifyAuth()
+useUnreadMessage()
+useConnectStatus()
+useClickEvent()
 </script>
 
 <template>
@@ -108,7 +95,7 @@ listener()
       <UserCardModal
         v-model:show="isShowUser"
         v-model:uid="showUserId"
-        @change-remark="onChangeRemark"
+        @update-remark="onChangeRemark"
       />
     </n-layout-content>
   </n-config-provider>

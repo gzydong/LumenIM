@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, computed, watch, ref, inject } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
 import { Comment, Search, Close, Plus } from '@icon-park/vue-next'
@@ -9,7 +9,7 @@ import {
   ServeGroupDetail,
   ServeGetGroupMembers,
   ServeSecedeGroup,
-  ServeUpdateGroupCard,
+  ServeUpdateGroupCard
 } from '@/api/group'
 
 const userStore = useUserStore()
@@ -20,8 +20,8 @@ const emit = defineEmits(['close', 'to-talk'])
 const props = defineProps({
   gid: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 watch(props, () => {
@@ -38,18 +38,17 @@ const state = reactive({
     avatar: '',
     name: '',
     profile: '',
-    visit_card: '',
+    visit_card: ''
   },
   members: [],
-  remark: '',
+  remark: ''
 })
 
 const search = computed(() => {
   if (state.keywords) {
     return state.members.filter((item: any) => {
       return (
-        item.nickname.match(state.keywords) != null ||
-        item.remark.match(state.keywords) != null
+        item.nickname.match(state.keywords) != null || item.remark.match(state.keywords) != null
       )
     })
   }
@@ -80,8 +79,8 @@ const onToInfo = (item: any) => {
  */
 function loadDetail() {
   ServeGroupDetail({
-    group_id: props.gid,
-  }).then(res => {
+    group_id: props.gid
+  }).then((res) => {
     if (res.code == 200) {
       let result = res.data
       state.detail.avatar = result.avatar
@@ -102,8 +101,8 @@ function loadDetail() {
  */
 function loadMembers() {
   ServeGetGroupMembers({
-    group_id: props.gid,
-  }).then(res => {
+    group_id: props.gid
+  }).then((res) => {
     if (res.code == 200) {
       state.members = res.data.items || []
     }
@@ -116,8 +115,8 @@ const onClose = () => {
 
 const onSignOut = () => {
   ServeSecedeGroup({
-    group_id: props.gid,
-  }).then(res => {
+    group_id: props.gid
+  }).then((res) => {
     if (res.code == 200) {
       window['$message'].success('已退出群聊')
       onClose()
@@ -130,7 +129,7 @@ const onSignOut = () => {
 const onChangeRemark = () => {
   ServeUpdateGroupCard({
     group_id: props.gid,
-    visit_card: state.remark,
+    visit_card: state.remark
   }).then(({ code, message }) => {
     if (code == 200) {
       editCardPopover.value.setShow(false)
@@ -162,6 +161,18 @@ loadMembers()
     </header>
 
     <main class="el-main main me-scrollbar me-scrollbar-thumb">
+      <!-- <div class="member-items">
+        <div v-for="i in 20" :key="i" class="member-item">
+          <div class="member-avatar"></div>
+          <div class="member-nickname text-ellipsis" v-if="i == 0">你</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 1">你是</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 2">你是你</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 3">你是你是</div>
+          <div class="member-nickname text-ellipsis" v-else-if="i == 4">你是你是你</div>
+          <div class="member-nickname text-ellipsis" v-else>你是你是你</div>
+        </div>
+      </div> -->
+
       <div class="info-box">
         <div class="b-box">
           <div class="block">
@@ -188,15 +199,9 @@ loadMembers()
                     :autofocus="true"
                     maxlength="10"
                     v-model:value="state.remark"
-                    @keydown.enter.native="onChangeRemark"
+                    @keydown.enter="onChangeRemark"
                   />
-                  <n-button
-                    type="primary"
-                    class="mt-l5"
-                    @click="onChangeRemark"
-                  >
-                    确定
-                  </n-button>
+                  <n-button type="primary" class="mt-l5" @click="onChangeRemark"> 确定 </n-button>
                 </div>
               </n-popover>
             </div>
@@ -234,12 +239,7 @@ loadMembers()
 
       <div class="member-box">
         <div class="flex">
-          <n-input
-            placeholder="搜索"
-            v-model:value="state.keywords"
-            :clearable="true"
-            round
-          >
+          <n-input placeholder="搜索" v-model:value="state.keywords" :clearable="true" round>
             <template #prefix>
               <n-icon :component="Search" />
             </template>
@@ -259,25 +259,14 @@ loadMembers()
             <div class="card">群名片</div>
           </div>
 
-          <div
-            class="row pointer"
-            v-for="item in search"
-            :key="item.id"
-            @click="onToInfo(item)"
-          >
+          <div class="row pointer" v-for="item in search" :key="item.id" @click="onToInfo(item)">
             <div class="avatar">
-              <im-avatar
-                :size="20"
-                :src="item.avatar"
-                :username="item.nickname"
-              />
+              <im-avatar :size="20" :src="item.avatar" :username="item.nickname" />
             </div>
             <div class="nickname text-ellipsis">
               <span>{{ item.nickname ? item.nickname : '-' }}</span>
               <span class="badge master" v-show="item.leader === 2">群主</span>
-              <span class="badge leader" v-show="item.leader === 1"
-                >管理员</span
-              >
+              <span class="badge leader" v-show="item.leader === 1">管理员</span>
             </div>
             <div class="card text-ellipsis grey">
               {{ item.remark || '-' }}
@@ -297,11 +286,7 @@ loadMembers()
 
     <footer class="el-footer footer bdr-t">
       <template v-if="!isAdmin">
-        <n-popconfirm
-          negative-text="取消"
-          positive-text="确定"
-          @positive-click="onSignOut"
-        >
+        <n-popconfirm negative-text="取消" positive-text="确定" @positive-click="onSignOut">
           <template #trigger>
             <n-button class="btn" type="error" ghost> 退出群聊 </n-button>
           </template>
@@ -366,6 +351,40 @@ loadMembers()
 
   .main {
     padding: 15px;
+
+    .member-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+      gap: 2px 0px;
+
+      .member-item {
+        height: 55px;
+        width: 55px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        // background-color: red;
+
+        .member-avatar {
+          display: flex;
+          width: 35px;
+          height: 35px;
+          background-color: rebeccapurple;
+          border-radius: 5px;
+          margin: 0 auto;
+        }
+
+        .member-nickname {
+          height: 20px;
+          width: 100%;
+          font-size: 12px;
+          transform: scale(0.8);
+          transform-origin: right;
+        }
+      }
+    }
+
     .info-box {
       .b-box {
         display: flex;

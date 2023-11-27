@@ -1,19 +1,19 @@
 <script setup>
 import { computed } from 'vue'
-import { useNoteStore } from '@/store/note'
+import { useNoteStore } from '@/store'
 import { ServeUpdateArticleTag } from '@/api/article'
 import { Close } from '@icon-park/vue-next'
 
 const store = useNoteStore()
 let loading = false
 const tags = computed(() => {
-  let ids = store.view.detail.tags.map(item => item.id)
+  let ids = store.view.detail.tags.map((item) => item.id)
 
-  return store.tags.map(tag => {
+  return store.tags.map((tag) => {
     return {
       id: tag.id,
       tag_name: tag.tag_name,
-      is_check: ids.includes(tag.id),
+      is_check: ids.includes(tag.id)
     }
   })
 })
@@ -23,11 +23,11 @@ const onSave = (ids = []) => {
 
   ServeUpdateArticleTag({
     article_id: store.view.detail.id,
-    tags: ids,
+    tags: ids
   })
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
-        store.view.detail.tags = ids.map(id => {
+        store.view.detail.tags = ids.map((id) => {
           return { id }
         })
       }
@@ -37,10 +37,10 @@ const onSave = (ids = []) => {
     })
 }
 
-const onActive = item => {
+const onActive = (item) => {
   if (loading) return
 
-  let items = tags.value.filter(val => {
+  let items = tags.value.filter((val) => {
     if (item.id === val.id) {
       return !val.is_check
     }
@@ -52,7 +52,7 @@ const onActive = item => {
     return window['$message'].info('标签不能超过5个')
   }
 
-  onSave(items.map(v => v.id))
+  onSave(items.map((v) => v.id))
 }
 </script>
 
@@ -73,9 +73,7 @@ const onActive = item => {
         @click="onActive(tag)"
       >
         <span>{{ tag.tag_name }}</span>
-        <span class="icon flex-center">
-          &nbsp;<n-icon :size="13" :component="Close" />
-        </span>
+        <span class="icon flex-center"> &nbsp;<n-icon :size="13" :component="Close" /> </span>
       </p>
     </div>
 

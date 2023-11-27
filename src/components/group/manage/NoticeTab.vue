@@ -8,8 +8,8 @@ import { ServeGetGroupNotices } from '@/api/group'
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 })
 
 const keywords = ref('')
@@ -20,11 +20,11 @@ const editor = reactive({
   id: 0,
   gid: 0,
   title: '',
-  content: '',
+  content: ''
 })
 
 const filterCheck = computed(() => {
-  return items.value.filter(item => item.is_delete)
+  return items.value.filter((item) => item.is_delete)
 })
 
 const filterSearch = computed(() => {
@@ -32,15 +32,15 @@ const filterSearch = computed(() => {
     return items.value
   }
 
-  return items.value.filter(item => {
+  return items.value.filter((item) => {
     return item.title.match(keywords.value) != null
   })
 })
 
 const onLoadData = () => {
   ServeGetGroupNotices({
-    group_id: props.id,
-  }).then(res => {
+    group_id: props.id
+  }).then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []
     }
@@ -52,11 +52,12 @@ const onBatchDelete = () => {
     return
   }
 
-  let ids = filterCheck.value.map(item => item.user_id).join(',')
+  let ids = filterCheck.value.map((item) => item.user_id).join(',')
 }
 
-const onRowClick = item => {
+const onRowClick = (item) => {
   if (batchDelete.value == true) {
+    console.log(item)
   } else {
     editor.id = item.id
     editor.gid = props.id
@@ -75,7 +76,7 @@ const onAdd = () => {
 }
 
 const onCancelDelete = () => {
-  items.value.forEach(item => {
+  items.value.forEach((item) => {
     item.is_delete = false
   })
 
@@ -128,6 +129,7 @@ onLoadData()
       <div
         class="member-item bdr-b"
         v-for="item in filterSearch"
+        :key="item.id"
         @click="onRowClick(item)"
       >
         <div class="content pointer o-hidden">
@@ -150,12 +152,8 @@ onLoadData()
       <div class="tips">已选({{ filterCheck.length }})</div>
       <div>
         <n-space>
-          <n-button type="primary" ghost size="small" @click="onCancelDelete">
-            取消
-          </n-button>
-          <n-button type="error" size="small" @click="onBatchDelete">
-            删除
-          </n-button>
+          <n-button type="primary" ghost size="small" @click="onCancelDelete"> 取消 </n-button>
+          <n-button type="error" size="small" @click="onBatchDelete"> 删除 </n-button>
         </n-space>
       </div>
     </footer>

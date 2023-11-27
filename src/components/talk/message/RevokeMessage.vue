@@ -4,35 +4,31 @@ import { formatTime } from '@/utils/datetime'
 defineProps({
   login_uid: {
     type: Number,
-    default: 0,
+    default: 0
   },
   user_id: {
     type: Number,
-    default: 0,
+    default: 0
   },
   talk_type: {
     type: Number,
-    default: 0,
+    default: 0
   },
   nickname: {
     type: String,
-    default: '',
+    default: ''
   },
   datetime: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 </script>
 <template>
   <div class="im-message-revoke">
     <div class="content">
-      <span v-if="login_uid == user_id">
-        你撤回了一条消息 | {{ formatTime(datetime) }}
-      </span>
-      <span v-else-if="talk_type == 1">
-        对方撤回了一条消息 | {{ formatTime(datetime) }}
-      </span>
+      <span v-if="login_uid == user_id"> 你撤回了一条消息 | {{ formatTime(datetime) }} </span>
+      <span v-else-if="talk_type == 1"> 对方撤回了一条消息 | {{ formatTime(datetime) }} </span>
       <span v-else>
         "{{ nickname }}" 撤回了一条消息 |
         {{ formatTime(datetime) }}

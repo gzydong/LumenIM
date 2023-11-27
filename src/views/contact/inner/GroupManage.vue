@@ -34,7 +34,7 @@ const onLoadData = async () => {
         id: item.id,
         name: item.name,
         index: index++,
-        count: item.count,
+        count: item.count
       })
     }
   }
@@ -46,7 +46,7 @@ const onLoadData = async () => {
 
 const onSubmit = () => {
   ServeContactGroupSave({
-    items: options,
+    items: options
   }).then(({ code, message }) => {
     if (code == 200) {
       window['$message'].success('保存成功')
@@ -64,7 +64,7 @@ const addOption = () => {
 
 const delOption = (item: Item) => {
   let fn = () => {
-    let i = options.findIndex(value => value.index == item.index)
+    let i = options.findIndex((value) => value.index == item.index)
     if (i >= 0) {
       options.length > 0 && options.splice(i, 1)
     }
@@ -76,7 +76,7 @@ const delOption = (item: Item) => {
       content: `【${item.name}】分组下有${item.count}个好友，确定要删除吗？`,
       positiveText: '确定',
       negativeText: '取消',
-      onPositiveClick: fn,
+      onPositiveClick: fn
     })
   } else {
     fn()
@@ -144,24 +144,14 @@ onLoadData()
     <template #footer>
       <div class="footer" style="">
         <div>
-          <n-button
-            text
-            type="primary"
-            @click="addOption"
-            v-if="options.length < 6"
-          >
+          <n-button text type="primary" @click="addOption" v-if="options.length < 6">
             添加分组
           </n-button>
         </div>
 
         <div>
           <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
-          <n-button
-            type="primary"
-            @click="onSubmit"
-            class="mt-l15"
-            :disabled="isCanSubmit"
-          >
+          <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
             保存
           </n-button>
         </div>

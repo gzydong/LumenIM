@@ -3,13 +3,13 @@ import { reactive, ref } from 'vue'
 import { NModal, NCard } from 'naive-ui'
 import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
 import 'vue-cropper/dist/index.css'
-import { VueCropper }  from "vue-cropper";
+import { VueCropper } from 'vue-cropper'
 import { ServeUploadAvatar } from '@/api/upload'
 
 const emit = defineEmits(['close', 'success'])
 const state = reactive({
   show: true,
-  src: '',
+  src: ''
 })
 
 const cropper = ref('cropper')
@@ -28,7 +28,7 @@ const option = reactive({
   autoCropHeight: 250,
   centerBox: false,
   high: true,
-  preview: '',
+  preview: ''
 })
 
 const onMaskClick = () => {
@@ -39,13 +39,11 @@ function onTriggerUpload() {
   document.getElementById('upload-avatar').click()
 }
 
-const onUpload = e => {
+const onUpload = (e) => {
   let file = e.target.files[0]
 
-  console.log(file)
-
   let reader = new FileReader()
-  reader.onload = e => {
+  reader.onload = (e) => {
     let data
     if (typeof e.target.result === 'object') {
       // 把Array Buffer转化为blob 如果是base64不需要
@@ -62,8 +60,8 @@ const onUpload = e => {
   reader.readAsArrayBuffer(file)
 }
 
-const realTime = data => {
-  cropper.value.getCropData(img => {
+const realTime = (data) => {
+  cropper.value.getCropData((img) => {
     option.preview = img
   })
 }
@@ -80,16 +78,16 @@ const refreshCrop = () => {
 }
 
 const onSubmit = () => {
-  cropper.value.getCropBlob(blob => {
+  cropper.value.getCropBlob((blob) => {
     let file = new File([blob], 'avatar.png', {
       type: blob.type,
-      lastModified: Date.now(),
+      lastModified: Date.now()
     })
 
     const form = new FormData()
     form.append('file', file)
 
-    ServeUploadAvatar(form).then(res => {
+    ServeUploadAvatar(form).then((res) => {
       if (res.code == 200) {
         emit('success', res.data.avatar)
       } else {
@@ -108,19 +106,9 @@ const onSubmit = () => {
     @change="onUpload"
   />
   <n-modal v-model:show="state.show" :on-after-leave="onMaskClick">
-    <n-card
-      style="width: 800px"
-      title="选择头像"
-      :bordered="false"
-      class="modal-radius"
-    >
+    <n-card style="width: 800px" title="选择头像" :bordered="false" class="modal-radius">
       <template #header-extra>
-        <n-icon
-          size="22"
-          :component="Close"
-          @click="state.show = false"
-          class="pointer"
-        />
+        <n-icon size="22" :component="Close" @click="state.show = false" class="pointer" />
       </template>
 
       <div class="content">

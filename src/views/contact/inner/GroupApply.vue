@@ -3,11 +3,7 @@ import { ref, onMounted, inject, h } from 'vue'
 import { NPopconfirm, NInput } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
-import {
-  ServeGetGroupApplyAll,
-  ServeDeleteGroupApply,
-  ServeAgreeGroupApply,
-} from '@/api/group'
+import { ServeGetGroupApplyAll, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 
@@ -18,7 +14,7 @@ const user = inject('$user')
 
 const onLoadData = (isClearTip = false) => {
   ServeGetGroupApplyAll()
-    .then(res => {
+    .then((res) => {
       if (res.code == 200) {
         items.value = res.data.items || []
       }
@@ -28,16 +24,16 @@ const onLoadData = (isClearTip = false) => {
     })
 }
 
-const onInfo = item => {
+const onInfo = (item) => {
   user(item.user_id)
 }
 
-const onAgree = throttle(item => {
+const onAgree = throttle((item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeAgreeGroupApply({
-    apply_id: item.id,
-  }).then(res => {
+    apply_id: item.id
+  }).then((res) => {
     loading.destroy()
     if (res.code == 200) {
       window['$message'].success('已同意')
@@ -49,7 +45,7 @@ const onAgree = throttle(item => {
   })
 }, 1000)
 
-const onDelete = item => {
+const onDelete = (item) => {
   let remark = ''
   let dialog = window['$dialog'].create({
     title: '拒绝入群申请',
@@ -58,8 +54,8 @@ const onDelete = item => {
         defaultValue: '',
         placeholder: '请填写拒绝原因',
         style: { marginTop: '20px' },
-        onInput: value => (remark = value),
-        autofocus: true,
+        onInput: (value) => (remark = value),
+        autofocus: true
       })
     },
     negativeText: '取消',
@@ -71,8 +67,8 @@ const onDelete = item => {
 
       ServeDeleteGroupApply({
         apply_id: item.id,
-        remark: remark,
-      }).then(res => {
+        remark: remark
+      }).then((res) => {
         dialog.destroy()
 
         if (res.code == 200) {
@@ -85,7 +81,7 @@ const onDelete = item => {
       })
 
       return false
-    },
+    }
   })
 }
 
@@ -122,35 +118,19 @@ onMounted(() => {
             </n-tag>
             {{ item.nickname }}
           </span>
-          <span class="time">{{
-            parseTime(item.created_at, '{m}/{d} {h}:{i}')
-          }}</span>
+          <span class="time">{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
         </div>
         <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
       </div>
 
       <div class="tools">
-        <n-button
-          @click="onAgree(item)"
-          strong
-          secondary
-          circle
-          size="small"
-          type="primary"
-        >
+        <n-button @click="onAgree(item)" strong secondary circle size="small" type="primary">
           <template #icon>
             <n-icon :component="CheckSmall" />
           </template>
         </n-button>
 
-        <n-button
-          @click="onDelete(item)"
-          strong
-          secondary
-          circle
-          type="tertiary"
-          size="small"
-        >
+        <n-button @click="onDelete(item)" strong secondary circle type="tertiary" size="small">
           <template #icon>
             <n-icon :component="Close" />
           </template>

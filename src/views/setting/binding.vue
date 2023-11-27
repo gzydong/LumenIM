@@ -1,10 +1,5 @@
 <script setup>
 import { reactive } from 'vue'
-
-const state = reactive({
-  mobile: '',
-  email: '',
-})
 </script>
 
 <template>

@@ -6,18 +6,18 @@ export default {
   children: [
     {
       path: '/auth/login',
-      meta: { requiresAuth: false },
-      component: () => import('@/views/auth/login.vue'),
+      meta: { auth: false },
+      component: () => import('@/views/auth/login.vue')
     },
     {
       path: '/auth/register',
-      meta: { requiresAuth: false },
-      component: () => import('@/views/auth/register.vue'),
+      meta: { auth: false },
+      component: () => import('@/views/auth/register.vue')
     },
     {
       path: '/auth/forget',
-      meta: { requiresAuth: false },
-      component: () => import('@/views/auth/forget.vue'),
-    },
-  ],
+      meta: { auth: false },
+      component: () => import('@/views/auth/forget.vue')
+    }
+  ]
 }

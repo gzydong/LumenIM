@@ -4,8 +4,11 @@ import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeForgetPassword } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
-import SmsLock from '@/plugins/sms-lock'
 import { isMobile } from '@/utils/validate'
+import { useSmsLock } from '@/hooks/useSmsLock'
+
+// 初始化短信按钮锁
+const { lockTime, start } = useSmsLock('FORGET_PSW_SMS', 120)
 
 const router = useRouter()
 const formRef = ref()
@@ -13,7 +16,7 @@ const rules = {
   sms_code: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '验证码不能为空！',
+    message: '验证码不能为空！'
   },
   username: {
     required: true,
@@ -26,26 +29,20 @@ const rules = {
       }
 
       return true
-    },
+    }
   },
   password: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '密码不能为空！',
-  },
+    message: '密码不能为空！'
+  }
 }
-
-// 短信按钮倒计时
-const lockTime = ref(0)
-
-// 初始化短信按钮锁
-const lock = new SmsLock('FORGET_PSW_SMS', 120, time => (lockTime.value = time))
 
 const model = reactive({
   username: '',
   password: '',
   sms_code: '',
-  loading: false,
+  loading: false
 })
 
 const onForget = () => {
@@ -54,10 +51,10 @@ const onForget = () => {
   const response = ServeForgetPassword({
     mobile: model.username,
     password: model.password,
-    sms_code: model.sms_code,
+    sms_code: model.sms_code
   })
 
-  response.then(res => {
+  response.then((res) => {
     if (res.code == 200) {
       window['$message'].success('密码修改成功')
 
@@ -74,10 +71,10 @@ const onForget = () => {
   })
 }
 
-const onValidate = e => {
+const onValidate = (e) => {
   e.preventDefault()
 
-  formRef.value.validate(errors => {
+  formRef.value.validate((errors) => {
     !errors && onForget()
   })
 }
@@ -91,12 +88,12 @@ const onSendSms = () => {
 
   const response = ServeSendVerifyCode({
     mobile: model.username,
-    channel: 'forget_account',
+    channel: 'forget_account'
   })
 
-  response.then(res => {
+  response.then((res) => {
     if (res.code == 200) {
-      lock.start()
+      start()
       window['$message'].success('短信发送成功')
     } else {
       window['$message'].warning(res.message)
@@ -107,10 +104,6 @@ const onSendSms = () => {
     model.loading = false
   })
 }
-
-onUnmounted(() => {
-  lock.clear()
-})
 </script>
 
 <template>
@@ -124,7 +117,7 @@ onUnmounted(() => {
             placeholder="登录账号/手机号"
             v-model:value="model.username"
             :maxlength="11"
-            @keydown.enter.native="onValidate"
+            @keydown.enter="onValidate"
           />
         </n-form-item>
 
@@ -133,14 +126,9 @@ onUnmounted(() => {
             placeholder="验证码"
             :maxlength="6"
             v-model:value="model.sms_code"
-            @keydown.enter.native="onValidate"
+            @keydown.enter="onValidate"
           />
-          <n-button
-            tertiary
-            class="mt-l5"
-            @click="onSendSms"
-            :disabled="lockTime > 0"
-          >
+          <n-button tertiary class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
             获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
           </n-button>
         </n-form-item>
@@ -151,7 +139,7 @@ onUnmounted(() => {
             type="password"
             show-password-on="click"
             v-model:value="model.password"
-            @keydown.enter.native="onValidate"
+            @keydown.enter="onValidate"
           />
         </n-form-item>
 
@@ -168,9 +156,7 @@ onUnmounted(() => {
       </n-form>
 
       <div class="helper">
-        <n-button text color="#409eff" @click="router.push('/auth/register')">
-          注册账号
-        </n-button>
+        <n-button text color="#409eff" @click="router.push('/auth/register')"> 注册账号 </n-button>
         <n-button text color="#409eff" @click="router.push('/auth/login')">
           已有账号，立即登录?
         </n-button>

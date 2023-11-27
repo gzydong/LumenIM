@@ -7,20 +7,20 @@ const emit = defineEmits(['close', 'success'])
 const props = defineProps({
   id: {
     type: Number,
-    default: 0,
+    default: 0
   },
   gid: {
     type: Number,
-    default: 0,
+    default: 0
   },
   title: {
     type: String,
-    default: '',
+    default: ''
   },
   content: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const titleModal = ref(props.id == 0 ? '发布群公告' : '编辑群公告')
@@ -28,20 +28,20 @@ const titleModal = ref(props.id == 0 ? '发布群公告' : '编辑群公告')
 const formRef = ref()
 const model = reactive({
   title: props.title,
-  content: props.content,
+  content: props.content
 })
 
 const rules = {
   title: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '标题不能为空！',
+    message: '标题不能为空！'
   },
   content: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '内容不能为空！',
-  },
+    message: '内容不能为空！'
+  }
 }
 
 const isShow = ref(true)
@@ -60,10 +60,10 @@ const onSubmit = () => {
     title: model.title,
     content: model.content,
     is_top: 0,
-    is_confirm: 0,
+    is_confirm: 0
   })
 
-  response.then(res => {
+  response.then((res) => {
     if (res.code == 200) {
       window['$message'].success(res.message)
       emit('success')
@@ -77,10 +77,10 @@ const onSubmit = () => {
   })
 }
 
-const onValidate = e => {
+const onValidate = (e) => {
   e.preventDefault()
 
-  formRef.value.validate(errors => {
+  formRef.value.validate((errors) => {
     !errors && onSubmit()
   })
 }
@@ -107,7 +107,7 @@ const onValidate = e => {
           v-model:value="model.content"
           :autosize="{
             minRows: 5,
-            maxRows: 10,
+            maxRows: 10
           }"
         />
       </n-form-item>
@@ -116,12 +116,7 @@ const onValidate = e => {
     <template #footer>
       <div style="width: 100%; text-align: right">
         <n-button type="tertiary" @click="onMaskClick"> 取消 </n-button>
-        <n-button
-          type="primary"
-          class="mt-l15"
-          :loading="loading"
-          @click="onValidate"
-        >
+        <n-button type="primary" class="mt-l15" :loading="loading" @click="onValidate">
           确定
         </n-button>
       </div>

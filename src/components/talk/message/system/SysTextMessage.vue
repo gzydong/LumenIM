@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   extra: Object,
-  data: Object,
+  data: Object
 })
 </script>
 

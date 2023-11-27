@@ -1,6 +1,6 @@
 <script setup>
 import { NProgress } from 'naive-ui'
-import { useUploadsStore } from '@/store/uploads'
+import { useUploadsStore } from '@/store'
 import { fileFormatSize } from '@/utils/strings'
 
 const uploadsStore = useUploadsStore()
@@ -9,26 +9,18 @@ const statusItem = {
   0: '等待上传',
   1: '上传中',
   2: '上传完成',
-  3: '网络异常',
+  3: '网络异常'
 }
 </script>
 
 <template>
   <div class="section me-scrollbar me-scrollbar-thumb">
     <div class="title bdr-b">
-      <span
-        >上传管理 ({{ uploadsStore.successCount }}/{{
-          uploadsStore.items.length
-        }})</span
-      >
+      <span>上传管理 ({{ uploadsStore.successCount }}/{{ uploadsStore.items.length }})</span>
       <span class="pointer" @click="uploadsStore.close()">关闭</span>
     </div>
 
-    <div
-      class="file-item"
-      v-for="item in uploadsStore.items"
-      :key="item.upload_id"
-    >
+    <div class="file-item" v-for="item in uploadsStore.items" :key="item.upload_id">
       <div class="file-header">
         <div class="type-icon flex-center">
           {{ item.username.substr(0, 1) }}

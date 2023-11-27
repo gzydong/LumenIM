@@ -3,13 +3,14 @@ import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { Search, Plus } from '@icon-park/vue-next'
-import { useUserStore } from '@/store'
-import { useTalkStore } from '@/store/talk'
+import { useUserStore, useTalkStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupCard from './inner/GroupCard.vue'
-import { toTalk } from '@/utils/talk'
 
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const isShowCreateGroupBox = ref(false)
@@ -18,7 +19,7 @@ const items = ref([])
 
 const params = reactive({
   isShow: false,
-  id: 0,
+  id: 0
 })
 
 const tabIndex = ref('all')
@@ -29,7 +30,7 @@ const filterCreator = computed(() => {
   return items.value.filter((item: any) => item.creator_id == uid)
 })
 
-const filter = computed(() => {
+const filter = computed((): any[] => {
   return items.value.filter((item: any) => {
     if (tabIndex.value == 'create' && item.creator_id != uid) {
       return false
@@ -39,30 +40,28 @@ const filter = computed(() => {
       return false
     }
 
-    return (
-      item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
-    )
+    return item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
   })
 })
 
 const onLoadData = () => {
-  ServeGetGroups().then(res => {
+  ServeGetGroups().then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []
     }
   })
 }
 
-const onShowGroup = item => {
+const onShowGroup = (item: any) => {
   params.isShow = true
   params.id = item.id
 }
 
-const onToTalk = item => {
-  toTalk(2, item.id)
+const onToTalk = (item: any) => {
+  talkStore.toTalk(2, item.id, router)
 }
 
-const onGroupCallBack = data => {
+const onGroupCallBack = () => {
   isShowCreateGroupBox.value = false
   onLoadData()
   talkStore.loadTalkList()
@@ -75,14 +74,12 @@ onMounted(() => {
 
 <template>
   <section id="drawer-target" class="el-container is-vertical height100">
-    <header class="el-header from-header bdr-b">
+    <header class="el-header me-view-header bdr-b">
       <div>
         <n-tabs v-model:value="tabIndex">
           <n-tab name="all"> 全部群聊({{ items.length }}) </n-tab>
           <n-tab name="create"> 我创建的({{ filterCreator.length }}) </n-tab>
-          <n-tab name="join">
-            我加入的({{ items.length - filterCreator.length }})
-          </n-tab>
+          <n-tab name="join"> 我加入的({{ items.length - filterCreator.length }}) </n-tab>
         </n-tabs>
       </div>
 
@@ -119,6 +116,7 @@ onMounted(() => {
       <div class="cards">
         <GroupCard
           v-for="item in filter"
+          :key="item.id"
           :avatar="item.avatar"
           :username="item.group_name"
           :gender="item.gender"
@@ -150,20 +148,12 @@ onMounted(() => {
     <GroupPanel
       :gid="params.id"
       @close="params.isShow = false"
-      @to-talk="toTalk(2, params.id)"
+      @to-talk="talkStore.toTalk(2, params.id, router)"
     />
   </n-drawer>
 </template>
 
 <style lang="less" scoped>
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

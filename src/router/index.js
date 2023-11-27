@@ -1,65 +1,65 @@
-import {
-  createRouter,
-  createWebHistory,
-  createWebHashHistory,
-} from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { isLoggedIn } from '@/utils/auth'
+import MainLayout from '@/layout/MainLayout.vue'
+
 import SettingRouter from './modules/setting'
 import ContactRouter from './modules/contact'
 import AuthRouter from './modules/auth'
-import Home from '@/views/index/index.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    meta: { requiresAuth: true },
-    component: Home,
+    name: 'home',
+    meta: { auth: true },
+    component: MainLayout,
+    redirect: '/message',
+    children: [
+      {
+        path: '/message',
+        name: 'message',
+        meta: { auth: true },
+        component: () => import('@/views/message/index.vue')
+      },
+      {
+        path: '/note',
+        name: 'note',
+        meta: { auth: true },
+        component: () => import('@/views/note/index.vue')
+      },
+      {
+        path: '/example',
+        name: 'example',
+        component: () => import('@/views/example/index.vue')
+      },
+      SettingRouter,
+      ContactRouter
+    ]
   },
-  {
-    path: '/message',
-    name: 'Message',
-    meta: { requiresAuth: true },
-    component: () => import('@/views/index/index.vue'),
-  },
-  {
-    path: '/note',
-    name: 'Note',
-    meta: { requiresAuth: true },
-    component: () => import('@/views/note/index.vue'),
-  },
-  {
-    path: '/example/index',
-    name: 'Example',
-    component: () => import('@/views/example/example.vue'),
-  },
-  SettingRouter,
-  ContactRouter,
   AuthRouter,
   {
     path: '/:pathMatch(.*)*',
     name: '404 NotFound',
-    component: () => import('@/views/other/not-found.vue'),
-  },
+    component: () => import('@/views/other/not-found.vue')
+  }
 ]
 
 const getHistoryMode = () => {
-  return import.meta.env.VITE_ROUTER_MODE == 'hash'
-    ? createWebHashHistory()
-    : createWebHistory()
+  return import.meta.env.VITE_ROUTER_MODE == 'hash' ? createWebHashHistory() : createWebHistory()
 }
 
 const router = createRouter({
   history: getHistoryMode(),
   routes,
+  strict: true,
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 // 设置中间件，权限验证
-router.beforeEach((to, from) => {
-  if (to.meta.requiresAuth && !isLoggedIn()) {
+router.beforeEach((to) => {
+  if (to.meta?.auth && !isLoggedIn()) {
     return {
       path: '/auth/login',
-      query: { redirect: to.fullPath },
+      query: { redirect: to.fullPath }
     }
   }
 })

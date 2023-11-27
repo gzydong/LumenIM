@@ -1,5 +1,5 @@
 export default {
-  created(el, binding, vnode) {
+  created(el, binding) {
     // 因为拖拽还包括拖动时的经过事件，离开事件，和进入事件，放下事件，
     // 浏览器对于拖拽的默认事件的处理是打开拖进来的资源，
     // 所以要先对这三个事件进行默认事件的禁止
@@ -21,5 +21,5 @@ export default {
       event.preventDefault()
       binding.value(event)
     })
-  },
+  }
 }

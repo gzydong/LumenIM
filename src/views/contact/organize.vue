@@ -1,27 +1,30 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { NTree, NEmpty } from 'naive-ui'
-import { useUserStore } from '@/store/user'
+import { useRouter } from 'vue-router'
+import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
-import { Search } from '@icon-park/vue-next'
-import { toTalk } from '@/utils/talk'
+import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
 import { modal } from '@/utils/common'
 
+const router = useRouter()
 const userStore = useUserStore()
+const talkStore = useTalkStore()
 
+const user = inject('$user')
 const dept = ref(-1)
 const keywords = ref('')
+const isShowOrganize = ref(true)
 const items = ref([])
 
 // 过滤器
 const filter = computed(() => {
-  return items.value.filter(item => {
+  return items.value.filter((item) => {
     return (
       item.nickname.match(keywords.value) != null &&
-      (dept.value == -1 ||
-        item.dept_items.some(item => item.dept_id == dept.value))
+      (dept.value == -1 || item.dept_items.some((item) => item.dept_id == dept.value))
     )
   })
 })
@@ -29,9 +32,9 @@ const filter = computed(() => {
 const tree = ref([])
 const breadcrumb = ref('全体成员')
 
-const onToTalk = item => {
+const onToTalk = (item) => {
   if (userStore.uid != item.user_id) {
-    toTalk(1, item.user_id)
+    talkStore.toTalk(1, item.user_id, router)
   } else {
     window['$message'].info('禁止给自己发送消息!!!')
   }
@@ -39,12 +42,12 @@ const onToTalk = item => {
 
 function toTree(data) {
   const map = {}
-  data.forEach(item => (map[item.dept_id] = item))
+  data.forEach((item) => (map[item.dept_id] = item))
 
-  const ancestors = value => {
+  const ancestors = (value) => {
     let list = []
 
-    value.split(',').forEach(id => {
+    value.split(',').forEach((id) => {
       map[parseInt(id)] && list.push(map[parseInt(id)].dept_name)
     })
 
@@ -52,7 +55,7 @@ function toTree(data) {
   }
 
   const tree = []
-  data.forEach(item => {
+  data.forEach((item) => {
     const parent = map[item.parent_id]
 
     item.breadcrumb = ancestors(item.ancestors || '').join(' / ')
@@ -69,10 +72,8 @@ function toTree(data) {
   return tree
 }
 
-const onInfo = item => {
-  modal(UserCardModal, {
-    uid: item.user_id,
-  })
+const onInfo = (item) => {
+  user(item.user_id)
 }
 
 const onNodeProps = ({ option }) => {
@@ -80,19 +81,19 @@ const onNodeProps = ({ option }) => {
     onClick() {
       breadcrumb.value = option.breadcrumb || '全部成员'
       dept.value = option.dept_id
-    },
+    }
   }
 }
 
 function onLoadDepartment() {
-  ServeDepartmentList().then(res => {
+  ServeDepartmentList().then((res) => {
     const items = res.data.items || []
 
     items.unshift({
       dept_id: -1,
       dept_name: '全部成员',
       parent_id: 0,
-      ancestors: '0',
+      ancestors: '0'
     })
 
     for (const item of items) {
@@ -114,7 +115,7 @@ async function onLoadData() {
 
   let users = res.data.items || []
 
-  users.map(item => {
+  users.map((item) => {
     item.online = false
     item.sort = 1000000
 
@@ -142,26 +143,12 @@ onLoadDepartment()
 </script>
 
 <template>
-  <section class="el-container height100 o-hidden">
-    <aside class="el-aside bdr-r aside">
-      <n-tree
-        key-field="dept_id"
-        label-field="dept_name"
-        block-line
-        :data="tree"
-        :default-expand-all="true"
-        :cancelable="true"
-        :default-selected-keys="[-1]"
-        :node-props="onNodeProps"
-      />
-    </aside>
+  <section class="el-container is-vertical height100">
+    <header class="el-header me-view-header bdr-b">
+      <div style="font-weight: 500">{{ breadcrumb }} ({{ filter.length }})</div>
 
-    <main class="el-main">
-      <section class="el-container is-vertical height100">
-        <header class="el-header from-header bdr-b">
-          <div style="font-weight: 500">
-            {{ breadcrumb }} ({{ filter.length }})
-          </div>
+      <div>
+        <n-space style="display: flex; align-items: center">
           <n-input
             v-model:value.trim="keywords"
             placeholder="搜索"
@@ -173,31 +160,53 @@ onLoadDepartment()
               <n-icon :component="Search" />
             </template>
           </n-input>
-        </header>
 
-        <main class="el-main me-scrollbar pd-10" v-if="filter.length">
-          <div class="cards">
-            <MemberCard
-              v-for="item in filter"
-              :username="item.nickname"
-              :gender="item.gender"
-              :motto="item.position"
-              :flag="'状态/离线'"
-              @click="onInfo(item)"
-              @to-talk="onToTalk(item)"
-            />
-          </div>
-        </main>
+          <n-icon
+            class="pointer"
+            style="margin-top: 5px"
+            :component="AllApplication"
+            :size="18"
+            @click="isShowOrganize = !isShowOrganize"
+          />
+        </n-space>
+      </div>
+    </header>
 
-        <main class="el-main flex-center" v-else>
-          <n-empty size="200" description="暂无相关数据">
-            <template #icon>
-              <img src="@/assets/image/no-data.svg" alt="" />
-            </template>
-          </n-empty>
-        </main>
-      </section>
-    </main>
+    <section class="el-container">
+      <main class="el-main me-scrollbar pd-10" v-if="filter.length">
+        <div class="cards">
+          <MemberCard
+            v-for="item in filter"
+            :key="item.id"
+            :username="item.nickname"
+            :gender="item.gender"
+            :motto="item.position"
+            :flag="'查看'"
+            @click="onInfo(item)"
+            @to-talk="onToTalk(item)"
+          />
+        </div>
+      </main>
+
+      <main class="el-main flex-center" v-else>
+        <n-empty size="200" description="暂无相关数据">
+          <template #icon>
+            <img src="@/assets/image/no-data.svg" alt="" />
+          </template>
+        </n-empty>
+      </main>
+      <aside v-if="isShowOrganize" class="el-aside aside bdr-l">
+        <n-tree
+          key-field="dept_id"
+          label-field="dept_name"
+          :data="tree"
+          :default-expand-all="true"
+          :cancelable="true"
+          :default-selected-keys="[-1]"
+          :node-props="onNodeProps"
+        />
+      </aside>
+    </section>
   </section>
 </template>
 
@@ -205,7 +214,6 @@ onLoadDepartment()
 .aside {
   width: 250px;
   padding: 8px;
-  // background-color: #f4f6f9;
 }
 
 .cards {
@@ -215,14 +223,6 @@ onLoadDepartment()
   gap: 12px;
 }
 
-.from-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  justify-content: space-between;
-}
-
 :deep(.n-tree-node) {
   padding: 5px 10px;
   user-select: none;
@@ -230,6 +230,5 @@ onLoadDepartment()
 
 :deep(.n-tree-node--selected) {
   background-color: #e8f4ff !important;
-  // color: rgb(120, 120, 178) !important;
 }
 </style>

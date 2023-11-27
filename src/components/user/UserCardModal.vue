@@ -3,19 +3,19 @@ import { ref, computed, reactive } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
 import { ServeSearchUser } from '@/api/contact'
-import { toTalk } from '@/utils/talk'
 import { ServeCreateContact } from '@/api/contact'
-import {
-  ServeContactGroupList,
-  ServeContactMoveGroup,
-  ServeEditContactRemark,
-} from '@/api/contact'
+import { ServeContactGroupList, ServeContactMoveGroup, ServeEditContactRemark } from '@/api/contact'
+import { useTalkStore } from '@/store'
+import { useRouter } from 'vue-router'
 
-const emit = defineEmits(['update:show', 'update:uid',"changeRemark"])
+const router = useRouter()
+const talkStore = useTalkStore()
+
+const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
 
 const props = defineProps({
   show: Boolean,
-  uid: Number,
+  uid: Number
 })
 
 const loading = ref(true)
@@ -30,7 +30,7 @@ const state: any = reactive({
   remark: '',
   email: '',
   status: 1,
-  text: '',
+  text: ''
 })
 
 const editCardPopover: any = ref(false)
@@ -51,7 +51,7 @@ const groupName = computed(() => {
 
 const onLoadData = () => {
   ServeSearchUser({
-    user_id: props.uid,
+    user_id: props.uid
   }).then(({ code, data }) => {
     if (code == 200) {
       Object.assign(state, data)
@@ -64,7 +64,7 @@ const onLoadData = () => {
     }
   })
 
-  ServeContactGroupList().then(res => {
+  ServeContactGroupList().then((res) => {
     if (res.code == 200) {
       let items = res.data.items || []
       options.value = []
@@ -76,7 +76,7 @@ const onLoadData = () => {
 }
 
 const onToTalk = () => {
-  toTalk(1, props.uid)
+  talkStore.toTalk(1, props.uid, router)
   emit('update:show', false)
 }
 
@@ -87,8 +87,8 @@ const onJoinContact = () => {
 
   ServeCreateContact({
     friend_id: props.uid,
-    remark: state.text,
-  }).then(res => {
+    remark: state.text
+  }).then((res) => {
     if (res.code == 200) {
       isOpenFrom.value = false
       window['$message'].success('申请发送成功')
@@ -101,16 +101,16 @@ const onJoinContact = () => {
 const onChangeRemark = () => {
   ServeEditContactRemark({
     friend_id: props.uid,
-    remark: modelRemark.value,
+    remark: modelRemark.value
   }).then(({ code, message }) => {
     if (code == 200) {
       editCardPopover.value.setShow(false)
       window['$message'].success('备注成功')
       state.remark = modelRemark.value
 
-      emit('changeRemark', {
+      emit('updateRemark', {
         user_id: props.uid,
-        remark: modelRemark.value,
+        remark: modelRemark.value
       })
     } else {
       window['$message'].error(message)
@@ -118,10 +118,10 @@ const onChangeRemark = () => {
   })
 }
 
-const handleSelectGroup = value => {
+const handleSelectGroup = (value) => {
   ServeContactMoveGroup({
     user_id: props.uid,
-    group_id: value,
+    group_id: value
   }).then(({ code, message }) => {
     if (code == 200) {
       state.group_id = value
@@ -145,13 +145,13 @@ const reset = () => {
     remark: '',
     email: '',
     status: 1,
-    text: '',
+    text: ''
   })
 
   isOpenFrom.value = false
 }
 
-const onUpdate = value => {
+const onUpdate = (value) => {
   if (!value) {
     setTimeout(reset, 100)
   }
@@ -165,11 +165,7 @@ const onAfterEnter = () => {
 </script>
 
 <template>
-  <n-modal
-    :show="show"
-    :on-update:show="onUpdate"
-    :on-after-enter="onAfterEnter"
-  >
+  <n-modal :show="show" :on-update:show="onUpdate" :on-after-enter="onAfterEnter">
     <div class="section" v-loading="loading">
       <section class="el-container container is-vertical">
         <header class="el-header header">
@@ -182,16 +178,8 @@ const onAfterEnter = () => {
           />
 
           <div class="gender" v-show="state.gender > 0">
-            <n-icon
-              v-if="state.gender == 1"
-              :component="Male"
-              color="#508afe"
-            />
-            <n-icon
-              v-if="state.gender == 2"
-              :component="Female"
-              color="#ff5722"
-            />
+            <n-icon v-if="state.gender == 1" :component="Male" color="#508afe" />
+            <n-icon v-if="state.gender == 2" :component="Female" color="#ff5722" />
           </div>
 
           <div class="close" @click="onUpdate(false)">
@@ -215,9 +203,7 @@ const onAfterEnter = () => {
             </div>
             <div class="info-item">
               <span class="name">昵称 :</span>
-              <span class="text text-ellipsis"
-                >{{ state.nickname || '-' }}
-              </span>
+              <span class="text text-ellipsis">{{ state.nickname || '-' }} </span>
             </div>
             <div class="info-item">
               <span class="name">性别 :</span>
@@ -227,11 +213,7 @@ const onAfterEnter = () => {
             </div>
             <div class="info-item" v-if="state.friend_status == 2">
               <span class="name">备注 :</span>
-              <n-popover
-                trigger="click"
-                placement="top-start"
-                ref="editCardPopover"
-              >
+              <n-popover trigger="click" placement="top-start" ref="editCardPopover">
                 <template #trigger>
                   <span class="text edit pointer text-ellipsis">
                     {{ state.remark || '未设置' }}&nbsp;&nbsp;
@@ -247,7 +229,7 @@ const onAfterEnter = () => {
                     :autofocus="true"
                     maxlength="10"
                     v-model:value="modelRemark"
-                    @keydown.enter.native="onChangeRemark"
+                    @keydown.enter="onChangeRemark"
                   />
                   <n-button
                     type="primary"
@@ -279,10 +261,7 @@ const onAfterEnter = () => {
           </div>
         </main>
 
-        <footer
-          v-if="state.friend_status == 2"
-          class="el-footer footer bdr-t flex-center"
-        >
+        <footer v-if="state.friend_status == 2" class="el-footer footer bdr-t flex-center">
           <n-button
             round
             block
@@ -298,24 +277,16 @@ const onAfterEnter = () => {
           </n-button>
         </footer>
 
-        <footer
-          v-else-if="state.friend_status == 1"
-          class="el-footer footer bdr-t flex-center"
-        >
+        <footer v-else-if="state.friend_status == 1" class="el-footer footer bdr-t flex-center">
           <template v-if="isOpenFrom">
             <n-input
               type="text"
               placeholder="请填写申请备注"
               v-model:value="state.text"
-              @keydown.enter.native="onJoinContact"
+              @keydown.enter="onJoinContact"
             />
 
-            <n-button
-              type="primary"
-              text-color="#ffffff"
-              class="mt-l5"
-              @click="onJoinContact"
-            >
+            <n-button type="primary" text-color="#ffffff" class="mt-l5" @click="onJoinContact">
               确定
             </n-button>
           </template>
@@ -349,11 +320,25 @@ const onAfterEnter = () => {
   .header {
     width: 100%;
     height: 230px;
-    position: relative;
-    display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom right, #247ec6, #73c1ff);
+    background: linear-gradient(to right, rgb(137, 104, 255), rgb(175, 152, 255));
+    display: flex;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      width: 150px;
+      height: 150px;
+      content: '';
+      background: linear-gradient(to right, rgb(142, 110, 255), rgb(208, 195, 255));
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      right: -25%;
+      top: -25%;
+    }
 
     .nickname {
       position: absolute;
@@ -382,6 +367,7 @@ const onAfterEnter = () => {
       position: absolute;
       right: 20px;
       top: 20px;
+      z-index: 1;
       &:hover {
         cursor: pointer;
         transform: scale(1.1);
@@ -391,7 +377,7 @@ const onAfterEnter = () => {
 
   .main {
     padding: 20px 30px;
-
+    max-height: 300px;
     .motto {
       min-height: 26px;
       border-radius: 5px;

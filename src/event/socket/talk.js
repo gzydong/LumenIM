@@ -4,16 +4,9 @@ import socket from '@/socket'
 import { parseTime } from '@/utils/datetime'
 import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
-import {
-  formatTalkItem,
-  findTalkIndex,
-  palyMusic,
-  formatTalkRecord,
-} from '@/utils/talk'
+import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
-import { useTalkStore } from '@/store'
-import { useDialogueStore } from '@/store/dialogue'
-import { useNotifyStore } from '@/store/notify'
+import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
 
 /**
  * 好友状态事件
@@ -98,7 +91,7 @@ class Talk extends Base {
       return
     }
 
-    useNotifyStore().isPromptTone && palyMusic()
+    useSettingsStore().isPromptTone && palyMusic()
   }
 
   handle() {
@@ -110,7 +103,7 @@ class Talk extends Base {
     }
 
     // 判断会话列表是否存在，不存在则创建
-    if (findTalkIndex(this.getIndexName()) == -1) {
+    if (useTalkStore().findTalkIndex(this.getIndexName()) == -1) {
       return this.addTalkItem()
     }
 
@@ -128,19 +121,19 @@ class Talk extends Base {
    * @returns
    */
   showMessageNocice() {
-    if (useNotifyStore().isLeaveWeb) {
-      if (useNotifyStore().isWebNotify) {
+    if (useSettingsStore().isLeaveWeb) {
+      if (useSettingsStore().isWebNotify) {
         WebNotify('LumenIM 在线聊天', {
           dir: 'auto',
           lang: 'zh-CN',
-          body: '您有新的消息请注意查收',
+          body: '您有新的消息请注意查收'
         })
       }
     } else {
       window['$notification'].create({
         title: '消息通知',
         content: '您有新的消息请注意查收',
-        duration: 3000,
+        duration: 3000
       })
     }
   }
@@ -160,7 +153,7 @@ class Talk extends Base {
 
     ServeCreateTalkList({
       talk_type,
-      receiver_id,
+      receiver_id
     }).then(({ code, data }) => {
       if (code == 200) {
         useTalkStore().addItem(formatTalkItem(data))
@@ -179,16 +172,14 @@ class Talk extends Base {
       useDialogueStore().updateGroupMembers()
     }
 
-    useDialogueStore().addDialogueRecord(
-      formatTalkRecord(this.getAccountId(), this.resource)
-    )
+    useDialogueStore().addDialogueRecord(formatTalkRecord(this.getAccountId(), this.resource))
 
     if (!this.isCurrSender()) {
       // 推送已读消息
       setTimeout(() => {
         socket.emit('im.message.read', {
           receiver_id: this.sender_id,
-          msg_id: [this.resource.id],
+          msg_id: [this.resource.id]
         })
       }, 1000)
     }
@@ -213,13 +204,13 @@ class Talk extends Base {
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
       msg_text: this.getTalkText(),
-      updated_at: parseTime(new Date()),
+      updated_at: parseTime(new Date())
     })
 
     if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
       ServeClearTalkUnreadNum({
         talk_type: 1,
-        receiver_id: this.sender_id,
+        receiver_id: this.sender_id
       })
     }
   }
@@ -231,7 +222,7 @@ class Talk extends Base {
     useTalkStore().updateMessage({
       index_name: this.getIndexName(),
       msg_text: this.getTalkText(),
-      updated_at: parseTime(new Date()),
+      updated_at: parseTime(new Date())
     })
   }
 }

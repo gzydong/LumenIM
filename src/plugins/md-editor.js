@@ -5,10 +5,9 @@ import '@kangc/v-md-editor/lib/theme/style/github.css'
 import hljs from 'highlight.js'
 
 VueMarkdownEditor.use(githubTheme, {
-  Hljs: hljs,
+  Hljs: hljs
 })
 
-
-export function setMdEditor(app){
-    app.use(VueMarkdownEditor)
+export function setMdEditor(app) {
+  app.use(VueMarkdownEditor)
 }

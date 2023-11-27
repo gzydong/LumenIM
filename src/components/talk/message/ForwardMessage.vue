@@ -13,7 +13,7 @@ const props = defineProps<{
 const isShowRecord = ref(false)
 
 const title = computed(() => {
-  return [...new Set(props.extra.records.map(v => v.nickname))].join('、')
+  return [...new Set(props.extra.records.map((v) => v.nickname))].join('、')
 })
 
 const onClick = () => {

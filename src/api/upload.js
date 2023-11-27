@@ -1,12 +1,12 @@
-import { post, get, upload } from '@/utils/request'
+import { post, upload } from '@/utils/request'
 
 // 上传头像裁剪图片服务接口
-export const ServeUploadAvatar = data => {
+export const ServeUploadAvatar = (data) => {
   return post('/api/v1/upload/avatar', data)
 }
 
 // 上传头像裁剪图片服务接口
-export const ServeUploadImage = data => {
+export const ServeUploadImage = (data) => {
   return post('/api/v1/upload/image', data)
 }
 

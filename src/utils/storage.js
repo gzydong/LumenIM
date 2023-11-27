@@ -28,7 +28,9 @@ class Storage {
       }
 
       this.remove(key)
-    } catch (e) {}
+    } catch (e) {
+      console.warn(e)
+    }
 
     return def
   }
@@ -45,7 +47,7 @@ class Storage {
       this.cacheKey(key),
       JSON.stringify({
         value,
-        expire: expire !== null ? new Date().getTime() + expire * 1000 : null,
+        expire: expire !== null ? new Date().getTime() + expire * 1000 : null
       })
     )
   }
