@@ -49,16 +49,6 @@
       }
     }
   </style>
-  <script>
-    // 这里为了处理首屏加载慢，设置缓存的主题
-    let cache = localStorage.getItem('IM_DARKTHEME')
-    if (cache) {
-      cache = JSON.parse(cache).value || false
-      if (cache) {
-        document.querySelector('html').style = 'background:#202124'
-      }
-    }
-  </script>
 </head>
 
 <body>

@@ -10,7 +10,6 @@ export function useThemeMode() {
     const theme = settingsStore.darkTheme ? 'dark' : 'light'
 
     document.getElementsByTagName('html')[0].dataset.theme = theme
-    document.getElementsByTagName('html')[0].style = ''
 
     return settingsStore.darkTheme ? darkTheme : undefined
   })

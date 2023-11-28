@@ -6,7 +6,7 @@ class WsSocket {
    *
    * @var Websocket
    */
-  connect = null
+  connect
 
   /**
    * 配置信息

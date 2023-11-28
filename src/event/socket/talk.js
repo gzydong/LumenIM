@@ -1,6 +1,6 @@
 import Base from './base'
 import { nextTick } from 'vue'
-import socket from '@/socket'
+import ws from '@/connect'
 import { parseTime } from '@/utils/datetime'
 import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
@@ -177,7 +177,7 @@ class Talk extends Base {
     if (!this.isCurrSender()) {
       // 推送已读消息
       setTimeout(() => {
-        socket.emit('im.message.read', {
+        ws.emit('im.message.read', {
           receiver_id: this.sender_id,
           msg_id: [this.resource.id]
         })

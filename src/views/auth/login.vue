@@ -5,7 +5,7 @@ import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
 import { setAccessToken } from '@/utils/auth'
 import { palyMusic } from '@/utils/talk'
-import socket from '@/socket'
+import ws from '@/connect'
 import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
@@ -44,7 +44,7 @@ const onLogin = () => {
     if (res.code == 200) {
       window['$message'].success('登录成功')
       setAccessToken(res.data.access_token, res.data.expires_in)
-      socket.connect()
+      ws.connect()
       userStore.loadSetting()
       router.push(route.query.redirect || '/')
     } else {

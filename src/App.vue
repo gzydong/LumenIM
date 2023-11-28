@@ -13,7 +13,7 @@ import {
 } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useTalkStore } from '@/store'
-import socket from '@/socket'
+import ws from '@/connect'
 import { bus } from '@/utils/event-bus'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
@@ -50,7 +50,7 @@ const onChangeRemark = (value) => {
 const init = () => {
   if (!isLoggedIn()) return
 
-  socket.connect()
+  ws.connect()
   userStore.loadSetting()
 }
 

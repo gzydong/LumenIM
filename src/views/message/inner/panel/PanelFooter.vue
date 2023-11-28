@@ -7,7 +7,7 @@ import {
   useUploadsStore,
   useEditorStore
 } from '@/store'
-import socket from '@/socket'
+import ws from '@/connect'
 import { ServePublishMessage, ServeSendVote } from '@/api/chat'
 import { throttle, getVideoImage } from '@/utils/common'
 import Editor from '@/components/editor/Editor.vue'
@@ -181,7 +181,7 @@ const onSendMixedEvent = ({ data, callBack }) => {
 }
 
 const onKeyboardPush = throttle(() => {
-  socket.emit('im.message.keyboard', {
+  ws.emit('im.message.keyboard', {
     sender_id: props.uid,
     receiver_id: props.receiver_id
   })
