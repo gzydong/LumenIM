@@ -149,7 +149,7 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     setUnreadBubble(value) {
-      if (value == 0) {
+      if (value === 0) {
         this.unreadBubble = 0
       } else {
         this.unreadBubble++

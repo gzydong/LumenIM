@@ -6,7 +6,6 @@ import { ForwardExtra } from './types'
 const props = defineProps<{
   extra: ForwardExtra
   data: any
-  pid: string
   maxWidth: Boolean
 }>()
 
@@ -18,13 +17,6 @@ const title = computed(() => {
 
 const onClick = () => {
   isShowRecord.value = true
-}
-
-let pids = props.pid
-if (pids == '' || pids == undefined) {
-  pids = props.data.id
-} else {
-  pids = `${pids},${props.data.id}`
 }
 </script>
 <template>
@@ -41,12 +33,7 @@ if (pids == '' || pids == undefined) {
       <span>转发：聊天会话记录 ({{ extra.msg_ids.length }}条)</span>
     </div>
 
-    <ForwardRecord
-      v-if="isShowRecord"
-      :record-id="data.id"
-      :pid="pids"
-      @close="isShowRecord = false"
-    />
+    <ForwardRecord v-if="isShowRecord" :record-id="data.id" @close="isShowRecord = false" />
   </section>
 </template>
 

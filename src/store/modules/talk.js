@@ -30,6 +30,7 @@ export const useTalkStore = defineStore('talk', {
 
     // 对话列表
     talkItems: (state) => {
+      // return state.items
       return state.items.sort((a, b) => {
         return ttime(b.updated_at) - ttime(a.updated_at)
       })

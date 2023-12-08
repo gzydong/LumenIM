@@ -47,11 +47,10 @@ export const useTalkRecord = (uid: number) => {
 
       const el = document.getElementById('imChatPanel')
 
-      el?.scrollTo({
+      return el?.scrollTo({
         top: 0,
         behavior: 'smooth'
       })
-      return
     }
 
     location.msgid = ''
@@ -111,12 +110,18 @@ export const useTalkRecord = (uid: number) => {
     loadConfig.minRecord = data.record_id
 
     nextTick(() => {
-      if (!el) return
+      const el = document.getElementById('imChatPanel')
 
-      if (request.record_id == 0) {
-        el.scrollTop = el.scrollHeight
-      } else {
-        el.scrollTop = el.scrollHeight - scrollHeight
+      if (el) {
+        if (request.record_id == 0) {
+          el.scrollTop = el.scrollHeight
+
+          setTimeout(() => {
+            el.scrollTop = el.scrollHeight + 1000
+          }, 50)
+        } else {
+          el.scrollTop = el.scrollHeight - scrollHeight
+        }
       }
 
       if (location.msgid) {

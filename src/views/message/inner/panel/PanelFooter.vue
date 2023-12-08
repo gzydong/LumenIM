@@ -88,10 +88,7 @@ const onSendTextEvent = throttle((value: any) => {
     if (!ok) return
 
     let el = document.getElementById('talk-session-list')
-    if (el) {
-      // 对话列表滚动条置顶
-      el.scrollTop = 0
-    }
+    el?.scrollTo({ top: 0, behavior: 'smooth' })
 
     callBack(true)
   })

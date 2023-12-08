@@ -55,6 +55,10 @@ class Connect {
     this.conn.close()
   }
 
+  /**
+   * 连接状态
+   * @returns WebSocket 连接状态
+   */
   isConnect() {
     if (!this.conn.connect) return false
 
@@ -120,7 +124,7 @@ class Connect {
   // 即将废弃
   onImMessageRevoke() {
     // 消息撤回事件
-    this.conn.on('im.message.revoke', (data) => new EventRevoke(data))
+    this.conn.on('im.message.revoke', (data: any) => new EventRevoke(data))
   }
 
   onImContactApply() {

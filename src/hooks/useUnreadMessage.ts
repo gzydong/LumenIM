@@ -13,7 +13,8 @@ export const useUnreadMessage = () => {
     } else {
       setInterval(() => {
         if (useTalk.talkUnreadNum > 0) {
-          el.innerText = el.innerText == title ? '您有新的消息未读' : title
+          el.innerText =
+            el.innerText == title ? `您有新的消息未读(${useTalk.talkUnreadNum})` : title
         } else {
           el.innerText = title
         }

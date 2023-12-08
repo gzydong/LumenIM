@@ -6,7 +6,7 @@ import { Data } from './types.d'
 const props = defineProps<{
   extra: any
   data: Data
-  maxWidth: Boolean
+  maxWidth?: Boolean
 }>()
 
 const float = props.data.float

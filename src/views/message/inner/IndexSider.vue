@@ -2,7 +2,7 @@
 import { computed, nextTick, reactive, ref, onMounted, h, inject } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NSkeleton, NIcon, NInput, NPopover } from 'naive-ui'
+import { NDropdown, NIcon, NInput, NPopover } from 'naive-ui'
 import {
   Search,
   ArrowUp,
@@ -17,6 +17,7 @@ import {
   Plus
 } from '@icon-park/vue-next'
 import TalkItem from './TalkItem.vue'
+import Skeleton from './Skeleton.vue'
 import {
   ServeTopTalkList,
   ServeClearTalkUnreadNum,
@@ -80,9 +81,7 @@ const onDeleteTalk = (index_name = '') => {
 
 // 切换会话
 const onTabTalk = (data: any, follow = false) => {
-  if (data.index_name === indexName.value) {
-    return
-  }
+  if (data.index_name === indexName.value) return
 
   searchKeyword.value = ''
 
@@ -104,16 +103,12 @@ const onTabTalk = (data: any, follow = false) => {
 
   // 设置滚动条跟随
   if (follow) {
-    setTimeout(() => {
-      let el = document.getElementById('talk-session-list')
-      if (el) {
-        let index = talkStore.findTalkIndex(data.index_name)
-        el.scrollTo({
-          top: index * 66 + index * 5,
-          behavior: 'smooth'
-        })
-      }
-    }, 100)
+    const el = document.getElementById('talk-session-list')
+    if (el) {
+      let index = talkStore.findTalkIndex(data.index_name)
+
+      el.scrollTo({ top: index * 72, behavior: 'smooth' })
+    }
   }
 }
 
@@ -438,23 +433,9 @@ onMounted(() => {
       </p>
     </header>
 
-    <template v-if="loadStatus == 2">
-      <main id="talk-session-list" class="el-main me-scrollbar">
-        <!-- 加载中模块 -->
-        <template v-if="loadStatus == 2">
-          <div class="skeleton flex-center" v-for="i in 10" :key="i">
-            <div class="avatar"><n-skeleton circle size="medium" /></div>
-            <div class="content">
-              <n-skeleton text :repeat="1" />
-              <n-skeleton text style="width: 60%" />
-            </div>
-          </div>
-        </template>
-      </main>
-    </template>
-
-    <template v-else>
-      <div id="talk-session-list" class="el-main scroller me-scrollbar me-scrollbar-thumb">
+    <main id="talk-session-list" class="el-main me-scrollbar">
+      <template v-if="loadStatus == 2"><Skeleton /></template>
+      <template v-else>
         <TalkItem
           v-for="item in items"
           :key="item.index_name"
@@ -466,8 +447,8 @@ onMounted(() => {
           @top-talk="onToTopTalk"
           @contextmenu.prevent="onContextMenuTalk($event, item)"
         />
-      </div>
-    </template>
+      </template>
+    </main>
   </section>
 
   <GroupLaunch v-if="isShowGroup" @close="isShowGroup = false" @on-submit="onGroupCallBack" />
@@ -565,25 +546,6 @@ onMounted(() => {
       overflow: hidden;
     }
   }
-}
-
-.skeleton {
-  padding: 5px 10px;
-  margin: 8px 0;
-
-  .avatar {
-    width: 50px;
-  }
-
-  .content {
-    flex: auto;
-  }
-}
-
-.empty-list {
-  margin-top: 30%;
-  width: 100%;
-  text-align: center;
 }
 
 html[data-theme='dark'] {

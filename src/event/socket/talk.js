@@ -5,6 +5,7 @@ import { parseTime } from '@/utils/datetime'
 import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
 import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
+import { isElectronMode } from '@/utils/common'
 import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
 import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
 
@@ -87,19 +88,15 @@ class Talk extends Base {
   // 播放提示音
   play() {
     // 客户端有消息提示
-    if (window.electron) {
-      return
-    }
+    if (isElectronMode()) return
 
     useSettingsStore().isPromptTone && palyMusic()
   }
 
   handle() {
-    // TODO 需要做消息去重处理
-
+    // 不是自己发送的消息则需要播放提示音
     if (!this.isCurrSender()) {
-      // 判断消息是否来自于我自己，否则会提示消息通知
-      // this.showMessageNocice()
+      this.play()
     }
 
     // 判断会话列表是否存在，不存在则创建
@@ -111,7 +108,6 @@ class Talk extends Base {
     if (this.isTalk(this.talk_type, this.receiver_id, this.sender_id)) {
       this.insertTalkRecord()
     } else {
-      this.play()
       this.updateTalkItem()
     }
   }
@@ -156,8 +152,9 @@ class Talk extends Base {
       receiver_id
     }).then(({ code, data }) => {
       if (code == 200) {
-        useTalkStore().addItem(formatTalkItem(data))
-        this.play()
+        let item = formatTalkItem(data)
+        item.unread_num = 1
+        useTalkStore().addItem(item)
       }
     })
   }
@@ -168,6 +165,7 @@ class Talk extends Base {
   insertTalkRecord() {
     let record = this.resource
 
+    // 群成员变化的消息，需要更新群成员列表
     if ([1102, 1103, 1104].includes(record.msg_type)) {
       useDialogueStore().updateGroupMembers()
     }
@@ -185,20 +183,18 @@ class Talk extends Base {
     }
 
     // 获取聊天面板元素节点
-    let el = document.getElementById('imChatPanel')
-    if (!el) {
-      return
-    }
+    const el = document.getElementById('imChatPanel')
+    if (!el) return
 
     // 判断的滚动条是否在底部
-    let isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight
+    const isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight
 
     if (isBottom || record.user_id == this.getAccountId()) {
       nextTick(() => {
         el.scrollTop = el.scrollHeight + 1000
       })
     } else {
-      useDialogueStore().setUnreadBubble(1)
+      useDialogueStore().setUnreadBubble()
     }
 
     useTalkStore().updateItem({

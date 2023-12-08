@@ -6,10 +6,6 @@ import { MessageComponents } from '@/constant/message'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  pid: {
-    type: String,
-    default: ''
-  },
   recordId: {
     type: Number,
     default: 0
@@ -25,10 +21,8 @@ const onMaskClick = () => {
 }
 
 const onLoadData = () => {
-  console.log(props.pid)
-
   ServeGetForwardRecords({
-    pid: props.pid,
+    pid: 0,
     record_id: props.recordId
   }).then((res) => {
     if (res.code == 200) {
@@ -78,7 +72,6 @@ onLoadData()
             :is="MessageComponents[item.msg_type] || 'unknown-message'"
             :extra="item.extra"
             :data="item"
-            :pid="pid"
           />
         </div>
       </div>
