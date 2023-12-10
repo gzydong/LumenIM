@@ -76,10 +76,11 @@ class Talk extends Base {
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = this.resource.content.replace(/<img .*?>/g, '')
-
+    let text = ''
     if (this.resource.msg_type != message.ChatMsgTypeText) {
       text = message.ChatMsgTypeMapping[this.resource.msg_type]
+    } else {
+      text = this.resource.extra.content.replace(/<img .*?>/g, '')
     }
 
     return text

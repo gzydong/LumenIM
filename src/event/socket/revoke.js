@@ -1,5 +1,6 @@
 import Base from './base'
-import { useDialogueStore } from '@/store'
+import { useDialogueStore, useTalkStore } from '@/store'
+import { parseTime } from '@/utils/datetime'
 
 /**
  * 好友状态事件
@@ -33,6 +34,7 @@ class Revoke extends Base {
   constructor(resource) {
     super()
 
+    this.resource = resource
     this.sender_id = resource.sender_id
     this.receiver_id = resource.receiver_id
     this.talk_type = resource.talk_type
@@ -65,6 +67,13 @@ class Revoke extends Base {
   }
 
   handle() {
+    console.log(this.resource)
+    useTalkStore().updateItem({
+      index_name: this.getIndexName(),
+      msg_text: this.resource.text,
+      updated_at: parseTime(new Date())
+    })
+
     // 判断当前是否正在和好友对话
     if (!this.isTalk(this.talk_type, this.receiver_id, this.sender_id)) {
       return

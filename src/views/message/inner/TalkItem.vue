@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
 

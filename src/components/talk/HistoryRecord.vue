@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
-import { NImageGroup } from 'naive-ui'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
 import { Down, Calendar } from '@icon-park/vue-next'
@@ -19,7 +18,7 @@ const props = defineProps({
 })
 const showUserModal = inject('$user')
 const model = reactive({
-  recordId: 0,
+  cursor: 0,
   limit: 30,
   msgType: 0,
   loading: false,
@@ -50,12 +49,12 @@ const loadChatRecord = () => {
   let data = {
     talk_type: props.talkType,
     receiver_id: props.receiverId,
-    record_id: model.recordId,
     msg_type: model.msgType,
+    cursor: model.cursor,
     limit: model.limit
   }
 
-  if (model.recordId === 0) {
+  if (model.cursor === 0) {
     model.loading = true
   } else {
     model.loadMore = true
@@ -64,7 +63,7 @@ const loadChatRecord = () => {
   ServeFindTalkRecords(data).then((res) => {
     if (res.code != 200) return
 
-    if (data.record_id === 0) {
+    if (data.cursor === 0) {
       records.value = []
     }
 
@@ -73,7 +72,7 @@ const loadChatRecord = () => {
     records.value.push(...items)
 
     if (items.length) {
-      model.recordId = res.data.record_id
+      model.cursor = res.data.cursor
     }
 
     model.loading = false
@@ -84,7 +83,7 @@ const loadChatRecord = () => {
 
 const triggerType = (type) => {
   model.msgType = type
-  model.recordId = 0
+  model.cursor = 0
   loadChatRecord()
 }
 
@@ -157,31 +156,34 @@ loadChatRecord()
       </main>
 
       <main v-else class="el-main me-scrollbar me-scrollbar-thumb">
-        <n-image-group>
-          <div v-for="item in records" :key="item.id" class="message-item">
-            <div class="left-box">
-              <im-avatar
-                :src="item.avatar"
-                :size="30"
-                :username="item.nickname"
-                @click="showUserModal(item.user_id)"
-              />
-            </div>
-
-            <div class="right-box me-scrollbar">
-              <div class="msg-header">
-                <span class="name">{{ item.nickname }}</span>
-                <span class="time"> {{ item.created_at }}</span>
-              </div>
-
-              <component
-                :is="message.MessageComponents[item.msg_type] || 'unknown-message'"
-                :extra="item.extra"
-                :data="item"
-              />
-            </div>
+        <div v-for="item in records" :key="item.id" class="message-item">
+          <div class="left-box">
+            <im-avatar
+              :src="item.avatar"
+              :size="30"
+              :username="item.nickname"
+              @click="showUserModal(item.user_id)"
+            />
           </div>
-        </n-image-group>
+
+          <div class="right-box me-scrollbar">
+            <div class="msg-header">
+              <span class="name">{{ item.nickname }}</span>
+              <span class="time"> {{ item.created_at }}</span>
+            </div>
+
+            <template v-if="item.is_revoke == 1">
+              <div class="msg-content">此消息已被撤回</div>
+            </template>
+
+            <component
+              v-if="item.is_revoke == 0"
+              :is="message.MessageComponents[item.msg_type] || 'unknown-message'"
+              :extra="item.extra"
+              :data="item"
+            />
+          </div>
+        </div>
 
         <div class="more pointer flex-center" @click="loadChatRecord" v-show="model.isLoadMore">
           <n-icon v-show="!model.loadMore" :size="20" class="icon" :component="Down" />

@@ -25,7 +25,7 @@ export const useTalkRecord = (uid: number) => {
     receiver_id: 0,
     talk_type: 0,
     status: 0,
-    minRecord: 0
+    cursor: 0
   })
 
   const onJumpMessage = (msgid: string) => {
@@ -70,8 +70,9 @@ export const useTalkRecord = (uid: number) => {
   // 加载数据列表
   const load = async (params: Params) => {
     const request = {
-      ...params,
-      record_id: loadConfig.minRecord,
+      talk_type: params.talk_type,
+      receiver_id: params.receiver_id,
+      cursor: loadConfig.cursor,
       limit: 30
     }
 
@@ -98,7 +99,7 @@ export const useTalkRecord = (uid: number) => {
 
     const items = (data.items || []).map((item: IMessageRecord) => formatTalkRecord(uid, item))
 
-    if (request.record_id == 0) {
+    if (request.cursor == 0) {
       // 判断是否是初次加载
       dialogueStore.clearDialogueRecord()
     }
@@ -107,13 +108,13 @@ export const useTalkRecord = (uid: number) => {
 
     loadConfig.status = items.length >= request.limit ? 1 : 2
 
-    loadConfig.minRecord = data.record_id
+    loadConfig.cursor = data.cursor
 
     nextTick(() => {
       const el = document.getElementById('imChatPanel')
 
       if (el) {
-        if (request.record_id == 0) {
+        if (request.cursor == 0) {
           el.scrollTop = el.scrollHeight
 
           setTimeout(() => {
@@ -141,7 +142,7 @@ export const useTalkRecord = (uid: number) => {
   }
 
   const onLoad = (params: Params) => {
-    loadConfig.minRecord = 0
+    loadConfig.cursor = 0
     loadConfig.receiver_id = params.receiver_id
     loadConfig.talk_type = params.talk_type
 

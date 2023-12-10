@@ -1,19 +1,16 @@
 import { defineStore } from 'pinia'
 import { ServeGetTalkList, ServeCreateTalkList } from '@/api/chat'
-import { formatTalkItem } from '@/utils/talk'
+import { formatTalkItem, ttime, KEY_INDEX_NAME } from '@/utils/talk'
 import { useEditorDraftStore } from './editor-draft'
-const KEY_INDEX_NAME = 'send_message_index_name'
+import { ISession } from '@/types/chat'
 
-const ttime = (datetime) => {
-  if (datetime == undefined || datetime == '') {
-    return new Date().getTime()
-  }
-
-  return new Date(datetime.replace(/-/g, '/')).getTime()
+interface TalkStoreState {
+  loadStatus: number
+  items: ISession[]
 }
 
 export const useTalkStore = defineStore('talk', {
-  state: () => {
+  state: (): TalkStoreState => {
     return {
       // 加载状态[1:未加载;2:加载中;3:加载完成;4:加载失败;]
       loadStatus: 2,
@@ -25,12 +22,11 @@ export const useTalkStore = defineStore('talk', {
   getters: {
     // 过滤所有置顶对话列表
     topItems: (state) => {
-      return state.items.filter((item) => item.is_top == 1)
+      return state.items.filter((item: ISession) => item.is_top == 1)
     },
 
     // 对话列表
     talkItems: (state) => {
-      // return state.items
       return state.items.sort((a, b) => {
         return ttime(b.updated_at) - ttime(a.updated_at)
       })
@@ -38,30 +34,30 @@ export const useTalkStore = defineStore('talk', {
 
     // 消息未读数总计
     talkUnreadNum: (state) => {
-      return state.items.reduce((total, item) => {
-        return total + parseInt(item.unread_num)
+      return state.items.reduce((total: number, item: ISession) => {
+        return total + item.unread_num
       }, 0)
     }
   },
   actions: {
-    findItem(index_name) {
-      return this.items.find((item) => item.index_name === index_name)
+    findItem(index_name: string) {
+      return this.items.find((item: ISession) => item.index_name === index_name) as ISession
     },
 
     // 更新对话节点
-    updateItem(params) {
+    updateItem(params: any) {
       const item = this.items.find((item) => item.index_name === params.index_name)
 
       item && Object.assign(item, params)
     },
 
     // 新增对话节点
-    addItem(params) {
+    addItem(params: any) {
       this.items = [params, ...this.items]
     },
 
     // 移除对话节点
-    delItem(index_name) {
+    delItem(index_name: string) {
       const i = this.items.findIndex((item) => item.index_name === index_name)
 
       if (i >= 0) {
@@ -72,18 +68,18 @@ export const useTalkStore = defineStore('talk', {
     },
 
     // 更新对话消息
-    updateMessage(params) {
+    updateMessage(params: any) {
       const item = this.items.find((item) => item.index_name === params.index_name)
 
       if (item) {
         item.unread_num++
-        item.msg_text = params.msg_text
+        // item.msg_text = params.msg_text
         item.updated_at = params.updated_at
       }
     },
 
     // 更新联系人备注
-    setRemark(params) {
+    setRemark(params: any) {
       const item = this.items.find((item) => item.index_name === `1_${params.user_id}`)
 
       item && (item.remark = params.remark)
@@ -93,11 +89,11 @@ export const useTalkStore = defineStore('talk', {
     loadTalkList() {
       this.loadStatus = 2
 
-      const response = ServeGetTalkList()
+      const resp = ServeGetTalkList()
 
-      response.then(({ code, data }) => {
+      resp.then(({ code, data }) => {
         if (code == 200) {
-          this.items = data.items.map((item) => {
+          this.items = data.items.map((item: any) => {
             let value = formatTalkItem(item)
 
             let draft = useEditorDraftStore().items[value.index_name]
@@ -118,42 +114,39 @@ export const useTalkStore = defineStore('talk', {
         }
       })
 
-      response.catch(() => {
+      resp.catch(() => {
         this.loadStatus = 4
       })
     },
 
-    findTalkIndex(index_name) {
-      return this.items.findIndex((item) => item.index_name === index_name)
+    findTalkIndex(index_name: string) {
+      return this.items.findIndex((item: ISession) => item.index_name === index_name)
     },
 
-    toTalk(talk_type, receiver_id, router) {
+    toTalk(talk_type: number, receiver_id: number, router: any) {
+      const route = {
+        path: '/message',
+        query: {
+          v: new Date().getTime()
+        }
+      }
+
       if (this.findTalkIndex(`${talk_type}_${receiver_id}`) >= 0) {
         sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
-        return router.push({
-          path: '/message',
-          query: {
-            v: new Date().getTime()
-          }
-        })
+        return router.push(route)
       }
 
       ServeCreateTalkList({
-        talk_type: parseInt(talk_type),
-        receiver_id: parseInt(receiver_id)
+        talk_type,
+        receiver_id
       }).then(({ code, data, message }) => {
         if (code == 200) {
-          sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
           if (this.findTalkIndex(`${talk_type}_${receiver_id}`) === -1) {
             this.addItem(formatTalkItem(data))
           }
 
-          router.push({
-            path: '/message',
-            query: {
-              v: new Date().getTime()
-            }
-          })
+          sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`)
+          return router.push(route)
         } else {
           window['$message'].info(message)
         }

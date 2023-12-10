@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const float = props.data.float
 
-let textContent = props.data.content
+let textContent = props.extra?.content || ''
 
 textContent = textReplaceLink(textContent)
 textContent = textReplaceMention(textContent, '#1890ff')

@@ -83,6 +83,7 @@ class Connect {
     this.onImMessage()
     this.onImMessageRead()
     this.onImContactStatus()
+    this.onImMessageRevoke()
   }
 
   onPing() {

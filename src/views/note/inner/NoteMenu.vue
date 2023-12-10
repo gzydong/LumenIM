@@ -268,7 +268,7 @@ loadWatchTagsMenu()
           }
         ]"
       >
-        <n-button circle>
+        <n-button circle type="primary" ghost>
           <n-icon :size="22" :component="Plus" />
         </n-button>
       </n-dropdown>

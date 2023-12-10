@@ -92,7 +92,7 @@ async function onPlay() {
   background: var(--im-message-left-bg-color);
   min-width: 30px;
   min-height: 30px;
-  display: flex;
+  display: inline-flex;
   position: relative;
 
   &.left {

@@ -8,7 +8,7 @@ defineProps({
 <template>
   <div class="im-message-system-text">
     <div class="content">
-      {{ data.content }}
+      {{ extra.content }}
     </div>
   </div>
 </template>
