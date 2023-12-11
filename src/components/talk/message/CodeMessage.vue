@@ -4,11 +4,11 @@ import { NCode } from 'naive-ui'
 import { Copy, Stretching } from '@icon-park/vue-next'
 import { clipboard } from '@/utils/common'
 import { message } from '@/utils/util'
-import { CodeExtra } from './types.d'
+import { TalkRecordExtraCode, IMessageRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: CodeExtra
-  data: any
+  extra: TalkRecordExtraCode
+  data: IMessageRecord
   maxWidth: Boolean
 }>()
 

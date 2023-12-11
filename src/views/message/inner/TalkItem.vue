@@ -1,27 +1,16 @@
 <script setup lang="ts">
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
+import { ISession } from '@/types/chat'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
 
-defineProps({
-  data: {
-    type: Object,
-    default: () => {}
-  },
-  avatar: {
-    type: String,
-    default: ''
-  },
-  username: {
-    type: String,
-    default: ''
-  },
-  active: {
-    type: Boolean,
-    default: false
-  }
-})
+defineProps<{
+  data: ISession
+  avatar: String
+  username: String
+  active: Boolean
+}>()
 </script>
 
 <template>

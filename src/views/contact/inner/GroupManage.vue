@@ -95,7 +95,7 @@ onLoadData()
   <n-modal
     v-model:show="isShow"
     preset="card"
-    title="联系人分组"
+    title="分组管理"
     size="huge"
     :bordered="false"
     class="modal-radius"
@@ -127,13 +127,7 @@ onLoadData()
                   :maxlength="20"
                   style="margin: 0 10px"
                 />
-                <n-icon
-                  size="16"
-                  class="pointer"
-                  :component="Delete"
-                  color="red"
-                  @click="delOption(element)"
-                />
+                <n-icon size="16" class="pointer" :component="Delete" @click="delOption(element)" />
               </div>
             </template>
           </Draggable>
@@ -152,7 +146,7 @@ onLoadData()
         <div>
           <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
           <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
-            保存
+            保存修改
           </n-button>
         </div>
       </div>

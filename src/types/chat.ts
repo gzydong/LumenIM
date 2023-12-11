@@ -50,3 +50,80 @@ export interface IMessageRecord {
   send_status: number
   float: string
 }
+
+export interface TalkRecordExtraText {
+  content: string
+  mentions?: number[]
+}
+
+export interface TalkRecordExtraCode {
+  lang: string
+  code: string
+}
+
+export interface TalkRecordExtraFile {
+  drive: number
+  name: string
+  path: string
+  suffix: string
+  size: number
+}
+
+export interface TalkRecordExtraForward {
+  msg_ids: number[]
+  receiver_id: number
+  records: {
+    nickname: string
+    text: string
+  }[]
+  talk_type: number
+  user_id: number
+}
+
+export interface TalkRecordExtraGroupNotice {
+  owner_id: number
+  owner_name: string
+  title: number
+  content: string
+}
+
+export interface TalkRecordExtraVideo {
+  cover: string
+  url: string
+  duration: number
+  size: number
+}
+
+export interface TalkRecordExtraMixed {
+  items: {
+    type: number
+    content: string
+    link: string
+  }[]
+}
+
+export interface TalkRecordExtraAudio {
+  name: string
+  suffix: string
+  size: number
+  url: string
+  duration: number
+}
+
+export interface TalkRecordExtraLogin {
+  ip: string
+  address: string
+  agent: string
+  platform: string
+  reason: string
+  datetime: string
+}
+
+export interface TalkRecordExtraImage {
+  name: string
+  suffix: string
+  size: number
+  url: string
+  width: number
+  height: number
+}

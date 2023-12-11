@@ -1,8 +1,11 @@
 <script setup lang="ts">
-defineProps({
-  extra: Object,
-  data: Object
-})
+import { TalkRecordExtraLogin, IMessageRecord } from '@/types/chat'
+
+defineProps<{
+  extra: TalkRecordExtraLogin
+  data: IMessageRecord
+  maxWidth: Boolean
+}>()
 
 function getExploreName(userAgent = '') {
   if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {

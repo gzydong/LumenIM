@@ -1,16 +1,18 @@
-<script setup>
-import { ref, computed, reactive } from 'vue'
-import { NProgress } from 'naive-ui'
-import { LoadingOne, PlayOne, HeadsetOne, PauseOne } from '@icon-park/vue-next'
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+import { PlayOne, PauseOne } from '@icon-park/vue-next'
+import { TalkRecordExtraAudio, IMessageRecord } from '@/types/chat'
 
-defineProps({
-  extra: Object,
-  data: Object
-})
+defineProps<{
+  extra: TalkRecordExtraAudio
+  data: IMessageRecord
+  maxWidth: Boolean
+}>()
 
 const audioRef = ref()
 
 const durationDesc = ref('-')
+
 const state = reactive({
   isAudioPlay: false,
   progress: 0,
@@ -40,7 +42,7 @@ const onCanplay = () => {
   state.loading = false
 }
 
-const onError = (e) => {
+const onError = (e: any) => {
   console.log('音频播放异常===>', e)
 }
 
@@ -54,15 +56,15 @@ const onTimeUpdate = () => {
   }
 }
 
-const formatTime = (value = 0) => {
+const formatTime = (value: number = 0) => {
   if (value == 0) {
-    return '0'
+    return '-'
   }
 
-  let minutes = parseInt(value / 60)
+  const minutes = Math.floor(value / 60)
   let seconds = value
   if (minutes > 0) {
-    seconds = parseInt(value - minutes * 60)
+    seconds = Math.floor(value - minutes * 60)
   }
 
   return `${minutes}'${seconds}"`

@@ -77,7 +77,7 @@ const onPanelHeaderEvent = (eventType) => {
 
     <!-- 编辑器区域 -->
     <footer
-      v-if="isShowEditor"
+      v-show="isShowEditor"
       class="el-footer"
       :style="{ height: 200 + 'px' }"
       v-dropsize="{ min: 200, max: 600, direction: 'top', key: 'editor' }"

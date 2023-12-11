@@ -54,6 +54,8 @@ const onTabTalk = (item: ISession, follow = false) => {
   // 更新编辑信息
   dialogueStore.setDialogue(item)
 
+  // dialogueStore.index_name = `${item.talk_type}_${item.receiver_id}`
+
   // 清空消息未读数
   if (item.unread_num > 0) {
     ServeClearTalkUnreadNum({

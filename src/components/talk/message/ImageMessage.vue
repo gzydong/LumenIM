@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { NImage } from 'naive-ui'
 import { getImageInfo } from '@/utils/functions'
+import { TalkRecordExtraImage, IMessageRecord } from '@/types/chat'
 
-defineProps({
-  extra: Object,
-  data: Object
-})
+defineProps<{
+  extra: TalkRecordExtraImage
+  data: IMessageRecord
+  maxWidth: Boolean
+}>()
 
-const img = (src, width = 200) => {
+const img = (src: string, width = 200) => {
   const info = getImageInfo(src)
 
   if (info.width == 0 || info.height == 0) {
@@ -23,7 +25,7 @@ const img = (src, width = 200) => {
 
   return {
     width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px'
+    height: `${info.height / (info.width / width)}px`
   }
 }
 </script>

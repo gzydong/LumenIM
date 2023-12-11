@@ -9,7 +9,7 @@ export const useDialogueStore = defineStore('dialogue', {
   state: () => {
     return {
       // 对话索引（聊天对话的唯一索引）
-      index_name: null,
+      index_name: '',
 
       // 对话节点
       talk: {
@@ -74,10 +74,10 @@ export const useDialogueStore = defineStore('dialogue', {
         receiver_id: data.receiver_id
       }
 
-      this.index_name = data.talk_type + '_' + data.receiver_id
+      this.index_name = `${data.talk_type}_${data.receiver_id}`
       this.records = []
       this.unreadBubble = 0
-      this.isShowEditor = data.is_robot === 0
+      this.isShowEditor = data?.is_robot === 0
 
       this.members = []
       if (data.talk_type == 2) {

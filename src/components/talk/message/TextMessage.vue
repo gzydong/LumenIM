@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink, textReplaceMention } from '@/utils/strings'
-import { Data } from './types.d'
+import { TalkRecordExtraText, IMessageRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: any
-  data: Data
+  extra: TalkRecordExtraText
+  data: IMessageRecord
   maxWidth?: Boolean
 }>()
 
@@ -14,7 +14,11 @@ const float = props.data.float
 let textContent = props.extra?.content || ''
 
 textContent = textReplaceLink(textContent)
-textContent = textReplaceMention(textContent, '#1890ff')
+
+if (props.data.talk_type == 2) {
+  textContent = textReplaceMention(textContent, '#1890ff')
+}
+
 textContent = textReplaceEmoji(textContent)
 </script>
 

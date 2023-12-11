@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import 'xgplayer/dist/index.min.css'
-
 import { ref, nextTick } from 'vue'
 import { NImage, NModal, NCard } from 'naive-ui'
 import { Play, Close } from '@icon-park/vue-next'
 import { getImageInfo } from '@/utils/functions'
 import Player from 'xgplayer'
-
-import { Data, VideoExtra } from './types'
+import { TalkRecordExtraVideo, IMessageRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: VideoExtra
-  data: Data
+  extra: TalkRecordExtraVideo
+  data: IMessageRecord
   maxWidth: Boolean
 }>()
 
