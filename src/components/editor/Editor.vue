@@ -205,10 +205,9 @@ function onUploadImage(file: File) {
 }
 
 function onEditorUpload(file: File) {
-  async function fn(file: File, resolve, reject) {
+  async function fn(file: File, resolve: Function, reject: Function) {
     if (file.type.indexOf('image/') === 0) {
-      resolve(await onUploadImage(file))
-      return
+      return resolve(await onUploadImage(file))
     }
 
     reject()

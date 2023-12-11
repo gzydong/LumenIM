@@ -109,8 +109,10 @@ const onPanelScroll = (e: any) => {
 
 // 复制文本信息
 const onCopyText = (data: IMessageRecord) => {
-  if (data.content && data.content.length > 0) {
-    return clipboard(htmlDecode(data.content), () => window['$message'].success('复制成功'))
+  if (data.msg_type == 1) {
+    if (data.extra.content && data.extra.content.length > 0) {
+      return clipboard(htmlDecode(data.extra.content), () => window['$message'].success('复制成功'))
+    }
   }
 
   if (data.extra?.url) {
