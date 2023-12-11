@@ -222,7 +222,7 @@ const onSearchInput = debounce((e) => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .section {
     --sub-header-border-color: #1f1f23;
 

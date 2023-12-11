@@ -494,7 +494,7 @@ onLoadData()
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .badge {
     &.muted {
       background-color: #777782;

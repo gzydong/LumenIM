@@ -62,7 +62,7 @@ const settingsStore = useSettingsStore()
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .container {
     background: unset;
 

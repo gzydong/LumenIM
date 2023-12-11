@@ -427,7 +427,7 @@ const onAfterEnter = () => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .section {
     .header {
       background: #2c2c32;

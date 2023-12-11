@@ -34,7 +34,7 @@ defineProps({
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .im-message-system-text {
     .content {
       background: unset;

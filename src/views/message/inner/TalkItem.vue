@@ -226,7 +226,7 @@ defineProps<{
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .talk {
     --actived-bg: rgb(44, 44, 50);
 

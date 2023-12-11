@@ -90,7 +90,7 @@ const store = useUserStore()
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .account-card .card-header {
     background: #2c2c32;
   }

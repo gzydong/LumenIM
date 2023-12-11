@@ -113,7 +113,7 @@ const onClipboard = () => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .im-message-code {
     background: var(--im-message-bg-color);
 

@@ -241,7 +241,7 @@ const formatTime = (value: number = 0) => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .im-message-audio {
     --audio-bg-color: #2c2c32;
     --audio-btn-bg-color: rgb(78, 75, 75);

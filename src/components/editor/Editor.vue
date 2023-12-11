@@ -578,7 +578,7 @@ useEventBus([
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .editor {
     --tip-bg-color: #48484d;
   }
@@ -677,7 +677,7 @@ html[data-theme='dark'] {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .ql-editor.ql-blank::before {
     color: #57575a;
   }

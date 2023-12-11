@@ -52,7 +52,7 @@ const onSkipBottom = () => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .skip-bottom {
     background-color: #2c2c32;
   }

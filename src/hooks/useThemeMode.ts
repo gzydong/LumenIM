@@ -9,7 +9,7 @@ export function useThemeMode() {
   const getDarkTheme = computed(() => {
     const theme = settingsStore.darkTheme ? 'dark' : 'light'
 
-    document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.setAttribute('theme-mode', theme)
 
     return settingsStore.darkTheme ? darkTheme : undefined
   })

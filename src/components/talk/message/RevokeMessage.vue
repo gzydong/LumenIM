@@ -61,7 +61,7 @@ defineProps({
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .im-message-revoke {
     .content {
       background: unset;

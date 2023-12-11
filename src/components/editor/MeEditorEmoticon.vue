@@ -255,7 +255,7 @@ const onSendEmoticon = (type, value, img = '') => {
   }
 }
 
-html[data-theme='dark'] {
+html[theme-mode='dark'] {
   .collect-box .item {
     background-color: #2c2c32;
   }
