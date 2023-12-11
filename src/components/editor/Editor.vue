@@ -96,12 +96,11 @@ const editorOption = {
       mentionDenotationChars: ['@'],
       positioningStrategy: 'fixed',
       renderItem: (data: any) => {
-        return `
-              <div class="ed-member-item">
-                  <img src="${data.avatar}" class="avator"/>
-                  <span class="nickname">${data.nickname}</span>
-              </div>
-            `
+        const el = document.createElement('div')
+        el.className = 'ed-member-item'
+        el.innerHTML = `<img src="${data.avatar}" class="avator"/>`
+        el.innerHTML += `<span class="nickname">${data.nickname}</span>`
+        return el
       },
       source: function (searchTerm: string, renderList: any) {
         if (!props.members.length) {
@@ -113,7 +112,9 @@ const editorOption = {
           ...props.members
         ]
 
-        const items = list.filter((item: any) => item.nickname.indexOf(searchTerm) !== -1)
+        const items = list.filter(
+          (item: any) => item.nickname.toLowerCase().indexOf(searchTerm) !== -1
+        )
 
         renderList(items)
       },

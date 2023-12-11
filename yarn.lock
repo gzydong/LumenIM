@@ -5080,10 +5080,10 @@ quill-image-uploader@^1.3.0:
   resolved "https://registry.npmmirror.com/quill-image-uploader/-/quill-image-uploader-1.3.0.tgz#cf5396e3bf792c350c946be2e592eea2a0b14c8f"
   integrity sha512-vO43GEn93rGThje/MlotkQE9OV5nOKBZ4oKhn71L/EjrM/J2P/8iDDVd9GEwlsGsbskeJqPLopsSQ4HlVVIn6A==
 
-quill-mention@^3.2.0:
-  version "3.4.1"
-  resolved "https://registry.npmmirror.com/quill-mention/-/quill-mention-3.4.1.tgz#84f56e21153d1351299f359bb7af10fd17069c49"
-  integrity sha512-7/KyWGDbh3T2pw/kPNhXrsUkc1j2Kp9mxtK7QqmU84A6oHIlcjCubsFntHQYPwX/xoJnjyzcWiBrig8vEgW0AA==
+quill-mention@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmmirror.com/quill-mention/-/quill-mention-4.1.0.tgz#275f8e39d0d44930973700f79d0b4afcbf74b4b2"
+  integrity sha512-dT8HLYeuGU8yjjUr5SgdOusFSqQ7FQt/DWefz4V/L2omJsZ9CVYWepg3GyqV/evNDV7LQtfM7cadxtYD2bi2ew==
   dependencies:
     quill "^1.3.7"
 

@@ -26,7 +26,7 @@
     "pinia-plugin-persistedstate": "^3.2.0",
     "quill": "^1.3.7",
     "quill-image-uploader": "^1.3.0",
-    "quill-mention": "^3.2.0",
+    "quill-mention": "^4.1.0",
     "vue": "^3.3.11",
     "vue-cropper": "^1.1.1",
     "vue-router": "^4.2.5",
