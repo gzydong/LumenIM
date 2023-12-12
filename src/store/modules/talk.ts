@@ -94,9 +94,9 @@ export const useTalkStore = defineStore('talk', {
       resp.then(({ code, data }) => {
         if (code == 200) {
           this.items = data.items.map((item: any) => {
-            let value = formatTalkItem(item)
+            const value = formatTalkItem(item)
 
-            let draft = useEditorDraftStore().items[value.index_name]
+            const draft = useEditorDraftStore().items[value.index_name]
             if (draft) {
               value.draft_text = JSON.parse(draft).text || ''
             }

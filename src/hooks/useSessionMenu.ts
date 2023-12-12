@@ -48,7 +48,7 @@ export function useSessionMenu() {
     dropdown.item = Object.assign({}, item)
     dropdown.options = []
 
-    let options: any[] = []
+    const options: any[] = []
 
     if (item.talk_type == 1) {
       options.push({
@@ -175,7 +175,7 @@ export function useSessionMenu() {
 
   // 移除联系人
   const onDeleteContact = (item: ISession) => {
-    let name = item.remark || item.name
+    const name = item.remark || item.name
 
     window['$dialog'].create({
       showIcon: false,
