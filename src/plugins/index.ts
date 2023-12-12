@@ -1,5 +1,4 @@
 export * from './highlight'
-export * from './hljs'
 export * from './component'
 export * from './md-editor'
 export * from './naive-ui'

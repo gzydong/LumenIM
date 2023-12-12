@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import NoteMenu from './inner/NoteMenu.vue'
 import NoteList from './inner/NoteList.vue'

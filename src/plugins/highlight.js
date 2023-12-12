@@ -1,3 +1,6 @@
+import hljsVuePlugin from '@highlightjs/vue-plugin'
+import 'highlight.js/styles/github.css'
+import 'highlight.js/lib/common'
 import hljs from 'highlight.js/lib/core'
 import php from 'highlight.js/lib/languages/php'
 import c from 'highlight.js/lib/languages/c'
@@ -34,3 +37,7 @@ hljs.registerLanguage('protobuf', protobuf)
 hljs.registerLanguage('shell', shell)
 hljs.registerLanguage('ini', ini)
 hljs.registerLanguage('makefile', makefile)
+
+export function setHljsVuePlugin(app) {
+  app.use(hljsVuePlugin)
+}

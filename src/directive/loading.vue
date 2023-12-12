@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .loading-content {
   width: 100%;
   height: 100%;
