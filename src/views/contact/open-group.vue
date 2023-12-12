@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { NAlert } from 'naive-ui'
 import { Search, AddOne } from '@icon-park/vue-next'

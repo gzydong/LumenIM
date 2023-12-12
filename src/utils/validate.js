@@ -42,11 +42,3 @@ export const isNumber = (value) => {
 export const isBoolean = (value) => {
   return Object.prototype.toString.call(value).slice(8, -1) === 'Boolean'
 }
-
-/**
- * 检测是非是微信浏览器
- */
-export const isWeiXin = () => {
-  let ua = navigator.userAgent.toLowerCase()
-  return ua.match(/microMessenger/i) == 'micromessenger'
-}

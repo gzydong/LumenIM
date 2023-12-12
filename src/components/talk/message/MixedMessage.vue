@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { NImage } from 'naive-ui'
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink } from '@/utils/strings'

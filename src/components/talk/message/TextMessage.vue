@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink, textReplaceMention } from '@/utils/strings'
 import { TalkRecordExtraText, IMessageRecord } from '@/types/chat'

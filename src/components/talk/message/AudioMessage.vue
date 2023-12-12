@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { PlayOne, PauseOne } from '@icon-park/vue-next'
 import { TalkRecordExtraAudio, IMessageRecord } from '@/types/chat'

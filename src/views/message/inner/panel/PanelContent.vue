@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { watch, onMounted, inject, ref } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'

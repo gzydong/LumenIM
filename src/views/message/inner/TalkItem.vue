@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
 import Xtime from '@/components/base/Xtime.vue'
 import { ISession } from '@/types/chat'

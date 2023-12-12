@@ -1,5 +1,5 @@
-<script setup>
-import { computed } from 'vue'
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
 import { NSwitch } from 'naive-ui'
 import { useSettingsStore } from '@/store'
 
@@ -7,31 +7,34 @@ const settingsStore = useSettingsStore()
 
 const isPromptTone = computed({
   get: () => settingsStore.isPromptTone,
-  set: (val) => {
-    settingsStore.setPromptTone(val)
+  set: (value) => {
+    settingsStore.setPromptTone(value)
   }
 })
 
 const isKeyboard = computed({
   get: () => settingsStore.isKeyboard,
-  set: (val) => {
-    settingsStore.setKeyboard(val)
+  set: (value) => {
+    settingsStore.setKeyboard(value)
   }
 })
 
 const isWebNotify = computed({
   get: () => settingsStore.isWebNotify,
-  set: (val) => {
-    if (val === false) {
-      settingsStore.isWebNotify = false
-    } else {
-      window.Notification.requestPermission((res) => {
-        console.log(res)
-        settingsStore.isWebNotify = 'granted' === res
-      })
-    }
+  set: (value) => {
+    settingsStore.setWebNotify(value)
   }
 })
+
+const hasPermission = ref(false)
+
+hasPermission.value = Notification.permission === 'granted'
+
+const toPermission = () => {
+  Notification.requestPermission().then((permission) => {
+    hasPermission.value = permission === 'granted'
+  })
+}
 </script>
 
 <template>
@@ -58,10 +61,18 @@ const isWebNotify = computed({
           <n-switch size="medium" v-model:value="isKeyboard" />
         </div>
       </div>
+
       <div class="view-list">
         <div class="content">
           <div class="name">消息通知</div>
-          <div class="desc">消息通知：{{ isWebNotify ? '已开启' : '已关闭' }}</div>
+          <div class="desc">
+            消息通知：{{ isWebNotify ? '已开启' : '已关闭' }}
+
+            <span v-show="isWebNotify && !hasPermission">
+              (当前未获得浏览器通知权限，
+              <n-button type="primary" text @click="toPermission">点击获取权限</n-button>)
+            </span>
+          </div>
         </div>
         <div class="tools">
           <n-switch size="medium" v-model:value="isWebNotify" />

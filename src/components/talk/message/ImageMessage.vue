@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { NImage } from 'naive-ui'
 import { getImageInfo } from '@/utils/functions'
 import { TalkRecordExtraImage, IMessageRecord } from '@/types/chat'

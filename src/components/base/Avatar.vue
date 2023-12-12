@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { hashStrToHexColor } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 

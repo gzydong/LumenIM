@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import Draggable from 'vuedraggable'
 import { reactive, computed, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'

@@ -111,22 +111,6 @@ export function emitCall(event, data, fn) {
   return { event: event, data: data, callBack: fn || function () {} }
 }
 
-export function modal(Constructor, props = {}) {
-  // 创建一个节点，并将组件挂载上去
-  const mountNode = document.createElement('div')
-  document.body.appendChild(mountNode)
-
-  const app = createApp(Constructor, {
-    ...props,
-    remove() {
-      mountNode.remove()
-      app.unmount(mountNode)
-    }
-  })
-
-  return app.mount(mountNode, true)
-}
-
 // 判断是否是客户端模式
 export function isElectronMode() {
   return electron() != undefined

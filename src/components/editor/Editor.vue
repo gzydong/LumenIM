@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import 'quill-image-uploader/dist/quill.imageUploader.min.css'
 import '@/assets/css/editor-mention.less'

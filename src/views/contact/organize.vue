@@ -5,9 +5,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
-import UserCardModal from '@/components/user/UserCardModal.vue'
 import MemberCard from './inner/MemberCard.vue'
-import { modal } from '@/utils/common'
 
 const router = useRouter()
 const userStore = useUserStore()

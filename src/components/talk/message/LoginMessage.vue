@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TalkRecordExtraLogin, IMessageRecord } from '@/types/chat'
 
 defineProps<{

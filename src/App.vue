@@ -22,7 +22,6 @@ import { useUserModal } from '@/hooks/useUserModal'
 import { useThemeMode } from '@/hooks/useThemeMode'
 import { useVisibilityChange } from '@/hooks/useVisibilityChange'
 import { useAccessPrompt } from '@/hooks/useAccessPrompt'
-import { useNotifyAuth } from '@/hooks/useNotifyAuth'
 import { useUnreadMessage } from '@/hooks/useUnreadMessage'
 import { useConnectStatus } from '@/hooks/useConnectStatus'
 import { useClickEvent } from '@/hooks/useClickEvent'
@@ -57,7 +56,6 @@ const init = () => {
 init()
 useVisibilityChange()
 useAccessPrompt()
-useNotifyAuth()
 useUnreadMessage()
 useConnectStatus()
 useClickEvent()

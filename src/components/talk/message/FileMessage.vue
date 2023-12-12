@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { fileFormatSize } from '@/utils/strings'
 import { download } from '@/utils/functions'
 import { TalkRecordExtraFile, IMessageRecord } from '@/types/chat'

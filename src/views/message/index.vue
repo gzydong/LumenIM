@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onUnmounted, computed } from 'vue'
 import { useDialogueStore } from '@/store'
 import IndexContent from './inner/IndexContent.vue'

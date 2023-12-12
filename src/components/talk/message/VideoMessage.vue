@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import 'xgplayer/dist/index.min.css'
 import { ref, nextTick } from 'vue'
 import { NImage, NModal, NCard } from 'naive-ui'

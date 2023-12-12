@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, inject } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'

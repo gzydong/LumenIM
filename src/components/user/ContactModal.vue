@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NCheckbox, NTabs, NTab } from 'naive-ui'
 import { Search, Delete } from '@icon-park/vue-next'

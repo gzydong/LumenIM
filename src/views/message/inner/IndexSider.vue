@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref, onMounted } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'

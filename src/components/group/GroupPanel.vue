@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive, computed, watch, ref, inject } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store'

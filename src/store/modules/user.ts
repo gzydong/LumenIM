@@ -5,11 +5,28 @@ import { ServeGroupApplyUnread } from '@/api/group'
 import { delAccessToken } from '@/utils/auth'
 import { storage } from '@/utils/storage'
 
+interface UserStoreState {
+  uid: number
+  nickname: string
+  mobile: string
+  email: string
+  gender: number
+  motto: string
+  avatar: string
+  banner: string
+  online: boolean
+  isQiye: boolean
+  isContactApply: boolean
+  isGroupApply: boolean
+}
+
 export const useUserStore = defineStore('user', {
   persist: true,
-  state: () => {
+  state: (): UserStoreState => {
     return {
       uid: 0, // 用户ID
+      mobile: '',
+      email: '',
       nickname: '', // 用户昵称
       gender: 0, // 性别
       motto: '', // 个性签名

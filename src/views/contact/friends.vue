@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, computed, onMounted, inject } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'

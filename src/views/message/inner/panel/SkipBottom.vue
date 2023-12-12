@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useDialogueStore } from '@/store'
 import { DoubleDown } from '@icon-park/vue-next'
 defineProps(['modelValue'])
