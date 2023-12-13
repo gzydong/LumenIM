@@ -1,21 +1,26 @@
 # Lumen IM 即时聊天
+
 <img alt="GitHub stars badge" src="https://img.shields.io/github/stars/gzydong/LumenIM"> <img alt="GitHub forks badge" src="https://img.shields.io/github/forks/gzydong/LumenIM"> <img alt="GitHub license badge" src="https://img.shields.io/github/license/gzydong/LumenIM">
 
-###  项目介绍
+### 项目介绍
+
 Lumen IM 是一个网页版在线聊天项目，前端使用 Naive UI + Vue3，后端采用 GO 开发。
 
 ### 功能模块
+
 - 支持私聊及群聊
 - 支持多种聊天消息类型 例如:文本消息、代码块、群投票、图片及其它类型文件，并支持文件下载
 - 支持聊天消息撤回、删除(批量删除)、转发消息(逐条转发、合并转发)
 - 支持编写笔记
 
 ### 项目预览
+
 - 地址： [http://im.gzydong.com](http://im.gzydong.com)
 
-### 项目安装(部署)
+### 项目安装
 
 ###### 下载安装
+
 ```bash
 ## 克隆项目源码包
 git clone https://gitee.com/gzydong/LumenIM.git
@@ -45,6 +50,7 @@ VITE_SOCKET_API=ws://127.0.0.1:9504
 ```
 
 ###### 关于 Nginx 的一些配置
+
 ```nginx
 server {
     listen       80;
@@ -68,13 +74,14 @@ server {
 ```
 
 ### 项目源码
-|代码仓库|前端源码|后端源码|
-|-|-|-|
-|Github|https://github.com/gzydong/LumenIM|https://github.com/gzydong/go-chat|
-|码云|https://gitee.com/gzydong/LumenIM|https://gitee.com/gzydong/go-chat|
 
+| 代码仓库 | 前端源码                           | 后端源码                           |
+| -------- | ---------------------------------- | ---------------------------------- |
+| Github   | https://github.com/gzydong/LumenIM | https://github.com/gzydong/go-chat |
+| 码云     | https://gitee.com/gzydong/LumenIM  | https://gitee.com/gzydong/go-chat  |
 
 #### 联系方式
+
 QQ作者 : 837215079
 
 ### 如果你觉得还不错，请 Star , Fork 给作者鼓励一下。

@@ -23,6 +23,10 @@ const isWebNotify = computed({
   get: () => settingsStore.isWebNotify,
   set: (value) => {
     settingsStore.setWebNotify(value)
+
+    if (value) {
+      toPermission()
+    }
   }
 })
 

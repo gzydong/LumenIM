@@ -1,6 +1,5 @@
-<script setup>
+<script lang="ts" setup>
 import '@icon-park/vue-next/styles/index.css'
-import { ref, computed } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,

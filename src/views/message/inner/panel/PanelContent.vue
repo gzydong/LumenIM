@@ -101,7 +101,7 @@ const onPanelScroll = (e: any) => {
         }
       })
 
-      loadConfig.minRecord = minid
+      loadConfig.cursor = minid
       loadConfig.status = 1
     }
   }
@@ -164,7 +164,7 @@ const onQuoteMessage = (data: IMessageRecord) => {
 
   switch (data.msg_type) {
     case 1:
-      item.describe = data.content
+      item.describe = data?.extra?.content
       break // 文本消息
     case 2:
       item.describe = '[代码消息]'
