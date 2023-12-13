@@ -4,7 +4,7 @@ import { NTree, NEmpty } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
-import { Search, TreeList, AllApplication } from '@icon-park/vue-next'
+import { Search, AllApplication } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
 
 const router = useRouter()

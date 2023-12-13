@@ -1,7 +1,6 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { NTabs, NTab } from 'naive-ui'
-import { Search } from '@icon-park/vue-next'
 import FriendApply from './inner/FriendApply.vue'
 import GroupApply from './inner/GroupApply.vue'
 
@@ -20,12 +19,6 @@ const components = {
         <n-tab name="friend"> 好友申请 </n-tab>
         <n-tab name="group"> 入群申请 </n-tab>
       </n-tabs>
-
-      <!-- <n-input placeholder="搜索" clearable style="max-width: 200px" round>
-        <template #prefix>
-          <n-icon :component="Search" />
-        </template>
-      </n-input> -->
     </header>
 
     <main class="el-main me-scrollbar me-scrollbar-thumb">

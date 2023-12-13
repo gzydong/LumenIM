@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
 import { useSettingsStore } from '@/store'

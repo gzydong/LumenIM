@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { Tool, Protect, Remind, LinkThree, User } from '@icon-park/vue-next'
 

@@ -11,12 +11,12 @@ const isShowChangePassword = ref(false)
 const isShowChangeMobile = ref(false)
 const isShowChangeEmail = ref(false)
 
-const onChangeMobileSuccess = (value) => {
+const onChangeMobileSuccess = (value: string) => {
   isShowChangeMobile.value = false
   userStore.mobile = value
 }
 
-const onChangeEmailSuccess = (value) => {
+const onChangeEmailSuccess = (value: string) => {
   isShowChangeEmail.value = false
   userStore.email = value
 }

@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, computed, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
@@ -9,8 +9,8 @@ import {
   SettingTwo,
   Message,
   NotebookAndPen,
-  People,
-  SmartOptimization
+  People
+  // SmartOptimization
 } from '@icon-park/vue-next'
 
 defineProps({

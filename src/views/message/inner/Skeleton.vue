@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { NSkeleton } from 'naive-ui'
 </script>
 

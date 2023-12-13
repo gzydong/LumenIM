@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { useDialogueStore } from '@/store'
 import { Share, ShareThree, Delete, Close } from '@icon-park/vue-next'
@@ -9,7 +9,7 @@ const dialogueStore = useDialogueStore()
 const isShowContactModal = ref(false)
 const forwardMode = ref(0)
 
-const onShowContactModal = (type) => {
+const onShowContactModal = (type: number) => {
   forwardMode.value = type
   isShowContactModal.value = true
 }
@@ -32,19 +32,19 @@ const onSingleForward = () => {
 
 const onMultiDelete = () => {
   // 批量删除
-  let ids = dialogueStore.selectItems.map((item) => item.id)
+  let ids = dialogueStore.selectItems.map((item: any) => item.id)
 
   if (!ids.length) return
 
   dialogueStore.ApiDeleteRecord(ids)
 }
 
-const onContactModal = (data) => {
-  let ids = dialogueStore.selectItems.map((item) => item.id)
-  let user_ids = []
-  let group_ids = []
+const onContactModal = (data: { id: number; type: number }[]) => {
+  let ids = dialogueStore.selectItems.map((item: any) => item.id)
+  let user_ids: number[] = []
+  let group_ids: number[] = []
 
-  for (const o of data) {
+  for (let o of data) {
     if (o.type == 1) {
       user_ids.push(o.id)
     } else {

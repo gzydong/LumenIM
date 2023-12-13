@@ -1,7 +1,6 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { NSwitch } from 'naive-ui'
-// import { Brightness, Moon, DarkMode } from '@icon-park/vue-next'
 import { useSettingsStore } from '@/store'
 import { isElectronMode } from '@/utils/common'
 
@@ -20,22 +19,6 @@ const darkTheme = computed({
     settingsStore.setDarkTheme(!val)
   }
 })
-
-const railStyle = ({ focused, checked }) => {
-  const style = {}
-  if (checked) {
-    style.background = '#d03050'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #d0305040'
-    }
-  } else {
-    style.background = '#2080f0'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #2080f040'
-    }
-  }
-  return style
-}
 </script>
 
 <template>

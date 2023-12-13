@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { Peoples, Announcement, MenuUnfoldOne, MenuFoldOne } from '@icon-park/vue-next'
 import { useDialogueStore } from '@/store'
 

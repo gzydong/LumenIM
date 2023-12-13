@@ -1,16 +1,19 @@
-<script setup>
+<script lang="ts" setup>
 import { markRaw } from 'vue'
 
-defineProps({
-  title: {
-    type: String,
-    default: '未定义标题'
-  },
-  menus: {
-    type: Array,
-    default: () => []
-  }
-})
+interface Menu {
+  name: string
+  path: string
+  icon: any
+  show?: boolean
+  size?: string
+  tips?: string
+}
+
+defineProps<{
+  title: string
+  menus: Menu[]
+}>()
 </script>
 
 <template>

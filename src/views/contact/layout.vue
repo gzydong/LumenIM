@@ -1,17 +1,8 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, computed, markRaw } from 'vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store'
-import {
-  PeoplesTwo,
-  ChartGraph,
-  ShareThree,
-  PersonalCollection,
-  Peoples,
-  People,
-  AddUser,
-  Permissions
-} from '@icon-park/vue-next'
+import { PeoplesTwo, ChartGraph, Peoples, People, Permissions } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 

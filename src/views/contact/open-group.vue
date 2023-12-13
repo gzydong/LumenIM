@@ -14,12 +14,12 @@ const apply = reactive({
 
 const search = reactive({
   page: 1,
-  next: false,
   name: '',
+  next: false,
   loading: false
 })
 
-const items = ref([])
+const items = ref<any[]>([])
 
 const onLoadData = () => {
   if (search.loading) return
@@ -53,7 +53,7 @@ const onLoadMore = () => {
   onLoadData()
 }
 
-const onSearchInput = debounce((value) => {
+const onSearchInput = debounce((value: string) => {
   search.page = 1
   search.name = value
 

@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { useUserStore } from '@/store'
 import { Male, Female } from '@icon-park/vue-next'
 const store = useUserStore()

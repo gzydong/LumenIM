@@ -1,5 +1,5 @@
-<script setup>
-import { reactive, computed, inject } from 'vue'
+<script lang="ts" setup>
+import { reactive, computed } from 'vue'
 import { NDrawer } from 'naive-ui'
 import { useUserStore, useDialogueStore, useUploadsStore } from '@/store'
 import PanelHeader from './panel/PanelHeader.vue'
@@ -9,7 +9,6 @@ import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 
-const user = inject('$user')
 const userStore = useUserStore()
 const dialogueStore = useDialogueStore()
 const uploadsStore = useUploadsStore()

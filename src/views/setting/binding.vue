@@ -1,6 +1,4 @@
-<script setup>
-import { reactive } from 'vue'
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <section>
