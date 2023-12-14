@@ -1,7 +1,7 @@
 import { reactive, computed, nextTick } from 'vue'
 import { ServeTalkRecords } from '@/api/chat'
 import { useDialogueStore } from '@/store'
-import { IMessageRecord } from '@/types/chat'
+import { ITalkRecord } from '@/types/chat'
 import { formatTalkRecord } from '@/utils/talk'
 import { addClass, removeClass } from '@/utils/dom'
 
@@ -14,7 +14,7 @@ interface Params {
 export const useTalkRecord = (uid: number) => {
   const dialogueStore = useDialogueStore()
 
-  const records = computed((): IMessageRecord[] => dialogueStore.records)
+  const records = computed((): ITalkRecord[] => dialogueStore.records)
 
   const location = reactive({
     msgid: '',
@@ -97,7 +97,7 @@ export const useTalkRecord = (uid: number) => {
       return (location.msgid = '')
     }
 
-    const items = (data.items || []).map((item: IMessageRecord) => formatTalkRecord(uid, item))
+    const items = (data.items || []).map((item: ITalkRecord) => formatTalkRecord(uid, item))
 
     if (request.cursor == 0) {
       // 判断是否是初次加载

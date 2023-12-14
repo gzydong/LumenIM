@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { TalkRecordExtraLogin, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraLogin, ITalkRecord } from '@/types/chat'
 
 defineProps<{
-  extra: TalkRecordExtraLogin
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraLogin
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 function getExploreName(userAgent = '') {

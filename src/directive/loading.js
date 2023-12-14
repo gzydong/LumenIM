@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import Loading from './loading.vue'
+import Loading from './inner/loading.vue'
 
 export default {
   mounted(el, binding) {

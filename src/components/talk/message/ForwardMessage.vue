@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import ForwardRecord from '../ForwardRecord.vue'
-import { TalkRecordExtraForward, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraForward, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: TalkRecordExtraForward
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraForward
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 const isShowRecord = ref(false)

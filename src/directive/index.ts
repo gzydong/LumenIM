@@ -1,15 +1,19 @@
 import dropsize from './dropsize'
 import focus from './focus'
-import paste from './paste'
-import drag from './drag'
+// import paste from './paste'
 import loading from './loading'
-import copy from './copy'
+// import copy from './copy'
+
+const directives = {
+  dropsize,
+  focus,
+  // paste,
+  loading
+  // copy
+}
 
 export function setupDirective(app: any) {
-  app.directive('dropsize', dropsize)
-  app.directive('focus', focus)
-  app.directive('paste', paste)
-  app.directive('drag', drag)
-  app.directive('loading', loading)
-  app.directive('copy', copy)
+  for (const key in directives) {
+    app.directive(key, directives[key])
+  }
 }

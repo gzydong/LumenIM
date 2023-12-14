@@ -1,8 +1,17 @@
+.dropsize-col-resize {
+  cursor: col-resize !important;
+}
+
+.dropsize-row-resize {
+  cursor: row-resize !important;
+}
+
 .dropsize-line {
   position: absolute;
   cursor: col-resize;
 
-  &:hover {
+  &:hover,
+  &.dropsize-resizing {
     background-color: #1890ff;
   }
 

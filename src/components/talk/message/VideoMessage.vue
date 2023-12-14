@@ -5,12 +5,12 @@ import { NImage, NModal, NCard } from 'naive-ui'
 import { Play, Close } from '@icon-park/vue-next'
 import { getImageInfo } from '@/utils/functions'
 import Player from 'xgplayer'
-import { TalkRecordExtraVideo, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraVideo, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: TalkRecordExtraVideo
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraVideo
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 const img = (src: string, width = 200) => {

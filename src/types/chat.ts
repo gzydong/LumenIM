@@ -30,7 +30,7 @@ export interface ISession {
 }
 
 // 消息记录
-export interface IMessageRecord {
+export interface ITalkRecord {
   id: number
   sequence: number
   msg_id: string
@@ -51,17 +51,17 @@ export interface IMessageRecord {
   float: string
 }
 
-export interface TalkRecordExtraText {
+export interface ITalkRecordExtraText {
   content: string
   mentions?: number[]
 }
 
-export interface TalkRecordExtraCode {
+export interface ITalkRecordExtraCode {
   lang: string
   code: string
 }
 
-export interface TalkRecordExtraFile {
+export interface ITalkRecordExtraFile {
   drive: number
   name: string
   path: string
@@ -69,7 +69,7 @@ export interface TalkRecordExtraFile {
   size: number
 }
 
-export interface TalkRecordExtraForward {
+export interface ITalkRecordExtraForward {
   msg_ids: number[]
   receiver_id: number
   records: {
@@ -80,21 +80,21 @@ export interface TalkRecordExtraForward {
   user_id: number
 }
 
-export interface TalkRecordExtraGroupNotice {
+export interface ITalkRecordExtraGroupNotice {
   owner_id: number
   owner_name: string
   title: number
   content: string
 }
 
-export interface TalkRecordExtraVideo {
+export interface ITalkRecordExtraVideo {
   cover: string
   url: string
   duration: number
   size: number
 }
 
-export interface TalkRecordExtraMixed {
+export interface ITalkRecordExtraMixed {
   items: {
     type: number
     content: string
@@ -102,7 +102,7 @@ export interface TalkRecordExtraMixed {
   }[]
 }
 
-export interface TalkRecordExtraAudio {
+export interface ITalkRecordExtraAudio {
   name: string
   suffix: string
   size: number
@@ -110,7 +110,7 @@ export interface TalkRecordExtraAudio {
   duration: number
 }
 
-export interface TalkRecordExtraLogin {
+export interface ITalkRecordExtraLogin {
   ip: string
   address: string
   agent: string
@@ -119,7 +119,7 @@ export interface TalkRecordExtraLogin {
   datetime: string
 }
 
-export interface TalkRecordExtraImage {
+export interface ITalkRecordExtraImage {
   name: string
   suffix: string
   size: number

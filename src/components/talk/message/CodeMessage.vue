@@ -4,12 +4,12 @@ import { NCode } from 'naive-ui'
 import { Copy, Stretching } from '@icon-park/vue-next'
 import { clipboard } from '@/utils/common'
 import { message } from '@/utils/util'
-import { TalkRecordExtraCode, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraCode, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: TalkRecordExtraCode
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraCode
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 const lineMumber = props.extra.code.trim().split('\n').length

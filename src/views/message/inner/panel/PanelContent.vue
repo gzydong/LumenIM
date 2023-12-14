@@ -10,7 +10,7 @@ import { downloadImage } from '@/utils/functions'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
-import { IMessageRecord } from '@/types/chat'
+import { ITalkRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
 import { useTalkRecord } from '@/hooks/useTalkRecord'
 
@@ -95,7 +95,7 @@ const onPanelScroll = (e: any) => {
       dialogueStore.records.splice(0, len - 100)
 
       let minid = 0
-      dialogueStore.records.forEach((item: IMessageRecord) => {
+      dialogueStore.records.forEach((item: ITalkRecord) => {
         if (minid == 0 || item.sequence < minid) {
           minid = item.sequence
         }
@@ -108,7 +108,7 @@ const onPanelScroll = (e: any) => {
 }
 
 // 复制文本信息
-const onCopyText = (data: IMessageRecord) => {
+const onCopyText = (data: ITalkRecord) => {
   if (data.msg_type == 1) {
     if (data.extra.content && data.extra.content.length > 0) {
       return clipboard(htmlDecode(data.extra.content), () => window['$message'].success('复制成功'))
@@ -123,17 +123,17 @@ const onCopyText = (data: IMessageRecord) => {
 }
 
 // 删除对话消息
-const onDeleteTalk = (data: IMessageRecord) => {
+const onDeleteTalk = (data: ITalkRecord) => {
   dialogueStore.ApiDeleteRecord([data.id])
 }
 
 // 撤销对话消息
-const onRevokeTalk = (data: IMessageRecord) => {
+const onRevokeTalk = (data: ITalkRecord) => {
   dialogueStore.ApiRevokeRecord(data.id)
 }
 
 // 多选事件
-const onMultiSelect = (data: IMessageRecord) => {
+const onMultiSelect = (data: ITalkRecord) => {
   dialogueStore.updateDialogueRecord({
     id: data.id,
     isCheck: true
@@ -142,7 +142,7 @@ const onMultiSelect = (data: IMessageRecord) => {
   dialogueStore.isOpenMultiSelect = true
 }
 
-const onDownloadFile = (data: IMessageRecord) => {
+const onDownloadFile = (data: ITalkRecord) => {
   if (data.msg_type == 3) {
     return downloadImage(data.extra.url, `${data.msg_id}.${data.extra.suffix}`)
   }
@@ -154,7 +154,7 @@ const onDownloadFile = (data: IMessageRecord) => {
   return window['$message'].info('视频暂不支持下载!')
 }
 
-const onQuoteMessage = (data: IMessageRecord) => {
+const onQuoteMessage = (data: ITalkRecord) => {
   let item = {
     id: data.msg_id,
     title: `${data.nickname} ${data.created_at}`,
@@ -204,7 +204,7 @@ const onQuoteMessage = (data: IMessageRecord) => {
   bus.emit('editor:quote', item)
 }
 
-const onClickNickname = (data: IMessageRecord) => {
+const onClickNickname = (data: ITalkRecord) => {
   bus.emit(EditorConst.Mention, {
     id: data.user_id,
     value: data.nickname
@@ -212,7 +212,7 @@ const onClickNickname = (data: IMessageRecord) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e: any, item: IMessageRecord) => {
+const onContextMenu = (e: any, item: ITalkRecord) => {
   if (!dialogueStore.isShowEditor || dialogueStore.isOpenMultiSelect) {
     return e.preventDefault()
   }
@@ -239,7 +239,7 @@ const onContextMenuHandle = (key: string) => {
   closeDropdownMenu()
 }
 
-const onRowClick = (item: IMessageRecord) => {
+const onRowClick = (item: ITalkRecord) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
@@ -350,6 +350,7 @@ onMounted(() => {
                 :extra="item.extra"
                 :data="item"
                 :max-width="true"
+                :source="'panel'"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 

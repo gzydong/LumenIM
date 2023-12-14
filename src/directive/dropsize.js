@@ -7,23 +7,26 @@ function getCacheKey(key, direction) {
 }
 
 export default {
-  // binding.value = {min:10,max:100,direction:"top",key:""}
   mounted: function (el, binding) {
     let { min, max, direction = 'right', key = '' } = binding.value
-
-    const cacheKey = getCacheKey(key, direction)
 
     el.style.position = 'relative'
     el.touch = { status: false, pageX: 0, pageY: 0, width: 0, height: 0 }
 
-    let linedom = document.createElement('div')
+    const cacheKey = getCacheKey(key, direction)
+    const cursor = ['left', 'right'].includes(direction) ? 'col-resize' : 'row-resize'
+
+    const linedom = document.createElement('div')
     linedom.className = `dropsize-line dropsize-line-${direction}`
 
     el.linedomMouseup = function () {
       if (!el.touch.status) return
+
       el.touch.status = false
 
-      document.querySelector('body').style.cursor = ''
+      linedom.classList.remove('dropsize-resizing')
+
+      document.querySelector('body').classList.remove(`dropsize-${cursor}`)
     }
 
     el.linedomMousemove = function (e) {
@@ -74,16 +77,16 @@ export default {
         height: el.offsetHeight
       }
 
-      let cursor = ['left', 'right'].includes(direction) ? 'col-resize' : 'row-resize'
+      this.classList.add('dropsize-resizing')
 
-      document.querySelector('body').style.cursor = cursor
+      document.querySelector('body').classList.add(`dropsize-${cursor}`)
 
       document.addEventListener('mouseup', el.linedomMouseup)
       document.addEventListener('mousemove', el.linedomMousemove)
     })
 
     if (cacheKey) {
-      let value = storage.get(cacheKey)
+      const value = storage.get(cacheKey)
 
       if (direction == 'left' || direction == 'right') {
         el.style.width = `${value}px`

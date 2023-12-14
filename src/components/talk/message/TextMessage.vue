@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink, textReplaceMention } from '@/utils/strings'
-import { TalkRecordExtraText, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraText, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: TalkRecordExtraText
-  data: IMessageRecord
-  maxWidth?: Boolean
+  extra: ITalkRecordExtraText
+  data: ITalkRecord
+  maxWidth?: boolean
+  source?: 'panel' | 'forward' | 'history'
 }>()
 
 const float = props.data.float
@@ -28,7 +29,8 @@ textContent = textReplaceEmoji(textContent)
     :class="{
       left: float == 'left',
       right: float == 'right',
-      maxwidth: maxWidth
+      maxwidth: maxWidth,
+      'radius-reset': source != 'panel'
     }"
   >
     <pre v-html="textContent" />
@@ -52,6 +54,10 @@ textContent = textReplaceEmoji(textContent)
 
   &.maxwidth {
     max-width: 70%;
+  }
+
+  &.radius-reset {
+    border-radius: 0;
   }
 
   pre {

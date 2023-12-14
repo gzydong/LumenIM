@@ -3,12 +3,12 @@ import { NImage } from 'naive-ui'
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink } from '@/utils/strings'
 import { getImageInfo } from '@/utils/functions'
-import { TalkRecordExtraMixed, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraMixed, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
-  extra: TalkRecordExtraMixed
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraMixed
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 const float = props.data.float

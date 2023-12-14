@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { NImage } from 'naive-ui'
 import { getImageInfo } from '@/utils/functions'
-import { TalkRecordExtraImage, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraImage, ITalkRecord } from '@/types/chat'
 
 defineProps<{
-  extra: TalkRecordExtraImage
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraImage
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 const img = (src: string, width = 200) => {

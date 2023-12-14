@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { TalkRecordExtraGroupNotice, IMessageRecord } from '@/types/chat'
+import { ITalkRecordExtraGroupNotice, ITalkRecord } from '@/types/chat'
 
 defineProps<{
-  extra: TalkRecordExtraGroupNotice
-  data: IMessageRecord
-  maxWidth: Boolean
+  extra: ITalkRecordExtraGroupNotice
+  data: ITalkRecord
+  maxWidth?: Boolean
 }>()
 
 let show = ref(false)
