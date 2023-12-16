@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeCreateGroupApply } from '@/api/group'
@@ -23,12 +23,12 @@ const onMaskClick = () => {
 const onSubmit = () => {
   loading.value = true
 
-  let response = ServeCreateGroupApply({
+  let resp = ServeCreateGroupApply({
     group_id: props.gid,
     remark: remark.value
   })
 
-  response.then((res) => {
+  resp.then((res) => {
     if (res.code == 200) {
       window['$message'].success('入群申请提交成功...')
       onMaskClick()
@@ -37,7 +37,7 @@ const onSubmit = () => {
     }
   })
 
-  response.finally(() => {
+  resp.finally(() => {
     loading.value = false
   })
 }

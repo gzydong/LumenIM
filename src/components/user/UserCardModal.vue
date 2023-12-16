@@ -14,8 +14,14 @@ const talkStore = useTalkStore()
 const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
 
 const props = defineProps({
-  show: Boolean,
-  uid: Number
+  show: {
+    type: Boolean,
+    default: false
+  },
+  uid: {
+    type: Number,
+    default: 0
+  }
 })
 
 const loading = ref(true)

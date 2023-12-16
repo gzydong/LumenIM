@@ -1,10 +1,11 @@
-<script setup>
-import { ref, computed, reactive } from 'vue'
+<script lang="ts" setup>
+import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NEmpty } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import NoticeEditor from './NoticeEditor.vue'
 import { ServeGetGroupNotices } from '@/api/group'
 
+const emit = defineEmits(['close'])
 const props = defineProps({
   id: {
     type: Number,
@@ -12,9 +13,22 @@ const props = defineProps({
   }
 })
 
+interface Item {
+  id: number
+  title: string
+  content: string
+  is_confirm: number
+  is_top: number
+  creator_id: number
+  created_at: string
+  updated_at: string
+  confirm_users: string
+  is_delete: boolean
+}
+
 const keywords = ref('')
 const batchDelete = ref(false)
-const items = ref([])
+const items = ref<Item[]>([])
 const editor = reactive({
   isShow: false,
   id: 0,
@@ -24,7 +38,7 @@ const editor = reactive({
 })
 
 const filterCheck = computed(() => {
-  return items.value.filter((item) => item.is_delete)
+  return items.value.filter((item: Item) => item.is_delete)
 })
 
 const filterSearch = computed(() => {
@@ -32,7 +46,7 @@ const filterSearch = computed(() => {
     return items.value
   }
 
-  return items.value.filter((item) => {
+  return items.value.filter((item: Item) => {
     return item.title.match(keywords.value) != null
   })
 })
@@ -51,11 +65,9 @@ const onBatchDelete = () => {
   if (!filterCheck.value.length) {
     return
   }
-
-  let ids = filterCheck.value.map((item) => item.user_id).join(',')
 }
 
-const onRowClick = (item) => {
+const onRowClick = (item: any) => {
   if (batchDelete.value == true) {
     console.log(item)
   } else {
@@ -76,7 +88,7 @@ const onAdd = () => {
 }
 
 const onCancelDelete = () => {
-  items.value.forEach((item) => {
+  items.value.forEach((item: Item) => {
     item.is_delete = false
   })
 
@@ -88,7 +100,9 @@ const onEditorSuccess = () => {
   onLoadData()
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 <template>
   <section class="section el-container is-vertical height100">
@@ -120,7 +134,7 @@ onLoadData()
     <main v-if="filterSearch.length === 0" class="el-main main flex-center">
       <n-empty size="200" description="暂无相关数据">
         <template #icon>
-          <img src="@/assets/image/no-data.svg" alt="" />
+          <img src="@/assets/image/no-data.svg" />
         </template>
       </n-empty>
     </main>
@@ -141,9 +155,7 @@ onLoadData()
               <span class="date">{{ item.updated_at }}</span>
             </p>
           </div>
-          <div class="item-text text-ellipsis">
-            {{ item.content }}
-          </div>
+          <div class="item-text text-ellipsis">{{ item.content }}</div>
         </div>
       </div>
     </main>
@@ -212,7 +224,8 @@ onLoadData()
     .item-text {
       width: inherit;
       height: 20px;
-      color: rgb(255 255 255 / 52%);
+      color: var(--im-text-color-grey);
+
       font-size: 12px;
     }
   }

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent, getCurrentInstance } from 'vue'
 import { useNotification } from 'naive-ui'
 

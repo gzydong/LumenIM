@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeUpdateMobile } from '@/api/user'

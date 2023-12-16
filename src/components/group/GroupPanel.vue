@@ -41,33 +41,38 @@ const state = reactive({
     visit_card: '',
     notice: ''
   },
-  members: [],
   remark: ''
 })
 
-const search = computed(() => {
+const members = ref<any[]>([])
+
+const search = computed<any[]>(() => {
   if (state.keywords) {
-    return state.members.filter((item: any) => {
+    return members.value.filter((item: any) => {
       return (
         item.nickname.match(state.keywords) != null || item.remark.match(state.keywords) != null
       )
     })
   }
 
-  return state.members
+  return members.value
 })
 
 const isLeader = computed(() => {
-  return state.members.some((item: any) => {
+  return members.value.some((item: any) => {
     return item.user_id == userStore.uid && item.leader >= 1
   })
 })
 
 const isAdmin = computed(() => {
-  return state.members.some((item: any) => {
+  return members.value.some((item: any) => {
     return item.user_id == userStore.uid && item.leader == 2
   })
 })
+
+const onShowManage = (vallue: any) => {
+  isShowManage.value = vallue
+}
 
 const onGroupCallBack = () => {}
 
@@ -105,7 +110,7 @@ function loadMembers() {
     group_id: props.gid
   }).then((res) => {
     if (res.code == 200) {
-      state.members = res.data.items || []
+      members.value = res.data.items || []
     }
   })
 }
@@ -133,6 +138,7 @@ const onChangeRemark = () => {
     visit_card: state.remark
   }).then(({ code, message }) => {
     if (code == 200) {
+      // @ts-ignore
       editCardPopover.value.setShow(false)
       state.detail.visit_card = state.remark
       window['$message'].success('已更新群名片')
@@ -200,7 +206,7 @@ loadMembers()
         <div class="b-box">
           <div class="block">
             <div class="title">群成员：</div>
-            <div class="text">{{ state.members.length }}人</div>
+            <div class="text">{{ members.length }}人</div>
           </div>
           <div class="describe">群主已开启“新成员入群可查看所有聊天记录</div>
         </div>
@@ -287,7 +293,7 @@ loadMembers()
         type="primary"
         text-color="#ffffff"
         v-if="isLeader"
-        @click="isShowManage = true"
+        @click="onShowManage(true)"
       >
         群聊管理
       </n-button>
@@ -301,7 +307,7 @@ loadMembers()
     @on-submit="onGroupCallBack"
   />
 
-  <GroupManage v-if="isShowManage" :gid="gid" @close="isShowManage = false" />
+  <GroupManage v-if="isShowManage" :gid="gid" @close="onShowManage(false)" />
 </template>
 <style lang="less" scoped>
 .section {

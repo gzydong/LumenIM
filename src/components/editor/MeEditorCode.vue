@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { NModal, NInput, NPopselect } from 'naive-ui'
 import { options } from '@/constant/highlight.js'
@@ -17,11 +17,7 @@ const langText = computed(() => {
     return item.value == model.lang
   })
 
-  if (data) {
-    return data.label
-  }
-
-  return '请选择语言类型'
+  return data ? data.label : '请选择语言类型'
 })
 
 const isCanSubmit = computed(() => {

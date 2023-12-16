@@ -4,6 +4,7 @@ import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import GroupLaunch from '../GroupLaunch.vue'
 import { useUserStore } from '@/store'
+import { StateDropdown } from '@/types/global'
 
 import {
   ServeGetGroupMembers,
@@ -13,6 +14,7 @@ import {
   ServeGroupNoSpeak
 } from '@/api/group'
 
+const emit = defineEmits(['close'])
 const props = defineProps({
   id: {
     type: Number,
@@ -20,12 +22,24 @@ const props = defineProps({
   }
 })
 
+interface Item {
+  user_id: number
+  avatar: string
+  nickname: string
+  gender: number
+  remark: string
+  is_mute: number
+  leader: number
+  is_delete: boolean
+  motto?: string
+}
+
 const user: any = inject('$user')
 const userStore = useUserStore()
 const isGroupLaunch = ref(false)
 const keywords = ref('')
 const batchDelete = ref(false)
-const items = ref([])
+const items = ref<Item[]>([])
 
 const filterCheck = computed(() => {
   return items.value.filter((item: any) => item.is_delete)
@@ -47,7 +61,7 @@ const isAdmin = computed(() => {
   })
 })
 
-const dropdown = reactive({
+const dropdown = reactive<StateDropdown>({
   options: [],
   show: false,
   dropdownX: 0,
@@ -62,7 +76,7 @@ const onLoadData = () => {
     if (res.code == 200) {
       let data = res.data.items || []
 
-      data.forEach((item) => {
+      data.forEach((item: Item) => {
         item.is_delete = false
       })
 
@@ -71,7 +85,7 @@ const onLoadData = () => {
   })
 }
 
-const onDelete = (item) => {
+const onDelete = (item: Item) => {
   let title = `删除 [${item.nickname}] 群成员？`
 
   window['$dialog'].create({
@@ -94,9 +108,7 @@ const onDelete = (item) => {
 }
 
 const onBatchDelete = () => {
-  if (!filterCheck.value.length) {
-    return
-  }
+  if (!filterCheck.value.length) return
 
   window['$dialog'].create({
     title: '温馨提示',
@@ -106,7 +118,7 @@ const onBatchDelete = () => {
     onPositiveClick: () => {
       ServeRemoveMembersGroup({
         group_id: props.id,
-        members_ids: filterCheck.value.map((item: any) => item.user_id).join(',')
+        members_ids: filterCheck.value.map((item: Item) => item.user_id).join(',')
       }).then((res) => {
         if (res.code == 200) {
           batchDelete.value = false
@@ -118,7 +130,7 @@ const onBatchDelete = () => {
   })
 }
 
-const onRowClick = (item: any) => {
+const onRowClick = (item: Item) => {
   if (batchDelete.value == true) {
     if (item.leader < 2) {
       item.is_delete = !item.is_delete
@@ -129,18 +141,18 @@ const onRowClick = (item: any) => {
 }
 
 const onCancelDelete = () => {
-  items.value.forEach((item: any) => {
+  items.value.forEach((item: Item) => {
     item.is_delete = false
   })
 
   batchDelete.value = false
 }
 
-const onUserInfo = (item: any) => {
+const onUserInfo = (item: Item) => {
   user(item.user_id)
 }
 
-const onAssignAdmin = (item: any) => {
+const onAssignAdmin = (item: Item) => {
   let title =
     item.leader == 0
       ? `确定要给 [${item.nickname}] 分配管理员权限吗？`
@@ -155,7 +167,7 @@ const onAssignAdmin = (item: any) => {
       ServeGroupAssignAdmin({
         mode: item.leader == 0 ? 1 : 2,
         group_id: props.id,
-        user_id: parseInt(item.user_id)
+        user_id: item.user_id
       }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
@@ -168,7 +180,7 @@ const onAssignAdmin = (item: any) => {
   })
 }
 
-const onTransfer = (item) => {
+const onTransfer = (item: Item) => {
   window['$dialog'].create({
     title: '温馨提示',
     content: `确定把群主权限转交给 [${item.nickname}] ？`,
@@ -177,7 +189,7 @@ const onTransfer = (item) => {
     onPositiveClick: () => {
       ServeGroupHandover({
         group_id: props.id,
-        user_id: parseInt(item.user_id)
+        user_id: item.user_id
       }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
@@ -190,7 +202,7 @@ const onTransfer = (item) => {
   })
 }
 
-const onForbidden = (item: any) => {
+const onForbidden = (item: Item) => {
   let content = `确定要禁言 [${item.nickname}] 此用户吗？`
 
   if (item.is_mute === 1) {
@@ -206,7 +218,7 @@ const onForbidden = (item: any) => {
       ServeGroupNoSpeak({
         mode: item.is_mute == 0 ? 1 : 2,
         group_id: props.id,
-        user_id: parseInt(item.user_id)
+        user_id: item.user_id
       }).then((res) => {
         if (res.code == 200) {
           window['$message'].success('操作成功')
@@ -220,7 +232,7 @@ const onForbidden = (item: any) => {
 }
 
 // 会话列表右键显示菜单
-const onContextMenu = (e: any, item: any) => {
+const onContextMenu = (e: any, item: Item) => {
   if (batchDelete.value == true || item.leader == 2) {
     return
   }
@@ -273,7 +285,7 @@ const onContextMenuHandle = (key: string) => {
     transfer: onTransfer,
     forbidden: onForbidden,
     delete: onDelete,
-    batch_delete: (data: any) => {
+    batch_delete: () => {
       batchDelete.value = true
     }
   }
@@ -320,32 +332,32 @@ onLoadData()
     </main>
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
-      <div class="member-item" v-for="member in filterSearch" :key="member.user_id">
+      <div class="member-item" v-for="item in filterSearch" :key="item.user_id">
         <div class="tool flex-center" v-show="batchDelete">
-          <n-checkbox :disabled="member.leader === 2" size="small" :checked="member.is_delete" />
+          <n-checkbox :disabled="item.leader === 2" size="small" :checked="item.is_delete" />
         </div>
-        <div class="avatar pointer" @click="onUserInfo(member)">
-          <im-avatar :size="40" :src="member.avatar" :username="member.nickname" />
+        <div class="avatar pointer" @click="onUserInfo(item)">
+          <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
         </div>
         <div
           class="content pointer o-hidden"
-          @click="onRowClick(member)"
-          @contextmenu.prevent="onContextMenu($event, member)"
+          @click="onRowClick(item)"
+          @contextmenu.prevent="onContextMenu($event, item)"
         >
           <div class="item-title">
             <p class="nickname text-ellipsis">
-              <span>{{ member.nickname || '未设置昵称' }}</span>
-              <span v-show="member.user_card"> ({{ member.user_card }})</span>
+              <span>{{ item.nickname || '未设置昵称' }}</span>
+              <span v-show="item.remark"> ({{ item.remark }})</span>
             </p>
             <p>
-              <span class="badge master" v-show="member.leader == 2">群主</span>
-              <span class="badge leader" v-show="member.leader == 1">管理员</span>
-              <span class="badge muted" v-show="member.is_mute == 1">已禁言</span>
+              <span class="badge master" v-show="item.leader == 2">群主</span>
+              <span class="badge leader" v-show="item.leader == 1">管理员</span>
+              <span class="badge muted" v-show="item.is_mute == 1">已禁言</span>
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>
           <div class="item-text text-ellipsis">
-            {{ member.motto || '暂无简介' }}
+            {{ item.motto || '暂无简介' }}
           </div>
         </div>
       </div>

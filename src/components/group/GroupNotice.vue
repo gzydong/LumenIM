@@ -1,6 +1,5 @@
-<script setup>
-import { ref, reactive } from 'vue'
-import { NModal } from 'naive-ui'
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import { Up, Down, Close } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetGroupNotices } from '@/api/group'
@@ -13,39 +12,37 @@ const props = defineProps({
   }
 })
 
-const isShow = ref(true)
 const title = ref('群公告')
-
-const state = reactive({
-  loading: false,
-  items: []
-})
+const loading = ref(false)
+const items = ref<any[]>([])
 
 const onClose = () => {
   emit('close')
 }
 
 const onLoadData = () => {
-  state.loading = true
+  loading.value = true
   ServeGetGroupNotices({
     group_id: props.groupId
   }).then((res) => {
     if (res.code == 200) {
-      let items = res.data.items || []
+      let list = res.data.items || []
 
-      items.forEach((item) => {
-        item.isShow = false
+      list.forEach((item: any) => {
+        item.is_show = false
       })
 
-      state.items = items
-      title.value = `群公告(${state.items.length})`
+      items.value = list
+      title.value = `群公告(${items.value.length})`
     }
 
-    state.loading = false
+    loading.value = false
   })
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 
 <template>
@@ -61,11 +58,11 @@ onLoadData()
     </header>
 
     <main class="el-main me-scrollbar me-scrollbar-thumb">
-      <div v-if="state.loading" class="flex-box flex-center">
+      <div v-if="loading" class="flex-box flex-center">
         <Loading />
       </div>
 
-      <div v-else-if="state.items.length === 0" class="flex-box flex-center">
+      <div v-else-if="items.length === 0" class="flex-box flex-center">
         <n-empty size="200" description="暂无相关数据">
           <template #icon>
             <img src="@/assets/image/no-data.svg" alt="" />
@@ -73,7 +70,7 @@ onLoadData()
         </n-empty>
       </div>
 
-      <div v-for="item in state.items" :key="item.id" class="items">
+      <div v-for="item in items" :key="item.id" class="items">
         <div class="title text-ellipsis">
           {{ item.title }}
         </div>
@@ -82,13 +79,13 @@ onLoadData()
           <n-avatar round :size="15" :src="item.avatar" />
           <span class="nickname text-ellipsis">{{ item.nickname }}</span>
           <span class="datetime">发表于 {{ item.created_at }}</span>
-          <span class="btn" @click="item.isShow = !item.isShow">
-            <n-icon :size="18" :component="item.isShow ? Up : Down" />
-            {{ item.isShow ? '收起' : '展开' }}
+          <span class="btn" @click="item.is_show = !item.is_show">
+            <n-icon :size="18" :component="item.is_show ? Up : Down" />
+            {{ item.is_show ? '收起' : '展开' }}
           </span>
         </div>
 
-        <div class="detail" v-show="item.isShow">
+        <div class="detail" v-show="item.is_show">
           {{ item.content }}
         </div>
       </div>

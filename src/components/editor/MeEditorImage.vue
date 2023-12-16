@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, onMounted } from 'vue'
 import { NModal } from 'naive-ui'
 import { fileFormatSize } from '@/utils/strings'
@@ -12,7 +12,7 @@ const props = defineProps({
   }
 })
 
-const state = reactive({
+const state: any = reactive({
   show: true,
   src: '',
   size: '',

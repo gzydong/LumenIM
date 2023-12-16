@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref, inject } from 'vue'
+import { ref, inject, onMounted } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
 import { MessageComponents } from '@/constant/message'
+import { ITalkRecord } from '@/types/chat'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -11,9 +12,9 @@ const props = defineProps({
     default: 0
   }
 })
-const user = inject('$user')
+const user: any = inject('$user')
 const isShow = ref(true)
-const records = ref([])
+const items = ref<ITalkRecord[]>([])
 const title = ref('会话记录')
 
 const onMaskClick = () => {
@@ -22,18 +23,19 @@ const onMaskClick = () => {
 
 const onLoadData = () => {
   ServeGetForwardRecords({
-    pid: 0,
     record_id: props.recordId
   }).then((res) => {
     if (res.code == 200) {
-      records.value = res.data.items || []
+      items.value = res.data.items || []
 
-      title.value = `会话记录(${records.value.length})`
+      title.value = `会话记录(${items.value.length})`
     }
   })
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 
 <template>
@@ -55,9 +57,9 @@ onLoadData()
     }"
   >
     <div class="main-box me-scrollbar me-scrollbar-thumb">
-      <Loading v-if="records.length === 0" />
+      <Loading v-if="items.length === 0" />
 
-      <div v-for="item in records" :key="item.msg_id" class="message-item">
+      <div v-for="item in items" :key="item.msg_id" class="message-item">
         <div class="left-box pointer" @click="user(item.user_id)">
           <im-avatar :src="item.avatar" :size="30" :username="item.nickname" />
         </div>

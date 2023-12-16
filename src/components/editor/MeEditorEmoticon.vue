@@ -1,14 +1,14 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useEditorStore } from '@/store'
 import { UploadOne, Delete } from '@icon-park/vue-next'
-import { emojiList as emoji } from '@/utils/emojis'
+import { emojis } from '@/utils/emojis'
 
 const emit = defineEmits(['on-select'])
 const editorStore = useEditorStore()
 const fileImageRef = ref()
 const tabIndex = ref(0)
-const items = computed(() => editorStore.emoticon.items)
+const items = computed<any[]>(() => editorStore.emoticon.items)
 
 // 触发上传按钮事件
 const onTriggerUpload = () => {
@@ -16,22 +16,22 @@ const onTriggerUpload = () => {
 }
 
 // 上传表情包
-const onUpload = (e) => {
+const onUpload = (e: any) => {
   let file = e.target.files[0]
 
   editorStore.uploadUserEmoticon(file)
 }
 
 // 删除表情包
-const onDelete = (index, id) => {
+const onDelete = (index: number, id: number) => {
   editorStore.removeUserEmoticon({ index, id })
 }
 
-const onTabs = (index) => {
+const onTabs = (index: number) => {
   tabIndex.value = index
 }
 
-const onSendEmoticon = (type, value, img = '') => {
+const onSendEmoticon = (type: any, value: any, img = '') => {
   if (img) {
     const imgSrcReg = /<img.*?src='(.*?)'/g
     let match = imgSrcReg.exec(img)
@@ -57,7 +57,7 @@ const onSendEmoticon = (type, value, img = '') => {
       <div class="symbol-box" v-if="tabIndex == 0">
         <div class="options">
           <div
-            v-for="(img, key) in emoji.emojis"
+            v-for="(img, key) in emojis"
             v-html="img"
             :key="key"
             @click="onSendEmoticon(1, key, img)"

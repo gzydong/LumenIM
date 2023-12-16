@@ -1,9 +1,10 @@
-<script setup>
-import { ref, reactive, inject } from 'vue'
+<script lang="ts" setup>
+import { ref, reactive, inject, onMounted } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
 import { Down, Calendar } from '@icon-park/vue-next'
 import * as message from '@/constant/message'
+import { ITalkRecord } from '@/types/chat'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -16,7 +17,7 @@ const props = defineProps({
     default: 0
   }
 })
-const showUserModal = inject('$user')
+const showUserModal: any = inject('$user')
 const model = reactive({
   cursor: 0,
   limit: 30,
@@ -27,7 +28,7 @@ const model = reactive({
 })
 
 const isShow = ref(true)
-const records = ref([])
+const items = ref<ITalkRecord[]>([])
 
 const tabs = [
   { name: '全部', type: 0, show: true },
@@ -64,30 +65,30 @@ const loadChatRecord = () => {
     if (res.code != 200) return
 
     if (data.cursor === 0) {
-      records.value = []
+      items.value = []
     }
 
-    let items = res.data.items || []
-
-    records.value.push(...items)
-
-    if (items.length) {
+    let list = res.data.items || []
+    if (list.length) {
       model.cursor = res.data.cursor
     }
 
     model.loading = false
     model.loadMore = false
-    model.isLoadMore = items.length >= model.limit
+    model.isLoadMore = list.length >= model.limit
+    items.value.push(...list)
   })
 }
 
-const triggerType = (type) => {
+const triggerType = (type: number) => {
   model.msgType = type
   model.cursor = 0
   loadChatRecord()
 }
 
-loadChatRecord()
+onMounted(() => {
+  loadChatRecord()
+})
 </script>
 
 <template>
@@ -147,7 +148,7 @@ loadChatRecord()
         <Loading />
       </main>
 
-      <main v-else-if="records.length === 0" class="el-main flex-center">
+      <main v-else-if="items.length === 0" class="el-main flex-center">
         <n-empty size="200" description="暂无相关数据">
           <template #icon>
             <img src="@/assets/image/no-data.svg" alt="" />
@@ -156,7 +157,7 @@ loadChatRecord()
       </main>
 
       <main v-else class="el-main me-scrollbar me-scrollbar-thumb">
-        <div v-for="item in records" :key="item.id" class="message-item">
+        <div v-for="item in items" :key="item.id" class="message-item">
           <div class="left-box">
             <im-avatar
               :src="item.avatar"

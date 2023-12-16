@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive } from 'vue'
 import { NForm, NFormItem, NSwitch, NPopconfirm } from 'naive-ui'
 import { ServeDismissGroup, ServeMuteGroup, ServeGroupDetail, ServeOvertGroup } from '@/api/group'
@@ -19,29 +19,27 @@ const detail = reactive({
   overt_loading: false
 })
 
-const onLoadData = () => {
-  ServeGroupDetail({ group_id: props.id }).then((res) => {
-    if (res.code == 200) {
-      detail.is_mute = res.data.is_mute == 1
-      detail.is_overt = res.data.is_overt == 1
-    }
-  })
+const onLoadData = async () => {
+  const { data, code } = await ServeGroupDetail({ group_id: props.id })
+
+  if (code === 200) {
+    detail.is_mute = data.is_mute === 1
+    detail.is_overt = data.is_overt === 1
+  }
 }
 
-const onDismiss = () => {
-  ServeDismissGroup({
-    group_id: props.id
-  }).then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('群聊已解散')
-      emit('close')
-    } else {
-      window['$message'].info(res.message)
-    }
-  })
+const onDismiss = async () => {
+  const { code, message } = await ServeDismissGroup({ group_id: props.id })
+
+  if (code === 200) {
+    emit('close')
+    window['$message'].success('群聊已解散')
+  } else {
+    window['$message'].info(message)
+  }
 }
 
-const onMute = (value) => {
+const onMute = (value: boolean) => {
   detail.mute_loading = true
 
   ServeMuteGroup({
@@ -60,7 +58,7 @@ const onMute = (value) => {
     })
 }
 
-const onOvert = (value) => {
+const onOvert = (value: boolean) => {
   detail.overt_loading = true
 
   ServeOvertGroup({

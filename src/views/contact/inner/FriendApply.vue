@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted, inject, watch, computed } from 'vue'
 import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
@@ -9,10 +9,20 @@ import { useUserStore } from '@/store'
 
 const userStore = useUserStore()
 
-const items = ref([])
+type Item = {
+  id: number
+  user_id: number
+  friend_id: number
+  remark: string
+  nickname: string
+  avatar: string
+  created_at: string
+}
+
+const items = ref<Item[]>([])
 const loading = ref(true)
 
-const user = inject('$user')
+const user: any = inject('$user')
 
 const isContactApply = computed(() => userStore.isContactApply)
 
@@ -32,11 +42,11 @@ const onLoadData = (isClearTip = false) => {
     })
 }
 
-const onInfo = (item) => {
+const onInfo = (item: Item) => {
   user(item.user_id)
 }
 
-const onAccept = throttle((item) => {
+const onAccept = throttle((item: Item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeApplyAccept({

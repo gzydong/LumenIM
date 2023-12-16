@@ -7,7 +7,7 @@ class QuoteBlot extends BlockEmbed {
   static tagName = 'div'
   static className = 'quote-card'
 
-  static create(value): any {
+  static create(value: any): any {
     const node = super.create(value)
 
     const { id, title, describe, image } = value
@@ -22,9 +22,18 @@ class QuoteBlot extends BlockEmbed {
     const quoteCardContent = document.createElement('span')
     quoteCardContent.classList.add('quote-card-content')
 
+    const close = document.createElement('span')
+    close.classList.add('quote-card-remove')
+    close.textContent = '×'
+    close.addEventListener('click', () => {
+      node.remove()
+    })
+
     const quoteCardTitle = document.createElement('span')
     quoteCardTitle.classList.add('quote-card-title')
     quoteCardTitle.textContent = title
+    quoteCardTitle.appendChild(close)
+
     quoteCardContent.appendChild(quoteCardTitle)
 
     if (image.length == 0) {
@@ -35,8 +44,12 @@ class QuoteBlot extends BlockEmbed {
     } else {
       const iconImg = document.createElement('img')
       iconImg.setAttribute('src', image)
-      iconImg.style = 'max-width:30px;max-height:30px;'
+      iconImg.setAttribute('style', 'width:30px;height:30px;margin-right:10px;')
       quoteCardContent.appendChild(iconImg)
+    }
+
+    node.ondblclick = () => {
+      console.log('quote card ondblclick')
     }
 
     node.appendChild(quoteCardContent)
@@ -44,7 +57,7 @@ class QuoteBlot extends BlockEmbed {
     return node
   }
 
-  static value(node): any {
+  static value(node: HTMLElement): any {
     return {
       id: node.dataset.id,
       title: node.dataset.title,

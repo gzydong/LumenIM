@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, computed, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NRadioGroup, NSpace, NRadio } from 'naive-ui'
 import { Delete } from '@icon-park/vue-next'
@@ -31,7 +31,7 @@ const addOption = () => {
   model.options.push({ value: '' })
 }
 
-const delOption = (index) => {
+const delOption = (index: number) => {
   model.options.length > 2 && model.options.splice(index, 1)
 }
 

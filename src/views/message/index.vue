@@ -6,7 +6,6 @@ import IndexSider from './inner/IndexSider.vue'
 import IndexAmicable from './inner/IndexAmicable.vue'
 
 const dialogueStore = useDialogueStore()
-
 const indexName = computed(() => dialogueStore.index_name)
 
 onUnmounted(() => {

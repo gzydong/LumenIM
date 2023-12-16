@@ -1,4 +1,4 @@
-import { Delta } from 'quill'
+import { Delta } from '@vueup/vue-quill'
 
 interface Item {
   type: number
@@ -13,11 +13,11 @@ interface AnalysisResp {
   quoteId: string // 引用的消息ID
 }
 
-function removeLeadingNewlines(str) {
+function removeLeadingNewlines(str: string) {
   return str.replace(/^[\n\s]+/, '')
 }
 
-function removeTrailingNewlines(str) {
+function removeTrailingNewlines(str: string) {
   return str.replace(/[\n\s]+$/, '')
 }
 
@@ -31,30 +31,32 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
   }
 
   for (const iterator of delta.ops) {
+    const insert: any = iterator.insert
+
     let node: any = null
     if (resp.items.length) {
       node = resp.items[resp.items.length - 1]
     }
 
-    if (typeof iterator.insert === 'string') {
-      if (!iterator.insert || iterator.insert == '\n') continue
+    if (typeof insert === 'string') {
+      if (!insert || insert == '\n') continue
 
       if (node && node.type == 1) {
-        node.content = node.content + iterator.insert
+        node.content = node.content + insert
         continue
       }
 
       resp.items.push({
         type: 1,
-        content: iterator.insert
+        content: insert
       })
 
       continue
     }
 
     // @好友
-    if (iterator.insert.mention) {
-      const mention = iterator.insert.mention
+    if (insert && insert.mention) {
+      const mention = insert.mention
 
       resp.mentions.push({
         name: `${mention.denotationChar}${mention.value}`,
@@ -75,17 +77,17 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
     }
 
     // 图片
-    if (iterator.insert.image) {
+    if (insert && insert.image) {
       resp.items.push({
         type: 3,
-        content: iterator.insert.image
+        content: insert.image
       })
       continue
     }
 
     // 表情
-    if (iterator.insert.emoji) {
-      const emoji = iterator.insert.emoji
+    if (insert && insert.emoji) {
+      const { emoji } = insert
 
       if (node && node.type == 1) {
         node.content = node.content + emoji.alt
@@ -100,8 +102,8 @@ export function deltaToMessage(delta: Delta): AnalysisResp {
       continue
     }
 
-    if (iterator.insert.quote) {
-      resp.quoteId = iterator.insert.quote.id
+    if (insert && insert.quote) {
+      resp.quoteId = insert.quote.id
       continue
     }
   }
@@ -136,29 +138,31 @@ export function deltaToString(delta: Delta): string {
   let content = ''
 
   for (const o of delta.ops) {
-    if (typeof o.insert === 'string') {
-      if (!o.insert || o.insert == '\n') continue
+    const insert: any = o.insert
 
-      content += o.insert
+    if (typeof insert === 'string') {
+      if (!insert || insert == '\n') continue
+
+      content += insert
       continue
     }
 
     // @好友
-    if (o.insert.mention) {
-      const mention = o.insert.mention
+    if (insert && insert.mention) {
+      const { mention } = insert
       content += ` ${mention.denotationChar}${mention.value} `
       continue
     }
 
     // 图片
-    if (o.insert.image) {
+    if (insert && insert.image) {
       content += '[图片]'
       continue
     }
 
     // 表情
-    if (o.insert.emoji) {
-      content += o.insert.emoji.alt
+    if (insert && insert.emoji) {
+      content += insert.emoji.alt
       continue
     }
   }

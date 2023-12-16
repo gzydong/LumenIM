@@ -1,8 +1,10 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { ServeGroupDetail, ServeEditGroup } from '@/api/group'
+
+const emit = defineEmits(['close'])
 
 const props = defineProps({
   id: {
@@ -73,7 +75,7 @@ onMounted(() => {
           maxWidth: '350px'
         }"
       >
-        <n-form-item label="群头像" path="name">
+        <n-form-item label="群头像:" path="name">
           <n-avatar v-if="modelDetail.avatar" :size="60" :src="modelDetail.avatar" />
           <n-avatar
             v-else
@@ -96,11 +98,11 @@ onMounted(() => {
           </n-button>
         </n-form-item>
 
-        <n-form-item label="群名称" required path="name">
+        <n-form-item label="群名称:" required path="name">
           <n-input placeholder="必填" type="text" v-model:value="modelDetail.name" />
         </n-form-item>
 
-        <n-form-item label="群简介" path="profile">
+        <n-form-item label="群简介:" path="profile">
           <n-input placeholder="选填" type="textarea" v-model:value="modelDetail.profile" />
         </n-form-item>
         <n-form-item label="">

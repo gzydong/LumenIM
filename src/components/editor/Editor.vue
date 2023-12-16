@@ -664,6 +664,13 @@ html[theme-mode='dark'] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
+
+    .quote-card-remove {
+      margin-right: 15px;
+      font-size: 18px;
+    }
   }
 
   .quote-card-meta {

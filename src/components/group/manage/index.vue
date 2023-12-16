@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { NModal } from 'naive-ui'
 import DetailTab from './DetailTab.vue'
@@ -9,7 +9,7 @@ import ConfigTab from './ConfigTab.vue'
 
 const emit = defineEmits(['close'])
 
-const props = defineProps({
+defineProps({
   gid: {
     type: Number,
     default: 0

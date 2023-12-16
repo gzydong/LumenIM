@@ -1,10 +1,10 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { NModal, NInput, NScrollbar, NDivider, NCheckbox, NForm, NFormItem } from 'naive-ui'
 import { Search, Delete } from '@icon-park/vue-next'
 import { ServeCreateGroup, ServeInviteGroup, ServeGetInviteFriends } from '@/api/group'
 
-const emit = defineEmits(['close', 'on-submit'])
+const emit = defineEmits(['close', 'on-submit', 'on-invite'])
 const props = defineProps({
   gid: {
     type: Number,
@@ -12,7 +12,7 @@ const props = defineProps({
   }
 })
 
-const items = ref([])
+const items = ref<any[]>([])
 const model = reactive({
   keywords: '',
   name: ''
@@ -82,7 +82,7 @@ const onTriggerContact = (item) => {
   data && (data.checked = !data.checked)
 }
 
-const onCreateSubmit = (ids) => {
+const onCreateSubmit = (ids: number[]) => {
   ServeCreateGroup({
     avatar: '',
     name: model.name,
@@ -98,7 +98,7 @@ const onCreateSubmit = (ids) => {
   })
 }
 
-const onInviteSubmit = (ids) => {
+const onInviteSubmit = (ids: number[]) => {
   ServeInviteGroup({
     group_id: props.gid,
     ids: ids.join(',')
@@ -112,7 +112,7 @@ const onInviteSubmit = (ids) => {
 }
 
 const onSubmit = () => {
-  let ids = checkedFilter.value.map((item) => item.id)
+  const ids = checkedFilter.value.map((item) => item.id)
 
   if (props.gid == 0) {
     onCreateSubmit(ids)

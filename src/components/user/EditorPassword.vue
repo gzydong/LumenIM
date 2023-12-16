@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
 import { ServeUpdatePassword } from '@/api/user'
@@ -9,29 +9,30 @@ const emit = defineEmits(['update:modelValue', 'close'])
 const formRef = ref()
 
 const model = reactive({
-  oldPassword: '',
-  newPassword: '',
-  newPassword2: ''
+  old_password: '',
+  new_password: '',
+  new_password2: ''
 })
 
 const rules = {
-  oldPassword: {
+  old_password: {
     required: true,
     trigger: ['blur', 'input'],
     message: '登录密码不能为空！'
   },
-  newPassword: {
+  new_password: {
     required: true,
     trigger: ['blur', 'input'],
     message: '新密码不能为空！'
   },
-  newPassword2: {
+  new_password2: {
     required: true,
     trigger: ['blur', 'change'],
     validator(rule, value) {
+      console.log(rule)
       if (!value) {
         return new Error('确认密码不能为空！')
-      } else if (model.newPassword != model.newPassword2) {
+      } else if (model.new_password != model.new_password2) {
         return new Error('两次密码填写不一致！')
       }
 
@@ -46,8 +47,8 @@ const onSubmit = () => {
   loading.value = true
 
   let response = ServeUpdatePassword({
-    old_password: model.oldPassword,
-    new_password: model.newPassword
+    old_password: model.old_password,
+    new_password: model.new_password
   })
 
   response.then((res) => {
@@ -87,19 +88,19 @@ const onValidate = (e) => {
     "
   >
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item label="登录密码" path="oldPassword">
-        <n-input placeholder="请填写登录密码" type="password" v-model:value="model.oldPassword" />
+      <n-form-item label="登录密码" path="old_password">
+        <n-input placeholder="请填写登录密码" type="password" v-model:value="model.old_password" />
       </n-form-item>
 
-      <n-form-item label="设置新密码" path="newPassword">
-        <n-input placeholder="请填写新密码" type="password" v-model:value="model.newPassword" />
+      <n-form-item label="设置新密码" path="new_password">
+        <n-input placeholder="请填写新密码" type="password" v-model:value="model.new_password" />
       </n-form-item>
 
-      <n-form-item label="确认新密码" path="newPassword2">
+      <n-form-item label="确认新密码" path="new_password2">
         <n-input
           placeholder="请再次填写新密码"
           type="password"
-          v-model:value="model.newPassword2"
+          v-model:value="model.new_password2"
         />
       </n-form-item>
     </n-form>

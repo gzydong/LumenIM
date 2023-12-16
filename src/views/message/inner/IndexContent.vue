@@ -35,17 +35,17 @@ const state = reactive({
   isShowGroupNotice: false
 })
 
-// Header 工具栏事件
-const onPanelHeaderEvent = (eventType) => {
-  const events = {
-    notice: () => {
-      state.isShowGroupNotice = !state.isShowGroupNotice
-    },
-    group: () => {
-      state.isShowGroupAside = !state.isShowGroupAside
-    }
+const events = {
+  notice: () => {
+    state.isShowGroupNotice = !state.isShowGroupNotice
+  },
+  group: () => {
+    state.isShowGroupAside = !state.isShowGroupAside
   }
+}
 
+// Header 工具栏事件
+const onPanelHeaderEvent = (eventType: string) => {
   events[eventType] && events[eventType]()
 }
 </script>

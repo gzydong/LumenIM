@@ -1,7 +1,7 @@
 /**
  * 动态表情
  */
-const emojis = {
+export const emojis = {
   '[微笑]':
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/0.gif'>",
   '[撇嘴]':
@@ -170,71 +170,7 @@ const emojis = {
     "<img class='emoji' src='https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/89.gif'>"
 }
 
-/**
- * 符号表情
- */
-const symbol = [
-  '😠',
-  '😩',
-  '😲',
-  '😞',
-  '😵',
-  '😰',
-  '😒',
-  '😍',
-  '😤',
-  '😜',
-  '😝',
-  '😋',
-  '😘',
-  '😚',
-  '😷',
-  '😳',
-  '😃',
-  '😅',
-  '😆',
-  '😁',
-  '😂',
-  '😊',
-  '☺',
-  '😄',
-  '😢',
-  '😭',
-  '😨',
-  '😣',
-  '😡',
-  '😌',
-  '😖',
-  '😔',
-  '😱',
-  '😪',
-  '😏',
-  '😓',
-  '😥',
-  '😫',
-  '😉',
-  '✊',
-  '✋',
-  '✌',
-  '👊',
-  '👍',
-  '☝',
-  '👆',
-  '👇',
-  '👈',
-  '👉',
-  '👋',
-  '👏',
-  '👌',
-  '👎'
-]
-
 const emojisKeys = Object.keys(emojis)
-
-export const emojiList = {
-  symbol,
-  emojis
-}
 
 const regEmoji = emojisKeys
   .map((value) => '|\\' + value)

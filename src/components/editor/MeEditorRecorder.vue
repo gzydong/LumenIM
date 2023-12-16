@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, onUnmounted } from 'vue'
 import { NModal } from 'naive-ui'
 import { Voice } from '@icon-park/vue-next'
@@ -11,7 +11,7 @@ const isShow = ref(true)
 const status = ref(0) // 0 未开始 1录制中 2已结束
 const animation = ref(false)
 const duration = ref(0)
-let recorder = null
+let recorder: any = null
 
 const onMaskClick = () => {
   onDestroy()

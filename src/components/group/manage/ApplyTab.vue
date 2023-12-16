@@ -1,9 +1,21 @@
-<script setup>
-import { ref, computed, h } from 'vue'
-import { NSpace, NPopconfirm, NInput } from 'naive-ui'
-import { Search, RefreshOne, CheckSmall, Close } from '@icon-park/vue-next'
+<script lang="ts" setup>
+import { ref, computed, h, inject, onMounted } from 'vue'
+import { NSpace, NInput } from 'naive-ui'
+import { Search, CheckSmall, Close, Redo } from '@icon-park/vue-next'
 import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { throttle } from '@/utils/common'
+
+interface Item {
+  id: number
+  user_id: number
+  group_id: number
+  avatar: string
+  nickname: string
+  remark: string
+  created_at: string
+}
+
+const emit = defineEmits(['close'])
 
 const props = defineProps({
   id: {
@@ -14,7 +26,9 @@ const props = defineProps({
 
 const keywords = ref('')
 const batchDelete = ref(false)
-const items = ref([])
+const items = ref<Item[]>([])
+
+const user: any = inject('$user')
 
 const filterSearch = computed(() => {
   if (!keywords.value.length) {
@@ -37,13 +51,17 @@ const onLoadData = () => {
   })
 }
 
-const onRowClick = (item) => {
+const onUserInfo = (item: Item) => {
+  user(item.user_id)
+}
+
+const onRowClick = (item: Item) => {
   if (batchDelete.value == true) {
     console.log(item)
   }
 }
 
-const onAgree = throttle((item) => {
+const onAgree = throttle((item: Item) => {
   let loading = window['$message'].loading('请稍等，正在处理')
 
   ServeAgreeGroupApply({
@@ -60,7 +78,7 @@ const onAgree = throttle((item) => {
   })
 }, 1000)
 
-const onDelete = (item) => {
+const onDelete = (item: Item) => {
   let remark = ''
   let dialog = window['$dialog'].create({
     title: '拒绝入群申请',
@@ -100,7 +118,9 @@ const onDelete = (item) => {
   })
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 <template>
   <section class="section el-container is-vertical height100">
@@ -121,7 +141,7 @@ onLoadData()
           </n-input>
 
           <n-button circle @click="onLoadData">
-            <template #icon> <n-icon :component="RefreshOne" /> </template>
+            <template #icon> <n-icon :component="Redo" /> </template>
           </n-button>
         </n-space>
       </div>
@@ -142,7 +162,7 @@ onLoadData()
         :key="item.id"
         @click="onRowClick(item)"
       >
-        <div class="avatar pointer" @click="onUserInfo(member)">
+        <div class="avatar pointer" @click="onUserInfo(item)">
           <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
         </div>
         <div class="content pointer o-hidden">
