@@ -2,8 +2,9 @@
 import { computed, ref, inject } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeSearchContact } from '@/api/contact'
+import { useInject } from '@/hooks'
 
-const user = inject('$user')
+const { showUserInfoModal } = useInject()
 
 const emit = defineEmits(['update:show'])
 
@@ -32,7 +33,7 @@ const onSubmit = () => {
     onShowError(res.code != 200)
 
     if (res.code == 200) {
-      user(res.data.id)
+      showUserInfoModal(res.data.id)
     }
   })
 }

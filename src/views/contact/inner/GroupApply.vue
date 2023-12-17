@@ -1,18 +1,31 @@
-<script setup>
-import { ref, onMounted, inject, h } from 'vue'
-import { NPopconfirm, NInput } from 'naive-ui'
+<script lang="ts" setup>
+import { ref, onMounted, h } from 'vue'
+import { NInput } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
 import { ServeGetGroupApplyAll, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
+import { useUtil, useInject } from '@/hooks'
 
+interface Item {
+  id: number
+  user_id: number
+  group_id: number
+  avatar: string
+  nickname: string
+  remark: string
+  created_at: string
+  group_name: string
+}
+
+const { useMessage, useDialog } = useUtil()
+const { showUserInfoModal } = useInject()
 const userStore = useUserStore()
-const items = ref([])
+const items = ref<Item[]>([])
 const loading = ref(true)
-const user = inject('$user')
 
-const onLoadData = (isClearTip = false) => {
+const onLoadData = () => {
   ServeGetGroupApplyAll()
     .then((res) => {
       if (res.code == 200) {
@@ -24,30 +37,30 @@ const onLoadData = (isClearTip = false) => {
     })
 }
 
-const onInfo = (item) => {
-  user(item.user_id)
+const onInfo = (item: Item) => {
+  showUserInfoModal(item.user_id)
 }
 
-const onAgree = throttle((item) => {
-  let loading = window['$message'].loading('请稍等，正在处理')
+const onAgree = throttle((item: Item) => {
+  let loading = useMessage.loading('请稍等，正在处理')
 
   ServeAgreeGroupApply({
     apply_id: item.id
   }).then((res) => {
     loading.destroy()
     if (res.code == 200) {
-      window['$message'].success('已同意')
+      useMessage.success('已同意')
     } else {
-      window['$message'].info(res.message)
+      useMessage.info(res.message)
     }
 
     onLoadData()
   })
 }, 1000)
 
-const onDelete = (item) => {
+const onDelete = (item: Item) => {
   let remark = ''
-  let dialog = window['$dialog'].create({
+  let dialog = useDialog.create({
     title: '拒绝入群申请',
     content: () => {
       return h(NInput, {
@@ -72,9 +85,9 @@ const onDelete = (item) => {
         dialog.destroy()
 
         if (res.code == 200) {
-          window['$message'].success('已拒绝')
+          useMessage.success('已拒绝')
         } else {
-          window['$message'].info(res.message)
+          useMessage.info(res.message)
         }
 
         onLoadData()
@@ -86,7 +99,7 @@ const onDelete = (item) => {
 }
 
 onMounted(() => {
-  onLoadData(true)
+  onLoadData()
 
   userStore.isGroupApply = false
 })

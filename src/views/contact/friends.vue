@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, inject } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { NSpace, NTabs, NTab, NDropdown } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
 import { ServeGetContacts, ServeDeleteContact, ServeContactGroupList } from '@/api/contact'
-import { useFriendsMenu } from '@/hooks/useFriendsMenu'
-import { useEventBus } from '@/hooks/useEventBus'
+import { useFriendsMenu, useEventBus, useInject } from '@/hooks'
 import { ContactConst } from '@/constant/event-bus'
 import { useTalkStore } from '@/store'
 import { useRouter } from 'vue-router'
@@ -15,7 +14,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const talkStore = useTalkStore()
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useFriendsMenu()
-const user: any = inject('$user')
+const { showUserInfoModal } = useInject()
 const isShowUserSearch = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
@@ -57,7 +56,7 @@ const onToTalk = (item: any) => {
 }
 
 const onInfo = (item: any) => {
-  user(item.id)
+  showUserInfoModal(item.id)
 }
 
 // 移除联系人

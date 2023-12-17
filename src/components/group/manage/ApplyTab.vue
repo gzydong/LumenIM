@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, h, inject, onMounted } from 'vue'
+import { ref, computed, h, onMounted } from 'vue'
 import { NSpace, NInput } from 'naive-ui'
 import { Search, CheckSmall, Close, Redo } from '@icon-park/vue-next'
 import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { throttle } from '@/utils/common'
+import { useInject } from '@/hooks'
 
 interface Item {
   id: number
@@ -27,8 +28,7 @@ const props = defineProps({
 const keywords = ref('')
 const batchDelete = ref(false)
 const items = ref<Item[]>([])
-
-const user: any = inject('$user')
+const { showUserInfoModal } = useInject()
 
 const filterSearch = computed(() => {
   if (!keywords.value.length) {
@@ -52,7 +52,7 @@ const onLoadData = () => {
 }
 
 const onUserInfo = (item: Item) => {
-  user(item.user_id)
+  showUserInfoModal(item.user_id)
 }
 
 const onRowClick = (item: Item) => {

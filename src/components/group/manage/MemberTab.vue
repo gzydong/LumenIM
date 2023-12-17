@@ -5,6 +5,7 @@ import { Search, Plus } from '@icon-park/vue-next'
 import GroupLaunch from '../GroupLaunch.vue'
 import { useUserStore } from '@/store'
 import { StateDropdown } from '@/types/global'
+import { useInject } from '@/hooks'
 
 import {
   ServeGetGroupMembers,
@@ -34,7 +35,7 @@ interface Item {
   motto?: string
 }
 
-const user: any = inject('$user')
+const { showUserInfoModal } = useInject()
 const userStore = useUserStore()
 const isGroupLaunch = ref(false)
 const keywords = ref('')
@@ -136,7 +137,7 @@ const onRowClick = (item: Item) => {
       item.is_delete = !item.is_delete
     }
   } else {
-    user(item.user_id)
+    showUserInfoModal(item.user_id)
   }
 }
 
@@ -149,7 +150,7 @@ const onCancelDelete = () => {
 }
 
 const onUserInfo = (item: Item) => {
-  user(item.user_id)
+  showUserInfoModal(item.user_id)
 }
 
 const onAssignAdmin = (item: Item) => {

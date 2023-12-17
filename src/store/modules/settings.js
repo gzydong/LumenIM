@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settings', {
       isPromptTone: storage.get('isPromptTone', false), // 新消息提示音
       isKeyboard: storage.get('isKeyboard', false), // 是否推送键盘输入事件
       isLeaveWeb: false, // 是否离开网页
-      isWebNotify: storage.get('isWebNotify', true), // 是否同意浏览器通知
+      isNotify: storage.get('isNotify', true), // 是否同意浏览器通知
       isFullScreen: storage.get('isFullScreen', true), // 是否客户端全屏
       darkTheme: storage.get('darkTheme', false)
     }
@@ -29,9 +29,9 @@ export const useSettingsStore = defineStore('settings', {
       this.darkTheme = value
       storage.set('darkTheme', value, null)
     },
-    setWebNotify(value) {
-      this.isWebNotify = value
-      storage.set('isWebNotify', value, null)
+    setNotify(value) {
+      this.isNotify = value
+      storage.set('isNotify', value, null)
     }
   }
 })

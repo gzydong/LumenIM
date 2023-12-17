@@ -37,8 +37,8 @@ const onSetMenu = () => {
   <header class="el-header box-header">
     <div class="menu bdr-r pointer" @click="onSetMenu">
       <n-icon
-        size="22"
         :component="dialogueStore.isShowSessionList ? MenuUnfoldOne : MenuFoldOne"
+        :size="22"
       />
     </div>
 
@@ -61,17 +61,17 @@ const onSetMenu = () => {
     <div class="module right-module">
       <n-icon
         v-show="type == 2"
+        :component="Announcement"
         :size="18"
         class="icon"
         @click="emit('evnet', 'notice')"
-        :component="Announcement"
       />
       <n-icon
         v-show="type == 2"
+        :component="Peoples"
         :size="18"
         class="icon"
         @click="emit('evnet', 'group')"
-        :component="Peoples"
       />
     </div>
   </header>

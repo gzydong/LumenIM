@@ -30,7 +30,7 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
-import { useEventBus } from '@/hooks/useEventBus'
+import { useEventBus } from '@/hooks'
 
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)

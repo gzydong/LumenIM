@@ -69,28 +69,23 @@ export async function clipboardImage(src, callback) {
 
   if (state != 'granted') return
 
-  let image = new Image()
-  image.src = src
-  image.onload = () => {
-    let canvas = document.createElement('canvas')
-    canvas.width = image.width
-    canvas.height = image.height
-    let context = canvas.getContext('2d')
-    context.drawImage(image, 0, 0, image.width, image.height)
+  try {
+    const data = await fetch(src)
+    const blob = await data.blob()
 
-    canvas.toBlob(async (blob) => {
-      try {
-        let item = new ClipboardItem({
-          [blob.type]: blob
-        })
+    if (blob.type != 'image/png') {
+      return alert('当前图片类型不支持复制')
+    }
 
-        await navigator.clipboard.write([item])
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob
+      })
+    ])
 
-        callback()
-      } catch (err) {
-        console.error('图片复制失败: ', err)
-      }
-    }, 'image/png')
+    callback()
+  } catch (err) {
+    console.error(err.name, err.message)
   }
 }
 

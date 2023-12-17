@@ -10,7 +10,7 @@ import { ServeClearTalkUnreadNum } from '@/api/chat'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName } from '@/utils/talk'
 import { ISession } from '@/types/chat'
-import { useSessionMenu } from '@/hooks/useSessionMenu'
+import { useSessionMenu } from '@/hooks'
 
 const {
   dropdown,

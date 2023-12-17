@@ -19,14 +19,11 @@ const isKeyboard = computed({
   }
 })
 
-const isWebNotify = computed({
-  get: () => settingsStore.isWebNotify,
+const isNotify = computed({
+  get: () => settingsStore.isNotify,
   set: (value) => {
-    settingsStore.setWebNotify(value)
-
-    if (value) {
-      toPermission()
-    }
+    settingsStore.setNotify(value)
+    value && toPermission()
   }
 })
 
@@ -70,16 +67,16 @@ const toPermission = () => {
         <div class="content">
           <div class="name">消息通知</div>
           <div class="desc">
-            消息通知：{{ isWebNotify ? '已开启' : '已关闭' }}
+            消息通知：{{ isNotify ? '已开启' : '已关闭' }}
 
-            <span v-show="isWebNotify && !hasPermission">
+            <span v-show="isNotify && !hasPermission">
               (当前未获得浏览器通知权限，
               <n-button type="primary" text @click="toPermission">点击获取权限</n-button>)
             </span>
           </div>
         </div>
         <div class="tools">
-          <n-switch size="medium" v-model:value="isWebNotify" />
+          <n-switch size="medium" v-model:value="isNotify" />
         </div>
       </div>
     </div>

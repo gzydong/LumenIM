@@ -1,6 +1,6 @@
 import { ref, provide } from 'vue'
 
-export function useUserModal() {
+export function useProvideUserModal() {
   const isShow = ref(false)
   const uid = ref(0)
 

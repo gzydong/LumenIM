@@ -10,10 +10,10 @@ export function useUtil() {
     throw new Error('useUtil must be called in setup function')
   }
 
-  const message: MessageApiInjection = ctx.appContext.config.globalProperties.$message
-  const dialog: DialogApiInjection = ctx.appContext.config.globalProperties.$dialog
-  const notification: NotificationApiInjection =
+  const useMessage: MessageApiInjection = ctx.appContext.config.globalProperties.$message
+  const useDialog: DialogApiInjection = ctx.appContext.config.globalProperties.$dialog
+  const useNotification: NotificationApiInjection =
     ctx.appContext.config.globalProperties.$notification
 
-  return { message, dialog, notification }
+  return { useMessage, useDialog, useNotification }
 }

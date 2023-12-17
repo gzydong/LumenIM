@@ -2,7 +2,6 @@ import Base from './base'
 import { nextTick } from 'vue'
 import ws from '@/connect'
 import { parseTime } from '@/utils/datetime'
-import { WebNotify } from '@/utils/notification'
 import * as message from '@/constant/message'
 import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { isElectronMode } from '@/utils/common'
@@ -119,12 +118,14 @@ class Talk extends Base {
    */
   showMessageNocice() {
     if (useSettingsStore().isLeaveWeb) {
-      if (useSettingsStore().isWebNotify) {
-        WebNotify('LumenIM 在线聊天', {
-          dir: 'auto',
-          lang: 'zh-CN',
-          body: '您有新的消息请注意查收'
-        })
+      const notification = new Notification('LumenIM 在线聊天', {
+        dir: 'auto',
+        lang: 'zh-CN',
+        body: '您有新的消息请注意查收'
+      })
+
+      notification.onclick = () => {
+        notification.close()
       }
     } else {
       window['$notification'].create({

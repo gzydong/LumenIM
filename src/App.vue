@@ -17,14 +17,16 @@ import { bus } from '@/utils/event-bus'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
-import { useUserModal } from '@/hooks/useUserModal'
-import { useThemeMode } from '@/hooks/useThemeMode'
-import { useVisibilityChange } from '@/hooks/useVisibilityChange'
-import { useAccessPrompt } from '@/hooks/useAccessPrompt'
-import { useUnreadMessage } from '@/hooks/useUnreadMessage'
-import { useConnectStatus } from '@/hooks/useConnectStatus'
-import { useClickEvent } from '@/hooks/useClickEvent'
 import { ContactConst } from '@/constant/event-bus'
+import {
+  useProvideUserModal,
+  useThemeMode,
+  useVisibilityChange,
+  useAccessPrompt,
+  useUnreadMessage,
+  useConnectStatus,
+  useClickEvent
+} from '@/hooks'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -34,13 +36,13 @@ IconProvider({
   strokeLinejoin: 'bevel'
 })
 
-const { uid: showUserId, isShow: isShowUser } = useUserModal()
+const { uid: showUserId, isShow: isShowUser } = useProvideUserModal()
 const { getDarkTheme, getThemeOverride } = useThemeMode()
 
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 
-const onChangeRemark = (value) => {
+const onChangeRemark = (value: string) => {
   bus.emit(ContactConst.UpdateRemark, value)
   talkStore.setRemark(value)
 }

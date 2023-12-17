@@ -3,10 +3,10 @@ import { NAvatar } from 'naive-ui'
 import { useTalkStore, useUserStore, useDialogueStore } from '@/store'
 import { notifyIcon } from '@/constant/default'
 import WsSocket from './plugins/ws-socket'
-import EventTalk from './event/socket/talk'
-import EventKeyboard from './event/socket/keyboard'
-import EventLogin from './event/socket/login'
-import EventRevoke from './event/socket/revoke'
+import EventTalk from './event/talk'
+import EventKeyboard from './event/keyboard'
+import EventLogin from './event/login'
+import EventRevoke from './event/revoke'
 import { getAccessToken, isLoggedIn } from './utils/auth'
 
 const urlCallback = () => {
@@ -172,7 +172,7 @@ class Connect {
 
   onEventError() {
     this.conn.on('event_error', (data: any) => {
-      window['$message'].error(JSON.stringify(data))
+      window['$message'] && window['$message'].error(JSON.stringify(data))
     })
   }
 }

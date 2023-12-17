@@ -1,11 +1,11 @@
-<script setup>
-import { reactive, ref, onUnmounted } from 'vue'
+<script lang="ts" setup>
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeRegister } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
-import { useSmsLock } from '@/hooks/useSmsLock'
+import { useSmsLock } from '@/hooks'
 
 // 初始化短信按钮锁
 const { lockTime, start } = useSmsLock('REGISTER_SMS', 60)
@@ -20,7 +20,8 @@ const rules = {
   },
   username: {
     required: true,
-    validator(rule, value) {
+    // @ts-ignore
+    validator(rule: any, value: string) {
       if (!value) {
         return new Error('手机号不能为空！')
       } else if (!isMobile(value)) {

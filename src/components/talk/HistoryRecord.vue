@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { ref, reactive, inject, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
 import { Down, Calendar } from '@icon-park/vue-next'
 import * as message from '@/constant/message'
 import { ITalkRecord } from '@/types/chat'
+import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -17,7 +18,7 @@ const props = defineProps({
     default: 0
   }
 })
-const showUserModal: any = inject('$user')
+const { showUserInfoModal } = useInject()
 const model = reactive({
   cursor: 0,
   limit: 30,
@@ -163,7 +164,7 @@ onMounted(() => {
               :src="item.avatar"
               :size="30"
               :username="item.nickname"
-              @click="showUserModal(item.user_id)"
+              @click="showUserInfoModal(item.user_id)"
             />
           </div>
 

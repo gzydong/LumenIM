@@ -1,3 +1,5 @@
+import { App } from 'vue'
+
 import {
   // create naive ui
   create,
@@ -38,6 +40,6 @@ const naive = create({
   ]
 })
 
-export function setupNaive(app) {
+export function setupNaive(app: App) {
   app.use(naive)
 }

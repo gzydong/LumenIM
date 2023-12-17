@@ -184,11 +184,10 @@ class WsSocket {
     let result = this.onParse(evt)
 
     if (result.sid) {
-      if (cache.has(result.sid)) {
-        return
-      }
+      if (cache.has(result.sid)) return
 
       cache.add(result.sid)
+
       this.connect.send(`{"event":"ack","sid":"${result.sid}"}`)
     }
 

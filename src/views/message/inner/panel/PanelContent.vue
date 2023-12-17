@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch, onMounted, inject, ref } from 'vue'
+import { watch, onMounted, ref } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
 import { bus } from '@/utils/event-bus'
@@ -12,7 +12,7 @@ import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 import { ITalkRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
-import { useTalkRecord } from '@/hooks/useTalkRecord'
+import { useInject, useTalkRecord, useUtil } from '@/hooks'
 
 const props = defineProps({
   uid: {
@@ -35,8 +35,9 @@ const props = defineProps({
 
 const { loadConfig, records, onLoad, onRefreshLoad, onJumpMessage } = useTalkRecord(props.uid)
 
+const { useMessage } = useUtil()
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
-const user: any = inject('$user')
+const { showUserInfoModal } = useInject()
 const dialogueStore = useDialogueStore()
 
 // 置底按钮
@@ -111,13 +112,13 @@ const onPanelScroll = (e: any) => {
 const onCopyText = (data: ITalkRecord) => {
   if (data.msg_type == 1) {
     if (data.extra.content && data.extra.content.length > 0) {
-      return clipboard(htmlDecode(data.extra.content), () => window['$message'].success('复制成功'))
+      return clipboard(htmlDecode(data.extra.content), () => useMessage.success('复制成功'))
     }
   }
 
   if (data.extra?.url) {
     return clipboardImage(data.extra.url, () => {
-      window['$message'].success('复制成功')
+      useMessage.success('复制成功')
     })
   }
 }
@@ -148,10 +149,10 @@ const onDownloadFile = (data: ITalkRecord) => {
   }
 
   if (data.msg_type == 4) {
-    return window['$message'].info('音频暂不支持下载!')
+    return useMessage.info('音频暂不支持下载!')
   }
 
-  return window['$message'].info('视频暂不支持下载!')
+  return useMessage.info('视频暂不支持下载!')
 }
 
 const onQuoteMessage = (data: ITalkRecord) => {
@@ -222,20 +223,19 @@ const onContextMenu = (e: any, item: ITalkRecord) => {
   e.preventDefault()
 }
 
+const evnets = {
+  copy: onCopyText,
+  revoke: onRevokeTalk,
+  delete: onDeleteTalk,
+  multiSelect: onMultiSelect,
+  download: onDownloadFile,
+  quote: onQuoteMessage
+}
+
 // 会话列表右键菜单回调事件
 const onContextMenuHandle = (key: string) => {
-  const evnets = {
-    copy: onCopyText,
-    revoke: onRevokeTalk,
-    delete: onDeleteTalk,
-    multiSelect: onMultiSelect,
-    download: onDownloadFile,
-    quote: onQuoteMessage
-  }
-
   // 触发事件
   evnets[key] && evnets[key](dropdown.item)
-
   closeDropdownMenu()
 }
 
@@ -244,7 +244,7 @@ const onRowClick = (item: ITalkRecord) => {
     if (ForwardableMessageType.includes(item.msg_type)) {
       item.isCheck = !item.isCheck
     } else {
-      window['$message'].info('此类消息不支持转发')
+      useMessage.info('此类消息不支持转发')
     }
   }
 }
@@ -323,7 +323,7 @@ onMounted(() => {
               :src="item.avatar"
               :size="30"
               :username="item.nickname"
-              @click="user(item.user_id)"
+              @click="showUserInfoModal(item.user_id)"
             />
           </aside>
 
@@ -501,7 +501,6 @@ onMounted(() => {
         font-size: 12px;
         user-select: none;
         color: #a7a0a0;
-        transition: 0.5s ease;
         opacity: 1;
 
         &.show {
@@ -549,7 +548,7 @@ onMounted(() => {
           justify-content: space-around;
 
           .more-tools {
-            display: none;
+            visibility: hidden;
             margin-left: 5px;
           }
         }
@@ -590,7 +589,7 @@ onMounted(() => {
         }
 
         .more-tools {
-          display: flex !important;
+          visibility: visible !important;
         }
       }
     }

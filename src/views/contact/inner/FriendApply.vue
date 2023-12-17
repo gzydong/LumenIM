@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted, inject, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 import { useUserStore } from '@/store'
-
-const userStore = useUserStore()
+import { useInject } from '@/hooks'
 
 type Item = {
   id: number
@@ -19,11 +18,10 @@ type Item = {
   created_at: string
 }
 
+const userStore = useUserStore()
+const { showUserInfoModal } = useInject()
 const items = ref<Item[]>([])
 const loading = ref(true)
-
-const user: any = inject('$user')
-
 const isContactApply = computed(() => userStore.isContactApply)
 
 const onLoadData = (isClearTip = false) => {
@@ -43,7 +41,7 @@ const onLoadData = (isClearTip = false) => {
 }
 
 const onInfo = (item: Item) => {
-  user(item.user_id)
+  showUserInfoModal(item.user_id)
 }
 
 const onAccept = throttle((item: Item) => {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, watch, ref, inject } from 'vue'
+import { reactive, computed, watch, ref } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
@@ -11,10 +11,10 @@ import {
   ServeSecedeGroup,
   ServeUpdateGroupCard
 } from '@/api/group'
+import { useInject } from '@/hooks'
 
 const userStore = useUserStore()
-
-const user: any = inject('$user')
+const { showUserInfoModal } = useInject()
 
 const emit = defineEmits(['close', 'to-talk'])
 const props = defineProps({
@@ -77,7 +77,7 @@ const onShowManage = (vallue: any) => {
 const onGroupCallBack = () => {}
 
 const onToInfo = (item: any) => {
-  user(item.user_id)
+  showUserInfoModal(item.user_id)
 }
 
 /**

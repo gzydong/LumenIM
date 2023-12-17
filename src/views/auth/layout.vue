@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { isElectronMode } from '@/utils/common'
 </script>
 

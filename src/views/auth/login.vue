@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NDivider, NForm, NFormItem } from 'naive-ui'
@@ -32,6 +32,8 @@ const model = reactive({
 })
 
 const onLogin = () => {
+  const redirect: any = route.params?.redirect || '/'
+
   model.loading = true
 
   const response = ServeLogin({
@@ -46,7 +48,7 @@ const onLogin = () => {
       setAccessToken(res.data.access_token, res.data.expires_in)
       ws.connect()
       userStore.loadSetting()
-      router.push(route.query.redirect || '/')
+      router.push(redirect)
     } else {
       window['$message'].warning(res.message)
     }
@@ -57,18 +59,18 @@ const onLogin = () => {
   })
 }
 
-const onValidate = (e) => {
+const onValidate = (e: Event) => {
   e.preventDefault()
 
   // 谷歌浏览器提示音需要用户主动交互才能播放，登录入口主动交互一次，后面消息提示音就能正常播放了
   palyMusic(true)
 
-  formRef.value.validate((errors) => {
+  formRef.value.validate((errors: any) => {
     !errors && onLogin()
   })
 }
 
-const onClickAccount = (type) => {
+const onClickAccount = (type: number) => {
   if (type == 1) {
     model.username = '18798272054'
     model.password = 'admin123'

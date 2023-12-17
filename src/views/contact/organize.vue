@@ -6,12 +6,13 @@ import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { Search, AllApplication } from '@icon-park/vue-next'
 import MemberCard from './inner/MemberCard.vue'
+import { useInject } from '@/hooks'
 
 const router = useRouter()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
+const { showUserInfoModal } = useInject()
 
-const user = inject('$user')
 const dept = ref(-1)
 const keywords = ref('')
 const isShowOrganize = ref(true)
@@ -71,7 +72,7 @@ function toTree(data) {
 }
 
 const onInfo = (item) => {
-  user(item.user_id)
+  showUserInfoModal(item.user_id)
 }
 
 const onNodeProps = ({ option }) => {

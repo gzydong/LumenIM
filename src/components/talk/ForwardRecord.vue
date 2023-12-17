@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetForwardRecords } from '@/api/chat'
 import { MessageComponents } from '@/constant/message'
 import { ITalkRecord } from '@/types/chat'
+import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -12,7 +13,8 @@ const props = defineProps({
     default: 0
   }
 })
-const user: any = inject('$user')
+
+const { showUserInfoModal } = useInject()
 const isShow = ref(true)
 const items = ref<ITalkRecord[]>([])
 const title = ref('会话记录')
@@ -60,7 +62,7 @@ onMounted(() => {
       <Loading v-if="items.length === 0" />
 
       <div v-for="item in items" :key="item.msg_id" class="message-item">
-        <div class="left-box pointer" @click="user(item.user_id)">
+        <div class="left-box pointer" @click="showUserInfoModal(item.user_id)">
           <im-avatar :src="item.avatar" :size="30" :username="item.nickname" />
         </div>
 

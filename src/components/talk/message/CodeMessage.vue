@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { NCode } from 'naive-ui'
 import { Copy, Stretching } from '@icon-park/vue-next'
 import { clipboard } from '@/utils/common'
-import { message } from '@/utils/util'
+import { useUtil } from '@/hooks'
 import { ITalkRecordExtraCode, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
@@ -12,12 +12,13 @@ const props = defineProps<{
   maxWidth?: Boolean
 }>()
 
+const { useMessage } = useUtil()
 const lineMumber = props.extra.code.trim().split('\n').length
 const full = ref(false)
 
 const onClipboard = () => {
   clipboard(props.extra.code, () => {
-    message().success('复制成功')
+    useMessage.success('复制成功')
   })
 }
 </script>
