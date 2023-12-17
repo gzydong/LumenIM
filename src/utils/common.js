@@ -73,17 +73,48 @@ export async function clipboardImage(src, callback) {
     const data = await fetch(src)
     const blob = await data.blob()
 
-    if (blob.type != 'image/png') {
-      return alert('当前图片类型不支持复制')
+    // navigator.clipboard.write 仅支持 png 图片
+    if (blob.type == 'image/png') {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob
+        })
+      ])
+
+      return callback()
     }
 
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob
-      })
-    ])
+    const objectURL = URL.createObjectURL(blob)
 
-    callback()
+    const img = new Image()
+    img.src = URL.createObjectURL(blob)
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0)
+
+      canvas.toBlob(
+        (blob) => {
+          const data = [new ClipboardItem({ [blob.type]: blob })]
+
+          navigator.clipboard
+            .write(data)
+            .then(() => {
+              callback()
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+
+          URL.revokeObjectURL(objectURL)
+        },
+        'image/png',
+        1
+      )
+    }
   } catch (err) {
     console.error(err.name, err.message)
   }
@@ -129,7 +160,9 @@ export function getVideoImage(file, time = 1) {
   return new Promise((resolve) => {
     let video = document.createElement('video')
 
-    video.src = URL.createObjectURL(file)
+    const objectURL = URL.createObjectURL(file)
+
+    video.src = objectURL
     video.currentTime = time
     video.autoplay = true
     video.muted = true
@@ -155,6 +188,8 @@ export function getVideoImage(file, time = 1) {
           type: blob.type,
           lastModified: Date.now()
         })
+
+        URL.revokeObjectURL(objectURL)
 
         resolve(data)
       }, 'image/jpeg')
