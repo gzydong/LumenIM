@@ -1,18 +1,29 @@
-<script setup>
-import { Search, SortAmountDown, SortAmountUp } from '@icon-park/vue-next'
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { Search, SortAmountDown } from '@icon-park/vue-next'
 import { NImage, NScrollbar } from 'naive-ui'
-import { useNoteStore } from '@/store'
+import { useNoteStore, NoteItem } from '@/store'
 import { debounce } from '@/utils/common'
 import Loading from '@/components/base/Loading.vue'
-const store = useNoteStore()
 
-const onCatDetail = (item) => {
+const store = useNoteStore()
+const items = computed(() => store.notes.items)
+const loadId = computed(() => store.view.loadId)
+const loadStatus = computed(() => store.notes.loadStatus)
+const keyword = computed({
+  get: () => store.notes.params.keyword,
+  set: (val) => {
+    store.notes.params.keyword = val
+  }
+})
+
+const onCatDetail = (item: NoteItem) => {
   store.loadDetail(item.id)
 }
 
-const onSearchInput = debounce((e) => {
+const onSearchInput = debounce(() => {
   store.loadNoteList({}, false)
-}, 500)
+}, 300)
 </script>
 <template>
   <section class="el-container is-vertical section">
@@ -24,7 +35,7 @@ const onSearchInput = debounce((e) => {
       <input
         type="text"
         class="search"
-        v-model="store.notes.params.keyword"
+        v-model="keyword"
         placeholder="搜索我的笔记 ..."
         maxlength="30"
         @input="onSearchInput"
@@ -32,17 +43,17 @@ const onSearchInput = debounce((e) => {
     </header>
 
     <header class="el-header sub-header">
-      <span>{{ store.notes.items.length }} 篇笔记</span>
+      <span>{{ items.length }} 篇笔记</span>
       <div class="menu-icon">
         <n-icon size="18" :component="SortAmountDown" />
       </div>
     </header>
 
-    <main class="el-main height100 flex-center" v-if="store.notes.loadStatus == 0">
+    <main class="el-main height100 flex-center" v-if="loadStatus == 0">
       <Loading />
     </main>
 
-    <main class="el-main height100 flex-center" v-else-if="!store.notes.items.length">
+    <main class="el-main height100 flex-center" v-else-if="!items.length">
       <n-empty size="200" description="暂无相关数据">
         <template #icon>
           <img src="@/assets/image/no-data.svg" alt="" />
@@ -54,10 +65,10 @@ const onSearchInput = debounce((e) => {
       <n-scrollbar>
         <div
           class="article"
-          v-for="note in store.notes.items"
+          v-for="note in items"
           :key="note.id"
           @click="onCatDetail(note)"
-          :class="{ selectd: store.view.loadId == note.id }"
+          :class="{ selectd: loadId == note.id }"
         >
           <div class="article-title">
             <span>{{ note.title }}</span>
@@ -66,7 +77,7 @@ const onSearchInput = debounce((e) => {
           <div class="article-main pointer">
             <div class="content">
               <div class="datetime">
-                <span>{{ note.created_at.substr(0, 10) }}</span>
+                <span>{{ note.created_at.substring(0, 10) }}</span>
                 <span>{{ note.class_name }}</span>
               </div>
               <div class="abstract">
@@ -81,7 +92,6 @@ const onSearchInput = debounce((e) => {
                 preview-disabled
                 style="border-radius: 2px"
                 :src="note.image"
-                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
               />
             </div>
           </div>

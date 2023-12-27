@@ -13,23 +13,23 @@ export const useSettingsStore = defineStore('settings', {
     }
   },
   actions: {
-    setPromptTone(value) {
+    setPromptTone(value: boolean) {
       this.isPromptTone = value
       storage.set('isPromptTone', value, null)
     },
-    setKeyboard(value) {
+    setKeyboard(value: boolean) {
       this.isKeyboard = value
       storage.set('isKeyboard', value, null)
     },
-    setFullScreen(value) {
+    setFullScreen(value: boolean) {
       this.isFullScreen = value
       storage.set('isFullScreen', value, null)
     },
-    setDarkTheme(value) {
+    setDarkTheme(value: boolean) {
       this.darkTheme = value
       storage.set('darkTheme', value, null)
     },
-    setNotify(value) {
+    setNotify(value: boolean) {
       this.isNotify = value
       storage.set('isNotify', value, null)
     }

@@ -58,7 +58,7 @@ const loadWatchClassMenu = () => {
           name: item.class_name,
           count: item.count,
           isEdit: false,
-          indexName: '2-' + item.id
+          indexName: `2-${item.id}`
         })
       }
 
@@ -82,7 +82,7 @@ const loadWatchTagsMenu = () => {
           name: item.tag_name,
           count: item.count,
           isEdit: false,
-          indexName: '3-' + item.id
+          indexName: `3-${item.id}`
         })
       }
 
@@ -436,6 +436,16 @@ loadWatchTagsMenu()
 
     .actived {
       background: var(--im-active-bg-color);
+    }
+  }
+}
+
+html[theme-mode='dark'] {
+  .menu-level2 {
+    input {
+      border: 1px solid var(--border-color);
+      background-color: var(--im-bg-color);
+      color: var(--im-text-color);
     }
   }
 }

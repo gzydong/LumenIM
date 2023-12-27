@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { NModal, NImage } from 'naive-ui'
 import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
@@ -16,7 +16,37 @@ import {
 const emit = defineEmits(['close'])
 
 const isShow = ref(true)
-const state = reactive({
+
+interface IState {
+  note: {
+    loading: boolean
+    items: {
+      abstract: string
+      class_id: number
+      class_name: string
+      created_at: string
+      id: number
+      image: string
+      is_asterisk: number
+      status: number
+      tags_id: string
+      title: string
+      updated_at: string
+    }[]
+  }
+  annex: {
+    loading: boolean
+    items: {
+      id: number
+      article_id: number
+      title: string
+      original_name: string
+      day: number
+    }[]
+  }
+}
+
+const state = reactive<IState>({
   note: {
     loading: false,
     items: []
@@ -33,7 +63,7 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const triggerType = (index) => {
+const triggerType = (index: number) => {
   tabIndex.value = index
 }
 
@@ -66,7 +96,7 @@ const loadAnnexList = () => {
 }
 
 // 永久删除笔记
-const onDeleteArticle = (index, id) => {
+const onDeleteArticle = (index: number, id: number) => {
   ServeForeverDeleteArticle({
     article_id: id
   }).then((res) => {
@@ -77,7 +107,7 @@ const onDeleteArticle = (index, id) => {
 }
 
 // 恢复已删除笔记
-const onRecoverArticle = (index, id) => {
+const onRecoverArticle = (index: number, id: number) => {
   ServeRecoverArticle({
     article_id: id
   }).then((res) => {
@@ -87,16 +117,16 @@ const onRecoverArticle = (index, id) => {
   })
 }
 
-const onRecoverAnnex = (index, id) => {
+const onRecoverAnnex = (index: number, id: number) => {
   ServeRecoverArticleAnnex({
-    annex_id: data.id
+    annex_id: id
   }).then((res) => {
     if (res.code == 200) {
       state.annex.items.splice(index, 1)
     }
   })
 }
-const onDeleteAnnex = (index, id) => {
+const onDeleteAnnex = (index: number, id: number) => {
   ServeForeverDeleteAnnex({
     annex_id: id
   }).then((res) => {
@@ -269,7 +299,7 @@ onMounted(() => {
 
             <div class="at-body pointer">
               <div class="content">
-                <div class="abstract">所属笔记：{{ annex.title }}</div>
+                <div class="abstract">所属笔记： {{ annex.title }}</div>
               </div>
             </div>
           </div>
@@ -354,10 +384,6 @@ onMounted(() => {
       width: 70px;
       display: flex;
       justify-content: flex-end;
-
-      .tip {
-        color: #ff9800;
-      }
 
       .icons {
         display: none;

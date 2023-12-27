@@ -10,8 +10,78 @@ import {
   ServeDeleteArticleTag
 } from '@/api/article'
 
+interface Tag {
+  id: number
+  tag_name: string
+  count: number
+}
+
+interface Class {
+  id: number
+  class_name: string
+  count: number
+  is_default: number
+}
+
+export interface NoteItem {
+  id: number
+  title: string
+  abstract: string
+  class_id: number
+  class_name: string
+  image: string
+  is_asterisk: number
+  status: number
+  tags_id: string
+  created_at: string
+  updated_at: string
+}
+
+export interface NoteFileItem {
+  id: number
+  created_at: string
+  original_name: string
+  size: number
+  suffix: string
+}
+
+interface NoteStoreState {
+  tags: Tag[]
+  class: Class[]
+  notes: {
+    loadStatus: number
+    params: {
+      page: number
+      keyword: string
+      find_type: number
+      cid: number
+    }
+    items: NoteItem[]
+  }
+  view: {
+    editorMode: string
+    loadId: number
+    loadStatus: number
+    detail: {
+      id: number
+      class_id: number
+      class_name: string
+      title: string
+      is_asterisk: number
+      status: number
+      tags: {
+        id: number
+      }[]
+      files: NoteFileItem[]
+      md_content: string
+      created_at: string
+      updated_at: string
+    }
+  }
+}
+
 export const useNoteStore = defineStore('note', {
-  state: () => {
+  state: (): NoteStoreState => {
     return {
       tags: [],
       class: [],
@@ -34,7 +104,6 @@ export const useNoteStore = defineStore('note', {
           status: 1,
           tags: [],
           files: [],
-          content: '',
           md_content: '',
           created_at: '',
           class_name: ''
@@ -51,7 +120,7 @@ export const useNoteStore = defineStore('note', {
     addNewNote(class_id = 0) {
       this.view.detail = {
         class_id: class_id,
-        content: '',
+        class_name: '',
         created_at: '',
         files: [],
         id: 0,
@@ -102,14 +171,14 @@ export const useNoteStore = defineStore('note', {
       })
     },
 
-    updateNoteItem(id, params = {}) {
+    updateNoteItem(id: number, params = {}) {
       const item = this.notes.items.find((item) => item.id == id)
 
       item && Object.assign(item, params)
     },
 
     // 加载详情信息
-    loadDetail(id) {
+    loadDetail(id: number) {
       this.view.loadId = id
       this.view.loadStatus = 0
 
@@ -125,41 +194,50 @@ export const useNoteStore = defineStore('note', {
         this.view.loadStatus = 1
 
         data.class_name = ''
+
         this.view.detail = data
 
-        let node = this.class.find((item) => {
+        const node = this.class.find((item) => {
           return item.id == data.class_id
         })
 
-        this.view.detail.class_name = node.class_name || ''
+        if (node) {
+          this.view.detail.class_name = node.class_name || ''
+        }
       })
     },
 
     // 修改编辑模式
-    setEditorMode(value) {
+    setEditorMode(value: string) {
       this.view.editorMode = value
     },
 
     // 修改收藏状态
-    setCollectionStatus(isTrue) {
+    setCollectionStatus(isTrue: boolean) {
       this.view.detail.is_asterisk = isTrue ? 1 : 0
     },
 
     // 编辑分类
-    async editClass(class_id, class_name) {
+    async editClass(class_id: number, class_name: string) {
       const res = await ServeEditArticleClass({ class_id, class_name })
 
       if (res && res.code === 200) {
         if (class_id === 0) {
-          this.class.unshift({ class_name, count: 0, id: res.data.id })
+          this.class.unshift({
+            id: res.data.id,
+            class_name,
+            count: 0,
+            is_default: 0
+          })
         } else {
           const item = this.class.find((item) => item.id === class_id)
+
           item && Object.assign(item, { class_name })
         }
       }
     },
 
-    async deleteClass(class_id) {
+    async deleteClass(class_id: number) {
       const res = await ServeDeleteArticleClass({ class_id })
 
       if (res && res.code == 200) {
@@ -174,20 +252,25 @@ export const useNoteStore = defineStore('note', {
     },
 
     // 编辑标签
-    async editTag(tag_id, tag_name) {
+    async editTag(tag_id: number, tag_name: string) {
       const res = await ServeEditArticleTag({ tag_id, tag_name })
 
       if (res && res.code === 200) {
         if (tag_id === 0) {
-          this.tags.unshift({ tag_name, count: 0, id: res.data.id })
+          this.tags.unshift({
+            id: res.data.id,
+            tag_name,
+            count: 0
+          })
         } else {
           const item = this.tags.find((item) => item.id === tag_id)
+
           item && Object.assign(item, { tag_name })
         }
       }
     },
 
-    async deleteTag(tag_id) {
+    async deleteTag(tag_id: number) {
       const res = await ServeDeleteArticleTag({ tag_id })
 
       if (res && res.code == 200) {

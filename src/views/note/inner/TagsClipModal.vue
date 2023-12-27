@@ -1,12 +1,22 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { useNoteStore } from '@/store'
 import { ServeUpdateArticleTag } from '@/api/article'
 import { Close } from '@icon-park/vue-next'
+import { useUtil } from '@/hooks/useUtil'
 
+const { useMessage } = useUtil()
 const store = useNoteStore()
+
 let loading = false
-const tags = computed(() => {
+
+interface TagItem {
+  id: number
+  tag_name: string
+  is_check: boolean
+}
+
+const tags = computed((): TagItem[] => {
   let ids = store.view.detail.tags.map((item) => item.id)
 
   return store.tags.map((tag) => {
@@ -18,7 +28,7 @@ const tags = computed(() => {
   })
 })
 
-const onSave = (ids = []) => {
+const onSave = (ids: number[] = []) => {
   loading = true
 
   ServeUpdateArticleTag({
@@ -37,7 +47,7 @@ const onSave = (ids = []) => {
     })
 }
 
-const onActive = (item) => {
+const onActive = (item: TagItem) => {
   if (loading) return
 
   let items = tags.value.filter((val) => {
@@ -49,7 +59,7 @@ const onActive = (item) => {
   })
 
   if (!item.is_check && items.length > 5) {
-    return window['$message'].info('标签不能超过5个')
+    return useMessage.info('标签不能超过5个')
   }
 
   onSave(items.map((v) => v.id))

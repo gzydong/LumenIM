@@ -1,25 +1,25 @@
 import { defineStore } from 'pinia'
-
 import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from '@/api/upload'
 import { ServeSendTalkFile } from '@/api/chat'
 
-const message = window.window.$message
+// @ts-ignore
+const message = window.$message
 
 // 处理拆分上传文件
-function fileSlice(file, uploadId, eachSize) {
+function fileSlice(file: File, uploadId: string, eachSize: number) {
   const splitNum = Math.ceil(file.size / eachSize) // 分片总数
-  const items = []
+  const items: FormData[] = []
 
   // 处理每个分片的上传操作
   for (let i = 0; i < splitNum; i++) {
-    let start = i * eachSize
-    let end = Math.min(file.size, start + eachSize)
+    const start = i * eachSize
+    const end = Math.min(file.size, start + eachSize)
 
     const form = new FormData()
     form.append('file', file.slice(start, end))
     form.append('upload_id', uploadId)
-    form.append('split_index', i)
-    form.append('split_num', splitNum)
+    form.append('split_index', `${i}`)
+    form.append('split_num', `${splitNum}`)
 
     items.push(form)
   }
@@ -36,7 +36,7 @@ export const useUploadsStore = defineStore('uploads', {
   },
   getters: {
     successCount: (state) => {
-      return state.items.filter((item) => {
+      return state.items.filter((item: any) => {
         return item.status === 2
       }).length
     }
@@ -47,7 +47,7 @@ export const useUploadsStore = defineStore('uploads', {
     },
 
     // 初始化上传
-    initUploadFile(file, talkType, receiverId, username) {
+    initUploadFile(file: File, talkType: number, receiverId: number, username: string) {
       ServeFindFileSplitInfo({
         file_name: file.name,
         file_size: file.size
@@ -55,6 +55,7 @@ export const useUploadsStore = defineStore('uploads', {
         if (res.code == 200) {
           const { upload_id, split_size } = res.data
 
+          // @ts-ignore
           this.items.unshift({
             file: file,
             talk_type: talkType,
@@ -77,15 +78,15 @@ export const useUploadsStore = defineStore('uploads', {
     },
 
     // 获取分片文件数组索引
-    findItem(uploadId) {
-      return this.items.find((item) => item.upload_id === uploadId)
+    findItem(uploadId: string): any {
+      return this.items.find((item: any) => item.upload_id === uploadId)
     },
 
     // 触发上传
-    triggerUpload(uploadId) {
+    triggerUpload(uploadId: string) {
       const item = this.findItem(uploadId)
 
-      let form = item.files[item.uploadIndex]
+      const form = item.files[item.uploadIndex]
 
       item.status = 1
 
@@ -99,7 +100,7 @@ export const useUploadsStore = defineStore('uploads', {
               item.percentage = 100
               this.sendUploadMessage(item)
             } else {
-              let percentage = (item.uploadIndex / item.files.length) * 100
+              const percentage = (item.uploadIndex / item.files.length) * 100
               item.percentage = percentage.toFixed(1)
               this.triggerUpload(uploadId)
             }
@@ -113,7 +114,7 @@ export const useUploadsStore = defineStore('uploads', {
     },
 
     // 发送上传消息
-    sendUploadMessage(item) {
+    sendUploadMessage(item: any) {
       ServeSendTalkFile({
         upload_id: item.upload_id,
         receiver_id: item.receiver_id,

@@ -1,50 +1,70 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { formatTime, parseTime } from '@/utils/datetime'
+import { formatTime } from '@/utils/datetime'
+import { formattedDate } from '@/utils/util'
 import { fileFormatSize } from '@/utils/strings'
-import { ServeUploadArticleAnnex, ServeDownloadAnnex as onDownload } from '@/api/article'
-import { useNoteStore } from '@/store'
+import {
+  ServeUploadArticleAnnex,
+  ServeDownloadAnnex as onDownload,
+  ServeDeleteArticleAnnex
+} from '@/api/article'
+import { useNoteStore, NoteFileItem } from '@/store'
 import { UploadOne } from '@icon-park/vue-next'
+import { useUtil } from '@/hooks/useUtil'
 
+const { useMessage, useDialog } = useUtil()
 const store = useNoteStore()
-
+const loading = ref(false)
 const detail = computed(() => store.view.detail)
 
-const loading = ref(false)
+const onTriggerUpload = () => {
+  const el = document.getElementById('upload-annex')
 
-function onTriggerUpload() {
-  document.getElementById('upload-annex').click()
+  el && el.click()
 }
 
-async function onUpload(e) {
-  if (e.target.files.length == 0) {
-    return false
-  }
+const onUpload = async (e: any) => {
+  if (e.target.files.length == 0) return
 
   let file = e.target.files[0]
   if (file.size / (1024 * 1024) > 5) {
-    window['$message'].info('笔记附件不能大于5M!')
-    return false
+    return useMessage.info('笔记附件不能大于5M!')
   }
-
-  let from = new FormData()
-  from.append('annex', file)
-  from.append('article_id', detail.value.id)
 
   loading.value = true
 
-  let res = await ServeUploadArticleAnnex(from).finally(() => (loading.value = false))
+  let from = new FormData()
+  from.append('annex', file)
+  from.append('article_id', `${detail.value.id}`)
 
-  if (res && res.code == 200) {
-    let { data } = res
+  let { code, data } = await ServeUploadArticleAnnex(from).finally(() => (loading.value = false))
+  if (code == 200) {
     store.view.detail.files.push({
       id: data.id,
       original_name: data.original_name,
-      created_at: parseTime(new Date()),
       size: data.size,
-      suffix: data.suffix
+      suffix: data.suffix,
+      created_at: formattedDate(new Date())
     })
   }
+}
+
+const onDelete = (item: NoteFileItem) => {
+  useDialog.create({
+    title: '删除确认？',
+    content: `你确定要删除笔记附件【${item.original_name}】吗？`,
+    negativeText: '取消',
+    positiveText: '删除',
+    onPositiveClick: async () => {
+      const { code, message } = await ServeDeleteArticleAnnex({ annex_id: item.id })
+      if (code != 200) {
+        return useMessage.error(message)
+      }
+
+      store.view.detail.files = store.view.detail.files.filter((i) => i.id != item.id)
+      return true
+    }
+  })
 }
 </script>
 
@@ -71,9 +91,12 @@ async function onUpload(e) {
               </span>
               <span>{{ formatTime(file.created_at) }}</span>
               <div class="tools">
-                <n-button type="primary" size="tiny" text @click="onDownload(file.id)">
-                  下载
-                </n-button>
+                <n-space>
+                  <n-button type="primary" size="tiny" text @click="onDownload(file.id)">
+                    下载
+                  </n-button>
+                  <n-button type="error" size="tiny" text @click="onDelete(file)"> 删除 </n-button>
+                </n-space>
               </div>
             </div>
           </div>
@@ -180,7 +203,7 @@ async function onUpload(e) {
           position: absolute;
           top: -5px;
           right: 5px;
-          width: 55px;
+          width: 60px;
           height: 24px;
           text-align: right;
           line-height: 28px;

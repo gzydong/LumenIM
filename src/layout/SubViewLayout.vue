@@ -69,7 +69,6 @@ defineProps<{
 
     a {
       text-decoration: none;
-      // color: rgba(0, 0, 0, 0.65);
       color: var(--im-text-color);
     }
 

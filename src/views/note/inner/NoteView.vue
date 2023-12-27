@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { computed, watch, reactive, ref } from 'vue'
 import { NPopover } from 'naive-ui'
 import {
@@ -12,34 +12,31 @@ import {
   FullScreen,
   OffScreen
 } from '@icon-park/vue-next'
-import Loading from '@/components/base/Loading.vue'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import TagsClipModal from './TagsClipModal.vue'
 import { debounce } from '@/utils/common'
+import { useUtil } from '@/hooks/useUtil'
 import {
   ServeSetAsteriskArticle,
   ServeUploadArticleImg,
   ServeEditArticle,
   ServeDeleteArticle
 } from '@/api/article'
-
 import { useNoteStore } from '@/store'
+const { useMessage, useDialog } = useUtil()
 
 const store = useNoteStore()
-
-const isFull = ref(false)
+const full = ref(false)
 const detail = computed(() => store.view.detail)
 
 const editor = reactive({
   title: detail.value.title,
-  markdown: detail.value.md_content,
-  html: detail.value.content
+  markdown: detail.value.md_content
 })
 
 watch(
   () => store.view.detail.id,
   () => {
-    editor.html = store.view.detail.content
     editor.markdown = store.view.detail.md_content
     editor.title = store.view.detail.title
   }
@@ -53,11 +50,12 @@ const loading = ref(false)
 const editorMode = computed(() => (store.view.editorMode == 'preview' ? false : 'plaintext-only'))
 
 const onFull = () => {
-  isFull.value = !isFull.value
+  full.value = !full.value
 }
 
 // 上传笔记图片
-const onUploadImage = (event, insertImage, files) => {
+// @ts-ignore
+const onUploadImage = (event: any, insertImage: any, files: File[]) => {
   if (!files.length) return
 
   let formdata = new FormData()
@@ -70,24 +68,23 @@ const onUploadImage = (event, insertImage, files) => {
         desc: files[0].name
       })
     } else {
-      window['$message'].info(res.message)
+      useMessage.info(res.message)
     }
   })
 }
 
 // 编辑器变动事件
-const onChange = (text, html) => {
-  editor.markdown = text
-  editor.html = html
+const onChange = (markdown: string, html: string) => {
+  editor.markdown = markdown
+  console.log(html)
 }
 
 // 保存笔记
-const onSave = (isCloseEditMode) => {
+const onSave = (isCloseEditMode: boolean = false) => {
   let data = detail.value
 
   if (editor.markdown == '' && data.id == 0) {
-    store.close()
-    return
+    return store.close()
   }
 
   loading.value = true
@@ -95,12 +92,11 @@ const onSave = (isCloseEditMode) => {
     article_id: data.id,
     class_id: data.class_id,
     title: editor.title,
-    md_content: editor.markdown,
-    content: editor.html
+    md_content: editor.markdown
   })
     .then((res) => {
       if (res.code != 200) {
-        return window['$message'].info(res.message)
+        return useMessage.info(res.message)
       }
 
       if (data.id == 0) {
@@ -111,14 +107,13 @@ const onSave = (isCloseEditMode) => {
       }
 
       store.view.detail.md_content = editor.markdown
-      store.view.detail.content = editor.html
       store.view.detail.id = res.data.id
 
       if (isCloseEditMode) {
         store.setEditorMode('preview')
       }
 
-      window['$message'].success('保存成功', {
+      useMessage.success('保存成功', {
         duration: 1000
       })
     })
@@ -128,15 +123,14 @@ const onSave = (isCloseEditMode) => {
 }
 
 // 防抖的保存事件
-const onSaveDebounce = debounce((isCloseEditMode) => {
+const onSaveDebounce = debounce((isCloseEditMode: boolean) => {
   onSave(isCloseEditMode)
 }, 500)
 
 // 标题输入键盘事件
-const onTitle = (e) => {
+const onTitle = (e: any) => {
   if (e.keyCode == 13) {
-    e.preventDefault()
-    return
+    return e.preventDefault()
   }
 
   editor.title = e.target.innerText
@@ -173,7 +167,8 @@ const onDownload = () => {
   reader.onload = function (e) {
     let a = document.createElement('a')
     a.download = title
-    a.href = e.target.result
+    // @ts-ignore
+    a.setAttribute('href', e.target.result)
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -181,12 +176,12 @@ const onDownload = () => {
 }
 
 // 查看预览图片
-const onClickImage = (images, currentIndex) => {
+const onClickImage = (images: string[], currentIndex: number) => {
   console.log(images, currentIndex)
 }
 
 const onDelete = () => {
-  window.$dialog.create({
+  useDialog.create({
     showIcon: false,
     title: `删除笔记？`,
     content: '笔记删除后30天之内，可在回收站中进行恢复。',
@@ -205,12 +200,12 @@ const onDelete = () => {
 }
 
 const onShare = () => {
-  window['$message'].info('开发中...')
+  useMessage.info('开发中...')
 }
 </script>
 
 <template>
-  <section class="el-container section" :class="{ full: isFull }" v-loading="loadStatus == 0">
+  <section class="el-container section" :class="{ full: full }" v-loading="loadStatus == 0">
     <main class="el-main" style="padding: 0 5px">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">
@@ -253,7 +248,7 @@ const onShare = () => {
 
     <aside class="el-aside nav-tools">
       <div class="nav-item" @click="onFull">
-        <n-icon class="icon" size="18" :component="!isFull ? FullScreen : OffScreen" />
+        <n-icon class="icon" size="18" :component="!full ? FullScreen : OffScreen" />
         <p>全屏</p>
       </div>
 
@@ -429,5 +424,12 @@ const onShare = () => {
 }
 :deep(.github-markdown-body) {
   padding: 16px 10px 32px 10px !important;
+}
+
+html[theme-mode='dark'] {
+  .nav-tools {
+    border-left: unset;
+    box-shadow: unset;
+  }
 }
 </style>

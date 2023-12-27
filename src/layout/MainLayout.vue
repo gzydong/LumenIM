@@ -35,7 +35,7 @@ const settingsStore = useSettingsStore()
 .container {
   height: 100vh;
   width: 100vw;
-  background: url(@/assets/image/iTab-exSKJMg-_vI.jpeg);
+  background: url(@/assets/image/background.jpeg);
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
