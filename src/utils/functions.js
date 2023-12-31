@@ -98,3 +98,9 @@ export function downloadImage(src, name) {
   }
   image.src = src
 }
+
+// 获取文件名后缀
+export const getFileNameSuffix = (name) => {
+  const arr = name.split('.')
+  return arr[arr.length - 1]
+}

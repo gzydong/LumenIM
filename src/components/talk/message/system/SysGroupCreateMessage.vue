@@ -13,7 +13,7 @@ const { showUserInfoModal } = useInject()
 <template>
   <div class="im-message-sys-text">
     <div class="sys-text">
-      <a @click="showUserModal(extra.owner_id)">
+      <a @click="showUserInfoModal(extra.owner_id)">
         {{ extra.owner_name }}
       </a>
 

@@ -59,34 +59,9 @@ export const ServePublishMessage = (data = {}) => {
   return post('/api/v1/talk/message/publish', data)
 }
 
-// 发送代码块消息服务接口
-export const ServeSendTalkText = (data = {}) => {
-  return post('/api/v1/talk/message/text', data)
-}
-
-// 发送代码块消息服务接口
-export const ServeSendTalkCodeBlock = (data = {}) => {
-  return post('/api/v1/talk/message/code', data)
-}
-
 // 发送聊天文件服务接口
 export const ServeSendTalkFile = (data = {}) => {
   return post('/api/v1/talk/message/file', data)
-}
-
-// 发送聊天图片服务接口
-export const ServeSendTalkImage = (data = {}) => {
-  return upload('/api/v1/talk/message/image', data)
-}
-
-// 发送表情包服务接口
-export const ServeSendEmoticon = (data = {}) => {
-  return post('/api/v1/talk/message/emoticon', data)
-}
-
-// 转发消息服务接口
-export const ServeForwardRecords = (data = {}) => {
-  return post('/api/v1/talk/message/forward', data)
 }
 
 // 撤回消息服务接口

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { fileFormatSize } from '@/utils/strings'
-import { download } from '@/utils/functions'
+import { download, getFileNameSuffix } from '@/utils/functions'
 import { ITalkRecordExtraFile, ITalkRecord } from '@/types/chat'
 
 defineProps<{
@@ -13,7 +13,7 @@ defineProps<{
 <template>
   <section class="file-message">
     <div class="main">
-      <div class="ext">{{ extra.suffix }}</div>
+      <div class="ext">{{ getFileNameSuffix(extra.name) }}</div>
       <div class="file-box">
         <p class="info">
           <span class="name">{{ extra.name }}</span>

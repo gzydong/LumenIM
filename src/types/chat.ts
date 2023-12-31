@@ -65,7 +65,6 @@ export interface ITalkRecordExtraFile {
   drive: number
   name: string
   path: string
-  suffix: string
   size: number
 }
 
@@ -104,7 +103,6 @@ export interface ITalkRecordExtraMixed {
 
 export interface ITalkRecordExtraAudio {
   name: string
-  suffix: string
   size: number
   url: string
   duration: number
@@ -121,7 +119,6 @@ export interface ITalkRecordExtraLogin {
 
 export interface ITalkRecordExtraImage {
   name: string
-  suffix: string
   size: number
   url: string
   width: number
