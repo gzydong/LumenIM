@@ -33,7 +33,7 @@ const onClick = () => {
       <span>转发：聊天会话记录 ({{ extra.msg_ids.length }}条)</span>
     </div>
 
-    <ForwardRecord v-if="isShowRecord" :record-id="data.id" @close="isShowRecord = false" />
+    <ForwardRecord v-if="isShowRecord" :msg-id="data.msg_id" @close="isShowRecord = false" />
   </section>
 </template>
 

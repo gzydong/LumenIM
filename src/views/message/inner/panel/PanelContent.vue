@@ -95,14 +95,14 @@ const onPanelScroll = (e: any) => {
       // 目前没有用虚拟列表只能这么干
       dialogueStore.records.splice(0, len - 100)
 
-      let minid = 0
+      let minSequence = 0
       dialogueStore.records.forEach((item: ITalkRecord) => {
-        if (minid == 0 || item.sequence < minid) {
-          minid = item.sequence
+        if (minSequence == 0 || item.sequence < minSequence) {
+          minSequence = item.sequence
         }
       })
 
-      loadConfig.cursor = minid
+      loadConfig.cursor = minSequence
       loadConfig.status = 1
     }
   }
@@ -125,18 +125,18 @@ const onCopyText = (data: ITalkRecord) => {
 
 // 删除对话消息
 const onDeleteTalk = (data: ITalkRecord) => {
-  dialogueStore.ApiDeleteRecord([data.id])
+  dialogueStore.ApiDeleteRecord([data.msg_id])
 }
 
 // 撤销对话消息
 const onRevokeTalk = (data: ITalkRecord) => {
-  dialogueStore.ApiRevokeRecord(data.id)
+  dialogueStore.ApiRevokeRecord(data.msg_id)
 }
 
 // 多选事件
 const onMultiSelect = (data: ITalkRecord) => {
   dialogueStore.updateDialogueRecord({
-    id: data.id,
+    msg_id: data.msg_id,
     isCheck: true
   })
 
@@ -205,6 +205,14 @@ const onQuoteMessage = (data: ITalkRecord) => {
   bus.emit('editor:quote', item)
 }
 
+const onCollectImage = (data: ITalkRecord) => {
+  if (data.msg_type == 3) {
+    dialogueStore.ApiCollectImage({
+      msg_id: data.msg_id
+    })
+  }
+}
+
 const onClickNickname = (data: ITalkRecord) => {
   bus.emit(EditorConst.Mention, {
     id: data.user_id,
@@ -229,7 +237,8 @@ const evnets = {
   delete: onDeleteTalk,
   multiSelect: onMultiSelect,
   download: onDownloadFile,
-  quote: onQuoteMessage
+  quote: onQuoteMessage,
+  collect: onCollectImage
 }
 
 // 会话列表右键菜单回调事件

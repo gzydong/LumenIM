@@ -83,7 +83,7 @@ const onSubmit = () => {
   })
 
   ServeConfirmVoteHandle({
-    record_id: props.data.id,
+    msg_id: props.data.msg_id,
     options: items.join(',')
   }).then((res) => {
     if (res.code == 200) {

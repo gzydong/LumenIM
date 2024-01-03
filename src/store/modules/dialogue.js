@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
-import { ServeRemoveRecords, ServeRevokeRecords, ServePublishMessage } from '@/api/chat'
+import {
+  ServeRemoveRecords,
+  ServeRevokeRecords,
+  ServePublishMessage,
+  ServeCollectEmoticon
+} from '@/api/chat'
 import { ServeGetGroupMembers } from '@/api/group'
+import { useEditorStore } from './editor'
 
 // 键盘消息事件定时器
 let keyboardTimeout = null
@@ -125,15 +131,17 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新对话记录
     updateDialogueRecord(params) {
-      const item = this.records.find((item) => item.id === params.id)
+      const { msg_id = '' } = params
+
+      const item = this.records.find((item) => item.msg_id === msg_id)
 
       item && Object.assign(item, params)
     },
 
     // 批量删除对话记录
-    batchDelDialogueRecord(ids) {
-      ids.forEach((id) => {
-        const index = this.records.findIndex((item) => item.id === id)
+    batchDelDialogueRecord(msgIds = []) {
+      msgIds.forEach((msgid) => {
+        const index = this.records.findIndex((item) => item.msg_id === msgid)
 
         if (index >= 0) this.records.splice(index, 1)
       })
@@ -168,14 +176,14 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 删除聊天记录
-    ApiDeleteRecord(ids = []) {
+    ApiDeleteRecord(msgIds = []) {
       ServeRemoveRecords({
         talk_type: this.talk.talk_type,
         receiver_id: this.talk.receiver_id,
-        record_id: ids.join(',')
+        msg_ids: msgIds
       }).then((res) => {
         if (res.code == 200) {
-          this.batchDelDialogueRecord(ids)
+          this.batchDelDialogueRecord(msgIds)
         } else {
           window['$message'].warning(res.message)
         }
@@ -183,10 +191,10 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 撤销聊天记录
-    ApiRevokeRecord(record_id) {
-      ServeRevokeRecords({ record_id }).then((res) => {
+    ApiRevokeRecord(msg_id = '') {
+      ServeRevokeRecords({ msg_id }).then((res) => {
         if (res.code == 200) {
-          this.updateDialogueRecord({ id: record_id, is_revoke: 1 })
+          this.updateDialogueRecord({ msg_id, is_revoke: 1 })
         } else {
           window['$message'].warning(res.message)
         }
@@ -211,6 +219,13 @@ export const useDialogueStore = defineStore('dialogue', {
       })
     },
 
-    ApiSendTextMessage(options) {}
+    ApiCollectImage(options) {
+      const { msg_id } = options
+
+      ServeCollectEmoticon({ msg_id }).then(() => {
+        useEditorStore().loadUserEmoticon()
+        window['$message'] && window['$message'].success('收藏成功')
+      })
+    }
   }
 })

@@ -28,16 +28,16 @@ export function getImageInfo(imgsrc) {
 /**
  * 文件下载方法
  *
- * @param {Number} cr_id
+ * @param {Number} msgid
  */
-export function download(cr_id) {
+export function download(msg_id) {
   let token = getAccessToken()
   try {
     let link = document.createElement('a')
     // link.target = '_blank'
     link.href = `${
       import.meta.env.VITE_BASE_API
-    }/api/v1/talk/records/file/download?cr_id=${cr_id}&token=${token}`
+    }/api/v1/talk/records/file/download?msg_id=${msg_id}&token=${token}`
     link.click()
   } catch (e) {
     console.warn(e)

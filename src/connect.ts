@@ -107,8 +107,10 @@ class Connect {
         return
       }
 
-      for (const msgid of data.ids) {
-        dialogueStore.updateDialogueRecord({ id: msgid, is_read: 1 })
+      const { msg_ids = [] } = data
+
+      for (const msgid of msg_ids) {
+        dialogueStore.updateDialogueRecord({ msg_id: msgid, is_read: 1 })
       }
     })
   }

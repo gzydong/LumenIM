@@ -47,7 +47,8 @@ const onClipboard = () => {
 </template>
 <style lang="less" scoped>
 .im-message-code {
-  min-width: 150px;
+  min-width: 300px;
+  min-height: 100px;
   border-radius: 10px;
   overflow-x: auto;
   border: 1px solid var(--border-color);

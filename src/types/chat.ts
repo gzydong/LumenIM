@@ -31,9 +31,8 @@ export interface ISession {
 
 // 消息记录
 export interface ITalkRecord {
-  id: number
-  sequence: number
   msg_id: string
+  sequence: number
   talk_type: number
   msg_type: number
   user_id: number

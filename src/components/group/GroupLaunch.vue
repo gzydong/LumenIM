@@ -57,7 +57,7 @@ const onLoad = () => {
     .then((res) => {
       if (res.code == 200 && res.data) {
         let list = res.data || []
-        items.value = list.map((item) => {
+        items.value = list.map((item: any) => {
           return Object.assign(item, {
             nickname: item.friend_remark ? item.friend_remark : item.nickname,
             checked: false

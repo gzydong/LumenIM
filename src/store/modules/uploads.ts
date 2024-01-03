@@ -18,7 +18,7 @@ function fileSlice(file: File, uploadId: string, eachSize: number) {
     const form = new FormData()
     form.append('file', file.slice(start, end))
     form.append('upload_id', uploadId)
-    form.append('split_index', `${i}`)
+    form.append('split_index', `${i + 1}`)
     form.append('split_num', `${splitNum}`)
 
     items.push(form)

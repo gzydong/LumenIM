@@ -8,9 +8,9 @@ import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  recordId: {
-    type: Number,
-    default: 0
+  msgId: {
+    type: String,
+    required: true
   }
 })
 
@@ -25,7 +25,7 @@ const onMaskClick = () => {
 
 const onLoadData = () => {
   ServeGetForwardRecords({
-    record_id: props.recordId
+    msg_id: props.msgId
   }).then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []

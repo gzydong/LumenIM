@@ -32,15 +32,16 @@ const onSingleForward = () => {
 
 const onMultiDelete = () => {
   // 批量删除
-  let ids = dialogueStore.selectItems.map((item: any) => item.id)
+  let msgIds = dialogueStore.selectItems.map((item: any) => item.msg_id)
 
-  if (!ids.length) return
+  if (!msgIds.length) return
 
-  dialogueStore.ApiDeleteRecord(ids)
+  dialogueStore.ApiDeleteRecord(msgIds)
 }
 
 const onContactModal = (data: { id: number; type: number }[]) => {
-  let ids = dialogueStore.selectItems.map((item: any) => item.id)
+  let msg_ids = dialogueStore.selectItems.map((item: any) => item.msg_id)
+
   let user_ids: number[] = []
   let group_ids: number[] = []
 
@@ -54,7 +55,7 @@ const onContactModal = (data: { id: number; type: number }[]) => {
 
   dialogueStore.ApiForwardRecord({
     mode: forwardMode.value,
-    message_ids: ids,
+    message_ids: msg_ids,
     uids: user_ids,
     gids: group_ids
   })

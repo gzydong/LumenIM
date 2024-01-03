@@ -38,7 +38,7 @@ class Revoke extends Base {
     this.sender_id = resource.sender_id
     this.receiver_id = resource.receiver_id
     this.talk_type = resource.talk_type
-    this.record_id = resource.record_id
+    this.msg_id = resource.msg_id
 
     this.handle()
   }
@@ -67,7 +67,6 @@ class Revoke extends Base {
   }
 
   handle() {
-    console.log(this.resource)
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
       msg_text: this.resource.text,
@@ -80,7 +79,7 @@ class Revoke extends Base {
     }
 
     useDialogueStore().updateDialogueRecord({
-      id: this.record_id,
+      msg_id: this.msg_id,
       is_revoke: 1
     })
   }

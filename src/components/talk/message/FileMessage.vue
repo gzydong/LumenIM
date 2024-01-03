@@ -23,7 +23,7 @@ defineProps<{
       </div>
     </div>
     <div class="footer">
-      <a @click="download(data.id)">下载</a>
+      <a @click="download(data.msg_id)">下载</a>
       <a>在线预览</a>
     </div>
   </section>
