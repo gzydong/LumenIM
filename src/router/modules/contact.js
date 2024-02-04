@@ -12,20 +12,25 @@ export default {
     {
       path: '/contact/friend',
       meta: { auth: true },
-      component: () => import('@/views/contact/friends.vue')
+      component: () => import('@/views/contact/friend.vue')
     },
     {
-      path: '/contact/apply',
+      path: '/contact/friend/apply',
       meta: { auth: true },
-      component: () => import('@/views/contact/apply.vue')
+      component: () => import('@/views/contact/friend-apply.vue')
     },
     {
       path: '/contact/group',
       meta: { auth: true },
-      component: () => import('@/views/contact/groups.vue')
+      component: () => import('@/views/contact/group.vue')
     },
     {
-      path: '/contact/group/open',
+      path: '/contact/group/apply',
+      meta: { auth: true },
+      component: () => import('@/views/contact/group-apply.vue')
+    },
+    {
+      path: '/contact/open-group',
       meta: { auth: true },
       component: () => import('@/views/contact/open-group.vue')
     }

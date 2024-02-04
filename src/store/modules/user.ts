@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
+import { toApi } from '@/api'
 import { ServeGetUserSetting } from '@/api/user'
 import { ServeFindFriendApplyNum } from '@/api/contact'
 import { ServeGroupApplyUnread } from '@/api/group'
 import { delAccessToken } from '@/utils/auth'
 import { storage } from '@/utils/storage'
 
-interface UserStoreState {
+interface IUserStoreState {
   uid: number
   nickname: string
   mobile: string
@@ -22,7 +23,7 @@ interface UserStoreState {
 
 export const useUserStore = defineStore('user', {
   persist: true,
-  state: (): UserStoreState => {
+  state: (): IUserStoreState => {
     return {
       uid: 0, // 用户ID
       mobile: '',
@@ -41,7 +42,7 @@ export const useUserStore = defineStore('user', {
   getters: {},
   actions: {
     // 设置用户登录状态
-    updateSocketStatus(status) {
+    updateSocketStatus(status: boolean) {
       this.online = status
     },
 
@@ -53,33 +54,40 @@ export const useUserStore = defineStore('user', {
     },
 
     loadSetting() {
-      ServeGetUserSetting().then(({ code, data }) => {
-        if (code == 200) {
-          this.nickname = data.user_info.nickname
-          this.uid = data.user_info.uid
-          this.avatar = data.user_info.avatar
+      this.loadUserSetting()
+      this.loadFriendApplyNum()
+      this.loadGroupApplyUnread()
+    },
+    async loadUserSetting() {
+      const { code, data } = await toApi(ServeGetUserSetting)
 
-          this.gender = data.user_info.gender
-          this.mobile = data.user_info.mobile || ''
-          this.email = data.user_info.email || ''
-          this.motto = data.user_info.motto
-          this.isQiye = data.user_info.is_qiye || false
+      if (code == 200) {
+        this.nickname = data.user_info.nickname
+        this.uid = data.user_info.uid
+        this.avatar = data.user_info.avatar
 
-          storage.set('user_info', data)
-        }
-      })
+        this.gender = data.user_info.gender
+        this.mobile = data.user_info.mobile || ''
+        this.email = data.user_info.email || ''
+        this.motto = data.user_info.motto
+        this.isQiye = data.user_info.is_qiye || false
 
-      ServeFindFriendApplyNum().then(({ code, data }) => {
-        if (code == 200) {
-          this.isContactApply = data.unread_num > 0
-        }
-      })
+        storage.set('user_info', data)
+      }
+    },
+    async loadFriendApplyNum() {
+      const { code, data } = await toApi(ServeFindFriendApplyNum)
 
-      ServeGroupApplyUnread().then(({ code, data }) => {
-        if (code == 200) {
-          this.isGroupApply = data.unread_num > 0
-        }
-      })
+      if (code == 200) {
+        this.isContactApply = data.unread_num > 0
+      }
+    },
+    async loadGroupApplyUnread() {
+      const { code, data } = await toApi(ServeGroupApplyUnread)
+
+      if (code == 200) {
+        this.isGroupApply = data.unread_num > 0
+      }
     }
   }
 })

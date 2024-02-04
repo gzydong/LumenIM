@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { hashStrToHexColor } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 
 defineProps({
@@ -30,7 +29,7 @@ defineProps({
     round
     :style="{
       color: '#ffffff',
-      backgroundColor: hashStrToHexColor(username || ''),
+      backgroundColor: '#1890ff',
       fontSize: fontSize + 'px'
     }"
     :size="size"

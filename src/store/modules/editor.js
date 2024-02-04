@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
-import { ServeFindUserEmoticon, ServeUploadEmoticon, ServeDeleteEmoticon } from '@/api/emoticon'
-import { ServeCollectEmoticon } from '@/api/chat'
+import {
+  ServeCustomizeEmoticonList,
+  ServeCustomizeEmoticonUpload,
+  ServeCustomizeEmoticonDelete
+} from '@/api/emoticon'
 
-const message = window['$message']
+import { toApi } from '@/api'
 
 export const useEditorStore = defineStore('editor', {
   state: () => {
@@ -25,56 +28,40 @@ export const useEditorStore = defineStore('editor', {
   },
   actions: {
     // 加载用户表情包
-    loadUserEmoticon() {
-      ServeFindUserEmoticon().then((res) => {
-        if (res.code == 200) {
-          const { collect_emoticon } = res.data
+    async loadUserEmoticon() {
+      const {
+        code,
+        data: { items }
+      } = await toApi(ServeCustomizeEmoticonList)
 
-          // 用户收藏的系统表情包
-          this.emoticon.items[1].children = collect_emoticon || []
-        }
-      })
-    },
+      if (code != 200) return
 
-    // 收藏用户表情包
-    saveUserEmoticon(resoure) {
-      ServeCollectEmoticon({
-        record_id: resoure.record_id
-      }).then((res) => {
-        if (res.code == 200) {
-          this.loadUserEmoticon()
-        } else {
-          message.warning(res.message)
-        }
-      })
+      this.emoticon.items[1].children = items || []
     },
 
     // 自定义上传用户表情包
-    uploadUserEmoticon(file) {
-      const data = new FormData()
-      data.append('emoticon', file)
+    async uploadUserEmoticon(file) {
+      const params = new FormData()
+      params.append('file', file)
 
-      ServeUploadEmoticon(data).then((res) => {
-        if (res.code == 200) {
-          this.emoticon.items[1].children.unshift(res.data)
-        } else {
-          message.warning(res.message)
-        }
-      })
+      const { code, data } = await toApi(ServeCustomizeEmoticonUpload, params)
+
+      code == 200 && this.emoticon.items[1].children.unshift(data)
     },
 
-    // 自定义上传用户表情包
-    removeUserEmoticon(resoure) {
-      ServeDeleteEmoticon({
-        ids: [resoure.id].join(',')
-      }).then((res) => {
-        if (res.code == 200) {
-          this.emoticon.items[1].children.splice(resoure.index, 1)
-          message.success('删除成功')
-        } else {
-          message.warning(res.message)
+    // 删除自定义上传用户表情包
+    async removeUserEmoticon(resoure) {
+      const { index, emoticon_id } = resoure
+
+      const { code, data } = await toApi(
+        ServeCustomizeEmoticonDelete,
+        { emoticon_id },
+        {
+          showMessageText: '删除成功'
         }
-      })
+      )
+
+      code == 200 && this.emoticon.items[1].children.splice(index, 1)
     }
   }
 })

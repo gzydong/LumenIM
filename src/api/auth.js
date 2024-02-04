@@ -1,5 +1,5 @@
 // 授权相关接口
-import { post } from '@/utils/request'
+import { post } from './request'
 
 // 登录服务接口
 export const ServeLogin = (data) => {

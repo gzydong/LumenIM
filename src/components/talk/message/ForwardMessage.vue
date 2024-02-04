@@ -7,12 +7,13 @@ const props = defineProps<{
   extra: ITalkRecordExtraForward
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 const isShowRecord = ref(false)
 
 const title = computed(() => {
-  return [...new Set(props.extra.records.map((v) => v.nickname))].join('、')
+  return [...new Set(props.extra?.records?.map((v) => v.nickname))].join('、')
 })
 
 const onClick = () => {
@@ -20,25 +21,30 @@ const onClick = () => {
 }
 </script>
 <template>
-  <section class="im-message-forward pointer" @click="onClick">
+  <section class="immsg-forward pointer" @click="onClick">
     <div class="title">{{ title }} 的会话记录</div>
-    <div class="list" v-for="(record, index) in extra.records" :key="index">
+    <div class="item" v-for="(record, index) in extra.records" :key="index">
       <p>
         <span>{{ record.nickname }}: </span>
-        <span>{{ record.text }}</span>
+        <span>{{ record.content }}</span>
       </p>
     </div>
 
-    <div class="tips">
-      <span>转发：聊天会话记录 ({{ extra.msg_ids.length }}条)</span>
+    <div class="describe">
+      <span>转发：聊天会话记录 ({{ extra?.msg_ids?.length }}条)</span>
     </div>
 
-    <ForwardRecord v-if="isShowRecord" :msg-id="data.msg_id" @close="isShowRecord = false" />
+    <ForwardRecord
+      v-if="isShowRecord"
+      :msg-ids="extra.msg_ids"
+      :talk-mode="extra.talk_type"
+      @close="isShowRecord = false"
+    />
   </section>
 </template>
 
 <style lang="less" scoped>
-.im-message-forward {
+.immsg-forward {
   width: 250px;
   min-height: 95px;
   max-height: 150px;
@@ -58,7 +64,7 @@ const onClick = () => {
     margin-bottom: 5px;
   }
 
-  .list p {
+  .item p {
     height: 18px;
     line-height: 18px;
     font-size: 12px;
@@ -69,7 +75,7 @@ const onClick = () => {
     margin-bottom: 5px;
   }
 
-  .tips {
+  .describe {
     height: 32px;
     line-height: 35px;
     color: #8a8888;

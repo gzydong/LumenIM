@@ -3,13 +3,17 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput, NDatePicker, NRadio, NRadioGroup, NSpace } from 'naive-ui'
 import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
+import { toApi } from '@/api'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { hidePhone } from '@/utils/strings'
+import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
 
-const userStore = useUserStore()
 const router = useRouter()
+const userStore = useUserStore()
+const { message } = useInject()
 const cropper = ref(false)
+const loading = ref(false)
 
 const detail = reactive({
   avatar: '',
@@ -18,58 +22,60 @@ const detail = reactive({
   email: '',
   gender: '0',
   motto: '0',
-  birthday: ref(),
-  loading: false
+  birthday: ref()
 })
 
-// 加载用户信息
-ServeGetUserDetail().then(({ data }) => {
+const loadDetail = async () => {
+  const { code, data } = await toApi(ServeGetUserDetail)
+  if (code != 200) return
+
   detail.nickname = data.nickname.toString()
   detail.mobile = data.mobile.toString()
   detail.email = data.email.toString()
   detail.gender = data.gender.toString()
   detail.motto = data.motto.toString()
   detail.avatar = data.avatar
+
   if (data.birthday) {
     detail.birthday = ref(data.birthday)
   }
-})
-
-// 修改用户信息
-const onChangeDetail = () => {
-  if (!detail.nickname.trim()) {
-    return window['$message'].warning('昵称不能为空')
-  }
-
-  detail.loading = true
-
-  const response = ServeUpdateUserDetail({
-    nickname: detail.nickname.trim(),
-    avatar: detail.avatar,
-    motto: detail.motto,
-    gender: parseInt(detail.gender),
-    birthday: detail.birthday
-  })
-
-  response.then(() => {
-    window['$message'].success('信息保存成功')
-    userStore.loadSetting()
-  })
-
-  response.catch(() => {
-    window['$message'].warning('信息保存失败')
-  })
-
-  response.finally(() => {
-    detail.loading = false
-  })
 }
 
-const onUploadAvatar = (avatar) => {
+// 修改用户信息
+const onChangeDetail = async () => {
+  if (!detail.nickname.trim()) {
+    return message.warning('昵称不能为空')
+  }
+
+  if (detail.motto.length > 500) {
+    return message.warning('个性签名文字长度不能超过500')
+  }
+
+  const { code } = await toApi(
+    ServeUpdateUserDetail,
+    {
+      nickname: detail.nickname.trim(),
+      avatar: detail.avatar,
+      motto: detail.motto,
+      gender: parseInt(detail.gender),
+      birthday: detail.birthday
+    },
+    { loading, showMessageText: '信息保存成功' }
+  )
+
+  if (code != 200) return
+
+  userStore.avatar = detail.avatar
+  userStore.motto = detail.motto
+}
+
+const onUploadAvatar = (avatar: string) => {
   cropper.value = false
   detail.avatar = avatar
   onChangeDetail()
 }
+
+loadDetail()
 </script>
 
 <template>
@@ -150,7 +156,8 @@ const onUploadAvatar = (avatar) => {
           <n-button
             type="primary"
             @click="onChangeDetail"
-            :loading="detail.loading"
+            :loading="loading"
+            text-color="#ffffff"
             style="margin-left: 94px"
           >
             保存修改

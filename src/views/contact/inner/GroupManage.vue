@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import Draggable from 'vuedraggable'
 import { reactive, computed, ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
+import { NModal, NInput } from 'naive-ui'
 import { Drag, Delete } from '@icon-park/vue-next'
 import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contact'
+import { toApi } from '@/api'
+import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close', 'relaod'])
 
@@ -15,6 +17,7 @@ interface Item {
 }
 
 let index = 1
+const { dialog } = useInject()
 const isShow = ref(true)
 const options = reactive<Item[]>([])
 
@@ -23,7 +26,7 @@ const onMaskClick = () => {
 }
 
 const onLoadData = async () => {
-  let { code, data } = await ServeContactGroupList()
+  let { code, data } = await toApi(ServeContactGroupList)
 
   if (code != 200) return
 
@@ -44,18 +47,21 @@ const onLoadData = async () => {
   }
 }
 
-const onSubmit = () => {
-  ServeContactGroupSave({
-    items: options
-  }).then(({ code, message }) => {
-    if (code == 200) {
-      window['$message'].success('保存成功')
-      emit('relaod')
-      emit('close')
-    } else {
-      window['$message'].error(message)
+const onSubmit = async () => {
+  const { code } = await toApi(
+    ServeContactGroupSave,
+    {
+      items: options
+    },
+    {
+      showMessageText: '已保存'
     }
-  })
+  )
+
+  if (code == 200) {
+    emit('relaod')
+    emit('close')
+  }
 }
 
 const addOption = () => {
@@ -71,16 +77,16 @@ const delOption = (item: Item) => {
   }
 
   if (item.count > 0) {
-    window['$dialog'].create({
+    return dialog.create({
       title: '温馨提示',
       content: `【${item.name}】分组下有${item.count}个好友，确定要删除吗？`,
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: fn
     })
-  } else {
-    fn()
   }
+
+  fn()
 }
 
 // 是否可提交
@@ -95,58 +101,54 @@ onLoadData()
   <n-modal
     v-model:show="isShow"
     preset="card"
-    title="分组管理"
+    title="好友分组管理"
     size="huge"
     :bordered="false"
     class="modal-radius"
     style="max-width: 450px"
     :on-after-leave="onMaskClick"
   >
-    <n-empty v-show="options.length == 0" size="50" description="暂未设置分组">
-      <template #icon>
-        <img src="@/assets/image/no-data.svg" alt="" />
-      </template>
-    </n-empty>
+    <div class="options">
+      <n-empty v-show="options.length == 0" description="暂未设置分组" style="margin-top: 20px" />
 
-    <n-form v-show="options.length > 0">
-      <n-form-item label="分组列表">
-        <div class="options">
-          <Draggable
-            class="draggable-ul"
-            animation="300"
-            :list="options"
-            itemKey="index"
-            handle=".handle"
-          >
-            <template #item="{ element }">
-              <div class="option">
-                <n-icon size="20" class="handle" :component="Drag" />
-                <n-input
-                  placeholder="必填"
-                  v-model:value="element.name"
-                  :maxlength="20"
-                  style="margin: 0 10px"
-                />
-                <n-icon size="16" class="pointer" :component="Delete" @click="delOption(element)" />
-              </div>
-            </template>
-          </Draggable>
-        </div>
-      </n-form-item>
-    </n-form>
+      <Draggable
+        class="draggable-ul"
+        animation="300"
+        :list="options"
+        itemKey="index"
+        handle=".handle"
+      >
+        <template #item="{ element }">
+          <div class="option">
+            <n-icon size="20" class="handle" :component="Drag" />
+            <n-input
+              placeholder="必填"
+              v-model:value="element.name"
+              :maxlength="20"
+              style="margin: 0 10px"
+            />
+            <n-icon size="16" class="pointer" :component="Delete" @click="delOption(element)" />
+          </div>
+        </template>
+      </Draggable>
+    </div>
 
     <template #footer>
-      <div class="footer" style="">
-        <div>
-          <n-button text type="primary" @click="addOption" v-if="options.length < 6">
-            添加分组
-          </n-button>
-        </div>
+      <div class="footer">
+        <n-button text type="primary" @click="addOption" v-if="options.length < 6">
+          添加分组
+        </n-button>
 
         <div>
           <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
-          <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
-            保存修改
+          <n-button
+            type="primary"
+            text-color="#ffffff"
+            @click="onSubmit"
+            class="mt-l15"
+            :disabled="isCanSubmit"
+          >
+            保存
           </n-button>
         </div>
       </div>
@@ -164,6 +166,7 @@ onLoadData()
 
 .options {
   width: 100%;
+  min-height: 80px;
 
   .handle {
     cursor: move;

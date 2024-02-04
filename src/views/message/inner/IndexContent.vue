@@ -1,17 +1,23 @@
 <script lang="ts" setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { NDrawer } from 'naive-ui'
-import { useUserStore, useDialogueStore, useUploadsStore } from '@/store'
+import { useRouter } from 'vue-router'
+import { useUserStore, useDialogueStore, useUploadsStore, useTalkStore } from '@/store'
 import PanelHeader from './panel/PanelHeader.vue'
 import PanelContent from './panel/PanelContent.vue'
 import PanelFooter from './panel/PanelFooter.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
+import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
+import { useEventBus } from '@/hooks'
+import { SessionConst } from '@/constant/event-bus'
 
+const router = useRouter()
 const userStore = useUserStore()
 const dialogueStore = useDialogueStore()
 const uploadsStore = useUploadsStore()
+const talkStore = useTalkStore()
 
 const members = computed(() => dialogueStore.members)
 const isShowEditor = computed(() => dialogueStore.isShowEditor)
@@ -19,9 +25,9 @@ const isShowEditor = computed(() => dialogueStore.isShowEditor)
 // 当前对话参数
 const talkParams = reactive({
   uid: computed(() => userStore.uid),
-  index_name: computed(() => dialogueStore.index_name),
-  type: computed(() => dialogueStore.talk.talk_type),
-  receiver_id: computed(() => dialogueStore.talk.receiver_id),
+  indexName: computed(() => dialogueStore.index_name),
+  talkMode: computed(() => dialogueStore.talk.talk_type),
+  toFromId: computed(() => dialogueStore.talk.receiver_id),
   username: computed(() => dialogueStore.talk.username),
   online: computed(() => dialogueStore.online),
   keyboard: computed(() => dialogueStore.keyboard),
@@ -31,8 +37,13 @@ const talkParams = reactive({
 const state = reactive({
   // 是否显示群面板
   isShowGroupAside: false,
-
+  // 是否显示群公告
   isShowGroupNotice: false
+})
+
+const showGroupLaunch = ref({
+  groupId: 0,
+  isShowGroupLaunch: false
 })
 
 const events = {
@@ -41,6 +52,14 @@ const events = {
   },
   group: () => {
     state.isShowGroupAside = !state.isShowGroupAside
+  },
+  'add-group': () => {
+    showGroupLaunch.value.groupId = 0
+    if (talkParams.talkMode === 2) {
+      showGroupLaunch.value.groupId = talkParams.toFromId
+    }
+
+    showGroupLaunch.value.isShowGroupLaunch = true
   }
 }
 
@@ -48,6 +67,19 @@ const events = {
 const onPanelHeaderEvent = (eventType: string) => {
   events[eventType] && events[eventType]()
 }
+
+const onGroupLaunchSuccess = (groupId: number) => {
+  talkStore.toTalk(2, groupId, router)
+}
+
+useEventBus([
+  {
+    name: SessionConst.Switch,
+    event: () => {
+      state.isShowGroupAside = false
+    }
+  }
+])
 </script>
 
 <template>
@@ -55,7 +87,7 @@ const onPanelHeaderEvent = (eventType: string) => {
     <!-- 头部区域 -->
     <header class="el-header bdr-b">
       <PanelHeader
-        :type="talkParams.type"
+        :talk-mode="talkParams.talkMode"
         :username="talkParams.username"
         :online="talkParams.online"
         :keyboard="talkParams.keyboard"
@@ -68,9 +100,9 @@ const onPanelHeaderEvent = (eventType: string) => {
     <main class="el-main">
       <PanelContent
         :uid="talkParams.uid"
-        :talk_type="talkParams.type"
-        :receiver_id="talkParams.receiver_id"
-        :index_name="talkParams.index_name"
+        :talk-mode="talkParams.talkMode"
+        :to-from-id="talkParams.toFromId"
+        :index-name="talkParams.indexName"
       />
     </main>
 
@@ -79,13 +111,13 @@ const onPanelHeaderEvent = (eventType: string) => {
       v-show="isShowEditor"
       class="el-footer"
       :style="{ height: 200 + 'px' }"
-      v-dropsize="{ min: 200, max: 600, direction: 'top', key: 'editor' }"
+      v-dropsize="{ min: 100, max: 600, direction: 'top', key: 'editor' }"
     >
       <PanelFooter
         :uid="talkParams.uid"
-        :index_name="talkParams.index_name"
-        :talk_type="talkParams.type"
-        :receiver_id="talkParams.receiver_id"
+        :index-name="talkParams.indexName"
+        :talk-mode="talkParams.talkMode"
+        :to-from-id="talkParams.toFromId"
         :online="talkParams.online"
         :members="members"
       />
@@ -113,7 +145,7 @@ const onPanelHeaderEvent = (eventType: string) => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupNotice :group-id="talkParams.receiver_id" @close="state.isShowGroupNotice = false" />
+    <GroupNotice :group-id="talkParams.toFromId" @close="state.isShowGroupNotice = false" />
   </n-drawer>
 
   <n-drawer
@@ -125,8 +157,15 @@ const onPanelHeaderEvent = (eventType: string) => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupPanel :gid="talkParams.receiver_id" @close="state.isShowGroupAside = false" />
+    <GroupPanel :group-id="talkParams.toFromId" @close="state.isShowGroupAside = false" />
   </n-drawer>
+
+  <GroupLaunch
+    v-if="showGroupLaunch.isShowGroupLaunch"
+    :group-id="showGroupLaunch.groupId"
+    @close="showGroupLaunch.isShowGroupLaunch = false"
+    @on-submit="onGroupLaunchSuccess"
+  />
 </template>
 
 <style lang="less" scoped>

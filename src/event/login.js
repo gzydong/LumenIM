@@ -29,7 +29,7 @@ class Login extends Base {
       is_online: this.resource.status
     })
 
-    if (this.isTalk(1, this.resource.user_id, this.getAccountId())) {
+    if (this.isTalk(1, this.resource.user_id)) {
       useDialogueStore().setOnlineStatus(this.resource.status == 1)
     }
   }

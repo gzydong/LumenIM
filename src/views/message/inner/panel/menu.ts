@@ -13,7 +13,7 @@ const isRevoke = (uid: any, item: any): boolean => {
     return false
   }
 
-  const datetime = item.created_at.replace(/-/g, '/')
+  const datetime = item.send_time.replace(/-/g, '/')
 
   const time = new Date().getTime() - Date.parse(datetime)
 

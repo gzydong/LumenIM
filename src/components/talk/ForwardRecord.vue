@@ -8,13 +8,16 @@ import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  msgId: {
-    type: String,
+  msgIds: {
+    required: true
+  },
+  talkMode: {
+    type: Number,
     required: true
   }
 })
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 const isShow = ref(true)
 const items = ref<ITalkRecord[]>([])
 const title = ref('会话记录')
@@ -23,16 +26,18 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const onLoadData = () => {
-  ServeGetForwardRecords({
-    msg_id: props.msgId
-  }).then((res) => {
-    if (res.code == 200) {
-      items.value = res.data.items || []
-
-      title.value = `会话记录(${items.value.length})`
-    }
+const onLoadData = async () => {
+  let { code, data } = await ServeGetForwardRecords({
+    msg_ids: props.msgIds,
+    talk_mode: props.talkMode
   })
+
+  if (code != 200) {
+    return alert('获取会话记录失败')
+  }
+
+  items.value = data.items || []
+  title.value = `会话记录(${items.value.length})`
 }
 
 onMounted(() => {
@@ -62,14 +67,14 @@ onMounted(() => {
       <Loading v-if="items.length === 0" />
 
       <div v-for="item in items" :key="item.msg_id" class="message-item">
-        <div class="left-box pointer" @click="showUserInfoModal(item.user_id)">
+        <div class="left-box pointer" @click="toShowUserInfo(item.user_id)">
           <im-avatar :src="item.avatar" :size="30" :username="item.nickname" />
         </div>
 
         <div class="right-box">
           <div class="msg-header">
             <span class="name">{{ item.nickname }}</span>
-            <span class="time"> {{ item.created_at }}</span>
+            <span class="time"> {{ item.send_time }}</span>
           </div>
 
           <component

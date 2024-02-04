@@ -2,6 +2,7 @@
 import { ref, computed, reactive, onMounted } from 'vue'
 import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
+import { toApi } from '@/api'
 import { Search, Plus } from '@icon-park/vue-next'
 import { useUserStore, useTalkStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
@@ -19,7 +20,7 @@ const items = ref([])
 
 const params = reactive({
   isShow: false,
-  id: 0
+  group_id: 0
 })
 
 const tabIndex = ref('all')
@@ -44,21 +45,21 @@ const filter = computed((): any[] => {
   })
 })
 
-const onLoadData = () => {
-  ServeGetGroups().then((res) => {
-    if (res.code == 200) {
-      items.value = res.data.items || []
-    }
-  })
+const onLoadData = async () => {
+  const { code, data } = await toApi(ServeGetGroups)
+
+  if (code == 200) {
+    items.value = data.items || []
+  }
 }
 
 const onShowGroup = (item: any) => {
   params.isShow = true
-  params.id = item.id
+  params.group_id = item.group_id
 }
 
 const onToTalk = (item: any) => {
-  talkStore.toTalk(2, item.id, router)
+  talkStore.toTalk(2, item.group_id, router)
 }
 
 const onGroupCallBack = () => {
@@ -105,18 +106,14 @@ onMounted(() => {
     </header>
 
     <main v-if="filter.length == 0" class="el-main flex-center">
-      <n-empty size="200" description="暂无相关数据">
-        <template #icon>
-          <img src="@/assets/image/no-data.svg" alt="" />
-        </template>
-      </n-empty>
+      <n-empty description="暂无相关数据" />
     </main>
 
     <main v-else class="el-main me-scrollbar me-scrollbar-thumb pd-10">
       <div class="cards">
         <GroupCard
           v-for="item in filter"
-          :key="item.id"
+          :key="item.group_id"
           :avatar="item.avatar"
           :username="item.group_name"
           :gender="item.gender"
@@ -131,6 +128,7 @@ onMounted(() => {
   </section>
 
   <GroupLaunch
+    :group-id="0"
     v-if="isShowCreateGroupBox"
     @close="isShowCreateGroupBox = false"
     @on-submit="onGroupCallBack"
@@ -146,9 +144,9 @@ onMounted(() => {
     show-mask="transparent"
   >
     <GroupPanel
-      :gid="params.id"
+      :group-id="params.group_id"
       @close="params.isShow = false"
-      @to-talk="talkStore.toTalk(2, params.id, router)"
+      @to-talk="talkStore.toTalk(2, params.group_id, router)"
     />
   </n-drawer>
 </template>

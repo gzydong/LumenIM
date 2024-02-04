@@ -34,7 +34,7 @@ const onSkipBottom = () => {
   min-width: 100px;
   height: 28px;
   font-size: 12px;
-  background-color: #1ebafc;
+  background-color: var(--im-primary-color);
   color: #ffffff;
   display: flex;
   align-items: center;

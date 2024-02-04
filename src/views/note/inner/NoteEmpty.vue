@@ -2,7 +2,6 @@
 <template>
   <section class="section flex-center">
     <svg
-      data-v-09891987=""
       focusable="false"
       viewBox="0 0 220 220"
       aria-hidden="true"

@@ -1,43 +1,19 @@
 <script lang="ts" setup>
 import { ITalkRecordExtraLogin, ITalkRecord } from '@/types/chat'
+import { getExploreName, getExploreOs } from '@/utils/util'
 
 defineProps<{
   extra: ITalkRecordExtraLogin
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
-
-function getExploreName(userAgent = '') {
-  if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
-    return 'Opera'
-  } else if (userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) {
-    return 'IE'
-  } else if (userAgent.indexOf('Edge') > -1) {
-    return 'Edge'
-  } else if (userAgent.indexOf('Firefox') > -1) {
-    return 'Firefox'
-  } else if (userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') == -1) {
-    return 'Safari'
-  } else if (userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Safari') > -1) {
-    return 'Chrome'
-  } else {
-    return 'Unkonwn'
-  }
-}
-
-function getExploreOs(userAgent = '') {
-  if (userAgent.indexOf('Mac OS') > -1) {
-    return 'Mac OS'
-  } else {
-    return 'Windows'
-  }
-}
 </script>
 <template>
-  <section class="im-message-login">
-    <h4>登录操作通知</h4>
+  <section class="immsg-login">
+    <h3>登录操作通知</h3>
     <p>登录时间：{{ extra.datetime }} (CST)</p>
-    <p>IP 地址：{{ extra.ip }}</p>
+    <p>IP&nbsp;&nbsp;&nbsp;&nbsp;地址：{{ extra.ip }}</p>
     <p>登录地点：{{ extra.address }}</p>
     <p>
       登录设备：{{ getExploreName(extra.agent) }} /
@@ -47,7 +23,7 @@ function getExploreOs(userAgent = '') {
   </section>
 </template>
 <style lang="less" scoped>
-.im-message-login {
+.immsg-login {
   width: 300px;
   min-height: 50px;
   background: var(--im-message-bg-color);

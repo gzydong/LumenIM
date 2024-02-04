@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 // 暴露方法给渲染进程调用
 contextBridge.exposeInMainWorld('electron', {
   // 设置消息未读数
-  setBadge: num => {
+  setBadge: (num) => {
     ipcRenderer.send('ipc:set-badge', num == 0 ? '' : `${num}`)
   },
   // 获取窗口全屏状态
@@ -15,18 +15,16 @@ contextBridge.exposeInMainWorld('electron', {
     return ipcRenderer.sendSync('app-info', '')
   },
 
-  openLink: link => {
+  openLink: (link) => {
     ipcRenderer.send('ipc:open-link', link)
-  },
+  }
 })
 
 // 窗口变化事件
 ipcRenderer.on('full-screen', function (event, value) {
   // isFullScreenStatus = value == 'enter'
 
-  document.dispatchEvent(
-    new CustomEvent('full-screen-event', { detail: value })
-  )
+  document.dispatchEvent(new CustomEvent('full-screen-event', { detail: value }))
 })
 
 // 触发自定义事件

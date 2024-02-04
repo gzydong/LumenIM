@@ -8,6 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "strictFunctionTypes": false,
     "jsx": "preserve",
+    "jsxImportSource": "vue",
     "baseUrl": ".",
     "allowJs": true,
     "sourceMap": true,

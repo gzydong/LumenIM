@@ -100,7 +100,7 @@ onUnmounted(() => {
           &nbsp;开始录音
         </n-button>
 
-        <n-button v-show="status == 1" type="primary" round @click="onStop">
+        <n-button v-show="status == 1" type="primary" text-color="#ffffff" round @click="onStop">
           <n-icon :component="Voice" />
           &nbsp;结束录音
         </n-button>
@@ -109,7 +109,9 @@ onUnmounted(() => {
           重新录音
         </n-button>
 
-        <n-button v-show="status == 2" type="primary" round @click="onSubmit"> 发送录音 </n-button>
+        <n-button v-show="status == 2" type="primary" text-color="#ffffff" round @click="onSubmit">
+          发送录音
+        </n-button>
       </div>
     </template>
   </n-modal>

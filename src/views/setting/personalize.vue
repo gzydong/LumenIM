@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { NSwitch } from 'naive-ui'
+import { NSwitch, NRadioGroup, NRadio } from 'naive-ui'
 import { useSettingsStore } from '@/store'
 import { isElectronMode } from '@/utils/common'
 
@@ -13,12 +13,27 @@ const isFullScreen = computed({
   }
 })
 
-const darkTheme = computed({
-  get: () => !settingsStore.darkTheme,
-  set: (val) => {
-    settingsStore.setDarkTheme(!val)
+const themeMode = computed({
+  get: () => settingsStore.themeMode,
+  set: (value: string) => {
+    settingsStore.setThemeMode(value)
   }
 })
+
+const themes = [
+  {
+    label: '浅色',
+    value: 'light'
+  },
+  {
+    label: '深色',
+    value: 'dark'
+  },
+  {
+    label: '跟随系统',
+    value: 'auto'
+  }
+]
 </script>
 
 <template>
@@ -29,10 +44,16 @@ const darkTheme = computed({
       <div class="view-list">
         <div class="content">
           <div class="name">主题颜色</div>
-          <div class="desc">当前主题颜色 ：{{ darkTheme ? '浅色' : '深色' }}</div>
+          <div class="desc">当前主题颜色 ：{{ themeMode }}</div>
         </div>
         <div class="tools">
-          <n-switch v-model:value="darkTheme" size="medium" />
+          <n-radio-group v-model:value="themeMode" name="theme-group">
+            <n-space>
+              <n-radio v-for="item in themes" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
         </div>
       </div>
 

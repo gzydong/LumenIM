@@ -20,7 +20,7 @@ const onSubmit = () => {
   let data = {
     title: model.title,
     mode: model.mode,
-    anonymous: model.anonymous,
+    is_anonymous: model.anonymous,
     options: model.options.map((item) => item.value)
   }
 
@@ -56,8 +56,8 @@ const isCanSubmit = computed(() => {
       <n-form-item label="投票方式" :required="true">
         <n-radio-group v-model:value="model.anonymous">
           <n-space>
-            <n-radio :value="0"> 公开投票 </n-radio>
-            <n-radio :value="1"> 匿名投票 </n-radio>
+            <n-radio :value="1"> 公开投票 </n-radio>
+            <n-radio :value="2"> 匿名投票 </n-radio>
           </n-space>
         </n-radio-group>
       </n-form-item>
@@ -65,8 +65,8 @@ const isCanSubmit = computed(() => {
       <n-form-item label="选择方式" :required="true">
         <n-radio-group v-model:value="model.mode">
           <n-space>
-            <n-radio :value="0"> 单选 </n-radio>
-            <n-radio :value="1"> 多选 </n-radio>
+            <n-radio :value="1"> 单选 </n-radio>
+            <n-radio :value="2"> 多选 </n-radio>
           </n-space>
         </n-radio-group>
       </n-form-item>
@@ -99,7 +99,13 @@ const isCanSubmit = computed(() => {
     <template #footer>
       <div style="width: 100%; text-align: right">
         <n-button type="tertiary" @click="isShow = false"> 取消 </n-button>
-        <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
+        <n-button
+          type="primary"
+          text-color="#ffffff"
+          @click="onSubmit"
+          class="mt-l15"
+          :disabled="isCanSubmit"
+        >
           发起投票
         </n-button>
       </div>

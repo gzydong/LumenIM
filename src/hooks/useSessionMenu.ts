@@ -50,7 +50,7 @@ export function useSessionMenu() {
 
     const options: any[] = []
 
-    if (item.talk_type == 1) {
+    if (item.talk_mode === 1) {
       options.push({
         icon: renderIcon(IdCard),
         label: '好友信息',
@@ -65,14 +65,14 @@ export function useSessionMenu() {
     }
 
     options.push({
-      icon: renderIcon(item.is_top ? ArrowDown : ArrowUp),
-      label: item.is_top ? '取消置顶' : '会话置顶',
+      icon: renderIcon(item.is_top === 1 ? ArrowDown : ArrowUp),
+      label: item.is_top === 1 ? '取消置顶' : '会话置顶',
       key: 'top'
     })
 
     options.push({
-      icon: renderIcon(item.is_disturb ? Remind : CloseRemind),
-      label: item.is_disturb ? '关闭免打扰' : '开启免打扰',
+      icon: renderIcon(item.is_disturb === 1 ? CloseRemind : Remind),
+      label: item.is_disturb === 1 ? '关闭免打扰' : '开启免打扰',
       key: 'disturb'
     })
 
@@ -82,7 +82,7 @@ export function useSessionMenu() {
       key: 'remove'
     })
 
-    if (item.talk_type == 1) {
+    if (item.talk_mode == 1) {
       options.push({
         icon: renderIcon(Delete),
         label: '删除好友',
@@ -119,13 +119,14 @@ export function useSessionMenu() {
   }
 
   const onUserInfo = (item: ISession) => {
-    user(item.receiver_id)
+    user(item.to_from_id)
   }
 
   // 移除会话
   const onRemoveTalk = (item: ISession) => {
     ServeDeleteTalkList({
-      list_id: item.id
+      talk_mode: item.talk_mode,
+      to_from_id: item.to_from_id
     }).then(({ code }) => {
       if (code == 200) {
         onDeleteTalk(item.index_name)
@@ -136,15 +137,15 @@ export function useSessionMenu() {
   // 设置消息免打扰
   const onSetDisturb = (item: ISession) => {
     ServeSetNotDisturb({
-      talk_type: item.talk_type,
-      receiver_id: item.receiver_id,
-      is_disturb: item.is_disturb == 0 ? 1 : 0
+      talk_mode: item.talk_mode,
+      to_from_id: item.to_from_id,
+      action: item.is_disturb === 2 ? 1 : 2
     }).then(({ code, message }) => {
       if (code == 200) {
         window['$message'].success('设置成功!')
         talkStore.updateItem({
           index_name: item.index_name,
-          is_disturb: item.is_disturb == 0 ? 1 : 0
+          is_disturb: item.is_disturb === 1 ? 2 : 1
         })
       } else {
         window['$message'].error(message)
@@ -154,18 +155,19 @@ export function useSessionMenu() {
 
   // 置顶会话
   const onToTopTalk = (item: ISession) => {
-    if (item.is_top == 0 && talkStore.topItems.length >= 18) {
+    if (item.is_top === 2 && talkStore.topItems.length >= 18) {
       return window['$message'].info('置顶最多不能超过18个会话')
     }
 
     ServeTopTalkList({
-      list_id: item.id,
-      type: item.is_top == 0 ? 1 : 2
+      talk_mode: item.talk_mode,
+      to_from_id: item.to_from_id,
+      action: item.is_top === 2 ? 1 : 2
     }).then(({ code, message }) => {
       if (code == 200) {
         talkStore.updateItem({
           index_name: item.index_name,
-          is_top: item.is_top == 0 ? 1 : 0
+          is_top: item.is_top === 1 ? 2 : 1
         })
       } else {
         window['$message'].error(message)
@@ -183,9 +185,12 @@ export function useSessionMenu() {
       content: '删除后不再接收对方任何消息。',
       positiveText: '确定',
       negativeText: '取消',
+      positiveButtonProps: {
+        textColor: '#ffffff'
+      },
       onPositiveClick: () => {
         ServeDeleteContact({
-          friend_id: item.receiver_id
+          user_id: item.to_from_id
         }).then(({ code, message }) => {
           if (code == 200) {
             window['$message'].success('删除联系人成功')
@@ -206,9 +211,12 @@ export function useSessionMenu() {
       content: '退出后不再接收此群的任何消息。',
       positiveText: '确定',
       negativeText: '取消',
+      positiveButtonProps: {
+        textColor: '#ffffff'
+      },
       onPositiveClick: () => {
         ServeSecedeGroup({
-          group_id: item.receiver_id
+          group_id: item.to_from_id
         }).then(({ code, message }) => {
           if (code == 200) {
             window['$message'].success('已退出群聊')
@@ -237,9 +245,12 @@ export function useSessionMenu() {
       },
       negativeText: '取消',
       positiveText: '修改备注',
+      positiveButtonProps: {
+        textColor: '#ffffff'
+      },
       onPositiveClick: () => {
         ServeEditContactRemark({
-          friend_id: item.receiver_id,
+          user_id: item.to_from_id,
           remark: remark
         }).then(({ code, message }) => {
           if (code == 200) {

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { NForm, NFormItem, NSwitch, NPopconfirm } from 'naive-ui'
 import { ServeDismissGroup, ServeMuteGroup, ServeGroupDetail, ServeOvertGroup } from '@/api/group'
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  id: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -20,64 +21,57 @@ const detail = reactive({
 })
 
 const onLoadData = async () => {
-  const { data, code } = await ServeGroupDetail({ group_id: props.id })
+  const { data, code } = await toApi(ServeGroupDetail, { group_id: props.groupId })
 
-  if (code === 200) {
-    detail.is_mute = data.is_mute === 1
-    detail.is_overt = data.is_overt === 1
-  }
+  if (code != 200) return
+
+  detail.is_mute = data.is_mute === 1
+  detail.is_overt = data.is_overt === 1
 }
 
 const onDismiss = async () => {
-  const { code, message } = await ServeDismissGroup({ group_id: props.id })
+  const { code } = await toApi(
+    ServeDismissGroup,
+    { group_id: props.groupId },
+    {
+      showMessageText: '群聊已解散'
+    }
+  )
 
-  if (code === 200) {
-    emit('close')
-    window['$message'].success('群聊已解散')
-  } else {
-    window['$message'].info(message)
-  }
+  code == 200 && emit('close')
 }
 
-const onMute = (value: boolean) => {
+const onMute = async (value: boolean) => {
   detail.mute_loading = true
 
-  ServeMuteGroup({
-    group_id: props.id,
-    mode: detail.is_mute ? 2 : 1
+  const { code } = await toApi(ServeMuteGroup, {
+    group_id: props.groupId,
+    action: value ? 1 : 2
   })
-    .then(({ code, message }) => {
-      if (code == 200) {
-        detail.is_mute = value
-      } else {
-        window['$message'].info(message)
-      }
-    })
-    .finally(() => {
-      detail.mute_loading = false
-    })
+
+  detail.mute_loading = false
+  if (code != 200) return
+
+  detail.is_mute = value
 }
 
-const onOvert = (value: boolean) => {
+const onOvert = async (value: boolean) => {
   detail.overt_loading = true
 
-  ServeOvertGroup({
-    group_id: props.id,
-    mode: detail.is_overt ? 2 : 1
+  const { code } = await toApi(ServeOvertGroup, {
+    group_id: props.groupId,
+    action: value ? 1 : 2
   })
-    .then(({ code, message }) => {
-      if (code == 200) {
-        detail.is_overt = value
-      } else {
-        window['$message'].info(message)
-      }
-    })
-    .finally(() => {
-      detail.overt_loading = false
-    })
+
+  detail.overt_loading = false
+  if (code != 200) return
+
+  detail.is_overt = value
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 <template>
   <section class="section el-container is-vertical height100">

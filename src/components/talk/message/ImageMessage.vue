@@ -7,6 +7,7 @@ defineProps<{
   extra: ITalkRecordExtraImage
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 const img = (src: string, width = 200) => {
@@ -31,15 +32,15 @@ const img = (src: string, width = 200) => {
 </script>
 <template>
   <section
-    class="im-message-image"
-    :class="{ left: data.float === 'left' }"
+    class="immsg-image"
+    :class="{ right: data.float === 'right' }"
     :style="img(extra.url, 350)"
   >
     <n-image :src="extra.url" />
   </section>
 </template>
 <style lang="less" scoped>
-.im-message-image {
+.immsg-image {
   overflow: hidden;
   padding: 5px;
   border-radius: 5px;
@@ -47,7 +48,7 @@ const img = (src: string, width = 200) => {
   min-width: 30px;
   min-height: 30px;
 
-  &.left {
+  &.right {
     background: var(--im-message-right-bg-color);
   }
 

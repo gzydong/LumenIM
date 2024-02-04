@@ -34,7 +34,7 @@ const onSendClick = () => {
   emit('submit', call)
 }
 
-function loadFileSrc(file) {
+function loadFileSrc(file: File) {
   let reader = new FileReader()
 
   state.size = file.size

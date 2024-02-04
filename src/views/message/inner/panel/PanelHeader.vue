@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { Peoples, Announcement, MenuUnfoldOne, MenuFoldOne } from '@icon-park/vue-next'
+import { NPopover } from 'naive-ui'
+import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, MoreTwo } from '@icon-park/vue-next'
 import { useDialogueStore } from '@/store'
 
 defineProps({
-  type: {
+  talkMode: {
     type: Number,
     default: 1
   },
@@ -43,36 +44,40 @@ const onSetMenu = () => {
     </div>
 
     <div class="module left-module">
-      <span class="tag" :class="{ red: type == 1 }">
-        {{ type == 1 ? '好友' : '群聊' }}
+      <span class="tag" :class="{ red: talkMode == 1 }">
+        {{ talkMode == 1 ? '好友' : '群聊' }}
       </span>
+      <span class="online online-status" v-show="online"></span>
       <span class="nickname">{{ username }}</span>
-      <span class="num" v-show="type == 2 && num">({{ num }})</span>
-    </div>
-
-    <div class="module center-module" v-if="type == 1">
-      <p class="online">
-        <span class="online-status" v-show="online"></span>
-        <span>{{ online ? '在线' : '离线' }}</span>
-      </p>
-      <p class="keyboard-status" v-show="keyboard">对方正在输入 ...</p>
+      <span class="keyboard" v-show="keyboard">对方正在输入...</span>
+      <span class="num" v-show="talkMode == 2 && num">({{ num }})</span>
     </div>
 
     <div class="module right-module">
-      <n-icon
-        v-show="type == 2"
-        :component="Announcement"
-        :size="18"
-        class="icon"
-        @click="emit('evnet', 'notice')"
-      />
-      <n-icon
-        v-show="type == 2"
-        :component="Peoples"
-        :size="18"
-        class="icon"
-        @click="emit('evnet', 'group')"
-      />
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            :component="PeoplePlusOne"
+            :size="18"
+            class="icon"
+            @click="emit('evnet', 'add-group')"
+          />
+        </template>
+        {{ talkMode == 1 ? '发起群聊' : '邀请好友' }}
+      </n-popover>
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            v-show="talkMode == 2"
+            :component="MoreTwo"
+            :size="18"
+            class="icon"
+            @click="emit('evnet', 'group')"
+          />
+        </template>
+        更多
+      </n-popover>
     </div>
   </header>
 </template>
@@ -91,7 +96,6 @@ const onSetMenu = () => {
   .menu {
     width: 50px;
     position: absolute;
-    // height: inherit;
     display: flex;
     align-items: center;
     left: 0;
@@ -129,58 +133,16 @@ const onSetMenu = () => {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-  }
 
-  .center-module {
-    flex-direction: column;
-    justify-content: center;
-
-    width: 100px;
-
-    .online {
-      color: #cccccc;
-      font-weight: 300;
-      font-size: 15px;
-      width: 50px;
-      text-align: center;
-
-      &.color {
-        color: #1890ff;
-      }
-
-      .online-status {
-        position: relative;
-        top: -1px;
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        vertical-align: middle;
-        border-radius: 50%;
-        position: relative;
-        background-color: #1890ff;
-        margin-right: 5px;
-
-        &:after {
-          position: absolute;
-          top: -1px;
-          left: -1px;
-          width: 100%;
-          height: 100%;
-          border: 1px solid #1890ff;
-          border-radius: 50%;
-          -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
-          animation: antStatusProcessing 1.2s ease-in-out infinite;
-          content: '';
-        }
-      }
+    .keyboard {
+      animation: inputfade 1s infinite;
+      -webkit-animation: inputfade 1s infinite;
+      margin-left: 5px;
+      font-size: 12px;
     }
 
-    .keyboard-status {
-      height: 20px;
-      line-height: 18px;
-      font-size: 10px;
-      animation: inputfade 600ms infinite;
-      -webkit-animation: inputfade 600ms infinite;
+    .online {
+      margin-left: 10px;
     }
   }
 
@@ -280,6 +242,32 @@ const onSetMenu = () => {
 
   &.red-color {
     background: #f97348;
+  }
+}
+
+.online-status {
+  position: relative;
+  top: -1px;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+  position: relative;
+  background-color: #1890ff;
+  margin-right: 5px;
+
+  &:after {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #1890ff;
+    border-radius: 50%;
+    -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
+    animation: antStatusProcessing 1.2s ease-in-out infinite;
+    content: '';
   }
 }
 </style>

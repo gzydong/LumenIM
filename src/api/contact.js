@@ -1,4 +1,5 @@
-import { post, get } from '@/utils/request'
+import { post, get } from './request'
+import { toApi } from './index'
 
 // 获取好友列表服务接口
 export const ServeGetContacts = (data) => {
@@ -59,5 +60,5 @@ export const ServeContactMoveGroup = (data) => {
 }
 
 export const ServeContactGroupSave = (data) => {
-  return post('/api/v1/contact/group/save', data)
+  return post('/api/v1/contact/group/update', data)
 }

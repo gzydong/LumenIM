@@ -7,15 +7,15 @@ const store = useUserStore()
 <template>
   <section class="account-card">
     <div class="card-header">
-      <n-avatar round class="avatar" :size="100" :src="store.avatar" />
+      <n-avatar round class="avatar" :size="80" :src="store.avatar" />
 
       <div class="nickname text-ellipsis">
         {{ store.nickname || '未设置昵称' }}
       </div>
 
       <div class="gender" v-show="store.gender > 0">
-        <n-icon v-if="store.gender == 1" :component="Male" color="#508afe" />
-        <n-icon v-if="store.gender == 2" :component="Female" color="#ff5722" />
+        <n-icon v-if="store.gender == 1" :component="Male" color="#ffffff" />
+        <n-icon v-if="store.gender == 2" :component="Female" color="#ffffff" />
       </div>
     </div>
 
@@ -33,25 +33,50 @@ const store = useUserStore()
 <style lang="less" scoped>
 .account-card {
   width: 320px;
-  min-height: 300px;
+  min-height: 100px;
   background: var(--im-bg-color);
   padding-bottom: 20px;
 
   .card-header {
     width: 100%;
-    height: 230px;
+    height: 180px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom right, #247ec6, #73c1ff);
+    background: #0084ff;
+    overflow: hidden;
+
+    &::before {
+      width: 150px;
+      height: 150px;
+      content: '';
+      background: linear-gradient(to right, #1890ff, #0084ff);
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      right: -25%;
+      top: -25%;
+    }
+
+    &::after {
+      width: 150px;
+      height: 150px;
+      content: '';
+      background: linear-gradient(to left, #1890ff, #0084ff);
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      left: -25%;
+      bottom: -20%;
+    }
 
     .gender {
       width: 20px;
       height: 20px;
       position: absolute;
-      right: 102px;
-      bottom: 65px;
+      right: 112px;
+      bottom: 46px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -60,7 +85,7 @@ const store = useUserStore()
 
     .nickname {
       position: absolute;
-      bottom: 20px;
+      bottom: 10px;
       width: 50%;
       height: 30px;
       font-size: 16px;

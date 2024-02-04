@@ -87,7 +87,13 @@ const onSubmit = () => {
       <div class="footer">
         <div>
           <n-button type="tertiary" @click="isShowBox = false"> 取消 </n-button>
-          <n-button type="primary" class="mt-l15" @click="onSubmit" :disabled="isCanSubmit">
+          <n-button
+            type="primary"
+            text-color="#ffffff"
+            class="mt-l15"
+            @click="onSubmit"
+            :disabled="isCanSubmit"
+          >
             发送
           </n-button>
         </div>

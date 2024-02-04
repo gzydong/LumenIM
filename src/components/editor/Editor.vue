@@ -267,7 +267,7 @@ function onEmoticonEvent(data: any) {
 }
 
 function onCodeEvent(data: any) {
-  const msg = emitCall('code_event', data, (ok: boolean) => {
+  const msg = emitCall('code_event', data, () => {
     isShowEditorCode.value = false
   })
 
@@ -311,7 +311,7 @@ function onRecorderEvent(file: any) {
   isShowEditorRecorder.value = false
 }
 
-function onClipboardMatcher(node: any, Delta) {
+function onClipboardMatcher(_: any, Delta) {
   const ops: any[] = []
 
   Delta.ops.forEach((op) => {
@@ -331,12 +331,10 @@ function onClipboardMatcher(node: any, Delta) {
 }
 
 function onSendMessage() {
-  var delta = getQuill().getContents()
+  let delta = getQuill().getContents()
   let data = deltaToMessage(delta)
 
-  if (data.items.length === 0) {
-    return
-  }
+  if (data.items.length === 0) return
 
   switch (data.msgType) {
     case 1: // 文字消息

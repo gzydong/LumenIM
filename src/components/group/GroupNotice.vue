@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { Up, Down, Close } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import { ServeGetGroupNotices } from '@/api/group'
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -20,24 +21,24 @@ const onClose = () => {
   emit('close')
 }
 
-const onLoadData = () => {
-  loading.value = true
-  ServeGetGroupNotices({
-    group_id: props.groupId
-  }).then((res) => {
-    if (res.code == 200) {
-      let list = res.data.items || []
+const onLoadData = async () => {
+  const { code, data } = await toApi(
+    ServeGetGroupNotices,
+    {
+      group_id: props.groupId
+    },
+    { loading }
+  )
 
-      list.forEach((item: any) => {
-        item.is_show = false
-      })
+  if (code != 200) return
 
-      items.value = list
-      title.value = `群公告(${items.value.length})`
-    }
-
-    loading.value = false
+  const list = data.items || []
+  list.forEach((item: any) => {
+    item.is_show = false
   })
+
+  items.value = list
+  title.value = `群公告(${items.value.length})`
 }
 
 onMounted(() => {
@@ -63,11 +64,7 @@ onMounted(() => {
       </div>
 
       <div v-else-if="items.length === 0" class="flex-box flex-center">
-        <n-empty size="200" description="暂无相关数据">
-          <template #icon>
-            <img src="@/assets/image/no-data.svg" alt="" />
-          </template>
-        </n-empty>
+        <n-empty description="暂无相关数据" />
       </div>
 
       <div v-for="item in items" :key="item.id" class="items">

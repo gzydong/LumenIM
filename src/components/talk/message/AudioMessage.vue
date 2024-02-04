@@ -7,6 +7,7 @@ defineProps<{
   extra: ITalkRecordExtraAudio
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 const audioRef = ref()
@@ -71,7 +72,7 @@ const formatTime = (value: number = 0) => {
 }
 </script>
 <template>
-  <div class="im-message-audio">
+  <div class="immsg-audio">
     <audio
       ref="audioRef"
       preload="auto"
@@ -100,7 +101,7 @@ const formatTime = (value: number = 0) => {
   </div>
 </template>
 <style lang="less" scoped>
-.im-message-audio {
+.immsg-audio {
   --audio-bg-color: #f5f5f5;
   --audio-btn-bg-color: #ffffff;
 
@@ -242,8 +243,8 @@ const formatTime = (value: number = 0) => {
 }
 
 html[theme-mode='dark'] {
-  .im-message-audio {
-    --audio-bg-color: #2c2c32;
+  .immsg-audio {
+    --audio-bg-color: rgba(255, 255, 255, 5%);
     --audio-btn-bg-color: rgb(78, 75, 75);
 
     .btn {

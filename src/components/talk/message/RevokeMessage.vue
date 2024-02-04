@@ -2,15 +2,15 @@
 import { formatTime } from '@/utils/datetime'
 
 defineProps({
-  login_uid: {
+  loginUid: {
     type: Number,
     default: 0
   },
-  user_id: {
+  userId: {
     type: Number,
     default: 0
   },
-  talk_type: {
+  talkMode: {
     type: Number,
     default: 0
   },
@@ -25,33 +25,30 @@ defineProps({
 })
 </script>
 <template>
-  <div class="im-message-revoke">
+  <div class="immsg-revoke">
     <div class="content">
-      <span v-if="login_uid == user_id"> 你撤回了一条消息 | {{ formatTime(datetime) }} </span>
-      <span v-else-if="talk_type == 1"> 对方撤回了一条消息 | {{ formatTime(datetime) }} </span>
+      <span v-if="loginUid == userId"> 你撤回了一条消息 | {{ formatTime(datetime) }} </span>
+      <span v-else-if="talkMode == 1"> 对方撤回了一条消息 | {{ formatTime(datetime) }} </span>
       <span v-else>
-        "{{ nickname }}" 撤回了一条消息 |
-        {{ formatTime(datetime) }}
+        {{ nickname }} 撤回了一条消息&nbsp;&nbsp;|&nbsp;&nbsp;{{ formatTime(datetime) }}
       </span>
     </div>
   </div>
 </template>
 <style lang="less" scoped>
-.im-message-revoke {
+.immsg-revoke {
   display: flex;
   justify-content: center;
 
   .content {
     margin: 10px auto;
     background-color: #f5f5f5;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 30px;
     padding: 0 8px;
     word-break: break-all;
     word-wrap: break-word;
-    color: #979191;
     user-select: none;
-    font-weight: 300;
     display: inline-block;
     border-radius: 3px;
 
@@ -62,9 +59,10 @@ defineProps({
 }
 
 html[theme-mode='dark'] {
-  .im-message-revoke {
+  .immsg-revoke {
     .content {
-      background: unset;
+      color: rgba(255, 255, 255, 0.5);
+      background: #2c2c32;
     }
   }
 }

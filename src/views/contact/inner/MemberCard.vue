@@ -28,7 +28,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="items-box pointer">
+  <div class="item-box pointer">
     <div class="left-item">
       <im-avatar :src="avatar" :size="40" :username="username" />
     </div>
@@ -57,7 +57,7 @@ defineProps({
   </div>
 </template>
 <style lang="less" scoped>
-.items-box {
+.item-box {
   display: flex;
   width: 100%;
   min-height: 50px;

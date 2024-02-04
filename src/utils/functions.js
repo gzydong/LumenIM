@@ -30,14 +30,13 @@ export function getImageInfo(imgsrc) {
  *
  * @param {Number} msgid
  */
-export function download(msg_id) {
+export function download(msg_id, talk_mode, to_from_id) {
   let token = getAccessToken()
   try {
     let link = document.createElement('a')
-    // link.target = '_blank'
     link.href = `${
       import.meta.env.VITE_BASE_API
-    }/api/v1/talk/records/file/download?msg_id=${msg_id}&token=${token}`
+    }/api/v1/talk/file-download?msg_id=${msg_id}&talk_mode=${talk_mode}&to_from_id=${to_from_id}&token=${token}`
     link.click()
   } catch (e) {
     console.warn(e)
@@ -103,4 +102,9 @@ export function downloadImage(src, name) {
 export const getFileNameSuffix = (name) => {
   const arr = name.split('.')
   return arr[arr.length - 1]
+}
+
+export function getFilenameFromUrl(url) {
+  const match = url.match(/^.*\/(.*?)$/)
+  return match ? match[1] : null
 }

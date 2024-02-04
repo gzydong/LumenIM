@@ -3,6 +3,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
+import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
 import { useUserStore } from '@/store'
@@ -19,63 +20,61 @@ type Item = {
 }
 
 const userStore = useUserStore()
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo, message } = useInject()
 const items = ref<Item[]>([])
 const loading = ref(true)
 const isContactApply = computed(() => userStore.isContactApply)
 
-const onLoadData = (isClearTip = false) => {
-  ServeGetContactApplyRecords()
-    .then((res) => {
-      if (res.code == 200) {
-        items.value = res.data.items || []
+const onLoadData = async (isClearTip = false) => {
+  const { code, data } = await toApi(ServeGetContactApplyRecords, {}, { loading })
 
-        if (isClearTip) {
-          userStore.isContactApply = false
-        }
-      }
-    })
-    .finally(() => {
-      loading.value = false
-    })
+  if (code != 200) return
+
+  items.value = data.items || []
+
+  if (isClearTip) {
+    userStore.isContactApply = false
+  }
 }
 
 const onInfo = (item: Item) => {
-  showUserInfoModal(item.user_id)
+  toShowUserInfo(item.user_id)
 }
 
-const onAccept = throttle((item: Item) => {
-  let loading = window['$message'].loading('请稍等，正在处理')
+const onAccept = throttle(async (item: Item) => {
+  let loading = message.loading('请稍等，正在处理')
 
-  ServeApplyAccept({
-    apply_id: item.id,
-    remark: item.nickname
-  }).then(({ code, message }) => {
-    loading.destroy()
-    if (code == 200) {
-      onLoadData()
-      window['$message'].success('已同意')
-    } else {
-      window['$message'].info(message)
+  await toApi(
+    ServeApplyAccept,
+    {
+      apply_id: item.id,
+      remark: item.nickname
+    },
+    {
+      showMessageText: '已同意',
+      onSuccess: onLoadData
     }
-  })
+  )
+
+  loading.destroy()
 }, 1000)
 
-const onDecline = throttle((item) => {
-  let loading = window['$message'].loading('请稍等，正在处理')
+const onDecline = throttle(async (item: Item) => {
+  let loading = message.loading('请稍等，正在处理')
 
-  ServeApplyDecline({
-    apply_id: item.id,
-    remark: '拒绝'
-  }).then(({ code, message }) => {
-    loading.destroy()
-    if (code == 200) {
-      onLoadData()
-      window['$message'].success('已拒绝')
-    } else {
-      window['$message'].info(message)
+  await toApi(
+    ServeApplyDecline,
+    {
+      apply_id: item.id,
+      remark: item.nickname
+    },
+    {
+      showMessageText: '已拒绝',
+      onSuccess: onLoadData
     }
-  })
+  )
+
+  loading.destroy()
 }, 1000)
 
 watch(isContactApply, () => {
@@ -88,17 +87,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <section v-loading="loading" style="min-height: 300px">
-    <n-empty
-      v-show="items.length == 0"
-      size="200"
-      description="暂无相关数据"
-      style="margin-top: 10%"
-    >
-      <template #icon>
-        <img src="@/assets/image/no-data.svg" alt="" />
-      </template>
-    </n-empty>
+  <section
+    v-loading="loading"
+    style="min-height: 400px"
+    :class="{
+      'flex-center': items.length == 0
+    }"
+  >
+    <n-empty v-show="items.length == 0" description="暂无相关数据" />
 
     <div class="item" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">

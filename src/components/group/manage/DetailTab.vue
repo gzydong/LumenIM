@@ -3,11 +3,12 @@ import { ref, reactive, onMounted } from 'vue'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
 import { ServeGroupDetail, ServeEditGroup } from '@/api/group'
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close'])
 
 const props = defineProps({
-  id: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -21,40 +22,39 @@ const modelDetail = reactive({
   profile: ''
 })
 
-const onUploadAvatar = (avatar) => {
+const onUploadAvatar = (avatar: string) => {
   cropper.value = false
   modelDetail.avatar = avatar
 
   onSubmitBaseInfo()
 }
 
-const onLoadData = () => {
-  ServeGroupDetail({ group_id: props.id }).then((res) => {
-    if (res.code == 200) {
-      modelDetail.name = res.data.group_name
-      modelDetail.avatar = res.data.avatar
-      modelDetail.profile = res.data.profile
-    }
-  })
+const onLoadData = async () => {
+  const { code, data } = await toApi(ServeGroupDetail, { group_id: props.groupId })
+  if (code != 200) return
+
+  modelDetail.name = data.group_name
+  modelDetail.avatar = data.avatar
+  modelDetail.profile = data.profile
 }
 
-function onSubmitBaseInfo() {
+async function onSubmitBaseInfo() {
   if (modelDetail.name.trim() == '') {
     return window['$message'].info('群名称不能为空')
   }
 
-  ServeEditGroup({
-    group_id: props.id,
-    group_name: modelDetail.name,
-    avatar: modelDetail.avatar,
-    profile: modelDetail.profile
-  }).then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('群信息更新成功')
-    } else {
-      window['$message'].error(res.message)
+  await toApi(
+    ServeEditGroup,
+    {
+      group_id: props.groupId,
+      group_name: modelDetail.name,
+      avatar: modelDetail.avatar,
+      profile: modelDetail.profile
+    },
+    {
+      showMessageText: '群信息更新成功'
     }
-  })
+  )
 }
 
 onMounted(() => {
@@ -106,7 +106,9 @@ onMounted(() => {
           <n-input placeholder="选填" type="textarea" v-model:value="modelDetail.profile" />
         </n-form-item>
         <n-form-item label="">
-          <n-button type="primary" @click="onSubmitBaseInfo"> 保存信息 </n-button>
+          <n-button type="primary" text-color="#ffffff" @click="onSubmitBaseInfo">
+            保存信息
+          </n-button>
         </n-form-item>
       </n-form>
     </main>

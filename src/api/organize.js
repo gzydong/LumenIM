@@ -1,4 +1,4 @@
-import { get } from '@/utils/request'
+import { get } from './request'
 
 export const ServeDepartmentList = () => {
   return get('/api/v1/organize/department/all')

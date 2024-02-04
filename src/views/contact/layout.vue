@@ -2,16 +2,22 @@
 import { reactive, computed, markRaw } from 'vue'
 import SubViewLayout from '@/layout/SubViewLayout.vue'
 import { useUserStore } from '@/store'
-import { PeoplesTwo, ChartGraph, Peoples, People, Permissions } from '@icon-park/vue-next'
+import { PeoplesTwo, ChartGraph, Peoples, People, Remind } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 
 const menus = reactive([
   {
-    name: '申请管理',
-    path: '/contact/apply',
-    icon: markRaw(Permissions),
-    tips: computed(() => (userStore.isContactApply || userStore.isGroupApply ? 'New' : ''))
+    name: '好友通知',
+    path: '/contact/friend/apply',
+    icon: markRaw(Remind),
+    tips: computed(() => (userStore.isContactApply ? 'New' : ''))
+  },
+  {
+    name: '群聊通知',
+    path: '/contact/group/apply',
+    icon: markRaw(Remind),
+    tips: computed(() => (userStore.isGroupApply ? 'New' : ''))
   },
   {
     name: '我的好友',
@@ -25,7 +31,7 @@ const menus = reactive([
   },
   {
     name: '公开群聊',
-    path: '/contact/group/open',
+    path: '/contact/open-group',
     icon: markRaw(PeoplesTwo)
   },
   {

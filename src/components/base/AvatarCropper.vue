@@ -4,7 +4,8 @@ import { NModal, NCard } from 'naive-ui'
 import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { ServeUploadAvatar } from '@/api/upload'
+import { toApi } from '@/api'
+import { ServeUploadImage } from '@/api/upload'
 
 const emit = defineEmits(['close', 'success'])
 const state = reactive({
@@ -48,8 +49,6 @@ const onUpload = (e) => {
     if (typeof e.target.result === 'object') {
       // 把Array Buffer转化为blob 如果是base64不需要
       data = window.URL.createObjectURL(new Blob([e.target.result]))
-
-      console.log(data, e.target.result)
     } else {
       data = e.target.result
     }
@@ -78,8 +77,8 @@ const refreshCrop = () => {
 }
 
 const onSubmit = () => {
-  cropper.value.getCropBlob((blob) => {
-    let file = new File([blob], 'avatar.png', {
+  cropper.value.getCropBlob(async (blob) => {
+    const file = new File([blob], 'avatar.png', {
       type: blob.type,
       lastModified: Date.now()
     })
@@ -87,13 +86,9 @@ const onSubmit = () => {
     const form = new FormData()
     form.append('file', file)
 
-    ServeUploadAvatar(form).then((res) => {
-      if (res.code == 200) {
-        emit('success', res.data.avatar)
-      } else {
-        window['$message'].info(res.message)
-      }
-    })
+    const { code, data } = await toApi(ServeUploadImage, form)
+
+    code == 200 && emit('success', data.src)
   })
 }
 </script>

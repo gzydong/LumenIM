@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeEditGroupNotice } from '@/api/group'
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close', 'success'])
 const props = defineProps({
@@ -9,7 +10,7 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  gid: {
+  groupId: {
     type: Number,
     default: 0
   },
@@ -51,29 +52,21 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const onSubmit = () => {
-  loading.value = true
-
-  let response = ServeEditGroupNotice({
+const onSubmit = async () => {
+  const params = {
     notice_id: props.id,
-    group_id: props.gid,
+    group_id: props.groupId,
     title: model.title,
     content: model.content,
-    is_top: 0,
-    is_confirm: 0
-  })
+    is_top: 1,
+    is_confirm: 1
+  }
 
-  response.then((res) => {
-    if (res.code == 200) {
-      window['$message'].success(res.message)
+  await toApi(ServeEditGroupNotice, params, {
+    loading,
+    onSuccess: () => {
       emit('success')
-    } else {
-      window['$message'].warning(res.message)
     }
-  })
-
-  response.finally(() => {
-    loading.value = false
   })
 }
 

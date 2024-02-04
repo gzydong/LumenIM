@@ -1,103 +1,77 @@
-<script setup>
-import { reactive, computed, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 import { NCheckbox, NProgress } from 'naive-ui'
-import { ServeConfirmVoteHandle } from '@/api/chat'
-import { useUserStore } from '@/store'
+import { ServeGroupVoteSubmit, ServeGroupVoteDetail } from '@/api/group'
+import { ITalkRecordExtraVote, ITalkRecord, IVoteDetail } from '@/types/chat'
 
-const props = defineProps({
-  extra: Object,
-  data: Object
+const props = defineProps<{
+  extra: ITalkRecordExtraVote
+  data: ITalkRecord
+  talkMode?: Number
+}>()
+
+const detail = ref<IVoteDetail>({
+  answer_mode: 0,
+  answer_num: 0,
+  answer_options: [],
+  answered_num: 0,
+  answered_users: [],
+  is_anonymous: 0,
+  title: '',
+  vote_id: 0,
+  is_checked: false,
+  is_submit: false
 })
-
-const extra = ref(props.extra)
-const userStore = useUserStore()
-const mode = extra.value.detail.answer_mode
-const state = reactive({ options: [] })
 
 // 是否可提交
 const isCanSubmit = computed(() => {
-  return state.options.some((item) => item.is_checked)
+  return detail.value.answer_options.some((item: any) => item.is_checked)
 })
 
-// 是否已投票
-const isVoted = computed(() => {
-  return extra.value.vote_users.some((item) => item == userStore.uid)
-})
-
-/**
- * 设置投票选项
- */
-function setOptions(options) {
-  for (const option of options) {
-    state.options.push({
-      key: option.key,
-      value: option.value,
-      is_checked: false,
-      num: 0,
-      progress: 0
-    })
+const onCheckboxChange = (checked: boolean, option: any) => {
+  if (detail.value.answer_mode == 1) {
+    detail.value.answer_options.forEach((option) => (option.is_checked = false))
   }
+
+  option.is_checked = checked
 }
 
-/**
- * 更新统计信息
- *
- * @param {*} data
- */
-function updateStatistics(data) {
-  let count = data.count
+const onLoadDetail = () => {
+  ServeGroupVoteDetail({ vote_id: props.extra.vote_id }).then(({ data }) => {
+    detail.value = data
 
-  state.options.forEach((option) => {
-    option.num = data.options[option.key]
-
-    if (count > 0) {
-      option.progress = (data.options[option.key] / count) * 100
+    let items: string[] = []
+    for (const v of data.answered_users) {
+      for (const option of v.options) {
+        items.push(option)
+      }
     }
+
+    detail.value.answer_options.forEach((option: any) => {
+      option.progress = (items.filter((item) => item == option.key).length / items.length) * 100
+    })
   })
-}
-
-/**
- * 选择投票
- *
- * @param {*} data
- * @param {*} option
- */
-function change(data, option) {
-  if (mode == 0) {
-    state.options.forEach((option) => (option.is_checked = false))
-  }
-
-  option.is_checked = data
 }
 
 /**
  * 表单提交
  */
-const onSubmit = () => {
+const onSubmit = async () => {
   if (!isCanSubmit.value) return
 
-  let items = []
+  let items = detail.value.answer_options
+    .filter((option) => option.is_checked)
+    .map((option) => option.key)
 
-  state.options.forEach((item) => {
-    item.is_checked && items.push(item.key)
+  await ServeGroupVoteSubmit({
+    vote_id: props.extra.vote_id,
+    options: items
   })
 
-  ServeConfirmVoteHandle({
-    msg_id: props.data.msg_id,
-    options: items.join(',')
-  }).then((res) => {
-    if (res.code == 200) {
-      updateStatistics(res.data)
-      extra.value.vote_users.push(userStore.uid)
-      extra.value.detail.answered_num++
-    }
-  })
+  onLoadDetail()
 }
 
-onMounted(() => {
-  setOptions(extra.value.detail.answer_option)
-  updateStatistics(extra.value.statistics)
-})
+onLoadDetail()
 </script>
 
 <template>
@@ -105,14 +79,14 @@ onMounted(() => {
     <div class="vote-from">
       <div class="vheader">
         <p style="font-weight: bold">
-          {{ mode == 1 ? '[多选投票]' : '[单选投票]' }}
+          {{ detail.answer_mode == 2 ? '[多选投票]' : '[单选投票]' }}
         </p>
-        <p>{{ extra.detail.title }}</p>
+        <p>{{ detail.title }}</p>
       </div>
 
-      <template v-if="isVoted">
+      <template v-if="detail.is_submit">
         <div class="vbody">
-          <div class="vote-view" v-for="option in state.options" :key="option.key">
+          <div class="vote-view" v-for="option in detail.answer_options" :key="option.key">
             <p class="vote-option">{{ option.key }}、 {{ option.value }}</p>
             <p class="vote-census">{{ option.num }} 票 {{ option.progress }}%</p>
             <p class="vote-progress">
@@ -120,32 +94,32 @@ onMounted(() => {
                 type="line"
                 :height="5"
                 :show-indicator="false"
-                :percentage="parseInt(option.progress)"
+                :percentage="option.progress"
                 color="#1890ff"
               />
             </p>
           </div>
         </div>
         <div class="vfooter vote-view">
-          <p>应参与人数：{{ extra.detail.answer_num }} 人</p>
-          <p>实际参与人数：{{ extra.detail.answered_num }} 人</p>
+          <p>应参与人数：{{ detail.answer_num }} 人</p>
+          <p>实际参与人数：{{ detail.answered_num }} 人</p>
         </div>
       </template>
       <template v-else>
         <div class="vbody">
           <div
             class="option"
-            :class="{ radio: mode == 0 }"
-            v-for="option in state.options"
+            :class="{ radio: detail.answer_mode == 1 }"
+            v-for="option in detail.answer_options"
             :key="option.key"
           >
             <p class="checkbox">
               <n-checkbox
                 v-model:checked="option.is_checked"
-                @update:checked="change(option.is_checked, option)"
+                @update:checked="onCheckboxChange(option.is_checked, option)"
               />
             </p>
-            <p class="text" @click="change(!option.is_checked, option)">
+            <p class="text" @click="onCheckboxChange(!option.is_checked, option)">
               {{ option.key }}、{{ option.value }}
             </p>
           </div>
@@ -213,6 +187,8 @@ onMounted(() => {
         font-size: 13px;
         display: flex;
         flex-direction: row;
+        align-items: center;
+        user-select: none;
 
         .text {
           margin-left: 10px;

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { NModal, NInput, NScrollbar, NCheckbox, NTabs, NTab } from 'naive-ui'
-import { Search, Delete } from '@icon-park/vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { NModal, NInput, NCheckbox, NTabs, NTab, NVirtualList } from 'naive-ui'
+import { Search } from '@icon-park/vue-next'
 import { ServeGetContacts } from '@/api/contact'
 import { ServeGetGroups } from '@/api/group'
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close', 'on-submit'])
 
@@ -42,45 +43,34 @@ const onLoad = () => {
   onLoadContact()
 }
 
-const onLoadContact = () => {
-  loading.value = true
-  ServeGetContacts()
-    .then((res) => {
-      if (res.code == 200) {
-        let list = res.data.items || []
+const onLoadContact = async () => {
+  const { code, data } = await toApi(ServeGetContacts, {}, { loading })
 
-        items.value = list.map((item: any) => {
-          return {
-            id: item.id,
-            avatar: item.avatar,
-            type: 1,
-            name: item.remark || item.nickname,
-            keyword: item.remark + item.nickname,
-            remark: item.remark,
-            checked: false
-          }
-        })
-      }
-    })
-    .finally(() => {
-      loading.value = false
-    })
+  if (code != 200) return
+
+  items.value = (data.items || []).map((item: any) => {
+    return {
+      id: item.user_id,
+      avatar: item.avatar,
+      type: 1,
+      name: item.nickname,
+      keyword: item.remark + item.nickname,
+      remark: item.remark,
+      checked: false
+    }
+  })
 }
 
 const onLoadGroup = async () => {
-  if (loadGroupStatus.value) {
-    return
-  }
+  if (loadGroupStatus.value) return
 
-  loading.value = true
-  let { code, data } = await ServeGetGroups()
-  if (code != 200) {
-    return
-  }
+  const { code, data } = await toApi(ServeGetGroups, {}, { loading })
 
-  let list = data.items.map((item: any) => {
+  if (code != 200) return
+
+  const list = data.items.map((item: any) => {
     return {
-      id: item.id,
+      id: item.group_id,
       avatar: item.avatar,
       type: 2,
       name: item.group_name,
@@ -92,7 +82,6 @@ const onLoadGroup = async () => {
 
   items.value.push(...list)
 
-  loading.value = false
   loadGroupStatus.value = true
 }
 
@@ -126,16 +115,18 @@ const onTabs = (value: number) => {
   }
 }
 
-onLoad()
+onMounted(() => {
+  onLoad()
+})
 </script>
 
 <template>
   <n-modal
     v-model:show="isShowBox"
     preset="card"
-    title="选择联系人"
+    title="选择目标"
     class="modal-radius"
-    style="max-width: 650px; height: 550px"
+    style="max-width: 350px; height: 550px"
     :on-after-leave="onMaskClick"
     :segmented="{
       content: true,
@@ -145,100 +136,53 @@ onLoad()
       padding: 0
     }"
   >
-    <section class="el-container launch-box">
-      <aside class="el-aside bdr-r" style="width: 240px">
-        <section class="el-container is-vertical height100">
-          <header class="el-header tabs">
-            <n-tabs type="line" justify-content="space-around" @update:value="onTabs">
-              <n-tab name="1"> 好友 </n-tab>
-              <n-tab name="2"> 群聊 </n-tab>
-              <!-- <n-tab name="企业"> 企业 </n-tab> -->
-            </n-tabs>
-          </header>
+    <section class="el-container is-vertical launch-box">
+      <header class="el-header search">
+        <n-input placeholder="搜索" v-model:value="keywords" clearable>
+          <template #prefix>
+            <n-icon :component="Search" />
+          </template>
+        </n-input>
+      </header>
 
-          <header class="el-header sub-header">
-            <n-input placeholder="搜索" v-model:value="keywords" clearable size="small">
-              <template #prefix>
-                <n-icon :component="Search" />
-              </template>
-            </n-input>
-          </header>
+      <header class="el-header tabs" style="padding: 3px 15px">
+        <n-tabs
+          type="segment"
+          size="small"
+          animated
+          justify-content="space-around"
+          @update:value="onTabs"
+        >
+          <n-tab name="1"> 好友 </n-tab>
+          <n-tab name="2"> 群聊 </n-tab>
+        </n-tabs>
+      </header>
 
-          <main class="el-main" v-loading="loading" loading-text="加载中...">
-            <n-scrollbar>
-              <div class="friend-items">
-                <div
-                  class="friend-item pointer"
-                  v-for="item in searchFilter"
-                  :key="item.id"
-                  @click="onTriggerContact(item)"
-                >
-                  <div class="avatar">
-                    <im-avatar
-                      class="pointer"
-                      :src="item.avatar"
-                      :size="25"
-                      :username="item.remark || item.name"
-                    />
-                  </div>
-
-                  <div class="content">
-                    <span class="text-ellipsis">{{ item.remark || item.name }}</span>
-                  </div>
-
-                  <div class="checkbox">
-                    <n-checkbox size="small" :checked="item.checked" />
-                  </div>
-                </div>
+      <main class="el-main main" v-loading="loading" loading-text="加载中...">
+        <n-virtual-list style="max-height: inherit" :item-size="42" :items="searchFilter">
+          <template #default="{ item }">
+            <div
+              :key="item.id"
+              class="item-box pointer"
+              style="height: 42px"
+              @click="onTriggerContact(item)"
+            >
+              <div class="avatar">
+                <im-avatar :src="item.avatar" :size="25" :username="item.remark || item.name" />
               </div>
-            </n-scrollbar>
-          </main>
-        </section>
-      </aside>
 
-      <main class="el-main">
-        <section class="el-container is-vertical height100">
-          <main class="el-main o-hidden">
-            <n-scrollbar class="friend-items">
-              <div class="friend-items">
-                <div v-show="!checkedFilter.length" style="padding-top: 100px">
-                  <n-empty size="200" description="暂无数据">
-                    <template #icon>
-                      <img src="@/assets/image/no-data.svg" alt="" />
-                    </template>
-                  </n-empty>
-                </div>
-
-                <div
-                  class="friend-item pointer"
-                  v-for="item in checkedFilter"
-                  :key="item.id"
-                  @click="onTriggerContact(item)"
-                >
-                  <div class="avatar">
-                    <im-avatar
-                      class="pointer"
-                      :src="item.avatar"
-                      :size="25"
-                      :username="item.remark || item.name"
-                    />
-                  </div>
-
-                  <div class="content">
-                    <span class="text-ellipsis">
-                      {{ item.remark || item.name }}
-                    </span>
-                    <span v-if="item.type == 2" class="badge group">群</span>
-                  </div>
-
-                  <div class="checkbox">
-                    <n-icon :size="16" :component="Delete" />
-                  </div>
-                </div>
+              <div class="content">
+                <span class="text-ellipsis">
+                  {{ item.name }} {{ item.remark ? ` (${item.remark})` : '' }}
+                </span>
               </div>
-            </n-scrollbar>
-          </main>
-        </section>
+
+              <div class="checkbox">
+                <n-checkbox size="small" :checked="item.checked" />
+              </div>
+            </div>
+          </template>
+        </n-virtual-list>
       </main>
     </section>
 
@@ -249,8 +193,14 @@ onLoad()
         </div>
 
         <div>
-          <n-button type="tertiary" @click="isShowBox = false"> 取消 </n-button>
-          <n-button type="primary" class="mt-l15" @click="onSubmit" :disabled="isCanSubmit">
+          <n-button @click="isShowBox = false"> 取消 </n-button>
+          <n-button
+            type="primary"
+            text-color="#ffffff"
+            class="mt-l15"
+            @click="onSubmit"
+            :disabled="isCanSubmit"
+          >
             确定
           </n-button>
         </div>
@@ -260,16 +210,12 @@ onLoad()
 </template>
 
 <style lang="less" scoped>
-:deep(.n-divider__title) {
-  font-weight: unset;
-}
-
 .launch-box {
   height: 410px;
   width: 100%;
   overflow: hidden;
 
-  .sub-header {
+  .search {
     height: 50px;
     padding: 10px 15px;
     display: flex;
@@ -277,17 +223,16 @@ onLoad()
     align-items: center;
   }
 
-  .friend-items {
-    height: 100%;
-    overflow-y: auto;
-    padding: 0 15px;
+  .main {
+    padding-top: 10px;
 
-    .friend-item {
+    .item-box {
       height: 40px;
       box-sizing: border-box;
       display: flex;
       flex-direction: row;
       margin: 5px 0;
+      padding: 0px 15px;
 
       > div {
         display: flex;

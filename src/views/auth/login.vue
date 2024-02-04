@@ -3,11 +3,14 @@ import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
+import { toApi } from '@/api'
 import { setAccessToken } from '@/utils/auth'
 import { palyMusic } from '@/utils/talk'
+import { useInject } from '@/hooks'
 import ws from '@/connect'
 import { useUserStore } from '@/store'
 
+const { message } = useInject()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
@@ -25,38 +28,35 @@ const rules = {
   }
 }
 
+const loading = ref(false)
+
 const model = reactive({
   username: '',
-  password: '',
-  loading: false
+  password: ''
 })
 
-const onLogin = () => {
+const onLogin = async () => {
   const redirect: any = route.params?.redirect || '/'
 
-  model.loading = true
-
-  const response = ServeLogin({
-    mobile: model.username,
-    password: model.password,
-    platform: 'web'
-  })
-
-  response.then(async (res) => {
-    if (res.code == 200) {
-      window['$message'].success('登录成功')
-      setAccessToken(res.data.access_token, res.data.expires_in)
-      ws.connect()
-      userStore.loadSetting()
-      router.push(redirect)
-    } else {
-      window['$message'].warning(res.message)
+  const { code, data } = await toApi(
+    ServeLogin,
+    {
+      mobile: model.username,
+      password: model.password,
+      platform: 'web'
+    },
+    {
+      loading
     }
-  })
+  )
 
-  response.finally(() => {
-    model.loading = false
-  })
+  if (code !== 200) return
+
+  setAccessToken(data.access_token, data.expires_in)
+  ws.connect()
+  message.success('登录成功')
+  userStore.loadSetting()
+  router.push(redirect)
 }
 
 const onValidate = (e: Event) => {
@@ -112,9 +112,10 @@ const onClickAccount = (type: number) => {
           type="primary"
           size="large"
           block
+          text-color="#ffffff"
           class="mt-t20"
           @click="onValidate"
-          :loading="model.loading"
+          :loading="loading"
         >
           立即登录
         </n-button>
@@ -133,8 +134,8 @@ const onClickAccount = (type: number) => {
         <span style="color: #ccc; font-weight: 300"> 预览账号</span>
       </n-divider>
       <div class="preview-account">
-        <p @click="onClickAccount(1)">预览账号:18798272054 / 密码: admin123</p>
-        <p @click="onClickAccount(2)">预览账号:18798272055 / 密码: admin123</p>
+        <p @click="onClickAccount(1)">预览账号:187****2054 / 密码: admin123</p>
+        <p @click="onClickAccount(2)">预览账号:187****2055 / 密码: admin123</p>
       </div>
     </footer>
   </section>

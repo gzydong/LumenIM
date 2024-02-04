@@ -23,7 +23,6 @@ export const ChatMsgSysGroupMuted = 1107 // 群禁言
 export const ChatMsgSysGroupCancelMuted = 1108 // 群解除禁言
 export const ChatMsgSysGroupMemberMuted = 1109 // 群成员禁言
 export const ChatMsgSysGroupMemberCancelMuted = 1110 // 群成员解除禁言
-export const ChatMsgSysGroupNotice = 1111 // 编辑群公告
 export const ChatMsgSysGroupTransfer = 1113 // 变更群主
 
 export const ChatMsgTypeMapping = {
@@ -50,8 +49,7 @@ export const ChatMsgTypeMapping = {
   [ChatMsgSysGroupMuted]: '[群禁言消息]',
   [ChatMsgSysGroupCancelMuted]: '[群解除禁言消息]',
   [ChatMsgSysGroupMemberMuted]: '[群成员禁言消息]',
-  [ChatMsgSysGroupMemberCancelMuted]: '[群成员解除禁言消息]',
-  [ChatMsgSysGroupNotice]: '[群公告]'
+  [ChatMsgSysGroupMemberCancelMuted]: '[群成员解除禁言消息]'
 }
 
 // 消息类型 - 消息组件 映射关系
@@ -74,8 +72,8 @@ export const MessageComponents = {
   [ChatMsgSysGroupMemberJoin]: 'sys-group-join-message',
   [ChatMsgSysGroupMemberQuit]: 'sys-group-member-quit-message',
   [ChatMsgSysGroupMemberKicked]: 'sys-group-member-kicked-message',
-  // [ChatMsgSysGroupMessageRevoke]: '[撤回消息]',
-  // [ChatMsgSysGroupDismissed]: '[群解散消息]',
+  [ChatMsgSysGroupMessageRevoke]: '[撤回消息]', // TODO 待修改
+  [ChatMsgSysGroupDismissed]: '[群解散消息]', // TODO 待修改
   [ChatMsgSysGroupMuted]: 'sys-group-muted-message',
   [ChatMsgSysGroupCancelMuted]: 'sys-group-cancel-muted-message',
   [ChatMsgSysGroupMemberMuted]: 'sys-group-member-muted-message',

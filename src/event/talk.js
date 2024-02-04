@@ -5,7 +5,7 @@ import { parseTime } from '@/utils/datetime'
 import * as message from '@/constant/message'
 import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
 import { isElectronMode } from '@/utils/common'
-import { ServeClearTalkUnreadNum, ServeCreateTalkList } from '@/api/chat'
+import { ServeClearTalkUnreadNum, ServeCreateTalk } from '@/api/chat'
 import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
 
 /**
@@ -13,37 +13,36 @@ import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
  */
 class Talk extends Base {
   /**
-   * @var resource 资源
+   * 消息体
    */
-  resource
-
-  /**
-   * 发送者ID
-   */
-  sender_id = 0
+  body
 
   /**
    * 接收者ID
    */
-  receiver_id = 0
+  to_from_id = 0
+
+  /**
+   * 发送者ID
+   */
+  from_id = 0
 
   /**
    * 聊天类型[1:私聊;2:群聊;]
    */
-  talk_type = 0
+  talk_mode = 0
 
   /**
    * 初始化构造方法
    *
    * @param {Object} resource Socket消息
    */
-  constructor(resource) {
+  constructor(data) {
     super()
 
-    this.sender_id = resource.sender_id
-    this.receiver_id = resource.receiver_id
-    this.talk_type = resource.talk_type
-    this.resource = resource.data
+    const { to_from_id, from_id, talk_mode, body } = data
+
+    Object.assign(this, { from_id, to_from_id, talk_mode, body })
 
     this.handle()
   }
@@ -53,7 +52,7 @@ class Talk extends Base {
    * @returns
    */
   isCurrSender() {
-    return this.sender_id == this.getAccountId()
+    return this.from_id == this.getAccountId()
   }
 
   /**
@@ -62,13 +61,7 @@ class Talk extends Base {
    * @return String
    */
   getIndexName() {
-    if (this.talk_type == 2) {
-      return `${this.talk_type}_${this.receiver_id}`
-    }
-
-    let receiver_id = this.isCurrSender() ? this.receiver_id : this.sender_id
-
-    return `${this.talk_type}_${receiver_id}`
+    return `${this.talk_mode}_${this.to_from_id}`
   }
 
   /**
@@ -76,10 +69,10 @@ class Talk extends Base {
    */
   getTalkText() {
     let text = ''
-    if (this.resource.msg_type != message.ChatMsgTypeText) {
-      text = message.ChatMsgTypeMapping[this.resource.msg_type]
+    if (this.body.msg_type != message.ChatMsgTypeText) {
+      text = message.ChatMsgTypeMapping[this.body.msg_type]
     } else {
-      text = this.resource.extra.content.replace(/<img .*?>/g, '')
+      text = this.body.extra.content.replace(/<img .*?>/g, '')
     }
 
     return text
@@ -94,21 +87,19 @@ class Talk extends Base {
   }
 
   handle() {
-    // 不是自己发送的消息则需要播放提示音
-    if (!this.isCurrSender()) {
-      this.play()
-    }
+    const findIndex = useTalkStore().findIndex(this.getIndexName())
 
     // 判断会话列表是否存在，不存在则创建
-    if (useTalkStore().findTalkIndex(this.getIndexName()) == -1) {
+    if (findIndex == -1) {
       return this.addTalkItem()
     }
 
     // 判断当前是否正在和好友对话
-    if (this.isTalk(this.talk_type, this.receiver_id, this.sender_id)) {
+    if (this.isTalk(this.talk_mode, this.to_from_id)) {
       this.insertTalkRecord()
     } else {
       this.updateTalkItem()
+      this.play()
     }
   }
 
@@ -140,23 +131,12 @@ class Talk extends Base {
    * 加载对接节点
    */
   addTalkItem() {
-    let receiver_id = this.sender_id
-    let talk_type = this.talk_type
-
-    if (talk_type == 1 && this.receiver_id != this.getAccountId()) {
-      receiver_id = this.receiver_id
-    } else if (talk_type == 2) {
-      receiver_id = this.receiver_id
-    }
-
-    ServeCreateTalkList({
-      talk_type,
-      receiver_id
+    ServeCreateTalk({
+      talk_mode: this.talk_mode,
+      to_from_id: this.to_from_id
     }).then(({ code, data }) => {
       if (code == 200) {
-        let item = formatTalkItem(data)
-        item.unread_num = 1
-        useTalkStore().addItem(item)
+        useTalkStore().addItem({ ...formatTalkItem(data), unread_num: 1 })
       }
     })
   }
@@ -165,24 +145,14 @@ class Talk extends Base {
    * 插入对话记录
    */
   insertTalkRecord() {
-    let record = this.resource
+    let record = this.body
 
     // 群成员变化的消息，需要更新群成员列表
     if ([1102, 1103, 1104].includes(record.msg_type)) {
       useDialogueStore().updateGroupMembers()
     }
 
-    useDialogueStore().addDialogueRecord(formatTalkRecord(this.getAccountId(), this.resource))
-
-    if (!this.isCurrSender()) {
-      // 推送已读消息
-      setTimeout(() => {
-        ws.emit('im.message.read', {
-          receiver_id: this.sender_id,
-          msg_ids: [this.resource.msg_id]
-        })
-      }, 1000)
-    }
+    useDialogueStore().addDialogueRecord(formatTalkRecord(this.getAccountId(), this.body))
 
     // 获取聊天面板元素节点
     const el = document.getElementById('imChatPanel')
@@ -191,24 +161,31 @@ class Talk extends Base {
     // 判断的滚动条是否在底部
     const isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight
 
-    if (isBottom || record.user_id == this.getAccountId()) {
+    if (isBottom || this.isCurrSender()) {
       nextTick(() => {
-        el.scrollTop = el.scrollHeight + 1000
+        el.scrollTop = el.scrollHeight
+
+        setTimeout(() => {
+          el.scrollTop = el.scrollHeight
+        }, 100)
       })
     } else {
       useDialogueStore().setUnreadBubble()
     }
 
-    useTalkStore().updateItem({
-      index_name: this.getIndexName(),
-      msg_text: this.getTalkText(),
-      updated_at: parseTime(new Date())
-    })
+    useTalkStore().updateMessage(
+      {
+        index_name: this.getIndexName(),
+        msg_text: this.getTalkText(),
+        updated_at: parseTime(new Date())
+      },
+      this.isCurrSender()
+    )
 
-    if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
+    if (this.getAccountId() !== this.from_id) {
       ServeClearTalkUnreadNum({
-        talk_type: 1,
-        receiver_id: this.sender_id
+        talk_mode: this.talk_mode,
+        to_from_id: this.to_from_id
       })
     }
   }
@@ -217,11 +194,14 @@ class Talk extends Base {
    * 更新对话列表记录
    */
   updateTalkItem() {
-    useTalkStore().updateMessage({
-      index_name: this.getIndexName(),
-      msg_text: this.getTalkText(),
-      updated_at: parseTime(new Date())
-    })
+    useTalkStore().updateMessage(
+      {
+        index_name: this.getIndexName(),
+        msg_text: this.getTalkText(),
+        updated_at: parseTime(new Date())
+      },
+      this.isCurrSender() || this.to_from_id == this.getAccountId()
+    )
   }
 }
 

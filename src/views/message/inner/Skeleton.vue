@@ -3,7 +3,7 @@ import { NSkeleton } from 'naive-ui'
 </script>
 
 <template>
-  <div class="skeleton flex-center" v-for="i in 10" :key="i">
+  <div class="skeleton flex-center" v-for="i in 20" :key="i">
     <div class="avatar"><n-skeleton circle size="medium" /></div>
     <div class="content">
       <n-skeleton text :repeat="1" />

@@ -7,11 +7,13 @@ defineProps<{
   extra: ITalkRecordExtraFile
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
+  toFromId?: Number
 }>()
 </script>
 
 <template>
-  <section class="file-message">
+  <section class="immsg-file">
     <div class="main">
       <div class="ext">{{ getFileNameSuffix(extra.name) }}</div>
       <div class="file-box">
@@ -23,14 +25,14 @@ defineProps<{
       </div>
     </div>
     <div class="footer">
-      <a @click="download(data.msg_id)">下载</a>
+      <a @click="download(data.msg_id, talkMode, toFromId)">下载</a>
       <a>在线预览</a>
     </div>
   </section>
 </template>
 
 <style lang="less" scoped>
-.file-message {
+.immsg-file {
   width: 250px;
   min-height: 85px;
   padding: 10px;

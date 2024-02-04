@@ -38,7 +38,7 @@ class Keyboard extends Base {
     }
 
     // 判断消息是否来当前对话
-    if (params.receiver_id != this.resource.sender_id) {
+    if (params.receiver_id != this.resource.from_id) {
       return false
     }
 

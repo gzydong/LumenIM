@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, nextTick, inject } from 'vue'
+import { ref, computed, reactive, nextTick, onMounted } from 'vue'
 import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import GroupLaunch from '../GroupLaunch.vue'
@@ -15,9 +15,11 @@ import {
   ServeGroupNoSpeak
 } from '@/api/group'
 
+import { toApi } from '@/api'
+
 const emit = defineEmits(['close'])
 const props = defineProps({
-  id: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -35,8 +37,9 @@ interface Item {
   motto?: string
 }
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo, dialog } = useInject()
 const userStore = useUserStore()
+const loading = ref(false)
 const isGroupLaunch = ref(false)
 const keywords = ref('')
 const batchDelete = ref(false)
@@ -58,7 +61,7 @@ const filterSearch = computed(() => {
 
 const isAdmin = computed(() => {
   return items.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader == 2
+    return item.user_id == userStore.uid && item.leader == 1
   })
 })
 
@@ -70,40 +73,45 @@ const dropdown = reactive<StateDropdown>({
   item: {}
 })
 
-const onLoadData = () => {
-  ServeGetGroupMembers({
-    group_id: props.id
-  }).then((res) => {
-    if (res.code == 200) {
-      let data = res.data.items || []
-
-      data.forEach((item: Item) => {
-        item.is_delete = false
-      })
-
-      items.value = data
+const onLoadData = async () => {
+  const { code, data } = await toApi(
+    ServeGetGroupMembers,
+    {
+      group_id: props.groupId
+    },
+    {
+      loading
     }
+  )
+
+  if (code != 200) return
+
+  let list = data.items || []
+  list.forEach((item: Item) => {
+    item.is_delete = false
   })
+
+  items.value = list
 }
 
 const onDelete = (item: Item) => {
-  let title = `删除 [${item.nickname}] 群成员？`
-
-  window['$dialog'].create({
+  dialog.create({
     title: '温馨提示',
-    content: title,
+    content: `删除 [${item.nickname}] 群成员？`,
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeRemoveMembersGroup({
-        group_id: props.id,
-        members_ids: `${item.user_id}`
-      }).then((res) => {
-        if (res.code == 200) {
-          onLoadData()
-          window['$message'].success('删除成功')
+    onPositiveClick: async () => {
+      await toApi(
+        ServeRemoveMembersGroup,
+        {
+          group_id: props.groupId,
+          user_ids: [item.user_id]
+        },
+        {
+          showMessageText: '删除成功',
+          onSuccess: onLoadData
         }
-      })
+      )
     }
   })
 }
@@ -111,33 +119,37 @@ const onDelete = (item: Item) => {
 const onBatchDelete = () => {
   if (!filterCheck.value.length) return
 
-  window['$dialog'].create({
+  dialog.create({
     title: '温馨提示',
     content: `批量删除群成员？`,
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeRemoveMembersGroup({
-        group_id: props.id,
-        members_ids: filterCheck.value.map((item: Item) => item.user_id).join(',')
-      }).then((res) => {
-        if (res.code == 200) {
-          batchDelete.value = false
-          onLoadData()
-          window['$message'].success('删除成功')
+    onPositiveClick: async () => {
+      await toApi(
+        ServeRemoveMembersGroup,
+        {
+          group_id: props.groupId,
+          user_ids: filterCheck.value.map((item: Item) => item.user_id)
+        },
+        {
+          showMessageText: '删除成功',
+          onSuccess: () => {
+            batchDelete.value = false
+            onLoadData()
+          }
         }
-      })
+      )
     }
   })
 }
 
 const onRowClick = (item: Item) => {
   if (batchDelete.value == true) {
-    if (item.leader < 2) {
+    if (item.leader > 1) {
       item.is_delete = !item.is_delete
     }
   } else {
-    showUserInfoModal(item.user_id)
+    toShowUserInfo(item.user_id)
   }
 }
 
@@ -150,55 +162,55 @@ const onCancelDelete = () => {
 }
 
 const onUserInfo = (item: Item) => {
-  showUserInfoModal(item.user_id)
+  toShowUserInfo(item.user_id)
 }
 
 const onAssignAdmin = (item: Item) => {
   let title =
-    item.leader == 0
+    item.leader == 3
       ? `确定要给 [${item.nickname}] 分配管理员权限吗？`
       : `确定解除 [${item.nickname}] 管理员权限吗？`
 
-  window['$dialog'].create({
+  dialog.create({
     title: '温馨提示',
     content: title,
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeGroupAssignAdmin({
-        mode: item.leader == 0 ? 1 : 2,
-        group_id: props.id,
-        user_id: item.user_id
-      }).then((res) => {
-        if (res.code == 200) {
-          window['$message'].success('操作成功')
-          onLoadData()
-        } else {
-          window['$message'].error(res.message)
+    onPositiveClick: async () => {
+      await toApi(
+        ServeGroupAssignAdmin,
+        {
+          action: item.leader === 3 ? 1 : 2,
+          group_id: props.groupId,
+          user_id: item.user_id
+        },
+        {
+          showMessageText: '操作成功',
+          onSuccess: onLoadData
         }
-      })
+      )
     }
   })
 }
 
 const onTransfer = (item: Item) => {
-  window['$dialog'].create({
+  dialog.create({
     title: '温馨提示',
     content: `确定把群主权限转交给 [${item.nickname}] ？`,
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeGroupHandover({
-        group_id: props.id,
-        user_id: item.user_id
-      }).then((res) => {
-        if (res.code == 200) {
-          window['$message'].success('操作成功')
-          onLoadData()
-        } else {
-          window['$message'].error(res.message)
+    onPositiveClick: async () => {
+      await toApi(
+        ServeGroupHandover,
+        {
+          group_id: props.groupId,
+          user_id: item.user_id
+        },
+        {
+          showMessageText: '操作成功',
+          onSuccess: onLoadData
         }
-      })
+      )
     }
   })
 }
@@ -210,31 +222,31 @@ const onForbidden = (item: Item) => {
     content = `确定要解除 [${item.nickname}] 此用户的禁言吗？`
   }
 
-  window['$dialog'].create({
+  dialog.create({
     title: '温馨提示',
     content: content,
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeGroupNoSpeak({
-        mode: item.is_mute == 0 ? 1 : 2,
-        group_id: props.id,
-        user_id: item.user_id
-      }).then((res) => {
-        if (res.code == 200) {
-          window['$message'].success('操作成功')
-          onLoadData()
-        } else {
-          window['$message'].error(res.message)
+    onPositiveClick: async () => {
+      await toApi(
+        ServeGroupNoSpeak,
+        {
+          action: item.is_mute === 1 ? 2 : 1,
+          group_id: props.groupId,
+          user_id: item.user_id
+        },
+        {
+          showMessageText: '操作成功',
+          onSuccess: onLoadData
         }
-      })
+      )
     }
   })
 }
 
 // 会话列表右键显示菜单
 const onContextMenu = (e: any, item: Item) => {
-  if (batchDelete.value == true || item.leader == 2) {
+  if (batchDelete.value == true || item.leader === 1) {
     return
   }
 
@@ -246,7 +258,7 @@ const onContextMenu = (e: any, item: Item) => {
       key: 'info'
     },
     {
-      label: item.is_mute ? '解除禁言' : '禁止发言',
+      label: item.is_mute === 1 ? '解除禁言' : '禁止发言',
       key: 'forbidden'
     },
     {
@@ -262,9 +274,9 @@ const onContextMenu = (e: any, item: Item) => {
   if (isAdmin.value) {
     dropdown.options.push({ label: '转让群主', key: 'transfer' })
 
-    if (item.leader == 1) {
+    if (item.leader == 2) {
       dropdown.options.push({ label: '管理权限(解除)', key: 'assignment' })
-    } else if (item.leader == 0) {
+    } else if (item.leader == 3) {
       dropdown.options.push({ label: '管理权限(分配)', key: 'assignment' })
     }
   }
@@ -295,7 +307,9 @@ const onContextMenuHandle = (key: string) => {
   evnets[key] && evnets[key](dropdown.item)
 }
 
-onLoadData()
+onMounted(() => {
+  onLoadData()
+})
 </script>
 <template>
   <section class="el-container is-vertical height100">
@@ -325,11 +339,7 @@ onLoadData()
     </header>
 
     <main v-if="filterSearch.length === 0" class="el-main main flex-center">
-      <n-empty size="200" description="暂无相关数据">
-        <template #icon>
-          <img src="@/assets/image/no-data.svg" alt="" />
-        </template>
-      </n-empty>
+      <n-empty description="暂无相关数据" />
     </main>
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
@@ -351,15 +361,13 @@ onLoadData()
               <span v-show="item.remark"> ({{ item.remark }})</span>
             </p>
             <p>
-              <span class="badge master" v-show="item.leader == 2">群主</span>
-              <span class="badge leader" v-show="item.leader == 1">管理员</span>
-              <span class="badge muted" v-show="item.is_mute == 1">已禁言</span>
+              <span class="badge master" v-show="item.leader === 1">群主</span>
+              <span class="badge leader" v-show="item.leader === 2">管理员</span>
+              <span class="badge muted" v-show="item.is_mute === 1">已禁言</span>
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>
-          <div class="item-text text-ellipsis">
-            {{ item.motto || '暂无简介' }}
-          </div>
+          <div class="item-text text-ellipsis">{{ item.motto || '暂无简介' }}.....</div>
         </div>
       </div>
     </main>
@@ -368,8 +376,10 @@ onLoadData()
       <div class="tips">已选({{ filterCheck.length }})</div>
       <div>
         <n-space>
-          <n-button type="primary" ghost size="small" @click="onCancelDelete"> 取消 </n-button>
-          <n-button color="red" size="small" @click="onBatchDelete"> 批量删除 </n-button>
+          <n-button size="small" @click="onCancelDelete"> 取消 </n-button>
+          <n-button color="red" text-color="#ffffff" size="small" @click="onBatchDelete">
+            批量删除
+          </n-button>
         </n-space>
       </div>
     </footer>
@@ -393,9 +403,13 @@ onLoadData()
 
   <GroupLaunch
     v-if="isGroupLaunch"
-    :gid="id"
+    :group-id="groupId"
     @close="isGroupLaunch = false"
-    @on-invite="onLoadData"
+    @on-invite="
+      () => {
+        onLoadData()
+      }
+    "
   />
 </template>
 <style lang="less" scoped>
@@ -453,8 +467,8 @@ onLoadData()
     .item-text {
       width: inherit;
       height: 20px;
-      color: rgb(255 255 255 / 52%);
       font-size: 12px;
+      color: var(--text-color-lighter);
     }
   }
 

@@ -28,18 +28,18 @@ git clone https://gitee.com/gzydong/LumenIM.git
 git clone https://github.com/gzydong/LumenIM.git
 
 ## 安装项目依赖扩展组件
-yarn install
+pnpm install
 
 # 启动本地开发环境
-yarn dev
+pnpm dev
 # 启动本地开发环境桌面客户端
-yarn electron:dev
+pnpm electron:dev
 
 ## 生产环境构建项目
-yarn build
+pnpm build
 
 ## 生产环境桌面客户端打包
-yarn electron:build
+pnpm electron:build
 ```
 
 ###### 修改 .env 配置信息

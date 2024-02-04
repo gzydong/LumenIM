@@ -1,4 +1,4 @@
-import { post, get } from '@/utils/request'
+import { post, get } from './request'
 
 // 查询用户群聊服务接口
 export const ServeGetGroups = () => {
@@ -6,7 +6,7 @@ export const ServeGetGroups = () => {
 }
 
 export const ServeGroupOvertList = (data) => {
-  return get('/api/v1/group/overt/list', data)
+  return get('/api/v1/group/overt-list', data)
 }
 
 // 获取群信息服务接口
@@ -21,7 +21,7 @@ export const ServeCreateGroup = (data) => {
 
 //  修改群信息
 export const ServeEditGroup = (data) => {
-  return post('/api/v1/group/setting', data)
+  return post('/api/v1/group/update', data)
 }
 
 // 邀请好友加入群聊服务接口
@@ -43,6 +43,10 @@ export const ServeMuteGroup = (data) => {
   return post('/api/v1/group/mute', data)
 }
 
+export const ServeMemberMuteGroup = (data) => {
+  return post('/api/v1/group/member-mute', data)
+}
+
 export const ServeOvertGroup = (data) => {
   return post('/api/v1/group/overt', data)
 }
@@ -54,12 +58,12 @@ export const ServeSecedeGroup = (data) => {
 
 // 修改群聊名片服务接口
 export const ServeUpdateGroupCard = (data) => {
-  return post('/api/v1/group/member/remark', data)
+  return post('/api/v1/group/member/update-remark', data)
 }
 
 // 获取用户可邀请加入群聊的好友列表
 export const ServeGetInviteFriends = (data) => {
-  return get('/api/v1/group/member/invites', data)
+  return get('/api/v1/group/invite-list', data)
 }
 
 //  获取群聊成员列表
@@ -103,7 +107,7 @@ export const ServeGroupApplyUnread = (data) => {
 
 // 转让群主
 export const ServeGroupHandover = (data) => {
-  return post('/api/v1/group/handover', data)
+  return post('/api/v1/group/transfer', data)
 }
 
 // 分配管理员
@@ -112,5 +116,20 @@ export const ServeGroupAssignAdmin = (data) => {
 }
 
 export const ServeGroupNoSpeak = (data) => {
-  return post('/api/v1/group/no-speak', data)
+  return post('/api/v1/group/member-mute', data)
+}
+
+// 创建群投票
+export const ServeGroupVoteCreate = (data) => {
+  return post('/api/v1/group/vote/create', data)
+}
+
+// 投票提交
+export const ServeGroupVoteSubmit = (data) => {
+  return post('/api/v1/group/vote/submit', data)
+}
+
+// 投票详情
+export const ServeGroupVoteDetail = (data) => {
+  return post('/api/v1/group/vote/detail', data)
 }

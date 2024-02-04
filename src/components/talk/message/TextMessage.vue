@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { textReplaceEmoji } from '@/utils/emojis'
-import { textReplaceLink, textReplaceMention } from '@/utils/strings'
+import { textReplaceLink } from '@/utils/strings'
 import { ITalkRecordExtraText, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
   extra: ITalkRecordExtraText
   data: ITalkRecord
   maxWidth?: boolean
+  talkMode?: Number
   source?: 'panel' | 'forward' | 'history'
 }>()
 
@@ -16,21 +17,18 @@ let textContent = props.extra?.content || ''
 
 textContent = textReplaceLink(textContent)
 
-if (props.data.talk_type == 2) {
-  textContent = textReplaceMention(textContent, '#1890ff')
-}
-
 textContent = textReplaceEmoji(textContent)
 </script>
 
 <template>
   <div
-    class="im-message-text"
+    class="immsg-text"
     :class="{
       left: float == 'left',
       right: float == 'right',
       maxwidth: maxWidth,
-      'radius-reset': source != 'panel'
+      'radius-reset': source != 'panel',
+      history: source == 'history'
     }"
   >
     <pre v-html="textContent" />
@@ -38,7 +36,7 @@ textContent = textReplaceEmoji(textContent)
 </template>
 
 <style lang="less" scoped>
-.im-message-text {
+.immsg-text {
   min-width: 30px;
   min-height: 30px;
   padding: 3px;
@@ -78,6 +76,16 @@ textContent = textReplaceEmoji(textContent)
     :deep(a) {
       color: #2196f3;
       text-decoration: revert;
+    }
+  }
+}
+
+html[theme-mode='dark'] {
+  .immsg-text {
+    // background: var(--im-message-bg-color);
+
+    &.history {
+      background-color: rgba(255, 255, 255, 5%);
     }
   }
 }

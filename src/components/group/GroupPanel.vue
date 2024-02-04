@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, watch, ref } from 'vue'
+import { reactive, computed, watch, ref, onMounted } from 'vue'
 import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
@@ -11,14 +11,15 @@ import {
   ServeSecedeGroup,
   ServeUpdateGroupCard
 } from '@/api/group'
+import { toApi } from '@/api'
 import { useInject } from '@/hooks'
 
 const userStore = useUserStore()
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 
 const emit = defineEmits(['close', 'to-talk'])
 const props = defineProps({
-  gid: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -32,6 +33,7 @@ watch(props, () => {
 const editCardPopover = ref(false)
 const isShowGroup = ref(false)
 const isShowManage = ref(false)
+const loading = ref(false)
 const state = reactive({
   keywords: '',
   detail: {
@@ -60,13 +62,13 @@ const search = computed<any[]>(() => {
 
 const isLeader = computed(() => {
   return members.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader >= 1
+    return item.user_id == userStore.uid && item.leader == 2
   })
 })
 
 const isAdmin = computed(() => {
   return members.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader == 2
+    return item.user_id == userStore.uid && item.leader == 1
   })
 })
 
@@ -77,81 +79,86 @@ const onShowManage = (vallue: any) => {
 const onGroupCallBack = () => {}
 
 const onToInfo = (item: any) => {
-  showUserInfoModal(item.user_id)
+  toShowUserInfo(item.user_id)
 }
 
 /**
  * 加载群信息
  */
-function loadDetail() {
-  ServeGroupDetail({
-    group_id: props.gid
-  }).then((res) => {
-    if (res.code == 200) {
-      let result = res.data
-      state.detail.avatar = result.avatar
-      state.detail.name = result.group_name
-      state.detail.profile = result.profile
-      state.detail.visit_card = result.visit_card
-      state.remark = result.visit_card
+async function loadDetail() {
+  const { code, data } = await toApi(
+    ServeGroupDetail,
+    { group_id: props.groupId },
+    { isShowError: false, loading }
+  )
 
-      if (result.notice) {
-        state.detail.notice = result.notice
-      }
-    }
-  })
+  if (code != 200) return
+
+  state.remark = data.visit_card
+  state.detail.avatar = data.avatar
+  state.detail.name = data.group_name
+  state.detail.profile = data.profile
+  state.detail.visit_card = data.visit_card
+  state.detail.notice = data.notice || ''
 }
 
 /**
  * 加载成员列表
  */
-function loadMembers() {
-  ServeGetGroupMembers({
-    group_id: props.gid
-  }).then((res) => {
-    if (res.code == 200) {
-      members.value = res.data.items || []
-    }
-  })
+async function loadMembers() {
+  const { code, data } = await toApi(
+    ServeGetGroupMembers,
+    { group_id: props.groupId },
+    { isShowError: false }
+  )
+
+  if (code != 200) return
+
+  members.value = data.items || []
 }
 
 const onClose = () => {
   emit('close')
 }
 
-const onSignOut = () => {
-  ServeSecedeGroup({
-    group_id: props.gid
-  }).then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('已退出群聊')
-      onClose()
-    } else {
-      window['$message'].error(res.message)
+const onSignOut = async () => {
+  const { code } = await toApi(
+    ServeSecedeGroup,
+    { group_id: props.groupId },
+    {
+      showMessageText: '已退出群聊'
     }
-  })
+  )
+
+  if (code != 200) return
+
+  onClose()
 }
 
-const onChangeRemark = () => {
-  ServeUpdateGroupCard({
-    group_id: props.gid,
-    visit_card: state.remark
-  }).then(({ code, message }) => {
-    if (code == 200) {
-      // @ts-ignore
-      editCardPopover.value.setShow(false)
-      state.detail.visit_card = state.remark
-      window['$message'].success('已更新群名片')
-
-      loadMembers()
-    } else {
-      window['$message'].error(message)
+const onChangeRemark = async () => {
+  const { code } = await toApi(
+    ServeUpdateGroupCard,
+    {
+      group_id: props.groupId,
+      remark: state.remark
+    },
+    {
+      showMessageText: '已更新群名片'
     }
-  })
+  )
+
+  if (code != 200) return
+
+  // @ts-ignore
+  editCardPopover.value.setShow(false)
+  state.detail.visit_card = state.remark
+  loadMembers()
 }
 
-loadDetail()
-loadMembers()
+onMounted(() => {
+  loadDetail()
+  loadMembers()
+})
 </script>
 <template>
   <section class="el-container is-vertical section">
@@ -195,7 +202,14 @@ loadMembers()
                     v-model:value="state.remark"
                     @keydown.enter="onChangeRemark"
                   />
-                  <n-button type="primary" class="mt-l5" @click="onChangeRemark"> 确定 </n-button>
+                  <n-button
+                    type="primary"
+                    text-color="#ffffff"
+                    class="mt-l5"
+                    @click="onChangeRemark"
+                  >
+                    确定
+                  </n-button>
                 </div>
               </n-popover>
             </div>
@@ -231,7 +245,7 @@ loadMembers()
         </div>
       </div>
 
-      <div class="member-box">
+      <div class="member-box" v-loading="members.length === 0">
         <div class="flex">
           <n-input placeholder="搜索" v-model:value="state.keywords" :clearable="true" round>
             <template #prefix>
@@ -259,8 +273,8 @@ loadMembers()
             </div>
             <div class="nickname text-ellipsis">
               <span>{{ item.nickname ? item.nickname : '-' }}</span>
-              <span class="badge master" v-show="item.leader === 2">群主</span>
-              <span class="badge leader" v-show="item.leader === 1">管理员</span>
+              <span class="badge master" v-show="item.leader === 1">群主</span>
+              <span class="badge leader" v-show="item.leader === 2">管理员</span>
             </div>
             <div class="card text-ellipsis grey">
               {{ item.remark || '-' }}
@@ -268,46 +282,70 @@ loadMembers()
           </div>
 
           <div class="mt-t20 pd-t20" v-if="search.length == 0">
-            <n-empty size="200" description="暂无相关数据">
-              <template #icon>
-                <img src="@/assets/image/no-data.svg" alt="" />
-              </template>
-            </n-empty>
+            <n-empty description="暂无相关数据" />
           </div>
         </div>
       </div>
     </main>
 
-    <footer class="el-footer footer bdr-t">
-      <template v-if="!isAdmin">
-        <n-popconfirm negative-text="取消" positive-text="确定" @positive-click="onSignOut">
+    <footer v-show="loading == false" class="el-footer footer bdr-t">
+      <template v-if="isAdmin">
+        <n-button block type="primary" text-color="#ffffff" @click="onShowManage(true)">
+          群聊管理
+        </n-button>
+      </template>
+
+      <template v-if="!isAdmin && !isLeader">
+        <n-popconfirm
+          negative-text="取消"
+          positive-text="确定"
+          :positive-button-props="{
+            textColor: '#ffffff'
+          }"
+          @positive-click="onSignOut"
+        >
           <template #trigger>
-            <n-button class="btn" type="error" ghost> 退出群聊 </n-button>
+            <n-button block type="error" ghost> 退出群聊 </n-button>
           </template>
           确定要退出群吗？ 退出后不再接收此群消息！
         </n-popconfirm>
       </template>
 
-      <n-button
-        class="btn"
-        type="primary"
-        text-color="#ffffff"
-        v-if="isLeader"
-        @click="onShowManage(true)"
-      >
-        群聊管理
-      </n-button>
+      <template v-if="isLeader">
+        <n-button
+          style="width: 49%"
+          type="primary"
+          text-color="#ffffff"
+          @click="onShowManage(true)"
+        >
+          群聊管理
+        </n-button>
+
+        <n-popconfirm
+          negative-text="取消"
+          positive-text="确定"
+          :positive-button-props="{
+            textColor: '#ffffff'
+          }"
+          @positive-click="onSignOut"
+        >
+          <template #trigger>
+            <n-button style="width: 49%" type="error" ghost> 退出群聊 </n-button>
+          </template>
+          确定要退出群吗？ 退出后不再接收此群消息！
+        </n-popconfirm>
+      </template>
     </footer>
   </section>
 
   <GroupLaunch
     v-if="isShowGroup"
-    :gid="gid"
+    :group-id="groupId"
     @close="isShowGroup = false"
     @on-submit="onGroupCallBack"
   />
 
-  <GroupManage v-if="isShowManage" :gid="gid" @close="onShowManage(false)" />
+  <GroupManage v-if="isShowManage" :group-id="groupId" @close="onShowManage(false)" />
 </template>
 <style lang="less" scoped>
 .section {
@@ -464,7 +502,7 @@ loadMembers()
     height: 60px;
     padding: 15px;
     .btn {
-      width: 48%;
+      width: 100%;
     }
   }
 }

@@ -1,33 +1,34 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
-import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
+import { MoreThree, ToTop } from '@icon-park/vue-next'
 import { bus } from '@/utils/event-bus'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'
-import { downloadImage } from '@/utils/functions'
+import { downloadImage, getFilenameFromUrl } from '@/utils/functions'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
 import { useMenu } from './menu'
 import SkipBottom from './SkipBottom.vue'
 import { ITalkRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
-import { useInject, useTalkRecord, useUtil } from '@/hooks'
+import { useInject, useTalkRecord } from '@/hooks'
+import DraggableArea from '@/components/base/DraggableArea.vue'
 
 const props = defineProps({
   uid: {
     type: Number,
     default: 0
   },
-  talk_type: {
+  talkMode: {
     type: Number,
     default: 0
   },
-  receiver_id: {
+  toFromId: {
     type: Number,
     default: 0
   },
-  index_name: {
+  indexName: {
     type: String,
     default: ''
   }
@@ -35,9 +36,8 @@ const props = defineProps({
 
 const { loadConfig, records, onLoad, onRefreshLoad, onJumpMessage } = useTalkRecord(props.uid)
 
-const { useMessage } = useUtil()
 const { dropdown, showDropdownMenu, closeDropdownMenu } = useMenu()
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo, message } = useInject()
 const dialogueStore = useDialogueStore()
 
 // 置底按钮
@@ -49,7 +49,7 @@ const isShowTalkTime = (index: number, datetime: string) => {
     return false
   }
 
-  if (records.value[index].is_revoke == 1) {
+  if (records.value[index].is_revoked == 2) {
     return false
   }
 
@@ -65,7 +65,7 @@ const isShowTalkTime = (index: number, datetime: string) => {
     return true
   }
 
-  let nextDate = records.value[index + 1].created_at.replace(/-/g, '/')
+  let nextDate = records.value[index + 1].send_time.replace(/-/g, '/')
 
   return !(
     parseTime(new Date(datetime), '{y}-{m}-{d} {h}:{i}') ==
@@ -76,7 +76,7 @@ const isShowTalkTime = (index: number, datetime: string) => {
 // 窗口滚动事件
 const onPanelScroll = (e: any) => {
   if (e.target.scrollTop == 0) {
-    onRefreshLoad()
+    return onRefreshLoad()
   }
 
   const height = e.target.scrollTop + e.target.clientHeight
@@ -112,13 +112,13 @@ const onPanelScroll = (e: any) => {
 const onCopyText = (data: ITalkRecord) => {
   if (data.msg_type == 1) {
     if (data.extra.content && data.extra.content.length > 0) {
-      return clipboard(htmlDecode(data.extra.content), () => useMessage.success('复制成功'))
+      return clipboard(htmlDecode(data.extra.content), () => message.success('复制成功'))
     }
   }
 
   if (data.extra?.url) {
     return clipboardImage(data.extra.url, () => {
-      useMessage.success('复制成功')
+      message.success('复制成功')
     })
   }
 }
@@ -145,20 +145,20 @@ const onMultiSelect = (data: ITalkRecord) => {
 
 const onDownloadFile = (data: ITalkRecord) => {
   if (data.msg_type == 3) {
-    return downloadImage(data.extra.url, `${data.msg_id}.${data.extra.suffix}`)
+    return downloadImage(data.extra.url, getFilenameFromUrl(data.extra.url))
   }
 
   if (data.msg_type == 4) {
-    return useMessage.info('音频暂不支持下载!')
+    return message.info('音频暂不支持下载!')
   }
 
-  return useMessage.info('视频暂不支持下载!')
+  return message.info('视频暂不支持下载!')
 }
 
 const onQuoteMessage = (data: ITalkRecord) => {
   let item = {
     id: data.msg_id,
-    title: `${data.nickname} ${data.created_at}`,
+    title: `${data.nickname} ${data.send_time}`,
     describe: '',
     image: ''
   }
@@ -208,7 +208,7 @@ const onQuoteMessage = (data: ITalkRecord) => {
 const onCollectImage = (data: ITalkRecord) => {
   if (data.msg_type == 3) {
     dialogueStore.ApiCollectImage({
-      msg_id: data.msg_id
+      url: data.extra?.url
     })
   }
 }
@@ -251,27 +251,47 @@ const onContextMenuHandle = (key: string) => {
 const onRowClick = (item: ITalkRecord) => {
   if (dialogueStore.isOpenMultiSelect) {
     if (ForwardableMessageType.includes(item.msg_type)) {
-      item.isCheck = !item.isCheck
+      item.is_check = !item.is_check
     } else {
-      useMessage.info('此类消息不支持转发')
+      message.info('此类消息不支持转发')
     }
   }
 }
 
+const onSelectedElements = (elements: string[]) => {
+  if (elements.length == 0) return
+
+  for (let id of elements) {
+    let item = dialogueStore.records[id]
+    if (item && ForwardableMessageType.includes(item.msg_type)) {
+      item.is_check = !item.is_check
+    }
+  }
+
+  dialogueStore.isOpenMultiSelect = true
+}
+
 watch(props, () => {
-  onLoad({ ...props, limit: 30 })
+  onLoad({ talkMode: props.talkMode, toFromId: props.toFromId, limit: 30 })
 })
 
 onMounted(() => {
-  onLoad({ ...props, limit: 30 })
+  setTimeout(() => {
+    onLoad({ talkMode: props.talkMode, toFromId: props.toFromId, limit: 30 })
+  }, 10)
 })
 </script>
 
 <template>
   <section class="section">
-    <div
+    <DraggableArea
       id="imChatPanel"
       class="me-scrollbar me-scrollbar-thumb talk-container"
+      elment-key="index"
+      closest=".immsg"
+      elment=".message-item"
+      strategy="intersect"
+      @selected-elements="onSelectedElements"
       @scroll="onPanelScroll($event)"
     >
       <!-- 数据加载状态栏 -->
@@ -286,10 +306,12 @@ onMounted(() => {
         v-for="(item, index) in records"
         :key="item.msg_id"
         :id="item.msg_id"
+        :data-index="index"
       >
         <!-- 系统消息 -->
         <div v-if="item.msg_type >= 1000" class="message-box">
           <component
+            class="immsg"
             :is="MessageComponents[item.msg_type] || 'unknown-message'"
             :extra="item.extra"
             :data="item"
@@ -297,13 +319,14 @@ onMounted(() => {
         </div>
 
         <!-- 撤回消息 -->
-        <div v-else-if="item.is_revoke == 1" class="message-box">
+        <div v-else-if="item.is_revoked === 1" class="message-box">
           <revoke-message
-            :login_uid="uid"
-            :user_id="item.user_id"
+            class="immsg"
+            :loginUid="uid"
+            :userId="item.user_id"
             :nickname="item.nickname"
-            :talk_type="item.talk_type"
-            :datetime="item.created_at"
+            :talkMode="talkMode"
+            :datetime="item.send_time"
           />
         </div>
 
@@ -313,15 +336,15 @@ onMounted(() => {
           :class="{
             'direction-rt': item.float == 'right',
             'multi-select': dialogueStore.isOpenMultiSelect,
-            'multi-select-check': item.isCheck
+            'multi-select-check': item.is_check
           }"
         >
           <!-- 多选按钮 -->
           <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
             <n-checkbox
               size="small"
-              :checked="item.isCheck"
-              @update:checked="item.isCheck = !item.isCheck"
+              :checked="item.is_check"
+              @update:checked="item.is_check = !item.is_check"
             />
           </aside>
 
@@ -332,52 +355,43 @@ onMounted(() => {
               :src="item.avatar"
               :size="30"
               :username="item.nickname"
-              @click="showUserInfoModal(item.user_id)"
+              @click="toShowUserInfo(item.user_id)"
             />
           </aside>
 
           <!-- 主体信息 -->
-          <main class="main-column">
+          <main
+            class="main-column"
+            :class="{
+              pointer: dialogueStore.isOpenMultiSelect
+            }"
+            @click="onRowClick(item)"
+          >
             <div class="talk-title">
               <span
                 class="nickname pointer"
-                v-show="talk_type == 2 && item.float == 'left'"
+                v-show="talkMode == 2 && item.float == 'left'"
                 @click="onClickNickname(item)"
               >
                 <span class="at">@</span>{{ item.nickname }}
               </span>
-              <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
+              <span>{{ parseTime(item.send_time, '{m}/{d} {h}:{i}') }}</span>
             </div>
 
-            <div
-              class="talk-content"
-              :class="{ pointer: dialogueStore.isOpenMultiSelect }"
-              @click="onRowClick(item)"
-            >
+            <div class="talk-content" :class="{ pointer: dialogueStore.isOpenMultiSelect }">
               <component
+                class="immsg"
                 :is="MessageComponents[item.msg_type] || 'unknown-message'"
                 :extra="item.extra"
                 :data="item"
                 :max-width="true"
                 :source="'panel'"
+                :talk-mode="talkMode"
+                :to-from-id="toFromId"
                 @contextmenu.prevent="onContextMenu($event, item)"
               />
 
               <div class="talk-tools">
-                <template v-if="talk_type == 1 && item.float == 'right'">
-                  <loading
-                    theme="outline"
-                    size="19"
-                    fill="#000"
-                    :strokeWidth="1"
-                    class="icon-rotate"
-                    v-show="item.send_status == 1"
-                  />
-
-                  <span v-show="item.send_status == 1"> 正在发送... </span>
-                  <!-- <span v-show="item.send_status != 1"> 已送达 </span> -->
-                </template>
-
                 <n-icon
                   class="more-tools pointer"
                   :component="MoreThree"
@@ -387,24 +401,24 @@ onMounted(() => {
             </div>
 
             <div
-              v-if="item.extra.reply"
+              v-if="item.quote?.quote_id"
               class="talk-reply pointer"
-              @click="onJumpMessage(item.extra?.reply?.msg_id)"
+              @click="onJumpMessage(item.quote?.quote_id)"
             >
               <n-icon :component="ToTop" size="14" class="icon-top" />
               <span class="ellipsis">
-                回复 {{ item.extra?.reply?.nickname }}:
-                {{ item.extra?.reply?.content }}
+                回复 {{ item.quote?.nickname }}:
+                {{ item.quote?.content }}
               </span>
             </div>
           </main>
         </div>
 
-        <div class="datetime" v-show="isShowTalkTime(index, item.created_at)">
-          {{ formatTime(item.created_at) }}
+        <div class="datetime" v-show="isShowTalkTime(index, item.send_time)">
+          {{ formatTime(item.send_time) }}
         </div>
       </div>
-    </div>
+    </DraggableArea>
 
     <!-- 置底按钮 -->
     <SkipBottom v-model="skipBottom" />
@@ -468,6 +482,7 @@ onMounted(() => {
     font-size: 12px;
     text-align: center;
     margin: 5px 0;
+    user-select: none;
   }
 
   .record-box {

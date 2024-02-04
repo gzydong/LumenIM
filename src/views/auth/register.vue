@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeRegister } from '@/api/auth'
+import { toApi } from '@/api'
 import { ServeSendVerifyCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
 import { useSmsLock } from '@/hooks'
@@ -44,40 +45,32 @@ const rules = {
   }
 }
 
+const loading = ref(false)
 const model = reactive({
   nickname: '',
   username: '',
   password: '',
-  sms_code: '',
-  loading: false
+  sms_code: ''
 })
 
-const onRegister = () => {
-  model.loading = true
-
-  const response = ServeRegister({
-    nickname: model.nickname,
-    mobile: model.username,
-    password: model.password,
-    sms_code: model.sms_code,
-    platform: 'web'
-  })
-
-  response.then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('注册成功')
-
-      setTimeout(() => {
+const onRegister = async () => {
+  await toApi(
+    ServeRegister,
+    {
+      nickname: model.nickname,
+      mobile: model.username,
+      password: model.password,
+      sms_code: model.sms_code,
+      platform: 'web'
+    },
+    {
+      loading,
+      showMessageText: '注册成功',
+      onSuccess: () => {
         router.push('/auth/login')
-      }, 500)
-    } else {
-      window['$message'].warning(res.message)
+      }
     }
-  })
-
-  response.finally(() => {
-    model.loading = false
-  })
+  )
 }
 
 const onValidate = (e) => {
@@ -89,37 +82,31 @@ const onValidate = (e) => {
 }
 
 // 发送短信
-const onSendSms = () => {
+const onSendSms = async () => {
   if (!isMobile(model.username)) {
-    window['$message'].warning('请正确填写手机号')
-    return
+    return window['$message'].warning('请正确填写手机号')
   }
 
-  const response = ServeSendVerifyCode({
-    mobile: model.username,
-    channel: 'register'
-  })
-
-  response.then((res) => {
-    if (res.code == 200) {
-      start()
-
-      window['$message'].success('短信发送成功')
-
-      if (res.data.is_debug) {
-        model.sms_code = res.data.sms_code
-        setTimeout(() => {
-          window['$message'].success('已开启验证码自动填充')
-        }, 1000)
-      }
-    } else {
-      window['$message'].warning(res.message)
+  const { code, data } = await toApi(
+    ServeSendVerifyCode,
+    {
+      mobile: model.username,
+      channel: 'register'
+    },
+    {
+      loading,
+      showMessageText: '短信发送成功'
     }
-  })
+  )
 
-  response.finally(() => {
-    model.loading = false
-  })
+  if (code != 200) return
+
+  start()
+
+  if (data?.is_debug) {
+    model.sms_code = data.sms_code
+    window['$message'].success('已开启验证码自动填充')
+  }
 }
 </script>
 
@@ -172,9 +159,10 @@ const onSendSms = () => {
           type="primary"
           size="large"
           block
+          text-color="#ffffff"
           class="mt-t20"
           @click="onValidate"
-          :loading="model.loading"
+          :loading="loading"
         >
           立即注册
         </n-button>

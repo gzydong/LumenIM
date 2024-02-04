@@ -18,7 +18,7 @@ const keyword = computed({
 })
 
 const onCatDetail = (item: NoteItem) => {
-  store.loadDetail(item.id)
+  store.loadDetail(item.article_id)
 }
 
 const onSearchInput = debounce(() => {
@@ -54,11 +54,7 @@ const onSearchInput = debounce(() => {
     </main>
 
     <main class="el-main height100 flex-center" v-else-if="!items.length">
-      <n-empty size="200" description="暂无相关数据">
-        <template #icon>
-          <img src="@/assets/image/no-data.svg" alt="" />
-        </template>
-      </n-empty>
+      <n-empty description="暂无相关数据" />
     </main>
 
     <main class="el-main" v-else>
@@ -66,9 +62,9 @@ const onSearchInput = debounce(() => {
         <div
           class="article"
           v-for="note in items"
-          :key="note.id"
+          :key="note.article_id"
           @click="onCatDetail(note)"
-          :class="{ selectd: loadId == note.id }"
+          :class="{ selectd: loadId == note.article_id }"
         >
           <div class="article-title">
             <span>{{ note.title }}</span>
@@ -224,7 +220,6 @@ const onSearchInput = debounce(() => {
 
   &.selectd {
     .article-title {
-      color: #5c504c;
       font-weight: bold;
     }
 
@@ -242,6 +237,10 @@ html[theme-mode='dark'] {
         color: #ffffff;
       }
     }
+  }
+
+  .article {
+    background-color: rgba(255, 255, 255, 5%);
   }
 }
 </style>

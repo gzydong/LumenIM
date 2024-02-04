@@ -29,20 +29,13 @@ class Base {
   /**
    * 判断消息是否来自当前对话
    *
-   * @param {Number} talk_type 聊天消息类型[1:私信;2:群聊;]
-   * @param {Number} sender_id 发送者ID
-   * @param {Number} receiver_id 接收者ID
+   * @param {Number} talk_mode 聊天消息类型[1:私信;2:群聊;]
+   * @param {Number} to_from_id 发送者ID
    */
-  isTalk(talk_type, sender_id, receiver_id) {
+  isTalk(talk_mode, to_from_id) {
     let params = this.getTalkParams()
 
-    if (talk_type != params.talk_type) {
-      return false
-    } else if (params.receiver_id == receiver_id || params.receiver_id == sender_id) {
-      return true
-    }
-
-    return false
+    return params.receiver_id == to_from_id && talk_mode == params.talk_type
   }
 
   /**

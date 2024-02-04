@@ -6,15 +6,16 @@ defineProps<{
   extra: ITalkRecordExtraGroupNotice
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 let show = ref(false)
 </script>
 <template>
-  <section class="im-message-group-notice pointer" @click="show = !show">
+  <section class="immsg-group-notice pointer" @click="show = !show">
     <div class="title">
       <n-tag :bordered="false" size="small" type="primary"> 群公告 </n-tag>
-      《{{ extra.title }}》
+      {{ extra.title }}
     </div>
     <div class="content" :class="{ ellipsis: !show }">
       {{ extra.content }}
@@ -23,7 +24,7 @@ let show = ref(false)
 </template>
 
 <style lang="less" scoped>
-.im-message-group-notice {
+.immsg-group-notice {
   max-width: 500px;
   min-height: 10px;
   border-radius: 10px;

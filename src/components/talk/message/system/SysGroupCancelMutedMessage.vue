@@ -2,7 +2,7 @@
 import './sys-message.less'
 import { useInject } from '@/hooks'
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 
 defineProps({
   extra: Object,
@@ -11,13 +11,11 @@ defineProps({
 </script>
 
 <template>
-  <div class="im-message-sys-text">
+  <div class="immsg-systext">
     <div class="sys-text">
-      <a @click="showUserInfoModal(extra.owner_id)">
-        {{ extra.owner_name }}
-      </a>
+      <a @click="toShowUserInfo(extra.owner_id)">{{ extra.owner_name }}</a>
 
-      <span>取消了全员禁言</span>
+      <span>已关闭全员禁言</span>
     </div>
   </div>
 </template>

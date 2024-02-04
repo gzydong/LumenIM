@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NForm, NFormItem, NInput } from 'naive-ui'
+import { toApi } from '@/api'
 import { ServeForgetPassword } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
@@ -39,37 +40,29 @@ const rules = {
   }
 }
 
+const loading = ref(false)
 const model = reactive({
   username: '',
   password: '',
-  sms_code: '',
-  loading: false
+  sms_code: ''
 })
 
-const onForget = () => {
-  model.loading = true
+const onForget = async () => {
+  const { code } = await toApi(
+    ServeForgetPassword,
+    {
+      mobile: model.username,
+      password: model.password,
+      sms_code: model.sms_code
+    },
+    { loading, showMessageText: '密码修改成功' }
+  )
 
-  const response = ServeForgetPassword({
-    mobile: model.username,
-    password: model.password,
-    sms_code: model.sms_code
-  })
+  if (code != 200) return
 
-  response.then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('密码修改成功')
-
-      setTimeout(() => {
-        router.push('/auth/login')
-      }, 500)
-    } else {
-      window['$message'].warning(res.message)
-    }
-  })
-
-  response.finally(() => {
-    model.loading = false
-  })
+  setTimeout(() => {
+    router.push('/auth/login')
+  }, 500)
 }
 
 const onValidate = (e: Event) => {
@@ -81,29 +74,19 @@ const onValidate = (e: Event) => {
 }
 
 // 发送短信
-const onSendSms = () => {
+const onSendSms = async () => {
   if (!isMobile(model.username)) {
-    window['$message'].warning('请正确填写手机号')
-    return
+    return window['$message'].warning('请正确填写手机号')
   }
 
-  const response = ServeSendVerifyCode({
-    mobile: model.username,
-    channel: 'forget_account'
-  })
-
-  response.then((res) => {
-    if (res.code == 200) {
-      start()
-      window['$message'].success('短信发送成功')
-    } else {
-      window['$message'].warning(res.message)
-    }
-  })
-
-  response.finally(() => {
-    model.loading = false
-  })
+  await toApi(
+    ServeSendVerifyCode,
+    {
+      mobile: model.username,
+      channel: 'forget_account'
+    },
+    { loading, showMessageText: '短信发送成功', onSuccess: start }
+  )
 }
 </script>
 
@@ -148,9 +131,10 @@ const onSendSms = () => {
           type="primary"
           size="large"
           block
+          text-color="#ffffff"
           class="mt-t20"
           @click="onValidate"
-          :loading="model.loading"
+          :loading="loading"
         >
           立即找回
         </n-button>

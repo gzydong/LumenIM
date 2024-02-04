@@ -23,8 +23,8 @@ const onUpload = (e: any) => {
 }
 
 // 删除表情包
-const onDelete = (index: number, id: number) => {
-  editorStore.removeUserEmoticon({ index, id })
+const onDelete = (index: number, emoticon_id: number) => {
+  editorStore.removeUserEmoticon({ index, emoticon_id })
 }
 
 const onTabs = (index: number) => {
@@ -73,9 +73,9 @@ const onSendEmoticon = (type: any, value: any, img = '') => {
         </div>
 
         <div class="item pointer" v-for="(item, index) in items[tabIndex].children" :key="index">
-          <img :src="item.src" @click="onSendEmoticon(2, item.media_id)" />
+          <img :src="item.url" @click="onSendEmoticon(2, item.emoticon_id)" />
 
-          <div v-if="tabIndex == 1" class="mask" @click="onDelete(index, item.media_id)">
+          <div v-if="tabIndex == 1" class="mask" @click="onDelete(index, item.emoticon_id)">
             <n-icon size="18" color="#ff5722" class="icon" :component="Delete" />
           </div>
         </div>

@@ -6,24 +6,21 @@ import {
   Delete as IconDelete,
   DownloadFour,
   FolderFocus,
-  Label as IconLabel,
   Star as IconStar,
   EditOne,
   FullScreen,
   OffScreen
 } from '@icon-park/vue-next'
 import AnnexUploadModal from './AnnexUploadModal.vue'
-import TagsClipModal from './TagsClipModal.vue'
 import { debounce } from '@/utils/common'
-import { useUtil } from '@/hooks/useUtil'
-import {
-  ServeSetAsteriskArticle,
-  ServeUploadArticleImg,
-  ServeEditArticle,
-  ServeDeleteArticle
-} from '@/api/article'
+import { downloadBlobFile } from '@/utils/strings'
+import { useInject } from '@/hooks'
+import { ServeSetAsteriskArticle, ServeEditArticle, ServeDeleteArticle } from '@/api/article'
+import { ServeUploadImage } from '@/api/upload'
+import { toApi } from '@/api'
+
 import { useNoteStore } from '@/store'
-const { useMessage, useDialog } = useUtil()
+const { message, dialog } = useInject()
 
 const store = useNoteStore()
 const full = ref(false)
@@ -35,7 +32,7 @@ const editor = reactive({
 })
 
 watch(
-  () => store.view.detail.id,
+  () => store.view.detail.article_id,
   () => {
     editor.markdown = store.view.detail.md_content
     editor.title = store.view.detail.title
@@ -55,77 +52,64 @@ const onFull = () => {
 
 // 上传笔记图片
 // @ts-ignore
-const onUploadImage = (event: any, insertImage: any, files: File[]) => {
+const onUploadImage = async (event: any, insertImage: any, files: File[]) => {
   if (!files.length) return
 
-  let formdata = new FormData()
-  formdata.append('image', files[0])
+  const form = new FormData()
+  form.append('file', files[0])
 
-  ServeUploadArticleImg(formdata).then((res) => {
-    if (res.code == 200) {
-      insertImage({
-        url: res.data.url,
-        desc: files[0].name
-      })
-    } else {
-      useMessage.info(res.message)
-    }
-  })
+  const { code, data } = await toApi(ServeUploadImage, form)
+  if (code != 200) return
+
+  insertImage({ url: data.src, desc: files[0].name })
 }
 
 // 编辑器变动事件
-const onChange = (markdown: string, html: string) => {
+const onChange = (markdown: string) => {
   editor.markdown = markdown
-  console.log(html)
 }
 
 // 保存笔记
-const onSave = (isCloseEditMode: boolean = false) => {
-  let data = detail.value
-
-  if (editor.markdown == '' && data.id == 0) {
+const onSave = async (isCloseEditMode: boolean = false) => {
+  if (editor.markdown == '' && detail.value.article_id == 0) {
     return store.close()
   }
 
-  loading.value = true
-  ServeEditArticle({
-    article_id: data.id,
-    class_id: data.class_id,
+  const params = {
+    article_id: detail.value.article_id,
+    classify_id: detail.value.classify_id,
     title: editor.title,
     md_content: editor.markdown
-  })
-    .then((res) => {
-      if (res.code != 200) {
-        return useMessage.info(res.message)
-      }
+  }
 
-      if (data.id == 0) {
-        store.loadClass()
-        store.loadNoteList({}, false)
-      } else {
-        store.updateNoteItem(data.id, res.data)
-      }
+  const { code, data } = await toApi(ServeEditArticle, params, { loading })
+  if (code != 200) return
 
-      store.view.detail.md_content = editor.markdown
-      store.view.detail.id = res.data.id
-
-      if (isCloseEditMode) {
-        store.setEditorMode('preview')
-      }
-
-      useMessage.success('保存成功', {
-        duration: 1000
-      })
+  if (detail.value.article_id == 0) {
+    store.loadClass()
+    store.loadNoteList({}, false)
+  } else {
+    store.updateNoteItem(data.article_id, {
+      article_id: data.article_id,
+      abstract: data.abstract,
+      image: data.image,
+      title: data.title
     })
-    .finally(() => {
-      loading.value = false
-    })
+  }
+
+  store.view.detail.md_content = editor.markdown
+  store.view.detail.title = editor.title
+  store.view.detail.article_id = data.article_id
+
+  if (isCloseEditMode) {
+    store.setEditorMode('preview')
+  }
+
+  message.success('已保存')
 }
 
 // 防抖的保存事件
-const onSaveDebounce = debounce((isCloseEditMode: boolean) => {
-  onSave(isCloseEditMode)
-}, 500)
+const onSaveDebounce = debounce(onSave, 500)
 
 // 标题输入键盘事件
 const onTitle = (e: any) => {
@@ -142,37 +126,22 @@ const onTitle = (e: any) => {
 }
 
 // 收藏笔记
-const onCollection = () => {
-  let type = detail.value.is_asterisk == 1 ? 2 : 1
+const onCollection = async () => {
+  let action = detail.value.is_asterisk == 1 ? 2 : 1
 
-  ServeSetAsteriskArticle({
-    article_id: detail.value.id,
-    type: type
-  }).then((res) => {
-    if (res.code !== 200) return false
-
-    store.setCollectionStatus(type == 1)
+  const { code } = await toApi(ServeSetAsteriskArticle, {
+    article_id: detail.value.article_id,
+    action: action
   })
+
+  if (code != 200) return
+
+  store.setCollectionStatus(action == 1)
 }
 
 // 下载笔记
 const onDownload = () => {
-  let title = store.view.detail.title + '.md'
-  let blob = new Blob([store.view.detail.md_content], {
-    type: 'text/plain'
-  })
-
-  let reader = new FileReader()
-  reader.readAsDataURL(blob)
-  reader.onload = function (e) {
-    let a = document.createElement('a')
-    a.download = title
-    // @ts-ignore
-    a.setAttribute('href', e.target.result)
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  }
+  downloadBlobFile(store.view.detail.title + '.md', store.view.detail.md_content)
 }
 
 // 查看预览图片
@@ -181,32 +150,37 @@ const onClickImage = (images: string[], currentIndex: number) => {
 }
 
 const onDelete = () => {
-  useDialog.create({
+  dialog.create({
     showIcon: false,
     title: `删除笔记？`,
     content: '笔记删除后30天之内，可在回收站中进行恢复。',
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      ServeDeleteArticle({
-        article_id: detail.value.id
-      }).then((res) => {
-        if (res.code !== 200) return false
-
-        store.close()
-      })
+    onPositiveClick: async () => {
+      await toApi(
+        ServeDeleteArticle,
+        {
+          article_id: detail.value.article_id
+        },
+        {
+          onSuccess: () => {
+            store.loadNoteList({}, false)
+            store.close()
+          }
+        }
+      )
     }
   })
 }
 
 const onShare = () => {
-  useMessage.info('开发中...')
+  message.info('开发中...')
 }
 </script>
 
 <template>
   <section class="el-container section" :class="{ full: full }" v-loading="loadStatus == 0">
-    <main class="el-main" style="padding: 0 5px">
+    <main class="el-main">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">
           <img src="@/assets/image/md.svg" class="icon-svg" />
@@ -217,7 +191,7 @@ const onShare = () => {
           v-if="store.view.editorMode == 'preview'"
           class="el-header sub-header text-ellipsis"
         >
-          <span>分类: {{ store.view.detail.class_name || '默认分类' }}</span>
+          <span>{{ store.view.detail.class_name || '默认分类' }}</span>
           <span>最后更新于 {{ store.view.detail.updated_at }}</span>
         </header>
 
@@ -263,12 +237,12 @@ const onShare = () => {
 
       <div v-show="store.view.editorMode == 'edit'" class="nav-item" @click="onSave(true)">
         <n-icon class="icon" size="18" :component="EditOne" />
-        <p v-if="detail.id == 0 && editor.markdown.length === 0">取消</p>
+        <p v-if="detail.article_id == 0 && editor.markdown.length === 0">取消</p>
         <p v-else>{{ loading ? '保存中..' : '保存' }}</p>
       </div>
 
       <div
-        v-show="detail.id"
+        v-show="detail.article_id"
         class="nav-item"
         :class="{ active: detail.is_asterisk == 1 }"
         @click="onCollection"
@@ -277,33 +251,12 @@ const onShare = () => {
         <p>收藏</p>
       </div>
 
-      <n-popover
-        :overlap="false"
-        placement="right"
-        trigger="click"
-        :show-arrow="true"
-        :raw="true"
-        :animated="false"
-      >
-        <template #trigger>
-          <div
-            v-show="detail.id"
-            class="nav-item"
-            :class="{ active: store.view.detail.tags.length }"
-          >
-            <n-icon class="icon" size="18" :component="IconLabel" />
-            <p>标签</p>
-          </div>
-        </template>
-        <TagsClipModal />
-      </n-popover>
-
       <n-popover placement="left" trigger="click" :show-arrow="true" :raw="true">
         <template #trigger>
           <div
-            v-show="detail.id"
+            v-show="detail.article_id"
             class="nav-item"
-            :class="{ active: store.view.detail.files.length }"
+            :class="{ active: store.view.detail.annex_list.length }"
           >
             <n-icon class="icon" size="18" :component="FolderFocus" />
             <p>附件</p>
@@ -312,17 +265,17 @@ const onShare = () => {
         <AnnexUploadModal />
       </n-popover>
 
-      <div v-show="detail.id" class="nav-item" @click="onDownload">
+      <div v-show="detail.article_id" class="nav-item" @click="onDownload">
         <n-icon class="icon" size="18" :component="DownloadFour" />
         <p>下载</p>
       </div>
 
-      <div v-show="detail.id" class="nav-item" @click="onDelete">
+      <div v-show="detail.article_id" class="nav-item" @click="onDelete">
         <n-icon class="icon" size="18" :component="IconDelete" />
         <p>删除</p>
       </div>
 
-      <div v-show="detail.id" class="nav-item" @click="onShare">
+      <div v-show="detail.article_id" class="nav-item" @click="onShare">
         <n-icon class="icon" size="18" :component="Share" />
         <p>分享</p>
       </div>
@@ -405,6 +358,7 @@ const onShare = () => {
   background-color: #ffffff;
   padding: 0 10px;
   overflow: hidden;
+  font-size: 12px;
 
   span {
     margin-right: 15px;
@@ -424,6 +378,10 @@ const onShare = () => {
 }
 :deep(.github-markdown-body) {
   padding: 16px 10px 32px 10px !important;
+}
+
+:deep(.v-md-editor__toolbar) {
+  padding-bottom: 5px;
 }
 
 html[theme-mode='dark'] {

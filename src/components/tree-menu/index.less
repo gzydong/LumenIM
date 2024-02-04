@@ -1,0 +1,34 @@
+.menu-list {
+  padding: 0 5px;
+
+  .menu-item {
+    .menu-item-name {
+      height: 35px;
+      line-height: 35px;
+      padding-left: 10px;
+      position: relative;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .menu-item-text {
+      height: inherit;
+      width: inherit;
+
+      &:hover {
+        background-color: var(--im-active-bg-color);
+      }
+    }
+
+    .menu-item-input {
+      width: 100%;
+      border: 1px solid #66b1ff;
+      height: 28px;
+      padding: 2px 8px;
+      font-size: 12px;
+      border-radius: 2px;
+      box-sizing: border-box;
+      margin-right: 10px;
+    }
+  }
+}

@@ -22,9 +22,9 @@ function createWindow() {
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-    },
+      preload: path.join(__dirname, 'preload.cjs'),
+      contextIsolation: true
+    }
   })
 
   // 加载 index.html
@@ -53,7 +53,7 @@ function createWindow() {
     e.returnValue = {
       platform: process.platform,
       version: app.getVersion(),
-      appPath: app.getAppPath(),
+      appPath: app.getAppPath()
     }
   })
 }

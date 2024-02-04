@@ -2,23 +2,24 @@
 import { ref, reactive, onMounted } from 'vue'
 import Loading from '@/components/base/Loading.vue'
 import { ServeFindTalkRecords } from '@/api/chat'
-import { Down, Calendar } from '@icon-park/vue-next'
-import * as message from '@/constant/message'
+import { toApi } from '@/api'
+import { Calendar } from '@icon-park/vue-next'
+import * as components from '@/constant/message'
 import { ITalkRecord } from '@/types/chat'
 import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  talkType: {
+  talkMode: {
     type: Number,
     default: 0
   },
-  receiverId: {
+  toFromId: {
     type: Number,
     default: 0
   }
 })
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 const model = reactive({
   cursor: 0,
   limit: 30,
@@ -33,24 +34,26 @@ const items = ref<ITalkRecord[]>([])
 
 const tabs = [
   { name: '全部', type: 0, show: true },
-  { name: '图片', type: message.ChatMsgTypeImage, show: true },
-  { name: '音频', type: message.ChatMsgTypeAudio, show: true },
-  { name: '视频', type: message.ChatMsgTypeVideo, show: true },
-  { name: '文件', type: message.ChatMsgTypeFile, show: true },
-  { name: '会话', type: message.ChatMsgTypeForward, show: true },
-  { name: '代码', type: message.ChatMsgTypeCode, show: true },
-  { name: '位置', type: message.ChatMsgTypeLocation, show: true },
-  { name: '群投票', type: message.ChatMsgTypeVote, show: props.talkType == 2 }
+  { name: '图片', type: components.ChatMsgTypeImage, show: true },
+  { name: '音频', type: components.ChatMsgTypeAudio, show: true },
+  { name: '视频', type: components.ChatMsgTypeVideo, show: true },
+  { name: '文件', type: components.ChatMsgTypeFile, show: true },
+  { name: '会话', type: components.ChatMsgTypeForward, show: true },
+  { name: '代码', type: components.ChatMsgTypeCode, show: true },
+  { name: '位置', type: components.ChatMsgTypeLocation, show: true },
+  { name: '群投票', type: components.ChatMsgTypeVote, show: props.talkMode == 2 }
 ]
 
 const onMaskClick = () => {
   emit('close')
 }
 
-const loadChatRecord = () => {
-  let data = {
-    talk_type: props.talkType,
-    receiver_id: props.receiverId,
+const loadChatRecord = async () => {
+  if (model.loading || model.loadMore) return
+
+  const params = {
+    talk_mode: props.talkMode,
+    to_from_id: props.toFromId,
     msg_type: model.msgType,
     cursor: model.cursor,
     limit: model.limit
@@ -62,23 +65,23 @@ const loadChatRecord = () => {
     model.loadMore = true
   }
 
-  ServeFindTalkRecords(data).then((res) => {
-    if (res.code != 200) return
+  const { code, data } = await toApi(ServeFindTalkRecords, params)
+  model.loading = false
+  model.loadMore = false
 
-    if (data.cursor === 0) {
-      items.value = []
-    }
+  if (code != 200) return
 
-    let list = res.data.items || []
-    if (list.length) {
-      model.cursor = res.data.cursor
-    }
+  if (data.cursor === 0) {
+    items.value = []
+  }
 
-    model.loading = false
-    model.loadMore = false
-    model.isLoadMore = list.length >= model.limit
-    items.value.push(...list)
-  })
+  let list = data.items || []
+  if (list.length) {
+    model.cursor = data.cursor
+  }
+
+  model.isLoadMore = list.length >= model.limit
+  items.value.push(...list)
 }
 
 const triggerType = (type: number) => {
@@ -125,22 +128,6 @@ onMounted(() => {
           </span>
         </div>
         <div style="display: flex; align-items: center">
-          <!-- <n-popover placement="bottom-end" trigger="click" :show-arrow="false">
-            <template #trigger>
-              <n-icon
-                :size="20"
-                class="pointer"
-                :component="Calendar"
-              />
-            </template>
-            <n-date-picker
-              panel
-              type="date"
-              :is-date-disabled="disablePreviousDate"
-              :on-update:value="datefunc"
-            />
-          </n-popover> -->
-
           <n-icon :size="20" class="pointer" :component="Calendar" />
         </div>
       </header>
@@ -150,45 +137,42 @@ onMounted(() => {
       </main>
 
       <main v-else-if="items.length === 0" class="el-main flex-center">
-        <n-empty size="200" description="暂无相关数据">
-          <template #icon>
-            <img src="@/assets/image/no-data.svg" alt="" />
-          </template>
-        </n-empty>
+        <n-empty description="暂无相关数据" />
       </main>
 
       <main v-else class="el-main me-scrollbar me-scrollbar-thumb">
-        <div v-for="item in items" :key="item.id" class="message-item">
+        <div v-for="item in items" :key="item.msg_id" class="message-item">
           <div class="left-box">
             <im-avatar
+              class="pointer"
               :src="item.avatar"
               :size="30"
               :username="item.nickname"
-              @click="showUserInfoModal(item.user_id)"
+              @click="toShowUserInfo(item.user_id)"
             />
           </div>
 
           <div class="right-box me-scrollbar">
             <div class="msg-header">
               <span class="name">{{ item.nickname }}</span>
-              <span class="time"> {{ item.created_at }}</span>
+              <span class="time"> {{ item.send_time }}</span>
             </div>
 
-            <template v-if="item.is_revoke == 1">
+            <template v-if="item.is_revoked === 1">
               <div class="msg-content">此消息已被撤回</div>
             </template>
 
             <component
-              v-if="item.is_revoke == 0"
-              :is="message.MessageComponents[item.msg_type] || 'unknown-message'"
+              v-if="item.is_revoked === 2"
+              :is="components.MessageComponents[item.msg_type] || 'unknown-message'"
               :extra="item.extra"
               :data="item"
+              :source="'history'"
             />
           </div>
         </div>
 
         <div class="more pointer flex-center" @click="loadChatRecord" v-show="model.isLoadMore">
-          <n-icon v-show="!model.loadMore" :size="20" class="icon" :component="Down" />
           <span> &nbsp;{{ model.loadMore ? '数据加载中...' : '加载更多' }} </span>
         </div>
       </main>
@@ -219,8 +203,7 @@ onMounted(() => {
         height: 40px;
         width: 45px;
         margin: 0 10px;
-        font-size: 13px;
-        font-weight: 400;
+        font-size: 14px;
       }
     }
   }

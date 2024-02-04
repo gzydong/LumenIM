@@ -6,9 +6,13 @@ import { formatTalkRecord } from '@/utils/talk'
 import { addClass, removeClass } from '@/utils/dom'
 
 interface Params {
-  receiver_id: number
-  talk_type: number
+  toFromId: number
+  talkMode: number
   limit: number
+}
+
+const getChatPanelElement = (): HTMLElement | null => {
+  return document.getElementById('imChatPanel')
 }
 
 export const useTalkRecord = (uid: number) => {
@@ -22,8 +26,8 @@ export const useTalkRecord = (uid: number) => {
   })
 
   const loadConfig = reactive({
-    receiver_id: 0,
-    talk_type: 0,
+    toFromId: 0,
+    talkMode: 0,
     status: 0,
     cursor: 0
   })
@@ -45,9 +49,7 @@ export const useTalkRecord = (uid: number) => {
         }
       }
 
-      const el = document.getElementById('imChatPanel')
-
-      return el?.scrollTo({
+      return getChatPanelElement()?.scrollTo({
         top: 0,
         behavior: 'smooth'
       })
@@ -70,8 +72,8 @@ export const useTalkRecord = (uid: number) => {
   // 加载数据列表
   const load = async (params: Params) => {
     const request = {
-      talk_type: params.talk_type,
-      receiver_id: params.receiver_id,
+      talk_mode: params.talkMode,
+      to_from_id: params.toFromId,
       cursor: loadConfig.cursor,
       limit: 30
     }
@@ -79,7 +81,7 @@ export const useTalkRecord = (uid: number) => {
     loadConfig.status = 0
 
     let scrollHeight = 0
-    const el = document.getElementById('imChatPanel')
+    const el = getChatPanelElement()
     if (el) {
       scrollHeight = el.scrollHeight
     }
@@ -90,10 +92,7 @@ export const useTalkRecord = (uid: number) => {
     }
 
     // 防止对话切换过快，数据渲染错误
-    if (
-      request.talk_type != loadConfig.talk_type ||
-      request.receiver_id != loadConfig.receiver_id
-    ) {
+    if (request.talk_mode != loadConfig.talkMode || request.to_from_id != loadConfig.toFromId) {
       return (location.msgid = '')
     }
 
@@ -111,15 +110,14 @@ export const useTalkRecord = (uid: number) => {
     loadConfig.cursor = data.cursor
 
     nextTick(() => {
-      const el = document.getElementById('imChatPanel')
+      const el = getChatPanelElement()
 
       if (el) {
         if (request.cursor == 0) {
           el.scrollTop = el.scrollHeight
-
-          setTimeout(() => {
-            el.scrollTop = el.scrollHeight + 1000
-          }, 50)
+          setTimeout(() => (el.scrollTop = el.scrollHeight), 10)
+          setTimeout(() => (el.scrollTop = el.scrollHeight), 60)
+          setTimeout(() => (el.scrollTop = el.scrollHeight), 120)
         } else {
           el.scrollTop = el.scrollHeight - scrollHeight
         }
@@ -134,8 +132,8 @@ export const useTalkRecord = (uid: number) => {
   const onRefreshLoad = () => {
     if (loadConfig.status == 1) {
       load({
-        receiver_id: loadConfig.receiver_id,
-        talk_type: loadConfig.talk_type,
+        toFromId: loadConfig.toFromId,
+        talkMode: loadConfig.talkMode,
         limit: 30
       })
     }
@@ -143,8 +141,8 @@ export const useTalkRecord = (uid: number) => {
 
   const onLoad = (params: Params) => {
     loadConfig.cursor = 0
-    loadConfig.receiver_id = params.receiver_id
-    loadConfig.talk_type = params.talk_type
+    loadConfig.toFromId = params.toFromId
+    loadConfig.talkMode = params.talkMode
 
     load(params)
   }

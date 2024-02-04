@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from '@/api/upload'
-import { ServeSendTalkFile } from '@/api/chat'
-
-// @ts-ignore
-const message = window.$message
+import { ServePublishMessage } from '@/api/chat'
+import { toApi } from '@/api'
 
 // 处理拆分上传文件
 function fileSlice(file: File, uploadId: string, eachSize: number) {
@@ -47,34 +45,32 @@ export const useUploadsStore = defineStore('uploads', {
     },
 
     // 初始化上传
-    initUploadFile(file: File, talkType: number, receiverId: number, username: string) {
-      ServeFindFileSplitInfo({
+    async initUploadFile(file: File, talkType: number, receiverId: number, username: string) {
+      const { code, data } = await toApi(ServeFindFileSplitInfo, {
         file_name: file.name,
         file_size: file.size
-      }).then((res) => {
-        if (res.code == 200) {
-          const { upload_id, split_size } = res.data
-
-          // @ts-ignore
-          this.items.unshift({
-            file: file,
-            talk_type: talkType,
-            receiver_id: receiverId,
-            upload_id: upload_id,
-            uploadIndex: 0,
-            percentage: 0,
-            status: 0, // 文件上传状态 0:等待上传 1:上传中 2:上传完成 3:网络异常
-            files: fileSlice(file, upload_id, split_size),
-            avatar: '',
-            username: username
-          })
-
-          this.triggerUpload(upload_id)
-          this.isShow = true
-        } else {
-          message.error(res.message)
-        }
       })
+
+      if (code !== 200) throw new Error('Failed to find file split info.')
+
+      const { upload_id, shard_size } = data
+
+      // @ts-ignore
+      this.items.unshift({
+        file: file,
+        talk_type: talkType,
+        receiver_id: receiverId,
+        upload_id: upload_id,
+        uploadIndex: 0,
+        percentage: 0,
+        status: 0, // 文件上传状态 0:等待上传 1:上传中 2:上传完成 3:网络异常
+        files: fileSlice(file, upload_id, shard_size),
+        avatar: '',
+        username: username
+      })
+
+      this.triggerUpload(upload_id)
+      this.isShow = true
     },
 
     // 获取分片文件数组索引
@@ -83,42 +79,36 @@ export const useUploadsStore = defineStore('uploads', {
     },
 
     // 触发上传
-    triggerUpload(uploadId: string) {
+    async triggerUpload(uploadId: string) {
       const item = this.findItem(uploadId)
 
-      const form = item.files[item.uploadIndex]
+      if (!item) return
 
       item.status = 1
+      const { code } = await toApi(ServeFileSubareaUpload, item.files[item.uploadIndex])
+      item.status = 3
 
-      ServeFileSubareaUpload(form)
-        .then((res) => {
-          if (res.code == 200) {
-            item.uploadIndex++
+      if (code !== 200) throw new Error('Failed to find file split info.')
 
-            if (item.uploadIndex === item.files.length) {
-              item.status = 2
-              item.percentage = 100
-              this.sendUploadMessage(item)
-            } else {
-              const percentage = (item.uploadIndex / item.files.length) * 100
-              item.percentage = percentage.toFixed(1)
-              this.triggerUpload(uploadId)
-            }
-          } else {
-            item.status = 3
-          }
-        })
-        .catch(() => {
-          item.status = 3
-        })
+      item.uploadIndex++
+
+      if (item.uploadIndex === item.files.length) {
+        item.status = 2
+        item.percentage = 100
+        this.sendUploadMessage(item)
+      } else {
+        item.percentage = (item.uploadIndex / item.files.length) * 100
+        this.triggerUpload(uploadId)
+      }
     },
 
     // 发送上传消息
     sendUploadMessage(item: any) {
-      ServeSendTalkFile({
-        upload_id: item.upload_id,
-        receiver_id: item.receiver_id,
-        talk_type: item.talk_type
+      ServePublishMessage({
+        type: 'file',
+        talk_mode: item.talk_type,
+        to_from_id: item.receiver_id,
+        body: { upload_id: item.upload_id }
       })
     }
   }

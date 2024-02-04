@@ -4,14 +4,16 @@ import { NModal, NImage } from 'naive-ui'
 import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
 import Loading from '@/components/base/Loading.vue'
 import {
-  ServeGetArticleList,
   ServeForeverDeleteArticle,
   ServeRecoverArticle,
   ServeGetRecoverAnnexList,
   ServeDownloadAnnex as onDownload,
   ServeForeverDeleteAnnex,
-  ServeRecoverArticleAnnex
+  ServeRecoverArticleAnnex,
+  ServeArticleRecycleList
 } from '@/api/article'
+
+import { toApi } from '@/api'
 
 const emit = defineEmits(['close'])
 
@@ -21,26 +23,25 @@ interface IState {
   note: {
     loading: boolean
     items: {
-      abstract: string
-      class_id: number
-      class_name: string
-      created_at: string
-      id: number
-      image: string
-      is_asterisk: number
-      status: number
-      tags_id: string
+      article_id: number
+      classify_id: number
+      classify_name: string
       title: string
-      updated_at: string
+      image: string
+      abstract: string
+      created_at: string
+      deleted_at: string
     }[]
   }
   annex: {
     loading: boolean
     items: {
-      id: number
       article_id: number
-      title: string
-      original_name: string
+      article_title: string
+      annex_id: number
+      annex_name: string
+      created_at: string
+      deleted_at: string
       day: number
     }[]
   }
@@ -68,72 +69,52 @@ const triggerType = (index: number) => {
 }
 
 // 加载笔记列表
-const loadNoteList = () => {
+const loadNoteList = async () => {
   state.note.loading = true
-  ServeGetArticleList({
-    page: 1,
-    find_type: 5
-  })
-    .then((res) => {
-      state.note.items = res.data.items
-    })
-    .finally(() => {
-      state.note.loading = false
-    })
+  const { code, data } = await toApi(ServeArticleRecycleList)
+  state.note.loading = false
+
+  if (code != 200) return
+  state.note.items = data.items
 }
 
-const loadAnnexList = () => {
+const loadAnnexList = async () => {
   state.annex.loading = true
-  ServeGetRecoverAnnexList()
-    .then((res) => {
-      if (res.code == 200) {
-        state.annex.items = res.data.items || []
-      }
-    })
-    .finally(() => {
-      state.annex.loading = false
-    })
+
+  const { code, data } = await toApi(ServeGetRecoverAnnexList)
+  state.annex.loading = false
+
+  if (code != 200) return
+  state.annex.items = data.items
 }
 
 // 永久删除笔记
-const onDeleteArticle = (index: number, id: number) => {
-  ServeForeverDeleteArticle({
-    article_id: id
-  }).then((res) => {
-    if (res.code == 200) {
-      state.note.items.splice(index, 1)
-    }
-  })
+const onDeleteArticle = async (index: number, article_id: number) => {
+  const { code } = await toApi(ServeForeverDeleteArticle, { article_id })
+
+  if (code != 200) return
+  state.note.items.splice(index, 1)
 }
 
 // 恢复已删除笔记
-const onRecoverArticle = (index: number, id: number) => {
-  ServeRecoverArticle({
-    article_id: id
-  }).then((res) => {
-    if (res.code == 200) {
-      state.note.items.splice(index, 1)
-    }
-  })
+const onRecoverArticle = async (index: number, article_id: number) => {
+  const { code } = await toApi(ServeRecoverArticle, { article_id })
+
+  if (code != 200) return
+  state.note.items.splice(index, 1)
 }
 
-const onRecoverAnnex = (index: number, id: number) => {
-  ServeRecoverArticleAnnex({
-    annex_id: id
-  }).then((res) => {
-    if (res.code == 200) {
-      state.annex.items.splice(index, 1)
-    }
-  })
+const onRecoverAnnex = async (index: number, article_id: number) => {
+  const { code } = await toApi(ServeRecoverArticleAnnex, { article_id })
+
+  if (code != 200) return
+  state.annex.items.splice(index, 1)
 }
-const onDeleteAnnex = (index: number, id: number) => {
-  ServeForeverDeleteAnnex({
-    annex_id: id
-  }).then((res) => {
-    if (res.code == 200) {
-      state.annex.items.splice(index, 1)
-    }
-  })
+const onDeleteAnnex = async (index: number, annex_id: number) => {
+  const { code } = await toApi(ServeForeverDeleteAnnex, { annex_id })
+
+  if (code != 200) return
+  state.annex.items.splice(index, 1)
 }
 
 onMounted(() => {
@@ -184,14 +165,10 @@ onMounted(() => {
           <Loading />
         </template>
         <template v-else-if="state.note.items.length === 0">
-          <n-empty size="200" description="暂无相关数据">
-            <template #icon>
-              <img src="@/assets/image/no-data.svg" alt="" />
-            </template>
-          </n-empty>
+          <n-empty description="暂无相关数据" />
         </template>
         <template v-else>
-          <div class="article" v-for="(note, index) in state.note.items" :key="note.id">
+          <div class="article" v-for="(note, index) in state.note.items" :key="note.article_id">
             <div class="at-header">
               <div class="at-name">
                 <span class="text-ellipsis">{{ note.title }}</span>
@@ -204,14 +181,14 @@ onMounted(() => {
                     color="#03a9f4"
                     class="pointer"
                     :component="Undo"
-                    @click="onRecoverArticle(index, note.id)"
+                    @click="onRecoverArticle(index, note.article_id)"
                   />
                   <n-icon
                     :size="18"
                     color="red"
                     class="pointer"
                     :component="Delete"
-                    @click="onDeleteArticle(index, note.id)"
+                    @click="onDeleteArticle(index, note.article_id)"
                   />
                 </div>
               </div>
@@ -221,7 +198,7 @@ onMounted(() => {
               <div class="content">
                 <div class="datetime">
                   <span>{{ note.created_at.substr(0, 10) }}</span>
-                  <span>{{ note.class_name }}</span>
+                  <span>{{ note.classify_name }}</span>
                 </div>
                 <div class="abstract">
                   {{ note.abstract.replace(/[\r\n]/g, '').replace(/(<([^>]+)>)/gi, '') }}
@@ -235,7 +212,6 @@ onMounted(() => {
                   preview-disabled
                   style="border-radius: 2px"
                   :src="note.image"
-                  fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
                 />
               </div>
             </div>
@@ -256,18 +232,14 @@ onMounted(() => {
         </template>
 
         <template v-else-if="state.annex.items.length == 0">
-          <n-empty size="200" description="暂无相关数据">
-            <template #icon>
-              <img src="@/assets/image/no-data.svg" alt="" />
-            </template>
-          </n-empty>
+          <n-empty description="暂无相关数据" />
         </template>
 
         <template v-else>
-          <div class="article" v-for="(annex, index) in state.annex.items" :key="annex.id">
+          <div class="article" v-for="(annex, index) in state.annex.items" :key="annex.annex_id">
             <div class="at-header">
               <div class="at-name">
-                <span class="text-ellipsis">{{ annex.original_name }}</span>
+                <span class="text-ellipsis">{{ annex.annex_name }}</span>
               </div>
               <div class="at-tool">
                 <div class="tip">剩余{{ annex.day }}天</div>
@@ -277,21 +249,21 @@ onMounted(() => {
                     color="#03a9f4"
                     class="pointer"
                     :component="ToBottom"
-                    @click="onDownload(annex.id)"
+                    @click="onDownload(annex.annex_id)"
                   />
                   <n-icon
                     :size="18"
                     color="#03a9f4"
                     class="pointer"
                     :component="Undo"
-                    @click="onRecoverAnnex(index, annex.id)"
+                    @click="onRecoverAnnex(index, annex.annex_id)"
                   />
                   <n-icon
                     :size="18"
                     color="red"
                     class="pointer"
                     :component="Delete"
-                    @click="onDeleteAnnex(index, annex.id)"
+                    @click="onDeleteAnnex(index, annex.annex_id)"
                   />
                 </div>
               </div>
@@ -299,7 +271,7 @@ onMounted(() => {
 
             <div class="at-body pointer">
               <div class="content">
-                <div class="abstract">所属笔记： {{ annex.title }}</div>
+                <div class="abstract">所属笔记： {{ annex.article_title }}</div>
               </div>
             </div>
           </div>

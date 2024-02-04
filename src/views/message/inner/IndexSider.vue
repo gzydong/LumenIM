@@ -2,7 +2,8 @@
 import { computed, ref, onMounted } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NIcon, NInput, NPopover } from 'naive-ui'
+import { NDropdown, NIcon, NInput, NPopover, NVirtualList } from 'naive-ui'
+import type { VirtualListInst } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import TalkItem from './TalkItem.vue'
 import Skeleton from './Skeleton.vue'
@@ -10,7 +11,9 @@ import { ServeClearTalkUnreadNum } from '@/api/chat'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName } from '@/utils/talk'
 import { ISession } from '@/types/chat'
-import { useSessionMenu } from '@/hooks'
+import { useSessionMenu, useEventBus } from '@/hooks'
+import { bus } from '@/utils/event-bus'
+import { SessionConst } from '@/constant/event-bus'
 
 const {
   dropdown,
@@ -26,13 +29,14 @@ const isShowGroup = ref(false)
 const searchKeyword = ref('')
 const topItems = computed((): ISession[] => talkStore.topItems)
 const unreadNum = computed(() => talkStore.talkUnreadNum)
+const virtualListInst = ref<VirtualListInst>()
 
 const items = computed((): ISession[] => {
   if (searchKeyword.value.length === 0) {
-    return talkStore.talkItems
+    return talkStore.items
   }
 
-  return talkStore.talkItems.filter((item: ISession) => {
+  return talkStore.items.filter((item: ISession) => {
     let keyword = item.remark || item.name
 
     return keyword.toLowerCase().indexOf(searchKeyword.value.toLowerCase()) != -1
@@ -47,7 +51,10 @@ const indexName = computed(() => dialogueStore.index_name)
 
 // 切换会话
 const onTabTalk = (item: ISession, follow = false) => {
-  if (item.index_name === indexName.value) return
+  const { talk_mode, to_from_id, index_name } = item
+
+  if (index_name === indexName.value) return
+  bus.emit(SessionConst.Switch, { talk_mode, to_from_id })
 
   searchKeyword.value = ''
 
@@ -56,28 +63,17 @@ const onTabTalk = (item: ISession, follow = false) => {
 
   // 清空消息未读数
   if (item.unread_num > 0) {
-    ServeClearTalkUnreadNum({
-      talk_type: item.talk_type,
-      receiver_id: item.receiver_id
-    }).then(() => {
-      talkStore.updateItem({
-        index_name: item.index_name,
-        unread_num: 0
-      })
+    ServeClearTalkUnreadNum({ talk_mode, to_from_id }).then(() => {
+      talkStore.clearUnreadNum(index_name)
     })
   }
 
   // 设置滚动条跟随
   if (follow) {
-    const el = document.getElementById('talk-session-list')
-    if (el) {
-      let index = talkStore.findTalkIndex(item.index_name)
-
-      el.scrollTo({
-        top: index * 66 + index * 5,
-        behavior: 'smooth'
-      })
-    }
+    virtualListInst.value?.scrollTo({
+      top: talkStore.findIndex(index_name) * 66,
+      behavior: 'smooth'
+    })
   }
 }
 
@@ -89,15 +85,29 @@ const onReload = () => {
 const onInitialize = () => {
   let index_name = getCacheIndexName()
 
-  index_name && onTabTalk(talkStore.findItem(index_name), true)
+  if (!index_name) return
+
+  const item = talkStore.findItem(index_name)
+
+  item && onTabTalk(item, true)
 }
 
 // 路由更新事件
 onBeforeRouteUpdate(onInitialize)
 
 onMounted(() => {
+  talkStore.loadTalkList()
   onInitialize()
 })
+
+useEventBus([
+  {
+    name: 'talk-session-scroll',
+    event: (data?: any) => {
+      data && virtualListInst.value?.scrollTo(data)
+    }
+  }
+])
 </script>
 
 <template>
@@ -112,9 +122,9 @@ onMounted(() => {
     @clickoutside="onCloseContextMenu"
   />
 
-  <section class="el-container is-vertical height100">
+  <section class="el-container container is-vertical height100">
     <!-- 工具栏目 -->
-    <header class="el-header header-tools">
+    <header class="el-header form-header">
       <n-input
         placeholder="搜索好友 / 群聊"
         v-model:value.trim="searchKeyword"
@@ -135,7 +145,7 @@ onMounted(() => {
     </header>
 
     <!-- 置顶栏目 -->
-    <header class="el-header header-top" v-show="loadStatus == 3 && topItems.length > 0">
+    <header class="el-header top-header" v-show="loadStatus == 3 && topItems.length > 0">
       <n-popover v-for="item in topItems" :key="item.index_name" placement="bottom" trigger="hover">
         <template #trigger>
           <div
@@ -147,9 +157,9 @@ onMounted(() => {
           >
             <im-avatar :src="item.avatar" :size="34" :username="item.name" />
 
-            <span class="icon-mark robot" v-show="item.is_robot == 1"> 助 </span>
+            <span class="icon-mark robot" v-show="item.is_robot === 1"> 助 </span>
 
-            <span class="icon-mark group" v-show="item.talk_type == 2 && item.is_robot == 0">
+            <span class="icon-mark group" v-show="item.talk_mode == 2 && item.is_robot === 2">
               群
             </span>
 
@@ -162,39 +172,52 @@ onMounted(() => {
 
     <!-- 标题栏目 -->
     <header
-      v-show="loadStatus == 3 && talkStore.talkItems.length > 0"
-      class="el-header header-badge"
+      v-show="loadStatus == 3 && talkStore.items.length > 0"
+      class="el-header badge-header"
       :class="{ shadow: false }"
     >
-      <p>会话记录({{ talkStore.talkItems.length }})</p>
+      <p>会话记录({{ talkStore.items.length }})</p>
       <p>
         <span class="badge unread" v-show="unreadNum">{{ unreadNum }}未读</span>
       </p>
     </header>
 
-    <main id="talk-session-list" class="el-main me-scrollbar me-scrollbar-thumb">
+    <main class="el-main">
       <template v-if="loadStatus == 2"><Skeleton /></template>
       <template v-else>
-        <TalkItem
-          v-for="item in items"
-          :key="item.index_name"
-          :data="item"
-          :avatar="item.avatar"
-          :username="item.remark || item.name"
-          :active="item.index_name == indexName"
-          @tab-talk="onTabTalk"
-          @top-talk="onToTopTalk"
-          @contextmenu.prevent="onContextMenuTalk($event, item)"
-        />
+        <n-virtual-list
+          ref="virtualListInst"
+          style="max-height: inherit; cursor: pointer"
+          :item-size="66"
+          :items="items"
+        >
+          <template #default="{ item }">
+            <TalkItem
+              :key="item.index_name"
+              :data="item"
+              :avatar="item.avatar"
+              :username="item.remark || item.name"
+              :active="item.index_name == indexName"
+              @tab-talk="onTabTalk"
+              @top-talk="onToTopTalk"
+              @contextmenu.prevent="onContextMenuTalk($event, item)"
+            />
+          </template>
+        </n-virtual-list>
       </template>
     </main>
   </section>
 
-  <GroupLaunch v-if="isShowGroup" @close="isShowGroup = false" @on-submit="onReload" />
+  <GroupLaunch
+    :group-id="0"
+    v-if="isShowGroup"
+    @close="isShowGroup = false"
+    @on-submit="onReload"
+  />
 </template>
 
 <style lang="less" scoped>
-.header-tools {
+.form-header {
   height: 60px;
   flex-shrink: 0;
   display: flex;
@@ -204,7 +227,7 @@ onMounted(() => {
   padding: 0 8px;
 }
 
-.header-badge {
+.badge-header {
   height: 38px;
   display: flex;
   align-items: center;
@@ -222,7 +245,7 @@ onMounted(() => {
   }
 }
 
-.header-top {
+.top-header {
   padding: 5px 8px;
   padding-right: 0;
   padding-right: 8px;
@@ -288,7 +311,7 @@ onMounted(() => {
 }
 
 html[theme-mode='dark'] {
-  .header-badge {
+  .badge-header {
     &.shadow {
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }

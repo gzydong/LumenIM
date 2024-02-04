@@ -11,6 +11,7 @@ const props = defineProps<{
   extra: ITalkRecordExtraVideo
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 const img = (src: string, width = 200) => {
@@ -57,8 +58,8 @@ async function onPlay() {
 </script>
 <template>
   <section
-    class="im-message-video"
-    :class="{ left: data.float === 'left' }"
+    class="immsg-video"
+    :class="{ right: data.float === 'right' }"
     :style="img(extra.cover, 350)"
     @click="onPlay"
   >
@@ -70,7 +71,7 @@ async function onPlay() {
 
     <n-modal v-model:show="open">
       <n-card
-        style="width: 800px; min-height: 300px; background-color: #ffffff; position: relative"
+        style="width: 800px; min-height: 300px; position: relative"
         role="dialog"
         aria-modal="true"
       >
@@ -83,7 +84,7 @@ async function onPlay() {
   </section>
 </template>
 <style lang="less" scoped>
-.im-message-video {
+.immsg-video {
   overflow: hidden;
   padding: 5px;
   border-radius: 5px;
@@ -93,7 +94,7 @@ async function onPlay() {
   display: inline-flex;
   position: relative;
 
-  &.left {
+  &.right {
     background: var(--im-message-right-bg-color);
   }
 

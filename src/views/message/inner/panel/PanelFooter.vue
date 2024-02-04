@@ -8,12 +8,15 @@ import {
   useEditorStore
 } from '@/store'
 import ws from '@/connect'
-import { ServePublishMessage, ServeSendVote } from '@/api/chat'
+import { ServePublishMessage } from '@/api/chat'
+import { ServeGroupVoteCreate } from '@/api/group'
 import { throttle, getVideoImage } from '@/utils/common'
 import Editor from '@/components/editor/Editor.vue'
 import MultiSelectFooter from './MultiSelectFooter.vue'
 import HistoryRecord from '@/components/talk/HistoryRecord.vue'
 import { ServeUploadImage } from '@/api/upload'
+import { toApi } from '@/api'
+import { bus } from '@/utils/event-bus'
 
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
@@ -25,15 +28,15 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  talk_type: {
+  talkMode: {
     type: Number,
     default: 0
   },
-  receiver_id: {
+  toFromId: {
     type: Number,
     default: 0
   },
-  index_name: {
+  indexName: {
     type: String,
     default: ''
   },
@@ -48,44 +51,32 @@ const props = defineProps({
 
 const isShowHistory = ref(false)
 
-const onSendMessage = (data = {}, callBack: any) => {
-  let message = {
+const onSendMessage = async (data = {}, callBack: any) => {
+  const params = {
     ...data,
-    receiver: {
-      receiver_id: props.receiver_id,
-      talk_type: props.talk_type
-    }
+    talk_mode: props.talkMode,
+    to_from_id: props.toFromId
   }
 
-  ServePublishMessage(message)
-    .then(({ code, message }) => {
-      if (code == 200) {
-        callBack(true)
-      } else {
-        window['$message'].warning(message)
-      }
-    })
-    .catch(() => {
-      window['$message'].warning('网络繁忙,请稍后重试!')
-    })
+  const { code } = await toApi(ServePublishMessage, params)
+  callBack(code == 200)
 }
 
 // 发送文本消息
 const onSendTextEvent = throttle((value: any) => {
-  let { data, callBack } = value
+  const { data, callBack } = value
 
-  let message = {
+  const message = {
     type: 'text',
-    content: data.items[0].content,
     quote_id: data.quoteId,
-    mentions: data.mentionUids
+    body: {
+      text: data.items[0].content,
+      mentions: data.mentionUids
+    }
   }
 
   onSendMessage(message, (ok: boolean) => {
     if (!ok) return
-
-    let el = document.getElementById('talk-session-list')
-    el?.scrollTo({ top: 0, behavior: 'smooth' })
 
     callBack(true)
   })
@@ -93,7 +84,12 @@ const onSendTextEvent = throttle((value: any) => {
 
 // 发送图片消息
 const onSendImageEvent = ({ data, callBack }) => {
-  onSendMessage({ type: 'image', ...data }, callBack)
+  const message = {
+    type: 'image',
+    body: { ...data }
+  }
+
+  onSendMessage(message, callBack)
 }
 
 // 发送图片消息
@@ -103,21 +99,23 @@ const onSendVideoEvent = async ({ data }) => {
   const coverForm = new FormData()
   coverForm.append('file', resp.file)
 
-  let cover = await ServeUploadImage(coverForm)
+  const cover = await toApi(ServeUploadImage, coverForm)
   if (cover.code != 200) return
 
   const form = new FormData()
   form.append('file', data)
 
-  let video = await ServeUploadImage(form)
+  const video = await toApi(ServeUploadImage, form)
   if (video.code != 200) return
 
-  let message = {
+  const message = {
     type: 'video',
-    url: video.data.src,
-    cover: cover.data.src,
-    duration: parseInt(resp.duration),
-    size: data.size
+    body: {
+      url: video.data.src,
+      cover: cover.data.src,
+      duration: parseInt(resp.duration),
+      size: data.size
+    }
   }
 
   onSendMessage(message, () => {})
@@ -125,7 +123,15 @@ const onSendVideoEvent = async ({ data }) => {
 
 // 发送代码消息
 const onSendCodeEvent = ({ data, callBack }) => {
-  onSendMessage({ type: 'code', code: data.code, lang: data.lang }, callBack)
+  const message = {
+    type: 'code',
+    body: {
+      code: data.code,
+      lang: data.lang
+    }
+  }
+
+  onSendMessage(message, callBack)
 }
 
 // 发送文件消息
@@ -135,15 +141,15 @@ const onSendFileEvent = ({ data }) => {
     return window['$message'].warning('上传文件不能超过100M!')
   }
 
-  uploadsStore.initUploadFile(data, props.talk_type, props.receiver_id, dialogueStore.talk.username)
+  uploadsStore.initUploadFile(data, props.talkMode, props.toFromId, dialogueStore.talk.username)
 }
 
 // 发送投票消息
 const onSendVoteEvent = ({ data, callBack }) => {
-  let response = ServeSendVote({
-    receiver_id: props.receiver_id,
+  let response = ServeGroupVoteCreate({
+    group_id: props.toFromId,
     mode: data.mode,
-    anonymous: data.anonymous,
+    is_anonymous: data.is_anonymous,
     title: data.title,
     options: data.options
   })
@@ -161,14 +167,23 @@ const onSendVoteEvent = ({ data, callBack }) => {
 
 // 发送表情消息
 const onSendEmoticonEvent = ({ data, callBack }) => {
-  onSendMessage({ type: 'emoticon', emoticon_id: data }, callBack)
+  const message = {
+    type: 'emoticon',
+    body: {
+      emoticon_id: data
+    }
+  }
+
+  onSendMessage(message, callBack)
 }
 
 const onSendMixedEvent = ({ data, callBack }) => {
-  let message = {
+  const message = {
     type: 'mixed',
     quote_id: data.quoteId,
-    items: data.items
+    body: {
+      items: data.items
+    }
   }
 
   onSendMessage(message, callBack)
@@ -176,15 +191,14 @@ const onSendMixedEvent = ({ data, callBack }) => {
 
 const onKeyboardPush = throttle(() => {
   ws.emit('im.message.keyboard', {
-    sender_id: props.uid,
-    receiver_id: props.receiver_id
+    to_from_id: props.toFromId
   })
 }, 3000)
 
 // 编辑器输入事件
 const onInputEvent = ({ data }) => {
   talkStore.updateItem({
-    index_name: props.index_name,
+    index_name: props.indexName,
     draft_text: data
   })
 
@@ -214,6 +228,9 @@ const evnets = {
 // 编辑器事件
 const onEditorEvent = (msg: any) => {
   evnets[msg.event] && evnets[msg.event](msg)
+
+  !['history_event', 'input_event'].includes(msg.event) &&
+    bus.emit('talk-session-scroll', { top: 0 })
 }
 
 onMounted(() => {
@@ -224,13 +241,13 @@ onMounted(() => {
 <template>
   <footer class="el-footer">
     <MultiSelectFooter v-if="dialogueStore.isOpenMultiSelect" />
-    <Editor v-else @editor-event="onEditorEvent" :vote="talk_type == 2" :members="members" />
+    <Editor v-else @editor-event="onEditorEvent" :vote="talkMode == 2" :members="members" />
   </footer>
 
   <HistoryRecord
     v-if="isShowHistory"
-    :talk-type="talk_type"
-    :receiver-id="receiver_id"
+    :talk-mode="talkMode"
+    :to-from-id="toFromId"
     @close="isShowHistory = false"
   />
 </template>

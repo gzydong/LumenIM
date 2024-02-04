@@ -4,14 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
-import {
-  GithubOne,
-  SettingTwo,
-  Message,
-  NotebookAndPen,
-  People
-  // SmartOptimization
-} from '@icon-park/vue-next'
+import { GithubOne, SettingTwo, Message, People, Bookshelf, BookmarkOne } from '@icon-park/vue-next'
 
 defineProps({
   index: {
@@ -27,7 +20,7 @@ const router = useRouter()
 const settingsStore = useSettingsStore()
 
 const color = computed(() => {
-  return settingsStore.darkTheme ? '#ffffff' : '#333'
+  return settingsStore.currentThemeMode == 'dark' ? '#ffffff' : '#333'
 })
 
 const menus = reactive([
@@ -45,14 +38,9 @@ const menus = reactive([
   },
   {
     link: '/note',
-    icon: markRaw(NotebookAndPen),
+    icon: markRaw(BookmarkOne),
     title: '笔记'
   },
-  // {
-  //   link: '/settings',
-  //   icon: markRaw(SmartOptimization),
-  //   title: 'Ai助手'
-  // },
   {
     link: '/settings',
     icon: markRaw(SettingTwo),
@@ -82,7 +70,7 @@ const isActive = (menu) => {
     <header class="menu-header" :url="router.currentRoute.value.path">
       <n-popover
         placement="right"
-        trigger="hover"
+        trigger="click"
         :raw="true"
         style="margin-left: 16px; border-radius: 8px; overflow: hidden"
       >

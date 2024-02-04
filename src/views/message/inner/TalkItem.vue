@@ -18,7 +18,7 @@ defineProps<{
     <div class="avatar-box">
       <im-avatar :src="avatar" :size="34" :username="data.name" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
-        <n-icon :component="data.is_top == 1 ? ArrowDown : ArrowUp" />
+        <n-icon :component="data.is_top === 1 ? ArrowDown : ArrowUp" />
       </div>
     </div>
 
@@ -26,9 +26,9 @@ defineProps<{
       <div class="header">
         <div class="title">
           <span class="nickname">{{ username }}</span>
-          <span class="badge top" v-show="data.is_top">顶</span>
-          <span class="badge roboot" v-show="data.is_robot">助</span>
-          <span class="badge group" v-show="data.talk_type == 2">群</span>
+          <span class="badge top" v-show="data.is_top === 1">顶</span>
+          <span class="badge roboot" v-show="data.is_robot === 1">助</span>
+          <span class="badge group" v-show="data.talk_mode === 2">群</span>
         </div>
         <div class="datetime"><Xtime :time="data.updated_at" /></div>
       </div>
@@ -40,13 +40,15 @@ defineProps<{
             <span class="detail" v-html="data.draft_text" />
           </template>
           <template v-else>
-            <span class="online" v-show="data.talk_type == 1 && data.is_online == 1"> [在线] </span>
+            <span class="online" v-show="data.talk_mode === 1 && data.is_online === 1">
+              [在线]
+            </span>
             <span class="detail" v-html="data.msg_text" />
           </template>
         </div>
 
         <div class="tip">
-          <div v-if="data.is_disturb" class="disturb">
+          <div v-if="data.is_disturb === 1" class="disturb">
             <n-icon :component="CloseRemind" />
           </div>
 
@@ -67,7 +69,7 @@ defineProps<{
   height: 50px;
   display: flex;
   align-items: center;
-  transition: 0.2s ease-in;
+  transition: 0.5s all;
   margin: 0px 2px 5px 5px;
   border-radius: 5px;
 
@@ -203,7 +205,7 @@ defineProps<{
 
   --actived-bg: #ececec;
 
-  &:hover,
+  // &:hover,
   &.actived {
     background-color: var(--actived-bg);
   }

@@ -54,10 +54,14 @@ const onContactModal = (data: { id: number; type: number }[]) => {
   }
 
   dialogueStore.ApiForwardRecord({
-    mode: forwardMode.value,
-    message_ids: msg_ids,
-    uids: user_ids,
-    gids: group_ids
+    talk_mode: dialogueStore.talk.talk_type,
+    to_from_id: dialogueStore.talk.receiver_id,
+    body: {
+      action: forwardMode.value,
+      msg_ids,
+      user_ids,
+      group_ids
+    }
   })
 
   isShowContactModal.value = false
@@ -105,24 +109,26 @@ const onContactModal = (data: { id: number; type: number }[]) => {
 </template>
 <style lang="less" scoped>
 .section {
-  height: 100%;
+  height: inherit;
   width: 100%;
   box-sizing: border-box;
+  user-select: none;
+  position: relative;
 
   .multi-title {
     width: 100%;
-    height: 80px;
-    line-height: 80px;
-    text-align: center;
+    height: 45px;
     color: #878484;
     font-size: 14px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
 
   .multi-groups {
     width: 100%;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
     justify-content: center;
 
     .btn-group {

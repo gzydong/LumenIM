@@ -2,23 +2,31 @@
 import { ref, computed, reactive } from 'vue'
 import { NIcon, NModal, NButton, NInput, NDropdown, NPopover } from 'naive-ui'
 import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
-import { ServeSearchUser } from '@/api/contact'
-import { ServeCreateContact } from '@/api/contact'
-import { ServeContactGroupList, ServeContactMoveGroup, ServeEditContactRemark } from '@/api/contact'
+import { toApi } from '@/api'
+import {
+  ServeSearchUser,
+  ServeCreateContact,
+  ServeContactGroupList,
+  ServeContactMoveGroup,
+  ServeEditContactRemark
+} from '@/api/contact'
 import { useTalkStore } from '@/store'
 import { useRouter } from 'vue-router'
+import { useInject } from '@/hooks'
 
+const { message } = useInject()
 const router = useRouter()
 const talkStore = useTalkStore()
 
-const emit = defineEmits(['update:show', 'update:uid', 'updateRemark'])
+const model = defineModel({ default: false })
+const emit = defineEmits(['update-remark'])
 
 const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false
+  userId: {
+    type: Number,
+    default: 0
   },
-  uid: {
+  loginUserId: {
     type: Number,
     default: 0
   }
@@ -26,166 +34,185 @@ const props = defineProps({
 
 const loading = ref(true)
 const isOpenFrom = ref(false)
-const state: any = reactive({
-  id: 0,
+const applyRemark = ref('')
+const friendRemark = ref('')
+const userInfo: any = reactive({
+  user_id: 0,
   avatar: '',
   gender: 0,
   mobile: '',
   motto: '',
   nickname: '',
-  remark: '',
   email: '',
-  status: 1,
-  text: ''
+  friend_info: {
+    group_id: 0,
+    is_friend: 'Y',
+    remark: ''
+  }
 })
 
 const editCardPopover: any = ref(false)
-const modelRemark = ref('')
-
 const options = ref<any>([])
 const groupName = computed(() => {
   const item = options.value.find((item: any) => {
-    return item.key == state.group_id
+    return item.key == userInfo.friend_info.group_id
   })
 
-  if (item) {
-    return item.label
-  }
-
-  return '未设置分组'
+  return item?.label || '未设置分组'
 })
 
-const onLoadData = () => {
-  ServeSearchUser({
-    user_id: props.uid
-  }).then(({ code, data }) => {
-    if (code == 200) {
-      Object.assign(state, data)
+const onLoadUser = async () => {
+  const { code, data } = await toApi(ServeSearchUser, { user_id: props.userId }, { loading })
 
-      modelRemark.value = state.remark
+  if (code != 200) return
 
-      loading.value = false
-    } else {
-      window['$message'].info('用户信息不存在', { showIcon: false })
-    }
+  Object.assign(userInfo, {
+    user_id: data.user_id,
+    avatar: data.avatar,
+    gender: data.gender,
+    mobile: data.mobile,
+    motto: data.motto,
+    nickname: data.nickname,
+    email: data.email,
+    friend_info: data.friend_info
   })
 
-  ServeContactGroupList().then((res) => {
-    if (res.code == 200) {
-      let items = res.data.items || []
-      options.value = []
-      for (const iter of items) {
-        options.value.push({ label: iter.name, key: iter.id })
-      }
-    }
-  })
+  friendRemark.value = data.friend_info.remark
+}
+
+const onLoadUserGroup = async () => {
+  const { code, data } = await toApi(ServeContactGroupList)
+  if (code != 200) return
+
+  let items = data.items || []
+
+  options.value = []
+  for (const iter of items) {
+    options.value.push({ label: iter.name, key: iter.id })
+  }
 }
 
 const onToTalk = () => {
-  talkStore.toTalk(1, props.uid, router)
-  emit('update:show', false)
+  talkStore.toTalk(1, props.userId, router)
+  model.value = false
 }
 
-const onJoinContact = () => {
-  if (!state.text.length) {
-    return window['$message'].info('备注信息不能为空')
+const onJoinContact = async () => {
+  if (!applyRemark.value.length) {
+    return message.info('备注信息不能为空')
   }
 
-  ServeCreateContact({
-    friend_id: props.uid,
-    remark: state.text
-  }).then((res) => {
-    if (res.code == 200) {
-      isOpenFrom.value = false
-      window['$message'].success('申请发送成功')
-    } else {
-      window['$message'].error(res.message)
+  await toApi(
+    ServeCreateContact,
+    {
+      user_id: props.userId,
+      remark: applyRemark.value
+    },
+    {
+      showMessageText: '申请发送成功',
+      onSuccess: () => {
+        isOpenFrom.value = false
+      }
     }
-  })
+  )
 }
 
-const onChangeRemark = () => {
-  ServeEditContactRemark({
-    friend_id: props.uid,
-    remark: modelRemark.value
-  }).then(({ code, message }) => {
-    if (code == 200) {
-      editCardPopover.value.setShow(false)
-      window['$message'].success('备注成功')
-      state.remark = modelRemark.value
+const onChangeRemark = async () => {
+  const onSuccess = () => {
+    editCardPopover.value.setShow(false)
+    userInfo.friend_info.remark = friendRemark.value
 
-      emit('updateRemark', {
-        user_id: props.uid,
-        remark: modelRemark.value
-      })
-    } else {
-      window['$message'].error(message)
+    emit('update-remark', {
+      user_id: props.userId,
+      remark: friendRemark.value
+    })
+  }
+
+  await toApi(
+    ServeEditContactRemark,
+    {
+      user_id: props.userId,
+      remark: friendRemark.value
+    },
+    {
+      showMessageText: '备注成功',
+      onSuccess
     }
-  })
+  )
 }
 
-const handleSelectGroup = (value) => {
-  ServeContactMoveGroup({
-    user_id: props.uid,
-    group_id: value
-  }).then(({ code, message }) => {
-    if (code == 200) {
-      state.group_id = value
-      window['$message'].success('分组修改成功')
-    } else {
-      window['$message'].error(message)
+const handleSelectGroup = async (value: Number) => {
+  await toApi(
+    ServeContactMoveGroup,
+    {
+      user_id: props.userId,
+      group_id: value
+    },
+    {
+      showMessageText: '分组修改成功',
+      onSuccess: () => {
+        userInfo.friend_info.group_id = value
+      }
     }
-  })
+  )
 }
 
 const reset = () => {
   loading.value = true
 
-  Object.assign(state, {
-    id: 0,
+  Object.assign(userInfo, {
+    user_id: 0,
     avatar: '',
     gender: 0,
     mobile: '',
     motto: '',
     nickname: '',
-    remark: '',
     email: '',
-    status: 1,
-    text: ''
+    friend_info: {
+      group_id: 0,
+      is_friend: 'Y',
+      remark: ''
+    }
   })
 
   isOpenFrom.value = false
 }
 
-const onUpdate = (value) => {
+const onUpdate = (value: boolean) => {
   if (!value) {
     setTimeout(reset, 100)
   }
 
-  emit('update:show', value)
+  model.value = value
 }
 
 const onAfterEnter = () => {
-  onLoadData()
+  onLoadUser()
+  onLoadUserGroup()
 }
 </script>
 
 <template>
-  <n-modal :show="show" :on-update:show="onUpdate" :on-after-enter="onAfterEnter">
-    <div class="section" v-loading="loading">
-      <section class="el-container container is-vertical">
+  <n-modal
+    :show="model"
+    transform-origin="mouse"
+    :on-update:show="onUpdate"
+    :on-after-enter="onAfterEnter"
+  >
+    <div class="section">
+      <section class="section el-container is-vertical height100">
         <header class="el-header header">
           <im-avatar
             class="avatar"
-            :size="100"
-            :src="state.avatar"
-            :username="state.remark || state.nickname"
+            :size="60"
+            :src="userInfo.avatar"
+            :username="userInfo.friend_info.remark || userInfo.nickname"
             :font-size="30"
           />
 
-          <div class="gender" v-show="state.gender > 0">
-            <n-icon v-if="state.gender == 1" :component="Male" color="#508afe" />
-            <n-icon v-if="state.gender == 2" :component="Female" color="#ff5722" />
+          <div class="gender" v-show="userInfo.gender > 0">
+            <n-icon v-if="userInfo.gender == 1" :component="Male" color="#ffffff" />
+            <n-icon v-if="userInfo.gender == 2" :component="Female" color="#ffffff" />
           </div>
 
           <div class="close" @click="onUpdate(false)">
@@ -193,36 +220,37 @@ const onAfterEnter = () => {
           </div>
 
           <div class="nickname text-ellipsis">
-            {{ state.remark || state.nickname || '未设置昵称' }}
+            {{ userInfo.friend_info.remark || userInfo.nickname || '--' }}
           </div>
         </header>
 
         <main class="el-main main me-scrollbar me-scrollbar-thumb">
           <div class="motto">
-            {{ state.motto || '编辑个签，展示我的独特态度。' }}
+            <span style="font-weight: 600">个性签名：</span
+            >{{ userInfo.motto || '编辑个签，展示我的独特态度。' }}
           </div>
 
           <div class="infos">
             <div class="info-item">
-              <span class="name">手机 :</span>
-              <span class="text">{{ state.mobile }}</span>
+              <span class="name">手机</span>
+              <span class="text">{{ userInfo.mobile }}</span>
             </div>
             <div class="info-item">
-              <span class="name">昵称 :</span>
-              <span class="text text-ellipsis">{{ state.nickname || '-' }} </span>
+              <span class="name">昵称</span>
+              <span class="text text-ellipsis">{{ userInfo.nickname || '-' }} </span>
             </div>
             <div class="info-item">
-              <span class="name">性别 :</span>
+              <span class="name">性别</span>
               <span class="text">{{
-                state.gender == 1 ? '男' : state.gender == 2 ? '女' : '未知'
+                userInfo.gender == 1 ? '男' : userInfo.gender == 2 ? '女' : '未知'
               }}</span>
             </div>
-            <div class="info-item" v-if="state.friend_status == 2">
-              <span class="name">备注 :</span>
+            <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+              <span class="name">备注</span>
               <n-popover trigger="click" placement="top-start" ref="editCardPopover">
                 <template #trigger>
                   <span class="text edit pointer text-ellipsis">
-                    {{ state.remark || '未设置' }}&nbsp;&nbsp;
+                    {{ userInfo.friend_info.remark || '--' }}&nbsp;&nbsp;
                   </span>
                 </template>
 
@@ -234,7 +262,7 @@ const onAfterEnter = () => {
                     placeholder="请填写备注"
                     :autofocus="true"
                     maxlength="10"
-                    v-model:value="modelRemark"
+                    v-model:value="friendRemark"
                     @keydown.enter="onChangeRemark"
                   />
                   <n-button
@@ -249,16 +277,16 @@ const onAfterEnter = () => {
               </n-popover>
             </div>
             <div class="info-item">
-              <span class="name">邮箱 :</span>
-              <span class="text">{{ state.email || '-' }}</span>
+              <span class="name">邮箱</span>
+              <span class="text">{{ userInfo.email || '--' }}</span>
             </div>
-            <div class="info-item" v-if="state.friend_status == 2">
-              <span class="name">分组 :</span>
+            <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+              <span class="name">分组</span>
               <n-dropdown
                 trigger="click"
                 placement="top-start"
-                :show-arrow="true"
-                :options="options"
+                show-arrow
+                :options
                 @select="handleSelectGroup"
               >
                 <span class="text edit pointer">{{ groupName }}</span>
@@ -267,7 +295,10 @@ const onAfterEnter = () => {
           </div>
         </main>
 
-        <footer v-if="state.friend_status == 2" class="el-footer footer bdr-t flex-center">
+        <footer
+          v-if="userInfo.friend_info.is_friend == 'Y'"
+          class="el-footer footer bdr-t flex-center"
+        >
           <n-button
             round
             block
@@ -283,12 +314,12 @@ const onAfterEnter = () => {
           </n-button>
         </footer>
 
-        <footer v-else-if="state.friend_status == 1" class="el-footer footer bdr-t flex-center">
+        <footer v-else-if="userId != loginUserId" class="el-footer footer bdr-t flex-center">
           <template v-if="isOpenFrom">
             <n-input
               type="text"
               placeholder="请填写申请备注"
-              v-model:value="state.text"
+              v-model:value="applyRemark"
               @keydown.enter="onJoinContact"
             />
 
@@ -317,18 +348,18 @@ const onAfterEnter = () => {
 <style lang="less" scoped>
 .section {
   position: relative;
-  width: 360px;
-  height: 600px;
+  width: 330px;
+  height: 540px;
   border-radius: 10px;
   overflow: hidden;
   background-color: var(--im-bg-color);
 
   .header {
     width: 100%;
-    height: 230px;
+    height: 160px;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to right, rgb(137, 104, 255), rgb(175, 152, 255));
+    background: #0084ff;
     display: flex;
     padding: 20px;
     position: relative;
@@ -338,7 +369,7 @@ const onAfterEnter = () => {
       width: 150px;
       height: 150px;
       content: '';
-      background: linear-gradient(to right, rgb(142, 110, 255), rgb(208, 195, 255));
+      background: linear-gradient(to right, #1890ff, #0084ff);
       position: absolute;
       z-index: 1;
       border-radius: 50%;
@@ -346,23 +377,36 @@ const onAfterEnter = () => {
       top: -25%;
     }
 
+    &::after {
+      width: 150px;
+      height: 150px;
+      content: '';
+      background: linear-gradient(to left, #1890ff, #0084ff);
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      left: -25%;
+      bottom: -20%;
+    }
+
     .nickname {
       position: absolute;
-      bottom: 20px;
+      bottom: 12px;
       width: 80%;
       height: 30px;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 30px;
       text-align: center;
       color: #ffffff;
+      font-weight: 600;
     }
 
     .gender {
       width: 20px;
       height: 20px;
       position: absolute;
-      right: 122px;
-      bottom: 65px;
+      right: 125px;
+      bottom: 45px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -383,7 +427,9 @@ const onAfterEnter = () => {
 
   .main {
     padding: 20px 30px;
-    max-height: 300px;
+    height: 300px;
+    overflow-y: auto;
+
     .motto {
       min-height: 26px;
       border-radius: 5px;
@@ -395,8 +441,9 @@ const onAfterEnter = () => {
       margin-bottom: 20px;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       position: relative;
+      overflow: hidden;
     }
   }
 
@@ -417,18 +464,13 @@ const onAfterEnter = () => {
     .name {
       width: 45px;
       flex-shrink: 0;
-      color: #625f5f;
+      font-size: 14px;
     }
 
     .text {
       flex: 1 auto;
       margin-left: 5px;
-    }
-
-    .edit {
-      text-decoration: underline;
-      text-decoration-style: solid;
-      text-underline-offset: 3px;
+      font-size: 13px;
     }
   }
 }
@@ -437,6 +479,14 @@ html[theme-mode='dark'] {
   .section {
     .header {
       background: #2c2c32;
+
+      &::before {
+        background: rgb(254 254 254 / 4%) !important;
+      }
+
+      &::after {
+        background: rgb(254 254 254 / 4%) !important;
+      }
     }
 
     .motto {

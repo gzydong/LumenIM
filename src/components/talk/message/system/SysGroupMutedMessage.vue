@@ -7,17 +7,15 @@ defineProps({
   data: Object
 })
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 </script>
 
 <template>
-  <div class="im-message-sys-text">
+  <div class="immsg-systext">
     <div class="sys-text">
-      <a @click="showUserInfoModal(extra.owner_id)">
-        {{ extra.owner_name }}
-      </a>
+      <a @click="toShowUserInfo(extra.owner_id)">{{ extra.owner_name }}</a>
 
-      <span>设置了全员禁言</span>
+      <span>已开启全员禁言</span>
     </div>
   </div>
 </template>

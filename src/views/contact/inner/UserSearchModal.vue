@@ -2,9 +2,10 @@
 import { computed, ref, inject } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeSearchContact } from '@/api/contact'
+import { toApi } from '@/api'
 import { useInject } from '@/hooks'
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 
 const emit = defineEmits(['update:show'])
 
@@ -22,20 +23,22 @@ const onShowError = (isBool) => {
   }
 }
 
-const onSubmit = () => {
-  if (!keyword.value.length) {
-    return
+const onSubmit = async () => {
+  if (!keyword.value.length) return
+
+  const { code, data } = await toApi(
+    ServeSearchContact,
+    { mobile: keyword.value },
+    {
+      isShowError: false
+    }
+  )
+
+  if (code !== 200) {
+    return onShowError(true)
   }
 
-  ServeSearchContact({
-    mobile: keyword.value
-  }).then((res) => {
-    onShowError(res.code != 200)
-
-    if (res.code == 200) {
-      showUserInfoModal(res.data.id)
-    }
-  })
+  toShowUserInfo(data.user_id)
 }
 
 // 是否可提交
@@ -77,7 +80,13 @@ const onShowUpdate = () => {
     <template #footer>
       <div style="width: 100%; text-align: right">
         <n-button type="tertiary" @click="onShowUpdate"> 取消 </n-button>
-        <n-button type="primary" @click="onSubmit" class="mt-l15" :disabled="isCanSubmit">
+        <n-button
+          type="primary"
+          text-color="#ffffff"
+          @click="onSubmit"
+          class="mt-l15"
+          :disabled="isCanSubmit"
+        >
           查询
         </n-button>
       </div>

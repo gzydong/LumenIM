@@ -3,9 +3,9 @@ import { computed } from 'vue'
 import { useNoteStore } from '@/store'
 import { ServeUpdateArticleTag } from '@/api/article'
 import { Close } from '@icon-park/vue-next'
-import { useUtil } from '@/hooks/useUtil'
+import { useInject } from '@/hooks'
 
-const { useMessage } = useUtil()
+const { message } = useInject()
 const store = useNoteStore()
 
 let loading = false
@@ -17,7 +17,7 @@ interface TagItem {
 }
 
 const tags = computed((): TagItem[] => {
-  let ids = store.view.detail.tags.map((item) => item.id)
+  let ids = store.view.detail.tag_ids.map((item) => item.id)
 
   return store.tags.map((tag) => {
     return {
@@ -28,16 +28,16 @@ const tags = computed((): TagItem[] => {
   })
 })
 
-const onSave = (ids: number[] = []) => {
+const onSave = (tagIds: number[] = []) => {
   loading = true
 
   ServeUpdateArticleTag({
-    article_id: store.view.detail.id,
-    tags: ids
+    article_id: store.view.detail.article_id,
+    tag_ids: tagIds
   })
     .then((res) => {
       if (res.code == 200) {
-        store.view.detail.tags = ids.map((id) => {
+        store.view.detail.tag_ids = tagIds.map((id) => {
           return { id }
         })
       }
@@ -59,7 +59,7 @@ const onActive = (item: TagItem) => {
   })
 
   if (!item.is_check && items.length > 5) {
-    return useMessage.info('标签不能超过5个')
+    return message.info('标签不能超过5个')
   }
 
   onSave(items.map((v) => v.id))

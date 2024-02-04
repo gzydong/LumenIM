@@ -78,3 +78,18 @@ export function fileSuffix(fileName) {
 
   return ext[ext.length - 1]
 }
+
+export function downloadBlobFile(fileName, content) {
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+
+  // 创建一个隐藏的可下载链接
+  const downloadLink = document.createElement('a')
+  downloadLink.href = URL.createObjectURL(blob)
+  downloadLink.download = fileName
+
+  // 触发点击事件
+  downloadLink.click()
+
+  // 清理URL
+  URL.revokeObjectURL(downloadLink.href)
+}

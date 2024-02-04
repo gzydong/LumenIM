@@ -74,7 +74,7 @@ class Revoke extends Base {
     })
 
     // 判断当前是否正在和好友对话
-    if (!this.isTalk(this.talk_type, this.receiver_id, this.sender_id)) {
+    if (!this.isTalk(this.talk_type, this.receiver_id)) {
       return
     }
 

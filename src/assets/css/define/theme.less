@@ -48,13 +48,12 @@ html[theme-mode='dark'] {
   --im-scrollbar-thumb: #625f5f;
 
   // message
-  --im-message-bg-color: #28282c;
+  --im-message-bg-color: #363636;
   --im-message-border-color: rgb(255 255 255 / 9%);
-  --im-message-left-bg-color: #2c2c31;
+  --im-message-left-bg-color: #474747;
   --im-message-left-text-color: var(--im-text-color);
-  --im-message-right-bg-color: #2f2f38;
-  --im-message-right-bg-color: #35353f;
-  --im-message-right-text-color: var(--im-text-color);
+  --im-message-right-bg-color: #28b560;
+  --im-message-right-text-color: #333;
 
   ::selection {
     background: #d3d3d3;
@@ -72,4 +71,7 @@ html[theme-mode='dark'] {
 
 body {
   background-color: var(--im-bg-color);
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease; /* 平滑过渡效果 */
 }

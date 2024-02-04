@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import '@icon-park/vue-next/styles/index.css'
+import { onMounted } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
 import {
   NNotificationProvider,
@@ -17,12 +18,11 @@ import { bus } from '@/utils/event-bus'
 import { isLoggedIn } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
-import { ContactConst } from '@/constant/event-bus'
+import { ContactConst } from '@/constant/event-bus.ts'
 import {
   useProvideUserModal,
   useThemeMode,
   useVisibilityChange,
-  useAccessPrompt,
   useUnreadMessage,
   useConnectStatus,
   useClickEvent
@@ -42,7 +42,7 @@ const { getDarkTheme, getThemeOverride } = useThemeMode()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 
-const onChangeRemark = (value: string) => {
+const onChangeRemark = (value: { user_id: number; remark: string }) => {
   bus.emit(ContactConst.UpdateRemark, value)
   talkStore.setRemark(value)
 }
@@ -54,12 +54,14 @@ const init = () => {
   userStore.loadSetting()
 }
 
-init()
-useVisibilityChange()
-useAccessPrompt()
-useUnreadMessage()
-useConnectStatus()
-useClickEvent()
+onMounted(() => {
+  init()
+  useVisibilityChange()
+  // useAccessPrompt()
+  useUnreadMessage()
+  useConnectStatus()
+  useClickEvent()
+})
 </script>
 
 <template>
@@ -92,8 +94,9 @@ useClickEvent()
       <router-view />
 
       <UserCardModal
-        v-model:show="isShowUser"
-        v-model:uid="showUserId"
+        v-model="isShowUser"
+        :user-id="showUserId"
+        :login-user-id="userStore.uid"
         @update-remark="onChangeRemark"
       />
     </n-layout-content>

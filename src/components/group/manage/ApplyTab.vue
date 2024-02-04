@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, h, onMounted } from 'vue'
 import { NSpace, NInput } from 'naive-ui'
-import { Search, CheckSmall, Close, Redo } from '@icon-park/vue-next'
+import { Search, CheckSmall, Close } from '@icon-park/vue-next'
 import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
+import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
 import { useInject } from '@/hooks'
 
@@ -19,7 +20,7 @@ interface Item {
 const emit = defineEmits(['close'])
 
 const props = defineProps({
-  id: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -28,7 +29,7 @@ const props = defineProps({
 const keywords = ref('')
 const batchDelete = ref(false)
 const items = ref<Item[]>([])
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo, dialog } = useInject()
 
 const filterSearch = computed(() => {
   if (!keywords.value.length) {
@@ -40,19 +41,18 @@ const filterSearch = computed(() => {
   })
 })
 
-const onLoadData = () => {
-  ServeGetGroupApplyList({
-    group_id: props.id
-  }).then((res) => {
-    if (res.code == 200) {
-      let data = res.data.items || []
-      items.value = data
-    }
+const onLoadData = async () => {
+  const { code, data } = await toApi(ServeGetGroupApplyList, {
+    group_id: props.groupId
   })
+
+  if (code == 200) {
+    items.value = data.items || []
+  }
 }
 
 const onUserInfo = (item: Item) => {
-  showUserInfoModal(item.user_id)
+  toShowUserInfo(item.user_id)
 }
 
 const onRowClick = (item: Item) => {
@@ -61,26 +61,22 @@ const onRowClick = (item: Item) => {
   }
 }
 
-const onAgree = throttle((item: Item) => {
-  let loading = window['$message'].loading('请稍等，正在处理')
-
-  ServeAgreeGroupApply({
-    apply_id: item.id
-  }).then((res) => {
-    loading.destroy()
-    if (res.code == 200) {
-      window['$message'].success('已同意')
-    } else {
-      window['$message'].info(res.message)
+const onAgree = throttle(async (item: Item) => {
+  await toApi(
+    ServeAgreeGroupApply,
+    {
+      apply_id: item.id
+    },
+    {
+      showMessageText: '已同意',
+      onSuccess: onLoadData
     }
-
-    onLoadData()
-  })
+  )
 }, 1000)
 
 const onDelete = (item: Item) => {
   let remark = ''
-  let dialog = window['$dialog'].create({
+  const modal = dialog.create({
     title: '拒绝入群申请',
     content: () => {
       return h(NInput, {
@@ -93,25 +89,24 @@ const onDelete = (item: Item) => {
     },
     negativeText: '取消',
     positiveText: '提交',
-    onPositiveClick: () => {
+    onPositiveClick: async () => {
       if (!remark.length) return false
 
-      dialog.loading = true
+      modal.loading = true
 
-      ServeDeleteGroupApply({
-        apply_id: item.id,
-        remark: remark
-      }).then((res) => {
-        dialog.destroy()
-
-        if (res.code == 200) {
-          window['$message'].success('已拒绝')
-        } else {
-          window['$message'].info(res.message)
+      await toApi(
+        ServeDeleteGroupApply,
+        {
+          apply_id: item.id,
+          remark: remark
+        },
+        {
+          showMessageText: '已拒绝',
+          onSuccess: onLoadData
         }
+      )
 
-        onLoadData()
-      })
+      modal.destroy()
 
       return false
     }
@@ -139,20 +134,12 @@ onMounted(() => {
               <n-icon :component="Search" />
             </template>
           </n-input>
-
-          <n-button circle @click="onLoadData">
-            <template #icon> <n-icon :component="Redo" /> </template>
-          </n-button>
         </n-space>
       </div>
     </header>
 
     <main v-if="filterSearch.length === 0" class="el-main main flex-center">
-      <n-empty size="200" description="暂无相关数据">
-        <template #icon>
-          <img src="@/assets/image/no-data.svg" alt="" />
-        </template>
-      </n-empty>
+      <n-empty description="暂无相关数据" />
     </main>
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">

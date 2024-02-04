@@ -9,7 +9,8 @@ export const useSettingsStore = defineStore('settings', {
       isLeaveWeb: false, // 是否离开网页
       isNotify: storage.get('isNotify', true), // 是否同意浏览器通知
       isFullScreen: storage.get('isFullScreen', true), // 是否客户端全屏
-      darkTheme: storage.get('darkTheme', false)
+      themeMode: storage.get('themeMode', 'light') as string,
+      currentThemeMode: storage.get('themeMode', 'light') as string
     }
   },
   actions: {
@@ -25,9 +26,9 @@ export const useSettingsStore = defineStore('settings', {
       this.isFullScreen = value
       storage.set('isFullScreen', value, null)
     },
-    setDarkTheme(value: boolean) {
-      this.darkTheme = value
-      storage.set('darkTheme', value, null)
+    setThemeMode(value: string) {
+      this.themeMode = value
+      storage.set('themeMode', value, null)
     },
     setNotify(value: boolean) {
       this.isNotify = value

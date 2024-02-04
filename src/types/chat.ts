@@ -13,8 +13,8 @@ export interface ISessionLastMessage {
 export interface ISession {
   id: number // 会话id
   index_name: string // 索引名称
-  talk_type: number // 聊天类型
-  receiver_id: number // 接收者id
+  talk_mode: number // 聊天类型
+  to_from_id: number // 接收者id
   name: string // 昵称
   avatar: string // 头像
   remark: string // 备注
@@ -24,30 +24,25 @@ export interface ISession {
   is_top: number // 置顶
   unread_num: number // 未读消息数
   updated_at: string // 最后发送时间
-  content?: string // 消息内容
-  last_message?: ISessionLastMessage
+  msg_text?: string // 消息内容
+  // last_message?: ISessionLastMessage
   draft_text?: string // 草稿文本
 }
 
 // 消息记录
 export interface ITalkRecord {
-  msg_id: string
-  sequence: number
-  talk_type: number
-  msg_type: number
-  user_id: number
-  receiver_id: number
-  nickname: string
-  avatar: string
-  is_revoke: number
-  is_mark: number
-  is_read: number
-  content: string
-  created_at: string
-  extra: any
-  isCheck: boolean
-  send_status: number
-  float: string
+  msg_id: string // 消息ID
+  sequence: number // 消息时序ID（消息排序）
+  msg_type: number // 消息类型
+  user_id: number // 发送者id
+  nickname: string // 昵称
+  avatar: string // 头像
+  is_revoked: number // 是否撤回
+  send_time: string // 发送时间
+  extra: any // 消息内容
+  quote: any // 消息内容
+  is_check: boolean // 是否已读
+  float: string // 悬浮窗(right,left)
 }
 
 export interface ITalkRecordExtraText {
@@ -70,12 +65,12 @@ export interface ITalkRecordExtraFile {
 export interface ITalkRecordExtraForward {
   msg_ids: number[]
   receiver_id: number
-  records: {
-    nickname: string
-    text: string
-  }[]
   talk_type: number
   user_id: number
+  records: {
+    nickname: string
+    content: string
+  }[]
 }
 
 export interface ITalkRecordExtraGroupNotice {
@@ -122,4 +117,27 @@ export interface ITalkRecordExtraImage {
   url: string
   width: number
   height: number
+}
+
+export interface ITalkRecordExtraVote {
+  vote_id: number
+}
+
+export interface IVoteDetail {
+  answer_mode: number
+  answer_num: number
+  answer_options: {
+    key: string
+    value: string
+    progress: number
+    num: number
+    is_checked: boolean
+  }[]
+  answered_num: number
+  answered_users: string[]
+  is_anonymous: number
+  title: string
+  vote_id: number
+  is_checked: boolean
+  is_submit: boolean
 }

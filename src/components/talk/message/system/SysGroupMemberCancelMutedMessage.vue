@@ -7,20 +7,20 @@ defineProps({
   data: Object
 })
 
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo } = useInject()
 </script>
 
 <template>
-  <div class="im-message-sys-text">
+  <div class="immsg-systext">
     <div class="sys-text">
-      <a @click="showUserInfoModal(extra.owner_id)">
+      <a @click="toShowUserInfo(extra.owner_id)">
         {{ extra.owner_name }}
       </a>
 
-      <span>解除了</span>
+      <span>已关闭</span>
 
       <template v-for="(user, index) in extra.members" :key="index">
-        <a @click="showUserInfoModal(user.user_id)">{{ user.nickname }}</a>
+        <a @click="toShowUserInfo(user.user_id)">{{ user.nickname }}</a>
         <em v-show="index < extra.members.length - 1">、</em>
       </template>
 

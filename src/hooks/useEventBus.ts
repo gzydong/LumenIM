@@ -7,19 +7,19 @@ interface Event {
 }
 
 export const useEventBus = (items: Event[]) => {
-  if (!items.length) return
+  if (items.length) {
+    onMounted(() => {
+      for (const item of items) {
+        bus.subscribe(item.name, item.event)
+      }
+    })
 
-  onMounted(() => {
-    for (const item of items) {
-      bus.subscribe(item.name, item.event)
-    }
-  })
-
-  onUnmounted(() => {
-    for (const item of items) {
-      bus.unsubscribe(item.name, item.event)
-    }
-  })
+    onUnmounted(() => {
+      for (const item of items) {
+        bus.unsubscribe(item.name, item.event)
+      }
+    })
+  }
 
   const emit = (channel: string, data: any) => {
     bus.emit(channel, data)

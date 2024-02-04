@@ -20,11 +20,18 @@ export default defineConfig(({ mode }) => {
     },
     root: process.cwd(),
     assetsInclude: ['./src/assets'],
-    plugins: [vue(), vueJsx({}), compressPlugin()],
+    plugins: [
+      vue(),
+      vueJsx({}),
+      compressPlugin({
+        threshold: 1024 * 1024 * 1
+      })
+    ],
     define: {
       __APP_ENV__: env.APP_ENV
     },
     build: {
+      emptyOutDir: true,
       chunkSizeWarningLimit: 1000
     }
   }

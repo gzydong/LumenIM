@@ -5,6 +5,7 @@ interface Menu {
   name: string
   path: string
   icon: any
+  iconBgColor?: string
   show?: boolean
   size?: string
   tips?: string
@@ -30,7 +31,7 @@ defineProps<{
             }"
           >
             <div class="icon">
-              <n-icon :size="menu.size || 15" :component="markRaw(menu.icon)" />
+              <n-icon :size="menu.size || 16" :component="markRaw(menu.icon)" />
             </div>
 
             <div class="name">
@@ -73,14 +74,15 @@ defineProps<{
     }
 
     .menu {
-      height: 35px;
+      height: 36px;
       padding: 0 5px;
-      font-size: 13px;
+      font-size: 14px;
       border-radius: 5px;
-      margin: 8px 2px;
+      margin: 6px 0px;
       display: flex;
       align-items: center;
       color: var(--im-text-color);
+      padding-left: 10px;
 
       > div {
         height: 100%;
@@ -90,13 +92,18 @@ defineProps<{
       }
 
       .icon {
-        width: 30px;
+        width: 26px;
+        height: 26px;
+
+        // border-radius: 5px;
+        // background-color: #1890ff;
+        // color: #ffffff;
       }
 
       .name {
         flex: auto;
         justify-content: flex-start;
-        padding-left: 5px;
+        padding-left: 6px;
       }
 
       .tips {
@@ -108,10 +115,9 @@ defineProps<{
         }
       }
 
+      &:hover,
       &.selectd {
         background-color: var(--im-hover-bg-color);
-        font-weight: 400;
-        color: var(--im-primary-color);
       }
     }
   }

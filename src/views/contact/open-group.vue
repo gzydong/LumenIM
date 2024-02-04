@@ -5,9 +5,10 @@ import { Search, AddOne } from '@icon-park/vue-next'
 import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'
 import { ServeGroupOvertList } from '@/api/group'
+import { toApi } from '@/api'
 import { debounce } from '@/utils/common'
 
-const apply = reactive({
+const model = reactive({
   isShow: false,
   groupId: 0
 })
@@ -15,37 +16,27 @@ const apply = reactive({
 const search = reactive({
   page: 1,
   name: '',
-  next: false,
-  loading: false
+  next: false
 })
 
 const items = ref<any[]>([])
 
-const onLoadData = () => {
-  if (search.loading) return
-
-  search.loading = true
-
-  ServeGroupOvertList({
+const onLoadData = async () => {
+  const { code, data } = await toApi(ServeGroupOvertList, {
     page: search.page,
     name: search.name
   })
-    .then((res) => {
-      if (res.code == 200) {
-        let list = res.data.items || []
 
-        if (search.page == 1) {
-          items.value = list
-        } else {
-          items.value.push(...list)
-        }
+  if (code != 200) return
 
-        search.next = res.data.next
-      }
-    })
-    .finally(() => {
-      search.loading = false
-    })
+  const list = data.items || []
+  if (search.page == 1) {
+    items.value = list
+  } else {
+    items.value.push(...list)
+  }
+
+  search.next = data.next
 }
 
 const onLoadMore = () => {
@@ -61,8 +52,8 @@ const onSearchInput = debounce((value: string) => {
 }, 300)
 
 const onJoin = (item: any) => {
-  apply.isShow = true
-  apply.groupId = item.id
+  model.isShow = true
+  model.groupId = item.group_id
 }
 
 onLoadData()
@@ -89,12 +80,10 @@ onLoadData()
           </div>
         </header>
 
-        <main class="el-main flex-center" v-if="items.length == 0">
-          <n-empty size="200" description="暂无相关数据">
-            <template #icon>
-              <img src="@/assets/image/no-data.svg" alt="" />
-            </template>
-          </n-empty>
+        <main class="el-main" v-if="items.length == 0">
+          <div style="min-height: 400px" class="flex-center">
+            <n-empty description="暂无相关数据" />
+          </div>
         </main>
 
         <main class="el-main me-scrollbar me-scrollbar-thumb pd-10" v-else>
@@ -105,7 +94,7 @@ onLoadData()
           <div class="cards">
             <GroupCard
               v-for="item in items"
-              :key="item.id"
+              :key="item.group_id"
               :avatar="item.avatar"
               :username="item.name"
               :gender="item.gender"
@@ -125,7 +114,7 @@ onLoadData()
     </main>
   </section>
 
-  <GroupApply v-if="apply.isShow" :gid="apply.groupId" @close="apply.isShow = false" />
+  <GroupApply v-if="model.isShow" :group-id="model.groupId" @close="model.isShow = false" />
 </template>
 
 <style lang="less" scoped>

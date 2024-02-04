@@ -2,10 +2,11 @@
 import { ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeCreateGroupApply } from '@/api/group'
+import { toApi } from '@/api'
 
 const remark = ref('')
 const props = defineProps({
-  gid: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -20,26 +21,17 @@ const onMaskClick = () => {
   emit('close')
 }
 
-const onSubmit = () => {
-  loading.value = true
+const onSubmit = async () => {
+  const { code } = await toApi(
+    ServeCreateGroupApply,
+    {
+      group_id: props.groupId,
+      remark: remark.value
+    },
+    { loading, showMessageText: '入群申请提交成功...' }
+  )
 
-  let resp = ServeCreateGroupApply({
-    group_id: props.gid,
-    remark: remark.value
-  })
-
-  resp.then((res) => {
-    if (res.code == 200) {
-      window['$message'].success('入群申请提交成功...')
-      onMaskClick()
-    } else {
-      window['$message'].warning(res.message)
-    }
-  })
-
-  resp.finally(() => {
-    loading.value = false
-  })
+  if (code == 200) onMaskClick()
 }
 </script>
 

@@ -9,11 +9,12 @@ const props = defineProps<{
   extra: ITalkRecordExtraMixed
   data: ITalkRecord
   maxWidth?: Boolean
+  talkMode?: Number
 }>()
 
 const float = props.data.float
 
-const img = (src, width = 200) => {
+const img = (src: string, width = 200) => {
   const info = getImageInfo(src)
 
   if (info.width == 0 || info.height == 0) {
@@ -46,7 +47,7 @@ const img = (src, width = 200) => {
     }"
   >
     <pre>
-      <template v-for="(item) in extra.items" :key="item.id">
+      <template v-for="(item,index) in extra.items"  :key="index">
    
         <template v-if="item.type === 1">
                <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />

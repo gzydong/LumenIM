@@ -4,9 +4,10 @@ import { NInput } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
 import { ServeGetGroupApplyAll, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
+import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
 import { parseTime } from '@/utils/datetime'
-import { useUtil, useInject } from '@/hooks'
+import { useInject } from '@/hooks'
 
 interface Item {
   id: number
@@ -19,48 +20,62 @@ interface Item {
   group_name: string
 }
 
-const { useMessage, useDialog } = useUtil()
-const { showUserInfoModal } = useInject()
+const { toShowUserInfo, message, dialog } = useInject()
 const userStore = useUserStore()
 const items = ref<Item[]>([])
 const loading = ref(true)
 
-const onLoadData = () => {
-  ServeGetGroupApplyAll()
-    .then((res) => {
-      if (res.code == 200) {
-        items.value = res.data.items || []
-      }
-    })
-    .finally(() => {
-      loading.value = false
-    })
+const onLoadData = async () => {
+  const { code, data } = await toApi(ServeGetGroupApplyAll, {}, { loading })
+
+  if (code != 200) return
+
+  items.value = data.items || []
 }
 
 const onInfo = (item: Item) => {
-  showUserInfoModal(item.user_id)
+  toShowUserInfo(item.user_id)
 }
 
-const onAgree = throttle((item: Item) => {
-  let loading = useMessage.loading('请稍等，正在处理')
+const onAgree = throttle(async (item: Item) => {
+  let loading = message.loading('请稍等，正在处理')
 
-  ServeAgreeGroupApply({
-    apply_id: item.id
-  }).then((res) => {
-    loading.destroy()
-    if (res.code == 200) {
-      useMessage.success('已同意')
-    } else {
-      useMessage.info(res.message)
+  await toApi(
+    ServeAgreeGroupApply,
+    {
+      apply_id: item.id
+    },
+    {
+      showMessageText: '已同意',
+      onSuccess: onLoadData
     }
+  )
 
-    onLoadData()
-  })
+  loading.destroy()
 }, 1000)
 
 const onDelete = (item: Item) => {
   let remark = ''
-  let dialog = useDialog.create({
+
+  const onPositiveClick = async () => {
+    if (!remark.length) return false
+
+    await toApi(
+      ServeDeleteGroupApply,
+      {
+        apply_id: item.id,
+        remark: remark
+      },
+      {
+        showMessageText: '已拒绝',
+        onSuccess: onLoadData
+      }
+    )
+
+    return false
+  }
+
+  dialog.create({
     title: '拒绝入群申请',
     content: () => {
       return h(NInput, {
@@ -73,28 +88,7 @@ const onDelete = (item: Item) => {
     },
     negativeText: '取消',
     positiveText: '提交',
-    onPositiveClick: () => {
-      if (!remark.length) return false
-
-      dialog.loading = true
-
-      ServeDeleteGroupApply({
-        apply_id: item.id,
-        remark: remark
-      }).then((res) => {
-        dialog.destroy()
-
-        if (res.code == 200) {
-          useMessage.success('已拒绝')
-        } else {
-          useMessage.info(res.message)
-        }
-
-        onLoadData()
-      })
-
-      return false
-    }
+    onPositiveClick
   })
 }
 
@@ -106,17 +100,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <section v-loading="loading" style="min-height: 300px">
-    <n-empty
-      v-show="items.length == 0"
-      style="margin-top: 10%"
-      size="200"
-      description="暂无相关数据"
-    >
-      <template #icon>
-        <img src="@/assets/image/no-data.svg" alt="" />
-      </template>
-    </n-empty>
+  <section
+    v-loading="loading"
+    style="min-height: 400px"
+    :class="{
+      'flex-center': items.length == 0
+    }"
+  >
+    <n-empty v-show="items.length == 0" description="暂无相关数据"> </n-empty>
 
     <div class="item" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">

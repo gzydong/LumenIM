@@ -1,4 +1,4 @@
-import { post, get, upload } from '@/utils/request'
+import { post, get, upload } from './request'
 import { getAccessToken } from '@/utils/auth'
 
 // -------- 笔记相关 --------
@@ -20,17 +20,21 @@ export const ServeDeleteArticle = (data) => {
 
 // 永久删除笔记回收站的笔记
 export const ServeForeverDeleteArticle = (data) => {
-  return post('/api/v1/note/article/forever/delete', data)
+  return post('/api/v1/note/article/forever-delete', data)
+}
+
+export const ServeArticleRecycleList = (data) => {
+  return post('/api/v1/note/article/recycle-list', data)
 }
 
 // 恢复笔记服务接口
 export const ServeRecoverArticle = (data) => {
-  return post('/api/v1/note/article/recover', data)
+  return post('/api/v1/note/article/recover-delete', data)
 }
 
 // 设置标记星号笔记服务接口
 export const ServeSetAsteriskArticle = (data) => {
-  return post('/api/v1/note/article/asterisk', data)
+  return post('/api/v1/note/article/collect', data)
 }
 
 // 查询用户文集分类服务接口
@@ -43,36 +47,36 @@ export const ServeMoveArticle = (data) => {
   return post('/api/v1/note/article/move', data)
 }
 
-// 笔记图片上传服务接口
-export const ServeUploadArticleImg = (data) => {
-  return upload('/api/v1/note/article/upload/image', data)
-}
-
 // 更新笔记标签服务接口
 export const ServeUpdateArticleTag = (data) => {
-  return post('/api/v1/note/article/tag', data)
+  return post('/api/v1/note/article/update-tag', data)
 }
 
 // -------- 笔记分类相关 --------
 
 // 查询用户文集分类服务接口
 export const ServeGetArticleClass = (data) => {
-  return get('/api/v1/note/class/list', data)
+  return get('/api/v1/note/classify/list', data)
 }
 
 // 添加或编辑文集分类服务接口
-export const ServeEditArticleClass = (data) => {
-  return post('/api/v1/note/class/editor', data)
+export const ServeCreateArticleClass = (data) => {
+  return post('/api/v1/note/classify/create', data)
+}
+
+// 添加或编辑文集分类服务接口
+export const ServeUpdateArticleClass = (data) => {
+  return post('/api/v1/note/classify/update', data)
 }
 
 // 删除笔记分类服务接口
 export const ServeDeleteArticleClass = (data) => {
-  return post('/api/v1/note/class/delete', data)
+  return post('/api/v1/note/classify/delete', data)
 }
 
 // 笔记分类排序服务接口
 export const ServeArticleClassSort = (data) => {
-  return post('/api/v1/note/class/sort', data)
+  return post('/api/v1/note/classify/sort', data)
 }
 
 // 合并笔记分类服务接口
@@ -88,8 +92,12 @@ export const ServeGetArticleTag = (data) => {
 }
 
 // 添加或编辑笔记标签服务接口
-export const ServeEditArticleTag = (data) => {
-  return post('/api/v1/note/tag/editor', data)
+export const ServeCreateNoteTag = (data) => {
+  return post('/api/v1/note/tag/create', data)
+}
+
+export const ServeUpdateNoteTag = (data) => {
+  return post('/api/v1/note/tag/update', data)
 }
 
 // 删除笔记标签服务接口
@@ -111,7 +119,7 @@ export const ServeDeleteArticleAnnex = (data) => {
 
 // 永久删除笔记附件回收站文件
 export const ServeForeverDeleteAnnex = (data) => {
-  return post('/api/v1/note/annex/forever/delete', data)
+  return post('/api/v1/note/annex/forever-delete', data)
 }
 
 // 恢复笔记附件服务接口
@@ -121,7 +129,7 @@ export const ServeRecoverArticleAnnex = (data) => {
 
 // 笔记附件回收站列表服务接口
 export const ServeGetRecoverAnnexList = () => {
-  return get('/api/v1/note/annex/recover/list')
+  return get('/api/v1/note/annex/recycle-list')
 }
 
 // 下载笔记附件服务接口

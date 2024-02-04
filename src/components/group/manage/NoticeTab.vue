@@ -7,7 +7,7 @@ import { ServeGetGroupNotices } from '@/api/group'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
-  id: {
+  groupId: {
     type: Number,
     default: 0
   }
@@ -53,7 +53,7 @@ const filterSearch = computed(() => {
 
 const onLoadData = () => {
   ServeGetGroupNotices({
-    group_id: props.id
+    group_id: props.groupId
   }).then((res) => {
     if (res.code == 200) {
       items.value = res.data.items || []
@@ -72,7 +72,7 @@ const onRowClick = (item: any) => {
     console.log(item)
   } else {
     editor.id = item.id
-    editor.gid = props.id
+    editor.gid = props.groupId
     editor.title = item.title
     editor.content = item.content
     editor.isShow = true
@@ -81,7 +81,7 @@ const onRowClick = (item: any) => {
 
 const onAdd = () => {
   editor.id = 0
-  editor.gid = props.id
+  editor.gid = props.groupId
   editor.title = ''
   editor.content = ''
   editor.isShow = true
@@ -132,7 +132,7 @@ onMounted(() => {
     </header>
 
     <main v-if="filterSearch.length === 0" class="el-main main flex-center">
-      <n-empty size="200" description="暂无相关数据">
+      <n-empty description="暂无相关数据">
         <template #icon>
           <img src="@/assets/image/no-data.svg" />
         </template>
@@ -174,7 +174,7 @@ onMounted(() => {
   <NoticeEditor
     v-if="editor.isShow"
     :id="editor.id"
-    :gid="editor.gid"
+    :group-id="editor.gid"
     :title="editor.title"
     :content="editor.content"
     @success="onEditorSuccess"

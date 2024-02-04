@@ -21,17 +21,9 @@ const menus = reactive([
     submenus: []
   },
   {
-    name: '笔记分类',
+    name: '我的分类',
     indexName: '2-1',
     isShowSub: true,
-    isShowCount: true,
-    isSubNode: true,
-    submenus: []
-  },
-  {
-    name: '笔记标签',
-    indexName: '3-0',
-    isShowSub: false,
     isShowCount: true,
     isSubNode: true,
     submenus: []
@@ -70,30 +62,6 @@ const loadWatchClassMenu = () => {
   )
 }
 
-const loadWatchTagsMenu = () => {
-  watch(
-    () => store.tags,
-    () => {
-      let items = []
-
-      for (const item of store.tags) {
-        items.push({
-          id: item.id,
-          name: item.tag_name,
-          count: item.count,
-          isEdit: false,
-          indexName: `3-${item.id}`
-        })
-      }
-
-      menus[3].submenus = items
-    },
-    {
-      deep: true
-    }
-  )
-}
-
 const getCalssId = () => {
   let str = activedMenu.value
 
@@ -113,10 +81,10 @@ const onMenuLevel1Event = (menu, index) => {
 
     switch (index) {
       case 0:
-        store.loadNoteList({ page: 1, find_type: 1 })
+        store.loadNoteList({ find_type: 1 })
         break
       case 1:
-        store.loadNoteList({ page: 1, find_type: 2 })
+        store.loadNoteList({ find_type: 2 })
         break
     }
   }
@@ -130,10 +98,7 @@ const onMenuLevel2Event = (submenu, index) => {
 
   if (index === 2) {
     // 笔记分类
-    store.loadNoteList({ page: 1, find_type: 3, cid: submenu.id })
-  } else if (index === 3) {
-    // 标签分类
-    store.loadNoteList({ page: 1, find_type: 4, cid: submenu.id })
+    store.loadNoteList({ find_type: 3, classify_id: submenu.id })
   }
 
   activedMenu.value = submenu.indexName
@@ -216,8 +181,6 @@ const onContextMenuHandle = (value) => {
   } else if (value == 'delete') {
     if (dropdownMenu.item.index == 2) {
       store.deleteClass(submenu.id)
-    } else if (dropdownMenu.item.index == 3) {
-      store.deleteTag(submenu.id)
     }
   }
 
@@ -226,13 +189,11 @@ const onContextMenuHandle = (value) => {
 
 const onInit = () => {
   store.loadClass()
-  store.loadTags()
   store.loadNoteList({}, true)
 }
 
 onInit()
 loadWatchClassMenu()
-loadWatchTagsMenu()
 </script>
 
 <template>
@@ -247,6 +208,7 @@ loadWatchTagsMenu()
           }
         "
         class="btn-add"
+        text-color="#ffffff"
       >
         + 新建笔记
       </n-button>
@@ -261,11 +223,11 @@ loadWatchTagsMenu()
           {
             label: '创建分类',
             key: 'class'
-          },
-          {
-            label: '创建标签',
-            key: 'tag'
           }
+          // {
+          //   label: '创建标签',
+          //   key: 'tag'
+          // }
         ]"
       >
         <n-button circle type="primary" ghost>
@@ -382,18 +344,28 @@ loadWatchTagsMenu()
 
   .menu {
     .menu-level1 {
-      height: 40px;
-      line-height: 40px;
-      padding-left: 10px;
+      // height: 40px;
+      // line-height: 40px;
+      // padding-left: 10px;
+      // position: relative;
+      // user-select: none;
+      // margin-bottom: 2px;
+
+      height: 36px;
+      line-height: 36px;
+      padding-left: 5px;
       position: relative;
       user-select: none;
+      margin-bottom: 2px;
+      margin: 2px 10px;
+      border-radius: 5px;
 
       &:hover {
         background: var(--im-hover-bg-color);
       }
 
       .dot {
-        color: #ff9800;
+        color: #8bc34a;
         font-size: 12px;
         display: inline-flex;
         transform: scale(0.75);
@@ -415,9 +387,11 @@ loadWatchTagsMenu()
     .menu-level2 {
       height: 35px;
       line-height: 35px;
-      padding-left: 32px;
+      padding-left: 26px;
       user-select: none;
       font-size: 12px;
+      margin: 2px 10px;
+      border-radius: 5px;
 
       input {
         width: 165px;

@@ -9,7 +9,7 @@ export function formatTalkRecord(uid, data) {
     data.float = data.user_id == uid ? 'right' : 'left'
   }
 
-  data.isCheck = false
+  data.is_check = false
 
   return data
 }
@@ -30,17 +30,17 @@ export function palyMusic(muted = false) {
 export function formatTalkItem(params) {
   let options = {
     id: 0,
-    talk_type: 1,
-    receiver_id: 0,
+    talk_mode: 1,
+    to_from_id: 0,
     name: '未设置',
     remark: '',
     avatar: '',
-    is_disturb: 0,
-    is_top: 0,
-    is_online: 0,
-    is_robot: 0,
+    is_disturb: 2,
+    is_top: 2,
+    is_online: 2,
+    is_robot: 2,
     unread_num: 0,
-    content: '......',
+    content: '...',
     draft_text: '',
     msg_text: '',
     index_name: '',
@@ -48,7 +48,7 @@ export function formatTalkItem(params) {
   }
 
   options = { ...options, ...params }
-  options.index_name = `${options.talk_type}_${options.receiver_id}`
+  options.index_name = `${options.talk_mode}_${options.to_from_id}`
 
   return options
 }

@@ -6,7 +6,7 @@ module.exports = {
     node: true // 只需将该项设置为 true 即可
   },
   root: true,
-  'extends': [
+  extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     '@vue/eslint-config-typescript',
@@ -16,6 +16,7 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
+    'no-var': 'error',
     'vue/multi-word-component-names': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     "no-unused-vars":"off"

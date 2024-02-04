@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { formatTime } from '@/utils/datetime'
-import { formattedDate } from '@/utils/util'
 import { fileFormatSize } from '@/utils/strings'
 import {
   ServeUploadArticleAnnex,
   ServeDownloadAnnex as onDownload,
   ServeDeleteArticleAnnex
 } from '@/api/article'
+import { toApi } from '@/api'
 import { useNoteStore, NoteFileItem } from '@/store'
 import { UploadOne } from '@icon-park/vue-next'
-import { useUtil } from '@/hooks/useUtil'
+import { useInject } from '@/hooks'
 
-const { useMessage, useDialog } = useUtil()
+const { message, dialog } = useInject()
 const store = useNoteStore()
 const loading = ref(false)
 const detail = computed(() => store.view.detail)
@@ -28,40 +28,34 @@ const onUpload = async (e: any) => {
 
   let file = e.target.files[0]
   if (file.size / (1024 * 1024) > 5) {
-    return useMessage.info('笔记附件不能大于5M!')
+    return message.info('笔记附件不能大于5M!')
   }
 
   loading.value = true
 
   let from = new FormData()
   from.append('annex', file)
-  from.append('article_id', `${detail.value.id}`)
+  from.append('article_id', `${detail.value.article_id}`)
 
-  let { code, data } = await ServeUploadArticleAnnex(from).finally(() => (loading.value = false))
+  let { code, data } = await toApi(ServeUploadArticleAnnex, from, { loading })
   if (code == 200) {
-    store.view.detail.files.push({
-      id: data.id,
-      original_name: data.original_name,
-      size: data.size,
-      suffix: data.suffix,
-      created_at: formattedDate(new Date())
-    })
+    store.view.detail.annex_list.push(data)
   }
 }
 
 const onDelete = (item: NoteFileItem) => {
-  useDialog.create({
+  dialog.create({
     title: '删除确认？',
-    content: `你确定要删除笔记附件【${item.original_name}】吗？`,
+    content: `你确定要删除笔记附件【${item.annex_name}】吗？`,
     negativeText: '取消',
     positiveText: '删除',
     onPositiveClick: async () => {
-      const { code, message } = await ServeDeleteArticleAnnex({ annex_id: item.id })
-      if (code != 200) {
-        return useMessage.error(message)
-      }
+      let { code } = await toApi(ServeDeleteArticleAnnex, { annex_id: item.annex_id })
+      if (code != 200) return
 
-      store.view.detail.files = store.view.detail.files.filter((i) => i.id != item.id)
+      store.view.detail.annex_list = store.view.detail.annex_list.filter(
+        (i) => i.annex_id != item.annex_id
+      )
       return true
     }
   })
@@ -73,26 +67,26 @@ const onDelete = (item: NoteFileItem) => {
 
   <section class="section">
     <div class="title">
-      <span>附件列表({{ detail.files.length }})</span>
+      <span>附件列表({{ detail.annex_list.length }})</span>
     </div>
 
     <div class="annex-box">
       <div class="annex-main me-scrollbar me-scrollbar-thumb">
-        <p v-show="detail.files.length == 0" class="empty-text">暂无附件</p>
+        <p v-show="detail.annex_list.length == 0" class="empty-text">暂无附件</p>
 
-        <div v-for="file in detail.files" :key="file.id" class="file-item pointer">
-          <div class="suffix">{{ file.suffix }}</div>
+        <div v-for="file in detail.annex_list" :key="file.annex_id" class="file-item pointer">
+          <div class="suffix">suffix</div>
 
           <div class="content">
-            <div class="filename">{{ file.original_name }}</div>
+            <div class="filename">{{ file.annex_name }}</div>
             <div class="filetool">
               <span class="size">
-                {{ fileFormatSize(file.size) }}
+                {{ fileFormatSize(file.annex_size) }}
               </span>
               <span>{{ formatTime(file.created_at) }}</span>
               <div class="tools">
                 <n-space>
-                  <n-button type="primary" size="tiny" text @click="onDownload(file.id)">
+                  <n-button type="primary" size="tiny" text @click="onDownload(file.annex_id)">
                     下载
                   </n-button>
                   <n-button type="error" size="tiny" text @click="onDelete(file)"> 删除 </n-button>

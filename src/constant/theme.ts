@@ -7,8 +7,11 @@ export const overrides = {
     primaryColorSuppl: '#1890ff',
     bodyColor: '#ffffff'
   },
-
   Dialog: {
     borderRadius: '10px'
   }
 }
+
+export const lightThemeOverrides = {}
+
+export const darkThemeOverrides = {}
