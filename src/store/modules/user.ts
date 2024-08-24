@@ -3,8 +3,8 @@ import { toApi } from '@/api'
 import { ServeGetUserSetting } from '@/api/user'
 import { ServeFindFriendApplyNum } from '@/api/contact'
 import { ServeGroupApplyUnread } from '@/api/group'
-import { delAccessToken } from '@/utils/auth'
-import { storage } from '@/utils/storage'
+import * as auth from '@/utils/auth'
+import { storage } from '@/utils'
 
 interface IUserStoreState {
   uid: number
@@ -49,7 +49,7 @@ export const useUserStore = defineStore('user', {
     logoutLogin() {
       this.$reset()
       storage.remove('user_info')
-      delAccessToken()
+      auth.deleteToken()
       location.reload()
     },
 

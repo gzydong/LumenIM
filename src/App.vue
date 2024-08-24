@@ -14,8 +14,8 @@ import {
 import hljs from 'highlight.js/lib/core'
 import { useUserStore, useTalkStore } from '@/store'
 import ws from '@/connect'
-import { bus } from '@/utils/event-bus'
-import { isLoggedIn } from '@/utils/auth'
+import { bus } from '@/utils'
+import { isLogin } from '@/utils/auth'
 import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { ContactConst } from '@/constant/event-bus.ts'
@@ -48,7 +48,7 @@ const onChangeRemark = (value: { user_id: number; remark: string }) => {
 }
 
 const init = () => {
-  if (!isLoggedIn()) return
+  if (!isLogin()) return
 
   ws.connect()
   userStore.loadSetting()

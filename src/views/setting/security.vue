@@ -4,7 +4,7 @@ import EditPassword from '@/components/user/EditorPassword.vue'
 import EditMobile from '@/components/user/EditorMobile.vue'
 import EditEmail from '@/components/user/EditorEmail.vue'
 import { useUserStore } from '@/store'
-import { hidePhone } from '@/utils/strings'
+import { hidePhone } from '@/utils/string'
 
 const userStore = useUserStore()
 const isShowChangePassword = ref(false)

@@ -66,7 +66,7 @@ class Revoke extends Base {
       return `${this.talk_type}_${this.receiver_id}`
     }
 
-    let receiver_id = this.isCurrSender() ? this.receiver_id : this.sender_id
+    const receiver_id = this.isCurrSender() ? this.receiver_id : this.sender_id
 
     return `${this.talk_type}_${receiver_id}`
   }

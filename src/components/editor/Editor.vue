@@ -171,7 +171,10 @@ const navs = reactive([
     icon: markRaw(History),
     show: true,
     click: () => {
-      emit('editor-event', emitCall('history_event'))
+      emit(
+        'editor-event',
+        emitCall('history_event', {}, () => {})
+      )
     }
   }
 ])

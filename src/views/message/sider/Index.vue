@@ -14,7 +14,7 @@ import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName, formatTalkItem } from '@/utils/talk'
 import { ISession } from '@/types/chat'
 import { useSessionMenu, useEventBus } from '@/hooks'
-import { bus } from '@/utils/event-bus'
+import { bus } from '@/utils'
 import { SessionConst } from '@/constant/event-bus'
 
 const {

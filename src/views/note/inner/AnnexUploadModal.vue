@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { formatTime } from '@/utils/datetime'
-import { fileFormatSize } from '@/utils/strings'
+import { fileFormatSize } from '@/utils/string'
 import {
   ServeUploadArticleAnnex,
   ServeDownloadAnnex as onDownload,

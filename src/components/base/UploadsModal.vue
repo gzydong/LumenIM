@@ -1,7 +1,7 @@
 <script setup>
 import { NProgress } from 'naive-ui'
 import { useUploadsStore } from '@/store'
-import { fileFormatSize } from '@/utils/strings'
+import { fileFormatSize } from '@/utils/string'
 
 const uploadsStore = useUploadsStore()
 

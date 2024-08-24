@@ -25,7 +25,7 @@ class Keyboard extends Base {
   }
 
   private handle() {
-    let params = this.getTalkParams()
+    const params = this.getTalkParams()
 
     // 判断当前是否正在对话
     if (!params.index_name) {

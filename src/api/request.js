@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { delAccessToken, getAccessToken } from '@/utils/auth'
+import * as auth from '@/utils/auth'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -21,7 +21,7 @@ const errorHandler = (error) => {
   // 判断是否是响应错误信息
   if (error.response) {
     if (error.response.status == 401) {
-      delAccessToken()
+      auth.deleteToken()
 
       if (!once) {
         once = true
@@ -41,7 +41,7 @@ const errorHandler = (error) => {
 
 // 请求拦截器
 request.interceptors.request.use((config) => {
-  const token = getAccessToken()
+  const token = auth.getToken()
 
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`

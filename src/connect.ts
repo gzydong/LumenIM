@@ -7,14 +7,14 @@ import EventTalk from './event/talk'
 import EventKeyboard from './event/keyboard'
 import EventLogin from './event/login'
 import EventRevoke from './event/revoke'
-import { getAccessToken, isLoggedIn } from './utils/auth'
+import { getToken, isLogin } from './utils/auth'
 
 const urlCallback = () => {
-  if (!isLoggedIn()) {
+  if (!isLogin()) {
     window.location.reload()
   }
 
-  return `${import.meta.env.VITE_SOCKET_API}/wss/default.io?token=${getAccessToken()}`
+  return `${import.meta.env.VITE_SOCKET_API}/wss/default.io?token=${getToken()}`
 }
 
 class Connect {

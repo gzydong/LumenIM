@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { Close } from '@icon-park/vue-next'
-import { storage } from '@/utils/storage'
+import { storage } from '@/utils'
 
 let isShow = ref(false)
 

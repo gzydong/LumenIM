@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
 import { toApi } from '@/api'
-import { setAccessToken } from '@/utils/auth'
+import { setToken } from '@/utils/auth'
 import { playMusic } from '@/utils/talk'
 import { useInject } from '@/hooks'
 import ws from '@/connect'
@@ -52,7 +52,7 @@ const onLogin = async () => {
 
   if (code !== 200) return
 
-  setAccessToken(data.access_token, data.expires_in)
+  setToken(data.access_token, data.expires_in)
   ws.connect()
   message.success('登录成功')
   userStore.loadSetting()

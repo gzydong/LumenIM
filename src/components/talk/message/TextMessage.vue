@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { textReplaceEmoji } from '@/utils/emojis'
-import { textReplaceLink } from '@/utils/strings'
+import { textReplaceLink } from '@/utils/string'
 import { ITalkRecordExtraText, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{

@@ -17,7 +17,7 @@ import MultiSelectFooter from './MultiSelectFooter.vue'
 import HistoryRecord from '@/components/talk/HistoryRecord.vue'
 import { ServeUploadImage } from '@/api/upload'
 import { toApi } from '@/api'
-import { bus } from '@/utils/event-bus'
+import { bus } from '@/utils'
 
 const talkStore = useTalkStore()
 const editorStore = useEditorStore()
@@ -114,7 +114,7 @@ const onSendVideoEvent = async ({ data }) => {
     body: {
       url: video.data.src,
       cover: cover.data.src,
-      duration: parseInt(resp.duration),
+      duration: parseInt(`${resp.duration}`),
       size: data.size
     }
   }

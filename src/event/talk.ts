@@ -143,7 +143,7 @@ class Talk extends Base {
    * 插入对话记录
    */
   insertTalkRecord() {
-    let record = this.body
+    const record = this.body
 
     // 群成员变化的消息，需要更新群成员列表
     if ([1102, 1103, 1104].includes(record.msg_type)) {

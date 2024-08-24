@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { isLoggedIn } from '@/utils/auth'
+import { isLogin } from '@/utils/auth'
 import { useSettingsStore } from '@/store'
 
 let once = false
@@ -25,7 +25,7 @@ function handle() {
     return
   }
 
-  if (isLoggedIn() || once) return
+  if (isLogin() || once) return
 
   if (paths.includes(useRouter().currentRoute.value.path)) return
 

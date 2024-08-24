@@ -1,6 +1,6 @@
 import { reactive, nextTick, computed, h, inject } from 'vue'
 import { ISession } from '@/types/chat'
-import { renderIcon } from '@/utils/util'
+import { renderIcon } from '@/utils/common'
 import {
   ArrowUp,
   ArrowDown,

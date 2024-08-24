@@ -2,7 +2,7 @@
 import { watch, onMounted, ref } from 'vue'
 import { NDropdown, NCheckbox } from 'naive-ui'
 import { MoreThree, ToTop } from '@icon-park/vue-next'
-import { bus } from '@/utils/event-bus'
+import { bus } from '@/utils'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'
@@ -145,7 +145,8 @@ const onMultiSelect = (data: ITalkRecord) => {
 
 const onDownloadFile = (data: ITalkRecord) => {
   if (data.msg_type == 3) {
-    return downloadImage(data.extra.url, getFilenameFromUrl(data.extra.url))
+    let filename = getFilenameFromUrl(data.extra?.url)
+    return downloadImage(data.extra.url, filename || '文件')
   }
 
   if (data.msg_type == 4) {

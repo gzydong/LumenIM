@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ITalkRecordExtraLogin, ITalkRecord } from '@/types/chat'
-import { getExploreName, getExploreOs } from '@/utils/util'
+import { getExploreName, getExploreOs } from '@/utils/common'
 
 defineProps<{
   extra: ITalkRecordExtraLogin

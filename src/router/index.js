@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import { isLoggedIn } from '@/utils/auth'
+import { isLogin } from '@/utils/auth'
 import MainLayout from '@/layout/MainLayout.vue'
 
 import SettingRouter from './modules/setting'
@@ -56,7 +56,7 @@ const router = createRouter({
 
 // 设置中间件，权限验证
 router.beforeEach((to) => {
-  if (to.meta?.auth && !isLoggedIn()) {
+  if (to.meta?.auth && !isLogin()) {
     return {
       path: '/auth/login',
       query: { redirect: to.fullPath }

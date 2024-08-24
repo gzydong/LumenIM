@@ -1,14 +1,14 @@
-import { storage } from './storage'
+import { storage } from './'
 
 const AccessToken = 'AUTH_TOKEN'
 
 /**
  * 验证是否登录
  *
- * @returns token
+ * @returns boolean
  */
-export function isLoggedIn(): boolean {
-  return getAccessToken() != ''
+export function isLogin(): boolean {
+  return getToken() != ''
 }
 
 /**
@@ -16,7 +16,7 @@ export function isLoggedIn(): boolean {
  *
  * @returns token
  */
-export function getAccessToken(): string {
+export function getToken(): string {
   return storage.get(AccessToken) || ''
 }
 
@@ -25,13 +25,13 @@ export function getAccessToken(): string {
  *
  * @returns token
  */
-export function setAccessToken(token = '', expire = 60 * 60 * 2) {
+export function setToken(token: string, expire: number) {
   storage.set(AccessToken, token, expire)
 }
 
 /**
  * 删除登录授权 Token
  */
-export function delAccessToken() {
+export function deleteToken() {
   storage.remove(AccessToken)
 }

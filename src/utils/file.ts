@@ -1,14 +1,15 @@
-import { getAccessToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 
 /**
  * 文件下载方法
- *
- * @param {Number} msgid
+ * @param msg_id
+ * @param talk_mode
+ * @param to_from_id
  */
 export function download(msg_id: string, talk_mode: number, to_from_id: number) {
-  let token = getAccessToken()
+  const token = getToken()
   try {
-    let link = document.createElement('a')
+    const link = document.createElement('a')
     link.href = `${
       import.meta.env.VITE_BASE_API
     }/api/v1/talk/file-download?msg_id=${msg_id}&talk_mode=${talk_mode}&to_from_id=${to_from_id}&token=${token}`
@@ -65,7 +66,7 @@ export async function getVideoImage(
       const ctx = canvas.getContext('2d')
       ctx?.drawImage(video, 0, 0, canvas.width, canvas.height)
 
-      let data: any = {
+      const data: any = {
         url: canvas.toDataURL('image/jpeg', 1),
         width: video.videoWidth,
         height: video.videoHeight,
@@ -89,22 +90,22 @@ export async function getVideoImage(
 }
 
 export function downloadImage(src: string, name: string) {
-  let image = new Image()
+  const image = new Image()
   image.setAttribute('crossOrigin', 'anonymous')
   image.src = src
   image.onload = function () {
-    let canvas = document.createElement('canvas')
+    const canvas = document.createElement('canvas')
     canvas.width = image.width
     canvas.height = image.height
 
-    let ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')
     if (ctx == null) return
 
     ctx.drawImage(image, 0, 0, image.width, image.height)
 
-    let url = canvas.toDataURL('image/png')
-    let a = document.createElement('a')
-    let event = new MouseEvent('click')
+    const url = canvas.toDataURL('image/png')
+    const a = document.createElement('a')
+    const event = new MouseEvent('click')
 
     a.download = name || 'image.png'
     a.href = url

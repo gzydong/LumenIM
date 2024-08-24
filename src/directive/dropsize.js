@@ -1,4 +1,4 @@
-import { storage } from '@/utils/storage'
+import { storage } from '@/utils'
 
 function getCacheKey(key, direction) {
   if (!key.length) return ''

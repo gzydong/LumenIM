@@ -1,5 +1,5 @@
 import { post, get, upload } from './request'
-import { getAccessToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 
 // -------- 笔记相关 --------
 
@@ -138,7 +138,7 @@ export const ServeDownloadAnnex = (annex_id) => {
   try {
     let link = document.createElement('a')
     // link.target = '_blank'
-    link.href = `${api}/api/v1/note/annex/download?annex_id=${annex_id}&token=${getAccessToken()}`
+    link.href = `${api}/api/v1/note/annex/download?annex_id=${annex_id}&token=${getToken()}`
     link.click()
   } catch (e) {
     console.error(e)

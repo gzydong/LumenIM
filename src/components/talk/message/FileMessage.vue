@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { fileFormatSize } from '@/utils/strings'
+import { fileFormatSize } from '@/utils/string'
 import { download, getFileNameSuffix } from '@/utils/file'
 import { ITalkRecordExtraFile, ITalkRecord } from '@/types/chat'
 

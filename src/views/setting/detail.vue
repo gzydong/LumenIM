@@ -5,7 +5,7 @@ import { NForm, NFormItem, NInput, NDatePicker, NRadio, NRadioGroup, NSpace } fr
 import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
 import { toApi } from '@/api'
 import AvatarCropper from '@/components/base/AvatarCropper.vue'
-import { hidePhone } from '@/utils/strings'
+import { hidePhone } from '@/utils/string'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
 

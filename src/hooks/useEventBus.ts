@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted } from 'vue'
-import { bus } from '@/utils/event-bus'
+import { bus } from '@/utils'
 
 interface Event {
   name: any

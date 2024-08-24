@@ -60,15 +60,15 @@ const onStop = () => {
   status.value = 2
 }
 
-function countDownTime(second = 0) {
+function countDownTime(second: number = 0) {
   // 小于10 加0 处理
-  function formate0to9(arg) {
-    return arg < 10 ? `0${arg}` : arg
+  function formate0to9(num: number) {
+    return num < 10 ? `0${num}` : num
   }
 
-  const hours = parseInt((second / 60 / 60) % 24, 10) //剩余的小时
-  const minutes = parseInt((second / 60) % 60, 10) //剩余的分钟
-  const seconds = parseInt(second % 60, 10) //剩余的秒数
+  const hours = Math.floor((second / 60 / 60) % 24) //剩余的小时
+  const minutes = Math.floor((second / 60) % 60) //剩余的分钟
+  const seconds = Math.floor(second % 60) //剩余的秒数
 
   return `${formate0to9(hours)}:${formate0to9(minutes)}:${formate0to9(seconds)}`
 }
