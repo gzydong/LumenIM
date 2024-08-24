@@ -975,7 +975,7 @@
 
 html[theme-mode='dark'] {
   #fill-color {
-    fill: #202124;
+    fill: #1e1e1e;
   }
 }
 </style>

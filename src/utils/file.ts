@@ -6,13 +6,14 @@ import { getToken } from '@/utils/auth'
  * @param talk_mode
  * @param to_from_id
  */
-export function download(msg_id: string, talk_mode: number, to_from_id: number) {
+export function download(msg_id: string) {
   const token = getToken()
+
   try {
     const link = document.createElement('a')
     link.href = `${
       import.meta.env.VITE_BASE_API
-    }/api/v1/talk/file-download?msg_id=${msg_id}&talk_mode=${talk_mode}&to_from_id=${to_from_id}&token=${token}`
+    }/api/v1/talk/file-download?msg_id=${msg_id}&token=${token}`
     link.click()
   } catch (e) {
     console.warn(e)

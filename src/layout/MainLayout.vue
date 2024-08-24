@@ -49,7 +49,7 @@ const settingsStore = useSettingsStore()
 
     .el-aside {
       width: 65px;
-      box-shadow: 2px 0 8px 0 var(--im-broadside-box-shadow);
+      box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
     }
 
     &.small-screen {
@@ -68,6 +68,11 @@ html[theme-mode='dark'] {
 
     .im-container {
       background-color: unset;
+
+      .el-aside {
+        background-color: rgba(255, 255, 255, 0.05);
+        box-shadow: unset;
+      }
     }
   }
 

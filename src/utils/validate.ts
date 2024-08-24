@@ -35,7 +35,7 @@ export const isNumber = (value: any) => {
 }
 
 /**
- * 检测是否为 Booleanl 类型
+ * 检测是否为 Boolean 类型
  *
  * @param {*} value
  */

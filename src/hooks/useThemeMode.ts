@@ -26,7 +26,8 @@ export function useThemeMode() {
 
   const getThemeOverride = computed(() => {
     if (themeMode.value === 'dark') {
-      overrides.common.bodyColor = '#202124'
+      // overrides.common.bodyColor = '#202124'
+      overrides.common.bodyColor = '#1e1e1e'
     }
 
     return overrides
