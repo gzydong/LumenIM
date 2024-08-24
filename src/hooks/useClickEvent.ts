@@ -1,4 +1,4 @@
-import { isElectronMode, electron } from '@/utils/common'
+import { isElectronMode, electron } from '@/utils/electron'
 
 export const useClickEvent = () => {
   const push = (el: any) => {

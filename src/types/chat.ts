@@ -11,7 +11,6 @@ export interface ISessionLastMessage {
 
 // 会话列表
 export interface ISession {
-  id: number // 会话id
   index_name: string // 索引名称
   talk_mode: number // 聊天类型
   to_from_id: number // 接收者id

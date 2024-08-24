@@ -13,7 +13,7 @@ import {
 } from '@icon-park/vue-next'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import { debounce } from '@/utils/common'
-import { downloadBlobFile } from '@/utils/strings'
+import { downloadBlobFile } from '@/utils/file'
 import { useInject } from '@/hooks'
 import { ServeSetAsteriskArticle, ServeEditArticle, ServeDeleteArticle } from '@/api/article'
 import { ServeUploadImage } from '@/api/upload'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NImage } from 'naive-ui'
-import { getImageInfo } from '@/utils/functions'
+import { getImageInfo } from '@/utils/file'
 import { ITalkRecordExtraImage, ITalkRecord } from '@/types/chat'
 
 defineProps<{

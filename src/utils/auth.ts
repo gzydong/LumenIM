@@ -7,7 +7,7 @@ const AccessToken = 'AUTH_TOKEN'
  *
  * @returns token
  */
-export function isLoggedIn() {
+export function isLoggedIn(): boolean {
   return getAccessToken() != ''
 }
 
@@ -16,7 +16,7 @@ export function isLoggedIn() {
  *
  * @returns token
  */
-export function getAccessToken() {
+export function getAccessToken(): string {
   return storage.get(AccessToken) || ''
 }
 
@@ -26,7 +26,7 @@ export function getAccessToken() {
  * @returns token
  */
 export function setAccessToken(token = '', expire = 60 * 60 * 2) {
-  return storage.set(AccessToken, token, expire) || ''
+  storage.set(AccessToken, token, expire)
 }
 
 /**

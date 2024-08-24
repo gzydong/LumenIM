@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { isElectronMode } from '@/utils/common'
+import { isElectronMode } from '@/utils/electron'
 </script>
 
 <template>

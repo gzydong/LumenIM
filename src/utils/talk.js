@@ -15,7 +15,7 @@ export function formatTalkRecord(uid, data) {
 }
 
 // 播放消息提示
-export function palyMusic(muted = false) {
+export function playMusic(muted = false) {
   let audio = document.getElementById('audio')
   audio.currentTime = 0
   audio.muted = muted
@@ -29,7 +29,6 @@ export function palyMusic(muted = false) {
  */
 export function formatTalkItem(params) {
   let options = {
-    id: 0,
     talk_mode: 1,
     to_from_id: 0,
     name: '未设置',

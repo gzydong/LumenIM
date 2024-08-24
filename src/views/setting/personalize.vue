@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { NSwitch, NRadioGroup, NRadio } from 'naive-ui'
 import { useSettingsStore } from '@/store'
-import { isElectronMode } from '@/utils/common'
+import { isElectronMode } from '@/utils/electron'
 
 const settingsStore = useSettingsStore()
 

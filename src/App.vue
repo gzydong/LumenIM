@@ -62,6 +62,12 @@ onMounted(() => {
   useConnectStatus()
   useClickEvent()
 })
+
+// 监听 document.dispatchEvent(new CustomEvent('full-screen-event', { detail: value }))
+document.addEventListener('check-update', (e) => {
+  alert('检查软件更新')
+  console.log(e)
+})
 </script>
 
 <template>

@@ -28,12 +28,9 @@ export function hidePhone(phone) {
  * @param {String} text 文本
  * @param {String} color 超链接颜色
  */
-export function textReplaceLink(text, color = '#409eff') {
+export function textReplaceLink(text) {
   let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi
-  return text.replace(
-    exp,
-    `<a href='$1' alt='link' style="color:${color};text-decoration: revert;">$1</a >`
-  )
+  return text.replace(exp, `<a href='$1' alt='link'>$1</a>`)
 }
 
 /**
@@ -66,30 +63,4 @@ export function fileFormatSize(value) {
   let size = srcsize / Math.pow(1000, index)
   size = size.toFixed(2) //保留的小数位数
   return size + unitArr[index]
-}
-
-/**
- * 获取文件后缀名
- *
- * @param {String} fileName
- */
-export function fileSuffix(fileName) {
-  let ext = fileName.split('.')
-
-  return ext[ext.length - 1]
-}
-
-export function downloadBlobFile(fileName, content) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-
-  // 创建一个隐藏的可下载链接
-  const downloadLink = document.createElement('a')
-  downloadLink.href = URL.createObjectURL(blob)
-  downloadLink.download = fileName
-
-  // 触发点击事件
-  downloadLink.click()
-
-  // 清理URL
-  URL.revokeObjectURL(downloadLink.href)
 }

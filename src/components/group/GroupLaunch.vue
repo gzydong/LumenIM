@@ -15,7 +15,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: []
   onInvite: [groupId: number]
-  onSubmit: [groupId: number]
+  onSubmit: [groupId: number, groupName: string]
 }>()
 
 const mapData = new Map()
@@ -99,7 +99,7 @@ const onCreateSubmit = async (user_ids: number[]) => {
   if (code != 200) return
 
   message.success('创建成功')
-  emit('onSubmit', data.group_id)
+  emit('onSubmit', data.group_id, modelGroupName.value.trim())
   emit('close')
 }
 

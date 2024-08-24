@@ -9,14 +9,14 @@ class Keyboard extends Base {
   /**
    * @var resource 资源
    */
-  resource
+  private resource: any
 
   /**
    * 初始化构造方法
    *
    * @param {Object} resource Socket消息
    */
-  constructor(resource) {
+  constructor(resource: any) {
     super()
 
     this.resource = resource
@@ -24,7 +24,7 @@ class Keyboard extends Base {
     this.handle()
   }
 
-  handle() {
+  private handle() {
     let params = this.getTalkParams()
 
     // 判断当前是否正在对话

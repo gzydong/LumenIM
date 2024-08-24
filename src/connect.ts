@@ -46,7 +46,7 @@ class Connect {
   }
 
   isConnect() {
-    return this.conn.connect?.readyState === 1
+    return this.conn.connect?.readyState === WebSocket.OPEN
   }
 
   emit(event: string, data: any) {

@@ -8,14 +8,14 @@ class Login extends Base {
   /**
    * @var resource 资源
    */
-  resource
+  private resource: any
 
   /**
    * 初始化构造方法
    *
    * @param {Object} resource Socket消息
    */
-  constructor(resource) {
+  constructor(resource: any) {
     super()
 
     this.resource = resource
@@ -23,14 +23,14 @@ class Login extends Base {
     this.handle()
   }
 
-  handle() {
+  private handle() {
     useTalkStore().updateItem({
       index_name: `1_${this.resource.user_id}`,
       is_online: this.resource.status
     })
 
     if (this.isTalk(1, this.resource.user_id)) {
-      useDialogueStore().setOnlineStatus(this.resource.status == 1)
+      useDialogueStore().setOnlineStatus(this.resource.status === 1)
     }
   }
 }

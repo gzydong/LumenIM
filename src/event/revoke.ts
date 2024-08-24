@@ -9,29 +9,34 @@ class Revoke extends Base {
   /**
    * @var resource 资源
    */
-  resource
+  resource: any
 
   /**
    * 发送者ID
    */
-  sender_id = 0
+  sender_id: number = 0
 
   /**
    * 接收者ID
    */
-  receiver_id = 0
+  receiver_id: number = 0
 
   /**
    * 聊天类型[1:私聊;2:群聊;]
    */
-  talk_type = 0
+  talk_type: number = 0
+
+  /**
+   * 消息ID
+   */
+  msg_id: number = 0
 
   /**
    * 初始化构造方法
    *
    * @param {Object} resource Socket消息
    */
-  constructor(resource) {
+  constructor(resource: any) {
     super()
 
     this.resource = resource
@@ -47,7 +52,7 @@ class Revoke extends Base {
    * 判断消息发送者是否来自于我
    * @returns
    */
-  isCurrSender() {
+  isCurrSender(): boolean {
     return this.sender_id == this.getAccountId()
   }
 
@@ -56,7 +61,7 @@ class Revoke extends Base {
    *
    * @return String
    */
-  getIndexName() {
+  getIndexName(): string {
     if (this.talk_type == 2) {
       return `${this.talk_type}_${this.receiver_id}`
     }
@@ -70,7 +75,7 @@ class Revoke extends Base {
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
       msg_text: this.resource.text,
-      updated_at: parseTime(new Date())
+      updated_at: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}') as string
     })
 
     // 判断当前是否正在和好友对话

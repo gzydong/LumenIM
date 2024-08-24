@@ -1,6 +1,6 @@
 import { watchEffect } from 'vue'
 import { useTalkStore } from '@/store'
-import { isElectronMode, electron } from '@/utils/common'
+import { isElectronMode, electron } from '@/utils/electron'
 
 export const useUnreadMessage = () => {
   const useTalk = useTalkStore()

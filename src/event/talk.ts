@@ -1,11 +1,12 @@
 import Base from './base'
 import { nextTick } from 'vue'
-import ws from '@/connect'
 import { parseTime } from '@/utils/datetime'
 import * as message from '@/constant/message'
-import { formatTalkItem, palyMusic, formatTalkRecord } from '@/utils/talk'
-import { isElectronMode } from '@/utils/common'
+import type { ISession } from '@/types/chat'
+import { formatTalkItem, playMusic, formatTalkRecord } from '@/utils/talk'
+import { isElectronMode } from '@/utils/electron'
 import { ServeClearTalkUnreadNum, ServeCreateTalk } from '@/api/chat'
+import { toApi } from '@/api'
 import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
 
 /**
@@ -15,29 +16,29 @@ class Talk extends Base {
   /**
    * 消息体
    */
-  body
+  body: any
 
   /**
    * 接收者ID
    */
-  to_from_id = 0
+  to_from_id: number = 0
 
   /**
    * 发送者ID
    */
-  from_id = 0
+  from_id: number = 0
 
   /**
    * 聊天类型[1:私聊;2:群聊;]
    */
-  talk_mode = 0
+  talk_mode: number = 0
 
   /**
    * 初始化构造方法
    *
    * @param {Object} resource Socket消息
    */
-  constructor(data) {
+  constructor(data: any) {
     super()
 
     const { to_from_id, from_id, talk_mode, body } = data
@@ -51,7 +52,7 @@ class Talk extends Base {
    * 判断消息发送者是否来自于我
    * @returns
    */
-  isCurrSender() {
+  isCurrSender(): boolean {
     return this.from_id == this.getAccountId()
   }
 
@@ -60,14 +61,14 @@ class Talk extends Base {
    *
    * @return String
    */
-  getIndexName() {
+  getIndexName(): string {
     return `${this.talk_mode}_${this.to_from_id}`
   }
 
   /**
    * 获取聊天列表左侧的对话信息
    */
-  getTalkText() {
+  getTalkText(): string {
     let text = ''
     if (this.body.msg_type != message.ChatMsgTypeText) {
       text = message.ChatMsgTypeMapping[this.body.msg_type]
@@ -83,7 +84,7 @@ class Talk extends Base {
     // 客户端有消息提示
     if (isElectronMode()) return
 
-    useSettingsStore().isPromptTone && palyMusic()
+    useSettingsStore().isPromptTone && playMusic()
   }
 
   handle() {
@@ -97,9 +98,14 @@ class Talk extends Base {
     // 判断当前是否正在和好友对话
     if (this.isTalk(this.talk_mode, this.to_from_id)) {
       this.insertTalkRecord()
+
+      if (useSettingsStore().isLeaveWeb) {
+        this.showMessageNocice()
+      }
     } else {
       this.updateTalkItem()
       this.play()
+      this.showMessageNocice()
     }
   }
 
@@ -108,37 +114,29 @@ class Talk extends Base {
    * @returns
    */
   showMessageNocice() {
-    if (useSettingsStore().isLeaveWeb) {
-      const notification = new Notification('LumenIM 在线聊天', {
-        dir: 'auto',
-        lang: 'zh-CN',
-        body: '您有新的消息请注意查收'
-      })
+    const notification = new Notification('LumenIM 在线聊天', {
+      dir: 'auto',
+      lang: 'zh-CN',
+      body: '您有新的聊天消息请注意查收!'
+    })
 
-      notification.onclick = () => {
-        notification.close()
-      }
-    } else {
-      window['$notification'].create({
-        title: '消息通知',
-        content: '您有新的消息请注意查收',
-        duration: 3000
-      })
+    notification.onclick = () => {
+      notification.close()
     }
   }
 
   /**
    * 加载对接节点
    */
-  addTalkItem() {
-    ServeCreateTalk({
+  async addTalkItem() {
+    const { code, data } = await toApi(ServeCreateTalk, {
       talk_mode: this.talk_mode,
       to_from_id: this.to_from_id
-    }).then(({ code, data }) => {
-      if (code == 200) {
-        useTalkStore().addItem({ ...formatTalkItem(data), unread_num: 1 })
-      }
     })
+
+    if (code !== 200) return
+
+    useTalkStore().addItem({ ...formatTalkItem(data), unread_num: 1 } as ISession)
   }
 
   /**
@@ -154,6 +152,27 @@ class Talk extends Base {
 
     useDialogueStore().addDialogueRecord(formatTalkRecord(this.getAccountId(), this.body))
 
+    useTalkStore().updateMessage(
+      {
+        index_name: this.getIndexName(),
+        msg_text: this.getTalkText(),
+        updated_at: parseTime(new Date()) as string
+      },
+      this.isCurrSender()
+    )
+
+    if (this.getAccountId() !== this.from_id) {
+      ServeClearTalkUnreadNum({
+        talk_mode: this.talk_mode,
+        to_from_id: this.to_from_id
+      })
+    }
+
+    this.scrollToBottom()
+  }
+
+  // 将面板滚动条滚动到最底部
+  scrollToBottom() {
     // 获取聊天面板元素节点
     const el = document.getElementById('imChatPanel')
     if (!el) return
@@ -172,22 +191,6 @@ class Talk extends Base {
     } else {
       useDialogueStore().setUnreadBubble()
     }
-
-    useTalkStore().updateMessage(
-      {
-        index_name: this.getIndexName(),
-        msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date())
-      },
-      this.isCurrSender()
-    )
-
-    if (this.getAccountId() !== this.from_id) {
-      ServeClearTalkUnreadNum({
-        talk_mode: this.talk_mode,
-        to_from_id: this.to_from_id
-      })
-    }
   }
 
   /**
@@ -198,7 +201,7 @@ class Talk extends Base {
       {
         index_name: this.getIndexName(),
         msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date())
+        updated_at: parseTime(new Date()) as string
       },
       this.isCurrSender() || this.to_from_id == this.getAccountId()
     )

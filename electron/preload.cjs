@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 // 暴露方法给渲染进程调用
-contextBridge.exposeInMainWorld('electron', {
+contextBridge.exposeInMainWorld('$electron', {
   // 设置消息未读数
   setBadge: (num) => {
     ipcRenderer.send('ipc:set-badge', num == 0 ? '' : `${num}`)
@@ -21,10 +21,13 @@ contextBridge.exposeInMainWorld('electron', {
 })
 
 // 窗口变化事件
-ipcRenderer.on('full-screen', function (event, value) {
-  // isFullScreenStatus = value == 'enter'
-
+ipcRenderer.on('full-screen', (event, value) => {
   document.dispatchEvent(new CustomEvent('full-screen-event', { detail: value }))
+})
+
+// 窗口变化事件
+ipcRenderer.on('check-update', (event, value) => {
+  document.dispatchEvent(new CustomEvent('check-update', { detail: value }))
 })
 
 // 触发自定义事件

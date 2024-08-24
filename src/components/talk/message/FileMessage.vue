@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { fileFormatSize } from '@/utils/strings'
-import { download, getFileNameSuffix } from '@/utils/functions'
+import { download, getFileNameSuffix } from '@/utils/file'
 import { ITalkRecordExtraFile, ITalkRecord } from '@/types/chat'
 
 defineProps<{

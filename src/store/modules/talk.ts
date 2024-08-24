@@ -14,6 +14,9 @@ export const useTalkStore = defineStore('talk', {
 
   getters: {
     topItems: (state) => state.items.filter((item) => item.is_top === 1),
+    unreadItems: (state) => state.items.filter((item) => item.unread_num > 0),
+    groupItems: (state) => state.items.filter((item) => item.talk_mode === 2),
+    friendItems: (state) => state.items.filter((item) => item.talk_mode === 1),
     talkUnreadNum: (state) => state.items.reduce((total, item) => total + item.unread_num, 0)
   },
 

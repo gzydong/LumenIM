@@ -3,7 +3,7 @@
  *
  * @param {String} value
  */
-export const isEmail = (value) => {
+export const isEmail = (value: string) => {
   return /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(value)
 }
 
@@ -12,7 +12,7 @@ export const isEmail = (value) => {
  *
  * @param {String} value
  */
-export const isMobile = (value) => {
+export const isMobile = (value: string) => {
   return /^1[0-9]{10}$/.test(value)
 }
 
@@ -21,7 +21,7 @@ export const isMobile = (value) => {
  *
  * @param {String} value
  */
-export const isURL = (value) => {
+export const isURL = (value: string) => {
   return /^http[s]?:\/\/.*/.test(value)
 }
 
@@ -30,7 +30,7 @@ export const isURL = (value) => {
  *
  * @param {*} value
  */
-export const isNumber = (value) => {
+export const isNumber = (value: any) => {
   return Object.prototype.toString.call(value).slice(8, -1) === 'Number'
 }
 
@@ -39,6 +39,6 @@ export const isNumber = (value) => {
  *
  * @param {*} value
  */
-export const isBoolean = (value) => {
+export const isBoolean = (value: any) => {
   return Object.prototype.toString.call(value).slice(8, -1) === 'Boolean'
 }

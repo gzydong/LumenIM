@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
 import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
-import { GithubOne, SettingTwo, Message, People, Bookshelf, BookmarkOne } from '@icon-park/vue-next'
+import { GithubOne, SettingTwo, Message, People, BookmarkOne } from '@icon-park/vue-next'
 
 defineProps({
   index: {

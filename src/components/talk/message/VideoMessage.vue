@@ -3,7 +3,7 @@ import 'xgplayer/dist/index.min.css'
 import { ref, nextTick } from 'vue'
 import { NImage, NModal, NCard } from 'naive-ui'
 import { Play, Close } from '@icon-park/vue-next'
-import { getImageInfo } from '@/utils/functions'
+import { getImageInfo } from '@/utils/file'
 import Player from 'xgplayer'
 import { ITalkRecordExtraVideo, ITalkRecord } from '@/types/chat'
 

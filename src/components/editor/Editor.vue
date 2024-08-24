@@ -7,7 +7,6 @@ import { NPopover } from 'naive-ui'
 import {
   Voice as IconVoice,
   SourceCode,
-  Local,
   SmilingFace,
   Pic,
   FolderUpload,
@@ -21,7 +20,7 @@ import QuoteBlot from './formats/quote'
 import 'quill-mention'
 import { useDialogueStore, useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString, isEmptyDelta } from './util'
-import { getImageInfo } from '@/utils/functions'
+import { getImageInfo } from '@/utils/file'
 import { EditorConst } from '@/constant/event-bus'
 import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
@@ -30,6 +29,7 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { ServeUploadImage } from '@/api/upload'
+import { toApi } from '@/api'
 import { useEventBus } from '@/hooks'
 
 Quill.register('formats/emoji', EmojiBlot)
@@ -159,12 +159,6 @@ const navs = reactive([
     }
   },
   {
-    title: '地理位置',
-    icon: markRaw(Local),
-    show: true,
-    click: () => {}
-  },
-  {
     title: '群投票',
     icon: markRaw(Ranking),
     show: computed(() => props.vote),
@@ -186,20 +180,16 @@ function onUploadImage(file: File) {
   return new Promise((resolve) => {
     let image = new Image()
     image.src = URL.createObjectURL(file)
-    image.onload = () => {
+    image.onload = async () => {
       const form = new FormData()
       form.append('file', file)
       form.append('width', image.width.toString())
       form.append('height', image.height.toString())
 
-      ServeUploadImage(form).then(({ code, data, message }) => {
-        if (code == 200) {
-          resolve(data.src)
-        } else {
-          resolve('')
-          window['$message'].error(message)
-        }
-      })
+      const { code, data } = await toApi(ServeUploadImage, form)
+      code == 200 && resolve(data.src)
+
+      URL.revokeObjectURL(image.src)
     }
   })
 }

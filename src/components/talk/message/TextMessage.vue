@@ -26,10 +26,9 @@ textContent = textReplaceEmoji(textContent)
     :class="{
       left: float == 'left',
       right: float == 'right',
-      maxwidth: maxWidth,
-      'radius-reset': source != 'panel',
-      history: source == 'history'
+      maxwidth: maxWidth
     }"
+    :data-source="source"
   >
     <pre v-html="textContent" />
   </div>
@@ -44,18 +43,8 @@ textContent = textReplaceEmoji(textContent)
   background: var(--im-message-left-bg-color);
   border-radius: 0px 10px 10px 10px;
 
-  &.right {
-    background-color: var(--im-message-right-bg-color);
-    color: var(--im-message-right-text-color);
-    border-radius: 10px 0px 10px 10px;
-  }
-
   &.maxwidth {
     max-width: 70%;
-  }
-
-  &.radius-reset {
-    border-radius: 0;
   }
 
   pre {
@@ -66,7 +55,7 @@ textContent = textReplaceEmoji(textContent)
     font-size: 14px;
     padding: 3px 5px;
     font-family: 'PingFang SC', 'Microsoft YaHei', 'Alibaba PuHuiTi 2.0 45';
-    line-height: 25px;
+    line-height: 1.8;
 
     :deep(.emoji) {
       vertical-align: text-bottom;
@@ -74,17 +63,27 @@ textContent = textReplaceEmoji(textContent)
     }
 
     :deep(a) {
-      color: #2196f3;
+      color: var(--im-message-left-link-text-color);
       text-decoration: revert;
+    }
+  }
+
+  &.right {
+    background-color: var(--im-message-right-bg-color);
+    color: var(--im-message-right-text-color);
+    border-radius: 10px 0px 10px 10px;
+
+    pre {
+      :deep(a) {
+        color: var(--im-message-right-link-text-color);
+      }
     }
   }
 }
 
 html[theme-mode='dark'] {
   .immsg-text {
-    // background: var(--im-message-bg-color);
-
-    &.history {
+    &[data-history] {
       background-color: rgba(255, 255, 255, 5%);
     }
   }

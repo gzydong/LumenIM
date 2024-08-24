@@ -2,7 +2,7 @@
 import { NImage } from 'naive-ui'
 import { textReplaceEmoji } from '@/utils/emojis'
 import { textReplaceLink } from '@/utils/strings'
-import { getImageInfo } from '@/utils/functions'
+import { getImageInfo } from '@/utils/file'
 import { ITalkRecordExtraMixed, ITalkRecord } from '@/types/chat'
 
 const props = defineProps<{
@@ -47,7 +47,7 @@ const img = (src: string, width = 200) => {
     }"
   >
     <pre>
-      <template v-for="(item,index) in extra.items"  :key="index">
+      <div class="line" v-for="(item,index) in extra.items" :key="index">
    
         <template v-if="item.type === 1">
                <span v-html="textReplaceEmoji(textReplaceLink(item.content))" />
@@ -61,7 +61,7 @@ const img = (src: string, width = 200) => {
             <n-image :src="item.content"></n-image>
           </div>
         </template>
-      </template>
+      </div>
     </pre>
   </div>
 </template>
@@ -74,12 +74,6 @@ const img = (src: string, width = 200) => {
   color: var(--im-message-left-text-color);
   background: var(--im-message-left-bg-color);
   border-radius: 0px 10px 10px 10px;
-
-  &.right {
-    background-color: var(--im-message-right-bg-color);
-    color: var(--im-message-right-text-color);
-    border-radius: 10px 0px 10px 10px;
-  }
 
   &.maxwidth {
     max-width: 70%;
@@ -98,8 +92,24 @@ const img = (src: string, width = 200) => {
     line-height: 25px;
 
     :deep(a) {
-      color: #2196f3;
+      color: var(--im-message-left-link-text-color);
       text-decoration: revert;
+    }
+
+    .line {
+      display: flex;
+    }
+  }
+
+  &.right {
+    background-color: var(--im-message-right-bg-color);
+    color: var(--im-message-right-text-color);
+    border-radius: 10px 0px 10px 10px;
+
+    pre {
+      :deep(a) {
+        color: var(--im-message-right-link-text-color);
+      }
     }
   }
 }

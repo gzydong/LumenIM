@@ -2,7 +2,7 @@
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
 import { useSettingsStore } from '@/store'
-import { isElectronMode } from '@/utils/common'
+import { isElectronMode } from '@/utils/electron'
 
 const settingsStore = useSettingsStore()
 </script>

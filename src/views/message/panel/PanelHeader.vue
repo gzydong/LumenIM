@@ -30,7 +30,7 @@ const dialogueStore = useDialogueStore()
 const emit = defineEmits(['evnet'])
 
 const onSetMenu = () => {
-  dialogueStore.isShowSessionList = !dialogueStore.isShowSessionList
+  dialogueStore.isShowSessionMenu = !dialogueStore.isShowSessionMenu
 }
 </script>
 
@@ -38,7 +38,7 @@ const onSetMenu = () => {
   <header class="el-header box-header">
     <div class="menu bdr-r pointer" @click="onSetMenu">
       <n-icon
-        :component="dialogueStore.isShowSessionList ? MenuUnfoldOne : MenuFoldOne"
+        :component="dialogueStore.isShowSessionMenu ? MenuUnfoldOne : MenuFoldOne"
         :size="22"
       />
     </div>

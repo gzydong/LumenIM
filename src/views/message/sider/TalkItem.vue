@@ -14,15 +14,15 @@ defineProps<{
 </script>
 
 <template>
-  <div class="talk pointer" :class="{ actived: active }" @click="emit('tab-talk', data)">
-    <div class="avatar-box">
+  <div class="talk-item pointer" :class="{ actived: active }" @click="emit('tab-talk', data)">
+    <div class="talk-item-avatar">
       <im-avatar :src="avatar" :size="34" :username="data.name" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
         <n-icon :component="data.is_top === 1 ? ArrowDown : ArrowUp" />
       </div>
     </div>
 
-    <div class="content-box">
+    <div class="talk-item-content">
       <div class="header">
         <div class="title">
           <span class="nickname">{{ username }}</span>
@@ -64,16 +64,17 @@ defineProps<{
 </template>
 
 <style lang="less" scoped>
-.talk {
-  padding: 8px 10px 8px 5px;
+.talk-item {
+  --actived-bg: rgba(24, 144, 255, 0.12);
+
+  padding: 8px 5px;
   height: 50px;
   display: flex;
   align-items: center;
-  transition: 0.5s all;
-  margin: 0px 2px 5px 5px;
-  border-radius: 5px;
+  border-radius: 10px;
+  margin: 0 5px;
 
-  .avatar-box {
+  &-avatar {
     height: 34px;
     width: 34px;
     border-radius: 50%;
@@ -104,12 +105,12 @@ defineProps<{
     }
   }
 
-  .content-box {
+  &-content {
     height: 40px;
     display: flex;
     align-content: center;
     flex-direction: column;
-    flex: 1 1;
+    flex: 1;
     margin-left: 10px;
     overflow: hidden;
 
@@ -123,9 +124,10 @@ defineProps<{
         color: #1f2329;
         font-size: 14px;
         line-height: 20px;
-        flex: 1 1;
+        flex: 1;
         display: flex;
         overflow: hidden;
+
         .nickname {
           white-space: nowrap;
           overflow: hidden;
@@ -203,9 +205,6 @@ defineProps<{
     }
   }
 
-  --actived-bg: #ececec;
-
-  // &:hover,
   &.actived {
     background-color: var(--actived-bg);
   }
@@ -229,8 +228,8 @@ defineProps<{
 }
 
 html[theme-mode='dark'] {
-  .talk {
-    --actived-bg: rgb(44, 44, 50);
+  .talk-item {
+    --actived-bg: rgba(255, 255, 255, 0.1);
 
     .nickname {
       color: #ffffff;

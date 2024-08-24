@@ -5,7 +5,7 @@ import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
 import { toApi } from '@/api'
 import { setAccessToken } from '@/utils/auth'
-import { palyMusic } from '@/utils/talk'
+import { playMusic } from '@/utils/talk'
 import { useInject } from '@/hooks'
 import ws from '@/connect'
 import { useUserStore } from '@/store'
@@ -63,7 +63,7 @@ const onValidate = (e: Event) => {
   e.preventDefault()
 
   // 谷歌浏览器提示音需要用户主动交互才能播放，登录入口主动交互一次，后面消息提示音就能正常播放了
-  palyMusic(true)
+  playMusic(true)
 
   formRef.value.validate((errors: any) => {
     !errors && onLogin()

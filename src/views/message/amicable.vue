@@ -1,8 +1,6 @@
 <template>
   <div class="amicable flex-center">
     <div class="content">
-      <!-- <img src="@/assets/image/welcome.svg" alt="" /> -->
-
       <svg
         node-id="1"
         sillyvg="true"
@@ -955,6 +953,7 @@
           />
         </g>
       </svg>
+
       <p>LumenIM 欢迎您(*^__^*)</p>
     </div>
   </div>

@@ -1,4 +1,19 @@
 /**
+ * 格式化日期
+ * @param date
+ * @returns String
+ */
+export const formattedDate = (date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+/**
  * 人性化时间显示
  *
  * @param {Object} datetime
@@ -57,7 +72,7 @@ export function formatTime(datetime) {
  * @param {String} cFormat
  * @returns {String | null}
  */
-export function parseTime(time, cFormat) {
+export function parseTime(time, cFormat = '{y}-{m}-{d} {h}:{i}:{s}') {
   if (arguments.length === 0) {
     return null
   }
