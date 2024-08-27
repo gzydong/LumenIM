@@ -77,9 +77,7 @@ const onSendTextEvent = throttle((value: any) => {
   }
 
   onSendMessage(message, (ok: boolean) => {
-    if (!ok) return
-
-    callBack(true)
+    ok && callBack(true)
   })
 }, 1000)
 
@@ -95,7 +93,7 @@ const onSendImageEvent = ({ data, callBack }) => {
 
 // 发送图片消息
 const onSendVideoEvent = async ({ data }) => {
-  let resp = await getVideoImage(data)
+  const resp = await getVideoImage(data)
 
   const coverForm = new FormData()
   coverForm.append('file', resp.file)
@@ -240,9 +238,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer class="el-footer">
+  <footer class="el-footer height100">
     <MultiSelectFooter v-if="dialogueStore.isOpenMultiSelect" />
-    <Editor v-else @editor-event="onEditorEvent" :vote="talkMode == 2" :members="members" />
+    <Editor
+      v-else
+      @editor-event="onEditorEvent"
+      :index-name="indexName"
+      :show-vote="talkMode == 2"
+      :group-members="members"
+    />
   </footer>
 
   <HistoryRecord
@@ -253,8 +257,4 @@ onMounted(() => {
   />
 </template>
 
-<style lang="less">
-.el-footer {
-  height: inherit;
-}
-</style>
+<style lang="less" scoped></style>

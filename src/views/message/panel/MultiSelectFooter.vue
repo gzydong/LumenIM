@@ -73,26 +73,26 @@ const onContactModal = (data: { id: number; type: number }[]) => {
     <div class="multi-title">
       <span>已选中：{{ dialogueStore.selectItems.length }} 条消息</span>
     </div>
-    <div class="multi-groups">
-      <div class="btn-group">
+    <div class="multi-group">
+      <div class="multi-group-item">
         <div class="multi-icon pointer flex-center" @click="onMergeForward">
           <n-icon :size="22" :component="Share" />
         </div>
         <p>合并转发</p>
       </div>
-      <div class="btn-group">
+      <div class="multi-group-item">
         <div class="multi-icon pointer flex-center" @click="onSingleForward">
           <n-icon :size="22" :component="ShareThree" />
         </div>
         <p>逐条转发</p>
       </div>
-      <div class="btn-group">
+      <div class="multi-group-item">
         <div class="multi-icon pointer flex-center" @click="onMultiDelete">
           <n-icon :size="22" :component="Delete" />
         </div>
         <p>批量删除</p>
       </div>
-      <div class="btn-group">
+      <div class="multi-group-item">
         <div class="multi-icon pointer flex-center" @click="onClose">
           <n-icon :size="22" :component="Close" />
         </div>
@@ -125,13 +125,13 @@ const onContactModal = (data: { id: number; type: number }[]) => {
     justify-content: center;
   }
 
-  .multi-groups {
+  .multi-group {
     width: 100%;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
 
-    .btn-group {
+    &-item {
       width: 50px;
       height: 80px;
       margin: 0 15px;

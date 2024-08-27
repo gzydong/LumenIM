@@ -1,26 +1,31 @@
 <script lang="ts" setup>
-import { useDialogueStore } from '@/store'
 import { DoubleDown } from '@icon-park/vue-next'
-defineProps(['modelValue'])
 
-const dialogueStore = useDialogueStore()
+defineProps({
+  show: {
+    type: Boolean,
+    default: false
+  },
+  unread: {
+    type: Number,
+    default: 0
+  }
+})
 
 // 聊天版本滚动到底部
 const onSkipBottom = () => {
-  let el = document.getElementById('imChatPanel')
-  if (el) {
-    el.scrollTo({
-      top: el.scrollHeight + 1000,
-      behavior: 'smooth'
-    })
-  }
+  const el = document.getElementById('imChatPanel')
+  el?.scrollTo({
+    top: el.scrollHeight + 1000,
+    behavior: 'smooth'
+  })
 }
 </script>
 
 <template>
   <!-- 置底按钮 -->
-  <div class="skip-bottom pointer" :class="{ show: modelValue }" @click="onSkipBottom">
-    <span v-if="dialogueStore.unreadBubble">{{ dialogueStore.unreadBubble }} 条未读消息</span>
+  <div class="skip-bottom pointer" :class="{ show }" @click="onSkipBottom">
+    <span v-if="unread">{{ unread }} 条未读消息</span>
     <span v-else>回到底部</span>
     <n-icon size="14" color="#fff" :component="DoubleDown" />
   </div>

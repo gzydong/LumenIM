@@ -8,7 +8,7 @@ import { formatTime, parseTime } from '@/utils/datetime'
 import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'
 import { downloadImage, getFilenameFromUrl } from '@/utils/file'
 import { MessageComponents, ForwardableMessageType } from '@/constant/message'
-import { useMenu } from './menu'
+import { useMenu } from './useMenu.ts'
 import SkipBottom from './SkipBottom.vue'
 import { ITalkRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
@@ -277,9 +277,7 @@ watch(props, () => {
 })
 
 onMounted(() => {
-  setTimeout(() => {
-    onLoad({ talkMode: props.talkMode, toFromId: props.toFromId, limit: 30 })
-  }, 10)
+  onLoad({ talkMode: props.talkMode, toFromId: props.toFromId, limit: 30 })
 })
 </script>
 
@@ -297,7 +295,7 @@ onMounted(() => {
     >
       <!-- 数据加载状态栏 -->
       <div class="load-toolbar pointer">
-        <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
+        <span v-if="loadConfig.status == 0"> 数据加载中 ... </span>
         <span v-else-if="loadConfig.status == 1" @click="onRefreshLoad"> 查看更多消息 ... </span>
         <span v-else class="no-more"> 没有更多消息了 </span>
       </div>
@@ -422,7 +420,7 @@ onMounted(() => {
     </DraggableArea>
 
     <!-- 置底按钮 -->
-    <SkipBottom v-model="skipBottom" />
+    <SkipBottom :show="skipBottom" :unread="dialogueStore.unreadBubble" />
   </section>
 
   <!-- 右键菜单 -->
@@ -657,3 +655,4 @@ onMounted(() => {
   }
 }
 </style>
+./useMenu

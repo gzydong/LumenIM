@@ -3,9 +3,9 @@ import { reactive, computed, ref } from 'vue'
 import { NDrawer } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useUserStore, useDialogueStore, useUploadsStore, useTalkStore } from '@/store'
-import PanelHeader from './PanelHeader.vue'
-import PanelContent from './PanelContent.vue'
-import PanelFooter from './PanelFooter.vue'
+import PanelHeader from './Header.vue'
+import PanelContent from './Content.vue'
+import PanelFooter from './Footer.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupNotice from '@/components/group/GroupNotice.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
@@ -65,7 +65,7 @@ const events = {
 
 // Header 工具栏事件
 const onPanelHeaderEvent = (eventType: string) => {
-  events[eventType] && events[eventType]()
+  events[eventType]?.()
 }
 
 const onGroupLaunchSuccess = (groupId: number) => {
@@ -92,7 +92,13 @@ useEventBus([
         :online="talkParams.online"
         :keyboard="talkParams.keyboard"
         :num="talkParams.num"
+        :show-session-menu="dialogueStore.isShowSessionMenu"
         @evnet="onPanelHeaderEvent"
+        @change-session-menu="
+          (value: boolean) => {
+            dialogueStore.isShowSessionMenu = value
+          }
+        "
       />
     </header>
 

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import 'quill-image-uploader/dist/quill.imageUploader.min.css'
-import '@/assets/css/editor-mention.less'
+import QuillEditor, { Quill, Delta } from '@/components/quill-editor'
+import Emitter from 'quill/core/emitter.js'
 import { reactive, watch, ref, markRaw, computed, onMounted, onUnmounted } from 'vue'
 import { NPopover } from 'naive-ui'
 import {
@@ -13,55 +12,54 @@ import {
   Ranking,
   History
 } from '@icon-park/vue-next'
-import { QuillEditor, Quill } from '@vueup/vue-quill'
-import ImageUploader from 'quill-image-uploader'
-import EmojiBlot from './formats/emoji'
-import QuoteBlot from './formats/quote'
-import 'quill-mention'
-import { useDialogueStore, useEditorDraftStore } from '@/store'
-import { deltaToMessage, deltaToString, isEmptyDelta } from './util'
-import { getImageInfo } from '@/utils/file'
-import { EditorConst } from '@/constant/event-bus'
-import { emitCall } from '@/utils/common'
-import { defAvatar } from '@/constant/default'
 import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
-import { ServeUploadImage } from '@/api/upload'
-import { toApi } from '@/api'
+import { useEditorDraftStore } from '@/store'
+import {
+  deltaToMessage,
+  deltaToString,
+  isEmptyDelta,
+  onClipboardMatcher,
+  onUploadImage
+} from './util'
+import { getImageInfo } from '@/utils/file'
+import { EditorConst } from '@/constant/event-bus'
+import { emitCall } from '@/utils/common'
+import { defAvatar } from '@/constant/default'
 import { useEventBus } from '@/hooks'
 
-Quill.register('formats/emoji', EmojiBlot)
-Quill.register('formats/quote', QuoteBlot)
-Quill.register('modules/imageUploader', ImageUploader)
-
 const emit = defineEmits(['editor-event'])
-const dialogueStore = useDialogueStore()
 const editorDraftStore = useEditorDraftStore()
 const props = defineProps({
-  vote: {
+  showVote: {
     type: Boolean,
     default: false
   },
-  members: {
+  indexName: {
+    type: String,
+    default: ''
+  },
+  groupMembers: {
     default: () => []
   }
 })
 
-const editor = ref()
+const editor = ref(null)
 
 const getQuill = () => {
-  return editor.value?.getQuill()
+  // @ts-ignore
+  return editor?.value?.getQuill()
 }
 
 const getQuillSelectionIndex = () => {
   let quill = getQuill()
+  if (!quill) return 0
 
   return (quill.getSelection() || {}).index || quill.getLength()
 }
 
-const indexName = computed(() => dialogueStore.index_name)
 const isShowEditorVote = ref(false)
 const isShowEditorCode = ref(false)
 const isShowEditorRecorder = ref(false)
@@ -70,9 +68,11 @@ const uploadFileRef = ref()
 const emoticonRef = ref()
 
 const editorOption = {
-  debug: false,
+  theme: 'snow',
+  placeholder: '按Enter发送 / Shift+Enter 换行',
   modules: {
     toolbar: false,
+
     clipboard: {
       // 粘贴版，处理粘贴时候的自带样式
       matchers: [[Node.ELEMENT_NODE, onClipboardMatcher]]
@@ -81,14 +81,11 @@ const editorOption = {
     keyboard: {
       bindings: {
         enter: {
-          key: 13,
+          key: 'Enter',
+          // 回车发送消息
           handler: onSendMessage
         }
       }
-    },
-
-    imageUploader: {
-      upload: onEditorUpload
     },
 
     mention: {
@@ -102,27 +99,43 @@ const editorOption = {
         el.innerHTML += `<span class="nickname">${data.nickname}</span>`
         return el
       },
-      source: function (searchTerm: string, renderList: any) {
-        if (!props.members.length) {
-          return renderList([])
-        }
+      source: function (searchTerm: string, render: any) {
+        if (!props.groupMembers.length) return render([])
 
-        let list = [
+        const items = [
           { id: 0, nickname: '所有人', avatar: defAvatar, value: '所有人' },
-          ...props.members
+          ...props.groupMembers
         ]
 
-        const items = list.filter(
-          (item: any) => item.nickname.toLowerCase().indexOf(searchTerm) !== -1
-        )
-
-        renderList(items)
+        render(items.filter((item: any) => item.nickname.toLowerCase().indexOf(searchTerm) !== -1))
       },
+
       mentionContainerClass: 'ql-mention-list-container me-scrollbar me-scrollbar-thumb'
+    },
+
+    uploader: {
+      mimetypes: ['image/webp', 'image/gif', 'image/png', 'image/jpg', 'image/jpeg'],
+      handler(range: any, files: File[]) {
+        // @ts-ignore
+        let quill = this.quill
+
+        if (!quill.scroll.query('image')) return
+
+        const promises = files.map((file) => {
+          return onUploadImage(file)
+        })
+
+        Promise.all(promises).then((images) => {
+          const update = images.reduce((delta: any, image) => {
+            return delta.insert({ image })
+          }, new Delta().retain(range.index).delete(range.length))
+
+          quill.updateContents(update, Emitter.sources.USER)
+          quill.setSelection(range.index + images.length, Emitter.sources.SILENT)
+        })
+      }
     }
-  },
-  placeholder: '按Enter发送 / Shift+Enter 换行',
-  theme: 'snow'
+  }
 }
 
 const navs = reactive([
@@ -161,7 +174,7 @@ const navs = reactive([
   {
     title: '群投票',
     icon: markRaw(Ranking),
-    show: computed(() => props.vote),
+    show: computed(() => props.showVote),
     click: () => {
       isShowEditorVote.value = true
     }
@@ -178,46 +191,6 @@ const navs = reactive([
     }
   }
 ])
-
-function onUploadImage(file: File) {
-  return new Promise((resolve) => {
-    let image = new Image()
-    image.src = URL.createObjectURL(file)
-    image.onload = async () => {
-      const form = new FormData()
-      form.append('file', file)
-      form.append('width', image.width.toString())
-      form.append('height', image.height.toString())
-
-      const { code, data } = await toApi(ServeUploadImage, form)
-      code == 200 && resolve(data.src)
-
-      URL.revokeObjectURL(image.src)
-    }
-  })
-}
-
-function onEditorUpload(file: File) {
-  async function fn(file: File, resolve: Function, reject: Function) {
-    if (file.type.indexOf('image/') === 0) {
-      return resolve(await onUploadImage(file))
-    }
-
-    reject()
-
-    if (file.type.indexOf('video/') === 0) {
-      let fn = emitCall('video_event', file, () => {})
-      emit('editor-event', fn)
-    } else {
-      let fn = emitCall('file_event', file, () => {})
-      emit('editor-event', fn)
-    }
-  }
-
-  return new Promise((resolve, reject) => {
-    fn(file, resolve, reject)
-  })
-}
 
 function onVoteEvent(data: any) {
   const msg = emitCall('vote_event', data, (ok: boolean) => {
@@ -268,7 +241,9 @@ function onCodeEvent(data: any) {
 }
 
 async function onUploadFile(e: any) {
-  let file = e.target.files[0]
+  if (!e.target.files) return
+
+  const file = e.target.files[0]
 
   e.target.value = null
 
@@ -302,25 +277,6 @@ async function onUploadFile(e: any) {
 function onRecorderEvent(file: any) {
   emit('editor-event', emitCall('file_event', file))
   isShowEditorRecorder.value = false
-}
-
-function onClipboardMatcher(_: any, Delta) {
-  const ops: any[] = []
-
-  Delta.ops.forEach((op) => {
-    // 如果粘贴了图片，这里会是一个对象，所以可以这样处理
-    if (op.insert && typeof op.insert === 'string') {
-      ops.push({
-        insert: op.insert, // 文字内容
-        attributes: {} //文字样式（包括背景色和文字颜色等）
-      })
-    } else {
-      ops.push(op)
-    }
-  })
-
-  Delta.ops = ops
-  return Delta
 }
 
 function onSendMessage() {
@@ -366,26 +322,24 @@ function onSendMessage() {
 }
 
 function onEditorChange() {
-  let delta = getQuill().getContents()
+  const delta: any = getQuill().getContents()
 
-  let text = deltaToString(delta)
+  const text = deltaToString(delta)
 
   if (!isEmptyDelta(delta)) {
-    editorDraftStore.items[indexName.value || ''] = JSON.stringify({
+    editorDraftStore.items[props.indexName || ''] = JSON.stringify({
       text: text,
       ops: delta.ops
     })
   } else {
     // 删除 editorDraftStore.items 下的元素
-    delete editorDraftStore.items[indexName.value || '']
+    delete editorDraftStore.items[props.indexName || '']
   }
 
   emit('editor-event', emitCall('input_event', text))
 }
 
 function loadEditorDraftText() {
-  if (!editor.value) return
-
   // 这里延迟处理，不然会有问题
   setTimeout(() => {
     hideMentionDom()
@@ -395,22 +349,28 @@ function loadEditorDraftText() {
     if (!quill) return
 
     // 从缓存中加载编辑器草稿
-    let draft = editorDraftStore.items[indexName.value || '']
+    let draft = editorDraftStore.items[props.indexName || '']
     if (draft) {
       quill.setContents(JSON.parse(draft)?.ops || [])
     } else {
       quill.setContents([])
     }
 
-    const index = getQuillSelectionIndex()
-    quill.setSelection(index, 0, 'user')
-  }, 0)
+    quill.setSelection(getQuillSelectionIndex(), 0, 'user')
+  }, 10)
 }
 
-function onSubscribeMention(data: any) {
-  const mention = getQuill().getModule('mention')
+function onSubscribeMention(data: { id: number; value: string }) {
+  const quill = getQuill()
 
-  mention.insertItem({ id: data?.id, denotationChar: '@', value: data.value }, true)
+  // @ts-ignore
+  const mention = quill.getModule('mention')
+
+  // @ts-ignore
+  mention.mentionCharPos = quill.getSelection()?.index ?? quill.getLength()
+
+  // @ts-ignore
+  mention.insertItem({ id: data?.id, denotationChar: '@', value: data.value }, false)
 }
 
 function onSubscribeQuote(data: any) {
@@ -428,12 +388,10 @@ function onSubscribeQuote(data: any) {
 
 function hideMentionDom() {
   let el = document.querySelector('.ql-mention-list-container')
-  if (el) {
-    document.querySelector('body')?.removeChild(el)
-  }
+  el && el.remove()
 }
 
-watch(indexName, loadEditorDraftText, { immediate: true })
+watch(() => props.indexName, loadEditorDraftText, { immediate: true })
 
 onMounted(() => {
   loadEditorDraftText()
@@ -450,58 +408,52 @@ useEventBus([
 </script>
 
 <template>
-  <section class="el-container editor">
-    <section class="el-container is-vertical">
-      <header class="el-header toolbar bdr-t">
-        <div class="tools">
-          <n-popover
-            placement="top-start"
-            trigger="click"
-            raw
-            :show-arrow="false"
-            :width="300"
-            ref="emoticonRef"
-            style="width: 500px; height: 250px; border-radius: 10px; overflow: hidden"
-          >
-            <template #trigger>
-              <div class="item pointer">
-                <n-icon size="18" class="icon" :component="SmilingFace" />
-                <p class="tip-title">表情符号</p>
-              </div>
-            </template>
-
-            <MeEditorEmoticon @on-select="onEmoticonEvent" />
-          </n-popover>
-
-          <div
-            class="item pointer"
-            v-for="nav in navs"
-            :key="nav.title"
-            v-show="nav.show"
-            @click="nav.click"
-          >
-            <n-icon size="18" class="icon" :component="nav.icon" />
-            <p class="tip-title">{{ nav.title }}</p>
+  <section class="el-container is-vertical editor">
+    <header class="el-header toolbar bdr-t">
+      <n-popover
+        placement="top-start"
+        trigger="click"
+        raw
+        :width="300"
+        ref="emoticonRef"
+        style="width: 500px; height: 250px; border-radius: 10px; overflow: hidden"
+      >
+        <template #trigger>
+          <div class="toolbar-item">
+            <n-icon size="18" class="icon" :component="SmilingFace" />
+            <p class="title">表情符号</p>
           </div>
-        </div>
-      </header>
+        </template>
 
-      <main class="el-main height100">
-        <QuillEditor
-          ref="editor"
-          id="editor"
-          :options="editorOption"
-          @editorChange="onEditorChange"
-          style="height: 100%; border: none"
-        />
-      </main>
-    </section>
+        <MeEditorEmoticon @on-select="onEmoticonEvent" />
+      </n-popover>
+
+      <div
+        class="toolbar-item"
+        v-for="nav in navs"
+        :key="nav.title"
+        v-show="nav.show"
+        @click="nav.click"
+      >
+        <n-icon size="18" class="icon" :component="nav.icon" />
+        <p class="title">{{ nav.title }}</p>
+      </div>
+    </header>
+
+    <main class="el-main">
+      <form enctype="multipart/form-data" style="display: none">
+        <input type="file" ref="fileImageRef" accept="image/*" @change="onUploadFile" />
+        <input type="file" ref="uploadFileRef" @change="onUploadFile" />
+      </form>
+
+      <QuillEditor
+        ref="editor"
+        :options="editorOption"
+        @change="onEditorChange"
+        style="height: 100%"
+      />
+    </main>
   </section>
-
-  <form enctype="multipart/form-data" style="display: none">
-    <input type="file" ref="fileImageRef" accept="image/*" @change="onUploadFile" />
-    <input type="file" ref="uploadFileRef" @change="onUploadFile" />
-  </form>
 
   <MeEditorVote v-if="isShowEditorVote" @close="isShowEditorVote = false" @submit="onVoteEvent" />
 
@@ -528,42 +480,35 @@ useEventBus([
     height: 38px;
     display: flex;
 
-    .tools {
-      height: 100%;
-      flex: auto;
+    .toolbar-item {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 35px;
+      margin: 0 2px;
+      position: relative;
+      user-select: none;
+      cursor: pointer;
 
-      .item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 35px;
-        margin: 0 2px;
-        position: relative;
+      .title {
+        display: none;
+        position: absolute;
+        top: 40px;
+        left: 0px;
+        line-height: 26px;
+        background-color: var(--tip-bg-color);
+        color: var(--im-text-color);
+        min-width: 20px;
+        font-size: 12px;
+        padding: 0 5px;
+        border-radius: 2px;
+        white-space: pre;
         user-select: none;
+        z-index: 999999999999;
+      }
 
-        .tip-title {
-          display: none;
-          position: absolute;
-          top: 40px;
-          left: 0px;
-          line-height: 26px;
-          background-color: var(--tip-bg-color);
-          color: var(--im-text-color);
-          min-width: 20px;
-          font-size: 12px;
-          padding: 0 5px;
-          border-radius: 2px;
-          white-space: pre;
-          user-select: none;
-          z-index: 999999999999;
-        }
-
-        &:hover {
-          .tip-title {
-            display: block;
-          }
-        }
+      &:hover .title {
+        display: block;
       }
     }
   }
@@ -577,12 +522,13 @@ html[theme-mode='dark'] {
 </style>
 
 <style lang="less">
-#editor {
-  overflow: hidden;
+.ql-container.ql-snow {
+  border: unset;
 }
 
 .ql-editor {
   padding: 8px;
+  border: unset;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -617,19 +563,6 @@ html[theme-mode='dark'] {
   margin: 0px 2px;
 }
 
-.image-uploading {
-  display: flex;
-  width: 100px;
-  height: 100px;
-  background: #f5f5f5;
-  border-radius: 5px;
-
-  img {
-    filter: unset;
-    display: none;
-  }
-}
-
 .ed-emoji {
   background-color: unset !important;
 }
@@ -643,7 +576,7 @@ html[theme-mode='dark'] {
   display: flex;
   background-color: #f6f6f6;
   flex-direction: column;
-  padding: 8px;
+  padding: 5px;
   margin-bottom: 5px;
   cursor: pointer;
   user-select: none;
@@ -659,9 +592,19 @@ html[theme-mode='dark'] {
     justify-content: space-between;
 
     .quote-card-remove {
-      margin-right: 15px;
-      font-size: 18px;
+      margin-right: 5px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      transition: all 0.3s;
     }
+  }
+
+  &:hover .quote-card-title .quote-card-remove {
+    font-size: 30px;
   }
 
   .quote-card-meta {

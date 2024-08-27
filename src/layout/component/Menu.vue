@@ -193,19 +193,6 @@ const isActive = (menu) => {
   margin: 8px auto;
   border-radius: 10px;
 
-  // &.active {
-  //   &::after {
-  //     position: absolute;
-  //     content: '';
-  //     width: 0;
-  //     height: 0;
-  //     right: -8px;
-  //     border-top: 8px solid transparent;
-  //     border-bottom: 8px solid transparent;
-  //     border-right: 8px solid #ffffff;
-  //   }
-  // }
-
   .hotspot {
     width: 5px;
     height: 5px;

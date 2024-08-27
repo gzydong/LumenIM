@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { NPopover } from 'naive-ui'
 import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, MoreTwo } from '@icon-park/vue-next'
-import { useDialogueStore } from '@/store'
 
-defineProps({
+const emit = defineEmits(['evnet', 'changeSessionMenu'])
+
+const props = defineProps({
   talkMode: {
     type: Number,
     default: 1
@@ -23,24 +24,22 @@ defineProps({
   num: {
     type: Number,
     default: 0
+  },
+  showSessionMenu: {
+    type: Boolean,
+    default: false
   }
 })
 
-const dialogueStore = useDialogueStore()
-const emit = defineEmits(['evnet'])
-
 const onSetMenu = () => {
-  dialogueStore.isShowSessionMenu = !dialogueStore.isShowSessionMenu
+  emit('changeSessionMenu', !props.showSessionMenu)
 }
 </script>
 
 <template>
-  <header class="el-header box-header">
+  <header class="el-header panel-header">
     <div class="menu bdr-r pointer" @click="onSetMenu">
-      <n-icon
-        :component="dialogueStore.isShowSessionMenu ? MenuUnfoldOne : MenuFoldOne"
-        :size="22"
-      />
+      <n-icon :component="showSessionMenu ? MenuUnfoldOne : MenuFoldOne" :size="22" />
     </div>
 
     <div class="module left-module">
@@ -48,7 +47,7 @@ const onSetMenu = () => {
         {{ talkMode == 1 ? '好友' : '群聊' }}
       </span>
       <span class="online online-status" v-show="online"></span>
-      <span class="nickname">{{ username }}</span>
+      <span class="nickname text-ellipsis">{{ username }}</span>
       <span class="keyboard" v-show="keyboard">对方正在输入...</span>
       <span class="num" v-show="talkMode == 2 && num">({{ num }})</span>
     </div>
@@ -57,22 +56,22 @@ const onSetMenu = () => {
       <n-popover trigger="hover">
         <template #trigger>
           <n-icon
+            class="icon"
             :component="PeoplePlusOne"
             :size="18"
-            class="icon"
             @click="emit('evnet', 'add-group')"
           />
         </template>
-        {{ talkMode == 1 ? '发起群聊' : '邀请好友' }}
+        {{ talkMode === 1 ? '发起群聊' : '邀请好友' }}
       </n-popover>
 
       <n-popover trigger="hover">
         <template #trigger>
           <n-icon
+            class="icon"
             v-show="talkMode == 2"
             :component="MoreTwo"
             :size="18"
-            class="icon"
             @click="emit('evnet', 'group')"
           />
         </template>
@@ -83,7 +82,7 @@ const onSetMenu = () => {
 </template>
 
 <style lang="less" scoped>
-.box-header {
+.panel-header {
   height: 60px;
   padding: 0 15px;
   display: flex;
@@ -110,29 +109,7 @@ const onSetMenu = () => {
 
   .left-module {
     padding-right: 5px;
-    padding-left: 50px;
-
-    .tag {
-      background: rgb(81 139 254);
-      height: 18px;
-      line-height: 18px;
-      padding: 1px 3px;
-      font-size: 10px;
-      color: white;
-      border-radius: 3px;
-      margin-right: 8px;
-      flex-shrink: 0;
-
-      &.red {
-        background: #f97348;
-      }
-    }
-
-    .nickname {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+    margin-left: 50px;
 
     .keyboard {
       animation: inputfade 1s infinite;
@@ -147,23 +124,9 @@ const onSetMenu = () => {
   }
 
   .right-module {
-    width: 200px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-
-    p {
-      cursor: pointer;
-      margin: 0 8px;
-      font-size: 20px;
-      color: #828f95;
-      &:active i {
-        font-size: 26px;
-        transform: scale(1.3);
-        transition: ease 0.5s;
-        color: red;
-      }
-    }
 
     .icon {
       cursor: pointer;
@@ -240,7 +203,7 @@ const onSetMenu = () => {
   margin-right: 8px;
   flex-shrink: 0;
 
-  &.red-color {
+  &.red {
     background: #f97348;
   }
 }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { onUnmounted, computed } from 'vue'
 import { useDialogueStore } from '@/store'
-import IndexContent from './panel/Index.vue'
-import IndexSider from './sider/Index.vue'
-import IndexAmicable from './amicable.vue'
+import Panel from './panel/Index.vue'
+import Sider from './sider/Index.vue'
+import Amicable from './amicable.vue'
 
 const dialogueStore = useDialogueStore()
 const indexName = computed(() => dialogueStore.index_name)
@@ -25,11 +25,11 @@ onUnmounted(() => {
       }"
       class="el-aside aside bdr-r"
     >
-      <IndexSider />
+      <Sider />
     </aside>
 
     <main class="el-main">
-      <component :is="indexName ? IndexContent : IndexAmicable" />
+      <component :is="indexName ? Panel : Amicable" />
     </main>
   </section>
 </template>
