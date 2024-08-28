@@ -49,7 +49,7 @@ const onSendEmoticon = (type: any, value: any, img = '') => {
   </form>
 
   <section class="el-container is-vertical section height100">
-    <header class="el-header em-header bdr-b">
+    <header class="el-header em-header border-bottom">
       <span>{{ items[tabIndex].name }}</span>
     </header>
 

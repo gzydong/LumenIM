@@ -2,13 +2,13 @@
 import { computed, ref, onMounted } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NIcon, NInput, NVirtualList } from 'naive-ui'
+import { NDropdown, NVirtualList } from 'naive-ui'
 import type { VirtualListInst } from 'naive-ui'
-import { Search, Plus } from '@icon-park/vue-next'
 import TalkItem from './TalkItem.vue'
 import Skeleton from './Skeleton.vue'
 import TabsHeader from './TabsHeader.vue'
 import TopHeader from './TopHeader.vue'
+import SearchHeader from './SearchHeader.vue'
 import { ServeClearTalkUnreadNum } from '@/api/chat'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName, formatTalkItem } from '@/utils/talk'
@@ -60,15 +60,16 @@ const indexName = computed(() => dialogueStore.index_name)
 const onTabTalk = (item: ISession, follow = false) => {
   if (item.index_name === indexName.value) return
 
-  bus.emit(SessionConst.Switch, { talk_mode: item.talk_mode, to_from_id: item.to_from_id })
+  const data = { talk_mode: item.talk_mode, to_from_id: item.to_from_id }
+
+  bus.emit(SessionConst.Switch, data)
 
   searchKeyword.value = ''
   dialogueStore.setDialogue(item)
 
   if (item.unread_num > 0) {
-    ServeClearTalkUnreadNum({ talk_mode: item.talk_mode, to_from_id: item.to_from_id }).then(() => {
-      talkStore.clearUnreadNum(item.index_name)
-    })
+    talkStore.clearUnreadNum(item.index_name)
+    ServeClearTalkUnreadNum(data)
   }
 
   if (follow) scrollToItem(item)
@@ -140,25 +141,11 @@ useEventBus([
 
   <section class="el-container container is-vertical height100">
     <!-- 工具栏目 -->
-    <header class="el-header search-header">
-      <n-input
-        placeholder="搜索好友 / 群聊"
-        v-model:value.trim="searchKeyword"
-        round
-        clearable
-        :on-input="onKeywordChange"
-      >
-        <template #prefix>
-          <n-icon :component="Search" />
-        </template>
-      </n-input>
-
-      <n-button circle @click="isShowGroup = true" style="margin-left: 10px">
-        <template #icon>
-          <n-icon :component="Plus" />
-        </template>
-      </n-button>
-    </header>
+    <SearchHeader
+      v-model="searchKeyword"
+      @on-keyword-change="onKeywordChange"
+      @show-group-box="isShowGroup = true"
+    />
 
     <!-- 置顶栏目 -->
     <TopHeader
@@ -211,16 +198,6 @@ useEventBus([
 </template>
 
 <style lang="less" scoped>
-.search-header {
-  height: 60px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 8px;
-}
-
 .empty-box {
   width: 100%;
   display: flex;

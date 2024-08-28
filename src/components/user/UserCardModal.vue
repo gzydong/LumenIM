@@ -297,7 +297,7 @@ const onAfterEnter = () => {
 
         <footer
           v-if="userInfo.friend_info.is_friend == 'Y'"
-          class="el-footer footer bdr-t flex-center"
+          class="el-footer footer border-top flex-center"
         >
           <n-button
             round
@@ -314,7 +314,7 @@ const onAfterEnter = () => {
           </n-button>
         </footer>
 
-        <footer v-else-if="userId != loginUserId" class="el-footer footer bdr-t flex-center">
+        <footer v-else-if="userId != loginUserId" class="el-footer footer border-top flex-center">
           <template v-if="isOpenFrom">
             <n-input
               type="text"

@@ -19,9 +19,9 @@ defineProps<{
 
 <template>
   <section class="el-container is-vertical section">
-    <header class="el-header bdr-b">{{ title }}</header>
+    <header class="el-header border-bottom">{{ title }}</header>
     <section class="el-container o-hidden">
-      <aside class="el-aside bdr-r">
+      <aside class="el-aside border-right">
         <router-link v-for="(menu, key) in menus" :to="menu.path" :key="key">
           <div
             v-if="menu.show !== false"

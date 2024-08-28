@@ -313,7 +313,7 @@ onMounted(() => {
 </script>
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header header bdr-b">
+    <header class="el-header header border-bottom">
       <p>成员管理({{ filterSearch.length }})</p>
       <div>
         <n-space>
@@ -372,7 +372,7 @@ onMounted(() => {
       </div>
     </main>
 
-    <footer class="el-footer footer bdr-t" v-show="batchDelete">
+    <footer class="el-footer footer border-top" v-show="batchDelete">
       <div class="tips">已选({{ filterCheck.length }})</div>
       <div>
         <n-space>

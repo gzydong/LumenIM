@@ -15,7 +15,7 @@ const statusItem = {
 
 <template>
   <div class="section me-scrollbar me-scrollbar-thumb">
-    <div class="title bdr-b">
+    <div class="title border-bottom">
       <span>上传管理 ({{ uploadsStore.successCount }}/{{ uploadsStore.items.length }})</span>
       <span class="pointer" @click="uploadsStore.close()">关闭</span>
     </div>

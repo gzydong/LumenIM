@@ -409,7 +409,7 @@ useEventBus([
 
 <template>
   <section class="el-container is-vertical editor">
-    <header class="el-header toolbar bdr-t">
+    <header class="el-header toolbar border-top">
       <n-popover
         placement="top-start"
         trigger="click"

@@ -75,7 +75,7 @@ onMounted(() => {
 
 <template>
   <section id="drawer-target" class="el-container is-vertical height100">
-    <header class="el-header me-view-header bdr-b">
+    <header class="el-header me-view-header border-bottom">
       <div>
         <n-tabs v-model:value="tabIndex">
           <n-tab name="all"> 全部群聊({{ items.length }}) </n-tab>

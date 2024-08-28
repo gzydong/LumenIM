@@ -102,7 +102,7 @@ useEventBus([{ name: ContactConst.UpdateRemark, event: onChangeRemark }])
 
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header from-header bdr-b">
+    <header class="el-header from-header border-bottom">
       <div class="groups">
         <n-tabs v-if="groups.length" v-model:value="index">
           <n-tab v-for="tab in groups" :key="tab.id" :name="tab.id">

@@ -7,7 +7,6 @@ import PanelHeader from './Header.vue'
 import PanelContent from './Content.vue'
 import PanelFooter from './Footer.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
-import GroupNotice from '@/components/group/GroupNotice.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 import { useEventBus } from '@/hooks'
@@ -34,12 +33,8 @@ const talkParams = reactive({
   num: computed(() => dialogueStore.members.length)
 })
 
-const state = reactive({
-  // 是否显示群面板
-  isShowGroupAside: false,
-  // 是否显示群公告
-  isShowGroupNotice: false
-})
+// 是否显示群面板
+const isShowGroupAside = ref(false)
 
 const showGroupLaunch = ref({
   groupId: 0,
@@ -47,14 +42,12 @@ const showGroupLaunch = ref({
 })
 
 const events = {
-  notice: () => {
-    state.isShowGroupNotice = !state.isShowGroupNotice
-  },
   group: () => {
-    state.isShowGroupAside = !state.isShowGroupAside
+    isShowGroupAside.value = !isShowGroupAside.value
   },
   'add-group': () => {
     showGroupLaunch.value.groupId = 0
+
     if (talkParams.talkMode === 2) {
       showGroupLaunch.value.groupId = talkParams.toFromId
     }
@@ -76,7 +69,7 @@ useEventBus([
   {
     name: SessionConst.Switch,
     event: () => {
-      state.isShowGroupAside = false
+      isShowGroupAside.value = false
     }
   }
 ])
@@ -85,7 +78,7 @@ useEventBus([
 <template>
   <section id="drawer-container" class="el-container is-vertical">
     <!-- 头部区域 -->
-    <header class="el-header bdr-b">
+    <header class="el-header border-bottom">
       <PanelHeader
         :talk-mode="talkParams.talkMode"
         :username="talkParams.username"
@@ -143,7 +136,7 @@ useEventBus([
   </n-drawer>
 
   <n-drawer
-    v-model:show="state.isShowGroupNotice"
+    v-model:show="isShowGroupAside"
     :width="400"
     placement="right"
     :trap-focus="false"
@@ -151,19 +144,7 @@ useEventBus([
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupNotice :group-id="talkParams.toFromId" @close="state.isShowGroupNotice = false" />
-  </n-drawer>
-
-  <n-drawer
-    v-model:show="state.isShowGroupAside"
-    :width="400"
-    placement="right"
-    :trap-focus="false"
-    :block-scroll="false"
-    show-mask="transparent"
-    to="#drawer-container"
-  >
-    <GroupPanel :group-id="talkParams.toFromId" @close="state.isShowGroupAside = false" />
+    <GroupPanel :group-id="talkParams.toFromId" @close="isShowGroupAside = false" />
   </n-drawer>
 
   <GroupLaunch
@@ -174,8 +155,4 @@ useEventBus([
   />
 </template>
 
-<style lang="less" scoped>
-.drawer-target {
-  overflow: hidden;
-}
-</style>
+<style lang="less" scoped></style>

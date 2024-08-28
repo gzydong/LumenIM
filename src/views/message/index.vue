@@ -21,9 +21,9 @@ onUnmounted(() => {
         min: 200,
         max: 500,
         direction: 'right',
-        key: 'session-list'
+        key: 'aside-session'
       }"
-      class="el-aside aside bdr-r"
+      class="el-aside aside-session border-right"
     >
       <Sider />
     </aside>
@@ -35,7 +35,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="less" scoped>
-.aside {
+.aside-session {
   width: 320px;
   position: relative;
   user-select: none;

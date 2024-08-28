@@ -69,7 +69,7 @@ const onContactModal = (data: { id: number; type: number }[]) => {
 </script>
 
 <template>
-  <section class="section bdr-t">
+  <section class="section border-top">
     <div class="multi-title">
       <span>已选中：{{ dialogueStore.selectItems.length }} 条消息</span>
     </div>

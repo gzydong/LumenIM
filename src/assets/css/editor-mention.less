@@ -1,14 +1,12 @@
 .ql-mention-list-container {
   width: 160px;
   max-height: 200px;
-  border: 1px solid #f0f0f0;
   border-radius: 10px;
   background-color: #ffffff;
-  box-shadow: 0 2px 12px 0 rgba(30, 30, 30, 0.08);
   z-index: 9001;
   overflow: auto;
-  padding: 3px;
-  padding-left: 6px;
+  padding: 3px 3px 3px 3px;
+  border: 1px solid #e0e0e0;
 }
 
 .ql-mention-loading {
@@ -26,35 +24,29 @@
 
 .ql-mention-list-item {
   cursor: pointer;
-  line-height: 44px;
   font-size: 16px;
-  vertical-align: middle;
   padding: 0 10px;
   overflow: hidden;
-}
+  height: 28px;
 
-.ql-mention-list-item.disabled {
-  cursor: auto;
-}
+  &.disabled {
+    cursor: auto;
+  }
 
-.ql-mention-list-item.selected {
-  background-color: var(--im-primary-color);
-  color: #fff;
-  text-decoration: none;
-  border-radius: 3px;
+  &.selected {
+    background-color: var(--im-primary-color);
+    color: #ffffff;
+    border-radius: 2px;
+  }
 }
 
 .mention {
   height: 24px;
   width: 65px;
   border-radius: 6px;
-  background-color: #d3e1eb;
   padding: 3px 0;
   margin-right: 2px;
   user-select: all;
-}
-
-.mention {
   color: var(--im-primary-color);
   background-color: transparent;
 
@@ -64,13 +56,13 @@
 }
 
 .ed-member-item {
-  height: 35px;
+  height: 28px;
   display: flex;
   align-items: center;
 
-  img {
-    height: 22px;
-    width: 22px;
+  > img {
+    height: 18px;
+    width: 18px;
     border-radius: 50%;
   }
 
@@ -86,11 +78,7 @@
 html[theme-mode='dark'] {
   .ql-mention-list-container {
     background-color: rgb(44 44 49);
-    color: #fff;
+    color: #ffffff;
     border: unset;
-
-    .ql-mention-list-item {
-      color: var(--im-text-color-grey);
-    }
   }
 }

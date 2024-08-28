@@ -162,7 +162,7 @@ onMounted(() => {
 </script>
 <template>
   <section class="el-container is-vertical section">
-    <header class="el-header header bdr-b">
+    <header class="el-header header border-bottom">
       <div class="left-icon" @click="emit('to-talk')">
         <n-icon size="21" :component="Comment" />
       </div>
@@ -288,7 +288,7 @@ onMounted(() => {
       </div>
     </main>
 
-    <footer v-show="loading == false" class="el-footer footer bdr-t">
+    <footer v-show="loading == false" class="el-footer footer border-top">
       <template v-if="isAdmin">
         <n-button block type="primary" text-color="#ffffff" @click="onShowManage(true)">
           群聊管理

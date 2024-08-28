@@ -47,7 +47,7 @@ const onMaskClick = () => {
     }"
   >
     <section class="el-container container-box">
-      <aside class="el-aside bdr-r" style="width: 120px">
+      <aside class="el-aside border-right" style="width: 120px">
         <div
           v-for="(menu, index) in menus"
           :key="menu.name"

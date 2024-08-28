@@ -148,7 +148,7 @@ onMounted(() => {
 
 <template>
   <section class="el-container is-vertical height100">
-    <header class="el-header me-view-header bdr-b">
+    <header class="el-header me-view-header border-bottom">
       <div>{{ breadcrumb }} ({{ filter.length }})</div>
 
       <div>
@@ -203,7 +203,7 @@ onMounted(() => {
           <n-empty description="暂无相关数据" />
         </main>
 
-        <aside class="el-aside bdr-l pd-10" style="width: 200px">
+        <aside class="el-aside border-left pd-10" style="width: 200px">
           <n-tree
             key-field="dept_id"
             label-field="dept_name"

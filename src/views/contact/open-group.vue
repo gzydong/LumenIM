@@ -63,7 +63,7 @@ onLoadData()
   <section class="el-container height100">
     <main class="el-main">
       <section class="el-container is-vertical height100">
-        <header class="el-header me-view-header bdr-b">
+        <header class="el-header me-view-header border-bottom">
           <div>公开群聊({{ items.length }})</div>
           <div>
             <n-input

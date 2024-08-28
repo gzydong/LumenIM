@@ -106,7 +106,7 @@ onMounted(() => {
 </script>
 <template>
   <section class="section el-container is-vertical height100">
-    <header class="el-header header bdr-b">
+    <header class="el-header header border-bottom">
       <p>公告管理({{ filterSearch.length }})</p>
       <div>
         <n-space>
@@ -141,7 +141,7 @@ onMounted(() => {
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
       <div
-        class="member-item bdr-b"
+        class="member-item border-bottom"
         v-for="item in filterSearch"
         :key="item.id"
         @click="onRowClick(item)"
@@ -160,7 +160,7 @@ onMounted(() => {
       </div>
     </main>
 
-    <footer class="el-footer footer bdr-t" v-show="batchDelete">
+    <footer class="el-footer footer border-top" v-show="batchDelete">
       <div class="tips">已选({{ filterCheck.length }})</div>
       <div>
         <n-space>

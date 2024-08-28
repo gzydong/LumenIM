@@ -119,7 +119,7 @@ onMounted(() => {
 </script>
 <template>
   <section class="section el-container is-vertical height100">
-    <header class="el-header header bdr-b">
+    <header class="el-header header border-bottom">
       <p>申请管理({{ filterSearch.length }})</p>
       <div>
         <n-space>

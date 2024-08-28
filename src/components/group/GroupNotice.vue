@@ -48,7 +48,7 @@ onMounted(() => {
 
 <template>
   <section class="el-container is-vertical">
-    <header class="el-header bdr-b">
+    <header class="el-header border-bottom">
       <div class="center-text">
         <span>{{ title }}</span>
       </div>

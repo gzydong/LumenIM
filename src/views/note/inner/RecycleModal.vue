@@ -142,7 +142,7 @@ onMounted(() => {
     }"
   >
     <section class="main-box el-container is-vertical o-hidden">
-      <header class="el-header bdr-b header" style="height: 50px">
+      <header class="el-header border-bottom header" style="height: 50px">
         <div class="type-items">
           <span :class="{ active: tabIndex == 1 }" @click="triggerType(1)"> 笔记列表 </span>
           <span :class="{ active: tabIndex == 2 }" @click="triggerType(2)"> 附件列表 </span>

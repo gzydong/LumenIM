@@ -38,7 +38,7 @@ const onSetMenu = () => {
 
 <template>
   <header class="el-header panel-header">
-    <div class="menu bdr-r pointer" @click="onSetMenu">
+    <div class="menu border-right pointer" @click="onSetMenu">
       <n-icon :component="showSessionMenu ? MenuUnfoldOne : MenuFoldOne" :size="22" />
     </div>
 

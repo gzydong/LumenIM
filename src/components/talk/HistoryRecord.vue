@@ -114,7 +114,7 @@ onMounted(() => {
     }"
   >
     <section class="main-box el-container is-vertical o-hidden">
-      <header class="el-header bdr-b search" style="height: 50px">
+      <header class="el-header border-bottom search" style="height: 50px">
         <div class="type-items">
           <span
             v-for="tab in tabs"

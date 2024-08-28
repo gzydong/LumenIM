@@ -75,7 +75,7 @@ onMounted(() => {
 </script>
 <template>
   <section class="section el-container is-vertical height100">
-    <header class="el-header header bdr-b">
+    <header class="el-header header border-bottom">
       <p>设置管理</p>
     </header>
 
