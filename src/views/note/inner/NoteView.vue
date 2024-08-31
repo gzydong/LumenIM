@@ -1,15 +1,16 @@
 <script lang="ts" setup>
+import 'md-editor-v3/lib/style.css'
+
 import { computed, watch, reactive, ref } from 'vue'
 import { NPopover } from 'naive-ui'
+import { MdEditor, MdPreview, type ToolbarNames, type Themes } from 'md-editor-v3'
 import {
   Share,
   Delete as IconDelete,
   DownloadFour,
   FolderFocus,
   Star as IconStar,
-  EditOne,
-  FullScreen,
-  OffScreen
+  EditOne
 } from '@icon-park/vue-next'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import { debounce } from '@/utils/common'
@@ -19,12 +20,43 @@ import { ServeSetAsteriskArticle, ServeEditArticle, ServeDeleteArticle } from '@
 import { ServeUploadImage } from '@/api/upload'
 import { toApi } from '@/api'
 
-import { useNoteStore } from '@/store'
+import { useNoteStore, useSettingsStore } from '@/store'
 const { message, dialog } = useInject()
 
+const settingsStore = useSettingsStore()
 const store = useNoteStore()
-const full = ref(false)
 const detail = computed(() => store.view.detail)
+
+const toolbars: ToolbarNames[] = [
+  'revoke',
+  'next',
+  '-',
+  'bold',
+  'underline',
+  'italic',
+  '-',
+  'title',
+  'strikeThrough',
+  'sub',
+  'sup',
+  'quote',
+  'unorderedList',
+  'orderedList',
+  'task',
+  '-',
+  'codeRow',
+  'code',
+  'link',
+  'image',
+  'table',
+  'mermaid',
+  'katex',
+  '=',
+  'fullscreen',
+  'preview',
+  'previewOnly',
+  'catalog'
+]
 
 const editor = reactive({
   title: detail.value.title,
@@ -46,13 +78,9 @@ const loading = ref(false)
 
 const editorMode = computed(() => (store.view.editorMode == 'preview' ? false : 'plaintext-only'))
 
-const onFull = () => {
-  full.value = !full.value
-}
-
 // 上传笔记图片
 // @ts-ignore
-const onUploadImage = async (event: any, insertImage: any, files: File[]) => {
+const onUploadImage = async (files: File[], callback: any) => {
   if (!files.length) return
 
   const form = new FormData()
@@ -61,12 +89,7 @@ const onUploadImage = async (event: any, insertImage: any, files: File[]) => {
   const { code, data } = await toApi(ServeUploadImage, form)
   if (code != 200) return
 
-  insertImage({ url: data.src, desc: files[0].name })
-}
-
-// 编辑器变动事件
-const onChange = (markdown: string) => {
-  editor.markdown = markdown
+  callback([data.src])
 }
 
 // 保存笔记
@@ -144,11 +167,6 @@ const onDownload = () => {
   downloadBlobFile(store.view.detail.title + '.md', store.view.detail.md_content)
 }
 
-// 查看预览图片
-const onClickImage = (images: string[], currentIndex: number) => {
-  console.log(images, currentIndex)
-}
-
 const onDelete = () => {
   dialog.create({
     showIcon: false,
@@ -179,7 +197,7 @@ const onShare = () => {
 </script>
 
 <template>
-  <section class="el-container section" :class="{ full: full }" v-loading="loadStatus == 0">
+  <section class="el-container section" v-loading="loadStatus == 0">
     <main class="el-main">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">
@@ -189,43 +207,38 @@ const onShare = () => {
 
         <header
           v-if="store.view.editorMode == 'preview'"
-          class="el-header sub-header text-ellipsis"
+          class="el-header sub-header text-ellipsis border-top border-bottom"
         >
           <span>{{ store.view.detail.class_name || '默认分类' }}</span>
           <span>最后更新于 {{ store.view.detail.updated_at }}</span>
         </header>
 
-        <main class="el-main" style="overflow: auto">
-          <v-md-editor
+        <main class="el-main">
+          <MdPreview
             v-if="store.view.editorMode == 'preview'"
+            preview-theme="vuepress"
+            :show-code-row-number="false"
+            style="height: 100%"
             v-model="editor.markdown"
-            mode="preview"
-            height="100%"
-            @image-click="onClickImage"
+            :theme="settingsStore.currentThemeMode as Themes"
           />
 
-          <v-md-editor
+          <MdEditor
             v-else
             v-model="editor.markdown"
-            :mode="store.view.editorMode"
-            height="100%"
-            left-toolbar="undo redo h bold italic strikethrough quote ul ol table link image code preview"
-            right-toolbar=""
-            :disabled-menus="[]"
-            @save="onSaveDebounce(false)"
-            @change="onChange"
-            @upload-image="onUploadImage"
+            :preview="false"
+            :show-code-row-number="false"
+            :theme="settingsStore.currentThemeMode as Themes"
+            style="height: 100%; border: unset"
+            @onSave="onSaveDebounce(false)"
+            :toolbars="toolbars"
+            @onUploadImg="onUploadImage"
           />
         </main>
       </section>
     </main>
 
-    <aside class="el-aside nav-tools">
-      <div class="nav-item" @click="onFull">
-        <n-icon class="icon" size="18" :component="!full ? FullScreen : OffScreen" />
-        <p>全屏</p>
-      </div>
-
+    <aside class="el-aside nav-tools hidden">
       <div
         v-show="store.view.editorMode == 'preview'"
         class="nav-item"
@@ -284,18 +297,51 @@ const onShare = () => {
 </template>
 
 <style lang="less" scoped>
-.full {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: #ffffff;
-}
-
 .section {
   width: 100%;
   height: 100%;
+
+  .editor-title {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    position: relative;
+
+    &.underline {
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    }
+
+    .icon-svg {
+      position: absolute;
+      top: 15px;
+      left: 6px;
+      width: 30px;
+      color: #b2bccd !important;
+    }
+
+    h4 {
+      font-size: 18px;
+      line-height: 30px;
+      width: 100%;
+      margin-left: 10px;
+    }
+  }
+
+  .sub-header {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    overflow: hidden;
+    font-size: 12px;
+
+    span {
+      margin-right: 15px;
+      color: #969292;
+    }
+  }
 
   .nav-tools {
     width: 50px;
@@ -328,66 +374,15 @@ const onShare = () => {
   }
 }
 
-.editor-title {
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 15px 30px;
-  position: relative;
-
-  .icon-svg {
-    position: absolute;
-    top: 15px;
-    left: 6px;
-    width: 30px;
-    color: #b2bccd !important;
-  }
-
-  h4 {
-    font-size: 18px;
-    line-height: 30px;
-    width: 100%;
-    margin-left: 10px;
-  }
-}
-
-.sub-header {
-  height: 30px;
-  display: flex;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 0 10px;
-  overflow: hidden;
-  font-size: 12px;
-
-  span {
-    margin-right: 15px;
-    color: #969292;
-  }
-}
-
-:deep(.v-md-textarea-editor) {
-  pre,
-  textarea {
-    font-size: 16px;
-  }
-
-  textarea {
-    padding: 20px 10px;
-  }
-}
-:deep(.github-markdown-body) {
-  padding: 16px 10px 32px 10px !important;
-}
-
-:deep(.v-md-editor__toolbar) {
-  padding-bottom: 5px;
-}
-
 html[theme-mode='dark'] {
-  .nav-tools {
-    border-left: unset;
-    box-shadow: unset;
+  .section {
+    background-color: #000;
+
+    .nav-tools {
+      border-left: unset;
+      box-shadow: unset;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
   }
 }
 </style>

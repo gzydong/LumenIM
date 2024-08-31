@@ -14,7 +14,6 @@ async function bootstrap() {
   plugins.setPinia(app)
   plugins.setHljsVuePlugin(app)
   plugins.setupNaive(app)
-  plugins.setMdEditor(app)
   plugins.setComponents(app)
   plugins.setupDirective(app)
 

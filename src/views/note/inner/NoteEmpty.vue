@@ -14,6 +14,7 @@
       <g>
         <g>
           <path
+            id="fill1"
             fill-rule="evenodd"
             clip-rule="evenodd"
             fill="#F9FAFA"
@@ -22,6 +23,7 @@
         </g>
       </g>
       <path
+        id="fill3"
         fill-rule="evenodd"
         clip-rule="evenodd"
         fill="#FFFFFF"
@@ -80,6 +82,7 @@
       <g>
         <g>
           <path
+            id="fill2"
             fill-rule="evenodd"
             clip-rule="evenodd"
             fill="#CCCCCC"
@@ -104,5 +107,18 @@
 .section {
   height: 100%;
   width: 100%;
+}
+
+html[theme-mode='dark'] {
+  #fill1 {
+    fill: #313131;
+  }
+
+  #fill2 {
+    fill: #313131;
+  }
+  #fill3 {
+    fill: #6a6a6a;
+  }
 }
 </style>

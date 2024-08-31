@@ -197,7 +197,7 @@ const onSearchInput = debounce(() => {
         display: -webkit-box;
         flex-grow: 1;
         max-height: 42px;
-        font-size: 12px;
+        font-size: 11px;
         color: #b5b5b5;
         line-height: 1.6;
         text-overflow: ellipsis;
@@ -240,7 +240,7 @@ html[theme-mode='dark'] {
   }
 
   .article {
-    background-color: rgba(255, 255, 255, 5%);
+    background-color: rgba(255, 255, 255, 0.04);
   }
 }
 </style>
