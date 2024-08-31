@@ -1,6 +1,6 @@
 <script setup></script>
 <template>
-  <section class="section flex-center">
+  <section class="section flex-center app-drag">
     <svg
       focusable="false"
       viewBox="0 0 220 220"

@@ -10,7 +10,9 @@ import {
   DownloadFour,
   FolderFocus,
   Star as IconStar,
-  EditOne
+  EditOne,
+  CategoryManagement,
+  Time
 } from '@icon-park/vue-next'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import { debounce } from '@/utils/common'
@@ -79,7 +81,6 @@ const loading = ref(false)
 const editorMode = computed(() => (store.view.editorMode == 'preview' ? false : 'plaintext-only'))
 
 // 上传笔记图片
-// @ts-ignore
 const onUploadImage = async (files: File[], callback: any) => {
   if (!files.length) return
 
@@ -201,16 +202,22 @@ const onShare = () => {
     <main class="el-main">
       <section class="el-container is-vertical height100">
         <header class="el-header editor-title">
-          <img src="@/assets/image/md.svg" class="icon-svg" />
+          <img src="@/assets/image/md.svg" class="svg-icon" />
           <h4 :contenteditable="editorMode" v-text="editor.title" @keydown="onTitle" />
         </header>
 
         <header
           v-if="store.view.editorMode == 'preview'"
-          class="el-header sub-header text-ellipsis border-top border-bottom"
+          class="el-header description text-ellipsis"
         >
-          <span>{{ store.view.detail.class_name || '默认分类' }}</span>
-          <span>最后更新于 {{ store.view.detail.updated_at }}</span>
+          <p>
+            <n-icon class="icon" size="14" :component="CategoryManagement" />
+            <span class="categorize">{{ store.view.detail.class_name || '默认分类' }}</span>
+          </p>
+          <p>
+            <n-icon class="icon" size="14" :component="Time" />
+            <span>最后更新于 {{ store.view.detail.updated_at.substring(0, 16) }} 分</span>
+          </p>
         </header>
 
         <main class="el-main">
@@ -238,7 +245,7 @@ const onShare = () => {
       </section>
     </main>
 
-    <aside class="el-aside nav-tools hidden">
+    <aside class="el-aside navs hidden">
       <div
         v-show="store.view.editorMode == 'preview'"
         class="nav-item"
@@ -308,12 +315,7 @@ const onShare = () => {
     padding: 15px 30px;
     position: relative;
 
-    &.underline {
-      text-decoration: underline;
-      text-underline-offset: 5px;
-    }
-
-    .icon-svg {
+    .svg-icon {
       position: absolute;
       top: 15px;
       left: 6px;
@@ -329,21 +331,30 @@ const onShare = () => {
     }
   }
 
-  .sub-header {
+  .description {
     height: 30px;
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 25px;
     overflow: hidden;
-    font-size: 12px;
+    font-size: 14px;
+    background-color: #fafafa;
+    margin: 0 10px;
+    border-radius: 5px;
+    position: relative;
 
-    span {
+    p {
+      display: inline;
+
+      span {
+        margin-left: 5px;
+      }
+
       margin-right: 15px;
-      color: #969292;
     }
   }
 
-  .nav-tools {
+  .navs {
     width: 50px;
     border-left: 1px solid #fff;
     box-shadow: 0 0 6px 0 #f6f5f5;
@@ -378,7 +389,11 @@ html[theme-mode='dark'] {
   .section {
     background-color: #000;
 
-    .nav-tools {
+    .description {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .navs {
       border-left: unset;
       box-shadow: unset;
       background-color: rgba(255, 255, 255, 0.05);

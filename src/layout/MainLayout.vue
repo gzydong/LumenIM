@@ -16,7 +16,7 @@ const settingsStore = useSettingsStore()
       }"
     >
       <aside
-        class="el-aside"
+        class="el-aside app-drag"
         :class="{
           'pd-t15': isElectronMode()
         }"

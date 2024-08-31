@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import { NPopover } from 'naive-ui'
-import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, MoreTwo } from '@icon-park/vue-next'
+import {
+  PeoplePlusOne,
+  MenuUnfoldOne,
+  MenuFoldOne,
+  Announcement,
+  PhoneVideoCall,
+  ViewGridDetail,
+  VideoOne
+} from '@icon-park/vue-next'
 
 const emit = defineEmits(['evnet', 'changeSessionMenu'])
 
@@ -70,12 +78,51 @@ const onSetMenu = () => {
           <n-icon
             class="icon"
             v-show="talkMode == 2"
-            :component="MoreTwo"
+            :component="Announcement"
+            :size="18"
+            @click="emit('evnet', 'announcement')"
+          />
+        </template>
+        群公告
+      </n-popover>
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            class="icon"
+            v-show="talkMode == 1"
+            :component="PhoneVideoCall"
+            :size="18"
+            @click="emit('evnet', 'phone_video_call')"
+          />
+        </template>
+        语音通话
+      </n-popover>
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            class="icon"
+            v-show="talkMode == 1"
+            :component="VideoOne"
+            :size="18"
+            @click="emit('evnet', 'facetime')"
+          />
+        </template>
+        视频通话
+      </n-popover>
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            class="icon"
+            v-show="talkMode == 2"
+            :component="ViewGridDetail"
             :size="18"
             @click="emit('evnet', 'group')"
           />
         </template>
-        更多
+        群详情
       </n-popover>
     </div>
   </header>

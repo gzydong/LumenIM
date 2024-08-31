@@ -26,18 +26,16 @@ const onTriggerUpload = () => {
 const onUpload = async (e: any) => {
   if (e.target.files.length == 0) return
 
-  let file = e.target.files[0]
+  const file = e.target.files[0]
   if (file.size / (1024 * 1024) > 5) {
     return message.info('笔记附件不能大于5M!')
   }
 
-  loading.value = true
-
-  let from = new FormData()
+  const from = new FormData()
   from.append('annex', file)
   from.append('article_id', `${detail.value.article_id}`)
 
-  let { code, data } = await toApi(ServeUploadArticleAnnex, from, { loading })
+  const { code, data } = await toApi(ServeUploadArticleAnnex, from, { loading })
   if (code == 200) {
     store.view.detail.annex_list.push(data)
   }
