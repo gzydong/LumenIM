@@ -6,6 +6,7 @@ import { useUserStore, useDialogueStore, useUploadsStore, useTalkStore } from '@
 import PanelHeader from './Header.vue'
 import PanelContent from './Content.vue'
 import PanelFooter from './Footer.vue'
+// import VoiceCall from './VoiceCall.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
@@ -76,7 +77,9 @@ useEventBus([
 </script>
 
 <template>
-  <section id="drawer-container" class="el-container is-vertical">
+  <!-- <VoiceCall /> -->
+
+  <section class="el-container is-vertical" id="drawer-container2" style="position: relative">
     <!-- 头部区域 -->
     <header class="el-header border-bottom">
       <PanelHeader
@@ -130,7 +133,7 @@ useEventBus([
     :trap-focus="false"
     :block-scroll="false"
     show-mask="transparent"
-    to="#drawer-container"
+    to="#drawer-container2"
   >
     <UploadsModal />
   </n-drawer>
@@ -139,10 +142,8 @@ useEventBus([
     v-model:show="isShowGroupAside"
     :width="400"
     placement="right"
-    :trap-focus="false"
-    :block-scroll="false"
     show-mask="transparent"
-    to="#drawer-container"
+    to="#drawer-container2"
   >
     <GroupPanel :group-id="talkParams.toFromId" @close="isShowGroupAside = false" />
   </n-drawer>

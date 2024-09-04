@@ -12,7 +12,9 @@ import {
   Star as IconStar,
   EditOne,
   CategoryManagement,
-  Time
+  Time,
+  TextMessage,
+  FolderUpload
 } from '@icon-park/vue-next'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import { debounce } from '@/utils/common'
@@ -218,6 +220,15 @@ const onShare = () => {
             <n-icon class="icon" size="14" :component="Time" />
             <span>最后更新于 {{ store.view.detail.updated_at.substring(0, 16) }} 分</span>
           </p>
+          <p>
+            <n-icon class="icon" size="14" :component="TextMessage" />
+            <span>字数 ({{ editor.markdown.length }})</span>
+          </p>
+
+          <p>
+            <n-icon class="icon" size="14" :component="FolderUpload" />
+            <span>附件 ({{ store.view.detail.annex_list.length }})</span>
+          </p>
         </header>
 
         <main class="el-main">
@@ -335,12 +346,12 @@ const onShare = () => {
     height: 30px;
     display: flex;
     align-items: center;
-    padding: 25px;
+    padding: 20px 10px;
     overflow: hidden;
     font-size: 14px;
     background-color: #fafafa;
     margin: 0 10px;
-    border-radius: 5px;
+    border-radius: 3px;
     position: relative;
 
     p {

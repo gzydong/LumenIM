@@ -7,7 +7,7 @@ import { useNoteStore } from '@/store'
 
 const store = useNoteStore()
 
-let activedMenu = ref('0-0')
+const activedMenu = ref('0-0')
 
 const menus = reactive([
   {
@@ -113,14 +113,6 @@ const onToolsMenu = (value) => {
       isEdit: true,
       indexName: '2--1'
     })
-  } else if (value == 'tag') {
-    menus[3].isShowSub = true
-    menus[3].submenus.unshift({
-      id: -1,
-      name: '',
-      isEdit: true,
-      indexName: '3--1'
-    })
   }
 }
 
@@ -224,10 +216,6 @@ loadWatchClassMenu()
             label: '创建分类',
             key: 'class'
           }
-          // {
-          //   label: '创建标签',
-          //   key: 'tag'
-          // }
         ]"
       >
         <n-button circle type="primary" ghost>
@@ -238,8 +226,8 @@ loadWatchClassMenu()
 
     <header class="el-header menu-subheader">
       <span>我的笔记</span>
-      <span
-        ><n-button
+      <span>
+        <n-button
           type="primary"
           size="tiny"
           ghost
@@ -248,8 +236,8 @@ loadWatchClassMenu()
           @click="isShowRecycleModal = true"
         >
           回收站
-        </n-button></span
-      >
+        </n-button>
+      </span>
     </header>
 
     <main class="el-main height100">
@@ -344,13 +332,6 @@ loadWatchClassMenu()
 
   .menu {
     .menu-level1 {
-      // height: 40px;
-      // line-height: 40px;
-      // padding-left: 10px;
-      // position: relative;
-      // user-select: none;
-      // margin-bottom: 2px;
-
       height: 36px;
       line-height: 36px;
       padding-left: 5px;

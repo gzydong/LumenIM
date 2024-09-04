@@ -63,6 +63,10 @@ class Connect {
     this.onImContactApply()
     this.onImGroupApply()
     this.onEventError()
+
+    this.conn.on('webrtc_answer', () => {})
+    this.conn.on('webrtc_ice_candidate', () => {})
+    this.conn.on('webrtc_offer', () => {})
   }
 
   onPing() {

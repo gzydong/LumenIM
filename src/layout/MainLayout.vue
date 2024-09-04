@@ -1,83 +1,61 @@
 <script lang="ts" setup>
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
-import { useSettingsStore } from '@/store'
 import { isElectronMode } from '@/utils/electron'
 
-const settingsStore = useSettingsStore()
+const isElectron = isElectronMode()
 </script>
 
 <template>
-  <section class="container flex-center">
-    <section
-      class="el-container im-container"
-      :class="{
-        'small-screen': !settingsStore.isFullScreen
-      }"
-    >
-      <aside
-        class="el-aside app-drag"
-        :class="{
-          'pd-t15': isElectronMode()
-        }"
-      >
-        <Menu />
-      </aside>
-      <main class="el-main">
-        <router-view />
-      </main>
-    </section>
+  <section class="el-container is-vertical im-container">
+    <header v-if="isElectron" class="el-header app-header flex-center app-drag">
+      LumenIM 在线聊天
+    </header>
+    <main class="el-main">
+      <section class="el-container">
+        <aside class="el-aside"><Menu></Menu></aside>
+        <main class="el-main"><router-view /></main>
+      </section>
+    </main>
   </section>
 
   <Sponsor />
 </template>
 <style lang="less" scoped>
-.container {
+.im-container {
   height: 100vh;
   width: 100vw;
-  background: url(@/assets/image/background.jpeg);
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
+  overflow: hidden;
+  background-color: #ffffff;
 
-  .im-container {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #fff;
+  .app-header {
+    height: 28px;
+    background-color: #1890ff;
+    color: #ffffff;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
 
-    .el-aside {
-      width: 60px;
-      box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
-    }
-
-    &.small-screen {
-      position: fixed;
-      width: 1000px;
-      height: 650px;
-      border-radius: 10px;
-      transition: all 0.5s;
-    }
+  .el-aside {
+    width: 60px;
+    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
   }
 }
 
 html[theme-mode='dark'] {
-  .container {
-    background: unset;
+  .im-container {
+    background-color: unset;
 
-    .im-container {
-      background-color: unset;
-
-      .el-aside {
-        background-color: rgba(255, 255, 255, 0.05);
-        box-shadow: unset;
-      }
+    .app-header {
+      background-color: #383838;
+      color: #9d9696;
     }
-  }
 
-  .small-screen {
-    border: 1px solid #494949;
+    .el-aside {
+      background-color: rgba(255, 255, 255, 0.05);
+      box-shadow: unset;
+    }
   }
 }
 </style>

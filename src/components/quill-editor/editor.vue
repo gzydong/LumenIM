@@ -22,7 +22,7 @@ const emit = defineEmits(['ready', 'change', 'blur', 'focus'])
 
 const model = defineModel()
 
-const props = defineProps({
+const { options } = defineProps({
   options: {
     type: Object,
     required: false,
@@ -41,7 +41,7 @@ function getQuill(): Quill | null {
 const initialize = () => {
   if (!editor.value) return
 
-  quill = new Quill(editor.value, mergeOptions(defaultOptions, props.options))
+  quill = new Quill(editor.value, mergeOptions(defaultOptions, options))
 
   quill.on('selection-change', (range) => {
     emit(!range ? 'blur' : 'focus', quill)
