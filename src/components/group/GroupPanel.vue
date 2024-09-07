@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import 'md-editor-v3/lib/style.css'
 import { reactive, computed, watch, ref, onMounted } from 'vue'
-import { NEmpty, NPopover, NPopconfirm } from 'naive-ui'
+import { NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
-import { Comment, Search, Close, Plus } from '@icon-park/vue-next'
+import MemberDrawer from './MemberDrawer.vue'
+import { Comment, Close, Plus, More } from '@icon-park/vue-next'
+import { MdPreview } from 'md-editor-v3'
 import {
   ServeGroupDetail,
   ServeGetGroupMembers,
@@ -33,32 +36,18 @@ watch(props, () => {
 const editCardPopover = ref(false)
 const isShowGroup = ref(false)
 const isShowManage = ref(false)
+const isShowMemberList = ref(false)
+const remark = ref('')
 const loading = ref(false)
-const state = reactive({
-  keywords: '',
-  detail: {
-    avatar: '',
-    name: '',
-    profile: '',
-    visit_card: '',
-    notice: ''
-  },
-  remark: ''
+const detail = reactive({
+  avatar: '',
+  name: '',
+  profile: '',
+  visit_card: '',
+  notice: ''
 })
 
 const members = ref<any[]>([])
-
-const search = computed<any[]>(() => {
-  if (state.keywords) {
-    return members.value.filter((item: any) => {
-      return (
-        item.nickname.match(state.keywords) != null || item.remark.match(state.keywords) != null
-      )
-    })
-  }
-
-  return members.value
-})
 
 const isLeader = computed(() => {
   return members.value.some((item: any) => {
@@ -94,12 +83,12 @@ async function loadDetail() {
 
   if (code != 200) return
 
-  state.remark = data.visit_card
-  state.detail.avatar = data.avatar
-  state.detail.name = data.group_name
-  state.detail.profile = data.profile
-  state.detail.visit_card = data.visit_card
-  state.detail.notice = data.notice || ''
+  remark.value = data.visit_card
+  detail.avatar = data.avatar
+  detail.name = data.group_name
+  detail.profile = data.profile
+  detail.visit_card = data.visit_card
+  detail.notice = data.notice || ''
 }
 
 /**
@@ -122,17 +111,14 @@ const onClose = () => {
 }
 
 const onSignOut = async () => {
-  const { code } = await toApi(
+  await toApi(
     ServeSecedeGroup,
     { group_id: props.groupId },
     {
-      showMessageText: '已退出群聊'
+      showMessageText: '已退出群聊',
+      onSuccess: onClose
     }
   )
-
-  if (code != 200) return
-
-  onClose()
 }
 
 const onChangeRemark = async () => {
@@ -140,7 +126,7 @@ const onChangeRemark = async () => {
     ServeUpdateGroupCard,
     {
       group_id: props.groupId,
-      remark: state.remark
+      remark: remark.value
     },
     {
       showMessageText: '已更新群名片'
@@ -151,7 +137,7 @@ const onChangeRemark = async () => {
 
   // @ts-ignore
   editCardPopover.value.setShow(false)
-  state.detail.visit_card = state.remark
+  detail.visit_card = remark.value
   loadMembers()
 }
 
@@ -161,16 +147,16 @@ onMounted(() => {
 })
 </script>
 <template>
-  <section class="el-container is-vertical section">
-    <header class="el-header header border-bottom">
-      <div class="left-icon" @click="emit('to-talk')">
-        <n-icon size="21" :component="Comment" />
+  <section id="group-panel" class="el-container is-vertical section">
+    <header class="el-header header border-bottom flex-center">
+      <div class="left-icon flex-center" @click="emit('to-talk')">
+        <n-icon size="20" :component="Comment" />
       </div>
-      <div class="center-text">
+      <div class="center-text flex-center">
         <span>群信息</span>
       </div>
-      <div class="right-icon">
-        <n-icon size="21" :component="Close" @click="onClose" />
+      <div class="right-icon flex-center">
+        <n-icon size="20" :component="Close" @click="onClose" />
       </div>
     </header>
 
@@ -178,14 +164,23 @@ onMounted(() => {
       <div class="info-box">
         <div class="b-box">
           <div class="block">
-            <div class="title">群名称：</div>
+            <div class="title">群名称</div>
           </div>
-          <div class="describe">{{ state.detail.name }}</div>
+          <div class="describe">{{ detail.name }}</div>
         </div>
 
         <div class="b-box">
           <div class="block">
-            <div class="title">群名片：</div>
+            <div class="title">群简介</div>
+          </div>
+          <div class="describe">
+            {{ detail.profile ? detail.profile : '暂无群简介' }}
+          </div>
+        </div>
+
+        <div class="b-box">
+          <div class="block">
+            <div class="title">群名片</div>
             <div class="text">
               <n-popover trigger="click" placement="left" ref="editCardPopover">
                 <template #trigger>
@@ -199,7 +194,7 @@ onMounted(() => {
                     type="text"
                     placeholder="设置我的群名片"
                     maxlength="10"
-                    v-model:value="state.remark"
+                    v-model:value="remark"
                     @keydown.enter="onChangeRemark"
                   />
                   <n-button
@@ -214,75 +209,66 @@ onMounted(() => {
               </n-popover>
             </div>
           </div>
-          <div class="describe">{{ state.detail.visit_card || '未设置' }}</div>
+          <div class="describe">{{ detail.visit_card || '未设置' }}</div>
         </div>
 
         <div class="b-box">
           <div class="block">
-            <div class="title">群成员：</div>
+            <div class="title">群成员</div>
             <div class="text">{{ members.length }}人</div>
           </div>
           <div class="describe">群主已开启“新成员入群可查看所有聊天记录</div>
         </div>
+      </div>
 
-        <div class="b-box">
-          <div class="block">
-            <div class="title">群简介：</div>
+      <div class="member-box2">
+        <div
+          class="member-item"
+          v-for="item in members.slice(0, 10)"
+          :key="item.id"
+          @click="onToInfo(item)"
+        >
+          <div class="avatar flex-center">
+            <im-avatar :size="35" :src="item.avatar" :username="item.nickname" />
           </div>
-          <div class="describe">
-            {{ state.detail.profile ? state.detail.profile : '暂无群简介' }}
-          </div>
+          <p class="text-ellipsis">{{ item.nickname }}马拉喀什吗发啦麻烦卡了</p>
         </div>
 
-        <div class="b-box">
-          <div class="block">
-            <div class="title">群公告：</div>
-            <div class="text">
-              <n-button type="primary" text> 更多 </n-button>
-            </div>
+        <div class="member-item" @click="isShowGroup = true">
+          <div class="avatar flex-center">
+            <n-button circle>
+              <template #icon>
+                <n-icon :component="Plus" />
+              </template>
+            </n-button>
           </div>
-          <div class="describe">暂无群公告</div>
+          <p class="text-ellipsis">添加成员</p>
+        </div>
+
+        <div class="member-item" @click="isShowMemberList = true">
+          <div class="avatar flex-center">
+            <n-button circle>
+              <template #icon>
+                <n-icon :component="More" />
+              </template>
+            </n-button>
+          </div>
+          <p class="text-ellipsis">查看更多</p>
         </div>
       </div>
 
-      <div class="member-box" v-loading="members.length === 0">
-        <div class="flex">
-          <n-input placeholder="搜索" v-model:value="state.keywords" :clearable="true" round>
-            <template #prefix>
-              <n-icon :component="Search" />
-            </template>
-          </n-input>
-
-          <n-button @click="isShowGroup = true" circle class="mt-l15">
-            <template #icon>
-              <n-icon :component="Plus" color="rgb(165 165 170)" />
-            </template>
-          </n-button>
-        </div>
-
-        <div class="table">
-          <div class="theader">
-            <div class="avatar"></div>
-            <div class="nickname">用户昵称</div>
-            <div class="card">群名片</div>
-          </div>
-
-          <div class="row pointer" v-for="item in search" :key="item.id" @click="onToInfo(item)">
-            <div class="avatar">
-              <im-avatar :size="20" :src="item.avatar" :username="item.nickname" />
-            </div>
-            <div class="nickname text-ellipsis">
-              <span>{{ item.nickname ? item.nickname : '-' }}</span>
-              <span class="badge master" v-show="item.leader === 1">群主</span>
-              <span class="badge leader" v-show="item.leader === 2">管理员</span>
-            </div>
-            <div class="card text-ellipsis grey">
-              {{ item.remark || '-' }}
+      <div class="info-box" style="margin-top: 30px">
+        <div class="b-box">
+          <div class="block">
+            <div class="title text-ellipsis">群公告：</div>
+            <div class="text">
+              <n-button type="primary" text> 编辑 </n-button>
             </div>
           </div>
+          <div class="describe">
+            <p v-if="!detail.notice.length">暂无公告</p>
 
-          <div class="mt-t20 pd-t20" v-if="search.length == 0">
-            <n-empty description="暂无相关数据" />
+            <MdPreview v-else style="padding: 0" review-theme="vuepress" v-model="detail.notice" />
           </div>
         </div>
       </div>
@@ -305,7 +291,7 @@ onMounted(() => {
           @positive-click="onSignOut"
         >
           <template #trigger>
-            <n-button block type="error" ghost> 退出群聊 </n-button>
+            <n-button block ghost> 退出群聊 </n-button>
           </template>
           确定要退出群吗？ 退出后不再接收此群消息！
         </n-popconfirm>
@@ -338,6 +324,8 @@ onMounted(() => {
     </footer>
   </section>
 
+  <MemberDrawer v-model="isShowMemberList" :items="members" @on-to-info="onToInfo" />
+
   <GroupLaunch
     v-if="isShowGroup"
     :group-id="groupId"
@@ -348,6 +336,10 @@ onMounted(() => {
   <GroupManage v-if="isShowManage" :group-id="groupId" @close="onShowManage(false)" />
 </template>
 <style lang="less" scoped>
+:deep(.md-editor-preview-wrapper) {
+  padding: 0;
+}
+
 .section {
   width: 100%;
   height: 100%;
@@ -356,20 +348,10 @@ onMounted(() => {
     width: 100%;
     height: 60px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    > div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     .center-text {
       flex: auto;
       font-weight: 500;
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .left-icon,
@@ -407,9 +389,6 @@ onMounted(() => {
             height: 100%;
             line-height: 30px;
             flex: auto;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
           }
 
           .text {
@@ -433,63 +412,36 @@ onMounted(() => {
       }
     }
 
-    .member-box {
-      min-height: 180px;
-      padding: 20px 15px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
+    .member-box2 {
+      width: 100%;
+      display: grid;
+      gap: 5px;
+      grid-template-columns: repeat(6, 50px);
+      grid-auto-rows: min-content;
+      justify-content: space-between;
 
-      .table {
-        margin-top: 15px;
-        .theader {
-          height: 36px;
-          border-bottom: 1px solid var(--border-color);
-          margin-bottom: 15px;
-        }
+      .member-item {
+        width: 50px;
+        height: 70px;
+        cursor: pointer;
 
-        .row {
-          height: 30px;
-          margin: 3px 0;
-          &:hover {
-            .nickname {
-              color: #1890ff;
-            }
+        &:hover {
+          border-radius: 3px;
+          p {
+            color: #1890ff;
           }
         }
 
-        .theader,
-        .row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .avatar {
+          width: 100%;
+          height: 50px;
+        }
 
-          > div {
-            height: 30px;
-            display: flex;
-            align-items: center;
-            font-size: 13px;
-          }
-
-          .avatar {
-            width: 30px;
-            justify-content: flex-start;
-          }
-
-          .nickname {
-            flex: auto;
-          }
-
-          .card {
-            width: 100px;
-            padding-right: 8px;
-            justify-content: flex-end;
-
-            &.grey {
-              font-size: 13px;
-              font-weight: 300;
-            }
-          }
+        p {
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          font-size: 10px;
         }
       }
     }
@@ -501,22 +453,6 @@ onMounted(() => {
     justify-content: space-around;
     height: 60px;
     padding: 15px;
-    .btn {
-      width: 100%;
-    }
-  }
-}
-
-.badge {
-  margin-left: 3px;
-  &.master {
-    color: #dc9b04 !important;
-    background-color: #faf1d1 !important;
-  }
-
-  &.leader {
-    color: #3370ff;
-    background-color: #e1eaff;
   }
 }
 </style>
