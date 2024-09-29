@@ -381,7 +381,8 @@ onMounted(() => {
                 <n-icon
                   class="more-tools pointer"
                   :component="MoreThree"
-                  @click="onContextMenu($event, item)"
+                  @click="closeDropdownMenu"  
+                  @mouseenter="onContextMenu($event, item)"
                 />
               </div>
             </div>

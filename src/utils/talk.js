@@ -5,7 +5,7 @@ export const KEY_INDEX_NAME = 'send_message_index_name'
 export function formatTalkRecord(uid, data) {
   data.float = 'center'
 
-  if (data.user_id > 0) {
+  if (data.user_id) {
     data.float = data.user_id == uid ? 'right' : 'left'
   }
 

@@ -29,3 +29,136 @@ export const ServeGetUserDetail = () => {
 export const ServeGetUserSetting = () => {
   return get('/api/v1/users/setting')
 }
+
+// 获取用户相关系统配置信息
+export const ServeGetUserConfig = () => {
+  return get('/api/v1/users/config')
+}
+
+// 获取用户相关系统配置信息分组
+export const ServeGetUserConfigGroup = () => {
+  return get('/api/v1/users/config/group')
+}
+
+// 修改配置服务接口
+export const ServeUpdateConfig = (data) => {
+  return post('/api/v1/users/config', data)
+}
+
+export function fetchUserInfo() {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "get-user-data",
+    //   },
+    //   (response) => {
+    //     if (response && !response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return get('/api/v1/users/detail')
+}
+
+export function fetchLogin(params) {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "user-login",
+    // url: "/users/login",
+    //     params,
+    //   },
+    //   (response) => {
+    //     if (!response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return post('/api/v1/users/login', params)
+}
+
+export function fetchRegister(params) {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "post-data",
+    //     url: "/user/register",
+    //     params,
+    //   },
+    //   (response) => {
+    //     if (response && !response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return post('/api/v1/users/register', params)
+}
+
+export function fetchUpdateUser(params) {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "post-data",
+    //     url: "/user/update",
+    //     params,
+    //   },
+    //   (response) => {
+    //     if (response && !response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return post('/api/v1/users/update', params)
+}
+
+export function fetchSendSms(params) {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "post-data",
+    //     url: "/user/sendSms",
+    //     params,
+    //   },
+    //   (response) => {
+    //     if (response && !response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return post('/api/v1/users/sendSms', params)
+}
+
+export function queryAppVersion(params) {
+  // return new Promise((resolve, reject) => {
+    // chrome.runtime.sendMessage(
+    //   {
+    //     type: "post-data",
+    //     url: "/echo/checkVersion",
+    //     params,
+    //   },
+    //   (response) => {
+    //     if (!response.status) {
+    //       resolve(response.data);
+    //     } else {
+    //       reject(response);
+    //     }
+    //   }
+    // );
+  // });
+  return post('/api/v1/echo/checkVersion', params)
+}
