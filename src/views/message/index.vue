@@ -4,6 +4,7 @@ import { useDialogueStore } from '@/store'
 import IndexContent from './inner/IndexContent.vue'
 import IndexSider from './inner/IndexSider.vue'
 import IndexAmicable from './inner/IndexAmicable.vue'
+import Chat from '../../components/Chat/index.vue'
 
 const dialogueStore = useDialogueStore()
 const indexName = computed(() => dialogueStore.index_name)
@@ -31,8 +32,8 @@ onUnmounted(() => {
     <main class="el-main">
       <component :is="indexName ? IndexContent : IndexAmicable" />
     </main>
-    <div style="min-width: 350px; background-color: aliceblue; text-align: center; padding-top: 100px">
-      <div>Chat Copilot操作区</div>
+    <div style="width: 350px; min-width: 350px; background-color: aliceblue; text-align: center">
+      <Chat @close="true" @updateApiKey="true" @logout="onUnmounted"></Chat>
     </div>
   </section>
 </template>
