@@ -31,6 +31,9 @@ onUnmounted(() => {
     <main class="el-main">
       <component :is="indexName ? IndexContent : IndexAmicable" />
     </main>
+    <div style="min-width: 350px; background-color: aliceblue; text-align: center; padding-top: 100px">
+      <div>Chat Copilot操作区</div>
+    </div>
   </section>
 </template>
 
