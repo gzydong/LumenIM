@@ -38,7 +38,7 @@ export function useMenu() {
     }
 
     if (isRevoke(uid, item)) {
-      dropdown.options.push({ label: `撤回`, key: 'revoke' })
+      // dropdown.options.push({ label: `撤回`, key: 'revoke' })
     }
 
     dropdown.options.push({ label: '回复', key: 'quote' })

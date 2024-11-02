@@ -25,7 +25,8 @@ import {
   useVisibilityChange,
   useUnreadMessage,
   useConnectStatus,
-  useClickEvent
+  useClickEvent,
+  useAccessPrompt
 } from '@/hooks'
 
 IconProvider({
@@ -57,7 +58,7 @@ const init = () => {
 onMounted(() => {
   init()
   useVisibilityChange()
-  // useAccessPrompt()
+  useAccessPrompt()
   useUnreadMessage()
   useConnectStatus()
   useClickEvent()

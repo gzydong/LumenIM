@@ -84,7 +84,7 @@ loadDetail()
   <section class="el-container container">
     <aside class="el-aside el-aside-left">
       <n-avatar
-        :size="200"
+        :size="150"
         :src="detail.avatar"
         @click="cropper = true"
         class="avatar-box pointer"
@@ -179,7 +179,7 @@ loadDetail()
 }
 
 .el-aside-left {
-  width: 250px;
+  width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -6,9 +6,9 @@ import { useUserStore, useDialogueStore, useUploadsStore, useTalkStore } from '@
 import PanelHeader from './Header.vue'
 import PanelContent from './Content.vue'
 import PanelFooter from './Footer.vue'
-// import VoiceCall from './VoiceCall.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
+import GroupNoticeDrawer from '@/components/group/GroupNoticeDrawer.vue'
 import UploadsModal from '@/components/base/UploadsModal.vue'
 import { useEventBus } from '@/hooks'
 import { SessionConst } from '@/constant/event-bus'
@@ -36,6 +36,7 @@ const talkParams = reactive({
 
 // 是否显示群面板
 const isShowGroupAside = ref(false)
+const isShowGroupNoticeAside = ref(false)
 
 const showGroupLaunch = ref({
   groupId: 0,
@@ -54,6 +55,9 @@ const events = {
     }
 
     showGroupLaunch.value.isShowGroupLaunch = true
+  },
+  announcement: () => {
+    isShowGroupNoticeAside.value = !isShowGroupNoticeAside.value
   }
 }
 
@@ -77,8 +81,6 @@ useEventBus([
 </script>
 
 <template>
-  <!-- <VoiceCall /> -->
-
   <section class="el-container is-vertical" id="drawer-container2" style="position: relative">
     <!-- 头部区域 -->
     <header class="el-header border-bottom">
@@ -137,6 +139,8 @@ useEventBus([
   >
     <UploadsModal />
   </n-drawer>
+
+  <GroupNoticeDrawer v-model="isShowGroupNoticeAside" :group-id="talkParams.toFromId" />
 
   <n-drawer
     v-model:show="isShowGroupAside"

@@ -88,7 +88,7 @@ async function loadDetail() {
   detail.name = data.group_name
   detail.profile = data.profile
   detail.visit_card = data.visit_card
-  detail.notice = data.notice || ''
+  detail.notice = data.notice?.content || ''
 }
 
 /**
@@ -260,15 +260,21 @@ onMounted(() => {
       <div class="info-box" style="margin-top: 30px">
         <div class="b-box">
           <div class="block">
-            <div class="title text-ellipsis">群公告：</div>
+            <div class="title text-ellipsis">群公告</div>
             <div class="text">
-              <n-button type="primary" text> 编辑 </n-button>
+              <!-- <n-button type="primary" text> 编辑 </n-button> -->
             </div>
           </div>
           <div class="describe">
             <p v-if="!detail.notice.length">暂无公告</p>
 
-            <MdPreview v-else style="padding: 0" review-theme="vuepress" v-model="detail.notice" />
+            <MdPreview
+              v-else
+              style="padding: 2px; border-radius: 5px; margin-top: 10px"
+              preview-theme="vuepress"
+              :showCodeRowNumber="false"
+              v-model="detail.notice"
+            />
           </div>
         </div>
       </div>

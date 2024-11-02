@@ -7,8 +7,8 @@ defineProps<{
   extra: ITalkRecordExtraFile
   data: ITalkRecord
   maxWidth?: Boolean
-  talkMode?: Number
-  toFromId?: Number
+  talkMode?: number
+  toFromId?: number
 }>()
 </script>
 
@@ -25,7 +25,7 @@ defineProps<{
       </div>
     </div>
     <div class="footer">
-      <a @click="download(data.msg_id)">下载</a>
+      <a @click="download(data.msg_id, talkMode)">下载</a>
       <a>在线预览</a>
     </div>
   </section>

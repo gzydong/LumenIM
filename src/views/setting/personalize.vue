@@ -1,17 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { NSwitch, NRadioGroup, NRadio } from 'naive-ui'
+import { NRadioGroup, NRadio } from 'naive-ui'
 import { useSettingsStore } from '@/store'
-import { isElectronMode } from '@/utils/electron'
 
 const settingsStore = useSettingsStore()
-
-const isFullScreen = computed({
-  get: () => settingsStore.isFullScreen,
-  set: (val) => {
-    settingsStore.setFullScreen(val)
-  }
-})
 
 const themeMode = computed({
   get: () => settingsStore.themeMode,
@@ -54,16 +46,6 @@ const themes = [
               </n-radio>
             </n-space>
           </n-radio-group>
-        </div>
-      </div>
-
-      <div v-show="!isElectronMode()" class="view-list">
-        <div class="content">
-          <div class="name">主题模式</div>
-          <div class="desc">当前主题模式 ：{{ isFullScreen ? '全屏模式' : '居中模式' }}</div>
-        </div>
-        <div class="tools">
-          <n-switch size="medium" v-model:value="isFullScreen" />
         </div>
       </div>
 

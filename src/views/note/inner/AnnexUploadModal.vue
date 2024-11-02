@@ -47,6 +47,9 @@ const onDelete = (item: NoteFileItem) => {
     content: `你确定要删除笔记附件【${item.annex_name}】吗？`,
     negativeText: '取消',
     positiveText: '删除',
+    positiveButtonProps: {
+      textColor: '#ffffff'
+    },
     onPositiveClick: async () => {
       let { code } = await toApi(ServeDeleteArticleAnnex, { annex_id: item.annex_id })
       if (code != 200) return
@@ -97,7 +100,13 @@ const onDelete = (item: NoteFileItem) => {
 
       <div class="annex-footer">
         <p class="notice-text">文件大小在5M以内<br />最多可支持上传10个附件</p>
-        <n-button type="primary" size="medium" :loading="loading" @click="onTriggerUpload">
+        <n-button
+          text-color="#fff"
+          type="primary"
+          size="medium"
+          :loading="loading"
+          @click="onTriggerUpload"
+        >
           <template #icon>
             <n-icon :component="UploadOne" />
           </template>
@@ -111,7 +120,7 @@ const onDelete = (item: NoteFileItem) => {
 <style lang="less" scoped>
 .section {
   padding: 15px;
-  background: #ffffff;
+  background: var(--im-bg-color);
 
   .title {
     display: flex;
@@ -125,7 +134,7 @@ const onDelete = (item: NoteFileItem) => {
 
 .annex-box {
   width: 300px;
-  background-color: white;
+  background: var(--im-bg-color);
 
   .annex-main {
     min-height: 30px;
@@ -165,7 +174,6 @@ const onDelete = (item: NoteFileItem) => {
 
         .filename {
           padding-left: 5px;
-          color: #172b4d;
           font-size: 14px;
           font-weight: 400;
           line-height: 1.6;

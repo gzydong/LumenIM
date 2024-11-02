@@ -6,8 +6,8 @@ import {
   MenuFoldOne,
   Announcement,
   PhoneVideoCall,
-  ViewGridDetail,
-  VideoOne
+  VideoOne,
+  More
 } from '@icon-park/vue-next'
 
 const emit = defineEmits(['evnet', 'changeSessionMenu'])
@@ -65,18 +65,6 @@ const onSetMenu = () => {
         <template #trigger>
           <n-icon
             class="icon"
-            :component="PeoplePlusOne"
-            :size="18"
-            @click="emit('evnet', 'add-group')"
-          />
-        </template>
-        {{ talkMode === 1 ? '发起群聊' : '邀请好友' }}
-      </n-popover>
-
-      <n-popover trigger="hover">
-        <template #trigger>
-          <n-icon
-            class="icon"
             v-show="talkMode == 2"
             :component="Announcement"
             :size="18"
@@ -86,7 +74,7 @@ const onSetMenu = () => {
         群公告
       </n-popover>
 
-      <n-popover trigger="hover">
+      <!-- <n-popover trigger="hover">
         <template #trigger>
           <n-icon
             class="icon"
@@ -110,6 +98,18 @@ const onSetMenu = () => {
           />
         </template>
         视频通话
+      </n-popover> -->
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            class="icon"
+            :component="PeoplePlusOne"
+            :size="18"
+            @click="emit('evnet', 'add-group')"
+          />
+        </template>
+        {{ talkMode === 1 ? '发起群聊' : '邀请好友' }}
       </n-popover>
 
       <n-popover trigger="hover">
@@ -117,7 +117,7 @@ const onSetMenu = () => {
           <n-icon
             class="icon"
             v-show="talkMode == 2"
-            :component="ViewGridDetail"
+            :component="More"
             :size="18"
             @click="emit('evnet', 'group')"
           />

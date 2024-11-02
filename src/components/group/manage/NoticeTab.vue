@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
-import { NSpace, NEmpty } from 'naive-ui'
-import { Search, Plus } from '@icon-park/vue-next'
-import NoticeEditor from './NoticeEditor.vue'
-import { ServeGetGroupNotices } from '@/api/group'
+import 'md-editor-v3/lib/style.css'
+import { MdEditor } from 'md-editor-v3'
 
-const emit = defineEmits(['close'])
+import { ref, onMounted } from 'vue'
+import { ServeGroupDetail, ServeEditGroupNotice } from '@/api/group'
+import { toApi } from '@/api'
+import { ServeUploadImage } from '@/api/upload'
+
 const props = defineProps({
   groupId: {
     type: Number,
@@ -13,173 +14,81 @@ const props = defineProps({
   }
 })
 
-interface Item {
-  id: number
-  title: string
-  content: string
-  is_confirm: number
-  is_top: number
-  creator_id: number
-  created_at: string
-  updated_at: string
-  confirm_users: string
-  is_delete: boolean
-}
-
-const keywords = ref('')
-const batchDelete = ref(false)
-const items = ref<Item[]>([])
-const editor = reactive({
-  isShow: false,
-  id: 0,
-  gid: 0,
-  title: '',
-  content: ''
-})
-
-const filterCheck = computed(() => {
-  return items.value.filter((item: Item) => item.is_delete)
-})
-
-const filterSearch = computed(() => {
-  if (!keywords.value.length) {
-    return items.value
-  }
-
-  return items.value.filter((item: Item) => {
-    return item.title.match(keywords.value) != null
-  })
-})
-
-const onLoadData = () => {
-  ServeGetGroupNotices({
-    group_id: props.groupId
-  }).then((res) => {
-    if (res.code == 200) {
-      items.value = res.data.items || []
+const editorContent = ref('')
+const onSave = async () => {
+  await toApi(
+    ServeEditGroupNotice,
+    {
+      group_id: props.groupId,
+      content: editorContent.value
+    },
+    {
+      showMessageText: '已保存'
     }
-  })
+  )
 }
 
-const onBatchDelete = () => {
-  if (!filterCheck.value.length) {
-    return
-  }
+const onUploadImage = async (files: File[], callback: any) => {
+  if (!files.length) return
+
+  const form = new FormData()
+  form.append('file', files[0])
+
+  const { code, data } = await toApi(ServeUploadImage, form)
+  if (code != 200) return
+
+  callback([data.src])
 }
 
-const onRowClick = (item: any) => {
-  if (batchDelete.value == true) {
-    console.log(item)
-  } else {
-    editor.id = item.id
-    editor.gid = props.groupId
-    editor.title = item.title
-    editor.content = item.content
-    editor.isShow = true
-  }
-}
+const loadDetail = async () => {
+  const { code, data } = await toApi(ServeGroupDetail, { group_id: props.groupId })
 
-const onAdd = () => {
-  editor.id = 0
-  editor.gid = props.groupId
-  editor.title = ''
-  editor.content = ''
-  editor.isShow = true
-}
+  if (code != 200) return
 
-const onCancelDelete = () => {
-  items.value.forEach((item: Item) => {
-    item.is_delete = false
-  })
-
-  batchDelete.value = false
-}
-
-const onEditorSuccess = () => {
-  editor.isShow = false
-  onLoadData()
+  editorContent.value = data.notice?.content || ''
 }
 
 onMounted(() => {
-  onLoadData()
+  loadDetail()
 })
 </script>
 <template>
   <section class="section el-container is-vertical height100">
     <header class="el-header header border-bottom">
-      <p>公告管理({{ filterSearch.length }})</p>
-      <div>
-        <n-space>
-          <n-input
-            placeholder="搜索"
-            v-model:value.trim="keywords"
-            clearable
-            style="width: 200px"
-            round
-          >
-            <template #prefix>
-              <n-icon :component="Search" />
-            </template>
-          </n-input>
-
-          <n-button circle @click="onAdd">
-            <template #icon>
-              <n-icon :component="Plus" />
-            </template>
-          </n-button>
-        </n-space>
-      </div>
+      <p>群公告</p>
     </header>
 
-    <main v-if="filterSearch.length === 0" class="el-main main flex-center">
-      <n-empty description="暂无相关数据">
-        <template #icon>
-          <img src="@/assets/image/no-data.svg" />
-        </template>
-      </n-empty>
+    <main class="el-main main">
+      <MdEditor
+        :preview="false"
+        v-model="editorContent"
+        :footers="[]"
+        :toolbars="[
+          'revoke',
+          'bold',
+          'underline',
+          'italic',
+          'title',
+          'strikeThrough',
+          'sub',
+          'sup',
+          'quote',
+          'unorderedList',
+          'orderedList',
+          'code',
+          'link',
+          'image',
+          'table',
+          '=',
+          'previewOnly',
+          'save'
+        ]"
+        @save="onSave"
+        @onUploadImg="onUploadImage"
+        style="border: none; height: 100%"
+      />
     </main>
-
-    <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
-      <div
-        class="member-item border-bottom"
-        v-for="item in filterSearch"
-        :key="item.id"
-        @click="onRowClick(item)"
-      >
-        <div class="content pointer o-hidden">
-          <div class="item-title">
-            <p class="nickname text-ellipsis">
-              <span>{{ item.title }}</span>
-            </p>
-            <p>
-              <span class="date">{{ item.updated_at }}</span>
-            </p>
-          </div>
-          <div class="item-text text-ellipsis">{{ item.content }}</div>
-        </div>
-      </div>
-    </main>
-
-    <footer class="el-footer footer border-top" v-show="batchDelete">
-      <div class="tips">已选({{ filterCheck.length }})</div>
-      <div>
-        <n-space>
-          <n-button type="primary" ghost size="small" @click="onCancelDelete"> 取消 </n-button>
-          <n-button type="error" size="small" @click="onBatchDelete"> 删除 </n-button>
-        </n-space>
-      </div>
-    </footer>
   </section>
-
-  <NoticeEditor
-    v-if="editor.isShow"
-    :id="editor.id"
-    :group-id="editor.gid"
-    :title="editor.title"
-    :content="editor.content"
-    @success="onEditorSuccess"
-    @close="editor.isShow = false"
-  />
 </template>
 <style lang="less" scoped>
 .header {
@@ -191,63 +100,6 @@ onMounted(() => {
 }
 
 .main {
-  padding: 0 15px;
-  box-sizing: border-box;
-}
-
-.member-item {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  user-select: none;
-  padding: 5px 0 15px 0;
-
-  .content {
-    width: 100%;
-    height: inherit;
-
-    .item-title {
-      height: 30px;
-      width: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 500;
-
-      .date {
-        color: #989898;
-        font-size: 12px;
-      }
-    }
-
-    .item-text {
-      width: inherit;
-      height: 20px;
-      color: var(--im-text-color-grey);
-
-      font-size: 12px;
-    }
-  }
-
-  &:hover {
-    .item-title {
-      color: #2196f3;
-    }
-  }
-}
-
-.footer {
-  height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 15px;
-  background-color: #fdf9f9;
-  border-bottom-right-radius: 15px;
-
-  .tips {
-    font-size: 16px;
-  }
+  border-radius: 10px;
 }
 </style>

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css'
+import { MdEditor, MdPreview, type ToolbarNames, type Themes } from 'md-editor-v3'
 
 import { computed, watch, reactive, ref } from 'vue'
 import { NPopover } from 'naive-ui'
-import { MdEditor, MdPreview, type ToolbarNames, type Themes } from 'md-editor-v3'
 import {
   Share,
   Delete as IconDelete,
@@ -177,6 +177,9 @@ const onDelete = () => {
     content: '笔记删除后30天之内，可在回收站中进行恢复。',
     positiveText: '确定',
     negativeText: '取消',
+    positiveButtonProps: {
+      textColor: '#ffffff'
+    },
     onPositiveClick: async () => {
       await toApi(
         ServeDeleteArticle,
@@ -282,7 +285,7 @@ const onShare = () => {
         <p>收藏</p>
       </div>
 
-      <n-popover placement="left" trigger="click" :show-arrow="true" :raw="true">
+      <n-popover placement="left" trigger="click" :show-arrow="false" :raw="true">
         <template #trigger>
           <div
             v-show="detail.article_id"

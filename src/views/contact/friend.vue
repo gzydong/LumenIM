@@ -17,6 +17,7 @@ const talkStore = useTalkStore()
 const { onDeleteContact, onEditContactRemark, toShowUserInfo } = useContact()
 
 const isShowUserSearch = ref(false)
+const loading = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
 const index = ref(0)
@@ -37,7 +38,7 @@ const filter: any = computed(() => {
 })
 
 const loadContactList = async () => {
-  const { code, data } = await toApi(ServeGetContacts)
+  const { code, data } = await toApi(ServeGetContacts, {}, { loading })
   if (code != 200) return
 
   items.value = data?.items || []
@@ -191,7 +192,7 @@ useEventBus([{ name: ContactConst.UpdateRemark, event: onChangeRemark }])
       </n-virtual-list>
     </main>
 
-    <main class="el-main flex-center" v-else>
+    <main class="el-main flex-center" v-else v-loading="loading">
       <n-empty description="暂无相关数据" />
     </main>
   </section>

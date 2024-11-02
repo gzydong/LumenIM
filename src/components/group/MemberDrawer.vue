@@ -29,7 +29,7 @@ const filters = computed(() => {
 </script>
 <template>
   <n-drawer v-model:show="isShow" :width="320" placement="right" to="#group-panel">
-    <n-drawer-content :body-content-style="{ padding: 0 }" title="群成员" closable>
+    <n-drawer-content :body-content-style="{ padding: 0 }" title="群聊成员" closable>
       <div class="member-box">
         <div>
           <n-input size="small" placeholder="搜索" v-model:value="keyword" :clearable="true" round>
@@ -84,11 +84,11 @@ const filters = computed(() => {
 }
 
 .member-box {
-  min-height: 180px;
-  padding: 20px 15px;
+  padding: 15px;
 
   .table {
-    margin-top: 15px;
+    margin-top: 20px;
+
     .theader {
       height: 36px;
       border-bottom: 1px solid var(--border-color);
@@ -103,6 +103,7 @@ const filters = computed(() => {
           color: #1890ff;
         }
       }
+      padding: 0 8px;
     }
 
     .theader,
@@ -129,7 +130,6 @@ const filters = computed(() => {
 
       .card {
         width: 100px;
-        padding-right: 8px;
         justify-content: flex-end;
 
         &.grey {
@@ -137,6 +137,15 @@ const filters = computed(() => {
           font-weight: 300;
         }
       }
+    }
+  }
+}
+
+html[theme-mode='dark'] {
+  .member-box {
+    .row:hover {
+      background-color: rgba(255, 255, 255, 15%);
+      border-radius: 5px;
     }
   }
 }
