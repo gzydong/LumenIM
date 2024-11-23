@@ -5,6 +5,7 @@ import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
 import { toApi } from '@/api'
 import { setToken } from '@/utils/auth'
+import { rsaEncrypt } from '@/utils/rsa'
 import { playMusic } from '@/utils/talk'
 import { useInject } from '@/hooks'
 import ws from '@/connect'
@@ -42,7 +43,7 @@ const onLogin = async () => {
     ServeLogin,
     {
       mobile: model.username,
-      password: model.password,
+      password: rsaEncrypt(model.password),
       platform: 'web'
     },
     {
@@ -72,10 +73,10 @@ const onValidate = (e: Event) => {
 
 const onClickAccount = (type: number) => {
   if (type == 1) {
-    model.username = '18798272054'
+    model.username = '13800000001'
     model.password = 'admin123'
   } else {
-    model.username = '18798272055'
+    model.username = '13800000002'
     model.password = 'admin123'
   }
 
@@ -134,8 +135,8 @@ const onClickAccount = (type: number) => {
         <span style="color: #ccc; font-weight: 300"> 预览账号</span>
       </n-divider>
       <div class="preview-account">
-        <p @click="onClickAccount(1)">预览账号:187****2054 / 密码: admin123</p>
-        <p @click="onClickAccount(2)">预览账号:187****2055 / 密码: admin123</p>
+        <p @click="onClickAccount(1)">预览账号:187****0001 / 密码: admin123</p>
+        <p @click="onClickAccount(2)">预览账号:187****0002 / 密码: admin123</p>
       </div>
     </footer>
   </section>

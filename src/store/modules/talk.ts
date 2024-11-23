@@ -102,10 +102,6 @@ export const useTalkStore = defineStore('talk', {
           value.draft_text = JSON.parse(draft).text || ''
         }
 
-        if (value.is_robot === 1) {
-          value.is_online = 1
-        }
-
         return value
       })
 

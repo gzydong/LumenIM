@@ -1,14 +1,6 @@
 <script lang="ts" setup>
 import { NPopover } from 'naive-ui'
-import {
-  PeoplePlusOne,
-  MenuUnfoldOne,
-  MenuFoldOne,
-  Announcement,
-  PhoneVideoCall,
-  VideoOne,
-  More
-} from '@icon-park/vue-next'
+import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, Announcement, More } from '@icon-park/vue-next'
 
 const emit = defineEmits(['evnet', 'changeSessionMenu'])
 
@@ -33,31 +25,37 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  showSessionMenu: {
+  menu: {
     type: Boolean,
     default: false
+  },
+  description: {
+    type: String,
+    default: ''
   }
 })
 
 const onSetMenu = () => {
-  emit('changeSessionMenu', !props.showSessionMenu)
+  emit('changeSessionMenu', !props.menu)
 }
 </script>
 
 <template>
   <header class="el-header panel-header">
     <div class="menu border-right pointer" @click="onSetMenu">
-      <n-icon :component="showSessionMenu ? MenuUnfoldOne : MenuFoldOne" :size="22" />
+      <n-icon :component="menu ? MenuUnfoldOne : MenuFoldOne" :size="22" />
     </div>
 
     <div class="module left-module">
-      <span class="tag" :class="{ red: talkMode == 1 }">
-        {{ talkMode == 1 ? '好友' : '群聊' }}
+      <span class="tag" v-show="talkMode == 2"> 群聊 </span>
+      <span class="tag red" v-show="talkMode == 1 && !online"> 好友 </span>
+      <span class="tag" v-show="talkMode == 1 && online" style="background-color: rgb(65, 174, 60)">
+        在线
       </span>
-      <span class="online online-status" v-show="online"></span>
       <span class="nickname text-ellipsis">{{ username }}</span>
       <span class="keyboard" v-show="keyboard">对方正在输入...</span>
       <span class="num" v-show="talkMode == 2 && num">({{ num }})</span>
+      <p class="desc text-ellipsis" v-show="description.length">{{ description }}</p>
     </div>
 
     <div class="module right-module">
@@ -106,7 +104,7 @@ const onSetMenu = () => {
             class="icon"
             :component="PeoplePlusOne"
             :size="18"
-            @click="emit('evnet', 'add-group')"
+            @click="emit('evnet', 'addGroup')"
           />
         </template>
         {{ talkMode === 1 ? '发起群聊' : '邀请好友' }}
@@ -157,6 +155,9 @@ const onSetMenu = () => {
   .left-module {
     padding-right: 5px;
     margin-left: 50px;
+    position: relative;
+    flex: 1 auto;
+    // background-color: rebeccapurple;
 
     .keyboard {
       animation: inputfade 1s infinite;
@@ -165,8 +166,13 @@ const onSetMenu = () => {
       font-size: 12px;
     }
 
-    .online {
-      margin-left: 10px;
+    .desc {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 80%;
+      font-size: 12px;
+      opacity: 0.4;
     }
   }
 

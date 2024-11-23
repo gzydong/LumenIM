@@ -25,13 +25,13 @@ export function getToken(): string {
  *
  * @returns token
  */
-export function setToken(token: string, expire: number) {
+export function setToken(token: string, expire: number): void {
   storage.set(AccessToken, token, expire)
 }
 
 /**
  * 删除登录授权 Token
  */
-export function deleteToken() {
+export function deleteToken(): void {
   storage.remove(AccessToken)
 }

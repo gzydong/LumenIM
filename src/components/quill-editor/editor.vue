@@ -4,13 +4,15 @@ import 'quill/dist/quill.snow.css'
 import '@/assets/css/editor-mention.less'
 import { ref, onMounted, onUnmounted } from 'vue'
 import Quill from 'quill'
-import 'quill-mention/autoregister'
+import { Mention, MentionBlot } from 'quill-mention'
+
 import { defaultOptions } from './const'
 import { mergeOptions } from './util'
 
 import EmojiBlot from './formats/emoji'
 import QuoteBlot from './formats/quote'
 
+Quill.register({ 'blots/mention': MentionBlot, 'modules/mention': Mention })
 Quill.register('formats/emoji', EmojiBlot)
 Quill.register('formats/quote', QuoteBlot)
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ArrowUp, ArrowDown, CloseRemind } from '@icon-park/vue-next'
-import Xtime from '@/components/base/Xtime.vue'
+import Xtime from '@/components/basic/Xtime.vue'
 import { ISession } from '@/types/chat'
 
 const emit = defineEmits(['tab-talk', 'top-talk'])
@@ -40,9 +40,6 @@ defineProps<{
             <span class="detail" v-html="data.draft_text" />
           </template>
           <template v-else>
-            <span class="online" v-show="data.talk_mode === 1 && data.is_online === 1">
-              [在线]
-            </span>
             <span class="detail" v-html="data.msg_text" />
           </template>
         </div>
@@ -67,12 +64,10 @@ defineProps<{
 .talk-item {
   --actived-bg: rgba(24, 144, 255, 0.12);
 
-  padding: 8px 5px;
+  padding: 8px 10px;
   height: 50px;
   display: flex;
   align-items: center;
-  border-radius: 10px;
-  margin: 0 5px;
 
   &-avatar {
     height: 34px;

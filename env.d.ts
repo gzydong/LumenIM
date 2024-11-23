@@ -5,9 +5,6 @@ declare module '*.vue' {
   const componentOptions: ComponentOptions
   export default componentOptions
 }
-
-declare module 'quill-image-uploader'
-
 declare interface Window {
   $electron: {
     // 更新系统托盘未读数

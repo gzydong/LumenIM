@@ -1,4 +1,6 @@
-import { EmbedBlot } from 'parchment'
+import Quill from 'quill'
+
+const { EmbedBlot } = Quill.import('parchment')
 
 class EmojiBlot extends EmbedBlot {
   static blotName = 'emoji'

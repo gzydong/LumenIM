@@ -2,18 +2,6 @@ import { parseTime } from './datetime'
 
 export const KEY_INDEX_NAME = 'send_message_index_name'
 
-export function formatTalkRecord(uid, data) {
-  data.float = 'center'
-
-  if (data.user_id > 0) {
-    data.float = data.user_id == uid ? 'right' : 'left'
-  }
-
-  data.is_check = false
-
-  return data
-}
-
 // 播放消息提示
 export function playMusic(muted = false) {
   let audio = document.getElementById('audio')
@@ -36,7 +24,6 @@ export function formatTalkItem(params) {
     avatar: '',
     is_disturb: 2,
     is_top: 2,
-    is_online: 2,
     is_robot: 2,
     unread_num: 0,
     content: '...',

@@ -7,17 +7,17 @@ interface IStorage {
 
 class Storage {
   // 缓存前缀
-  prefix = ''
+  private prefix = ''
 
   // 缓存驱动
-  storage: IStorage = localStorage
+  private storage: IStorage = localStorage
 
   constructor(prefix = '', storage: IStorage) {
     this.prefix = prefix
     this.storage = storage
   }
 
-  cacheKey(key: string) {
+  private cacheKey(key: string) {
     return `${this.prefix}_${key}`.toUpperCase()
   }
 

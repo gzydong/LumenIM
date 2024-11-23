@@ -14,17 +14,17 @@ class Revoke extends Base {
   /**
    * 发送者ID
    */
-  sender_id: number = 0
+  from_id: number = 0
 
   /**
    * 接收者ID
    */
-  receiver_id: number = 0
+  to_from_id: number = 0
 
   /**
    * 聊天类型[1:私聊;2:群聊;]
    */
-  talk_type: number = 0
+  talk_mode: number = 0
 
   /**
    * 消息ID
@@ -40,9 +40,9 @@ class Revoke extends Base {
     super()
 
     this.resource = resource
-    this.sender_id = resource.sender_id
-    this.receiver_id = resource.receiver_id
-    this.talk_type = resource.talk_type
+    this.from_id = resource.from_id
+    this.to_from_id = resource.to_from_id
+    this.talk_mode = resource.talk_mode
     this.msg_id = resource.msg_id
 
     this.handle()
@@ -53,7 +53,7 @@ class Revoke extends Base {
    * @returns
    */
   isCurrSender(): boolean {
-    return this.sender_id == this.getAccountId()
+    return this.from_id == this.getAccountId()
   }
 
   /**
@@ -62,30 +62,30 @@ class Revoke extends Base {
    * @return String
    */
   getIndexName(): string {
-    if (this.talk_type == 2) {
-      return `${this.talk_type}_${this.receiver_id}`
+    if (this.talk_mode == 2) {
+      return `${this.talk_mode}_${this.to_from_id}`
     }
 
-    const receiver_id = this.isCurrSender() ? this.receiver_id : this.sender_id
+    const to_from_id = this.isCurrSender() ? this.to_from_id : this.from_id
 
-    return `${this.talk_type}_${receiver_id}`
+    return `${this.talk_mode}_${to_from_id}`
   }
 
   handle() {
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
-      msg_text: this.resource.text,
+      msg_text: this.resource.remark,
       updated_at: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}') as string
     })
 
     // 判断当前是否正在和好友对话
-    if (!this.isTalk(this.talk_type, this.receiver_id)) {
+    if (!this.isTalk(this.talk_mode, this.to_from_id)) {
       return
     }
 
     useDialogueStore().updateDialogueRecord({
       msg_id: this.msg_id,
-      is_revoke: 1
+      is_revoked: 1
     })
   }
 }

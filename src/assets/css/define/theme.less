@@ -19,23 +19,27 @@ html {
   // message
   --im-message-bg-color: #f7f7f7;
   --im-message-border-color: #efeff5;
-  --im-message-left-bg-color: #eff0f1;
+  --im-message-left-bg-color: rgba(46, 50, 56, 0.05);
   --im-message-left-text-color: #333;
   --im-message-left-link-text-color: #1890ff;
 
   --im-message-right-bg-color: #daf3fd;
   --im-message-right-text-color: #333;
   --im-message-right-link-text-color: #1890ff;
+
+  --chat-assistant-bg-color: rgba(46, 50, 56, 0.05);
+  --chat-user-bg-color: #daf3fd;
+  --chat-bg-grey-color: rgba(46, 50, 56, 0.05);
 }
 
 // 黑色主题
 html[theme-mode='dark'] {
   --im-primary-color: #1890ff;
   --im-bg-color: #1e1e1e;
-  --line-border-color: rgb(255 255 255 / 9%);
-  --border-color: rgb(255 255 255 / 9%);
-  --im-text-color: rgb(255 255 255 / 82%);
-  --im-text-color-grey: color: rgb(255 255 255 / 52%);
+  --line-border-color: rgba(255, 255, 255, 0.09);
+  --border-color: rgba(255, 255, 255, 0.09);
+  --im-text-color: rgba(255, 255, 255, 0.82);
+  --im-text-color-grey: rgba(255, 255, 255, 0.52);
   --im-active-bg-color: #2c2c32;
   --im-hover-bg-color: #2c2c32;
 
@@ -43,19 +47,23 @@ html[theme-mode='dark'] {
   --im-note-list-bg-color: #1b1b1b;
 
   // 滚动条
-  --im-scrollbar: #e4e4e5;
-  --im-scrollbar-thumb: #625f5f;
+  --im-scrollbar: transparent;
+  --im-scrollbar-thumb: #707073;
 
   // message
   --im-message-bg-color: #363636;
-  --im-message-border-color: rgb(255 255 255 / 9%);
+  --im-message-border-color: rgba(255, 255, 255, 0.09);
   --im-message-left-bg-color: #474747;
   --im-message-left-text-color: var(--im-text-color);
   --im-message-left-link-text-color: #1890ff;
 
-  --im-message-right-bg-color: #28b560;
-  --im-message-right-text-color: #333;
-  --im-message-right-link-text-color: #1772c5;
+  --im-message-right-bg-color: rgb(84 169 255);
+  --im-message-right-text-color: #e4e7f5;
+  --im-message-right-link-text-color: #1890ff;
+
+  --chat-assistant-bg-color: rgba(255, 255, 255, 0.12);
+  --chat-user-bg-color: rgba(255, 255, 255, 0.12);
+  --chat-bg-grey-color: rgba(255, 255, 255, 0.12);
 
   ::selection {
     background: #d3d3d3;

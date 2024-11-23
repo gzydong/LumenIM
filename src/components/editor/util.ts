@@ -176,26 +176,6 @@ export function isEmptyDelta(delta: Delta): boolean {
   return delta.ops.length == 1 && delta.ops[0].insert == '\n'
 }
 
-export function onClipboardMatcher(_: any, delta: Delta) {
-  const ops: any[] = []
-
-  delta.ops.forEach((op) => {
-    // 如果粘贴了图片，这里会是一个对象，所以可以这样处理
-    if (op.insert && typeof op.insert === 'string') {
-      ops.push({
-        insert: op.insert, // 文字内容
-        attributes: {} //文字样式（包括背景色和文字颜色等）
-      })
-    } else {
-      ops.push(op)
-    }
-  })
-
-  delta.ops = ops
-
-  return delta
-}
-
 export function onUploadImage(file: File) {
   return new Promise((resolve) => {
     const image = new Image()

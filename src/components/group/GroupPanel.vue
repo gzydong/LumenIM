@@ -262,10 +262,10 @@ onMounted(() => {
           <div class="block">
             <div class="title text-ellipsis">群公告</div>
             <div class="text">
-              <!-- <n-button type="primary" text> 编辑 </n-button> -->
+              <!-- <n-button type="primary" text> 更新于 12/13 12:23 </n-button> -->
             </div>
           </div>
-          <div class="describe">
+          <div>
             <p v-if="!detail.notice.length">暂无公告</p>
 
             <MdPreview

@@ -1,38 +1,72 @@
 <script lang="ts" setup>
-import { reactive, computed, ref } from 'vue'
+import { reactive, computed, useTemplateRef, watch, ref, onMounted, onUnmounted } from 'vue'
 import { NDrawer } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { useUserStore, useDialogueStore, useUploadsStore, useTalkStore } from '@/store'
+import { useUserStore, useUploadsStore, useTalkStore } from '@/store/index.ts'
+import { ServeContactOnlineStatus } from '@/api/contact.js'
+import { ChatPlus } from '@/components/chat'
 import PanelHeader from './Header.vue'
-import PanelContent from './Content.vue'
-import PanelFooter from './Footer.vue'
+import Editor from './Editor.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupNoticeDrawer from '@/components/group/GroupNoticeDrawer.vue'
-import UploadsModal from '@/components/base/UploadsModal.vue'
-import { useEventBus } from '@/hooks'
-import { SessionConst } from '@/constant/event-bus'
+import UploadsModal from '@/components/basic/UploadsModal.vue'
+import { useTalkRecord } from './useTalkRecord.ts'
+import { useContextMenu } from './useContextMenu.ts'
+import { bus } from '@/utils/index.ts'
+import { EditorConst, SessionConst } from '@/constant/event-bus.ts'
+import { ChatTalkMode } from '@/constant/chat.ts'
+import { useInject, useEventBus } from '@/hooks/index.ts'
+import { formatChatMessage } from '@/components/mechat/render.tsx'
 
-const router = useRouter()
+const chat = useTemplateRef('chat')
 const userStore = useUserStore()
-const dialogueStore = useDialogueStore()
 const uploadsStore = useUploadsStore()
 const talkStore = useTalkStore()
-
+const router = useRouter()
+const { records, loadChatRecord, dialogueStore, resetTalkRecord } = useTalkRecord()
+const { toShowUserInfo } = useInject()
 const members = computed(() => dialogueStore.members)
 const isShowEditor = computed(() => dialogueStore.isShowEditor)
+const {
+  isShowMultiSelect,
+  contextMenuOptions,
+  onContextMenuEvent,
+  onChatElementSelect,
+  MultiSelectComponent
+} = useContextMenu(chat)
 
 // 当前对话参数
 const talkParams = reactive({
   uid: computed(() => userStore.uid),
   indexName: computed(() => dialogueStore.index_name),
-  talkMode: computed(() => dialogueStore.talk.talk_type),
-  toFromId: computed(() => dialogueStore.talk.receiver_id),
+  talkMode: computed(() => dialogueStore.talk.talk_mode),
+  toFromId: computed(() => dialogueStore.talk.to_from_id),
   username: computed(() => dialogueStore.talk.username),
-  online: computed(() => dialogueStore.online),
   keyboard: computed(() => dialogueStore.keyboard),
-  num: computed(() => dialogueStore.members.length)
+  num: computed(() => dialogueStore.members.length),
+  online: false
 })
+
+/**
+ * 自定义消息渲染器
+ * @param item
+ */
+const customMessageRender = (item: any) => formatChatMessage(talkParams.uid, item)
+
+function onElementClickUser(key: string, item: any) {
+  if (key === 'nickname') {
+    return (
+      talkParams.talkMode == ChatTalkMode.Group &&
+      bus.emit(EditorConst.Mention, {
+        id: item.from_id,
+        value: item.nickname
+      })
+    )
+  } else {
+    toShowUserInfo(item.from_id)
+  }
+}
 
 // 是否显示群面板
 const isShowGroupAside = ref(false)
@@ -47,10 +81,10 @@ const events = {
   group: () => {
     isShowGroupAside.value = !isShowGroupAside.value
   },
-  'add-group': () => {
+  addGroup: () => {
     showGroupLaunch.value.groupId = 0
 
-    if (talkParams.talkMode === 2) {
+    if (talkParams.talkMode === ChatTalkMode.Group) {
       showGroupLaunch.value.groupId = talkParams.toFromId
     }
 
@@ -66,10 +100,6 @@ const onPanelHeaderEvent = (eventType: string) => {
   events[eventType]?.()
 }
 
-const onGroupLaunchSuccess = (groupId: number) => {
-  talkStore.toTalk(2, groupId, router)
-}
-
 useEventBus([
   {
     name: SessionConst.Switch,
@@ -78,19 +108,60 @@ useEventBus([
     }
   }
 ])
+
+watch(
+  () => talkParams.indexName,
+  () => {
+    resetTalkRecord()
+    chat.value?.reload()
+
+    loopGetOnlineStatus()
+  },
+  { immediate: true }
+)
+
+async function loopGetOnlineStatus() {
+  if (talkParams.talkMode != ChatTalkMode.Single) {
+    return
+  }
+
+  const {
+    code,
+    data: { online_status }
+  } = await ServeContactOnlineStatus({
+    user_id: talkParams.toFromId
+  })
+
+  if (code === 200) {
+    talkParams.online = online_status == 2
+  }
+}
+
+let timer
+onMounted(() => {
+  dialogueStore.container = chat.value?.getContainerId() || ''
+
+  // 120后刷新一次在线状态
+  timer = setInterval(loopGetOnlineStatus, 2 * 60 * 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
 </script>
 
 <template>
-  <section class="el-container is-vertical" id="drawer-container2" style="position: relative">
+  <section class="el-container is-vertical" id="drawer-container">
     <!-- 头部区域 -->
     <header class="el-header border-bottom">
       <PanelHeader
         :talk-mode="talkParams.talkMode"
         :username="talkParams.username"
+        :description="'休假中，有事请拨打电话！'"
         :online="talkParams.online"
         :keyboard="talkParams.keyboard"
         :num="talkParams.num"
-        :show-session-menu="dialogueStore.isShowSessionMenu"
+        :menu="dialogueStore.isShowSessionMenu"
         @evnet="onPanelHeaderEvent"
         @change-session-menu="
           (value: boolean) => {
@@ -102,11 +173,20 @@ useEventBus([
 
     <!-- 聊天区域 -->
     <main class="el-main">
-      <PanelContent
-        :uid="talkParams.uid"
-        :talk-mode="talkParams.talkMode"
-        :to-from-id="talkParams.toFromId"
-        :index-name="talkParams.indexName"
+      <ChatPlus
+        ref="chat"
+        :items="records"
+        :custom-render="customMessageRender"
+        data-source-mode="pulldown"
+        :onScrollLoadMore="loadChatRecord"
+        :unread="dialogueStore.unreadBubble"
+        :multi-select-mode="true"
+        :context-menu="true"
+        :context-menu-option="contextMenuOptions"
+        @context-menu-event="onContextMenuEvent"
+        @element-select="onChatElementSelect"
+        @element-event="onContextMenuEvent"
+        @user-click-event="onElementClickUser"
       />
     </main>
 
@@ -117,7 +197,10 @@ useEventBus([
       :style="{ height: 200 + 'px' }"
       v-dropsize="{ min: 100, max: 600, direction: 'top', key: 'editor' }"
     >
-      <PanelFooter
+      <MultiSelectComponent v-if="isShowMultiSelect" />
+
+      <Editor
+        v-else
         :uid="talkParams.uid"
         :index-name="talkParams.indexName"
         :talk-mode="talkParams.talkMode"
@@ -135,7 +218,7 @@ useEventBus([
     :trap-focus="false"
     :block-scroll="false"
     show-mask="transparent"
-    to="#drawer-container2"
+    to="#drawer-container"
   >
     <UploadsModal />
   </n-drawer>
@@ -147,7 +230,7 @@ useEventBus([
     :width="400"
     placement="right"
     show-mask="transparent"
-    to="#drawer-container2"
+    to="#drawer-container"
   >
     <GroupPanel :group-id="talkParams.toFromId" @close="isShowGroupAside = false" />
   </n-drawer>
@@ -156,7 +239,11 @@ useEventBus([
     v-if="showGroupLaunch.isShowGroupLaunch"
     :group-id="showGroupLaunch.groupId"
     @close="showGroupLaunch.isShowGroupLaunch = false"
-    @on-submit="onGroupLaunchSuccess"
+    @on-submit="
+      (groupId: number) => {
+        talkStore.toTalk(ChatTalkMode.Group, groupId, router)
+      }
+    "
   />
 </template>
 

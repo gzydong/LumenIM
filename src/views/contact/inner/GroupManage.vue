@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Draggable from 'vuedraggable'
-import { reactive, computed, ref } from 'vue'
+import { VueDraggable } from 'vue-draggable-plus'
+import { computed, ref } from 'vue'
 import { NModal, NInput } from 'naive-ui'
 import { Drag, Delete } from '@icon-park/vue-next'
 import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contact'
@@ -19,7 +19,7 @@ interface Item {
 let index = 1
 const { dialog } = useInject()
 const isShow = ref(true)
-const options = reactive<Item[]>([])
+const options = ref<Item[]>([])
 
 const onMaskClick = () => {
   emit('close')
@@ -33,7 +33,7 @@ const onLoadData = async () => {
   let items = data.items || []
   for (const item of items) {
     if (item.id) {
-      options.push({
+      options.value.push({
         id: item.id,
         name: item.name,
         index: index++,
@@ -42,8 +42,8 @@ const onLoadData = async () => {
     }
   }
 
-  if (!options.length) {
-    options.push({ id: 0, name: '', index: index++, count: 0 })
+  if (!options.value.length) {
+    options.value.push({ id: 0, name: '', index: index++, count: 0 })
   }
 }
 
@@ -51,7 +51,7 @@ const onSubmit = async () => {
   const { code } = await toApi(
     ServeContactGroupSave,
     {
-      items: options
+      items: options.value
     },
     {
       showMessageText: '已保存'
@@ -65,14 +65,14 @@ const onSubmit = async () => {
 }
 
 const addOption = () => {
-  options.push({ name: '', id: 0, index: index++, count: 0 })
+  options.value.push({ name: '', id: 0, index: index++, count: 0 })
 }
 
 const delOption = (item: Item) => {
   let fn = () => {
-    let i = options.findIndex((value) => value.index == item.index)
+    let i = options.value.findIndex((value) => value.index == item.index)
     if (i >= 0) {
-      options.length > 0 && options.splice(i, 1)
+      options.value.length > 0 && options.value.splice(i, 1)
     }
   }
 
@@ -91,7 +91,7 @@ const delOption = (item: Item) => {
 
 // 是否可提交
 const isCanSubmit = computed(() => {
-  return options.some((item: Item) => item.name.trim().length === 0)
+  return options.value.some((item: Item) => item.name.trim().length === 0)
 })
 
 onLoadData()
@@ -111,26 +111,18 @@ onLoadData()
     <div class="options">
       <n-empty v-show="options.length == 0" description="暂未设置分组" style="margin-top: 20px" />
 
-      <Draggable
-        class="draggable-ul"
-        animation="300"
-        :list="options"
-        itemKey="index"
-        handle=".handle"
-      >
-        <template #item="{ element }">
-          <div class="option">
-            <n-icon size="20" class="handle" :component="Drag" />
-            <n-input
-              placeholder="必填"
-              v-model:value="element.name"
-              :maxlength="20"
-              style="margin: 0 10px"
-            />
-            <n-icon size="16" class="pointer" :component="Delete" @click="delOption(element)" />
-          </div>
-        </template>
-      </Draggable>
+      <VueDraggable ref="el" v-model="options">
+        <div class="option" v-for="item in options" :key="item.id">
+          <n-icon size="20" class="handle" :component="Drag" />
+          <n-input
+            placeholder="必填"
+            v-model:value="item.name"
+            :maxlength="20"
+            style="margin: 0 10px"
+          />
+          <n-icon size="16" class="pointer" :component="Delete" @click="delOption(item)" />
+        </div>
+      </VueDraggable>
     </div>
 
     <template #footer>

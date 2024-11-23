@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { formatTime } from '@/utils/datetime'
 import { fileFormatSize } from '@/utils/string'
 import {
   ServeUploadArticleAnnex,
@@ -84,7 +83,7 @@ const onDelete = (item: NoteFileItem) => {
               <span class="size">
                 {{ fileFormatSize(file.annex_size) }}
               </span>
-              <span>{{ formatTime(file.created_at) }}</span>
+              <span>{{ file.created_at }}</span>
               <div class="tools">
                 <n-space>
                   <n-button type="primary" size="tiny" text @click="onDownload(file.annex_id)">

@@ -33,12 +33,12 @@ class Keyboard extends Base {
     }
 
     // 判断是否是私信
-    if (params.talk_type != 1) {
+    if (params.talk_mode != 1) {
       return false
     }
 
     // 判断消息是否来当前对话
-    if (params.receiver_id != this.resource.from_id) {
+    if (params.to_from_id != this.resource.from_id) {
       return false
     }
 

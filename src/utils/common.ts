@@ -88,14 +88,6 @@ export async function clipboardImage(src: string, callback: Function): Promise<v
   }
 }
 
-export function emitCall(
-  event: string,
-  data: any,
-  fn: Function = function () {}
-): { event: string; data: any; callBack: Function } {
-  return { event: event, data: data, callBack: fn }
-}
-
 export function htmlDecode(input: string): string {
   return input
     .replace(/&amp;/g, '&')

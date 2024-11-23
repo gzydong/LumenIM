@@ -1,12 +1,12 @@
 import { App } from 'vue'
-import { setComponents as Components } from '@/components/talk/message'
-import Avatar from '@/components/base/Avatar.vue'
+import Avatar from '@/components/basic/Avatar.vue'
+import { installComponent } from '@/components/mechat/component'
 
 export { setupDirective } from '@/directive'
 
 // 注册全局消息组件
 export function setComponents(app: App) {
-  Components(app)
+  installComponent(app)
 
   app.component('im-avatar', Avatar)
 }

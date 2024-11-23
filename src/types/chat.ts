@@ -18,13 +18,11 @@ export interface ISession {
   avatar: string // 头像
   remark: string // 备注
   is_disturb: number // 是否免打扰
-  is_online: number // 是否在线
   is_robot: number // 是否机器人
   is_top: number // 置顶
   unread_num: number // 未读消息数
   updated_at: string // 最后发送时间
   msg_text?: string // 消息内容
-  // last_message?: ISessionLastMessage
   draft_text?: string // 草稿文本
 }
 
@@ -33,15 +31,14 @@ export interface ITalkRecord {
   msg_id: string // 消息ID
   sequence: number // 消息时序ID（消息排序）
   msg_type: number // 消息类型
-  user_id: number // 发送者id
+  from_id: number // 发送者id
   nickname: string // 昵称
   avatar: string // 头像
   is_revoked: number // 是否撤回
   send_time: string // 发送时间
   extra: any // 消息内容
   quote: any // 消息内容
-  is_check: boolean // 是否已读
-  float: string // 悬浮窗(right,left)
+  status: number // 消息状态 1发送成功 2发送中 3发送失败
 }
 
 export interface ITalkRecordExtraText {

@@ -17,34 +17,23 @@ import MeEditorEmoticon from './MeEditorEmoticon.vue'
 import MeEditorCode from './MeEditorCode.vue'
 import MeEditorRecorder from './MeEditorRecorder.vue'
 import { useEditorDraftStore } from '@/store'
-import {
-  deltaToMessage,
-  deltaToString,
-  isEmptyDelta,
-  onClipboardMatcher,
-  onUploadImage
-} from './util'
+import { deltaToMessage, deltaToString, isEmptyDelta, onUploadImage } from './util.ts'
 import { getImageInfo } from '@/utils/file'
 import { EditorConst } from '@/constant/event-bus'
-import { emitCall } from '@/utils/common'
 import { defAvatar } from '@/constant/default'
 import { useEventBus } from '@/hooks'
 
 const emit = defineEmits(['editor-event'])
 const editorDraftStore = useEditorDraftStore()
-const props = defineProps({
-  showVote: {
-    type: Boolean,
-    default: false
-  },
-  indexName: {
-    type: String,
-    default: ''
-  },
-  groupMembers: {
-    default: () => []
-  }
-})
+
+interface Props {
+  showVote: boolean
+  indexName: string
+  members: any[]
+  callback: (event: string, data?: any) => Promise<boolean>
+}
+
+const { showVote = false, indexName = '', members = [], callback } = defineProps<Props>()
 
 const editor = ref(null)
 
@@ -54,7 +43,7 @@ const getQuill = () => {
 }
 
 const getQuillSelectionIndex = () => {
-  let quill = getQuill()
+  const quill = getQuill()
   if (!quill) return 0
 
   return (quill.getSelection() || {}).index || quill.getLength()
@@ -70,13 +59,9 @@ const emoticonRef = ref()
 const editorOption = {
   theme: 'snow',
   placeholder: '按Enter发送 / Shift+Enter 换行',
+  formats: ['emoji', 'quote', 'mention', 'image'],
   modules: {
     toolbar: false,
-
-    clipboard: {
-      // 粘贴版，处理粘贴时候的自带样式
-      matchers: [[Node.ELEMENT_NODE, onClipboardMatcher]]
-    },
 
     keyboard: {
       bindings: {
@@ -100,11 +85,11 @@ const editorOption = {
         return el
       },
       source: function (searchTerm: string, render: any) {
-        if (!props.groupMembers.length) return render([])
+        if (!members.length) return render([])
 
         const items = [
           { id: 0, nickname: '所有人', avatar: defAvatar, value: '所有人' },
-          ...props.groupMembers
+          ...members
         ]
 
         render(items.filter((item: any) => item.nickname.toLowerCase().indexOf(searchTerm) !== -1))
@@ -117,7 +102,7 @@ const editorOption = {
       mimetypes: ['image/webp', 'image/gif', 'image/png', 'image/jpg', 'image/jpeg'],
       handler(range: any, files: File[]) {
         // @ts-ignore
-        let quill = this.quill
+        const quill = this.quill
 
         if (!quill.scroll.query('image')) return
 
@@ -174,7 +159,7 @@ const navs = reactive([
   {
     title: '群投票',
     icon: markRaw(Ranking),
-    show: computed(() => props.showVote),
+    show: computed(() => showVote),
     click: () => {
       isShowEditorVote.value = true
     }
@@ -184,25 +169,17 @@ const navs = reactive([
     icon: markRaw(History),
     show: true,
     click: () => {
-      emit(
-        'editor-event',
-        emitCall('history_event', {}, () => {})
-      )
+      callback('history_event')
     }
   }
 ])
 
-function onVoteEvent(data: any) {
-  const msg = emitCall('vote_event', data, (ok: boolean) => {
-    if (ok) {
-      isShowEditorVote.value = false
-    }
-  })
-
-  emit('editor-event', msg)
+async function onVoteEvent(data: any) {
+  const ok = await callback('vote_event', data)
+  ok && (isShowEditorVote.value = false)
 }
 
-function onEmoticonEvent(data: any) {
+async function onEmoticonEvent(data: any) {
   emoticonRef.value.setShow(false)
 
   if (data.type == 1) {
@@ -227,17 +204,13 @@ function onEmoticonEvent(data: any) {
 
     quill.setSelection(index + 1, 0, 'user')
   } else {
-    let fn = emitCall('emoticon_event', data.value, () => {})
-    emit('editor-event', fn)
+    await callback('emoticon_event', data.value)
   }
 }
 
-function onCodeEvent(data: any) {
-  const msg = emitCall('code_event', data, () => {
-    isShowEditorCode.value = false
-  })
-
-  emit('editor-event', msg)
+async function onCodeEvent(data: any) {
+  const ok = await callback('code_event', data)
+  ok && (isShowEditorCode.value = false)
 }
 
 async function onUploadFile(e: any) {
@@ -266,58 +239,47 @@ async function onUploadFile(e: any) {
   }
 
   if (file.type.indexOf('video/') === 0) {
-    let fn = emitCall('video_event', file, () => {})
-    emit('editor-event', fn)
+    await callback('video_event', file)
   } else {
-    let fn = emitCall('file_event', file, () => {})
-    emit('editor-event', fn)
+    await callback('file_event', file)
   }
 }
 
-function onRecorderEvent(file: any) {
-  emit('editor-event', emitCall('file_event', file))
-  isShowEditorRecorder.value = false
+async function onRecorderEvent(file: any) {
+  const ok = await callback('file_event', file)
+  ok && (isShowEditorRecorder.value = false)
 }
-
-function onSendMessage() {
+async function onSendMessage() {
   let delta = getQuill().getContents()
   let data = deltaToMessage(delta)
 
   if (data.items.length === 0) return
 
-  switch (data.msgType) {
-    case 1: // 文字消息
-      if (data.items[0].content.length > 1024) {
-        return window['$message'].info('发送内容超长，请分条发送')
-      }
+  if (data.msgType == 1) {
+    if (data.items[0].content.length > 1024) {
+      return window['$message'].info('发送内容超长，请分条发送')
+    }
 
-      emit(
-        'editor-event',
-        emitCall('text_event', data, (ok: any) => {
-          ok && getQuill().setContents([], Quill.sources.USER)
-        })
-      )
-      break
-    case 3: // 图片消息
-      emit(
-        'editor-event',
-        emitCall(
-          'image_event',
-          { ...getImageInfo(data.items[0].content), url: data.items[0].content, size: 10000 },
-          (ok: any) => {
-            ok && getQuill().setContents([])
-          }
-        )
-      )
-      break
-    case 12: // 图文消息
-      emit(
-        'editor-event',
-        emitCall('mixed_event', data, (ok: any) => {
-          ok && getQuill().setContents([])
-        })
-      )
-      break
+    const ok = await callback('text_event', data)
+    ok && getQuill().setContents([], Quill.sources.USER)
+    return
+  }
+
+  if (data.msgType == 3) {
+    const ok = await callback('image_event', {
+      ...getImageInfo(data.items[0].content),
+      url: data.items[0].content,
+      size: 10000
+    })
+
+    ok && getQuill().setContents([], Quill.sources.USER)
+    return
+  }
+
+  if (data.msgType == 12) {
+    const ok = await callback('mixed_event', data)
+    ok && getQuill().setContents([], Quill.sources.USER)
+    return
   }
 }
 
@@ -327,16 +289,16 @@ function onEditorChange() {
   const text = deltaToString(delta)
 
   if (!isEmptyDelta(delta)) {
-    editorDraftStore.items[props.indexName || ''] = JSON.stringify({
+    editorDraftStore.items[indexName || ''] = JSON.stringify({
       text: text,
       ops: delta.ops
     })
   } else {
     // 删除 editorDraftStore.items 下的元素
-    delete editorDraftStore.items[props.indexName || '']
+    delete editorDraftStore.items[indexName || '']
   }
 
-  emit('editor-event', emitCall('input_event', text))
+  callback('input_event', text)
 }
 
 function loadEditorDraftText() {
@@ -349,7 +311,7 @@ function loadEditorDraftText() {
     if (!quill) return
 
     // 从缓存中加载编辑器草稿
-    let draft = editorDraftStore.items[props.indexName || '']
+    let draft = editorDraftStore.items[indexName || '']
     if (draft) {
       quill.setContents(JSON.parse(draft)?.ops || [])
     } else {
@@ -391,7 +353,7 @@ function hideMentionDom() {
   el && el.remove()
 }
 
-watch(() => props.indexName, loadEditorDraftText, { immediate: true })
+watch(() => indexName, loadEditorDraftText, { immediate: true })
 
 onMounted(() => {
   loadEditorDraftText()
@@ -416,7 +378,14 @@ useEventBus([
         raw
         :width="300"
         ref="emoticonRef"
-        style="width: 500px; height: 250px; border-radius: 10px; overflow: hidden"
+        style="
+          width: 500px;
+          height: 250px;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: none;
+          border: 1px solid var(--border-color);
+        "
       >
         <template #trigger>
           <div class="toolbar-item">
@@ -455,18 +424,18 @@ useEventBus([
     </main>
   </section>
 
-  <MeEditorVote v-if="isShowEditorVote" @close="isShowEditorVote = false" @submit="onVoteEvent" />
+  <MeEditorVote v-if="isShowEditorVote" @close="(isShowEditorVote = false)" @submit="onVoteEvent" />
 
   <MeEditorCode
     v-if="isShowEditorCode"
     @on-submit="onCodeEvent"
-    @close="isShowEditorCode = false"
+    @close="(isShowEditorCode = false)"
   />
 
   <MeEditorRecorder
     v-if="isShowEditorRecorder"
     @on-submit="onRecorderEvent"
-    @close="isShowEditorRecorder = false"
+    @close="(isShowEditorRecorder = false)"
   />
 </template>
 

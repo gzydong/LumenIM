@@ -1,9 +1,9 @@
 import Base from './base'
 import { nextTick } from 'vue'
 import { parseTime } from '@/utils/datetime'
-import * as message from '@/constant/message'
+import * as message from '@/constant/chat'
 import type { ISession } from '@/types/chat'
-import { formatTalkItem, playMusic, formatTalkRecord } from '@/utils/talk'
+import { formatTalkItem, playMusic } from '@/utils/talk'
 import { isElectronMode } from '@/utils/electron'
 import { ServeClearTalkUnreadNum, ServeCreateTalk } from '@/api/chat'
 import { toApi } from '@/api'
@@ -44,6 +44,9 @@ class Talk extends Base {
     const { to_from_id, from_id, talk_mode, body } = data
 
     Object.assign(this, { from_id, to_from_id, talk_mode, body })
+
+    body.extra = JSON.parse(body.extra)
+    body.quote = JSON.parse(body.quote)
 
     this.handle()
   }
@@ -114,6 +117,9 @@ class Talk extends Base {
    * @returns
    */
   showMessageNocice() {
+    // 是我自己发送的消息不提醒
+    if (this.from_id == this.getAccountId()) return
+
     const notification = new Notification('LumenIM 在线聊天', {
       dir: 'auto',
       lang: 'zh-CN',
@@ -150,7 +156,7 @@ class Talk extends Base {
       useDialogueStore().updateGroupMembers()
     }
 
-    useDialogueStore().addDialogueRecord(formatTalkRecord(this.getAccountId(), this.body))
+    useDialogueStore().addDialogueRecord(record)
 
     useTalkStore().updateMessage(
       {
@@ -162,6 +168,7 @@ class Talk extends Base {
     )
 
     if (this.getAccountId() !== this.from_id) {
+      // 这里需要做节流操作
       ServeClearTalkUnreadNum({
         talk_mode: this.talk_mode,
         to_from_id: this.to_from_id
@@ -174,7 +181,7 @@ class Talk extends Base {
   // 将面板滚动条滚动到最底部
   scrollToBottom() {
     // 获取聊天面板元素节点
-    const el = document.getElementById('imChatPanel')
+    const el = document.getElementById(useDialogueStore().container)
     if (!el) return
 
     // 判断的滚动条是否在底部

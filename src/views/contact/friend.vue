@@ -10,7 +10,7 @@ import { useEventBus, useContact } from '@/hooks'
 import { ContactConst } from '@/constant/event-bus'
 import { useTalkStore } from '@/store'
 import { useRouter } from 'vue-router'
-import Dropdown from '@/components/base/Dropdown.vue'
+import Dropdown from '@/components/basic/Dropdown.vue'
 
 const router = useRouter()
 const talkStore = useTalkStore()

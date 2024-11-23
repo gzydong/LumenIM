@@ -1,0 +1,47 @@
+.immsg-systext {
+  display: flex;
+  justify-content: center;
+
+  .sys-text {
+    margin: 10px auto;
+    background-color: var(--chat-bg-grey-color);
+    font-size: 13px;
+    line-height: 30px;
+    padding: 0 8px;
+    word-wrap: break-word;
+    display: inline-block;
+    border-radius: 3px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+
+    span {
+      margin: 0 5px;
+    }
+
+    a {
+      color: rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+      font-size: 12px;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}
+
+html[theme-mode='dark'] {
+  .immsg-systext {
+    .sys-text {
+      color: rgba(255, 255, 255, 0.5);
+
+      a {
+        color: rgba(255, 255, 255, 0.8);
+
+        &:hover {
+          color: #1890ff;
+        }
+      }
+    }
+  }
+}

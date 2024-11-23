@@ -100,6 +100,6 @@ onMounted(() => {
 }
 
 .main {
-  border-radius: 10px;
+  // border-radius: 10px;
 }
 </style>

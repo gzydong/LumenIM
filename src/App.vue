@@ -16,7 +16,7 @@ import { useUserStore, useTalkStore } from '@/store'
 import ws from '@/connect'
 import { bus } from '@/utils'
 import { isLogin } from '@/utils/auth'
-import { NotificationApi, MessageApi, DialogApi } from '@/components/common'
+import { NotificationApi, MessageApi, DialogApi } from '@/components/common/index.ts'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { ContactConst } from '@/constant/event-bus.ts'
 import {
@@ -25,8 +25,8 @@ import {
   useVisibilityChange,
   useUnreadMessage,
   useConnectStatus,
-  useClickEvent,
-  useAccessPrompt
+  useClickEvent
+  // useAccessPrompt
 } from '@/hooks'
 
 IconProvider({
@@ -58,7 +58,7 @@ const init = () => {
 onMounted(() => {
   init()
   useVisibilityChange()
-  useAccessPrompt()
+  // useAccessPrompt()
   useUnreadMessage()
   useConnectStatus()
   useClickEvent()

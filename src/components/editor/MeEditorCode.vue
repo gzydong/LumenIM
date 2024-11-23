@@ -17,7 +17,7 @@ const langText = computed(() => {
     return item.value == model.lang
   })
 
-  return data ? data.label : '请选择语言类型'
+  return data ? data.label : '请选择'
 })
 
 const isCanSubmit = computed(() => {
@@ -52,16 +52,13 @@ const onSubmit = () => {
     preset="card"
     title="代码消息"
     class="modal-radius"
-    style="max-width: 800px; height: 600px"
+    style="max-width: 600px; height: 400px"
     :on-after-leave="onMaskClick"
-    :segmented="{
-      content: true
-    }"
     :mask-closable="false"
   >
-    <div class="preview" id="add-content">
+    <div>
       <div class="popselect">
-        <span>语言类型:</span>
+        <span>代码语言:</span>
 
         <n-popselect v-model:value="model.lang" :options="options" size="medium" scrollable>
           <n-button text type="primary">
@@ -74,8 +71,10 @@ const onSubmit = () => {
         type="textarea"
         :maxlength="65535"
         show-count
-        style="height: 380px"
-        placeholder="请输入..."
+        :autosize="{
+          minRows: 9,
+          maxRows: 9
+        }"
         v-model:value="model.code"
       >
         <template #count="{ value }">
@@ -103,13 +102,6 @@ const onSubmit = () => {
 </template>
 
 <style lang="less" scoped>
-.preview {
-  width: 100%;
-  padding: 5px;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
 .popselect {
   height: 30px;
   line-height: 30px;

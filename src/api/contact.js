@@ -62,3 +62,7 @@ export const ServeContactMoveGroup = (data) => {
 export const ServeContactGroupSave = (data) => {
   return post('/api/v1/contact/group/update', data)
 }
+
+export const ServeContactOnlineStatus = (data) => {
+  return post('/api/v1/contact/online-status', data)
+}

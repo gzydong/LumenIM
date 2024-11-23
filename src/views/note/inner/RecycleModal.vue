@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { NModal, NImage } from 'naive-ui'
 import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
-import Loading from '@/components/base/Loading.vue'
+import Loading from '@/components/basic/Loading.vue'
 import {
   ServeForeverDeleteArticle,
   ServeRecoverArticle,

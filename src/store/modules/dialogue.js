@@ -17,8 +17,8 @@ export const useDialogueStore = defineStore('dialogue', {
       // 对话节点
       talk: {
         username: '',
-        talk_type: 0, // 对话来源[1:私聊;2:群聊]
-        receiver_id: 0
+        talk_mode: 0, // 对话来源[1:私聊;2:群聊]
+        to_from_id: 0
       },
 
       // 好友是否正在输入文字
@@ -32,9 +32,6 @@ export const useDialogueStore = defineStore('dialogue', {
 
       // 新消息提示
       unreadBubble: 0,
-
-      // 是否开启多选操作模式
-      isOpenMultiSelect: false,
 
       // 是否显示编辑器
       isShowEditor: false,
@@ -53,14 +50,15 @@ export const useDialogueStore = defineStore('dialogue', {
           read_sequence: 0, // 当前已读的最后一条记录
           records: []
         }
-      }
+      },
+
+      // 聊天面板的容器ID
+      container: ''
     }
   },
   getters: {
-    // 多选列表
-    selectItems: (state) => state.records.filter((item) => item.is_check),
     // 当前对话是否是群聊
-    isGroupTalk: (state) => state.talk.talk_type === 2
+    isGroupTalk: (state) => state.talk.talk_mode === 2
   },
   actions: {
     // 更新在线状态
@@ -74,8 +72,8 @@ export const useDialogueStore = defineStore('dialogue', {
 
       this.talk = {
         username: data.remark || data.name,
-        talk_type: data.talk_mode,
-        receiver_id: data.to_from_id
+        talk_mode: data.talk_mode,
+        to_from_id: data.to_from_id
       }
 
       this.index_name = `${data.talk_mode}_${data.to_from_id}`
@@ -96,7 +94,7 @@ export const useDialogueStore = defineStore('dialogue', {
     async updateGroupMembers() {
       this.members = []
       const { code, data } = await toApi(ServeGetGroupMembers, {
-        group_id: this.talk.receiver_id
+        group_id: this.talk.to_from_id
       })
 
       if (code != 200) return
@@ -166,22 +164,11 @@ export const useDialogueStore = defineStore('dialogue', {
       }
     },
 
-    // 关闭多选模式
-    closeMultiSelect() {
-      this.isOpenMultiSelect = false
-
-      for (const item of this.selectItems) {
-        if (item.is_check) {
-          item.is_check = false
-        }
-      }
-    },
-
     // 删除聊天记录
     async ApiDeleteRecord(msgIds = []) {
       const { code, data } = await toApi(ServeRemoveRecords, {
-        talk_mode: this.talk.talk_type,
-        to_from_id: this.talk.receiver_id,
+        talk_mode: this.talk.talk_mode,
+        to_from_id: this.talk.to_from_id,
         msg_ids: msgIds
       })
 
@@ -191,8 +178,8 @@ export const useDialogueStore = defineStore('dialogue', {
     // 撤销聊天记录
     async ApiRevokeRecord(msg_id = '') {
       const { code, data } = await toApi(ServeRevokeRecords, {
-        talk_mode: this.talk.talk_type,
-        to_from_id: this.talk.receiver_id,
+        talk_mode: this.talk.talk_mode,
+        to_from_id: this.talk.to_from_id,
         msg_id
       })
 
@@ -205,14 +192,15 @@ export const useDialogueStore = defineStore('dialogue', {
         type: 'forward',
         ...params
       })
-
-      code == 200 && this.closeMultiSelect()
     },
 
     async ApiCollectImage(params = {}) {
       const { code, data } = await toApi(ServeCustomizeEmoticonCreate, params)
 
-      code == 200 && useEditorStore().loadUserEmoticon()
+      if (code === 200) {
+        window['$message']?.success('收藏成功')
+        useEditorStore().loadUserEmoticon()
+      }
     }
   }
 })

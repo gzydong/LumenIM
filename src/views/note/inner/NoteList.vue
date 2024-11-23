@@ -4,7 +4,7 @@ import { Search, SortAmountDown } from '@icon-park/vue-next'
 import { NImage, NScrollbar } from 'naive-ui'
 import { useNoteStore, NoteItem } from '@/store'
 import { debounce } from '@/utils/common'
-import Loading from '@/components/base/Loading.vue'
+import Loading from '@/components/basic/Loading.vue'
 
 const store = useNoteStore()
 const items = computed(() => store.notes.items)

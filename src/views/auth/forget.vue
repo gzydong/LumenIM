@@ -7,6 +7,7 @@ import { ServeForgetPassword } from '@/api/auth'
 import { ServeSendVerifyCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
 import { useSmsLock } from '@/hooks'
+import { rsaEncrypt } from '@/utils/rsa'
 
 // 初始化短信按钮锁
 const { lockTime, start } = useSmsLock('FORGET_PSW_SMS', 120)
@@ -52,7 +53,7 @@ const onForget = async () => {
     ServeForgetPassword,
     {
       mobile: model.username,
-      password: model.password,
+      password: rsaEncrypt(model.password),
       sms_code: model.sms_code
     },
     { loading, showMessageText: '密码修改成功' }
