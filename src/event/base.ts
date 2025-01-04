@@ -17,7 +17,7 @@ class Base {
   getTalkParams(): { talk_mode: number; to_from_id: number; index_name: string } {
     const dialogueStore = useDialogueStore()
 
-    const { talk_mode, to_from_id } = dialogueStore.talk
+    const { talk_mode, to_from_id } = dialogueStore.target
 
     return {
       talk_mode,

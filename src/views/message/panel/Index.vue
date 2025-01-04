@@ -15,7 +15,7 @@ import { useTalkRecord } from './useTalkRecord.ts'
 import { useContextMenu } from './useContextMenu.ts'
 import { bus } from '@/utils/index.ts'
 import { EditorConst, SessionConst } from '@/constant/event-bus.ts'
-import { ChatTalkMode } from '@/constant/chat.ts'
+import { TalkModeEnum } from '@/constant/chat.ts'
 import { useInject, useEventBus } from '@/hooks/index.ts'
 import { formatChatMessage } from '@/components/mechat/render.tsx'
 
@@ -40,9 +40,9 @@ const {
 const talkParams = reactive({
   uid: computed(() => userStore.uid),
   indexName: computed(() => dialogueStore.index_name),
-  talkMode: computed(() => dialogueStore.talk.talk_mode),
-  toFromId: computed(() => dialogueStore.talk.to_from_id),
-  username: computed(() => dialogueStore.talk.username),
+  talkMode: computed(() => dialogueStore.target.talk_mode),
+  toFromId: computed(() => dialogueStore.target.to_from_id),
+  username: computed(() => dialogueStore.target.username),
   keyboard: computed(() => dialogueStore.keyboard),
   num: computed(() => dialogueStore.members.length),
   online: false
@@ -57,7 +57,7 @@ const customMessageRender = (item: any) => formatChatMessage(talkParams.uid, ite
 function onElementClickUser(key: string, item: any) {
   if (key === 'nickname') {
     return (
-      talkParams.talkMode == ChatTalkMode.Group &&
+      talkParams.talkMode == TalkModeEnum.Group &&
       bus.emit(EditorConst.Mention, {
         id: item.from_id,
         value: item.nickname
@@ -84,7 +84,7 @@ const events = {
   addGroup: () => {
     showGroupLaunch.value.groupId = 0
 
-    if (talkParams.talkMode === ChatTalkMode.Group) {
+    if (talkParams.talkMode === TalkModeEnum.Group) {
       showGroupLaunch.value.groupId = talkParams.toFromId
     }
 
@@ -121,7 +121,7 @@ watch(
 )
 
 async function loopGetOnlineStatus() {
-  if (talkParams.talkMode != ChatTalkMode.Single) {
+  if (talkParams.talkMode != TalkModeEnum.Single) {
     return
   }
 
@@ -161,11 +161,11 @@ onUnmounted(() => {
         :online="talkParams.online"
         :keyboard="talkParams.keyboard"
         :num="talkParams.num"
-        :menu="dialogueStore.isShowSessionMenu"
+        :menu="talkStore.isShowSessionMenu"
         @evnet="onPanelHeaderEvent"
         @change-session-menu="
           (value: boolean) => {
-            dialogueStore.isShowSessionMenu = value
+            talkStore.isShowSessionMenu = value
           }
         "
       />
@@ -241,7 +241,7 @@ onUnmounted(() => {
     @close="showGroupLaunch.isShowGroupLaunch = false"
     @on-submit="
       (groupId: number) => {
-        talkStore.toTalk(ChatTalkMode.Group, groupId, router)
+        talkStore.toTalk(TalkModeEnum.Group, groupId, router)
       }
     "
   />

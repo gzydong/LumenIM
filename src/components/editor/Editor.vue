@@ -89,7 +89,14 @@ const editorOption = {
 
         const items = [
           { id: 0, nickname: '所有人', avatar: defAvatar, value: '所有人' },
-          ...members
+          ...members.map((item: any) => {
+            return {
+              id: item.id,
+              nickname: item.nickname,
+              avatar: item.avatar,
+              value: item.nickname
+            }
+          })
         ]
 
         render(items.filter((item: any) => item.nickname.toLowerCase().indexOf(searchTerm) !== -1))
@@ -424,18 +431,18 @@ useEventBus([
     </main>
   </section>
 
-  <MeEditorVote v-if="isShowEditorVote" @close="(isShowEditorVote = false)" @submit="onVoteEvent" />
+  <MeEditorVote v-if="isShowEditorVote" @close="isShowEditorVote = false" @submit="onVoteEvent" />
 
   <MeEditorCode
     v-if="isShowEditorCode"
     @on-submit="onCodeEvent"
-    @close="(isShowEditorCode = false)"
+    @close="isShowEditorCode = false"
   />
 
   <MeEditorRecorder
     v-if="isShowEditorRecorder"
     @on-submit="onRecorderEvent"
-    @close="(isShowEditorRecorder = false)"
+    @close="isShowEditorRecorder = false"
   />
 </template>
 

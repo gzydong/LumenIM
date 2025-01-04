@@ -1,12 +1,23 @@
 import { defineStore } from 'pinia'
 import { ServeRemoveRecords, ServeRevokeRecords, ServePublishMessage } from '@/api/chat'
 import { ServeGetGroupMembers } from '@/api/group'
+import { TalkModeEnum } from '@/constant/chat'
 import { toApi } from '@/api'
 import { ServeCustomizeEmoticonCreate } from '@/api/emoticon'
 import { useEditorStore } from './editor'
+import { ITalkRecord } from '@/types/chat'
 
 // 键盘消息事件定时器
-let keyboardTimeout = null
+let keyboardTimeout: number
+
+interface IMember {
+  id: number
+  nickname: string
+  avatar: string
+  gender: number
+  leader: number
+  remark: string
+}
 
 export const useDialogueStore = defineStore('dialogue', {
   state: () => {
@@ -15,7 +26,7 @@ export const useDialogueStore = defineStore('dialogue', {
       index_name: '',
 
       // 对话节点
-      talk: {
+      target: {
         username: '',
         talk_mode: 0, // 对话来源[1:私聊;2:群聊]
         to_from_id: 0
@@ -24,11 +35,8 @@ export const useDialogueStore = defineStore('dialogue', {
       // 好友是否正在输入文字
       keyboard: false,
 
-      // 对方是否在线
-      online: false,
-
       // 聊天记录
-      records: [],
+      records: [] as Array<ITalkRecord>,
 
       // 新消息提示
       unreadBubble: 0,
@@ -36,21 +44,8 @@ export const useDialogueStore = defineStore('dialogue', {
       // 是否显示编辑器
       isShowEditor: false,
 
-      // 是否显示会话列表
-      isShowSessionMenu: true,
-
       // 群成员列表
-      members: [],
-
-      // 对话记录
-      items: {
-        '1_1': {
-          talk_type: 1, // 对话类型
-          receiver_id: 0, // 接收者ID
-          read_sequence: 0, // 当前已读的最后一条记录
-          records: []
-        }
-      },
+      members: [] as Array<IMember>,
 
       // 聊天面板的容器ID
       container: ''
@@ -58,19 +53,12 @@ export const useDialogueStore = defineStore('dialogue', {
   },
   getters: {
     // 当前对话是否是群聊
-    isGroupTalk: (state) => state.talk.talk_mode === 2
+    isGroupTalk: (state) => state.target.talk_mode === TalkModeEnum.Group
   },
   actions: {
-    // 更新在线状态
-    setOnlineStatus(status) {
-      this.online = status
-    },
-
     // 更新对话信息
-    setDialogue(data = {}) {
-      this.online = data.is_online === 1
-
-      this.talk = {
+    setDialogue(data: any = {}) {
+      this.target = {
         username: data.remark || data.name,
         talk_mode: data.talk_mode,
         to_from_id: data.to_from_id
@@ -85,29 +73,29 @@ export const useDialogueStore = defineStore('dialogue', {
 
       this.members = []
 
-      if (data.talk_mode == 2) {
+      if (data.talk_mode == TalkModeEnum.Group) {
         this.updateGroupMembers()
       }
     },
 
     // 更新提及列表
     async updateGroupMembers() {
+      const { to_from_id } = this.target
+
       this.members = []
       const { code, data } = await toApi(ServeGetGroupMembers, {
-        group_id: this.talk.to_from_id
+        group_id: to_from_id
       })
 
       if (code != 200) return
 
-      this.members = data?.items.map((item) => ({
+      this.members = data?.items.map((item: any) => ({
         id: item.user_id,
         nickname: item.nickname,
         avatar: item.avatar,
         gender: item.gender,
         leader: item.leader,
-        remark: item.remark,
-        online: false,
-        value: item.nickname
+        remark: item.remark
       }))
     },
 
@@ -117,31 +105,28 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 数组头部压入对话记录
-    unshiftDialogueRecord(records) {
+    unshiftDialogueRecord(records: ITalkRecord[]) {
       this.records.unshift(...records)
     },
 
     // 推送对话记录
-    addDialogueRecord(record) {
-      // TOOD 需要通过 sequence 排序，保证消息一致性
-      // this.records.splice(index, 0, record)
-
+    addDialogueRecord(record: any) {
       this.records.push(record)
     },
 
     // 更新对话记录
-    updateDialogueRecord(params) {
+    updateDialogueRecord(params: any) {
       const { msg_id = '' } = params
 
-      const item = this.records.find((item) => item.msg_id === msg_id)
+      const item = this.records.find((item: ITalkRecord) => item.msg_id === msg_id)
 
       item && Object.assign(item, params)
     },
 
     // 批量删除对话记录
-    batchDelDialogueRecord(msgIds = []) {
-      msgIds.forEach((msgid) => {
-        const index = this.records.findIndex((item) => item.msg_id === msgid)
+    batchDelDialogueRecord(msgIds: string[]) {
+      msgIds.forEach((msg_id) => {
+        const index = this.records.findIndex((item: ITalkRecord) => item.msg_id === msg_id)
 
         if (index >= 0) this.records.splice(index, 1)
       })
@@ -151,13 +136,13 @@ export const useDialogueStore = defineStore('dialogue', {
     triggerKeyboard() {
       this.keyboard = true
 
-      clearTimeout(keyboardTimeout)
+      keyboardTimeout && clearTimeout(keyboardTimeout)
 
       keyboardTimeout = setTimeout(() => (this.keyboard = false), 2000)
     },
 
-    setUnreadBubble(value) {
-      if (value === 0) {
+    setUnreadBubble(clear: boolean = false) {
+      if (clear) {
         this.unreadBubble = 0
       } else {
         this.unreadBubble++
@@ -165,10 +150,10 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 删除聊天记录
-    async ApiDeleteRecord(msgIds = []) {
-      const { code, data } = await toApi(ServeRemoveRecords, {
-        talk_mode: this.talk.talk_mode,
-        to_from_id: this.talk.to_from_id,
+    async ApiDeleteRecord(msgIds: string[]) {
+      const { code } = await toApi(ServeRemoveRecords, {
+        talk_mode: this.target.talk_mode,
+        to_from_id: this.target.to_from_id,
         msg_ids: msgIds
       })
 
@@ -176,31 +161,31 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 撤销聊天记录
-    async ApiRevokeRecord(msg_id = '') {
-      const { code, data } = await toApi(ServeRevokeRecords, {
-        talk_mode: this.talk.talk_mode,
-        to_from_id: this.talk.to_from_id,
+    async ApiRevokeRecord(msg_id: string) {
+      const { code } = await toApi(ServeRevokeRecords, {
+        talk_mode: this.target.talk_mode,
+        to_from_id: this.target.to_from_id,
         msg_id
       })
 
-      code == 200 && this.updateDialogueRecord({ msg_id, is_revoke: 1 })
+      code == 200 && this.updateDialogueRecord({ msg_id, is_revoked: 1 })
     },
 
     // 转发聊天记录
     async ApiForwardRecord(params = {}) {
-      const { code, data } = await toApi(ServePublishMessage, {
+      await toApi(ServePublishMessage, {
         type: 'forward',
         ...params
       })
     },
 
     async ApiCollectImage(params = {}) {
-      const { code, data } = await toApi(ServeCustomizeEmoticonCreate, params)
-
-      if (code === 200) {
-        window['$message']?.success('收藏成功')
-        useEditorStore().loadUserEmoticon()
-      }
+      await toApi(ServeCustomizeEmoticonCreate, params, {
+        showMessageText: '收藏成功',
+        onSuccess: () => {
+          useEditorStore().loadUserEmoticon()
+        }
+      })
     }
   }
 })

@@ -6,7 +6,7 @@ export enum ChatMsgStatus {
   Revoke = 4 // 已撤回
 }
 
-export enum ChatTalkMode {
+export enum TalkModeEnum {
   // 聊天类型
   Single = 1, // 单聊
   Group = 2 // 群聊

@@ -47,7 +47,7 @@ const props = defineProps({
     default: false
   },
   members: {
-    default: () => []
+    default: () => [] as any[]
   }
 })
 
@@ -130,7 +130,7 @@ const onSendFileEvent = async (data: any) => {
     return true
   }
 
-  uploadsStore.initUploadFile(data, props.talkMode, props.toFromId, dialogueStore.talk.username)
+  uploadsStore.initUploadFile(data, props.talkMode, props.toFromId, dialogueStore.target.username)
   return true
 }
 

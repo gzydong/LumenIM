@@ -187,8 +187,8 @@ export function useContextMenu(chat: any) {
     }
 
     dialogueStore.ApiForwardRecord({
-      talk_mode: dialogueStore.talk.talk_mode,
-      to_from_id: dialogueStore.talk.to_from_id,
+      talk_mode: dialogueStore.target.talk_mode,
+      to_from_id: dialogueStore.target.to_from_id,
       body: {
         action: mode == 'merge' ? 2 : 1,
         msg_ids: chat.value?.getMultiSelect(),

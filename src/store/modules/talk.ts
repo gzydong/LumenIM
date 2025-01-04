@@ -3,13 +3,15 @@ import { ServeGetTalkList, ServeCreateTalk } from '@/api/chat'
 import { toApi } from '@/api'
 
 import { formatTalkItem, KEY_INDEX_NAME } from '@/utils/talk'
-import { useEditorDraftStore } from './editor-draft'
+import { useEditorDraftStore } from './editor-draft.ts'
 import { ISession } from '@/types/chat'
 
 export const useTalkStore = defineStore('talk', {
   state: () => ({
     loadStatus: 2, // 加载状态[1:未加载;2:加载中;3:加载完成;4:加载失败;]
-    items: [] as ISession[]
+    items: [] as ISession[],
+    // 是否显示会话列表
+    isShowSessionMenu: true
   }),
 
   getters: {
