@@ -1,6 +1,6 @@
 import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import { useSettingsStore } from '@/store'
-import { overrides } from '@/constant/theme'
+import { lightThemeOverrides, darkThemeOverrides } from '@/constant/theme'
 import { darkTheme } from 'naive-ui'
 
 const themeModeKey = 'theme-mode'
@@ -25,12 +25,7 @@ export function useThemeMode() {
   })
 
   const getThemeOverride = computed(() => {
-    if (themeMode.value === 'dark') {
-      // overrides.common.bodyColor = '#202124'
-      overrides.common.bodyColor = '#1e1e1e'
-    }
-
-    return overrides
+    return themeMode.value === 'dark' ? darkThemeOverrides : lightThemeOverrides
   })
 
   const updateSysThemeMode = (e: any) => {

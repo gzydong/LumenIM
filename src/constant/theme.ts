@@ -1,5 +1,7 @@
+import { GlobalThemeOverrides } from 'naive-ui'
+
 // 主题配置
-export const overrides = {
+export const overrides: GlobalThemeOverrides = {
   common: {
     primaryColor: '#1890ff',
     primaryColorHover: '#1890ff',
@@ -12,6 +14,14 @@ export const overrides = {
   }
 }
 
-export const lightThemeOverrides = {}
+export const lightThemeOverrides: GlobalThemeOverrides = {
+  ...overrides
+}
 
-export const darkThemeOverrides = {}
+export const darkThemeOverrides: GlobalThemeOverrides = {
+  ...overrides,
+  common: {
+    ...overrides.common,
+    bodyColor: '#1e1e1e'
+  }
+}
