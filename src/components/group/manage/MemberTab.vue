@@ -367,7 +367,7 @@ onMounted(() => {
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>
-          <div class="item-text text-ellipsis">{{ item.motto || '暂无简介' }}.....</div>
+          <div class="item-text text-ellipsis">{{ item.motto || '...' }}</div>
         </div>
       </div>
     </main>

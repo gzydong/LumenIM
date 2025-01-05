@@ -231,13 +231,13 @@ onUnmounted(() => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupPanel :group-id="talkParams.toFromId" @close="(isShowGroupAside = false)" />
+    <GroupPanel :group-id="talkParams.toFromId" @close="isShowGroupAside = false" />
   </n-drawer>
 
   <GroupLaunch
     v-if="showGroupLaunch.isShowGroupLaunch"
     :group-id="showGroupLaunch.groupId"
-    @close="(showGroupLaunch.isShowGroupLaunch = false)"
+    @close="showGroupLaunch.isShowGroupLaunch = false"
     @on-submit="
       (groupId: number) => {
         talkStore.toTalk(TalkModeEnum.Group, groupId, router)

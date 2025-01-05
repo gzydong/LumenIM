@@ -58,7 +58,7 @@ onMounted(() => {
       <p>群公告</p>
     </header>
 
-    <main class="el-main main">
+    <main class="el-main">
       <MdEditor
         :preview="false"
         v-model="editorContent"
@@ -97,9 +97,5 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-}
-
-.main {
-  // border-radius: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { NModal } from 'naive-ui'
+import { NModal, NTabPane, NTabs } from 'naive-ui'
 import DetailTab from './DetailTab.vue'
 import MemberTab from './MemberTab.vue'
 import NoticeTab from './NoticeTab.vue'
@@ -17,18 +17,6 @@ defineProps({
 })
 
 const isShowBox = ref(true)
-const tabIndex = ref(0)
-const menus = [
-  { name: '群信息', component: DetailTab },
-  { name: '群成员', component: MemberTab },
-  { name: '群公告', component: NoticeTab },
-  { name: '群申请', component: ApplyTab },
-  { name: '群设置', component: ConfigTab }
-]
-
-const onMaskClick = () => {
-  emit('close')
-}
 </script>
 
 <template>
@@ -37,8 +25,7 @@ const onMaskClick = () => {
     preset="card"
     title="群管理"
     class="modal-radius"
-    style="max-width: 800px"
-    :on-after-leave="onMaskClick"
+    style="width: 800px"
     :segmented="{
       content: true
     }"
@@ -46,44 +33,24 @@ const onMaskClick = () => {
       padding: 0
     }"
   >
-    <section class="el-container container-box">
-      <aside class="el-aside border-right" style="width: 120px">
-        <div
-          v-for="(menu, index) in menus"
-          :key="menu.name"
-          class="menu-list pointer"
-          :class="{ selectd: tabIndex == index }"
-          v-text="menu.name"
-          @click="tabIndex = index"
-        />
-      </aside>
-
-      <main class="el-main">
-        <component :is="menus[tabIndex].component" :group-id="groupId" @close="onMaskClick" />
-      </main>
+    <section class="el-container container-box" :style="{ height: '550px' }">
+      <n-tabs
+        key="群信息"
+        type="line"
+        animated
+        placement="left"
+        :style="{ height: '100%' }"
+        :pane-style="{ padding: '0px', boxSizing: 'content-box', overflow: 'auto' }"
+      >
+        <n-tab-pane name="群信息" tab="群信息"><DetailTab :groupId="groupId" /></n-tab-pane>
+        <n-tab-pane name="群成员" tab="群成员"><MemberTab :groupId="groupId" /></n-tab-pane>
+        <n-tab-pane name="群公告" tab="群公告"><NoticeTab :groupId="groupId" /></n-tab-pane>
+        <n-tab-pane name="群申请" tab="群申请"><ApplyTab :groupId="groupId" /></n-tab-pane>
+        <n-tab-pane name="群设置" tab="群设置"><ConfigTab :groupId="groupId" /></n-tab-pane>
+        <n-tab-pane name="群邀请" tab="群邀请"><ConfigTab :groupId="groupId" /></n-tab-pane>
+      </n-tabs>
     </section>
   </n-modal>
 </template>
 
-<style lang="less" scoped>
-.container-box {
-  height: 550px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.menu-list {
-  height: 25px;
-  line-height: 25px;
-  margin: 16px 0px;
-  font-weight: 400;
-  font-size: 14px;
-  border-right: 3px solid transparent;
-  text-align: center;
-
-  &.selectd {
-    color: #2196f3;
-    border-color: #2196f3;
-  }
-}
-</style>
+<style lang="less" scoped></style>

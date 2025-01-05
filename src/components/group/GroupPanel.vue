@@ -234,7 +234,7 @@ onMounted(() => {
           <p class="text-ellipsis">{{ item.nickname }}</p>
         </div>
 
-        <div class="member-item" @click="(isShowGroup = true)">
+        <div class="member-item" @click="isShowGroup = true">
           <div class="avatar flex-center">
             <n-button circle>
               <template #icon>
@@ -245,7 +245,7 @@ onMounted(() => {
           <p class="text-ellipsis">添加成员</p>
         </div>
 
-        <div class="member-item" @click="(isShowMemberList = true)">
+        <div class="member-item" @click="isShowMemberList = true">
           <div class="avatar flex-center">
             <n-button circle>
               <template #icon>
@@ -335,7 +335,7 @@ onMounted(() => {
   <GroupLaunch
     v-if="isShowGroup"
     :group-id="groupId"
-    @close="(isShowGroup = false)"
+    @close="isShowGroup = false"
     @on-submit="onGroupCallBack"
   />
 
