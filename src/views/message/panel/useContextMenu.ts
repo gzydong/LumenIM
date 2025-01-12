@@ -1,4 +1,3 @@
-import { ref, defineComponent, h } from 'vue'
 import { bus } from '@/utils'
 import { ITalkRecord } from '@/types/chat'
 import { clipboard, htmlDecode, clipboardImage } from '@/utils/common'

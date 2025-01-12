@@ -1,5 +1,4 @@
 <script setup>
-import { NProgress } from 'naive-ui'
 import { useUploadsStore } from '@/store'
 import { fileFormatSize } from '@/utils/string'
 

@@ -1,6 +1,4 @@
 <script setup>
-import { computed, ref, inject } from 'vue'
-import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeSearchContact } from '@/api/contact'
 import { toApi } from '@/api'
 import { useInject } from '@/hooks'

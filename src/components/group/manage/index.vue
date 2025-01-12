@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { NModal, NTabPane, NTabs } from 'naive-ui'
 import DetailTab from './DetailTab.vue'
 import MemberTab from './MemberTab.vue'
 import NoticeTab from './NoticeTab.vue'

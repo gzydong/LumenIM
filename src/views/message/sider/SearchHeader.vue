@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { NIcon, NInput } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 
 const modelValue = defineModel<string>()

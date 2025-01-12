@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed, h, onMounted } from 'vue'
-import { NTransfer, NModal, NInput } from 'naive-ui'
 import { ServeCreateGroup, ServeInviteGroup, ServeGetInviteFriends } from '@/api/group'
 import { toApi } from '@/api'
 import { useInject } from '@/hooks'

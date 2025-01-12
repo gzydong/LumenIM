@@ -1,4 +1,3 @@
-import { computed } from 'vue'
 import { ServeTalkRecords } from '@/api/chat'
 import { toApi } from '@/api'
 import { useDialogueStore } from '@/store'

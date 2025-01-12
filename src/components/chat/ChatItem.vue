@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ToTop, Delete, Undo, Copy } from '@icon-park/vue-next'
-import { NCheckbox } from 'naive-ui'
 import { IMessage, RoleEnum, AlignEnum, MessageTypeEnum, StatusEnum } from './types.ts'
 import { humanizeTime } from '@/utils/datetime.ts'
 

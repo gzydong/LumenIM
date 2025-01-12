@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { NSpace, NTabs, NTab, NDropdown, NVirtualList } from 'naive-ui'
 import { Search, Plus, Male, Female } from '@icon-park/vue-next'
 import UserSearchModal from './inner/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'

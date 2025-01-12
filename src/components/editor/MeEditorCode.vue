@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
-import { NModal, NInput, NPopselect } from 'naive-ui'
 import { options } from '@/constant/highlight.js'
 
 const emit = defineEmits(['close', 'on-submit'])

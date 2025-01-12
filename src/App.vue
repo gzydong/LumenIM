@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import { useUserStore, useTalkStore } from '@/store'
 import ws from '@/connect'
 import { bus } from '@/utils'

@@ -1,5 +1,5 @@
 import Quill from 'quill'
-import QuillEditor from './editor.vue'
+import QuillEditor from './QuillEditor.vue'
 const Delta = Quill.import('delta')
 
 export default QuillEditor

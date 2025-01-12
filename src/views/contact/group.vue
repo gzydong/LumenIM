@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
-import { NSpace, NDrawer, NTabs, NTab } from 'naive-ui'
 import { ServeGetGroups } from '@/api/group'
 import { toApi } from '@/api'
 import { Search, Plus } from '@icon-park/vue-next'

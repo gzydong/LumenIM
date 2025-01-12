@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import ForwardRecord from '@/components/mechat/ForwardRecord.vue'
+import ForwardRecord from '@/components/mechat/ChatForwardRecord.vue'
 
 const props = defineProps<{
   count: number

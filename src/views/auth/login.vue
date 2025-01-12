@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { NDivider, NForm, NFormItem } from 'naive-ui'
 import { ServeLogin } from '@/api/auth'
 import { toApi } from '@/api'
 import { setToken } from '@/utils/auth'

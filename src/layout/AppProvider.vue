@@ -2,15 +2,7 @@
 import '@icon-park/vue-next/styles/index.css'
 import { onMounted } from 'vue'
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
-import {
-  NNotificationProvider,
-  NMessageProvider,
-  NDialogProvider,
-  NConfigProvider,
-  zhCN,
-  dateZhCN,
-  NLayoutContent
-} from 'naive-ui'
+import { zhCN, dateZhCN } from 'naive-ui'
 import hljs from 'highlight.js/lib/core'
 import { NotificationApi, MessageApi, DialogApi } from '@/layout/common'
 import {
@@ -51,7 +43,6 @@ onMounted(() => {
     <source src="@/assets/music.mp3" type="audio/mp3" />
   </audio>
 
-  <!-- 调整 naive-ui 的字重配置 -->
   <n-config-provider
     :theme="getDarkTheme"
     :theme-overrides="getThemeOverride"

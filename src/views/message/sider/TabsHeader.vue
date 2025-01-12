@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
 import { useTalkStore } from '@/store'
 
 const talkStore = useTalkStore()

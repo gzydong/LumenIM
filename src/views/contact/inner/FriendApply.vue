@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue'
-import { NPopconfirm } from 'naive-ui'
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
 import { toApi } from '@/api'

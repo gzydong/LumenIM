@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
-import { NAlert } from 'naive-ui'
 import { Search, AddOne } from '@icon-park/vue-next'
 import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'

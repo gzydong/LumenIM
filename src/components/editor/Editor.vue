@@ -2,7 +2,6 @@
 import QuillEditor, { Quill, Delta } from '@/components/quill-editor'
 import Emitter from 'quill/core/emitter.js'
 import { reactive, watch, ref, markRaw, computed, onMounted, onUnmounted } from 'vue'
-import { NPopover } from 'naive-ui'
 import {
   Voice as IconVoice,
   SourceCode,

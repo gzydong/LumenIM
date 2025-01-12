@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
-import { NModal, NImage } from 'naive-ui'
 import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
 import Loading from '@/components/basic/Loading.vue'
 import {
@@ -31,6 +29,7 @@ interface IState {
       abstract: string
       created_at: string
       deleted_at: string
+      day: number
     }[]
   }
   annex: {
@@ -174,7 +173,7 @@ onMounted(() => {
                 <span class="text-ellipsis">{{ note.title }}</span>
               </div>
               <div class="at-tool">
-                <div class="tip">剩余15天</div>
+                <div class="tip">剩余{{ note.day }}天</div>
                 <div class="icons">
                   <n-icon
                     :size="18"
@@ -343,7 +342,6 @@ onMounted(() => {
     justify-content: space-between;
 
     .at-name {
-      color: #1f2329;
       font-size: 14px;
       line-height: 20px;
       flex: 1 1;
@@ -424,6 +422,18 @@ onMounted(() => {
         margin-left: 12px;
       }
     }
+  }
+}
+
+html[theme-mode='dark'] {
+  .main-box {
+    .main-bag {
+      background-color: unset;
+    }
+  }
+
+  .article {
+    background-color: rgba(255, 255, 255, 0.05);
   }
 }
 </style>

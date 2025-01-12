@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { NSwitch } from 'naive-ui'
 import { useSettingsStore } from '@/store'
 
 const settingsStore = useSettingsStore()

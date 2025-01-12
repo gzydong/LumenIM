@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import EditPassword from '@/components/user/EditorPassword.vue'
 import EditMobile from '@/components/user/EditorMobile.vue'
 import EditEmail from '@/components/user/EditorEmail.vue'

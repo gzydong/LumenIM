@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { NPopover } from 'naive-ui'
 import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, Announcement, More } from '@icon-park/vue-next'
 
 const emit = defineEmits(['evnet', 'changeSessionMenu'])

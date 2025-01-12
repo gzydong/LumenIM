@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, markRaw } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
-import { NPopover } from 'naive-ui'
 import AccountCard from './AccountCard.vue'
 import { GithubOne, SettingTwo, Message, People, BookmarkOne } from '@icon-park/vue-next'
 

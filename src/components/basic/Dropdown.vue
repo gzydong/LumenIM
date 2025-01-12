@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NDropdown, DropdownOption } from 'naive-ui'
+import { DropdownOption } from 'naive-ui'
 import { More } from '@icon-park/vue-next'
 
 const emit = defineEmits(['select'])

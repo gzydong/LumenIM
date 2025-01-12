@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
-import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NVirtualList } from 'naive-ui'
 import type { VirtualListInst } from 'naive-ui'
 import TalkItem from './TalkItem.vue'
 import Skeleton from './Skeleton.vue'

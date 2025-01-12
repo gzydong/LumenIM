@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css'
-import { ref, watch } from 'vue'
-import { NDrawer, NDrawerContent, NEmpty, NFloatButton } from 'naive-ui'
 import { ServeGroupDetail, ServeEditGroupNotice } from '@/api/group'
 import { toApi } from '@/api'
 import { MdPreview, MdEditor } from 'md-editor-v3'

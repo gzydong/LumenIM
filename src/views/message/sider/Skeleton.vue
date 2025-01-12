@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-import { NSkeleton } from 'naive-ui'
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <div class="skeleton flex-center" v-for="i in 20" :key="i">

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, h, onMounted } from 'vue'
-import { NSpace, NInput } from 'naive-ui'
 import { Search, CheckSmall, Close } from '@icon-park/vue-next'
 import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
 import { useInject } from '@/hooks'
+import { NInput } from 'naive-ui'
 
 interface Item {
   id: number

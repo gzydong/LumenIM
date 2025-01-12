@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { Share, ShareThree, Delete, Close } from '@icon-park/vue-next'
 import ContactModal from '@/components/user/ContactModal.vue'
 

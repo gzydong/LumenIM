@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { Search, SortAmountDown } from '@icon-park/vue-next'
-import { NScrollbar } from 'naive-ui'
 import { useNoteStore, NoteItem } from '@/store'
 import { debounce } from '@/utils/common'
 import Loading from '@/components/basic/Loading.vue'
@@ -210,7 +208,7 @@ html[theme-mode='dark'] {
     --im-note-list-bg-color: #1b1b1b;
     --header-desc-border-color: #1f1f23;
     --article-bg-color: rgba(255, 255, 255, 0.05);
-    --article-active-bg-color: rgba(255, 255, 255, 0.3);
+    --article-active-bg-color: #413f3f;
   }
 }
 </style>

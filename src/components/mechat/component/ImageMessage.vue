@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { NImage } from 'naive-ui'
 import { getImageInfo } from '@/utils/file'
 
 defineProps<{

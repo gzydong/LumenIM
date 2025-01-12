@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { NPopover } from 'naive-ui'
 import type { ISession } from '@/types/chat'
 
 const emit = defineEmits(['tab-talk'])

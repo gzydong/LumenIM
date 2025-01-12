@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { NModal, NInput, NCheckbox, NTabs, NTab, NVirtualList } from 'naive-ui'
 import { Search } from '@icon-park/vue-next'
 import { ServeGetContacts } from '@/api/contact'
 import { ServeGetGroups } from '@/api/group'

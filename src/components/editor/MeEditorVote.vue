@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { reactive, computed, ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput, NRadioGroup, NSpace, NRadio } from 'naive-ui'
 import { Delete } from '@icon-park/vue-next'
 const emit = defineEmits(['close', 'submit'])
 

@@ -1,6 +1,4 @@
 <script setup>
-import { ref, reactive, watch, nextTick } from 'vue'
-import { NScrollbar, NDropdown } from 'naive-ui'
 import RecycleModal from './RecycleModal.vue'
 import { Down, AddOne, Plus } from '@icon-park/vue-next'
 import { useNoteStore } from '@/store'

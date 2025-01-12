@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
-import { NForm, NFormItem, NInput } from 'naive-ui'
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
 import { ServeGroupDetail, ServeEditGroup } from '@/api/group'
 import { toApi } from '@/api'

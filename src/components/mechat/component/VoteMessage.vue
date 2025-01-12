@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NCheckbox, NProgress } from 'naive-ui'
 import { ServeGroupVoteSubmit, ServeGroupVoteDetail } from '@/api/group'
 import { IVoteDetail } from '@/types/chat'
 

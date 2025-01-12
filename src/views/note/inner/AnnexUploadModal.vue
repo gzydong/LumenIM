@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
 import { fileFormatSize } from '@/utils/string'
 import { getFileNameSuffix } from '@/utils/file'
 import {

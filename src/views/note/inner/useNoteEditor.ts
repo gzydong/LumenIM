@@ -1,6 +1,5 @@
 import { useNoteStore, useSettingsStore } from '@/store'
 import { type ToolbarNames, type Themes } from 'md-editor-v3'
-import { computed, reactive, watch, ref } from 'vue'
 import {
   ServeSetAsteriskArticle,
   ServeEditArticle,

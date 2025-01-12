@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { reactive, computed, useTemplateRef, watch, ref, onMounted, onUnmounted } from 'vue'
-import { NDrawer } from 'naive-ui'
-import { useRouter } from 'vue-router'
 import { useUserStore, useUploadsStore, useTalkStore } from '@/store/index.ts'
 import { ServeContactOnlineStatus } from '@/api/contact.js'
 import { ChatPlus } from '@/components/chat'

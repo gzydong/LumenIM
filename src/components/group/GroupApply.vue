@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeCreateGroupApply } from '@/api/group'
 import { toApi } from '@/api'
 

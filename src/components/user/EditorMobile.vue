@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeUpdateMobile } from '@/api/user'
 import { toApi } from '@/api'
 import SmsLock from '@/plugins/sms-lock'

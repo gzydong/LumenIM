@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { NCode } from 'naive-ui'
 import { Copy, Stretching } from '@icon-park/vue-next'
 import { clipboard } from '@/utils/common'
 import { useInject } from '@/hooks'

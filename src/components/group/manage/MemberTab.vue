@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, nextTick, onMounted } from 'vue'
-import { NSpace, NDropdown, NCheckbox } from 'naive-ui'
 import { Search, Plus } from '@icon-park/vue-next'
 import GroupLaunch from '../GroupLaunch.vue'
 import { useUserStore } from '@/store'

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onUnmounted, computed } from 'vue'
 import { useDialogueStore, useTalkStore } from '@/store'
 import Panel from './panel/Index.vue'
 import Sider from './sider/Index.vue'

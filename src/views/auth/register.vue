@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { NForm, NFormItem, NInput } from 'naive-ui'
 import { ServeRegister } from '@/api/auth'
 import { toApi } from '@/api'
 import { ServeSendVerifyCode } from '@/api/common'

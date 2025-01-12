@@ -1,4 +1,3 @@
-import { h } from 'vue'
 import { NAvatar } from 'naive-ui'
 import { useTalkStore, useUserStore } from '@/store'
 import { notifyIcon } from '@/constant/default'

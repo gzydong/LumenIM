@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { NTree, NEmpty, NVirtualList, NButton } from 'naive-ui'
-import { useRouter } from 'vue-router'
 import { useUserStore, useTalkStore } from '@/store'
 import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { toApi } from '@/api'

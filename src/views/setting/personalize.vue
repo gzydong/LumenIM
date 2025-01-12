@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { NRadioGroup, NRadio } from 'naive-ui'
 import { useSettingsStore } from '@/store'
 
 const settingsStore = useSettingsStore()

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
 import { ServeUpdatePassword } from '@/api/user'
 import { toApi } from '@/api'
 import { rsaEncrypt } from '@/utils/rsa'

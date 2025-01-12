@@ -3,6 +3,9 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import compressPlugin from 'vite-plugin-compression'
+import AutoImport from 'unplugin-auto-import/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -25,6 +28,14 @@ export default defineConfig(({ mode }) => {
       vueJsx({}),
       compressPlugin({
         threshold: 1024 * 1024 * 1
+      }),
+      AutoImport({
+        imports: ['vue', 'vue-router', 'pinia'], // 你想要自动导入的库
+        // 你可以在这里添加更多的配置选项
+        dts: './auto-imports.d.ts'
+      }),
+      Components({
+        resolvers: [NaiveUiResolver()]
       })
     ],
     define: {

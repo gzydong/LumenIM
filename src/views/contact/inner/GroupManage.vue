@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { VueDraggable } from 'vue-draggable-plus'
-import { computed, ref } from 'vue'
-import { NModal, NInput } from 'naive-ui'
 import { Drag, Delete } from '@icon-park/vue-next'
 import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contact'
 import { toApi } from '@/api'

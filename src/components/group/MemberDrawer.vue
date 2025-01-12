@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { NEmpty, NDrawer, NDrawerContent } from 'naive-ui'
 import { Search } from '@icon-park/vue-next'
 
 const emit = defineEmits(['on-to-info'])

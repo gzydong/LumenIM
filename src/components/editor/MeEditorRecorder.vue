@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, onUnmounted } from 'vue'
-import { NModal } from 'naive-ui'
 import { Voice } from '@icon-park/vue-next'
 import Recorder from 'js-audio-recorder'
 

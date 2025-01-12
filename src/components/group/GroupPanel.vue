@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css'
-import { reactive, computed, watch, ref, onMounted } from 'vue'
-import { NPopover, NPopconfirm } from 'naive-ui'
 import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'

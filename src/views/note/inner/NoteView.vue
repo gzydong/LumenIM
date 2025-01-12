@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css'
 import { MdEditor, MdPreview } from 'md-editor-v3'
-import { NPopover, NPopselect, NFloatButton, NTooltip } from 'naive-ui'
 import {
   Share,
   Delete as IconDelete,
@@ -24,35 +23,35 @@ const {
   classOptions,
   toolbars,
   isPreviewMode,
+  editorBtnText,
+  loadStatus,
+  themeMode,
+  detail,
   onUploadImage,
   onCollection,
   onDownload,
   onDelete,
   onChangeClassify,
   onSaveDebounce,
-  editorBtnText,
-  loadStatus,
   onTitle,
-  onClickEditorBtn,
-  themeMode,
-  detail
+  onClickEditorBtn
 } = useNoteEditor()
 </script>
 
 <template>
   <section
-    class="el-container is-vertical height100 note-view"
+    class="el-container is-vertical note-view"
     v-loading="loadStatus"
     style="width: 100%; max-width: 1200px; margin: 0 auto"
   >
     <header class="el-header note-view-title app-drag">
       <img v-if="!detail.article_id" src="@/assets/image/md.svg" class="svg-icon" />
 
-      <IconStar
+      <n-icon
         v-if="detail.article_id && isPreviewMode"
-        :theme="detail.is_asterisk == 1 ? 'filled' : 'outline'"
-        fill="#ee3f4d"
         :size="22"
+        :component="IconStar"
+        :color="detail.is_asterisk == 1 ? '#ee3f4d' : ''"
         class="pointer"
         @click="onCollection"
       />
@@ -61,7 +60,7 @@ const {
         :data-aid="detail.article_id"
         :contenteditable="isPreviewMode ? false : 'plaintext-only'"
         v-text="editor.title"
-        @keydown="onTitle"
+        @input="onTitle"
       />
 
       <n-button size="small" strong secondary @click="onClickEditorBtn">

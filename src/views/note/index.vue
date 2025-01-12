@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import NoteMenu from './inner/NoteMenu.vue'
 import NoteList from './inner/NoteList.vue'
 import NoteView from './inner/NoteView.vue'

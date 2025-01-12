@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { reactive, onMounted } from 'vue'
-import { NForm, NFormItem, NSwitch, NPopconfirm } from 'naive-ui'
 import { ServeDismissGroup, ServeMuteGroup, ServeGroupDetail, ServeOvertGroup } from '@/api/group'
 import { toApi } from '@/api'
 

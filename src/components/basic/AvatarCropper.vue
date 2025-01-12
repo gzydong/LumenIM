@@ -1,6 +1,5 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import { NModal, NCard } from 'naive-ui'
 import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
