@@ -43,8 +43,8 @@ export const ServeGetArticleDetail = (data) => {
 }
 
 // 移动笔记服务接口
-export const ServeMoveArticle = (data) => {
-  return post('/api/v1/note/article/move', data)
+export const ServeMoveArticleClassify = (data) => {
+  return post('/api/v1/note/article/move-classify', data)
 }
 
 // 更新笔记标签服务接口

@@ -2,7 +2,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { NDropdown, NVirtualList } from 'naive-ui'
+import { NVirtualList } from 'naive-ui'
 import type { VirtualListInst } from 'naive-ui'
 import TalkItem from './TalkItem.vue'
 import Skeleton from './Skeleton.vue'
@@ -13,17 +13,12 @@ import { ServeClearTalkUnreadNum } from '@/api/chat'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName, formatTalkItem } from '@/utils/talk'
 import { ISession } from '@/types/chat'
-import { useSessionMenu, useEventBus } from '@/hooks'
+import { useEventBus } from '@/hooks'
 import { bus } from '@/utils'
 import { SessionConst } from '@/constant/event-bus'
+import { useSessionMenu } from './useSessionMenu.ts'
 
-const {
-  dropdown,
-  onContextMenuTalkHandle,
-  onContextMenu: onContextMenuTalk,
-  onCloseContextMenu,
-  onToTopTalk
-} = useSessionMenu()
+const { ContextMenuElement, onContextMenu, onToTopTalk } = useSessionMenu()
 
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()
@@ -129,15 +124,7 @@ useEventBus([
 
 <template>
   <!-- 右键菜单 -->
-  <n-dropdown
-    class="dropdown-menus"
-    :show="dropdown.show"
-    :x="dropdown.x"
-    :y="dropdown.y"
-    :options="dropdown.options"
-    @select="onContextMenuTalkHandle"
-    @clickoutside="onCloseContextMenu"
-  />
+  <ContextMenuElement />
 
   <section class="el-container container is-vertical height100">
     <!-- 工具栏目 -->
@@ -181,7 +168,7 @@ useEventBus([
               :active="item.index_name === indexName"
               @tab-talk="onTabTalk"
               @top-talk="onToTopTalk"
-              @contextmenu.prevent="onContextMenuTalk($event, item)"
+              @contextmenu.prevent="onContextMenu($event, item)"
             />
           </template>
         </n-virtual-list>

@@ -34,7 +34,11 @@ const { getDarkTheme, getThemeOverride } = useThemeMode()
 
 onMounted(() => {
   useVisibilityChange()
-  useAccessPrompt()
+
+  if (import.meta.env.ENV == 'production') {
+    useAccessPrompt()
+  }
+
   useUnreadMessage()
   useConnectStatus()
   useClickEvent()

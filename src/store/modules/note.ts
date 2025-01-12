@@ -10,12 +10,6 @@ import {
 
 import { toApi } from '@/api'
 
-interface Tag {
-  id: number
-  tag_name: string
-  count: number
-}
-
 interface Class {
   id: number
   class_name: string
@@ -45,7 +39,6 @@ export interface NoteFileItem {
 }
 
 interface NoteStoreState {
-  tags: Tag[]
   class: Class[]
   notes: {
     loadStatus: number
@@ -61,28 +54,27 @@ interface NoteStoreState {
     editorMode: string
     loadId: number
     loadStatus: number
-    detail: {
-      article_id: number
-      classify_id: number
-      class_name: string
-      title: string
-      is_asterisk: number
-      status: number
-      tag_ids: {
-        id: number
-      }[]
-      annex_list: NoteFileItem[]
-      md_content: string
-      created_at: string
-      updated_at: string
-    }
+  }
+  detail: {
+    article_id: number
+    classify_id: number
+    class_name: string
+    title: string
+    is_asterisk: number
+    status: number
+    tag_ids: {
+      id: number
+    }[]
+    annex_list: NoteFileItem[]
+    md_content: string
+    created_at: string
+    updated_at: string
   }
 }
 
 export const useNoteStore = defineStore('note', {
   state: (): NoteStoreState => {
     return {
-      tags: [],
       class: [],
 
       notes: {
@@ -94,20 +86,20 @@ export const useNoteStore = defineStore('note', {
       view: {
         editorMode: 'preview',
         loadId: 0,
-        loadStatus: 0,
-        detail: {
-          article_id: 0,
-          classify_id: 0,
-          title: '',
-          is_asterisk: 0,
-          status: 1,
-          tag_ids: [],
-          annex_list: [],
-          md_content: '',
-          created_at: '',
-          class_name: '',
-          updated_at: ''
-        }
+        loadStatus: 0
+      },
+      detail: {
+        article_id: 0,
+        classify_id: 0,
+        title: '',
+        is_asterisk: 0,
+        status: 1,
+        tag_ids: [],
+        annex_list: [],
+        md_content: '',
+        created_at: '',
+        class_name: '',
+        updated_at: ''
       }
     }
   },
@@ -118,7 +110,7 @@ export const useNoteStore = defineStore('note', {
     },
 
     addNewNote(class_id = 0) {
-      this.view.detail = {
+      this.detail = {
         classify_id: class_id,
         class_name: '',
         created_at: '',
@@ -128,7 +120,7 @@ export const useNoteStore = defineStore('note', {
         md_content: '',
         status: 1,
         tag_ids: [],
-        title: '请编辑标题！',
+        title: '',
         updated_at: ''
       }
 
@@ -183,13 +175,11 @@ export const useNoteStore = defineStore('note', {
 
       this.view.loadStatus = 1
 
-      data.class_name = ''
-
-      this.view.detail = data
+      this.detail = data
 
       const node = this.class.find((item) => item.id == data.classify_id)
       if (node) {
-        this.view.detail.class_name = node.class_name || ''
+        this.detail.class_name = node.class_name || '默认分类'
       }
     },
 
@@ -200,7 +190,7 @@ export const useNoteStore = defineStore('note', {
 
     // 修改收藏状态
     setCollectionStatus(isTrue: boolean) {
-      this.view.detail.is_asterisk = isTrue ? 1 : 0
+      this.detail.is_asterisk = isTrue ? 1 : 0
     },
 
     // 编辑分类

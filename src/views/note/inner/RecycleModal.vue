@@ -104,8 +104,8 @@ const onRecoverArticle = async (index: number, article_id: number) => {
   state.note.items.splice(index, 1)
 }
 
-const onRecoverAnnex = async (index: number, article_id: number) => {
-  const { code } = await toApi(ServeRecoverArticleAnnex, { article_id })
+const onRecoverAnnex = async (index: number, annex_id: number) => {
+  const { code } = await toApi(ServeRecoverArticleAnnex, { annex_id })
 
   if (code != 200) return
   state.annex.items.splice(index, 1)

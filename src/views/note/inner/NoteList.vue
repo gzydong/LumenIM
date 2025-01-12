@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Search, SortAmountDown } from '@icon-park/vue-next'
-import { NImage, NScrollbar } from 'naive-ui'
+import { NScrollbar } from 'naive-ui'
 import { useNoteStore, NoteItem } from '@/store'
 import { debounce } from '@/utils/common'
 import Loading from '@/components/basic/Loading.vue'
+import { useNoteListContextMenu } from './useNoteListContextMenu.ts'
+
+const { onContextMenu, ContextMenuElement } = useNoteListContextMenu()
 
 const store = useNoteStore()
 const items = computed(() => store.notes.items)
@@ -26,8 +29,8 @@ const onSearchInput = debounce(() => {
 }, 300)
 </script>
 <template>
-  <section class="el-container is-vertical section">
-    <header class="el-header search-header">
+  <section class="el-container is-vertical note-list-view">
+    <header class="el-header header-search">
       <div class="icon">
         <n-icon size="18" :component="Search" />
       </div>
@@ -42,69 +45,63 @@ const onSearchInput = debounce(() => {
       />
     </header>
 
-    <header class="el-header sub-header">
+    <header class="el-header header-desc">
       <span>{{ items.length }} 篇笔记</span>
       <div class="menu-icon">
         <n-icon size="18" :component="SortAmountDown" />
       </div>
     </header>
 
-    <main class="el-main height100 flex-center" v-if="loadStatus == 0">
-      <Loading />
-    </main>
-
-    <main class="el-main height100 flex-center" v-else-if="!items.length">
-      <n-empty description="暂无相关数据" />
+    <main class="el-main height100 flex-center" v-if="loadStatus == 0 || !items.length">
+      <Loading v-if="loadStatus == 0" />
+      <n-empty v-else description="暂无相关数据" />
     </main>
 
     <main class="el-main" v-else>
       <n-scrollbar>
         <div
-          class="article"
+          class="article-item pointer"
           v-for="note in items"
           :key="note.article_id"
           @click="onCatDetail(note)"
-          :class="{ selectd: loadId == note.article_id }"
+          :class="{ active: loadId == note.article_id }"
+          @contextmenu.prevent="onContextMenu($event, note)"
         >
-          <div class="article-title">
+          <div class="article-item-title text-ellipsis">
             <span>{{ note.title }}</span>
           </div>
 
-          <div class="article-main pointer">
+          <div class="article-item-body">
             <div class="content">
               <div class="datetime">
                 <span>{{ note.created_at.substring(0, 10) }}</span>
                 <span>{{ note.class_name }}</span>
               </div>
+
               <div class="abstract">
                 {{ note.abstract.replace(/[\r\n]/g, '').replace(/(<([^>]+)>)/gi, '') }}
               </div>
-            </div>
-
-            <div class="image" v-show="note.image">
-              <n-image
-                width="56"
-                height="56"
-                preview-disabled
-                style="border-radius: 2px"
-                :src="note.image"
-              />
             </div>
           </div>
         </div>
       </n-scrollbar>
     </main>
   </section>
+
+  <ContextMenuElement />
 </template>
 <style lang="less" scoped>
-.section {
+.note-list-view {
+  --im-note-list-bg-color: #f4f6f9;
+  --header-desc-border-color: #ece8e8;
+  --article-bg-color: #ffffff;
+  --article-active-bg-color: rgba(198, 198, 200, 0.3);
+
   width: 100%;
   height: 100%;
   background: var(--im-note-list-bg-color);
 
-  --sub-header-border-color: #ece8e8;
-
-  .search-header {
+  .header-search {
     height: 60px;
     text-align: center;
     position: relative;
@@ -123,7 +120,8 @@ const onSearchInput = debounce(() => {
       top: 15px;
       padding: 0 3px;
       font-size: 14px;
-      background: #f4f6f9;
+      background: transparent;
+      color: var(--im-text-color);
 
       &::-webkit-input-placeholder {
         color: rgb(158, 150, 150);
@@ -132,13 +130,13 @@ const onSearchInput = debounce(() => {
     }
   }
 
-  .sub-header {
+  .header-desc {
     height: 40px;
     line-height: 40px;
     position: relative;
     color: #7b7777;
-    border-top: 1px solid var(--sub-header-border-color);
-    border-bottom: 1px solid var(--sub-header-border-color);
+    border-top: 1px solid var(--header-desc-border-color);
+    border-bottom: 1px solid var(--header-desc-border-color);
     font-size: 13px;
     padding: 0 10px;
 
@@ -148,99 +146,71 @@ const onSearchInput = debounce(() => {
       top: 3px;
     }
   }
-}
 
-.article {
-  min-height: 50px;
-  padding: 10px 10px 5px 10px;
-  position: relative;
-  background: var(--im-bg-color);
-  margin: 8px 5px;
-  transition: border 0.1s;
+  .article-item {
+    min-height: 50px;
+    padding: 8px 15px;
+    background-color: var(--article-bg-color);
+    margin: 8px 10px;
+    transition: all 0.5s ease;
+    border-radius: 3px;
 
-  .article-title {
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-    i {
-      display: none;
+    &-title {
+      height: 24px;
+      line-height: 24px;
+      font-size: 14px;
+      width: 100%;
     }
-  }
 
-  .article-main {
-    display: flex;
-    align-items: center;
+    &-body {
+      display: flex;
+      align-items: center;
 
-    .content {
-      flex-grow: 1;
+      .content {
+        flex-grow: 1;
 
-      .datetime {
-        display: flex;
-        align-items: center;
-        padding-top: 4px;
-        font-size: 10px;
-        color: #a7afbc;
-        font-weight: 300;
-        line-height: 1.6;
+        .datetime {
+          display: flex;
+          align-items: center;
+          padding-top: 4px;
+          font-size: 10px;
+          color: #a7afbc;
+          font-weight: 300;
+          line-height: 1.6;
 
-        span {
-          margin-right: 15px;
+          span {
+            margin-right: 15px;
+          }
+        }
+
+        .abstract {
+          display: -webkit-box;
+          flex-grow: 1;
+          max-height: 42px;
+          font-size: 11px;
+          color: #b5b5b5;
+          line-height: 1.6;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          word-break: break-word;
+          overflow: hidden;
         }
       }
-
-      .abstract {
-        display: -webkit-box;
-        flex-grow: 1;
-        max-height: 42px;
-        font-size: 11px;
-        color: #b5b5b5;
-        line-height: 1.6;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        word-break: break-word;
-        overflow: hidden;
-      }
     }
 
-    .image {
-      width: 56px;
-      height: 56px;
-      flex-grow: 0;
-      flex-shrink: 0;
-      margin-left: 16px;
-      cursor: pointer;
+    &.active {
+      background-color: var(--article-active-bg-color);
     }
-  }
-
-  &.selectd {
-    .article-title {
-      font-weight: bold;
-    }
-
-    border-left: 4px solid #2196f3;
   }
 }
 
 html[theme-mode='dark'] {
-  .section {
-    --sub-header-border-color: #1f1f23;
-
-    .search-header {
-      input {
-        background-color: unset;
-        color: #ffffff;
-      }
-    }
-  }
-
-  .article {
-    background-color: rgba(255, 255, 255, 0.04);
+  .note-list-view {
+    --im-note-list-bg-color: #1b1b1b;
+    --header-desc-border-color: #1f1f23;
+    --article-bg-color: rgba(255, 255, 255, 0.05);
+    --article-active-bg-color: rgba(255, 255, 255, 0.3);
   }
 }
 </style>

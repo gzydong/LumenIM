@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { fileFormatSize } from '@/utils/string'
+import { getFileNameSuffix } from '@/utils/file'
 import {
   ServeUploadArticleAnnex,
   ServeDownloadAnnex as onDownload,
@@ -14,7 +15,7 @@ import { useInject } from '@/hooks'
 const { message, dialog } = useInject()
 const store = useNoteStore()
 const loading = ref(false)
-const detail = computed(() => store.view.detail)
+const detail = computed(() => store.detail)
 
 const onTriggerUpload = () => {
   const el = document.getElementById('upload-annex')
@@ -36,7 +37,7 @@ const onUpload = async (e: any) => {
 
   const { code, data } = await toApi(ServeUploadArticleAnnex, from, { loading })
   if (code == 200) {
-    store.view.detail.annex_list.push(data)
+    store.detail.annex_list.push(data)
   }
 }
 
@@ -53,9 +54,7 @@ const onDelete = (item: NoteFileItem) => {
       let { code } = await toApi(ServeDeleteArticleAnnex, { annex_id: item.annex_id })
       if (code != 200) return
 
-      store.view.detail.annex_list = store.view.detail.annex_list.filter(
-        (i) => i.annex_id != item.annex_id
-      )
+      store.detail.annex_list = store.detail.annex_list.filter((i) => i.annex_id != item.annex_id)
       return true
     }
   })
@@ -63,9 +62,7 @@ const onDelete = (item: NoteFileItem) => {
 </script>
 
 <template>
-  <input type="file" id="upload-annex" @change="onUpload" style="display: none" />
-
-  <section class="section">
+  <section class="annex-modal">
     <div class="title">
       <span>附件列表({{ detail.annex_list.length }})</span>
     </div>
@@ -75,10 +72,10 @@ const onDelete = (item: NoteFileItem) => {
         <p v-show="detail.annex_list.length == 0" class="empty-text">暂无附件</p>
 
         <div v-for="file in detail.annex_list" :key="file.annex_id" class="file-item pointer">
-          <div class="suffix">suffix</div>
+          <div class="suffix">{{ getFileNameSuffix(file.annex_name) }}</div>
 
           <div class="content">
-            <div class="filename">{{ file.annex_name }}</div>
+            <div class="filename text-ellipsis">{{ file.annex_name }}</div>
             <div class="filetool">
               <span class="size">
                 {{ fileFormatSize(file.annex_size) }}
@@ -98,7 +95,7 @@ const onDelete = (item: NoteFileItem) => {
       </div>
 
       <div class="annex-footer">
-        <p class="notice-text">文件大小在5M以内<br />最多可支持上传10个附件</p>
+        <p class="notice-text">文件大小在100M以内<br />最多可支持上传10个附件</p>
         <n-button
           text-color="#fff"
           type="primary"
@@ -110,6 +107,7 @@ const onDelete = (item: NoteFileItem) => {
             <n-icon :component="UploadOne" />
           </template>
           上传附件
+          <input type="file" id="upload-annex" @change="onUpload" style="display: none" />
         </n-button>
       </div>
     </div>
@@ -117,111 +115,103 @@ const onDelete = (item: NoteFileItem) => {
 </template>
 
 <style lang="less" scoped>
-.section {
-  padding: 15px;
-  background: var(--im-bg-color);
-
+.annex-modal {
   .title {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 30px;
     font-weight: 500;
-    font-size: 15px;
+    font-size: 16px;
   }
-}
 
-.annex-box {
-  width: 300px;
-  background: var(--im-bg-color);
+  .annex-box {
+    width: 350px;
 
-  .annex-main {
-    min-height: 30px;
-    border-bottom: 1px solid rgb(239, 233, 233);
-    margin-bottom: 8px;
-    padding: 5px 0;
-    max-height: 400px;
-    overflow-y: auto;
+    .annex-main {
+      min-height: 50px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 8px;
+      padding: 5px 0;
+      max-height: 400px;
+      overflow-y: auto;
 
-    .empty-text {
-      color: #969292;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-
-    .file-item {
-      height: 50px;
-      margin-bottom: 5px;
-      margin-top: 10px;
-      user-select: none;
-
-      .suffix {
-        width: 50px;
-        height: 100%;
-        background-color: #ffcc80;
-        border-radius: 3px;
-        float: left;
-        line-height: 50px;
-        text-align: center;
-        color: white;
+      .empty-text {
+        color: #969292;
+        font-size: 12px;
+        margin-top: 10px;
       }
 
-      .content {
-        float: left;
-        width: 247px;
-        height: 100%;
+      .file-item {
+        height: 50px;
+        margin: 15px 0;
+        user-select: none;
+        display: flex;
 
-        .filename {
-          padding-left: 5px;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 1.6;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        .suffix {
+          flex-shrink: 0;
+          width: 50px;
+          height: 100%;
+          background-color: #ffcc80;
+          border-radius: 3px;
+          line-height: 50px;
+          text-align: center;
+          color: white;
         }
 
-        .filetool {
-          color: #505f79;
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 1.6;
-          padding-left: 5px;
-          margin-top: 9px;
-          position: relative;
+        .content {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
 
-          span {
-            margin: 0 3px;
-            &.size {
-              color: #3a8ee6;
+          .filename {
+            padding-left: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.6;
+          }
+
+          .filetool {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.6;
+            padding-left: 5px;
+            margin-top: 9px;
+            position: relative;
+
+            span {
+              margin: 0 3px;
+              &.size {
+                color: #3a8ee6;
+              }
             }
           }
-        }
 
-        .tools {
-          position: absolute;
-          top: -5px;
-          right: 5px;
-          width: 60px;
-          height: 24px;
-          text-align: right;
-          line-height: 28px;
+          .tools {
+            position: absolute;
+            top: -5px;
+            right: 5px;
+            width: 60px;
+            height: 24px;
+            text-align: right;
+            line-height: 28px;
+          }
         }
       }
     }
-  }
 
-  .annex-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-    padding: 5px 5px 5px 0;
+    .annex-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding: 5px 5px 5px 0;
 
-    .notice-text {
-      color: #ccc;
-      font-size: 12px;
-      user-select: none;
+      .notice-text {
+        color: #ccc;
+        font-size: 12px;
+        user-select: none;
+      }
     }
   }
 }

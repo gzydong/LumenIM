@@ -9,9 +9,6 @@ html {
   --im-active-bg-color: #f5f5f5;
   --im-hover-bg-color: #f5f5f5;
 
-  // note
-  --im-note-list-bg-color: #f4f6f9;
-
   // 滚动条
   --im-scrollbar: #e4e4e5;
   --im-scrollbar-thumb: #c0bebc;
@@ -42,9 +39,6 @@ html[theme-mode='dark'] {
   --im-text-color-grey: rgba(255, 255, 255, 0.52);
   --im-active-bg-color: #2c2c32;
   --im-hover-bg-color: #2c2c32;
-
-  // note
-  --im-note-list-bg-color: #1b1b1b;
 
   // 滚动条
   --im-scrollbar: transparent;
@@ -81,4 +75,21 @@ html[theme-mode='dark'] {
 
 body {
   background-color: var(--im-bg-color);
+}
+
+.md-editor {
+  --md-scrollbar-bg-color: transparent !important;
+  --md-scrollbar-thumb-color: transparent !important;
+
+  &:hover {
+    --md-scrollbar-thumb-color: #c0bebc !important;
+  }
+}
+
+.md-editor-dark {
+  --md-bk-color: #242424 !important;
+
+  &:hover {
+    --md-scrollbar-thumb-color: #848281 !important;
+  }
 }
