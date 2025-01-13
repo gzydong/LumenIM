@@ -97,6 +97,10 @@ const onPanelHeaderEvent = (eventType: string) => {
   events[eventType]?.()
 }
 
+const onClearUnread = () => {
+  dialogueStore.unreadBubble = 0
+}
+
 useEventBus([
   {
     name: SessionConst.Switch,
@@ -183,6 +187,7 @@ onUnmounted(() => {
         @element-select="onChatElementSelect"
         @element-event="onContextMenuEvent"
         @user-click-event="onElementClickUser"
+        @on-scroll-to-bottom="onClearUnread"
       />
     </main>
 

@@ -8,8 +8,12 @@ import { isElectronMode } from '@/utils/electron.ts'
   <section class="el-container is-vertical im-container">
     <main class="el-main">
       <section class="el-container">
-        <aside class="el-aside" :class="{ pd20: isElectronMode() }"><Menu></Menu></aside>
-        <main class="el-main"><router-view /></main>
+        <aside :class="{ pd20: isElectronMode() }" class="el-aside app-drag">
+          <Menu></Menu>
+        </aside>
+        <main class="el-main">
+          <router-view />
+        </main>
       </section>
     </main>
   </section>
@@ -25,9 +29,8 @@ import { isElectronMode } from '@/utils/electron.ts'
 
   .el-aside {
     width: 60px;
-    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
     box-sizing: border-box;
-    -webkit-app-region: drag;
+    background-color: #fafafa;
 
     &.pd20 {
       padding-top: 20px;
@@ -41,7 +44,6 @@ html[theme-mode='dark'] {
 
     .el-aside {
       background-color: rgba(255, 255, 255, 0.05);
-      box-shadow: unset;
     }
   }
 }

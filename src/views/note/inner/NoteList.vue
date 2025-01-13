@@ -147,9 +147,9 @@ const onSearchInput = debounce(() => {
 
   .article-item {
     min-height: 50px;
-    padding: 8px 15px;
+    padding: 8px;
     background-color: var(--article-bg-color);
-    margin: 8px 10px;
+    margin: 8px;
     transition: all 0.5s ease;
     border-radius: 3px;
 

@@ -2,11 +2,10 @@
 import { DoubleDown } from '@icon-park/vue-next'
 
 defineProps<{
+  show: boolean
   unread?: number
   scrollToBottom: (animation: boolean) => void
 }>()
-
-const show = defineModel<boolean>()
 </script>
 
 <template>

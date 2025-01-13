@@ -39,11 +39,7 @@ const {
 </script>
 
 <template>
-  <section
-    class="el-container is-vertical note-view"
-    v-loading="loadStatus"
-    style="width: 100%; max-width: 1200px; margin: 0 auto"
-  >
+  <section v-loading="loadStatus" class="el-container is-vertical note-view">
     <header class="el-header note-view-title app-drag">
       <img v-if="!detail.article_id" src="@/assets/image/md.svg" class="svg-icon" />
 
@@ -70,7 +66,7 @@ const {
         {{ editorBtnText }}
       </n-button>
 
-      <n-button size="small" strong secondary style="margin-left: 5px">
+      <n-button v-if="detail.article_id" secondary size="small" strong style="margin-left: 5px">
         <template #icon>
           <n-icon size="16" :component="History" />
         </template>
@@ -115,7 +111,7 @@ const {
       </p>
     </header>
 
-    <main class="el-main">
+    <main class="el-main" style="width: 100%; max-width: 1200px; margin: 0 auto">
       <MdPreview
         v-if="isPreviewMode"
         preview-theme="vuepress"

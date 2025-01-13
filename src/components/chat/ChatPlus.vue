@@ -16,11 +16,11 @@ const {
   multiSelectMode = false,
   dataSourceMode = 'custom',
   items,
-  onScrollLoadMore,
+  unread,
   contextMenu,
+  onScrollLoadMore,
   customRender,
-  contextMenuOption,
-  unread
+  contextMenuOption
 } = defineProps<ChatProps>()
 
 const emit = defineEmits<{
@@ -28,6 +28,8 @@ const emit = defineEmits<{
   (e: 'context-menu-event', key: string, raw: any): void
   (e: 'element-event', key: string, raw: any): void
   (e: 'element-select', element: string[]): void
+  // 滚动到底部触发事件
+  (e: 'on-scroll-to-bottom'): void
 }>()
 
 const containerId = `chat-container-${useId()}`
@@ -134,6 +136,10 @@ function reload(): void {
   }
 }
 
+watch(isScrollBottom, (value) => {
+  value && emit('on-scroll-to-bottom')
+})
+
 onMounted(() => {
   if (dataSourceMode === 'pulldown') {
     scrollToBottomWithDelay()
@@ -201,7 +207,7 @@ defineExpose({
     <!-- 置底按钮(仅下拉加载数据显示置底按钮) -->
     <SkipBottomButton
       v-if="dataSourceMode === 'pulldown'"
-      v-model="isScrollBottom"
+      :show="!isScrollBottom"
       :unread="unread"
       :scrollToBottom="scrollToBottom"
     />

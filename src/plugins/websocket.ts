@@ -1,4 +1,10 @@
-const cache = new Set()
+import { LRUCache } from 'lru-cache'
+
+// @ts-ignore
+const cache = new LRUCache<string, boolean>({
+  max: 10000,
+  ttl: 3 * 60 * 1000 // 过期时间，单位为毫秒
+})
 
 const maxAttempts = 100
 
@@ -116,7 +122,7 @@ class WsSocket {
 
       if (cache.has(data.ackid)) return
 
-      cache.add(data.ackid)
+      cache.set(data.ackid, true)
     }
 
     if (this.onCallBacks[data.event]) {

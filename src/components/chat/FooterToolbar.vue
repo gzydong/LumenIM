@@ -10,10 +10,10 @@ const { loadStatus, loadMode, fn } = defineProps<{
   fn: (reload: boolean) => Promise<void>
 }>()
 
-const loadToolbarFotterTarget = useTemplateRef('load-toolbar-footer')
+const loadToolbarFooterTarget = useTemplateRef('load-toolbar-footer')
 
-const { stop } = useIntersectionObserver(loadToolbarFotterTarget, ([{ isIntersecting }]) => {
-  model.value = !isIntersecting
+const { stop } = useIntersectionObserver(loadToolbarFooterTarget, ([{ isIntersecting }]) => {
+  model.value = isIntersecting
 
   if (loadMode === 'pullup' && isIntersecting) {
     fn(false)
