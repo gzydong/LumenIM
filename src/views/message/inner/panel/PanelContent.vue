@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref } from 'vue'
 import { NDropdown, NCheckbox, NCard, NGrid, NGi, NList, NListItem, NTag, NAlert, NText, NButton } from 'naive-ui'
-import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
+import { Loading, MoreThree, ToTop, ReplayFive } from '@icon-park/vue-next'
+import { GameController, GameControllerOutline } from '@vicons/ionicons5'
 import { bus } from '@/utils/event-bus'
 import { useDialogueStore } from '@/store'
 import { formatTime, parseTime } from '@/utils/datetime'
@@ -109,10 +110,12 @@ const onPanelScroll = (e: any) => {
   }
 }
 
+// 智能回复
 const onSmartReply = (data: ITalkRecord) => {
   console.log('用户点击了智能回复', data)
   const receiver_id = data.receiver_id
   console.log(receiver_id)
+  dialogueStore.setReplaying(true)
   ServeGetSmartReply({
     receiver_id,
   }).then((res: any) => {
@@ -120,6 +123,10 @@ const onSmartReply = (data: ITalkRecord) => {
     // 缓存智能回复
     dialogueStore.setSmartReply(res.data)
     console.log('从store获取智能回复', dialogueStore.smartReply)
+    dialogueStore.setReplaying(false)
+  }).catch((err: any) => {
+    console.log('获取智能回复失败', err)
+    dialogueStore.setReplaying(false)
   })
 }
 
@@ -361,6 +368,14 @@ const sendMessage = (content: string) => {
 
                 <n-icon class="more-tools pointer" :component="MoreThree" @click="closeDropdownMenu"
                   @mouseenter="onContextMenu($event, item)" />
+                <!-- <p>智能回复</p> -->
+                <n-button text style="font-size: 16px; color: green;margin-left: 10px;" @click="onSmartReply(item)"
+                  :loading="dialogueStore.replaying">
+                  <n-icon v-if="!dialogueStore.replaying">
+                    <!-- <ReplayFive /> -->
+                    <GameController />
+                  </n-icon>
+                </n-button>
               </div>
             </div>
 
@@ -379,7 +394,7 @@ const sendMessage = (content: string) => {
         </div>
       </div>
       <div class="smart-reply-container"
-        v-if="dialogueStore.smartReply?.replayMessage && dialogueStore.smartReply?.receiverId === dialogueStore.talk.receiver_id">
+        v-if="dialogueStore.smartReply?.replayMessage && dialogueStore.smartReply?.receiverId === dialogueStore.talk.receiver_id && false">
         <n-card title="智能回复建议" size="small" :bordered="false">
           <!-- 主回复内容 -->
           <div class="main-reply">

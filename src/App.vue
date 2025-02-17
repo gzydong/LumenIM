@@ -22,7 +22,7 @@ import {
   useProvideUserModal,
   useThemeMode,
   useVisibilityChange,
-  useAccessPrompt,
+  // useAccessPrompt,
   useUnreadMessage,
   useConnectStatus,
   useClickEvent
@@ -56,7 +56,7 @@ const init = () => {
 
 init()
 useVisibilityChange()
-useAccessPrompt()
+// useAccessPrompt()
 useUnreadMessage()
 useConnectStatus()
 useClickEvent()

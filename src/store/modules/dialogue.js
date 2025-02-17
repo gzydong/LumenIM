@@ -27,6 +27,9 @@ export const useDialogueStore = defineStore('dialogue', {
       // 好友是否正在输入文字
       keyboard: false,
 
+      // 是否正在回复
+      replaying: false,
+
       // 智能回复
       smartReply: {
         "replayMessage": {
@@ -93,6 +96,11 @@ export const useDialogueStore = defineStore('dialogue', {
     // 更新在线状态
     setOnlineStatus(status) {
       this.online = status
+    },
+
+    // 设置智能回复
+    setReplaying(data) {
+      this.replaying = data
     },
 
     // 设置智能回复

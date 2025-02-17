@@ -12,8 +12,10 @@ import {
   Pic,
   FolderUpload,
   Ranking,
-  History
+  History,
+  ReplayFive
 } from '@icon-park/vue-next'
+import { GameController, GameControllerOutline } from '@vicons/ionicons5'
 import { QuillEditor, Quill } from '@vueup/vue-quill'
 import ImageUploader from 'quill-image-uploader'
 import EmojiBlot from './formats/emoji'
@@ -178,6 +180,14 @@ const navs = reactive([
     show: true,
     click: () => {
       emit('editor-event', emitCall('history_event'))
+    }
+  },
+  {
+    title: '智能回复',
+    icon: markRaw(GameController),
+    show: true,
+    click: () => {
+      console.log('智能回复')
     }
   }
 ])
