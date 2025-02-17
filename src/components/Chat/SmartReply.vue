@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 import { message } from 'ant-design-vue'
+import { GameController, GameControllerOutline } from '@vicons/ionicons5'
 import showdown from 'showdown'
 import { IArrowDown } from '../icons'
 import {
@@ -17,7 +18,7 @@ import {
 } from '../../api/embedding'
 import { useDialogueStore } from '@/store'
 import { WarningOutlined } from '@vicons/antd'
-import { NButton, NTag, NAlert, NIcon } from 'naive-ui'
+import { NButton, NTag, NAlert, NIcon, NSpin } from 'naive-ui'
 
 const dialogueStore = useDialogueStore()
 
@@ -231,8 +232,8 @@ onMounted(async () => {
 </script>
 <template>
     <div class="smart-reply-wrapper">
-        <div v-if="dialogueStore.smartReply?.replayMessage && dialogueStore.smartReply?.receiverId === dialogueStore.talk.receiver_id" 
-             class="smart-reply-container">
+        <div v-if="dialogueStore.smartReply?.replayMessage && dialogueStore.smartReply?.receiverId === dialogueStore.talk.receiver_id"
+            class="smart-reply-container">
             <div class="reply-card">
                 <!-- 主回复内容 -->
                 <div class="main-reply-section">
@@ -241,8 +242,8 @@ onMounted(async () => {
                         <div class="reply-content">
                             {{ dialogueStore.smartReply.replayMessage.message.replyMessage }}
                         </div>
-                        <n-button size="small" type="primary" 
-                                  @click="sendMessage(dialogueStore.smartReply.replayMessage.message.replyMessage)">
+                        <n-button size="small" type="primary"
+                            @click="sendMessage(dialogueStore.smartReply.replayMessage.message.replyMessage)">
                             发送
                         </n-button>
                     </div>
@@ -253,8 +254,7 @@ onMounted(async () => {
                     <div class="section-title">其他推荐</div>
                     <div class="recommend-list">
                         <div v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.otherRecommendReply"
-                             :key="index"
-                             class="recommend-item">
+                            :key="index" class="recommend-item">
                             <div class="recommend-content">
                                 <n-tag size="small" type="success" class="recommend-tag">
                                     推荐{{ index + 1 }}
@@ -273,16 +273,15 @@ onMounted(async () => {
                     <div class="section-title">操作时间线</div>
                     <div class="timeline-list">
                         <div v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.timeLineSummary"
-                             :key="index"
-                             class="timeline-item">
+                            :key="index" class="timeline-item">
                             {{ item }}
                         </div>
                     </div>
                 </div>
 
                 <!-- 警告信息 -->
-                <div v-if="dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.conflictWarning" 
-                     class="warning-section">
+                <div v-if="dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.conflictWarning"
+                    class="warning-section">
                     <n-alert type="warning">
                         <span class="warning-text">
                             {{ dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.conflictWarning }}
@@ -295,8 +294,7 @@ onMounted(async () => {
                     <div class="section-title">待确认事项</div>
                     <div class="confirm-list">
                         <div v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.pendingConfirmation"
-                             :key="index"
-                             class="confirm-item">
+                            :key="index" class="confirm-item">
                             <n-tag size="small" round>{{ item }}</n-tag>
                         </div>
                     </div>
@@ -304,7 +302,13 @@ onMounted(async () => {
             </div>
         </div>
         <div v-else class="empty-state">
-            暂无智能回复
+            <div v-if="dialogueStore.replaying" class="loading-state">
+                <n-spin size="small" />
+                <span class="loading-text">正在获取智能回复...</span>
+            </div>
+            <div v-else>
+                暂无智能回复
+            </div>
         </div>
     </div>
 </template>
@@ -434,6 +438,16 @@ onMounted(async () => {
     justify-content: center;
     color: #9ca3af;
     font-size: 14px;
+}
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.loading-text {
+    margin-left: 8px;
 }
 
 :deep(.n-button) {

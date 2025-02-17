@@ -370,8 +370,8 @@ const sendMessage = (content: string) => {
                   @mouseenter="onContextMenu($event, item)" />
                 <!-- <p>智能回复</p> -->
                 <n-button text style="font-size: 16px; color: green;margin-left: 10px;" @click="onSmartReply(item)"
-                  :loading="dialogueStore.replaying">
-                  <n-icon v-if="!dialogueStore.replaying">
+                  :disabled="dialogueStore.replaying">
+                  <n-icon>
                     <!-- <ReplayFive /> -->
                     <GameController />
                   </n-icon>
