@@ -7,7 +7,7 @@ const request = axios.create({
   baseURL: import.meta.env.VITE_BASE_API,
 
   // 请求超时时间
-  timeout: 10000
+  timeout: 120000
 })
 
 let once = false

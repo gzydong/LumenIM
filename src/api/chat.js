@@ -1,5 +1,10 @@
 import { post, get, upload } from '@/utils/request'
 
+// 获取智能回复服务接口
+export const ServeGetSmartReply = (data = {}) => {
+  return get('/api/v1/talk/reply/byai', data)
+}
+
 // 获取聊天列表服务接口
 export const ServeGetTalkList = (data = {}) => {
   return get('/api/v1/talk/list', data)

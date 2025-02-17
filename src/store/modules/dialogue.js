@@ -21,11 +21,35 @@ export const useDialogueStore = defineStore('dialogue', {
       talk: {
         username: '',
         talk_type: 0, // 对话来源[1:私聊;2:群聊]
-        receiver_id: 0
+        receiver_id: '0'
       },
 
       // 好友是否正在输入文字
       keyboard: false,
+
+      // 智能回复
+      smartReply: {
+        "replayMessage": {
+          "message": {
+            "replyMessage": "",
+            "otherRecommendReply": [],
+            "chatSummaryAndTips": {
+              "timeLineSummary": [],
+              "conflictWarning": "",
+              "emotion": "",
+              "pendingConfirmation": []
+            },
+            "translation": {
+              "originalText": "",
+              "targetLanguage": "zh/en",
+              "result": ""
+            }
+          },
+          "talker": "",
+          "userContent": ""
+        },
+        "receiverId": ""
+      },
 
       // 对方是否在线
       online: false,
@@ -69,6 +93,11 @@ export const useDialogueStore = defineStore('dialogue', {
     // 更新在线状态
     setOnlineStatus(status) {
       this.online = status
+    },
+
+    // 设置智能回复
+    setSmartReply(data) {
+      this.smartReply = data
     },
 
     // 更新对话信息

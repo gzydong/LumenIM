@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref } from 'vue'
-import { NDropdown, NCheckbox } from 'naive-ui'
+import { NDropdown, NCheckbox, NCard, NGrid, NGi, NList, NListItem, NTag, NAlert, NText, NButton } from 'naive-ui'
 import { Loading, MoreThree, ToTop } from '@icon-park/vue-next'
 import { bus } from '@/utils/event-bus'
 import { useDialogueStore } from '@/store'
@@ -13,6 +13,7 @@ import SkipBottom from './SkipBottom.vue'
 import { ITalkRecord } from '@/types/chat'
 import { EditorConst } from '@/constant/event-bus'
 import { useInject, useTalkRecord, useUtil } from '@/hooks'
+import { ServeGetSmartReply, ServePublishMessage } from '@/api/chat'
 
 const props = defineProps({
   uid: {
@@ -106,6 +107,20 @@ const onPanelScroll = (e: any) => {
       loadConfig.status = 1
     }
   }
+}
+
+const onSmartReply = (data: ITalkRecord) => {
+  console.log('用户点击了智能回复', data)
+  const receiver_id = data.receiver_id
+  console.log(receiver_id)
+  ServeGetSmartReply({
+    receiver_id,
+  }).then((res: any) => {
+    console.log('智能回复', res)
+    // 缓存智能回复
+    dialogueStore.setSmartReply(res.data)
+    console.log('从store获取智能回复', dialogueStore.smartReply)
+  })
 }
 
 // 复制文本信息
@@ -238,7 +253,8 @@ const evnets = {
   multiSelect: onMultiSelect,
   download: onDownloadFile,
   quote: onQuoteMessage,
-  collect: onCollectImage
+  collect: onCollectImage,
+  smartReply: onSmartReply
 }
 
 // 会话列表右键菜单回调事件
@@ -265,15 +281,26 @@ watch(props, () => {
 onMounted(() => {
   onLoad({ ...props, limit: 30 })
 })
+
+// 新增发送消息方法
+const sendMessage = (content: string) => {
+  ServePublishMessage({
+    receiver_id: dialogueStore.talk.receiver_id,
+    content: content,
+    talk_type: dialogueStore.talk.talk_type
+  }).then((res: any) => {
+    console.log('发送消息', res)
+    // 清空智能回复缓存
+    dialogueStore.setSmartReply(null)
+  }).catch((err: any) => {
+    console.log('发送消息失败', err)
+  })
+}
 </script>
 
 <template>
   <section class="section">
-    <div
-      id="imChatPanel"
-      class="me-scrollbar me-scrollbar-thumb talk-container"
-      @scroll="onPanelScroll($event)"
-    >
+    <div id="imChatPanel" class="me-scrollbar me-scrollbar-thumb talk-container" @scroll="onPanelScroll($event)">
       <!-- 数据加载状态栏 -->
       <div class="load-toolbar pointer">
         <span v-if="loadConfig.status == 0"> 正在加载数据中 ... </span>
@@ -281,117 +308,63 @@ onMounted(() => {
         <span v-else class="no-more"> 没有更多消息了 </span>
       </div>
 
-      <div
-        class="message-item"
-        v-for="(item, index) in records"
-        :key="item.msg_id"
-        :id="item.msg_id"
-      >
+      <div class="message-item" v-for="(item, index) in records" :key="item.msg_id" :id="item.msg_id">
         <!-- 系统消息 -->
         <div v-if="item.msg_type >= 1000" class="message-box">
-          <component
-            :is="MessageComponents[item.msg_type] || 'unknown-message'"
-            :extra="item.extra"
-            :data="item"
-          />
+          <component :is="MessageComponents[item.msg_type] || 'unknown-message'" :extra="item.extra" :data="item" />
         </div>
 
         <!-- 撤回消息 -->
         <div v-else-if="item.is_revoke == 1" class="message-box">
-          <revoke-message
-            :login_uid="uid"
-            :user_id="item.user_id"
-            :nickname="item.nickname"
-            :talk_type="item.talk_type"
-            :datetime="item.created_at"
-          />
+          <revoke-message :login_uid="uid" :user_id="item.user_id" :nickname="item.nickname" :talk_type="item.talk_type"
+            :datetime="item.created_at" />
         </div>
 
-        <div
-          v-else
-          class="message-box record-box"
-          :class="{
-            'direction-rt': item.float == 'right',
-            'multi-select': dialogueStore.isOpenMultiSelect,
-            'multi-select-check': item.isCheck
-          }"
-        >
+        <div v-else class="message-box record-box" :class="{
+          'direction-rt': item.float == 'right',
+          'multi-select': dialogueStore.isOpenMultiSelect,
+          'multi-select-check': item.isCheck
+        }">
           <!-- 多选按钮 -->
           <aside v-if="dialogueStore.isOpenMultiSelect" class="checkbox-column">
-            <n-checkbox
-              size="small"
-              :checked="item.isCheck"
-              @update:checked="item.isCheck = !item.isCheck"
-            />
+            <n-checkbox size="small" :checked="item.isCheck" @update:checked="item.isCheck = !item.isCheck" />
           </aside>
 
           <!-- 头像信息 -->
           <aside class="avatar-column">
-            <im-avatar
-              class="pointer"
-              :src="item.avatar"
-              :size="30"
-              :username="item.nickname"
-              @click="showUserInfoModal(item.user_id)"
-            />
+            <im-avatar class="pointer" :src="item.avatar" :size="30" :username="item.nickname"
+              @click="showUserInfoModal(item.user_id)" />
           </aside>
 
           <!-- 主体信息 -->
           <main class="main-column">
             <div class="talk-title">
-              <span
-                class="nickname pointer"
-                v-show="talk_type == 2 && item.float == 'left'"
-                @click="onClickNickname(item)"
-              >
+              <span class="nickname pointer" v-show="talk_type == 2 && item.float == 'left'"
+                @click="onClickNickname(item)">
                 <span class="at">@</span>{{ item.nickname }}
               </span>
               <span>{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
             </div>
 
-            <div
-              class="talk-content"
-              :class="{ pointer: dialogueStore.isOpenMultiSelect }"
-              @click="onRowClick(item)"
-            >
-              <component
-                :is="MessageComponents[item.msg_type] || 'unknown-message'"
-                :extra="item.extra"
-                :data="item"
-                :max-width="true"
-                :source="'panel'"
-                @contextmenu.prevent="onContextMenu($event, item)"
-              />
+            <div class="talk-content" :class="{ pointer: dialogueStore.isOpenMultiSelect }" @click="onRowClick(item)">
+              <component :is="MessageComponents[item.msg_type] || 'unknown-message'" :extra="item.extra" :data="item"
+                :max-width="true" :source="'panel'" @contextmenu.prevent="onContextMenu($event, item)" />
 
               <div class="talk-tools">
                 <template v-if="talk_type == 1 && item.float == 'right'">
-                  <loading
-                    theme="outline"
-                    size="19"
-                    fill="#000"
-                    :strokeWidth="1"
-                    class="icon-rotate"
-                    v-show="item.send_status == 1"
-                  />
+                  <loading theme="outline" size="19" fill="#000" :strokeWidth="1" class="icon-rotate"
+                    v-show="item.send_status == 1" />
 
                   <span v-show="item.send_status == 1"> 正在发送... </span>
                   <!-- <span v-show="item.send_status != 1"> 已送达 </span> -->
                 </template>
 
-                <n-icon
-                  class="more-tools pointer"
-                  :component="MoreThree"
-                  @click="closeDropdownMenu"  
-                  @mouseenter="onContextMenu($event, item)"
-                />
+                <n-icon class="more-tools pointer" :component="MoreThree" @click="closeDropdownMenu"
+                  @mouseenter="onContextMenu($event, item)" />
               </div>
             </div>
 
-            <div
-              v-if="item.extra.reply"
-              class="talk-reply pointer"
-              @click="onJumpMessage(item.extra?.reply?.msg_id)"
-            >
+            <div v-if="item.extra.reply" class="talk-reply pointer" @click="onJumpMessage(item.extra?.reply?.msg_id)">
               <n-icon :component="ToTop" size="14" class="icon-top" />
               <span class="ellipsis">
                 回复 {{ item.extra?.reply?.nickname }}:
@@ -405,6 +378,73 @@ onMounted(() => {
           {{ formatTime(item.created_at) }}
         </div>
       </div>
+      <div class="smart-reply-container"
+        v-if="dialogueStore.smartReply?.replayMessage && dialogueStore.smartReply?.receiverId === dialogueStore.talk.receiver_id">
+        <n-card title="智能回复建议" size="small" :bordered="false">
+          <!-- 主回复内容 -->
+          <div class="main-reply">
+            <n-alert type="info" :bordered="false" class="mb-2">
+              {{ dialogueStore.smartReply.replayMessage.message.replyMessage }}
+              <n-button size="tiny" type="primary" class="ml-2"
+                @click.stop="sendMessage(dialogueStore.smartReply.replayMessage.message.replyMessage)">
+                发送
+              </n-button>
+            </n-alert>
+          </div>
+
+          <!-- 推荐回复和时间线布局 -->
+          <n-grid cols="1 s:2" :x-gap="12" :y-gap="8">
+            <n-gi>
+              <!-- 推荐回复 -->
+              <n-list bordered size="small">
+                <n-list-item v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.otherRecommendReply"
+                  :key="index">
+                  <div class="flex items-center justify-between w-full">
+                    <div>
+                      <n-tag type="success" size="small" class="mr-2">推荐{{ index + 1 }}</n-tag>
+                      {{ item }}
+                    </div>
+                    <n-button size="tiny" type="primary" ghost @click.stop="sendMessage(item)">
+                      发送
+                    </n-button>
+                  </div>
+                </n-list-item>
+              </n-list>
+            </n-gi>
+
+            <n-gi>
+              <!-- 时间线摘要 -->
+              <n-list bordered size="small">
+                <template #header>操作时间线</template>
+                <n-list-item
+                  v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.timeLineSummary"
+                  :key="index">
+                  <n-text depth="3" class="timeline-item">{{ item }}</n-text>
+                </n-list-item>
+              </n-list>
+            </n-gi>
+          </n-grid>
+
+          <!-- 警告信息 -->
+          <n-alert v-if="dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.conflictWarning"
+            type="warning" class="mt-2" :bordered="false">
+            <n-text strong>异常检测：</n-text>
+            {{ dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.conflictWarning }}
+          </n-alert>
+
+          <!-- 待确认事项 -->
+          <div class="confirmation-items mt-2">
+            <n-text strong class="block mb-1">待确认事项：</n-text>
+            <div
+              v-for="(item, index) in dialogueStore.smartReply.replayMessage.message.chatSummaryAndTips.pendingConfirmation"
+              :key="index" class="confirmation-item">
+              <n-button text tag="a" type="primary" size="tiny">
+                {{ item }}
+              </n-button>
+            </div>
+          </div>
+        </n-card>
+      </div>
     </div>
 
     <!-- 置底按钮 -->
@@ -412,14 +452,8 @@ onMounted(() => {
   </section>
 
   <!-- 右键菜单 -->
-  <n-dropdown
-    :show="dropdown.show"
-    :x="dropdown.x"
-    :y="dropdown.y"
-    :options="dropdown.options"
-    @select="onContextMenuHandle"
-    @clickoutside="closeDropdownMenu"
-  />
+  <n-dropdown :show="dropdown.show" :x="dropdown.x" :y="dropdown.y" :options="dropdown.options"
+    @select="onContextMenuHandle" @clickoutside="closeDropdownMenu" />
 </template>
 
 <style lang="less" scoped>
@@ -444,6 +478,7 @@ onMounted(() => {
     text-align: center;
     line-height: 38px;
     font-size: 13px;
+
     .no-more {
       color: #b9b3b3;
     }
@@ -638,6 +673,65 @@ onMounted(() => {
       &.multi-select-check {
         background-color: var(--im-active-bg-color);
       }
+    }
+  }
+}
+
+.smart-reply-container {
+  margin: 12px 0;
+  padding: 8px;
+  background-color: var(--im-message-left-bg-color);
+  border-radius: 8px;
+
+  :deep(.n-card__content) {
+    padding: 8px;
+  }
+
+  .timeline-item {
+    font-size: 12px;
+    white-space: pre-wrap;
+  }
+
+  .confirmation-items {
+    border-top: 1px dashed #eee;
+    padding-top: 8px;
+
+    .confirmation-item {
+      margin: 4px 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .n-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.main-reply {
+  :deep(.n-alert-body) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.n-list-item {
+  :deep(.n-list-item__main) {
+    width: 100%;
+  }
+
+  .flex {
+    min-width: 0;
+
+    >div:first-child {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

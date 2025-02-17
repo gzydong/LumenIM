@@ -33,6 +33,8 @@ export function useMenu() {
     dropdown.item = Object.assign({}, item)
 
     dropdown.options = []
+    dropdown.options.push({ label: '智能回复', key: 'smartReply' })
+    
     if ([1, 3].includes(item.msg_type)) {
       dropdown.options.push({ label: '复制', key: 'copy' })
     }
