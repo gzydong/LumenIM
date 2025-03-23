@@ -105,18 +105,11 @@ const onSave = async () => {
                 'bold',
                 'underline',
                 'italic',
-                'title',
                 'strikeThrough',
-                'sub',
-                'sup',
-                'quote',
                 'unorderedList',
                 'orderedList',
-                'task',
-                'code',
                 'link',
-                'image',
-                'table'
+                'image'
               ]"
               style="height: inherit; border: none"
             />

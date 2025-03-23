@@ -116,6 +116,7 @@ watch(
     resetTalkRecord()
     chat.value?.reload()
 
+    // 查询好友的在线状态
     loopGetOnlineStatus()
   },
   { immediate: true }

@@ -30,7 +30,7 @@ export function useLoadMore(
         nextTick(() => {
           const el = container()
           if (el) {
-            el.scrollTop = el.scrollHeight - scrollHeight
+            el.scrollTop = el.scrollHeight - (reload ? 0 : scrollHeight)
           }
         })
       }
