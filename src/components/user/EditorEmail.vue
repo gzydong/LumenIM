@@ -100,7 +100,7 @@ const onValidate = (e: any) => {
 
       <n-form-item label="邮箱验证码" path="code">
         <n-input placeholder="请填写验证码" type="text" v-model:value="state.code" />
-        <n-button tertiary class="mt-l5" @click="onSendEmail" :disabled="lockTime > 0">
+        <n-button class="mt-l5" @click="onSendEmail" :disabled="lockTime > 0">
           获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
         </n-button>
       </n-form-item>

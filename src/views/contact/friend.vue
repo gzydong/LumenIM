@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Search, Plus, Male, Female } from '@icon-park/vue-next'
-import UserSearchModal from './inner/UserSearchModal.vue'
+import UserSearchModal from '@/components/user/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
 import { ServeGetContacts, ServeContactGroupList } from '@/api/contact'
 import { toApi } from '@/api'

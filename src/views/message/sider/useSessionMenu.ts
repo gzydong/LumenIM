@@ -1,4 +1,3 @@
-import { computed, h, inject } from 'vue'
 import { ISession } from '@/types/chat'
 import { renderIcon } from '@/utils/common'
 import {
@@ -23,10 +22,8 @@ import { useInject } from '@/hooks'
 export function useSessionMenu() {
   const dialogueStore = useDialogueStore()
   const talkStore = useTalkStore()
-  const { dialog, message } = useInject()
+  const { dialog, message, toShowUserInfo } = useInject()
   const { menu, ContextMenuElement } = useCommonContextMenu(onContextMenuTalkHandle)
-  // @ts-ignore
-  const user: (uid: number) => void = inject('$user')
 
   // 当前会话索引
   const indexName = computed(() => dialogueStore.index_name)
@@ -90,7 +87,7 @@ export function useSessionMenu() {
   }
 
   const onUserInfo = (item: ISession) => {
-    user(item.to_from_id)
+    toShowUserInfo(item.to_from_id)
   }
 
   // 移除会话

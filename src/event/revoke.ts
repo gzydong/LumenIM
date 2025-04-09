@@ -1,6 +1,6 @@
 import Base from './base'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { parseTime } from '@/utils/datetime'
+import { datetime } from '@/utils/datetime'
 
 /**
  * 好友状态事件
@@ -75,7 +75,7 @@ class Revoke extends Base {
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
       msg_text: this.resource.remark,
-      updated_at: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}') as string
+      updated_at: datetime()
     })
 
     // 判断当前是否正在和好友对话

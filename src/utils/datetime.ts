@@ -1,52 +1,13 @@
-/**
- * 时间格式化方法
- *
- * @param {(Object|string|number)} time
- * @param {String} cFormat
- * @returns {String | null}
- */
-export function parseTime(time, cFormat = '{y}-{m}-{d} {h}:{i}:{s}') {
-  if (arguments.length === 0) {
-    return null
-  }
+import dayjs from 'dayjs'
 
-  let date
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+// 时间格式化方法
+export function formatTime(time: number | string | Date, format = 'YYYY-MM-DD HH:mm:ss'): string {
+  return dayjs(time).format(format)
+}
 
-  if (typeof time === 'object') {
-    date = time
-  } else {
-    if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
-      time = parseInt(time)
-    }
-    if (typeof time === 'number' && time.toString().length === 10) {
-      time = time * 1000
-    }
-
-    date = new Date(time.replace(/-/g, '/'))
-  }
-
-  const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
-    d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
-    s: date.getSeconds(),
-    a: date.getDay()
-  }
-
-  const time_str = format.replace(/{([ymdhisa])+}/g, (_, key) => {
-    const value = formatObj[key]
-    // Note: getDay() returns 0 on Sunday
-    if (key === 'a') {
-      return ['日', '一', '二', '三', '四', '五', '六'][value]
-    }
-
-    return value.toString().padStart(2, '0')
-  })
-
-  return time_str
+// 当前时间
+export function datetime(): string {
+  return dayjs().format('YYYY-MM-DD HH:mm')
 }
 
 /**
@@ -54,7 +15,7 @@ export function parseTime(time, cFormat = '{y}-{m}-{d} {h}:{i}:{s}') {
  *
  * @param {Object} datetime
  */
-export function beautifyTime(datetime = '') {
+export function beautifyTime(datetime: string = ''): string {
   if (datetime == null) {
     return ''
   }
@@ -68,32 +29,32 @@ export function beautifyTime(datetime = '') {
   }
 
   if (time.getTime() < outTime.getTime()) {
-    return parseTime(outTime, '{y}/{m}/{d}')
+    return formatTime(outTime, 'YYYY/MM/DD')
   }
 
   if (time.getFullYear() != outTime.getFullYear()) {
-    return parseTime(outTime, '{y}/{m}/{d}')
+    return formatTime(outTime, 'YYYY/MM/DD')
   }
 
   if (time.getMonth() != outTime.getMonth()) {
-    return parseTime(outTime, '{m}/{d}')
+    return formatTime(outTime, 'MM/DD')
   }
 
   if (time.getDate() != outTime.getDate()) {
     const day = outTime.getDate() - time.getDate()
     if (day == -1) {
-      return parseTime(outTime, '昨天 {h}:{i}')
+      return formatTime(outTime, '昨天 HH:mm')
     }
 
     if (day == -2) {
-      return parseTime(outTime, '前天 {h}:{i}')
+      return formatTime(outTime, '前天 HH:mm')
     }
 
-    return parseTime(outTime, '{m}-{d}')
+    return formatTime(outTime, 'MM/DD')
   }
 
   if (time.getHours() != outTime.getHours()) {
-    return parseTime(outTime, '{h}:{i}')
+    return formatTime(outTime, 'HH:mm')
   }
 
   let minutes = outTime.getMinutes() - time.getMinutes()

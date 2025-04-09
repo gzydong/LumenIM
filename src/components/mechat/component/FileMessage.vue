@@ -6,7 +6,6 @@ defineProps<{
   filename: string
   filesize: number
   msgId: string
-  talkMode: number
 }>()
 </script>
 
@@ -23,7 +22,7 @@ defineProps<{
       </div>
     </div>
     <div class="footer">
-      <a @click="download(msgId, talkMode)">下载</a>
+      <a @click="download(msgId, 1)">下载</a>
       <a>在线预览</a>
     </div>
   </section>

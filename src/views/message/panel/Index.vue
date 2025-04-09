@@ -139,7 +139,7 @@ async function loopGetOnlineStatus() {
   }
 }
 
-let timer
+let timer: number
 onMounted(() => {
   dialogueStore.container = chat.value?.getContainerId() || ''
 

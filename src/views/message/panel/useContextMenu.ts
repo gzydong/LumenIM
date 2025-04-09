@@ -60,7 +60,7 @@ export function useContextMenu(chat: any) {
   }
 
   const onCollectImage = (data: ITalkRecord) => {
-    dialogueStore.ApiCollectImage({
+    dialogueStore.collectImage({
       url: data.extra?.url
     })
   }
@@ -147,12 +147,12 @@ export function useContextMenu(chat: any) {
   }
 
   const onRevoke = (item: ITalkRecord) => {
-    dialogueStore.ApiRevokeRecord(item.msg_id)
+    dialogueStore.revokeRecord(item.msg_id)
     item.is_revoked = 1
   }
 
   const onDelete = (item: ITalkRecord) => {
-    dialogueStore.ApiDeleteRecord([item.msg_id])
+    dialogueStore.deleteRecord([item.msg_id])
   }
 
   const onMultiSelect = (item: ITalkRecord) => {
@@ -170,7 +170,7 @@ export function useContextMenu(chat: any) {
       return message.info('请选择要删除的消息')
     }
 
-    dialogueStore.ApiDeleteRecord(chat.value?.getMultiSelect())
+    dialogueStore.deleteRecord(chat.value?.getMultiSelect())
     chat.value?.enableMultiSelect(false)
     isShowMultiSelect.value = false
   }
@@ -185,7 +185,7 @@ export function useContextMenu(chat: any) {
       return message.info('请选择要转发的消息')
     }
 
-    dialogueStore.ApiForwardRecord({
+    dialogueStore.forwardRecord({
       talk_mode: dialogueStore.target.talk_mode,
       to_from_id: dialogueStore.target.to_from_id,
       body: {

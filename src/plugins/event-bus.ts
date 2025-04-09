@@ -29,16 +29,11 @@ class EventBus {
     // 如果频道不存在，则创建一个新的频道
     if (!this.channels[channel]) {
       this.channels[channel] = []
+      return
     }
 
-    for (const index in this.channels[channel]) {
-      if (this.channels[channel][index] === callback) {
-        this.channels[channel].splice(index, 1)
-      }
-    }
+    this.channels[channel] = this.channels[channel].filter((item: Function) => item !== callback)
   }
 }
 
 export default EventBus
-
-export const bus = new EventBus()

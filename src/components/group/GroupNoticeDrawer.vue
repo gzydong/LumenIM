@@ -4,6 +4,8 @@ import { ServeGroupDetail, ServeEditGroupNotice } from '@/api/group'
 import { toApi } from '@/api'
 import { MdPreview, MdEditor } from 'md-editor-v3'
 import { Editor, CheckCorrect } from '@icon-park/vue-next'
+import { useSettingsStore } from '@/store'
+import { type Themes } from 'md-editor-v3'
 
 const isShow = defineModel({ default: false })
 
@@ -14,8 +16,11 @@ const props = defineProps({
   }
 })
 
+const settingsStore = useSettingsStore()
 const isEditorMode = ref(false)
 const editorContent = ref('')
+
+const themeMode = computed(() => settingsStore.currentThemeMode as Themes)
 
 const detail = ref({
   updated_at: '',
@@ -91,6 +96,8 @@ const onSave = async () => {
             <MdPreview
               preview-theme="vuepress"
               :show-code-row-number="false"
+              :theme="themeMode"
+              style="height: 100%; padding: 8px"
               v-if="!isEditorMode"
               v-model="detail.content"
             />
@@ -111,6 +118,7 @@ const onSave = async () => {
                 'link',
                 'image'
               ]"
+              :theme="themeMode"
               style="height: inherit; border: none"
             />
 

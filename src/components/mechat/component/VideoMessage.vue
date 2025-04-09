@@ -63,7 +63,7 @@ async function onPlay() {
 
     <n-modal v-model:show="open">
       <n-card
-        style="width: 800px; min-height: 300px; position: relative"
+        style="width: 800px; min-height: 300px; position: relative; padding: 5px"
         role="dialog"
         aria-modal="true"
       >
@@ -85,7 +85,7 @@ async function onPlay() {
   min-height: 30px;
   position: relative;
   max-width: min(500px, 60%);
-  width: 100%;
+  // width: 100%;
   display: flex;
   cursor: pointer;
 

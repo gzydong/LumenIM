@@ -52,7 +52,7 @@ const onLogin = async () => {
 
   setToken(data.access_token, data.expires_in)
   ws.connect()
-  message.success('登录成功')
+  message.success('登录成功，即将进入系统')
   userStore.loadSetting()
   router.push(redirect)
 }

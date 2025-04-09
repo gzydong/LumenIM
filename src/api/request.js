@@ -52,8 +52,19 @@ request.interceptors.request.use((config) => {
   return config
 }, errorHandler)
 
+// Refresh
+
 // 响应拦截器
-request.interceptors.response.use((response) => response.data, errorHandler)
+request.interceptors.response.use((response) => {
+  const refreshAccessToken = response.headers.get('refresh-access-token')
+  const refreshTokenExpire = response.headers.get('refresh-access-expires-at')
+
+  if (refreshAccessToken && refreshTokenExpire) {
+    auth.setToken(refreshAccessToken, parseInt(refreshTokenExpire))
+  }
+
+  return response.data
+}, errorHandler)
 
 /**
  * GET 请求

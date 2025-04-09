@@ -3,13 +3,6 @@ import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
 import AccountCard from './AccountCard.vue'
 import { GithubOne, SettingTwo, Message, People, BookmarkOne } from '@icon-park/vue-next'
 
-defineProps({
-  index: {
-    type: Number,
-    default: 0
-  }
-})
-
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const router = useRouter()

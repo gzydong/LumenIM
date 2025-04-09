@@ -3,6 +3,9 @@ import { useDialogueStore, useTalkStore } from '@/store'
 import Panel from './panel/Index.vue'
 import Sider from './sider/Index.vue'
 import Amicable from './amicable.vue'
+// import { useInject } from '@/hooks'
+
+// const { toShowUserInfo } = useInject()
 
 const dialogueStore = useDialogueStore()
 const talkStore = useTalkStore()

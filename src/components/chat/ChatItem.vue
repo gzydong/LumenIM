@@ -99,11 +99,17 @@ const onClieckSelect = (e: Event, item: IMessage) => {
             <template v-else>
               <div>未知类型</div>
             </template>
-            <span class="sent-status" v-if="item?.status === StatusEnum.SENDING">发送中</span>
+            <span class="sent-status sending" v-if="item?.status === StatusEnum.SENDING"
+              >发送中...</span
+            >
+            <span class="sent-status sending" v-if="item?.status === StatusEnum.ERROR"
+              >发送失败</span
+            >
           </div>
 
           <div v-if="item.quote?.quote_id" class="chat-content-quote">
             <n-icon :component="ToTop" size="14" />
+            <!-- TODO 点击跳转到指定的消息 -->
             <span>回复：{{ item?.quote?.content }}</span>
           </div>
 
@@ -241,6 +247,10 @@ const onClieckSelect = (e: Event, item: IMessage) => {
           margin: 0 10px;
           font-size: 12px;
           color: #8f8f8f;
+
+          &.sending {
+            color: #ff8d8d;
+          }
         }
       }
 

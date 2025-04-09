@@ -3,7 +3,7 @@ import { Close, CheckSmall } from '@icon-park/vue-next'
 import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
 import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
-import { parseTime } from '@/utils/datetime'
+import { formatTime } from '@/utils/datetime'
 import { useUserStore } from '@/store'
 import { useInject } from '@/hooks'
 
@@ -102,7 +102,7 @@ onMounted(() => {
       <div class="content pointer o-hidden" @click="onInfo(item)">
         <div class="username">
           <span>{{ item.nickname }}</span>
-          <span class="time">{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
+          <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
         </div>
         <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
       </div>

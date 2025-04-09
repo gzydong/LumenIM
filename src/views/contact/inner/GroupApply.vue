@@ -4,7 +4,7 @@ import { useUserStore } from '@/store'
 import { ServeGetGroupApplyAll, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
 import { toApi } from '@/api'
 import { throttle } from '@/utils/common'
-import { parseTime } from '@/utils/datetime'
+import { formatTime } from '@/utils/datetime'
 import { useInject } from '@/hooks'
 import { NInput } from 'naive-ui'
 
@@ -121,7 +121,7 @@ onMounted(() => {
             </n-tag>
             {{ item.nickname }}
           </span>
-          <span class="time">{{ parseTime(item.created_at, '{m}/{d} {h}:{i}') }}</span>
+          <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
         </div>
         <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
       </div>

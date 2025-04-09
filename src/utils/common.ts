@@ -110,7 +110,7 @@ export const renderIcon = (icon: any) => {
  * @param userAgent
  * @returns
  */
-export function getExploreName(userAgent = '') {
+export function getExploreName(userAgent: string = ''): string {
   if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
     return 'Opera'
   } else if (userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) {
@@ -133,7 +133,7 @@ export function getExploreName(userAgent = '') {
  * @param userAgent
  * @returns
  */
-export function getExploreOs(userAgent = '') {
+export function getExploreOs(userAgent: string = ''): string {
   if (userAgent.indexOf('Mac OS') > -1) {
     return 'Mac OS'
   } else {

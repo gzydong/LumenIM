@@ -17,7 +17,19 @@ const defaultEvent = {
 class WsSocket {
   connect: WebSocket | null = null
 
-  config: any = {
+  config: {
+    heartbeat: {
+      setInterval: number | null
+      pingInterval: number
+      pingTimeout: number
+    }
+    reconnect: {
+      lockReconnect: boolean
+      setTimeout: number | null
+      interval: number[]
+      attempts: number
+    }
+  } = {
     heartbeat: {
       setInterval: null,
       pingInterval: 20000,
@@ -58,7 +70,9 @@ class WsSocket {
   }
 
   connection(): void {
-    this.connect === null && this.loadSocket()
+    if (this.connect === null) {
+      this.loadSocket()
+    }
   }
 
   reconnect(): void {

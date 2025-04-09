@@ -58,7 +58,7 @@ const onShowUpdate = () => {
     :bordered="false"
     class="modal-radius"
     style="max-width: 450px"
-    :mask-closable="false"
+    :mask-closable="true"
     :on-after-leave="onShowUpdate"
     :on-update:show="onShowUpdate"
     transform-origin="center"

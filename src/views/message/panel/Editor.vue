@@ -4,7 +4,8 @@ import {
   useDialogueStore,
   useSettingsStore,
   useUploadsStore,
-  useEditorStore
+  useEditorStore,
+  useAsyncMessageStore
 } from '@/store'
 import ws from '@/connect'
 import { ServePublishMessage } from '@/api/chat'
@@ -24,6 +25,7 @@ const editorStore = useEditorStore()
 const settingsStore = useSettingsStore()
 const uploadsStore = useUploadsStore()
 const dialogueStore = useDialogueStore()
+const { addAsyncMessage } = useAsyncMessageStore()
 const props = defineProps({
   uid: {
     type: Number,
@@ -52,13 +54,25 @@ const props = defineProps({
 
 const isShowHistory = ref(false)
 
-const onSendMessage = async (data = {}): Promise<boolean> => {
+const onSendMessage = async (data: any = {}): Promise<boolean> => {
+  if (!ws.isConnect()) {
+    message.error('网络连接已中断，请稍后再试!')
+    return Promise.resolve(false)
+  }
+
   const params = {
     ...data,
     talk_mode: props.talkMode,
     to_from_id: props.toFromId
   }
 
+  // 异步发送
+  if (['text', 'mixed', 'image', 'video', 'code'].includes(params.type)) {
+    addAsyncMessage(params)
+    return true
+  }
+
+  // 同步发送
   const { code } = await toApi(ServePublishMessage, params)
   return code == 200
 }
@@ -69,6 +83,7 @@ const onSendTextEvent = (data: any): Promise<boolean> => {
     type: 'text',
     quote_id: data.quoteId,
     body: {
+      content: data.items[0].content,
       text: data.items[0].content,
       mentions: data.mentionUids
     }
@@ -213,12 +228,12 @@ onMounted(() => {
   editorStore.loadUserEmoticon()
 })
 
-const onNewEditorEvent = async (event: string, data: any) => {
+const onEditorEvent = async (event: string, data: any) => {
   if (!evnets[event]) return false
 
   let ok = await evnets[event](data)
-  if (ok) {
-    !['history_event', 'input_event'].includes(event) && bus.emit('talk-session-scroll', { top: 0 })
+  if (ok && !['history_event', 'input_event'].includes(event)) {
+    bus.emit('talk-session-scroll', { top: 0 })
   }
 
   return ok
@@ -231,7 +246,7 @@ const onNewEditorEvent = async (event: string, data: any) => {
       :index-name="indexName"
       :show-vote="talkMode == 2"
       :members="members"
-      :callback="onNewEditorEvent"
+      :callback="onEditorEvent"
     />
   </footer>
 

@@ -4,28 +4,33 @@ import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
 import { toApi } from '@/api'
 import { Search, Male, Female } from '@icon-park/vue-next'
 import { useInject } from '@/hooks'
+import { NTag } from 'naive-ui'
 
 const router = useRouter()
 const userStore = useUserStore()
 const talkStore = useTalkStore()
 const { toShowUserInfo, message } = useInject()
 
-const dept = ref(-1)
+const ancestors = ref('')
 const keywords = ref('')
 const items = ref<any[]>([])
 
-// 过滤器
 const filter = computed(() => {
   return items.value.filter((item) => {
     return (
       item.nickname.match(keywords.value) != null &&
-      (dept.value == -1 || item.dept_items.some((item: any) => item.dept_id == dept.value))
+      (ancestors.value == '' || item.ancestors.indexOf(ancestors.value) > -1)
     )
   })
 })
 
 const tree = ref<any[]>([])
-const breadcrumb = ref('全体成员')
+const breadcrumb = ref<
+  {
+    name: string
+    dept_id: number
+  }[]
+>([{ name: '企业成员', dept_id: -1 }])
 
 const onToTalk = (item: any) => {
   if (userStore.uid != item.user_id) {
@@ -62,7 +67,6 @@ function toTree(list: any[]): any[] {
     const parent = map[item.parent_id]
     if (parent) {
       if (parent.children == undefined) parent.children = []
-
       parent.children.push(item)
     } else {
       tree.push(item)
@@ -79,31 +83,51 @@ const onInfo = (item: any) => {
 const onNodeProps = ({ option }) => {
   return {
     onClick() {
-      breadcrumb.value = option.breadcrumb || '全部成员'
-      dept.value = option.dept_id
+      if (option.breadcrumb == '') {
+        breadcrumb.value = [{ name: '企业成员', dept_id: -1 }]
+      } else {
+        breadcrumb.value = option.breadcrumb.split('/').map((name: any) => {
+          return {
+            name: name,
+            dept_id: option.dept_id
+          }
+        })
+      }
+
+      ancestors.value = option.ancestors
+
+      console.log(option.ancestors)
     }
   }
+}
+
+const tag = () => {
+  return h(NTag, {
+    type: 'info',
+    size: 'small',
+    bordered: false,
+    style: {
+      margin: '5px 0px 5px 0px'
+    },
+    innerHTML: '全员'
+  })
 }
 
 async function onLoadDepartment() {
   const { code, data } = await toApi(ServeDepartmentList)
   if (code != 200) return
 
-  const items = data.items || []
-
-  items.unshift({
-    dept_id: -1,
-    dept_name: '全部成员',
-    parent_id: 0,
-    ancestors: '0'
-  })
-
-  for (const item of items) {
-    item.suffix = 0
-    if (item.dept_id > 0) {
-      item.ancestors = `${item.ancestors},${item.dept_id}`
+  let items = data.items || []
+  items = items.map((item: any) => {
+    return {
+      parent_id: item.parent_id,
+      dept_id: item.dept_id,
+      dept_name: item.dept_name,
+      ancestors: item.dept_id > 0 ? `${item.ancestors},${item.dept_id}` : '',
+      prefix: item.dept_id == -1 ? tag : null,
+      suffix: item.count
     }
-  }
+  })
 
   tree.value = toTree(items)
 }
@@ -115,26 +139,19 @@ async function onLoadData() {
   const users = data.items || []
 
   users.map((item: any) => {
-    item.online = false
-    item.sort = 1000000
-
     item.position_items.sort((a, b) => a.sort - b.sort)
+    item.ancestors = `${item.dept_item.ancestors},${item.dept_item.dept_id}`
 
-    const values: string[] = []
-    for (const o of item.position_items) {
-      values.push(o.name)
-
-      if (o.sort < item.sort) {
-        item.sort = o.sort
-      }
-    }
-
-    item.position = values.join('、')
+    item.position = item.position_items
+      .map((item: any) => {
+        return item.name
+      })
+      .join('、')
 
     return item
   })
 
-  items.value = users.sort((a: any, b: any) => a.sort - b.sort)
+  items.value = users.sort((a, b) => a.nickname.localeCompare(b.nickname, 'zh-CN'))
 }
 
 onMounted(() => {
@@ -146,7 +163,14 @@ onMounted(() => {
 <template>
   <section class="el-container is-vertical height100">
     <header class="el-header me-view-header border-bottom">
-      <div>{{ breadcrumb }} ({{ filter.length }})</div>
+      <div>
+        <n-breadcrumb>
+          <n-breadcrumb-item :clickable="false" v-for="item in breadcrumb">{{
+            item.name
+          }}</n-breadcrumb-item>
+          ({{ filter.length }})
+        </n-breadcrumb>
+      </div>
 
       <div>
         <n-space style="display: flex; align-items: center">
@@ -167,6 +191,30 @@ onMounted(() => {
 
     <main class="el-main">
       <section class="el-container height100">
+        <aside
+          class="el-aside border-right pd-10"
+          style="width: 200px"
+          v-dropsize="{
+            min: 200,
+            max: 500,
+            direction: 'right',
+            key: 'aside-organize'
+          }"
+        >
+          <n-tree
+            key-field="dept_id"
+            label-field="dept_name"
+            :data="tree"
+            :default-expand-all="true"
+            :cancelable="true"
+            :default-selected-keys="[-1]"
+            :node-props="onNodeProps"
+            block-node
+            block-line
+            :show-line="true"
+          />
+        </aside>
+
         <main class="el-main" v-if="filter.length" style="padding-bottom: 10px">
           <n-virtual-list style="max-height: inherit" :item-size="80" :items="filter">
             <template #default="{ item }">
@@ -176,11 +224,18 @@ onMounted(() => {
                 </div>
                 <div class="content" @click="onInfo(item)">
                   <div class="content-title">
-                    <span>{{ item.remark || item.nickname }}</span>
                     <span>
                       <n-icon v-if="item.gender == 1" :component="Male" color="#508afe" />
                       <n-icon v-if="item.gender == 2" :component="Female" color="#ff5722" />
                     </span>
+                    <span>{{ item.remark || item.nickname }}</span>
+                    <n-tag
+                      v-for="(v, index) in item.position_items"
+                      size="small"
+                      type="info"
+                      :key="index"
+                      >{{ v.name }}</n-tag
+                    >
                   </div>
                   <div class="content-text text-ellipsis">
                     个性签名: {{ item.motto ? item.motto : '暂无' }}
@@ -199,20 +254,6 @@ onMounted(() => {
         <main class="el-main flex-center" v-else>
           <n-empty description="暂无相关数据" />
         </main>
-
-        <aside class="el-aside border-left pd-10" style="width: 200px">
-          <n-tree
-            key-field="dept_id"
-            label-field="dept_name"
-            :data="tree"
-            :default-expand-all="true"
-            :cancelable="true"
-            :default-selected-keys="[-1]"
-            :node-props="onNodeProps"
-            block-line
-            block-node
-          />
-        </aside>
       </section>
     </main>
   </section>

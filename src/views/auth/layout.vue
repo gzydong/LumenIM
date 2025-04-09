@@ -10,7 +10,7 @@ import { isElectronMode } from '@/utils/electron'
   </section>
 
   <div class="copyright">
-    <span>©2020 - 2024 Lumen IM 在线聊天</span>
+    <span>©2020 - 2025 Lumen IM 在线聊天</span>
     <span><a href="http://beian.miit.gov.cn" target="_blank">黔ICP备20006767号-2</a></span>
     <span>Github源码</span>
   </div>
@@ -27,6 +27,7 @@ import { isElectronMode } from '@/utils/electron'
 body {
   -webkit-app-region: drag;
 }
+
 @import '@/assets/css/login.less';
 
 .section {

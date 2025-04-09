@@ -14,7 +14,6 @@ interface IUserStoreState {
   gender: number
   motto: string
   avatar: string
-  banner: string
   online: boolean
   isQiye: boolean
   isContactApply: boolean
@@ -32,7 +31,6 @@ export const useUserStore = defineStore('user', {
       gender: 0, // 性别
       motto: '', // 个性签名
       avatar: '',
-      banner: '', // 名片背景
       online: false, // 在线状态
       isQiye: false,
       isContactApply: false,
@@ -60,20 +58,18 @@ export const useUserStore = defineStore('user', {
     },
     async loadUserSetting() {
       const { code, data } = await toApi(ServeGetUserSetting)
+      if (code != 200) return
 
-      if (code == 200) {
-        this.nickname = data.user_info.nickname
-        this.uid = data.user_info.uid
-        this.avatar = data.user_info.avatar
+      this.nickname = data.user_info.nickname
+      this.uid = data.user_info.uid
+      this.avatar = data.user_info.avatar
+      this.gender = data.user_info.gender
+      this.mobile = data.user_info.mobile || ''
+      this.email = data.user_info.email || ''
+      this.motto = data.user_info.motto
+      this.isQiye = data.user_info.is_qiye || false
 
-        this.gender = data.user_info.gender
-        this.mobile = data.user_info.mobile || ''
-        this.email = data.user_info.email || ''
-        this.motto = data.user_info.motto
-        this.isQiye = data.user_info.is_qiye || false
-
-        storage.set('user_info', data)
-      }
+      storage.set('user_info', data)
     },
     async loadFriendApplyNum() {
       const { code, data } = await toApi(ServeFindFriendApplyNum)

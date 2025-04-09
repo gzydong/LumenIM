@@ -130,7 +130,7 @@ const onSendSms = async () => {
             :maxlength="6"
             @keydown.enter="onValidate"
           />
-          <n-button tertiary class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
+          <n-button class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
             获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
           </n-button>
         </n-form-item>

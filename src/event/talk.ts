@@ -1,13 +1,13 @@
 import Base from './base'
 import { nextTick } from 'vue'
-import { parseTime } from '@/utils/datetime'
+import { datetime } from '@/utils/datetime'
 import * as message from '@/constant/chat'
 import type { ISession } from '@/types/chat'
 import { formatTalkItem, playMusic } from '@/utils/talk'
 import { isElectronMode } from '@/utils/electron'
 import { ServeClearTalkUnreadNum, ServeCreateTalk } from '@/api/chat'
 import { toApi } from '@/api'
-import { useTalkStore, useDialogueStore, useSettingsStore } from '@/store'
+import { useTalkStore, useDialogueStore, useSettingsStore, useAsyncMessageStore } from '@/store'
 
 /**
  * 好友状态事件
@@ -93,6 +93,8 @@ class Talk extends Base {
   handle() {
     const findIndex = useTalkStore().findIndex(this.getIndexName())
 
+    const { msgIdsCache } = useAsyncMessageStore()
+
     // 判断会话列表是否存在，不存在则创建
     if (findIndex == -1) {
       return this.addTalkItem()
@@ -100,7 +102,12 @@ class Talk extends Base {
 
     // 判断当前是否正在和好友对话
     if (this.isTalk(this.talk_mode, this.to_from_id)) {
-      this.insertTalkRecord()
+      const isCache = msgIdsCache.has(this.body.msg_id)
+      if (isCache) {
+        msgIdsCache.clear(this.body.msg_id)
+      }
+
+      this.insertTalkRecord(!isCache)
 
       if (useSettingsStore().isLeaveWeb) {
         this.showMessageNocice()
@@ -148,7 +155,7 @@ class Talk extends Base {
   /**
    * 插入对话记录
    */
-  insertTalkRecord() {
+  insertTalkRecord(addRecord: boolean = true) {
     const record = this.body
 
     // 群成员变化的消息，需要更新群成员列表
@@ -156,13 +163,15 @@ class Talk extends Base {
       useDialogueStore().updateGroupMembers()
     }
 
-    useDialogueStore().addDialogueRecord(record)
+    if (addRecord) {
+      useDialogueStore().addDialogueRecord(record)
+    }
 
     useTalkStore().updateMessage(
       {
         index_name: this.getIndexName(),
         msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()) as string
+        updated_at: datetime()
       },
       this.isCurrSender()
     )
@@ -208,7 +217,7 @@ class Talk extends Base {
       {
         index_name: this.getIndexName(),
         msg_text: this.getTalkText(),
-        updated_at: parseTime(new Date()) as string
+        updated_at: datetime()
       },
       this.isCurrSender() || this.to_from_id == this.getAccountId()
     )

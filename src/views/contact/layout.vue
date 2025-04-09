@@ -34,7 +34,7 @@ const menus = reactive([
     icon: markRaw(PeoplesTwo)
   },
   {
-    name: '组织架构',
+    name: '企业组织',
     path: '/contact/organize',
     icon: markRaw(ChartGraph),
     show: computed(() => userStore.isQiye)

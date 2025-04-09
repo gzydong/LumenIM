@@ -9,15 +9,15 @@ import {
   ServeEditContactRemark
 } from '@/api/contact'
 import { useTalkStore } from '@/store'
-import { useRouter } from 'vue-router'
 import { useInject } from '@/hooks'
+import { bus } from '@/utils'
+import { ContactConst } from '@/constant/event-bus.ts'
 
 const { message } = useInject()
 const router = useRouter()
 const talkStore = useTalkStore()
 
-const model = defineModel({ default: false })
-const emit = defineEmits(['update-remark'])
+const emit = defineEmits(['close'])
 
 const props = defineProps({
   userId: {
@@ -49,6 +49,13 @@ const userInfo: any = reactive({
   }
 })
 
+const genders = {
+  0: '-',
+  1: '男',
+  2: '女',
+  3: '未知'
+}
+
 const editCardPopover: any = ref(false)
 const options = ref<any>([])
 const groupName = computed(() => {
@@ -56,7 +63,7 @@ const groupName = computed(() => {
     return item.key == userInfo.friend_info.group_id
   })
 
-  return item?.label || '未设置分组'
+  return item?.label || '-'
 })
 
 const onLoadUser = async () => {
@@ -92,7 +99,7 @@ const onLoadUserGroup = async () => {
 
 const onToTalk = () => {
   talkStore.toTalk(1, props.userId, router)
-  model.value = false
+  emit('close')
 }
 
 const onJoinContact = async () => {
@@ -120,10 +127,13 @@ const onChangeRemark = async () => {
     editCardPopover.value.setShow(false)
     userInfo.friend_info.remark = friendRemark.value
 
-    emit('update-remark', {
+    const params = {
       user_id: props.userId,
       remark: friendRemark.value
-    })
+    }
+
+    talkStore.setRemark(params)
+    bus.emit(ContactConst.UpdateRemark, params)
   }
 
   await toApi(
@@ -155,202 +165,161 @@ const handleSelectGroup = async (value: Number) => {
   )
 }
 
-const reset = () => {
-  loading.value = true
-
-  Object.assign(userInfo, {
-    user_id: 0,
-    avatar: '',
-    gender: 0,
-    mobile: '',
-    motto: '',
-    nickname: '',
-    email: '',
-    friend_info: {
-      group_id: 0,
-      is_friend: 'Y',
-      remark: ''
-    }
-  })
-
-  isOpenFrom.value = false
+const onClose = () => {
+  emit('close')
 }
 
-const onUpdate = (value: boolean) => {
-  if (!value) {
-    setTimeout(reset, 100)
-  }
-
-  model.value = value
-}
-
-const onAfterEnter = () => {
-  onLoadUser()
-  onLoadUserGroup()
-}
+onLoadUser()
+onLoadUserGroup()
 </script>
 
 <template>
-  <n-modal
-    :show="model"
-    transform-origin="mouse"
-    :on-update:show="onUpdate"
-    :on-after-enter="onAfterEnter"
-  >
-    <div class="section">
-      <section class="section el-container is-vertical height100">
-        <header class="el-header header">
-          <im-avatar
-            class="avatar"
-            :size="60"
-            :src="userInfo.avatar"
-            :username="userInfo.friend_info.remark || userInfo.nickname"
-            :font-size="30"
+  <div class="section">
+    <section class="section el-container is-vertical height100">
+      <header class="el-header header">
+        <im-avatar
+          class="avatar"
+          :size="60"
+          :src="userInfo.avatar"
+          :username="userInfo.friend_info.remark || userInfo.nickname"
+          :font-size="30"
+        />
+
+        <div class="gender" v-show="userInfo.gender > 0">
+          <n-icon v-if="userInfo.gender == 1" :component="Male" color="#ffffff" />
+          <n-icon v-if="userInfo.gender == 2" :component="Female" color="#ffffff" />
+        </div>
+
+        <div class="close" @click="onClose">
+          <close-one theme="outline" size="22" fill="#fff" :strokeWidth="2" />
+        </div>
+
+        <div class="nickname text-ellipsis">
+          {{ userInfo.friend_info.remark || userInfo.nickname || '-' }}
+        </div>
+      </header>
+
+      <main class="el-main main me-scrollbar me-scrollbar-thumb">
+        <div class="motto">
+          <span style="font-weight: 600">个性签名：</span
+          >{{ userInfo.motto || '编辑个签，展示我的独特态度。' }}
+        </div>
+
+        <div class="infos">
+          <div class="info-item">
+            <span class="name">手机</span>
+            <span class="text">{{ userInfo.mobile || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="name">昵称</span>
+            <span class="text text-ellipsis">{{ userInfo.nickname || '-' }} </span>
+          </div>
+          <div class="info-item">
+            <span class="name">性别</span>
+            <span class="text">{{ genders[userInfo.gender] }}</span>
+          </div>
+          <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+            <span class="name">备注</span>
+            <n-popover trigger="click" placement="top-start" ref="editCardPopover">
+              <template #trigger>
+                <span class="text edit pointer text-ellipsis">
+                  {{ userInfo.friend_info.remark || '-' }}&nbsp;&nbsp;
+                </span>
+              </template>
+
+              <template #header> 设置备注 </template>
+
+              <div style="display: flex">
+                <n-input
+                  type="text"
+                  placeholder="请填写备注"
+                  :autofocus="true"
+                  maxlength="10"
+                  v-model:value="friendRemark"
+                  @keydown.enter="onChangeRemark"
+                />
+                <n-button type="primary" text-color="#ffffff" class="mt-l5" @click="onChangeRemark">
+                  确定
+                </n-button>
+              </div>
+            </n-popover>
+          </div>
+          <div class="info-item">
+            <span class="name">邮箱</span>
+            <span class="text">{{ userInfo.email || '-' }}</span>
+          </div>
+          <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+            <span class="name">分组</span>
+            <n-dropdown
+              trigger="click"
+              placement="top-start"
+              show-arrow
+              :options
+              @select="handleSelectGroup"
+            >
+              <span class="text edit pointer">{{ groupName }}</span>
+            </n-dropdown>
+          </div>
+        </div>
+      </main>
+
+      <footer
+        v-if="userInfo.friend_info.is_friend == 'Y'"
+        class="el-footer footer border-top flex-center"
+      >
+        <n-button
+          round
+          block
+          type="primary"
+          text-color="#ffffff"
+          @click="onToTalk"
+          style="width: 91%"
+        >
+          <template #icon>
+            <n-icon :component="SendOne" />
+          </template>
+          发送消息
+        </n-button>
+      </footer>
+
+      <footer v-else-if="userId != loginUserId" class="el-footer footer border-top flex-center">
+        <template v-if="isOpenFrom">
+          <n-input
+            type="text"
+            placeholder="请填写申请备注"
+            v-model:value="applyRemark"
+            @keydown.enter="onJoinContact"
           />
 
-          <div class="gender" v-show="userInfo.gender > 0">
-            <n-icon v-if="userInfo.gender == 1" :component="Male" color="#ffffff" />
-            <n-icon v-if="userInfo.gender == 2" :component="Female" color="#ffffff" />
-          </div>
-
-          <div class="close" @click="onUpdate(false)">
-            <close-one theme="outline" size="22" fill="#fff" :strokeWidth="2" />
-          </div>
-
-          <div class="nickname text-ellipsis">
-            {{ userInfo.friend_info.remark || userInfo.nickname || '--' }}
-          </div>
-        </header>
-
-        <main class="el-main main me-scrollbar me-scrollbar-thumb">
-          <div class="motto">
-            <span style="font-weight: 600">个性签名：</span
-            >{{ userInfo.motto || '编辑个签，展示我的独特态度。' }}
-          </div>
-
-          <div class="infos">
-            <div class="info-item">
-              <span class="name">手机</span>
-              <span class="text">{{ userInfo.mobile }}</span>
-            </div>
-            <div class="info-item">
-              <span class="name">昵称</span>
-              <span class="text text-ellipsis">{{ userInfo.nickname || '-' }} </span>
-            </div>
-            <div class="info-item">
-              <span class="name">性别</span>
-              <span class="text">{{
-                userInfo.gender == 1 ? '男' : userInfo.gender == 2 ? '女' : '未知'
-              }}</span>
-            </div>
-            <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
-              <span class="name">备注</span>
-              <n-popover trigger="click" placement="top-start" ref="editCardPopover">
-                <template #trigger>
-                  <span class="text edit pointer text-ellipsis">
-                    {{ userInfo.friend_info.remark || '--' }}&nbsp;&nbsp;
-                  </span>
-                </template>
-
-                <template #header> 设置备注 </template>
-
-                <div style="display: flex">
-                  <n-input
-                    type="text"
-                    placeholder="请填写备注"
-                    :autofocus="true"
-                    maxlength="10"
-                    v-model:value="friendRemark"
-                    @keydown.enter="onChangeRemark"
-                  />
-                  <n-button
-                    type="primary"
-                    text-color="#ffffff"
-                    class="mt-l5"
-                    @click="onChangeRemark"
-                  >
-                    确定
-                  </n-button>
-                </div>
-              </n-popover>
-            </div>
-            <div class="info-item">
-              <span class="name">邮箱</span>
-              <span class="text">{{ userInfo.email || '--' }}</span>
-            </div>
-            <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
-              <span class="name">分组</span>
-              <n-dropdown
-                trigger="click"
-                placement="top-start"
-                show-arrow
-                :options
-                @select="handleSelectGroup"
-              >
-                <span class="text edit pointer">{{ groupName }}</span>
-              </n-dropdown>
-            </div>
-          </div>
-        </main>
-
-        <footer
-          v-if="userInfo.friend_info.is_friend == 'Y'"
-          class="el-footer footer border-top flex-center"
-        >
+          <n-button type="primary" text-color="#ffffff" class="mt-l5" @click="onJoinContact">
+            确定
+          </n-button>
+        </template>
+        <template v-else>
           <n-button
-            round
-            block
             type="primary"
             text-color="#ffffff"
-            @click="onToTalk"
+            block
+            round
             style="width: 91%"
+            @click="isOpenFrom = true"
           >
-            <template #icon>
-              <n-icon :component="SendOne" />
-            </template>
-            发送消息
+            添加好友
           </n-button>
-        </footer>
-
-        <footer v-else-if="userId != loginUserId" class="el-footer footer border-top flex-center">
-          <template v-if="isOpenFrom">
-            <n-input
-              type="text"
-              placeholder="请填写申请备注"
-              v-model:value="applyRemark"
-              @keydown.enter="onJoinContact"
-            />
-
-            <n-button type="primary" text-color="#ffffff" class="mt-l5" @click="onJoinContact">
-              确定
-            </n-button>
-          </template>
-          <template v-else>
-            <n-button
-              type="primary"
-              text-color="#ffffff"
-              block
-              round
-              style="width: 91%"
-              @click="isOpenFrom = true"
-            >
-              添加好友
-            </n-button>
-          </template>
-        </footer>
-      </section>
-    </div>
-  </n-modal>
+        </template>
+      </footer>
+    </section>
+  </div>
 </template>
 
 <style lang="less" scoped>
 .section {
   position: relative;
   width: 330px;
-  height: 540px;
-  border-radius: 10px;
+  max-height: 540px;
   overflow: hidden;
   background-color: var(--im-bg-color);
+  border-radius: 10px;
 
   .header {
     width: 100%;

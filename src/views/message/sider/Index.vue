@@ -14,6 +14,7 @@ import { useEventBus } from '@/hooks'
 import { bus } from '@/utils'
 import { SessionConst } from '@/constant/event-bus'
 import { useSessionMenu } from './useSessionMenu.ts'
+import UserSearchModal from '@/components/user/UserSearchModal.vue'
 
 const { ContextMenuElement, onContextMenu, onToTopTalk } = useSessionMenu()
 
@@ -22,6 +23,7 @@ const talkStore = useTalkStore()
 
 const selectIndex = ref(0)
 const isShowGroup = ref(false)
+const isShowUserSearch = ref(false)
 const searchKeyword = ref('')
 
 const virtualListInst = ref<VirtualListInst>()
@@ -127,8 +129,29 @@ useEventBus([
     <!-- 工具栏目 -->
     <SearchHeader
       v-model="searchKeyword"
-      @on-keyword-change="onKeywordChange"
-      @show-group-box="isShowGroup = true"
+      @on-keyword="onKeywordChange"
+      :options="[
+        {
+          label: '添加好友',
+          key: 'friend'
+        },
+        {
+          label: '创建群聊',
+          key: 'create-group'
+        }
+      ]"
+      @on-select="
+        (value: string) => {
+          switch (value) {
+            case 'friend':
+              isShowUserSearch = true
+              break
+            case 'create-group':
+              isShowGroup = true
+              break
+          }
+        }
+      "
     />
 
     <!-- 置顶栏目 -->
@@ -171,14 +194,17 @@ useEventBus([
         </n-virtual-list>
       </template>
     </main>
-  </section>
 
-  <GroupLaunch
-    :group-id="0"
-    v-if="isShowGroup"
-    @close="isShowGroup = false"
-    @on-submit="onGroupLaunchCreate"
-  />
+    <!-- 用户查询模态框 -->
+    <UserSearchModal v-model:show="isShowUserSearch" />
+
+    <GroupLaunch
+      :group-id="0"
+      v-if="isShowGroup"
+      @close="isShowGroup = false"
+      @on-submit="onGroupLaunchCreate"
+    />
+  </section>
 </template>
 
 <style lang="less" scoped>

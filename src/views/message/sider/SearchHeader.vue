@@ -3,10 +3,21 @@ import { Search, Plus } from '@icon-park/vue-next'
 
 const modelValue = defineModel<string>()
 
-const emit = defineEmits(['showGroupBox', 'on-keyword-change'])
+const { options } = defineProps<{
+  options: {
+    label: string
+    key: string
+  }[]
+}>()
+
+const emit = defineEmits(['on-select', 'on-keyword'])
 
 const onKeywordChange = () => {
-  emit('on-keyword-change', modelValue)
+  emit('on-keyword', modelValue)
+}
+
+const onToolsMenu = (value: string) => {
+  emit('on-select', value)
 }
 </script>
 
@@ -24,11 +35,19 @@ const onKeywordChange = () => {
       </template>
     </n-input>
 
-    <n-button circle @click="emit('showGroupBox')" style="margin-left: 10px">
-      <template #icon>
-        <n-icon :component="Plus" />
-      </template>
-    </n-button>
+    <n-dropdown
+      :animated="true"
+      trigger="hover"
+      :show-arrow="true"
+      @select="onToolsMenu"
+      :options="options"
+    >
+      <n-button circle style="margin-left: 10px">
+        <template #icon>
+          <n-icon :component="Plus" />
+        </template>
+      </n-button>
+    </n-dropdown>
   </header>
 </template>
 

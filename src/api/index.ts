@@ -4,10 +4,10 @@ import { AxiosError } from 'axios'
 export * from './request'
 
 interface ApiResponse<T = any> {
-  code: number // http 状态码非200则处理失败
-  error_code: string // 错误码
+  status: number // http 状态码非200则处理失败
+  code: number // 具体的业务错误码 200 表示成功
   message: string // 错误信息
-  data?: T // 仅当 code 为 200 时有效
+  data?: T // 仅当 http status 为 200 时有效
 }
 
 /**
@@ -46,15 +46,18 @@ export async function toApi<T = any>(
       options?.onSuccess()
     }
 
-    return { code: 200, message: 'success', error_code: '', ...res } as ApiResponse
+    return { status: 200, code: 200, message: 'success', ...res }
   } catch (err: unknown) {
     if (options?.loading) options.loading.value = false
 
     if (err instanceof AxiosError) {
       if (!err.response) {
         error(err.message)
-
-        return { code: 500, error_code: err.code as string, message: err.message } as ApiResponse
+        return {
+          status: -1,
+          code: 500,
+          message: err.message
+        }
       }
 
       const status = err.response.status as number
@@ -64,16 +67,14 @@ export async function toApi<T = any>(
         error(message || err.message)
       }
 
-      return { code: status || 500, error_code: `${code}`, message: message }
-    } else {
-      // 处理其他类型的错误
-      error('An unexpected error occurred.')
+      return { status, code, message: message }
+    }
 
-      return {
-        code: 500,
-        error_code: 'UNKNOWN_ERROR',
-        message: 'An unexpected error occurred.'
-      } as ApiResponse
+    error('An unexpected error occurred.')
+    return {
+      status: -2,
+      code: 500,
+      message: 'An unexpected error occurred.'
     }
   }
 }

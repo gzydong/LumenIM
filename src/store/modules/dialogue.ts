@@ -36,7 +36,7 @@ export const useDialogueStore = defineStore('dialogue', {
       keyboard: false,
 
       // 聊天记录
-      records: [] as Array<ITalkRecord>,
+      records: [] as ITalkRecord[],
 
       // 新消息提示
       unreadBubble: 0,
@@ -45,7 +45,7 @@ export const useDialogueStore = defineStore('dialogue', {
       isShowEditor: false,
 
       // 群成员列表
-      members: [] as Array<IMember>,
+      members: [] as IMember[],
 
       // 聊天面板的容器ID
       container: ''
@@ -80,12 +80,10 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新提及列表
     async updateGroupMembers() {
-      const { to_from_id } = this.target
+      const { to_from_id: group_id } = this.target
 
       this.members = []
-      const { code, data } = await toApi(ServeGetGroupMembers, {
-        group_id: to_from_id
-      })
+      const { code, data } = await toApi(ServeGetGroupMembers, { group_id })
 
       if (code != 200) return
 
@@ -150,7 +148,7 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 删除聊天记录
-    async ApiDeleteRecord(msgIds: string[]) {
+    async deleteRecord(msgIds: string[]) {
       const { code } = await toApi(ServeRemoveRecords, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
@@ -161,7 +159,7 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 撤销聊天记录
-    async ApiRevokeRecord(msg_id: string) {
+    async revokeRecord(msg_id: string) {
       const { code } = await toApi(ServeRevokeRecords, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
@@ -172,19 +170,31 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 转发聊天记录
-    async ApiForwardRecord(params = {}) {
+    async forwardRecord(params = {}) {
       await toApi(ServePublishMessage, {
         type: 'forward',
         ...params
       })
     },
 
-    async ApiCollectImage(params = {}) {
+    async collectImage(params = {}) {
       await toApi(ServeCustomizeEmoticonCreate, params, {
         showMessageText: '收藏成功',
         onSuccess: () => {
           useEditorStore().loadUserEmoticon()
         }
+      })
+    },
+
+    /**
+     * 滚动到底部
+     * @param animation 是否使用动画
+     */
+    scrollToBottom(animation: boolean = false) {
+      const el = document.getElementById(this.container)
+      el?.scrollTo({
+        top: el?.scrollHeight + 1000,
+        behavior: animation ? 'smooth' : 'auto'
       })
     }
   }

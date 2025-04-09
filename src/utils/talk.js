@@ -1,4 +1,4 @@
-import { parseTime } from './datetime'
+import { datetime } from './datetime'
 
 export const KEY_INDEX_NAME = 'send_message_index_name'
 
@@ -30,7 +30,7 @@ export function formatTalkItem(params) {
     draft_text: '',
     msg_text: '',
     index_name: '',
-    updated_at: parseTime(new Date())
+    updated_at: datetime()
   }
 
   options = { ...options, ...params }
