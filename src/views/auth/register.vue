@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ServeRegister } from '@/api/auth'
-import { toApi } from '@/api'
-import { ServeSendVerifyCode } from '@/api/common'
+import { ServAuthRegister } from '@/api/auth'
+import { ServCommonSendSmsCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
 import { useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
@@ -52,8 +51,7 @@ const model = reactive({
 })
 
 const onRegister = async () => {
-  await toApi(
-    ServeRegister,
+  await ServAuthRegister(
     {
       nickname: model.nickname,
       mobile: model.username,
@@ -63,7 +61,7 @@ const onRegister = async () => {
     },
     {
       loading,
-      showMessageText: '注册成功',
+      successText: '注册成功',
       onSuccess: () => {
         router.push('/auth/login')
       }
@@ -85,15 +83,14 @@ const onSendSms = async () => {
     return window['$message'].warning('请正确填写手机号')
   }
 
-  const { code, data } = await toApi(
-    ServeSendVerifyCode,
+  const { code, data } = await ServCommonSendSmsCode(
     {
       mobile: model.username,
       channel: 'register'
     },
     {
       loading,
-      showMessageText: '短信发送成功'
+      successText: '短信发送成功'
     }
   )
 

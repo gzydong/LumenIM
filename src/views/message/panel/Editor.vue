@@ -8,14 +8,13 @@ import {
   useAsyncMessageStore
 } from '@/store'
 import ws from '@/connect'
-import { ServePublishMessage } from '@/api/chat'
-import { toApi } from '@/api'
-import { ServeGroupVoteCreate } from '@/api/group'
+import { ServTalkMessageSend } from '@/api/chat.ts'
+import { ServGroupVoteCreate } from '@/api/group.ts'
 import { throttle } from '@/utils/common'
 import { getVideoImage } from '@/utils/file'
 import Editor from '@/components/editor/Editor.vue'
 import HistoryRecord from '@/components/mechat/HistoryRecord.vue'
-import { ServeUploadImage } from '@/api/upload'
+import { ServUploadImage } from '@/api/upload.ts'
 import { bus } from '@/utils'
 import { useInject } from '@/hooks'
 
@@ -73,7 +72,7 @@ const onSendMessage = async (data: any = {}): Promise<boolean> => {
   }
 
   // 同步发送
-  const { code } = await toApi(ServePublishMessage, params)
+  const { code } = await ServTalkMessageSend(params)
   return code == 200
 }
 
@@ -105,13 +104,13 @@ const onSendVideoEvent = async (data: any) => {
   const coverForm = new FormData()
   coverForm.append('file', resp.file)
 
-  const cover = await toApi(ServeUploadImage, coverForm)
+  const cover = await ServUploadImage(coverForm)
   if (cover.code != 200) return false
 
   const form = new FormData()
   form.append('file', data)
 
-  const video = await toApi(ServeUploadImage, form)
+  const video = await ServUploadImage(form)
   if (video.code != 200) return false
 
   return await onSendMessage({
@@ -150,7 +149,7 @@ const onSendFileEvent = async (data: any) => {
 
 // 发送投票消息
 const onSendVoteEvent = async (data: any) => {
-  const { code } = await toApi(ServeGroupVoteCreate, {
+  const { code } = await ServGroupVoteCreate({
     group_id: props.toFromId,
     mode: data.mode,
     is_anonymous: data.is_anonymous,

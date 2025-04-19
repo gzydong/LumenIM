@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import { ServeFindFileSplitInfo, ServeFileSubareaUpload } from '@/api/upload'
-import { ServePublishMessage } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServUploadInitMultipart, ServUploadMultipart } from '@/api/upload'
+import { ServTalkMessageSend } from '@/api/chat'
 
 // 处理拆分上传文件
 function fileSlice(file: File, uploadId: string, eachSize: number) {
@@ -46,7 +45,7 @@ export const useUploadsStore = defineStore('uploads', {
 
     // 初始化上传
     async initUploadFile(file: File, talkType: number, receiverId: number, username: string) {
-      const { code, data } = await toApi(ServeFindFileSplitInfo, {
+      const { code, data } = await ServUploadInitMultipart({
         file_name: file.name,
         file_size: file.size
       })
@@ -85,7 +84,7 @@ export const useUploadsStore = defineStore('uploads', {
       if (!item) return
 
       item.status = 1
-      const { code } = await toApi(ServeFileSubareaUpload, item.files[item.uploadIndex])
+      const { code } = await ServUploadMultipart(item.files[item.uploadIndex])
       item.status = 3
 
       if (code !== 200) throw new Error('Failed to find file split info.')
@@ -104,7 +103,7 @@ export const useUploadsStore = defineStore('uploads', {
 
     // 发送上传消息
     sendUploadMessage(item: any) {
-      ServePublishMessage({
+      ServTalkMessageSend({
         type: 'file',
         talk_mode: item.talk_type,
         to_from_id: item.receiver_id,

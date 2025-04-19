@@ -2,16 +2,14 @@
 import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
 import Loading from '@/components/basic/Loading.vue'
 import {
-  ServeForeverDeleteArticle,
-  ServeRecoverArticle,
-  ServeGetRecoverAnnexList,
+  ServArticleForeverDelete,
+  ServArticleRecoverDelete,
+  ServArticleAnnexRecycleList,
   ServeDownloadAnnex as onDownload,
-  ServeForeverDeleteAnnex,
-  ServeRecoverArticleAnnex,
-  ServeArticleRecycleList
-} from '@/api/article'
-
-import { toApi } from '@/api'
+  ServArticleAnnexForeverDelete,
+  ServArticleAnnexRecover,
+  ServArticleRecycleList
+} from '@/api/article.ts'
 
 const emit = defineEmits(['close'])
 
@@ -70,7 +68,7 @@ const triggerType = (index: number) => {
 // 加载笔记列表
 const loadNoteList = async () => {
   state.note.loading = true
-  const { code, data } = await toApi(ServeArticleRecycleList)
+  const { code, data } = await ServArticleRecycleList()
   state.note.loading = false
 
   if (code != 200) return
@@ -80,7 +78,7 @@ const loadNoteList = async () => {
 const loadAnnexList = async () => {
   state.annex.loading = true
 
-  const { code, data } = await toApi(ServeGetRecoverAnnexList)
+  const { code, data } = await ServArticleAnnexRecycleList()
   state.annex.loading = false
 
   if (code != 200) return
@@ -89,7 +87,7 @@ const loadAnnexList = async () => {
 
 // 永久删除笔记
 const onDeleteArticle = async (index: number, article_id: number) => {
-  const { code } = await toApi(ServeForeverDeleteArticle, { article_id })
+  const { code } = await ServArticleForeverDelete({ article_id })
 
   if (code != 200) return
   state.note.items.splice(index, 1)
@@ -97,20 +95,20 @@ const onDeleteArticle = async (index: number, article_id: number) => {
 
 // 恢复已删除笔记
 const onRecoverArticle = async (index: number, article_id: number) => {
-  const { code } = await toApi(ServeRecoverArticle, { article_id })
+  const { code } = await ServArticleRecoverDelete({ article_id })
 
   if (code != 200) return
   state.note.items.splice(index, 1)
 }
 
 const onRecoverAnnex = async (index: number, annex_id: number) => {
-  const { code } = await toApi(ServeRecoverArticleAnnex, { annex_id })
+  const { code } = await ServArticleAnnexRecover({ annex_id })
 
   if (code != 200) return
   state.annex.items.splice(index, 1)
 }
 const onDeleteAnnex = async (index: number, annex_id: number) => {
-  const { code } = await toApi(ServeForeverDeleteAnnex, { annex_id })
+  const { code } = await ServArticleAnnexForeverDelete({ annex_id })
 
   if (code != 200) return
   state.annex.items.splice(index, 1)

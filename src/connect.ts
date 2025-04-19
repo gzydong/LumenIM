@@ -1,11 +1,11 @@
 import { NAvatar } from 'naive-ui'
 import { useTalkStore, useUserStore } from '@/store'
 import { notifyIcon } from '@/constant/default'
-import WsSocket from './plugins/websocket'
-import EventTalk from './event/talk'
-import EventKeyboard from './event/keyboard'
-import EventRevoke from './event/revoke'
-import { getToken, isLogin } from './utils/auth'
+import WsSocket from '@/plugins/websocket.ts'
+import EventTalk from '@/event/talk.ts'
+import EventKeyboard from '@/event/keyboard.ts'
+import EventRevoke from '@/event/revoke.ts'
+import { getToken, isLogin } from '@/utils/auth.ts'
 
 const urlCallback = () => {
   if (!isLogin()) {

@@ -54,7 +54,9 @@ const onSetMenu = () => {
       <span class="nickname text-ellipsis">{{ username }}</span>
       <span class="keyboard" v-show="keyboard">对方正在输入...</span>
       <span class="num" v-show="talkMode == 2 && num">({{ num }})</span>
-      <p class="desc text-ellipsis" v-show="description.length">{{ description }}</p>
+      <p class="desc text-ellipsis" v-show="description.length">
+        {{ description }}
+      </p>
     </div>
 
     <div class="module right-module">
@@ -156,7 +158,6 @@ const onSetMenu = () => {
     margin-left: 50px;
     position: relative;
     flex: 1 auto;
-    // background-color: rebeccapurple;
 
     .keyboard {
       animation: inputfade 1s infinite;
@@ -216,34 +217,6 @@ const onSetMenu = () => {
   }
 }
 
-@-webkit-keyframes antStatusProcessing {
-  0% {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-
-  to {
-    -webkit-transform: scale(2.4);
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
-
-@keyframes antStatusProcessing {
-  0% {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-
-  to {
-    -webkit-transform: scale(2.4);
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
-
 .tag {
   background: rgb(81 139 254);
   height: 18px;
@@ -257,32 +230,6 @@ const onSetMenu = () => {
 
   &.red {
     background: #f97348;
-  }
-}
-
-.online-status {
-  position: relative;
-  top: -1px;
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  vertical-align: middle;
-  border-radius: 50%;
-  position: relative;
-  background-color: #1890ff;
-  margin-right: 5px;
-
-  &:after {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #1890ff;
-    border-radius: 50%;
-    -webkit-animation: antStatusProcessing 1.2s ease-in-out infinite;
-    animation: antStatusProcessing 1.2s ease-in-out infinite;
-    content: '';
   }
 }
 </style>

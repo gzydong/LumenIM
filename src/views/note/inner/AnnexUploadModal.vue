@@ -2,11 +2,10 @@
 import { fileFormatSize } from '@/utils/string'
 import { getFileNameSuffix } from '@/utils/file'
 import {
-  ServeUploadArticleAnnex,
+  ServArticleAnnexUpload,
   ServeDownloadAnnex as onDownload,
-  ServeDeleteArticleAnnex
-} from '@/api/article'
-import { toApi } from '@/api'
+  ServArticleAnnexDelete
+} from '@/api/article.ts'
 import { useNoteStore, NoteFileItem } from '@/store'
 import { UploadOne } from '@icon-park/vue-next'
 import { useInject } from '@/hooks'
@@ -34,7 +33,7 @@ const onUpload = async (e: any) => {
   from.append('annex', file)
   from.append('article_id', `${detail.value.article_id}`)
 
-  const { code, data } = await toApi(ServeUploadArticleAnnex, from, { loading })
+  const { code, data } = await ServArticleAnnexUpload(from, { loading })
   if (code == 200) {
     store.detail.annex_list.push(data)
   }
@@ -50,7 +49,7 @@ const onDelete = (item: NoteFileItem) => {
       textColor: '#ffffff'
     },
     onPositiveClick: async () => {
-      let { code } = await toApi(ServeDeleteArticleAnnex, { annex_id: item.annex_id })
+      let { code } = await ServArticleAnnexDelete({ annex_id: item.annex_id })
       if (code != 200) return
 
       store.detail.annex_list = store.detail.annex_list.filter((i) => i.annex_id != item.annex_id)

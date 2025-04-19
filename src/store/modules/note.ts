@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia'
 import {
-  ServeGetArticleDetail,
-  ServeGetArticleClass,
-  ServeGetArticleList,
-  ServeCreateArticleClass,
-  ServeUpdateArticleClass,
-  ServeDeleteArticleClass
+  ServArticleDetail,
+  ServArticleClassifyList,
+  ServArticleList,
+  ServArticleClassifyCreate,
+  ServArticleClassifyUpdate,
+  ServArticleClassifyDelete
 } from '@/api/article'
-
-import { toApi } from '@/api'
 
 interface Class {
   id: number
@@ -133,7 +131,7 @@ export const useNoteStore = defineStore('note', {
     },
 
     async loadClass() {
-      const { code, data } = await toApi(ServeGetArticleClass)
+      const { code, data } = await ServArticleClassifyList()
       if (code != 200) return
 
       this.class = data.items
@@ -149,7 +147,7 @@ export const useNoteStore = defineStore('note', {
       this.notes.loadStatus = 0
       this.notes.items = []
 
-      const { code, data } = await toApi(ServeGetArticleList, { ...this.notes.params })
+      const { code, data } = await ServArticleList({ ...this.notes.params })
       if (code != 200) return
 
       this.notes.items = data.items
@@ -169,7 +167,7 @@ export const useNoteStore = defineStore('note', {
 
       this.setEditorMode('preview')
 
-      const { code, data } = await toApi(ServeGetArticleDetail, { article_id: articleId })
+      const { code, data } = await ServArticleDetail({ article_id: articleId })
 
       if (code != 200 || data.article_id != this.view.loadId) return
 
@@ -197,7 +195,7 @@ export const useNoteStore = defineStore('note', {
     async editClass(classifyId: number, name: string) {
       if (classifyId === 0) {
         // 创建
-        const { code, data } = await toApi(ServeCreateArticleClass, { name })
+        const { code, data } = await ServArticleClassifyCreate({ name })
         if (code != 200) return
 
         return this.class.unshift({
@@ -209,7 +207,7 @@ export const useNoteStore = defineStore('note', {
       }
 
       // 更新
-      const { code } = await toApi(ServeUpdateArticleClass, { classify_id: classifyId, name })
+      const { code } = await ServArticleClassifyUpdate({ classify_id: classifyId, name })
       if (code != 200) return
 
       const item = this.class.find((item) => item.id === classifyId)
@@ -217,7 +215,7 @@ export const useNoteStore = defineStore('note', {
     },
 
     async deleteClass(classify_id: number) {
-      const { code } = await toApi(ServeDeleteArticleClass, { classify_id })
+      const { code } = await ServArticleClassifyDelete({ classify_id })
       if (code != 200) return
 
       const index = this.class.findIndex((item) => item.id === classify_id)

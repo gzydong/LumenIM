@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { Close, CheckSmall } from '@icon-park/vue-next'
-import { ServeGetContactApplyRecords, ServeApplyAccept, ServeApplyDecline } from '@/api/contact'
-import { toApi } from '@/api'
+import {
+  ServContactApplyRecords,
+  ServContactApplyAccept,
+  ServContactApplyDecline
+} from '@/api/contact'
 import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
 import { useUserStore } from '@/store'
@@ -24,11 +27,11 @@ const loading = ref(true)
 const isContactApply = computed(() => userStore.isContactApply)
 
 const onLoadData = async (isClearTip = false) => {
-  const { code, data } = await toApi(ServeGetContactApplyRecords, {}, { loading })
+  const { code, data } = await ServContactApplyRecords({}, { loading })
 
   if (code != 200) return
 
-  items.value = data.items || []
+  items.value = data?.items || []
 
   if (isClearTip) {
     userStore.isContactApply = false
@@ -42,14 +45,13 @@ const onInfo = (item: Item) => {
 const onAccept = throttle(async (item: Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await toApi(
-    ServeApplyAccept,
+  await ServContactApplyAccept(
     {
       apply_id: item.id,
       remark: item.nickname
     },
     {
-      showMessageText: '已同意',
+      successText: '已同意',
       onSuccess: onLoadData
     }
   )
@@ -60,14 +62,13 @@ const onAccept = throttle(async (item: Item) => {
 const onDecline = throttle(async (item: Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await toApi(
-    ServeApplyDecline,
+  await ServContactApplyDecline(
     {
       apply_id: item.id,
       remark: item.nickname
     },
     {
-      showMessageText: '已拒绝',
+      successText: '已拒绝',
       onSuccess: onLoadData
     }
   )

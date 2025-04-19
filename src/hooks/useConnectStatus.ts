@@ -1,7 +1,7 @@
 import { watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/store'
-import { isLogin } from '@/utils/auth'
+import { isLogin } from '@/utils/auth.ts'
 import ws from '@/connect'
 
 export const useConnectStatus = () => {

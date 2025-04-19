@@ -16,6 +16,6 @@ export const GenderOptions = [
   }
 ]
 
-export const defAvatar = avatar
+export const defaultAvatar = avatar
 
 export const notifyIcon = notify

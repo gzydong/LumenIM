@@ -3,9 +3,8 @@ import 'md-editor-v3/lib/style.css'
 import { MdEditor } from 'md-editor-v3'
 
 import { ref, onMounted } from 'vue'
-import { ServeGroupDetail, ServeEditGroupNotice } from '@/api/group'
-import { toApi } from '@/api'
-import { ServeUploadImage } from '@/api/upload'
+import { ServGroupDetail, ServGroupNoticeUpdate } from '@/api/group'
+import { ServUploadImage } from '@/api/upload'
 
 const props = defineProps({
   groupId: {
@@ -16,14 +15,13 @@ const props = defineProps({
 
 const editorContent = ref('')
 const onSave = async () => {
-  await toApi(
-    ServeEditGroupNotice,
+  await ServGroupNoticeUpdate(
     {
       group_id: props.groupId,
       content: editorContent.value
     },
     {
-      showMessageText: '已保存'
+      successText: '已保存'
     }
   )
 }
@@ -34,14 +32,14 @@ const onUploadImage = async (files: File[], callback: any) => {
   const form = new FormData()
   form.append('file', files[0])
 
-  const { code, data } = await toApi(ServeUploadImage, form)
+  const { code, data } = await ServUploadImage(form)
   if (code != 200) return
 
   callback([data.src])
 }
 
 const loadDetail = async () => {
-  const { code, data } = await toApi(ServeGroupDetail, { group_id: props.groupId })
+  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
 
   if (code != 200) return
 

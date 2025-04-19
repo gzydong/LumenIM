@@ -2,8 +2,11 @@
 import { Search, Plus, Male, Female } from '@icon-park/vue-next'
 import UserSearchModal from '@/components/user/UserSearchModal.vue'
 import GroupManage from './inner/GroupManage.vue'
-import { ServeGetContacts, ServeContactGroupList } from '@/api/contact'
-import { toApi } from '@/api'
+import {
+  ServContactList,
+  ServContactGroupList,
+  ServContactListResponseItem
+} from '@/api/contact.ts'
 import { useEventBus, useContact } from '@/hooks'
 import { ContactConst } from '@/constant/event-bus'
 import { useTalkStore } from '@/store'
@@ -12,18 +15,18 @@ import Dropdown from '@/components/basic/Dropdown.vue'
 
 const router = useRouter()
 const talkStore = useTalkStore()
-const { onDeleteContact, onEditContactRemark, toShowUserInfo } = useContact()
+const { onDeleteContact, onChangeContactRemark, toShowUserInfo } = useContact()
 
 const isShowUserSearch = ref(false)
 const loading = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
 const index = ref(0)
-const items = ref([])
+const items = ref<ServContactListResponseItem[]>([])
 const groups: any = ref([])
 
 const filter: any = computed(() => {
-  return items.value.filter((item: any) => {
+  return items.value.filter((item: ServContactListResponseItem) => {
     let value = item.remark || item.nickname
 
     let findIndex = value.toLowerCase().indexOf(keywords.value.toLowerCase())
@@ -36,24 +39,24 @@ const filter: any = computed(() => {
 })
 
 const loadContactList = async () => {
-  const { code, data } = await toApi(ServeGetContacts, {}, { loading })
+  const { code, data } = await ServContactList({}, { loading })
   if (code != 200) return
 
   items.value = data?.items || []
 }
 
 const loadContactGroupList = async () => {
-  const { code, data } = await toApi(ServeContactGroupList)
+  const { code, data } = await ServContactGroupList()
   if (code != 200) return
 
   groups.value = data?.items || []
 }
 
-const onToTalk = (item: any) => {
+const onToTalk = (item: ServContactListResponseItem) => {
   talkStore.toTalk(1, item.user_id, router)
 }
 
-const onInfo = (item: any) => {
+const onInfo = (item: ServContactListResponseItem) => {
   toShowUserInfo(item.user_id)
 }
 
@@ -68,17 +71,19 @@ const onToolsMenu = (value: string) => {
   }
 }
 
-const onChangeRemark = (data: any) => {
-  let item: any = items.value.find((item: any) => item.user_id == data.user_id)
+const onChangeRemark = (data: { user_id: number; remark: string }) => {
+  let item: any = items.value.find(
+    (item: ServContactListResponseItem) => item.user_id == data.user_id
+  )
   item && (item.remark = data.remark)
 }
 
-const onClickDropdown = (key: string, item: any) => {
+const onClickDropdown = (key: string, item: ServContactListResponseItem) => {
   const { user_id, nickname, remark } = item
 
   switch (key) {
     case 'change-remark':
-      onEditContactRemark({ user_id, nickname, remark }, () => {
+      onChangeContactRemark({ user_id, nickname, remark }, () => {
         loadContactList()
       })
 

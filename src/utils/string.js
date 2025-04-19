@@ -64,3 +64,7 @@ export function fileFormatSize(value) {
   size = size.toFixed(2) //保留的小数位数
   return size + unitArr[index]
 }
+
+export function formatPhone(phone) {
+  return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3')
+}

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useUserStore, useTalkStore } from '@/store'
-import { ServeDepartmentList, ServePersonnelList } from '@/api/organize'
-import { toApi } from '@/api'
+import { ServOrganizeDepartmentList, ServOrganizePersonnelAll } from '@/api/organize'
 import { Search, Male, Female } from '@icon-park/vue-next'
 import { useInject } from '@/hooks'
 import { NTag } from 'naive-ui'
@@ -114,7 +113,7 @@ const tag = () => {
 }
 
 async function onLoadDepartment() {
-  const { code, data } = await toApi(ServeDepartmentList)
+  const { code, data } = await ServOrganizeDepartmentList()
   if (code != 200) return
 
   let items = data.items || []
@@ -133,7 +132,7 @@ async function onLoadDepartment() {
 }
 
 async function onLoadData() {
-  const { code, data } = await toApi(ServePersonnelList)
+  const { code, data } = await ServOrganizePersonnelAll()
   if (code != 200) return
 
   const users = data.items || []
@@ -142,11 +141,7 @@ async function onLoadData() {
     item.position_items.sort((a, b) => a.sort - b.sort)
     item.ancestors = `${item.dept_item.ancestors},${item.dept_item.dept_id}`
 
-    item.position = item.position_items
-      .map((item: any) => {
-        return item.name
-      })
-      .join('、')
+    item.position = item.position_items.map((item: any) => item.name).join('、')
 
     return item
   })
@@ -165,7 +160,7 @@ onMounted(() => {
     <header class="el-header me-view-header border-bottom">
       <div>
         <n-breadcrumb>
-          <n-breadcrumb-item :clickable="false" v-for="item in breadcrumb">{{
+          <n-breadcrumb-item :clickable="false" :key="item.name" v-for="item in breadcrumb">{{
             item.name
           }}</n-breadcrumb-item>
           ({{ filter.length }})

@@ -3,8 +3,7 @@ import { reactive, ref } from 'vue'
 import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { toApi } from '@/api'
-import { ServeUploadImage } from '@/api/upload'
+import { ServUploadImage } from '@/api/upload'
 
 const emit = defineEmits(['close', 'success'])
 const state = reactive({
@@ -85,7 +84,7 @@ const onSubmit = () => {
     const form = new FormData()
     form.append('file', file)
 
-    const { code, data } = await toApi(ServeUploadImage, form)
+    const { code, data } = await ServUploadImage(form)
 
     code == 200 && emit('success', data.src)
   })

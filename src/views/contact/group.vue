@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeGetGroups } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupList } from '@/api/group.ts'
 import { Search, Plus } from '@icon-park/vue-next'
 import { useUserStore, useTalkStore } from '@/store'
 import GroupPanel from '@/components/group/GroupPanel.vue'
@@ -44,7 +43,7 @@ const filter = computed((): any[] => {
 })
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(ServeGetGroups)
+  const { code, data } = await ServGroupList()
 
   if (code == 200) {
     items.value = data.items || []

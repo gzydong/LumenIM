@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { ServeRemoveRecords, ServeRevokeRecords, ServePublishMessage } from '@/api/chat'
-import { ServeGetGroupMembers } from '@/api/group'
+import { ServTalkMessageDelete, ServTalkMessageRevoke, ServTalkMessageSend } from '@/api/chat'
+import { ServGroupMemberList } from '@/api/group'
+import { ServContactDetail } from '@/api/contact'
 import { TalkModeEnum } from '@/constant/chat'
-import { toApi } from '@/api'
-import { ServeCustomizeEmoticonCreate } from '@/api/emoticon'
+import { ServCustomizeEmoticonCreate } from '@/api/emoticon'
 import { useEditorStore } from './editor'
 import { ITalkRecord } from '@/types/chat'
 
@@ -28,6 +28,7 @@ export const useDialogueStore = defineStore('dialogue', {
       // 对话节点
       target: {
         username: '',
+        description: '',
         talk_mode: 0, // 对话来源[1:私聊;2:群聊]
         to_from_id: 0 // 对话对象ID[群ID或者好友ID]
       },
@@ -61,20 +62,21 @@ export const useDialogueStore = defineStore('dialogue', {
       this.target = {
         username: data.remark || data.name,
         talk_mode: data.talk_mode,
-        to_from_id: data.to_from_id
+        to_from_id: data.to_from_id,
+        description: ''
       }
 
       this.index_name = `${data.talk_mode}_${data.to_from_id}`
       this.records = []
       this.unreadBubble = 0
-
+      this.members = []
       // 是机器人则不显示编辑器
       this.isShowEditor = data?.is_robot === 1 ? false : true
 
-      this.members = []
-
       if (data.talk_mode == TalkModeEnum.Group) {
         this.updateGroupMembers()
+      } else {
+        this.loadContactDetail()
       }
     },
 
@@ -83,9 +85,9 @@ export const useDialogueStore = defineStore('dialogue', {
       const { to_from_id: group_id } = this.target
 
       this.members = []
-      const { code, data } = await toApi(ServeGetGroupMembers, { group_id })
+      const { code, data } = await ServGroupMemberList({ group_id })
 
-      if (code != 200) return
+      if (code != 200 && this.target.to_from_id != group_id) return
 
       this.members = data?.items.map((item: any) => ({
         id: item.user_id,
@@ -95,6 +97,16 @@ export const useDialogueStore = defineStore('dialogue', {
         leader: item.leader,
         remark: item.remark
       }))
+    },
+
+    // 更新提及列表
+    async loadContactDetail() {
+      const { to_from_id: user_id } = this.target
+      const { code, data } = await ServContactDetail({ user_id })
+
+      if (code != 200 && this.target.to_from_id != user_id) return
+
+      this.target.description = data?.motto || ''
     },
 
     // 清空对话记录
@@ -149,7 +161,7 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 删除聊天记录
     async deleteRecord(msgIds: string[]) {
-      const { code } = await toApi(ServeRemoveRecords, {
+      const { code } = await ServTalkMessageDelete({
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
         msg_ids: msgIds
@@ -160,7 +172,7 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 撤销聊天记录
     async revokeRecord(msg_id: string) {
-      const { code } = await toApi(ServeRevokeRecords, {
+      const { code } = await ServTalkMessageRevoke({
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
         msg_id
@@ -171,15 +183,15 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 转发聊天记录
     async forwardRecord(params = {}) {
-      await toApi(ServePublishMessage, {
+      await ServTalkMessageSend({
         type: 'forward',
         ...params
       })
     },
 
     async collectImage(params = {}) {
-      await toApi(ServeCustomizeEmoticonCreate, params, {
-        showMessageText: '收藏成功',
+      await ServCustomizeEmoticonCreate(params, {
+        successText: '收藏成功',
         onSuccess: () => {
           useEditorStore().loadUserEmoticon()
         }

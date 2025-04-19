@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ServeUpdateMobile } from '@/api/user'
-import { toApi } from '@/api'
+import { ServUserMobileUpdate } from '@/api/user'
 import SmsLock from '@/plugins/sms-lock'
 import { isMobile } from '@/utils/validate'
-import { ServeSendVerifyCode } from '@/api/common'
+import { ServCommonSendSmsCode } from '@/api/common'
 import { useInject } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
 
@@ -57,7 +56,7 @@ const onSendSms = async () => {
     channel: 'change_account'
   }
 
-  const { code, data } = await toApi(ServeSendVerifyCode, params)
+  const { code, data } = await ServCommonSendSmsCode(params)
   if (code != 200) return
 
   lock.start()
@@ -76,9 +75,9 @@ const onSubmit = async () => {
     password: rsaEncrypt(state.password)
   }
 
-  await toApi(ServeUpdateMobile, params, {
+  await ServUserMobileUpdate(params, {
     loading,
-    showMessageText: '手机号修改成功',
+    successText: '手机号修改成功',
     onSuccess: () => {
       emit('success', state.mobile)
     }

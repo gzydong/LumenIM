@@ -6,14 +6,12 @@ import { StateDropdown } from '@/types/global'
 import { useInject } from '@/hooks'
 
 import {
-  ServeGetGroupMembers,
-  ServeRemoveMembersGroup,
-  ServeGroupAssignAdmin,
-  ServeGroupHandover,
-  ServeGroupNoSpeak
-} from '@/api/group'
-
-import { toApi } from '@/api'
+  ServGroupMemberList,
+  ServGroupMemberRemove,
+  ServGroupAssignAdmin,
+  ServGroupTransfer,
+  ServGroupMemberMute
+} from '@/api/group.ts'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -72,8 +70,7 @@ const dropdown = reactive<StateDropdown>({
 })
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(
-    ServeGetGroupMembers,
+  const { code, data } = await ServGroupMemberList(
     {
       group_id: props.groupId
     },
@@ -99,14 +96,13 @@ const onDelete = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await toApi(
-        ServeRemoveMembersGroup,
+      await ServGroupMemberRemove(
         {
           group_id: props.groupId,
           user_ids: [item.user_id]
         },
         {
-          showMessageText: '删除成功',
+          successText: '删除成功',
           onSuccess: onLoadData
         }
       )
@@ -123,14 +119,13 @@ const onBatchDelete = () => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await toApi(
-        ServeRemoveMembersGroup,
+      await ServGroupMemberRemove(
         {
           group_id: props.groupId,
           user_ids: filterCheck.value.map((item: Item) => item.user_id)
         },
         {
-          showMessageText: '删除成功',
+          successText: '删除成功',
           onSuccess: () => {
             batchDelete.value = false
             onLoadData()
@@ -175,15 +170,14 @@ const onAssignAdmin = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await toApi(
-        ServeGroupAssignAdmin,
+      await ServGroupAssignAdmin(
         {
           action: item.leader === 3 ? 1 : 2,
           group_id: props.groupId,
           user_id: item.user_id
         },
         {
-          showMessageText: '操作成功',
+          successText: '操作成功',
           onSuccess: onLoadData
         }
       )
@@ -198,14 +192,13 @@ const onTransfer = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await toApi(
-        ServeGroupHandover,
+      await ServGroupTransfer(
         {
           group_id: props.groupId,
           user_id: item.user_id
         },
         {
-          showMessageText: '操作成功',
+          successText: '操作成功',
           onSuccess: onLoadData
         }
       )
@@ -226,15 +219,14 @@ const onForbidden = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await toApi(
-        ServeGroupNoSpeak,
+      await ServGroupMemberMute(
         {
           action: item.is_mute === 1 ? 2 : 1,
           group_id: props.groupId,
           user_id: item.user_id
         },
         {
-          showMessageText: '操作成功',
+          successText: '操作成功',
           onSuccess: onLoadData
         }
       )

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ServeGroupVoteSubmit, ServeGroupVoteDetail } from '@/api/group'
+import { ServGroupVoteSubmit, ServGroupVoteDetail } from '@/api/group'
 import { IVoteDetail } from '@/types/chat'
 
 const props = defineProps<{
@@ -33,7 +33,7 @@ const onCheckboxChange = (checked: boolean, option: any) => {
 }
 
 const onLoadDetail = () => {
-  ServeGroupVoteDetail({ vote_id: props.vote_id }).then(({ data }) => {
+  ServGroupVoteDetail({ vote_id: props.vote_id }).then(({ data }) => {
     detail.value = data
 
     let items: string[] = []
@@ -59,7 +59,7 @@ const onSubmit = async () => {
     .filter((option) => option.is_checked)
     .map((option) => option.key)
 
-  await ServeGroupVoteSubmit({
+  await ServGroupVoteSubmit({
     vote_id: props.vote_id,
     options: items
   })

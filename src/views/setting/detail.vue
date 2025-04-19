@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeUpdateUserDetail, ServeGetUserDetail } from '@/api/user'
-import { toApi } from '@/api'
+import { ServUserUpdate, ServUserDetail } from '@/api/user.ts'
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
 import { hidePhone } from '@/utils/string'
 import { useInject } from '@/hooks'
@@ -23,14 +22,14 @@ const detail = reactive({
 })
 
 const loadDetail = async () => {
-  const { code, data } = await toApi(ServeGetUserDetail)
-  if (code != 200) return
+  const { code, data } = await ServUserDetail()
+  if (code != 200 || !data) return
 
-  detail.nickname = data.nickname.toString()
-  detail.mobile = data.mobile.toString()
-  detail.email = data.email.toString()
+  detail.nickname = data.nickname
+  detail.mobile = data.mobile
+  detail.email = data.email
   detail.gender = data.gender.toString()
-  detail.motto = data.motto.toString()
+  detail.motto = data.motto
   detail.avatar = data.avatar
 
   if (data.birthday) {
@@ -48,8 +47,7 @@ const onChangeDetail = async () => {
     return message.warning('个性签名文字长度不能超过500')
   }
 
-  const { code } = await toApi(
-    ServeUpdateUserDetail,
+  const { code } = await ServUserUpdate(
     {
       nickname: detail.nickname.trim(),
       avatar: detail.avatar,
@@ -57,7 +55,7 @@ const onChangeDetail = async () => {
       gender: parseInt(detail.gender),
       birthday: detail.birthday
     },
-    { loading, showMessageText: '信息保存成功' }
+    { loading, successText: '信息保存成功' }
   )
 
   if (code != 200) return

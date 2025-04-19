@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css'
-import { ServeGroupDetail, ServeEditGroupNotice } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupDetail, ServGroupNoticeUpdate } from '@/api/group'
 import { MdPreview, MdEditor } from 'md-editor-v3'
 import { Editor, CheckCorrect } from '@icon-park/vue-next'
 import { useSettingsStore } from '@/store'
@@ -29,7 +28,7 @@ const detail = ref({
 })
 
 async function loadDetail() {
-  const { code, data } = await toApi(ServeGroupDetail, { group_id: props.groupId })
+  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
 
   if (code != 200) return
 
@@ -57,7 +56,7 @@ const onSave = async () => {
     return (isEditorMode.value = false)
   }
 
-  const { code } = await toApi(ServeEditGroupNotice, {
+  const { code } = await ServGroupNoticeUpdate({
     group_id: props.groupId,
     content: editorContent.value
   })

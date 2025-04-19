@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeUpdatePassword } from '@/api/user'
-import { toApi } from '@/api'
+import { ServUserPasswordUpdate } from '@/api/user'
 import { rsaEncrypt } from '@/utils/rsa'
 
 const model = defineModel({ default: false })
@@ -43,15 +42,14 @@ const rules = {
 const loading = ref(false)
 
 const onSubmit = async () => {
-  await toApi(
-    ServeUpdatePassword,
+  await ServUserPasswordUpdate(
     {
       old_password: rsaEncrypt(state.old_password),
       new_password: rsaEncrypt(state.new_password)
     },
     {
       loading,
-      showMessageText: '密码修改成功',
+      successText: '密码修改成功',
       onSuccess: () => {
         model.value = false
       }

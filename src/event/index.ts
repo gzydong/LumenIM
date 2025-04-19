@@ -1,3 +1,3 @@
-export * from './keyboard'
-export * from './revoke'
-export * from './talk'
+export * from './keyboard.ts'
+export * from './revoke.ts'
+export * from './talk.ts'

@@ -1,6 +1,5 @@
-<script setup>
-import { ServeSearchContact } from '@/api/contact'
-import { toApi } from '@/api'
+<script lang="ts" setup>
+import { ServContactSearch } from '@/api/contact.ts'
 import { useInject } from '@/hooks'
 
 const { toShowUserInfo } = useInject()
@@ -11,32 +10,30 @@ const isShow = ref(true)
 const keyword = ref('')
 const isShowError = ref(false)
 
-const onShowError = (isBool) => {
-  isShowError.value = isBool
+const onShowError = (value: boolean) => {
+  isShowError.value = value
 
-  if (isBool) {
-    setTimeout(() => {
-      isShowError.value = false
-    }, 2000)
+  if (value) {
+    setTimeout(() => (isShowError.value = false), 3000)
   }
 }
 
 const onSubmit = async () => {
   if (!keyword.value.length) return
 
-  const { code, data } = await toApi(
-    ServeSearchContact,
+  const { code, data } = await ServContactSearch(
     { mobile: keyword.value },
     {
-      isShowError: false
+      error: false
     }
   )
 
-  if (code !== 200) {
+  if (code !== 200 || !data) {
     return onShowError(true)
   }
 
   toShowUserInfo(data.user_id)
+  onClose()
 }
 
 // 是否可提交
@@ -44,7 +41,8 @@ const isCanSubmit = computed(() => {
   return keyword.value.trim().length == 0
 })
 
-const onShowUpdate = () => {
+const onClose = () => {
+  keyword.value = ''
   emit('update:show', false)
 }
 </script>
@@ -53,62 +51,35 @@ const onShowUpdate = () => {
   <n-modal
     v-model:show="isShow"
     preset="card"
-    title="好友搜索"
-    size="huge"
-    :bordered="false"
+    title="联系人查询"
     class="modal-radius"
     style="max-width: 450px"
     :mask-closable="true"
-    :on-after-leave="onShowUpdate"
-    :on-update:show="onShowUpdate"
+    :on-update:show="onClose"
     transform-origin="center"
   >
     <n-form>
-      <n-form-item label="请输入手机号" :required="true">
+      <n-form-item
+        :validation-status="isShowError ? 'error' : undefined"
+        :feedback="isShowError ? '无法找到该用户，请检查搜索内容并重试!' : ''"
+      >
         <n-input
-          placeholder="必填"
+          placeholder="请输入手机号"
           :maxlength="30"
           v-model:value="keyword"
           @keydown.enter="onSubmit"
         />
       </n-form-item>
-      <p v-show="isShowError" style="color: red">无法找到该用户，请检查搜索内容并重试!</p>
     </n-form>
 
     <template #footer>
-      <div style="width: 100%; text-align: right">
-        <n-button type="tertiary" @click="onShowUpdate"> 取消 </n-button>
-        <n-button
-          type="primary"
-          text-color="#ffffff"
-          @click="onSubmit"
-          class="mt-l15"
-          :disabled="isCanSubmit"
-        >
-          查询
+      <div style="width: 100%; text-align: center">
+        <n-button type="primary" text-color="#ffffff" @click="onSubmit" :disabled="isCanSubmit">
+          查询手机号
         </n-button>
       </div>
     </template>
   </n-modal>
 </template>
 
-<style lang="less" scoped>
-.options {
-  width: 100%;
-
-  .option {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-
-    .btn {
-      width: 30px;
-      height: 30px;
-      margin-left: 3px;
-      &:hover {
-        color: red;
-      }
-    }
-  }
-}
-</style>
+<style lang="less" scoped></style>

@@ -1,13 +1,12 @@
 import { useNoteStore, useSettingsStore } from '@/store'
 import { type ToolbarNames, type Themes } from 'md-editor-v3'
 import {
-  ServeSetAsteriskArticle,
-  ServeEditArticle,
-  ServeDeleteArticle,
-  ServeMoveArticleClassify
+  ServArticleCollect,
+  ServArticleEdit,
+  ServArticleDelete,
+  ServArticleMoveClassify
 } from '@/api/article'
-import { ServeUploadImage } from '@/api/upload'
-import { toApi } from '@/api'
+import { ServUploadImage } from '@/api/upload'
 import { downloadBlobFile } from '@/utils/file'
 import { useInject } from '@/hooks'
 import { debounce } from '@/utils/common'
@@ -71,7 +70,7 @@ export function useNoteEditor() {
     const form = new FormData()
     form.append('file', files[0])
 
-    const { code, data } = await toApi(ServeUploadImage, form)
+    const { code, data } = await ServUploadImage(form)
     if (code != 200) return
 
     callback([data.src])
@@ -81,7 +80,7 @@ export function useNoteEditor() {
   const onCollection = async () => {
     const action = store.detail.is_asterisk == 1 ? 2 : 1
 
-    const { code } = await toApi(ServeSetAsteriskArticle, {
+    const { code } = await ServArticleCollect({
       article_id: store.detail.article_id,
       action: action
     })
@@ -108,8 +107,7 @@ export function useNoteEditor() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        await toApi(
-          ServeDeleteArticle,
+        await ServArticleDelete(
           {
             article_id: store.detail.article_id
           },
@@ -128,8 +126,7 @@ export function useNoteEditor() {
   const onChangeClassify = (classify_id: number) => {
     const { article_id } = store.detail
 
-    toApi(
-      ServeMoveArticleClassify,
+    ServArticleMoveClassify(
       { article_id, classify_id },
       {
         onSuccess: () => {
@@ -166,7 +163,7 @@ export function useNoteEditor() {
       md_content: editor.markdown
     }
 
-    const { code, data } = await toApi(ServeEditArticle, params, { loading: saveLoading })
+    const { code, data } = await ServArticleEdit(params, { loading: saveLoading })
     if (code != 200) return
 
     if (store.detail.article_id == 0) {

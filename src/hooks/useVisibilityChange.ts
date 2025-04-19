@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { isLogin } from '@/utils/auth'
+import { isLogin } from '@/utils/auth.ts'
 import { useSettingsStore } from '@/store'
 
 let once = false

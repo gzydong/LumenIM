@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defAvatar } from '@/constant/default'
+import { defaultAvatar } from '@/constant/default'
 
 defineProps({
   src: {
@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <template>
-  <n-avatar v-if="src.length" round :src="src" :size="size" :fallback-src="defAvatar" />
+  <n-avatar v-if="src.length" round :src="src" :size="size" :fallback-src="defaultAvatar" />
 
   <n-avatar
     v-else

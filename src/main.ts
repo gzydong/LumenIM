@@ -6,7 +6,7 @@ import router from './router'
 import App from './App.vue'
 import * as plugins from './plugins'
 
-async function bootstrap() {
+function bootstrap() {
   const app = createApp(App)
 
   app.use(router)

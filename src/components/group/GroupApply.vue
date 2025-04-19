@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeCreateGroupApply } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupApplyCreate } from '@/api/group'
 
 const remark = ref('')
 const props = defineProps({
@@ -20,13 +19,12 @@ const onMaskClick = () => {
 }
 
 const onSubmit = async () => {
-  const { code } = await toApi(
-    ServeCreateGroupApply,
+  const { code } = await ServGroupApplyCreate(
     {
       group_id: props.groupId,
       remark: remark.value
     },
-    { loading, showMessageText: '入群申请提交成功...' }
+    { loading, successText: '入群申请提交成功...' }
   )
 
   if (code == 200) onMaskClick()

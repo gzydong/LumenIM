@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
-import { toApi } from '@/api'
 import {
-  ServeSearchUser,
-  ServeCreateContact,
-  ServeContactGroupList,
-  ServeContactMoveGroup,
-  ServeEditContactRemark
-} from '@/api/contact'
+  ServContactDetail,
+  ServContactApplyCreate,
+  ServContactGroupList,
+  ServContactMoveGroup,
+  ServContactEditRemark
+} from '@/api/contact.ts'
 import { useTalkStore } from '@/store'
 import { useInject } from '@/hooks'
 import { bus } from '@/utils'
 import { ContactConst } from '@/constant/event-bus.ts'
+import { formatPhone } from '@/utils/string'
 
 const { message } = useInject()
 const router = useRouter()
@@ -42,11 +42,9 @@ const userInfo: any = reactive({
   motto: '',
   nickname: '',
   email: '',
-  friend_info: {
-    group_id: 0,
-    is_friend: 'Y',
-    remark: ''
-  }
+  relation: 1, // 关系 1陌生人 2好友 3企业同事 4本人
+  contact_group_id: 0,
+  contact_remark: ''
 })
 
 const genders = {
@@ -60,16 +58,16 @@ const editCardPopover: any = ref(false)
 const options = ref<any>([])
 const groupName = computed(() => {
   const item = options.value.find((item: any) => {
-    return item.key == userInfo.friend_info.group_id
+    return item.key == userInfo.contact_group_id
   })
 
   return item?.label || '-'
 })
 
 const onLoadUser = async () => {
-  const { code, data } = await toApi(ServeSearchUser, { user_id: props.userId }, { loading })
+  const { code, data } = await ServContactDetail({ user_id: props.userId }, { loading })
 
-  if (code != 200) return
+  if (code != 200 || !data) return
 
   Object.assign(userInfo, {
     user_id: data.user_id,
@@ -79,15 +77,17 @@ const onLoadUser = async () => {
     motto: data.motto,
     nickname: data.nickname,
     email: data.email,
-    friend_info: data.friend_info
+    relation: data.relation,
+    contact_group_id: data.contact_group_id,
+    contact_remark: data.contact_remark
   })
 
-  friendRemark.value = data.friend_info.remark
+  friendRemark.value = data.contact_remark
 }
 
 const onLoadUserGroup = async () => {
-  const { code, data } = await toApi(ServeContactGroupList)
-  if (code != 200) return
+  const { code, data } = await ServContactGroupList()
+  if (code != 200 || !data) return
 
   let items = data.items || []
 
@@ -107,14 +107,13 @@ const onJoinContact = async () => {
     return message.info('备注信息不能为空')
   }
 
-  await toApi(
-    ServeCreateContact,
+  await ServContactApplyCreate(
     {
       user_id: props.userId,
       remark: applyRemark.value
     },
     {
-      showMessageText: '申请发送成功',
+      successText: '申请发送成功',
       onSuccess: () => {
         isOpenFrom.value = false
       }
@@ -125,7 +124,7 @@ const onJoinContact = async () => {
 const onChangeRemark = async () => {
   const onSuccess = () => {
     editCardPopover.value.setShow(false)
-    userInfo.friend_info.remark = friendRemark.value
+    userInfo.contact_remark.remark = friendRemark.value
 
     const params = {
       user_id: props.userId,
@@ -136,30 +135,28 @@ const onChangeRemark = async () => {
     bus.emit(ContactConst.UpdateRemark, params)
   }
 
-  await toApi(
-    ServeEditContactRemark,
+  await ServContactEditRemark(
     {
       user_id: props.userId,
       remark: friendRemark.value
     },
     {
-      showMessageText: '备注成功',
+      successText: '备注修改成功',
       onSuccess
     }
   )
 }
 
-const handleSelectGroup = async (value: Number) => {
-  await toApi(
-    ServeContactMoveGroup,
+const handleSelectGroup = async (value: number) => {
+  await ServContactMoveGroup(
     {
       user_id: props.userId,
       group_id: value
     },
     {
-      showMessageText: '分组修改成功',
+      successText: '分组修改成功',
       onSuccess: () => {
-        userInfo.friend_info.group_id = value
+        userInfo.contact_group_id = value
       }
     }
   )
@@ -181,7 +178,7 @@ onLoadUserGroup()
           class="avatar"
           :size="60"
           :src="userInfo.avatar"
-          :username="userInfo.friend_info.remark || userInfo.nickname"
+          :username="userInfo.contact_remark || userInfo.nickname"
           :font-size="30"
         />
 
@@ -195,7 +192,7 @@ onLoadUserGroup()
         </div>
 
         <div class="nickname text-ellipsis">
-          {{ userInfo.friend_info.remark || userInfo.nickname || '-' }}
+          {{ userInfo.contact_remark || userInfo.nickname || '-' }}
         </div>
       </header>
 
@@ -208,7 +205,7 @@ onLoadUserGroup()
         <div class="infos">
           <div class="info-item">
             <span class="name">手机</span>
-            <span class="text">{{ userInfo.mobile || '-' }}</span>
+            <span class="text">{{ formatPhone(userInfo.mobile) || '-' }}</span>
           </div>
           <div class="info-item">
             <span class="name">昵称</span>
@@ -218,12 +215,12 @@ onLoadUserGroup()
             <span class="name">性别</span>
             <span class="text">{{ genders[userInfo.gender] }}</span>
           </div>
-          <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+          <div class="info-item" v-if="userInfo.relation === 2">
             <span class="name">备注</span>
             <n-popover trigger="click" placement="top-start" ref="editCardPopover">
               <template #trigger>
                 <span class="text edit pointer text-ellipsis">
-                  {{ userInfo.friend_info.remark || '-' }}&nbsp;&nbsp;
+                  {{ userInfo.contact_remark || '-' }}&nbsp;&nbsp;
                 </span>
               </template>
 
@@ -248,7 +245,7 @@ onLoadUserGroup()
             <span class="name">邮箱</span>
             <span class="text">{{ userInfo.email || '-' }}</span>
           </div>
-          <div class="info-item" v-if="userInfo.friend_info.is_friend == 'Y'">
+          <div class="info-item" v-if="userInfo.relation === 2">
             <span class="name">分组</span>
             <n-dropdown
               trigger="click"
@@ -264,7 +261,7 @@ onLoadUserGroup()
       </main>
 
       <footer
-        v-if="userInfo.friend_info.is_friend == 'Y'"
+        v-if="[2, 3].includes(userInfo.relation)"
         class="el-footer footer border-top flex-center"
       >
         <n-button
@@ -282,16 +279,22 @@ onLoadUserGroup()
         </n-button>
       </footer>
 
-      <footer v-else-if="userId != loginUserId" class="el-footer footer border-top flex-center">
+      <footer v-else-if="userInfo.relation === 1" class="el-footer footer border-top flex-center">
         <template v-if="isOpenFrom">
           <n-input
             type="text"
-            placeholder="请填写申请备注"
+            placeholder="请填写备注信息"
             v-model:value="applyRemark"
             @keydown.enter="onJoinContact"
           />
 
-          <n-button type="primary" text-color="#ffffff" class="mt-l5" @click="onJoinContact">
+          <n-button
+            type="primary"
+            text-color="#ffffff"
+            :disabled="!applyRemark.length"
+            class="mt-l5"
+            @click="onJoinContact"
+          >
             确定
           </n-button>
         </template>
@@ -394,7 +397,7 @@ onLoadUserGroup()
 
   .main {
     padding: 20px 30px;
-    height: 300px;
+    max-height: 300px;
     overflow-y: auto;
 
     .motto {

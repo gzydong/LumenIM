@@ -1,7 +1,6 @@
 import { useCommonContextMenu, IDropdownOption } from '@/hooks/useCommonContextMenu.ts'
 import { useNoteStore } from '@/store'
-import { ServeDeleteArticle, ServeMoveArticleClassify } from '@/api/article'
-import { toApi } from '@/api'
+import { ServArticleDelete, ServArticleMoveClassify } from '@/api/article'
 import { useInject } from '@/hooks'
 export function useNoteListContextMenu() {
   const store = useNoteStore()
@@ -11,8 +10,7 @@ export function useNoteListContextMenu() {
 
   // 修改笔记分类
   const onChangeClassify = (article_id: number, classify_id: number) => {
-    toApi(
-      ServeMoveArticleClassify,
+    ServArticleMoveClassify(
       { article_id, classify_id },
       {
         onSuccess: () => {
@@ -34,8 +32,7 @@ export function useNoteListContextMenu() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        await toApi(
-          ServeDeleteArticle,
+        await ServArticleDelete(
           {
             article_id
           },

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { VueDraggable } from 'vue-draggable-plus'
 import { Drag, Delete } from '@icon-park/vue-next'
-import { ServeContactGroupSave, ServeContactGroupList } from '@/api/contact'
-import { toApi } from '@/api'
+import { ServContactGroupUpdate, ServContactGroupList } from '@/api/contact'
 import { useInject } from '@/hooks'
 
 const emit = defineEmits(['close', 'relaod'])
 
 interface Item {
   id: number
-  index: number
+  sort: number
   name: string
   count: number
 }
@@ -18,41 +17,41 @@ let index = 1
 const { dialog } = useInject()
 const isShow = ref(true)
 const options = ref<Item[]>([])
+const loading = ref(false)
 
 const onMaskClick = () => {
   emit('close')
 }
 
 const onLoadData = async () => {
-  let { code, data } = await toApi(ServeContactGroupList)
+  let { code, data } = await ServContactGroupList({}, { loading })
 
   if (code != 200) return
 
-  let items = data.items || []
+  let items = data?.items || []
   for (const item of items) {
     if (item.id) {
       options.value.push({
         id: item.id,
         name: item.name,
-        index: index++,
+        sort: index++,
         count: item.count
       })
     }
   }
 
   if (!options.value.length) {
-    options.value.push({ id: 0, name: '', index: index++, count: 0 })
+    options.value.push({ id: 0, name: '', sort: index++, count: 0 })
   }
 }
 
 const onSubmit = async () => {
-  const { code } = await toApi(
-    ServeContactGroupSave,
+  const { code } = await ServContactGroupUpdate(
     {
       items: options.value
     },
     {
-      showMessageText: '已保存'
+      successText: '已保存'
     }
   )
 
@@ -63,28 +62,26 @@ const onSubmit = async () => {
 }
 
 const addOption = () => {
-  options.value.push({ name: '', id: 0, index: index++, count: 0 })
+  options.value.push({ name: '', id: 0, sort: index++, count: 0 })
 }
 
 const delOption = (item: Item) => {
-  let fn = () => {
-    let i = options.value.findIndex((value) => value.index == item.index)
-    if (i >= 0) {
-      options.value.length > 0 && options.value.splice(i, 1)
+  const onPositiveClick = () => {
+    options.value = options.value.filter((value) => value.sort != item.sort)
+  }
+
+  if (item.count === 0) return onPositiveClick()
+
+  dialog.create({
+    title: '温馨提示',
+    content: `【${item.name}】分组下有${item.count}个好友，确定要删除吗？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: onPositiveClick,
+    positiveButtonProps: {
+      textColor: '#ffffff'
     }
-  }
-
-  if (item.count > 0) {
-    return dialog.create({
-      title: '温馨提示',
-      content: `【${item.name}】分组下有${item.count}个好友，确定要删除吗？`,
-      positiveText: '确定',
-      negativeText: '取消',
-      onPositiveClick: fn
-    })
-  }
-
-  fn()
+  })
 }
 
 // 是否可提交
@@ -99,21 +96,19 @@ onLoadData()
   <n-modal
     v-model:show="isShow"
     preset="card"
-    title="好友分组管理"
-    size="huge"
-    :bordered="false"
+    title="好友分组"
     class="modal-radius"
     style="max-width: 450px"
     :on-after-leave="onMaskClick"
   >
-    <div class="options">
+    <div class="options" v-loading="loading">
       <n-empty v-show="options.length == 0" description="暂未设置分组" style="margin-top: 20px" />
 
       <VueDraggable ref="el" v-model="options">
         <div class="option" v-for="item in options" :key="item.id">
           <n-icon size="20" class="handle" :component="Drag" />
           <n-input
-            placeholder="必填"
+            placeholder="请填写分组名称"
             v-model:value="item.name"
             :maxlength="20"
             style="margin: 0 10px"
@@ -125,7 +120,7 @@ onLoadData()
 
     <template #footer>
       <div class="footer">
-        <n-button text type="primary" @click="addOption" v-if="options.length < 6">
+        <n-button text type="primary" :disabled="options.length >= 8" @click="addOption">
           添加分组
         </n-button>
 

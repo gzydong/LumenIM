@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Search, CheckSmall, Close } from '@icon-park/vue-next'
-import { ServeGetGroupApplyList, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupApplyList, ServGroupApplyDecline, ServGroupApplyAgree } from '@/api/group'
 import { throttle } from '@/utils/common'
 import { useInject } from '@/hooks'
 import { NInput } from 'naive-ui'
@@ -41,7 +40,7 @@ const filterSearch = computed(() => {
 })
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(ServeGetGroupApplyList, {
+  const { code, data } = await ServGroupApplyList({
     group_id: props.groupId
   })
 
@@ -61,13 +60,12 @@ const onRowClick = (item: Item) => {
 }
 
 const onAgree = throttle(async (item: Item) => {
-  await toApi(
-    ServeAgreeGroupApply,
+  await ServGroupApplyAgree(
     {
       apply_id: item.id
     },
     {
-      showMessageText: '已同意',
+      successText: '已同意',
       onSuccess: onLoadData
     }
   )
@@ -93,14 +91,13 @@ const onDelete = (item: Item) => {
 
       modal.loading = true
 
-      await toApi(
-        ServeDeleteGroupApply,
+      await ServGroupApplyDecline(
         {
           apply_id: item.id,
           remark: remark
         },
         {
-          showMessageText: '已拒绝',
+          successText: '已拒绝',
           onSuccess: onLoadData
         }
       )

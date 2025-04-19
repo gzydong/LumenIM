@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ServeUpdateEmail } from '@/api/user'
-import { toApi } from '@/api'
+import { ServUserEmailUpdate } from '@/api/user.ts'
 import SmsLock from '@/plugins/sms-lock'
-import { ServeSendEmailCode } from '@/api/common'
+import { ServCommonSendEmailCode } from '@/api/common'
 import { rsaEncrypt } from '@/utils/rsa'
 
 const model = defineModel({ default: false })
@@ -43,13 +42,12 @@ const rules = {
 const loading = ref(false)
 
 const onSendEmail = async () => {
-  await toApi(
-    ServeSendEmailCode,
+  await ServCommonSendEmailCode(
     {
       email: state.email
     },
     {
-      showMessageText: '邮件发送成功',
+      successText: '邮件发送成功',
       onSuccess: lock.start
     }
   )
@@ -62,9 +60,9 @@ const onSubmit = async () => {
     password: rsaEncrypt(state.password)
   }
 
-  await toApi(ServeUpdateEmail, params, {
+  await ServUserEmailUpdate(params, {
     loading,
-    showMessageText: '邮箱修改成功',
+    successText: '邮箱修改成功',
     onSuccess: () => {
       emit('success', state.email)
     }

@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import {
-  ServeCustomizeEmoticonList,
-  ServeCustomizeEmoticonUpload,
-  ServeCustomizeEmoticonDelete
+  ServCustomizeEmoticonList,
+  ServCustomizeEmoticonUpload,
+  ServCustomizeEmoticonDelete
 } from '@/api/emoticon'
-
-import { toApi } from '@/api'
 
 export const useEditorStore = defineStore('editor', {
   state: () => {
@@ -33,7 +31,7 @@ export const useEditorStore = defineStore('editor', {
       const {
         code,
         data: { items }
-      } = await toApi(ServeCustomizeEmoticonList)
+      } = await ServCustomizeEmoticonList()
 
       if (code != 200) return
 
@@ -45,7 +43,7 @@ export const useEditorStore = defineStore('editor', {
       const params = new FormData()
       params.append('file', file)
 
-      const { code, data } = await toApi(ServeCustomizeEmoticonUpload, params)
+      const { code, data } = await ServCustomizeEmoticonUpload(params)
 
       if (code != 200) return
 
@@ -56,11 +54,10 @@ export const useEditorStore = defineStore('editor', {
     async removeUserEmoticon(resoure: { index: number; emoticon_id: number }) {
       const { index, emoticon_id } = resoure
 
-      const { code } = await toApi(
-        ServeCustomizeEmoticonDelete,
+      const { code } = await ServCustomizeEmoticonDelete(
         { emoticon_id },
         {
-          showMessageText: '删除成功'
+          successText: '删除成功'
         }
       )
 

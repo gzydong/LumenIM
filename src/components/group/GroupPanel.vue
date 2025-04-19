@@ -7,12 +7,11 @@ import MemberDrawer from './MemberDrawer.vue'
 import { Comment, Close, Plus, More } from '@icon-park/vue-next'
 import { MdPreview } from 'md-editor-v3'
 import {
-  ServeGroupDetail,
-  ServeGetGroupMembers,
-  ServeSecedeGroup,
-  ServeUpdateGroupCard
-} from '@/api/group'
-import { toApi } from '@/api'
+  ServGroupDetail,
+  ServGroupMemberList,
+  ServGroupSecede,
+  ServGroupMemberUpdateRemark
+} from '@/api/group.ts'
 import { useInject } from '@/hooks'
 
 const userStore = useUserStore()
@@ -73,10 +72,9 @@ const onToInfo = (item: any) => {
  * 加载群信息
  */
 async function loadDetail() {
-  const { code, data } = await toApi(
-    ServeGroupDetail,
+  const { code, data } = await ServGroupDetail(
     { group_id: props.groupId },
-    { isShowError: false, loading }
+    { error: false, loading }
   )
 
   if (code != 200) return
@@ -93,11 +91,7 @@ async function loadDetail() {
  * 加载成员列表
  */
 async function loadMembers() {
-  const { code, data } = await toApi(
-    ServeGetGroupMembers,
-    { group_id: props.groupId },
-    { isShowError: false }
-  )
+  const { code, data } = await ServGroupMemberList({ group_id: props.groupId }, { error: false })
 
   if (code != 200) return
 
@@ -109,25 +103,23 @@ const onClose = () => {
 }
 
 const onSignOut = async () => {
-  await toApi(
-    ServeSecedeGroup,
+  await ServGroupSecede(
     { group_id: props.groupId },
     {
-      showMessageText: '已退出群聊',
+      successText: '已退出群聊',
       onSuccess: onClose
     }
   )
 }
 
 const onChangeRemark = async () => {
-  const { code } = await toApi(
-    ServeUpdateGroupCard,
+  const { code } = await ServGroupMemberUpdateRemark(
     {
       group_id: props.groupId,
       remark: remark.value
     },
     {
-      showMessageText: '已更新群名片'
+      successText: '已更新群名片'
     }
   )
 

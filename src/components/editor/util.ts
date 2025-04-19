@@ -1,6 +1,5 @@
 import type { Delta } from 'quill/core'
-import { ServeUploadImage } from '@/api/upload'
-import { toApi } from '@/api'
+import { ServUploadImage } from '@/api/upload'
 
 interface Item {
   type: number
@@ -186,7 +185,7 @@ export function onUploadImage(file: File) {
       form.append('width', image.width.toString())
       form.append('height', image.height.toString())
 
-      const { code, data } = await toApi(ServeUploadImage, form)
+      const { code, data } = await ServUploadImage(form)
       code == 200 && resolve(data.src)
 
       URL.revokeObjectURL(image.src)

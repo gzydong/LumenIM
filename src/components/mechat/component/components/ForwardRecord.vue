@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { ServeGetForwardRecords } from '@/api/chat'
+import { ServTalkForwardRecords } from '@/api/chat'
 import { ITalkRecord } from '@/types/chat'
 import { ChatPlus } from '@/components/chat'
 import { formatChatMessage } from '@/components/mechat/render'
@@ -31,7 +31,7 @@ const onMaskClick = () => {
 const customMessageRender = (item: any) => formatChatMessage(0, item)
 
 const onLoadData = async () => {
-  let { code, data } = await ServeGetForwardRecords({
+  let { code, data } = await ServTalkForwardRecords({
     msg_ids: props.msgIds,
     talk_mode: props.talkMode
   })

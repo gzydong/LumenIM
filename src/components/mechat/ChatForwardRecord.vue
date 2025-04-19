@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { ServeGetForwardRecords } from '@/api/chat'
+import { ServTalkForwardRecords } from '@/api/chat'
 import { ITalkRecord } from '@/types/chat'
 import { ChatPlus } from '@/components/chat'
 import { formatChatMessage } from './render.tsx'
-import { toApi } from '@/api'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -33,8 +32,7 @@ const onMaskClick = () => {
 const customMessageRender = (item: any) => formatChatMessage(0, item)
 
 const loadChatRecord = async () => {
-  const { code, data } = await toApi(
-    ServeGetForwardRecords,
+  const { code, data } = await ServTalkForwardRecords(
     {
       msg_ids: props.msgIds,
       talk_mode: props.talkMode

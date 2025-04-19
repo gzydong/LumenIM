@@ -3,7 +3,6 @@ import { renderIcon } from '@/utils/common'
 import {
   ArrowUp,
   ArrowDown,
-  Logout,
   Delete,
   Clear,
   Remind,
@@ -11,18 +10,18 @@ import {
   EditTwo,
   IdCard
 } from '@icon-park/vue-next'
-import { ServeTopTalkList, ServeDeleteTalkList, ServeSetNotDisturb } from '@/api/chat'
+import { ServTalkTopping, ServTalkDelete, ServTalkDisturb } from '@/api/chat'
 import { useDialogueStore, useTalkStore } from '@/store'
-import { ServeSecedeGroup } from '@/api/group'
-import { ServeDeleteContact, ServeEditContactRemark } from '@/api/contact'
-import { NInput } from 'naive-ui'
 import { useCommonContextMenu, IDropdownOption } from '@/hooks/useCommonContextMenu.ts'
-import { useInject } from '@/hooks'
+import { useInject, useContact, useGroup } from '@/hooks'
 
 export function useSessionMenu() {
   const dialogueStore = useDialogueStore()
   const talkStore = useTalkStore()
-  const { dialog, message, toShowUserInfo } = useInject()
+  const { message, toShowUserInfo } = useInject()
+
+  const { onDeleteContact: onDeleteContact2, onChangeContactRemark } = useContact()
+  const { onSignOutGroup: onSignOutGroup2 } = useGroup()
   const { menu, ContextMenuElement } = useCommonContextMenu(onContextMenuTalkHandle)
 
   // 当前会话索引
@@ -31,7 +30,7 @@ export function useSessionMenu() {
   const onContextMenu = (e: any, item: ISession) => {
     const options: IDropdownOption[] = []
 
-    if (item.talk_mode === 1) {
+    if (item.talk_mode === 1 && item.is_robot !== 1) {
       options.push({
         icon: renderIcon(IdCard),
         label: '好友信息',
@@ -58,24 +57,30 @@ export function useSessionMenu() {
     })
 
     options.push({
-      icon: renderIcon(Clear),
-      label: '移除会话',
-      key: 'remove'
+      type: 'divider'
     })
 
-    if (item.talk_mode == 1) {
+    if (item.talk_mode == 1 && item.is_robot !== 1) {
       options.push({
         icon: renderIcon(Delete),
         label: '删除好友',
         key: 'delete_contact'
       })
-    } else {
+    }
+
+    if (item.talk_mode === 2) {
       options.push({
-        icon: renderIcon(Logout),
+        icon: renderIcon(Delete),
         label: '退出群聊',
         key: 'signout_group'
       })
     }
+
+    options.push({
+      icon: renderIcon(Clear),
+      label: '移除会话',
+      key: 'remove'
+    })
 
     options && menu.show(e, options, item)
   }
@@ -91,148 +96,93 @@ export function useSessionMenu() {
   }
 
   // 移除会话
-  const onRemoveTalk = (item: ISession) => {
-    ServeDeleteTalkList({
+  const onRemoveTalk = async (item: ISession) => {
+    const { code } = await ServTalkDelete({
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id
-    }).then(({ code }) => {
-      if (code == 200) {
-        onDeleteTalk(item.index_name)
-      }
     })
+
+    if (code == 200) {
+      onDeleteTalk(item.index_name)
+    }
   }
 
   // 设置消息免打扰
-  const onSetDisturb = (item: ISession) => {
-    ServeSetNotDisturb({
+  const onSetDisturb = async (item: ISession) => {
+    const { code } = await ServTalkDisturb({
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
       action: item.is_disturb === 2 ? 1 : 2
-    }).then(({ code, message }) => {
-      if (code == 200) {
-        message.success('设置成功!')
-        talkStore.updateItem({
-          index_name: item.index_name,
-          is_disturb: item.is_disturb === 1 ? 2 : 1
-        })
-      } else {
-        message.error(message)
-      }
     })
+
+    if (code == 200) {
+      talkStore.updateItem({
+        index_name: item.index_name,
+        is_disturb: item.is_disturb === 1 ? 2 : 1
+      })
+    }
   }
 
   // 置顶会话
-  const onToTopTalk = (item: ISession) => {
+  const onToTopTalk = async (item: ISession) => {
     if (item.is_top === 2 && talkStore.topItems.length >= 18) {
       return message.warning('置顶最多不能超过18个会话')
     }
 
-    ServeTopTalkList({
+    const { code } = await ServTalkTopping({
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
       action: item.is_top === 2 ? 1 : 2
-    }).then(({ code, message }) => {
-      if (code == 200) {
-        talkStore.updateItem({
-          index_name: item.index_name,
-          is_top: item.is_top === 1 ? 2 : 1
-        })
-      } else {
-        message.error(message)
-      }
     })
+
+    if (code == 200) {
+      talkStore.updateItem({
+        index_name: item.index_name,
+        is_top: item.is_top === 1 ? 2 : 1
+      })
+    }
   }
 
   // 移除联系人
   const onDeleteContact = (item: ISession) => {
-    const name = item.remark || item.name
-
-    dialog.create({
-      showIcon: false,
-      title: `删除 [${name}] 联系人？`,
-      content: '删除后不再接收对方任何消息。',
-      positiveText: '确定',
-      negativeText: '取消',
-      positiveButtonProps: {
-        textColor: '#ffffff'
+    onDeleteContact2(
+      {
+        user_id: item.to_from_id,
+        nickname: item.name,
+        remark: item.remark
       },
-      onPositiveClick: () => {
-        ServeDeleteContact({
-          user_id: item.to_from_id
-        }).then(({ code, message }) => {
-          if (code == 200) {
-            message.success('删除联系人成功')
-            onDeleteTalk(item.index_name)
-          } else {
-            message.error(message)
-          }
-        })
+      () => {
+        onDeleteTalk(item.index_name)
       }
-    })
+    )
   }
 
   // 退出群聊
   const onSignOutGroup = (item: ISession) => {
-    dialog.create({
-      showIcon: false,
-      title: `退出 [${item.name}] 群聊？`,
-      content: '退出后不再接收此群的任何消息。',
-      positiveText: '确定',
-      negativeText: '取消',
-      positiveButtonProps: {
-        textColor: '#ffffff'
+    onSignOutGroup2(
+      {
+        group_id: item.to_from_id,
+        name: item.name
       },
-      onPositiveClick: () => {
-        ServeSecedeGroup({
-          group_id: item.to_from_id
-        }).then(({ code, message }) => {
-          if (code == 200) {
-            message.success('已退出群聊')
-            onDeleteTalk(item.index_name)
-          } else {
-            message.error(message)
-          }
-        })
+      () => {
+        onDeleteTalk(item.index_name)
       }
-    })
+    )
   }
 
   const onChangeRemark = (item: ISession) => {
-    let remark = ''
-    dialog.create({
-      showIcon: false,
-      title: '修改备注',
-      content: () => {
-        return h(NInput, {
-          defaultValue: item.remark,
-          placeholder: '请输入备注信息',
-          style: { marginTop: '20px' },
-          onInput: (value) => (remark = value),
-          autofocus: true
-        })
+    onChangeContactRemark(
+      {
+        user_id: item.to_from_id,
+        remark: item.remark
       },
-      negativeText: '取消',
-      positiveText: '修改备注',
-      positiveButtonProps: {
-        textColor: '#ffffff'
-      },
-      onPositiveClick: () => {
-        ServeEditContactRemark({
-          user_id: item.to_from_id,
+      ({ remark }) => {
+        talkStore.updateItem({
+          index_name: item.index_name,
           remark: remark
-        }).then(({ code, message }) => {
-          if (code == 200) {
-            message.success('备注成功')
-            talkStore.updateItem({
-              index_name: item.index_name,
-              remark: remark
-            })
-          } else {
-            message.error(message)
-          }
         })
       }
-    })
+    )
   }
 
   // 注册回调事件

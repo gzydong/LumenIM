@@ -1,5 +1,4 @@
-import { ServeTalkRecords } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServTalkRecords } from '@/api/chat'
 import { useDialogueStore } from '@/store'
 import { ITalkRecord } from '@/types/chat'
 
@@ -23,7 +22,7 @@ export function useTalkRecord() {
 
     try {
       console.log('Loading talk records with request:', request)
-      const { code, data, message } = await toApi(ServeTalkRecords, request)
+      const { code, data, message } = await ServTalkRecords(request)
 
       if (request.talk_mode !== talk.talk_mode || request.to_from_id !== talk.to_from_id) {
         console.error('Talk mode or to_from_id changed')

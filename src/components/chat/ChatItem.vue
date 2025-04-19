@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ToTop, Delete, Undo, Copy } from '@icon-park/vue-next'
+import { ToTop, Delete, Undo, Copy, LoadingTwo } from '@icon-park/vue-next'
 import { IMessage, RoleEnum, AlignEnum, MessageTypeEnum, StatusEnum } from './types.ts'
 import { humanizeTime } from '@/utils/datetime.ts'
 
@@ -100,15 +100,13 @@ const onClieckSelect = (e: Event, item: IMessage) => {
               <div>未知类型</div>
             </template>
             <span class="sent-status sending" v-if="item?.status === StatusEnum.SENDING"
-              >发送中...</span
-            >
-            <span class="sent-status sending" v-if="item?.status === StatusEnum.ERROR"
-              >发送失败</span
-            >
+              ><n-icon :component="LoadingTwo"
+            /></span>
+            <span class="sent-status fail" v-if="item?.status === StatusEnum.ERROR">发送失败</span>
           </div>
 
           <div v-if="item.quote?.quote_id" class="chat-content-quote">
-            <n-icon :component="ToTop" size="14" />
+            <n-icon :component="ToTop" size="22" />
             <!-- TODO 点击跳转到指定的消息 -->
             <span>回复：{{ item?.quote?.content }}</span>
           </div>
@@ -245,10 +243,10 @@ const onClieckSelect = (e: Event, item: IMessage) => {
 
         .sent-status {
           margin: 0 10px;
-          font-size: 12px;
+          // font-size: 12px;
           color: #8f8f8f;
 
-          &.sending {
+          &.fail {
             color: #ff8d8d;
           }
         }

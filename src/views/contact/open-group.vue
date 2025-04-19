@@ -2,8 +2,7 @@
 import { Search, AddOne } from '@icon-park/vue-next'
 import GroupApply from '@/components/group/GroupApply.vue'
 import GroupCard from './inner/GroupCard.vue'
-import { ServeGroupOvertList } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupOvertList } from '@/api/group.ts'
 import { debounce } from '@/utils/common'
 
 const model = reactive({
@@ -20,7 +19,7 @@ const search = reactive({
 const items = ref<any[]>([])
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(ServeGroupOvertList, {
+  const { code, data } = await ServGroupOvertList({
     page: search.page,
     name: search.name
   })

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { Close, CheckSmall } from '@icon-park/vue-next'
 import { useUserStore } from '@/store'
-import { ServeGetGroupApplyAll, ServeDeleteGroupApply, ServeAgreeGroupApply } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupApplyAll, ServGroupApplyDecline, ServGroupApplyAgree } from '@/api/group'
 import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
 import { useInject } from '@/hooks'
@@ -25,7 +24,7 @@ const items = ref<Item[]>([])
 const loading = ref(true)
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(ServeGetGroupApplyAll, {}, { loading })
+  const { code, data } = await ServGroupApplyAll({}, { loading })
 
   if (code != 200) return
 
@@ -39,13 +38,12 @@ const onInfo = (item: Item) => {
 const onAgree = throttle(async (item: Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await toApi(
-    ServeAgreeGroupApply,
+  await ServGroupApplyAgree(
     {
       apply_id: item.id
     },
     {
-      showMessageText: '已同意',
+      successText: '已同意',
       onSuccess: onLoadData
     }
   )
@@ -59,14 +57,13 @@ const onDelete = (item: Item) => {
   const onPositiveClick = async () => {
     if (!remark.length) return false
 
-    await toApi(
-      ServeDeleteGroupApply,
+    await ServGroupApplyDecline(
       {
         apply_id: item.id,
         remark: remark
       },
       {
-        showMessageText: '已拒绝',
+        successText: '已拒绝',
         onSuccess: onLoadData
       }
     )

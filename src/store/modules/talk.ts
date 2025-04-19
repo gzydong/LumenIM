@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-import { ServeGetTalkList, ServeCreateTalk } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServTalkList, ServTalkCreate } from '@/api/chat'
 
 import { formatTalkItem, KEY_INDEX_NAME } from '@/utils/talk'
 import { useEditorDraftStore } from './editor-draft.ts'
@@ -89,7 +88,7 @@ export const useTalkStore = defineStore('talk', {
     },
 
     async loadTalkList() {
-      const { code, data } = await toApi(ServeGetTalkList)
+      const { code, data } = await ServTalkList()
       if (code !== 200) return
 
       this.loadStatus = 3
@@ -127,7 +126,7 @@ export const useTalkStore = defineStore('talk', {
         return await router.push(route)
       }
 
-      const { code, data } = await toApi(ServeCreateTalk, { talk_mode, to_from_id })
+      const { code, data } = await ServTalkCreate({ talk_mode, to_from_id })
       if (code !== 200) return
 
       if (this.findIndex(indexName) === -1) {

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { toApi } from '@/api'
-import { ServeForgetPassword } from '@/api/auth'
-import { ServeSendVerifyCode } from '@/api/common'
+import { ServAuthForget } from '@/api/auth'
+import { ServCommonSendSmsCode } from '@/api/common'
 import { isMobile } from '@/utils/validate'
 import { useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
@@ -46,14 +45,13 @@ const model = reactive({
 })
 
 const onForget = async () => {
-  const { code } = await toApi(
-    ServeForgetPassword,
+  const { code } = await ServAuthForget(
     {
       mobile: model.username,
       password: rsaEncrypt(model.password),
       sms_code: model.sms_code
     },
-    { loading, showMessageText: '密码修改成功' }
+    { loading, successText: '密码修改成功' }
   )
 
   if (code != 200) return
@@ -77,13 +75,12 @@ const onSendSms = async () => {
     return window['$message'].warning('请正确填写手机号')
   }
 
-  await toApi(
-    ServeSendVerifyCode,
+  await ServCommonSendSmsCode(
     {
       mobile: model.username,
       channel: 'forget_account'
     },
-    { loading, showMessageText: '短信发送成功', onSuccess: start }
+    { loading, successText: '短信发送成功', onSuccess: start }
   )
 }
 </script>

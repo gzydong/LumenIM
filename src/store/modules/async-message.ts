@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { useDialogueStore } from './dialogue'
 import { useUserStore } from './user'
-import { ServePublishMessage } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServTalkMessageSend } from '@/api/chat'
 import { v4 as uuidv4 } from 'uuid'
 import { nextTick } from 'vue'
 import * as chat from '@/constant/chat'
@@ -47,7 +46,7 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
 
   async function sendMessage(message: IAsyncMessage, retryCount = 0) {
     try {
-      const { code } = await toApi(ServePublishMessage, message)
+      const { code } = await ServTalkMessageSend(message)
       if (code !== 200) {
         if (retryCount < MAX_RETRIES) {
           await delay(delayStrategy(retryCount))
@@ -116,7 +115,7 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
     dialogueStore.records.push(record)
 
     nextTick(() => {
-      dialogueStore.scrollToBottom(true)
+      dialogueStore.scrollToBottom(false)
     })
   }
 

@@ -6,7 +6,7 @@ import Skeleton from './Skeleton.vue'
 import TabsHeader from './TabsHeader.vue'
 import TopHeader from './TopHeader.vue'
 import SearchHeader from './SearchHeader.vue'
-import { ServeClearTalkUnreadNum } from '@/api/chat'
+import { ServTalkClearUnread } from '@/api/chat.ts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import { getCacheIndexName, formatTalkItem } from '@/utils/talk'
 import { ISession } from '@/types/chat'
@@ -63,7 +63,7 @@ const onTabTalk = (item: ISession, follow = false) => {
 
   if (item.unread_num > 0) {
     talkStore.clearUnreadNum(item.index_name)
-    ServeClearTalkUnreadNum(data)
+    ServTalkClearUnread(data)
   }
 
   if (follow) scrollToItem(item)

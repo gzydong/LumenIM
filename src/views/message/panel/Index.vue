@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useUserStore, useUploadsStore, useTalkStore } from '@/store/index.ts'
-import { ServeContactOnlineStatus } from '@/api/contact.js'
+import { ServContactOnlineStatus } from '@/api/contact.ts'
 import { ChatPlus } from '@/components/chat'
 import PanelHeader from './Header.vue'
 import Editor from './Editor.vue'
@@ -40,6 +40,7 @@ const talkParams = reactive({
   talkMode: computed(() => dialogueStore.target.talk_mode),
   toFromId: computed(() => dialogueStore.target.to_from_id),
   username: computed(() => dialogueStore.target.username),
+  description: computed(() => dialogueStore.target.description),
   keyboard: computed(() => dialogueStore.keyboard),
   num: computed(() => dialogueStore.members.length),
   online: false
@@ -127,15 +128,12 @@ async function loopGetOnlineStatus() {
     return
   }
 
-  const {
-    code,
-    data: { online_status }
-  } = await ServeContactOnlineStatus({
+  const { code, data } = await ServContactOnlineStatus({
     user_id: talkParams.toFromId
   })
 
-  if (code === 200) {
-    talkParams.online = online_status == 2
+  if (code === 200 && data) {
+    talkParams.online = data.online_status == 'Y'
   }
 }
 
@@ -163,6 +161,7 @@ onUnmounted(() => {
         :keyboard="talkParams.keyboard"
         :num="talkParams.num"
         :menu="talkStore.isShowSessionMenu"
+        :description="talkParams.description"
         @evnet="onPanelHeaderEvent"
         @change-session-menu="
           (value: boolean) => {

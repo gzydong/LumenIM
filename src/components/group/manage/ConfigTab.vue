@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeDismissGroup, ServeMuteGroup, ServeGroupDetail, ServeOvertGroup } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupDismiss, ServGroupMute, ServGroupDetail, ServGroupOvert } from '@/api/group'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -19,7 +18,7 @@ const detail = reactive({
 })
 
 const onLoadData = async () => {
-  const { data, code } = await toApi(ServeGroupDetail, { group_id: props.groupId })
+  const { data, code } = await ServGroupDetail({ group_id: props.groupId })
 
   if (code != 200) return
 
@@ -28,11 +27,10 @@ const onLoadData = async () => {
 }
 
 const onDismiss = async () => {
-  const { code } = await toApi(
-    ServeDismissGroup,
+  const { code } = await ServGroupDismiss(
     { group_id: props.groupId },
     {
-      showMessageText: '群聊已解散'
+      successText: '群聊已解散'
     }
   )
 
@@ -42,7 +40,7 @@ const onDismiss = async () => {
 const onMute = async (value: boolean) => {
   detail.mute_loading = true
 
-  const { code } = await toApi(ServeMuteGroup, {
+  const { code } = await ServGroupMute({
     group_id: props.groupId,
     action: value ? 1 : 2
   })
@@ -56,7 +54,7 @@ const onMute = async (value: boolean) => {
 const onOvert = async (value: boolean) => {
   detail.overt_loading = true
 
-  const { code } = await toApi(ServeOvertGroup, {
+  const { code } = await ServGroupOvert({
     group_id: props.groupId,
     action: value ? 1 : 2
   })

@@ -93,7 +93,7 @@ const onSearchInput = debounce(() => {
   --im-note-list-bg-color: #f4f6f9;
   --header-desc-border-color: #ece8e8;
   --article-bg-color: #ffffff;
-  --article-active-bg-color: rgba(198, 198, 200, 0.3);
+  --article-active-bg-color: transparent;
 
   width: 100%;
   height: 100%;
@@ -154,9 +154,9 @@ const onSearchInput = debounce(() => {
     border-radius: 3px;
 
     &-title {
-      height: 24px;
-      line-height: 24px;
-      font-size: 14px;
+      height: 26px;
+      line-height: 26px;
+      font-size: 15px;
       width: 100%;
     }
 
@@ -170,7 +170,6 @@ const onSearchInput = debounce(() => {
         .datetime {
           display: flex;
           align-items: center;
-          padding-top: 4px;
           font-size: 10px;
           color: #a7afbc;
           font-weight: 300;
@@ -179,14 +178,16 @@ const onSearchInput = debounce(() => {
           span {
             margin-right: 15px;
           }
+          height: 22px;
+          margin: 3px 0;
         }
 
         .abstract {
           display: -webkit-box;
           flex-grow: 1;
           max-height: 42px;
-          font-size: 11px;
-          color: #b5b5b5;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 0.3);
           line-height: 1.6;
           text-overflow: ellipsis;
           -webkit-box-orient: vertical;
@@ -209,6 +210,10 @@ html[theme-mode='dark'] {
     --header-desc-border-color: #1f1f23;
     --article-bg-color: rgba(255, 255, 255, 0.05);
     --article-active-bg-color: #413f3f;
+
+    .abstract {
+      color: rgba(255, 255, 255, 0.4) !important;
+    }
   }
 }
 </style>

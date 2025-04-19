@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ServeLogin } from '@/api/auth'
-import { toApi } from '@/api'
-import { setToken } from '@/utils/auth'
+import { ServAuthLogin } from '@/api/auth'
+import { setToken } from '@/utils/auth.ts'
 import { rsaEncrypt } from '@/utils/rsa'
 import { playMusic } from '@/utils/talk'
 import { useInject } from '@/hooks'
@@ -34,10 +33,7 @@ const model = reactive({
 })
 
 const onLogin = async () => {
-  const redirect: any = route.params?.redirect || '/'
-
-  const { code, data } = await toApi(
-    ServeLogin,
+  const { code, data } = await ServAuthLogin(
     {
       mobile: model.username,
       password: rsaEncrypt(model.password),
@@ -48,12 +44,14 @@ const onLogin = async () => {
     }
   )
 
-  if (code !== 200) return
+  if (code !== 200 || !data) return
 
   setToken(data.access_token, data.expires_in)
   ws.connect()
   message.success('登录成功，即将进入系统')
   userStore.loadSetting()
+
+  const redirect: any = route.params?.redirect || '/'
   router.push(redirect)
 }
 

@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
-import { toApi } from '@/api'
-import { ServeGetUserSetting } from '@/api/user'
-import { ServeFindFriendApplyNum } from '@/api/contact'
-import { ServeGroupApplyUnread } from '@/api/group'
-import * as auth from '@/utils/auth'
+import { ServeUserSetting } from '@/api/user'
+import { ServContactApplyUnreadNum } from '@/api/contact'
+import { ServGroupApplyUnread } from '@/api/group'
+import * as auth from '@/utils/auth.ts'
 import { storage } from '@/utils'
 
 interface IUserStoreState {
@@ -57,7 +56,7 @@ export const useUserStore = defineStore('user', {
       this.loadGroupApplyUnread()
     },
     async loadUserSetting() {
-      const { code, data } = await toApi(ServeGetUserSetting)
+      const { code, data } = await ServeUserSetting()
       if (code != 200) return
 
       this.nickname = data.user_info.nickname
@@ -72,14 +71,14 @@ export const useUserStore = defineStore('user', {
       storage.set('user_info', data)
     },
     async loadFriendApplyNum() {
-      const { code, data } = await toApi(ServeFindFriendApplyNum)
+      const { code, data } = await ServContactApplyUnreadNum()
 
-      if (code == 200) {
+      if (code == 200 && data) {
         this.isContactApply = data.unread_num > 0
       }
     },
     async loadGroupApplyUnread() {
-      const { code, data } = await toApi(ServeGroupApplyUnread)
+      const { code, data } = await ServGroupApplyUnread()
 
       if (code == 200) {
         this.isGroupApply = data.unread_num > 0

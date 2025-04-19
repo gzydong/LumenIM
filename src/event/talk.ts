@@ -5,8 +5,7 @@ import * as message from '@/constant/chat'
 import type { ISession } from '@/types/chat'
 import { formatTalkItem, playMusic } from '@/utils/talk'
 import { isElectronMode } from '@/utils/electron'
-import { ServeClearTalkUnreadNum, ServeCreateTalk } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServTalkClearUnread, ServTalkCreate } from '@/api/chat'
 import { useTalkStore, useDialogueStore, useSettingsStore, useAsyncMessageStore } from '@/store'
 
 /**
@@ -142,7 +141,7 @@ class Talk extends Base {
    * 加载对接节点
    */
   async addTalkItem() {
-    const { code, data } = await toApi(ServeCreateTalk, {
+    const { code, data } = await ServTalkCreate({
       talk_mode: this.talk_mode,
       to_from_id: this.to_from_id
     })
@@ -178,7 +177,7 @@ class Talk extends Base {
 
     if (this.getAccountId() !== this.from_id) {
       // 这里需要做节流操作
-      ServeClearTalkUnreadNum({
+      ServTalkClearUnread({
         talk_mode: this.talk_mode,
         to_from_id: this.to_from_id
       })

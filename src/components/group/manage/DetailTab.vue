@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
-import { ServeGroupDetail, ServeEditGroup } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupDetail, ServeGroupUpdate } from '@/api/group.ts'
 
 const emit = defineEmits(['close'])
 
@@ -28,7 +27,7 @@ const onUploadAvatar = (avatar: string) => {
 }
 
 const onLoadData = async () => {
-  const { code, data } = await toApi(ServeGroupDetail, { group_id: props.groupId })
+  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
   if (code != 200) return
 
   modelDetail.name = data.group_name
@@ -41,8 +40,7 @@ async function onSubmitBaseInfo() {
     return window['$message'].info('群名称不能为空')
   }
 
-  await toApi(
-    ServeEditGroup,
+  await ServeGroupUpdate(
     {
       group_id: props.groupId,
       group_name: modelDetail.name,
@@ -50,7 +48,7 @@ async function onSubmitBaseInfo() {
       profile: modelDetail.profile
     },
     {
-      showMessageText: '群信息更新成功'
+      successText: '群信息更新成功'
     }
   )
 }

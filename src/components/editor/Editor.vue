@@ -19,7 +19,7 @@ import { useEditorDraftStore } from '@/store'
 import { deltaToMessage, deltaToString, isEmptyDelta, onUploadImage } from './util.ts'
 import { getImageInfo } from '@/utils/file'
 import { EditorConst } from '@/constant/event-bus'
-import { defAvatar } from '@/constant/default'
+import { defaultAvatar } from '@/constant/default'
 import { useEventBus } from '@/hooks'
 
 const emit = defineEmits(['editor-event'])
@@ -87,7 +87,7 @@ const editorOption = {
         if (!members.length) return render([])
 
         const items = [
-          { id: 0, nickname: '所有人', avatar: defAvatar, value: '所有人' },
+          { id: 0, nickname: '所有人', avatar: defaultAvatar, value: '所有人' },
           ...members.map((item: any) => {
             return {
               id: item.id,

@@ -1,18 +1,7 @@
-<script lang="ts" setup>
-import { h } from 'vue'
-const sd = h('text-message', {
-  role: 'user',
-  content: 'akfaml'
-})
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <div class="el-container">
-    <text-message content="asdfakj" role="user" />
-    <sd />
-
-    <component :is="sd" />
-  </div>
+  <div class="el-container"></div>
 </template>
 
 <style scoped lang="less">

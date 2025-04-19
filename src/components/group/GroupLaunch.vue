@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ServeCreateGroup, ServeInviteGroup, ServeGetInviteFriends } from '@/api/group'
-import { toApi } from '@/api'
+import { ServGroupCreate, ServGroupInvite, ServGroupInviteList } from '@/api/group'
 import { useInject } from '@/hooks'
 import { NAvatar, TransferRenderTargetLabel } from 'naive-ui'
 
@@ -64,7 +63,7 @@ const onLoad = async () => {
     group_id: props.groupId
   }
 
-  const { code, data } = await toApi(ServeGetInviteFriends, option, { loading })
+  const { code, data } = await ServGroupInviteList(option, { loading })
   if (code != 200) return
 
   const list = data?.items || []
@@ -89,7 +88,7 @@ const onCreateSubmit = async (user_ids: number[]) => {
     return message.error('请输入群名称')
   }
 
-  const { code, data } = await toApi(ServeCreateGroup, {
+  const { code, data } = await ServGroupCreate({
     user_ids,
     name: modelGroupName.value.trim()
   })
@@ -102,7 +101,7 @@ const onCreateSubmit = async (user_ids: number[]) => {
 }
 
 const onInviteSubmit = async (user_ids: number[]) => {
-  const { code } = await toApi(ServeInviteGroup, {
+  const { code } = await ServGroupInvite({
     user_ids,
     group_id: props.groupId
   })

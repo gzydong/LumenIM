@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, useTemplateRef } from 'vue'
-import { ServeFindTalkRecords } from '@/api/chat'
-import { toApi } from '@/api'
+import { ServTalkHistoryRecords } from '@/api/chat'
 import { Calendar } from '@icon-park/vue-next'
 import * as components from '@/constant/chat'
 import { ITalkRecord } from '@/types/chat'
@@ -64,7 +63,7 @@ const loadChatRecord = async (): Promise<boolean> => {
     model.loading = true
   }
 
-  const { code, data } = await toApi(ServeFindTalkRecords, params)
+  const { code, data } = await ServTalkHistoryRecords(params)
   model.loading = false
 
   if (code != 200) return true
