@@ -45,7 +45,7 @@ const isShowBox = ref(true)
         <n-tab-pane name="群公告" tab="群公告"><NoticeTab :groupId="groupId" /></n-tab-pane>
         <n-tab-pane name="群申请" tab="群申请"><ApplyTab :groupId="groupId" /></n-tab-pane>
         <n-tab-pane name="群设置" tab="群设置"><ConfigTab :groupId="groupId" /></n-tab-pane>
-        <n-tab-pane name="群邀请" tab="群邀请"><ConfigTab :groupId="groupId" /></n-tab-pane>
+        <!-- <n-tab-pane name="群邀请" tab="群邀请"><ConfigTab :groupId="groupId" /></n-tab-pane> -->
       </n-tabs>
     </section>
   </n-modal>
