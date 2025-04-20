@@ -32,14 +32,9 @@ pnpm install
 
 # 启动本地开发环境
 pnpm dev
-# 启动本地开发环境桌面客户端
-pnpm electron:dev
 
 ## 生产环境构建项目
 pnpm build
-
-## 生产环境桌面客户端打包
-pnpm electron:build
 ```
 
 ###### 修改 .env 配置信息
