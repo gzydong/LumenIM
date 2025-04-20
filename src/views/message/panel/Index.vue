@@ -137,7 +137,7 @@ async function loopGetOnlineStatus() {
   }
 }
 
-let timer: number
+let timer: NodeJS.Timeout
 onMounted(() => {
   dialogueStore.container = chat.value?.getContainerId() || ''
 

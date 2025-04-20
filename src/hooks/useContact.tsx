@@ -17,7 +17,12 @@ export function useContact() {
       showIcon: false,
       title: `删除好友`,
       content: () => {
-        return <>你要删除与【<span style={{ color: 'red' }}>{item.remark || item.nickname}</span>】好友的关系？请注意，删除操作将永久切断与该联系人的消息往来，您将不再接收任何来自他(她)们的信息。</>
+        return (
+          <>
+            你要删除与【<span style={{ color: 'red' }}>{item.remark || item.nickname}</span>
+            】好友的关系？请注意，删除操作将永久切断与该联系人的消息往来，您将不再接收任何来自他(她)们的信息。
+          </>
+        )
       },
       positiveText: '确定',
       negativeText: '取消',

@@ -13,7 +13,7 @@ const { options } = defineProps<{
 const emit = defineEmits(['on-select', 'on-keyword'])
 
 const onKeywordChange = () => {
-  emit('on-keyword', modelValue)
+  emit('on-keyword', modelValue.value)
 }
 
 const onToolsMenu = (value: string) => {

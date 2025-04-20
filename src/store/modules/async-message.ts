@@ -152,5 +152,6 @@ function delayStrategy(retryCount: number): number {
 }
 
 function uuid(): string {
+  // @ts-ignore
   return uuidv4().replaceAll('-', '')
 }

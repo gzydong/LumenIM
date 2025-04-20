@@ -8,7 +8,7 @@ import { useEditorStore } from './editor'
 import { ITalkRecord } from '@/types/chat'
 
 // 键盘消息事件定时器
-let keyboardTimeout: number
+let keyboardTimeout: NodeJS.Timeout
 
 interface IMember {
   id: number
@@ -183,9 +183,10 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 转发聊天记录
     async forwardRecord(params = {}) {
+      // @ts-ignore
       await ServTalkMessageSend({
-        type: 'forward',
-        ...params
+        ...params,
+        type: 'forward'
       })
     },
 

@@ -5,7 +5,7 @@ type callBack = (time: number) => void
  */
 class SmsLock {
   // 计时器
-  timer: number | null = null
+  timer: NodeJS.Timeout | null = null
 
   // 倒计时默认60秒
   lockTime: number = 60

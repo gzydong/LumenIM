@@ -19,13 +19,13 @@ class WsSocket {
 
   config: {
     heartbeat: {
-      setInterval: number | null
+      setInterval: NodeJS.Timeout | null
       pingInterval: number
       pingTimeout: number
     }
     reconnect: {
       lockReconnect: boolean
-      setTimeout: number | null
+      setTimeout: NodeJS.Timeout | null
       interval: number[]
       attempts: number
     }

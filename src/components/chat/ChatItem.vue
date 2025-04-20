@@ -10,7 +10,7 @@ const { showCheckbox, onContextMenu } = defineProps<{
   item: IMessage
   raw: any
   isSelected?: boolean
-  onContextMenu: (event: Event, item: any) => void
+  onContextMenu: (event: MouseEvent, item: any) => void
   showToolsMenus?: boolean
 }>()
 
