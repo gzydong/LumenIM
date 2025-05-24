@@ -29,6 +29,8 @@ const toolbars: ToolbarNames[] = [
   'image',
   'table',
   'mermaid',
+
+  '=',
   'preview',
   'fullscreen'
 ]
@@ -208,16 +210,7 @@ export function useNoteEditor() {
 
   // 标题输入键盘事件
   const onTitle = (e: any) => {
-    if (e.keyCode == 13) {
-      return e.preventDefault()
-    }
-
-    editor.title = e.target.innerText
-
-    if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
-      e.preventDefault()
-      onSaveDebounce(false)
-    }
+    editor.title = e.target.innerText.replace(/\n/g, '')
   }
 
   const onClickEditorBtn = () => {

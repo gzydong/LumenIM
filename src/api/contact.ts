@@ -1,62 +1,59 @@
-import { createApiCall, EmptyRequest } from './request.ts'
+import { createApi, EmptyRequest } from './request.ts'
 
 // 使用高阶函数生成具体的API调用函数
-export const ServContactList = createApiCall<EmptyRequest, ServContactListResponse>(
+export const ServContactList = createApi<EmptyRequest, ServContactListResponse>(
   '/api/v1/contact/list'
 )
 
-export const ServContactDelete = createApiCall<{ user_id: number }, null>('/api/v1/contact/delete')
+export const ServContactDelete = createApi<{ user_id: number }, null>('/api/v1/contact/delete')
 
-export const ServContactEditRemark = createApiCall<{ user_id: number; remark: string }, null>(
+export const ServContactEditRemark = createApi<{ user_id: number; remark: string }, null>(
   '/api/v1/contact/edit-remark'
 )
 
-export const ServContactSearch = createApiCall<{ mobile: string }, ServContactSearchResponse>(
+export const ServContactSearch = createApi<{ mobile: string }, ServContactSearchResponse>(
   '/api/v1/contact/search'
 )
 
-export const ServContactApplyCreate = createApiCall<{ user_id: number; remark: string }, null>(
+export const ServContactApplyCreate = createApi<{ user_id: number; remark: string }, null>(
   '/api/v1/contact/apply/create'
 )
 
-export const ServContactApplyRecords = createApiCall<EmptyRequest, any>(
-  '/api/v1/contact/apply/records'
-)
+export const ServContactApplyRecords = createApi<EmptyRequest, any>('/api/v1/contact/apply/records')
 
-export const ServContactApplyAccept = createApiCall<{ apply_id: number; remark: string }, null>(
+export const ServContactApplyAccept = createApi<{ apply_id: number; remark: string }, null>(
   '/api/v1/contact/apply/accept'
 )
 
-export const ServContactApplyDecline = createApiCall<{ apply_id: number; remark: string }, null>(
+export const ServContactApplyDecline = createApi<{ apply_id: number; remark: string }, null>(
   '/api/v1/contact/apply/decline'
 )
 
-export const ServContactApplyUnreadNum = createApiCall<EmptyRequest, { unread_num: number }>(
+export const ServContactApplyUnreadNum = createApi<EmptyRequest, { unread_num: number }>(
   '/api/v1/contact/apply/unread-num'
 )
 
-export const ServContactDetail = createApiCall<{ user_id: number }, ServContactDetailResponse>(
+export const ServContactDetail = createApi<{ user_id: number }, ServContactDetailResponse>(
   '/api/v1/contact/detail'
 )
 
-export const ServContactGroupList = createApiCall<EmptyRequest, ServContactGroupListResponse>(
+export const ServContactGroupList = createApi<EmptyRequest, ServContactGroupListResponse>(
   '/api/v1/contact/group/list'
 )
 
-export const ServContactMoveGroup = createApiCall<
+export const ServContactMoveGroup = createApi<
   { user_id: number; group_id: number },
   ServContactGroupListResponse
 >('/api/v1/contact/move-group')
 
-export const ServContactGroupUpdate = createApiCall<
+export const ServContactGroupUpdate = createApi<
   { items: { id: number; name: string; sort: number }[] },
   null
 >('/api/v1/contact/group/update')
 
-export const ServContactOnlineStatus = createApiCall<
-  { user_id: number },
-  { online_status: string }
->('/api/v1/contact/online-status')
+export const ServContactOnlineStatus = createApi<{ user_id: number }, { online_status: string }>(
+  '/api/v1/contact/online-status'
+)
 
 // 定义响应类型接口
 export interface ServContactSearchResponse {

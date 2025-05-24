@@ -1,5 +1,6 @@
 import { ref, onUnmounted } from 'vue'
 import SmsLock from '@/plugins/sms-lock'
+import { NButton } from 'naive-ui'
 
 export function useSmsLock(key: string, time = 60) {
   const lockTime = ref(0)
@@ -9,7 +10,7 @@ export function useSmsLock(key: string, time = 60) {
     lockTime.value = time
   })
 
-  const start = () => {
+  const startCountdown = () => {
     return lock.start()
   }
 
@@ -17,8 +18,25 @@ export function useSmsLock(key: string, time = 60) {
     lock.clear()
   })
 
+  const Countdown = defineComponent((props) => {
+    return () => {
+      return h(
+        NButton,
+        {
+          ...props.$attrs,
+          disabled: lockTime.value > 0,
+          bordered: true
+        },
+        () => {
+          return lockTime.value > 0 ? `发送验证码(${lockTime.value}s)` : '发送验证码'
+        }
+      )
+    }
+  })
+
   return {
     lockTime,
-    start
+    startCountdown,
+    Countdown
   }
 }

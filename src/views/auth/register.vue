@@ -6,7 +6,7 @@ import { useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
 
 // 初始化短信按钮锁
-const { lockTime, start } = useSmsLock('REGISTER_SMS', 60)
+const { startCountdown, Countdown } = useSmsLock('REGISTER_SMS', 60)
 
 const router = useRouter()
 const formRef = ref()
@@ -96,7 +96,7 @@ const onSendSms = async () => {
 
   if (code != 200) return
 
-  start()
+  startCountdown()
 
   if (data?.is_debug) {
     model.sms_code = data.sms_code
@@ -127,9 +127,7 @@ const onSendSms = async () => {
             :maxlength="6"
             @keydown.enter="onValidate"
           />
-          <n-button class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
-            获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
-          </n-button>
+          <Countdown class="mt-l5" @click="onSendSms" />
         </n-form-item>
 
         <n-form-item path="nickname" :show-label="false">

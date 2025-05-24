@@ -1,5 +1,5 @@
-import { createApiCall } from './request.ts'
+import { createApi } from './request.ts'
 
-export const ServOrganizeDepartmentList = createApiCall<any, any>('/api/v1/organize/department/all')
+export const ServOrganizeDepartmentList = createApi<any, any>('/api/v1/organize/department/all')
 
-export const ServOrganizePersonnelAll = createApiCall<any, any>('/api/v1/organize/personnel/all')
+export const ServOrganizePersonnelAll = createApi<any, any>('/api/v1/organize/personnel/all')

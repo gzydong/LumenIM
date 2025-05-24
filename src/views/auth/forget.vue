@@ -6,7 +6,7 @@ import { useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
 
 // 初始化短信按钮锁
-const { lockTime, start } = useSmsLock('FORGET_PSW_SMS', 120)
+const { startCountdown, Countdown } = useSmsLock('FORGET_PSW_SMS', 120)
 
 const router = useRouter()
 const formRef = ref()
@@ -80,7 +80,7 @@ const onSendSms = async () => {
       mobile: model.username,
       channel: 'forget_account'
     },
-    { loading, successText: '短信发送成功', onSuccess: start }
+    { loading, successText: '短信发送成功', onSuccess: startCountdown }
   )
 }
 </script>
@@ -93,7 +93,7 @@ const onSendSms = async () => {
       <n-form ref="formRef" size="large" :model="model" :rules="rules">
         <n-form-item path="username" :show-label="false">
           <n-input
-            placeholder="登录账号/手机号"
+            placeholder="手机号"
             v-model:value="model.username"
             :maxlength="11"
             @keydown.enter="onValidate"
@@ -107,9 +107,8 @@ const onSendSms = async () => {
             v-model:value="model.sms_code"
             @keydown.enter="onValidate"
           />
-          <n-button class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
-            获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
-          </n-button>
+
+          <Countdown @click="onSendSms" class="mt-l5" />
         </n-form-item>
 
         <n-form-item path="password" :show-label="false">

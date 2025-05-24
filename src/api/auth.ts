@@ -1,17 +1,15 @@
 // 授权相关接口
-import { createApiCall, EmptyRequest } from './request.ts'
+import { createApi, EmptyRequest } from './request.ts'
 
-export const ServAuthLogin = createApiCall<ServAuthLoginRequest, ServAuthLoginResponse>(
+export const ServAuthLogin = createApi<ServAuthLoginRequest, ServAuthLoginResponse>(
   '/api/v1/auth/login'
 )
 
-export const ServAuthRegister = createApiCall<ServAuthRegisterRequest, null>(
-  '/api/v1/auth/register'
-)
+export const ServAuthRegister = createApi<ServAuthRegisterRequest, null>('/api/v1/auth/register')
 
-export const ServAuthLogout = createApiCall<EmptyRequest, null>('/api/v1/auth/logout')
+export const ServAuthLogout = createApi<EmptyRequest, null>('/api/v1/auth/logout')
 
-export const ServAuthForget = createApiCall<ServAuthForgetRequest, null>('/api/v1/auth/forget')
+export const ServAuthForget = createApi<ServAuthForgetRequest, null>('/api/v1/auth/forget')
 
 export interface ServAuthLoginRequest {
   mobile: string

@@ -1,10 +1,12 @@
 import { datetime } from './datetime'
+import music from '@/assets/music.mp3'
+
+const audio = new Audio(music)
 
 export const KEY_INDEX_NAME = 'send_message_index_name'
 
 // 播放消息提示
 export function playMusic(muted = false) {
-  let audio = document.getElementById('audio')
   audio.currentTime = 0
   audio.muted = muted
   audio.play()

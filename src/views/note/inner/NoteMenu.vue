@@ -2,6 +2,7 @@
 import RecycleModal from './RecycleModal.vue'
 import { Down, AddOne, Plus } from '@icon-park/vue-next'
 import { useNoteStore } from '@/store'
+import { useCommonContextMenu } from '@/hooks/useCommonContextMenu.ts'
 
 const store = useNoteStore()
 
@@ -19,7 +20,7 @@ const menus = reactive([
     submenus: []
   },
   {
-    name: '我的分类',
+    name: '分类管理',
     indexName: '2-1',
     isShowSub: true,
     isShowCount: true,
@@ -129,52 +130,41 @@ const onEditNoteMenu = (e, i, i2, submenu) => {
 
   if (i == 2) {
     store.editClass(id, name)
-  } else if (i == 3) {
-    store.editTag(id, name)
+    submenu.isEdit = false
   }
 }
 
-// 会话列表右键显示菜单
-const onContextMenu = (e, i, i2, submenu) => {
-  dropdownMenu.show = false
-  dropdownMenu.item = {
-    index: i,
-    index2: i2,
-    submenu: submenu
-  }
+const { menu, ContextMenuElement } = useCommonContextMenu(onContextMenuHandle)
 
-  dropdownMenu.options = [
-    {
-      label: '重命名',
-      key: 'rename'
-    },
-    {
-      label: '删除',
-      key: 'delete'
-    }
-  ]
+function onContextMenuHandle(key) {
+  const item = menu.getItem()
 
-  nextTick(() => {
-    dropdownMenu.show = true
-    dropdownMenu.dropdownX = e.clientX
-    dropdownMenu.dropdownY = e.clientY
-  })
+  let submenu = menus[item.index].submenus[item.index2]
 
-  e.preventDefault()
-}
-
-const onContextMenuHandle = (value) => {
-  let submenu = menus[dropdownMenu.item.index].submenus[dropdownMenu.item.index2]
-
-  if (value == 'rename') {
+  if (key == 'rename') {
     submenu.isEdit = true
-  } else if (value == 'delete') {
-    if (dropdownMenu.item.index == 2) {
+  } else if (key == 'delete') {
+    if (item.index == 2) {
       store.deleteClass(submenu.id)
     }
   }
-
-  dropdownMenu.show = false
+}
+// 会话列表右键显示菜单
+const onContextMenu = (e, item) => {
+  menu.show(
+    e,
+    [
+      {
+        label: '重命名',
+        key: 'rename'
+      },
+      {
+        label: '删除',
+        key: 'delete'
+      }
+    ],
+    item
+  )
 }
 
 const onInit = () => {
@@ -273,7 +263,10 @@ loadWatchClassMenu()
                 type="text"
               />
             </p>
-            <p v-else @contextmenu.prevent="onContextMenu($event, i, i2, submenu)">
+            <p
+              v-else
+              @contextmenu.prevent="onContextMenu($event, { index: i, index2: i2, submenu })"
+            >
               <span>|- {{ submenu.name }}</span>
               <span v-if="submenu.count">({{ submenu.count }})</span>
             </p>
@@ -284,19 +277,7 @@ loadWatchClassMenu()
   </section>
 
   <!-- 右键菜单 -->
-  <n-dropdown
-    :show="dropdownMenu.show"
-    :x="dropdownMenu.dropdownX"
-    :y="dropdownMenu.dropdownY"
-    :options="dropdownMenu.options"
-    @select="onContextMenuHandle"
-    @clickoutside="
-      () => {
-        dropdownMenu.show = false
-        dropdownMenu.item = {}
-      }
-    "
-  />
+  <ContextMenuElement />
 
   <RecycleModal v-if="isShowRecycleModal" @close="isShowRecycleModal = false" />
 </template>

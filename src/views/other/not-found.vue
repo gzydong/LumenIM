@@ -1,17 +1,22 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 let second = ref(6)
+let timer: NodeJS.Timeout | null = null
+
+function toJump() {
+  timer && clearInterval(timer)
+  router.push('/')
+}
 
 onMounted(() => {
-  let timer = setInterval(() => {
+  timer = setInterval(() => {
     second.value--
 
     if (second.value <= 0) {
-      clearInterval(timer)
-      router.push('/')
+      toJump()
     }
   }, 1000)
 })
@@ -26,7 +31,7 @@ onMounted(() => {
       <h1>404</h1>
       <p>抱歉，你访问的页面不存在...</p>
       <div>
-        <n-button type="primary" size="medium"> 返回首页 ({{ second }}S) </n-button>
+        <n-button type="primary" size="medium" @click="toJump"> 返回首页 ({{ second }}S) </n-button>
       </div>
     </div>
   </section>

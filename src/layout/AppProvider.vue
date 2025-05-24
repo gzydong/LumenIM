@@ -38,11 +38,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!--接收信息提示音-->
-  <audio id="audio" preload="preload" muted>
-    <source src="@/assets/music.mp3" type="audio/mp3" />
-  </audio>
-
   <n-config-provider
     :theme="getDarkTheme"
     :theme-overrides="getThemeOverride"

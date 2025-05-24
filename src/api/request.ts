@@ -157,7 +157,7 @@ function error(message: string) {
   window.alert(message)
 }
 
-export const createApiCall = <R = any, T = any>(url: string) => {
+export const createApi = <R = any, T = any>(url: string) => {
   return (data?: R, options?: ApiOptions): Response<T> => {
     return api(url, data, options)
   }

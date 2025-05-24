@@ -7,8 +7,10 @@ declare module '*.vue' {
 }
 
 interface ImportMetaEnv {
+  readonly ENV: string
   readonly VITE_RSA_PUBLIC_KEY: string
-  // 更多环境变量...
+  readonly VITE_BASE_API: string
+  readonly VITE_SOCKET_API: string
 }
 
 declare interface Window {

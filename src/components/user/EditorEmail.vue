@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import { ServUserEmailUpdate } from '@/api/user.ts'
-import SmsLock from '@/plugins/sms-lock'
 import { ServCommonSendEmailCode } from '@/api/common'
 import { rsaEncrypt } from '@/utils/rsa'
+import { useInject, useSmsLock } from '@/hooks'
 
 const model = defineModel({ default: false })
 const emit = defineEmits(['success'])
 
-// 短信按钮倒计时
-const lockTime = ref(0)
+const { message } = useInject()
 
-// 初始化短信按钮锁
-const lock = new SmsLock('CHANGE_EMAIL_SMS', 120, (time) => (lockTime.value = time))
+const { startCountdown, Countdown } = useSmsLock('CHANGE_EMAIL_SMS', 60)
 
 const formRef = ref()
 
@@ -42,18 +40,26 @@ const rules = {
 const loading = ref(false)
 
 const onSendEmail = async () => {
+  if (!state.email) {
+    return message.warning('请填写新邮箱')
+  }
+
   await ServCommonSendEmailCode(
     {
       email: state.email
     },
     {
       successText: '邮件发送成功',
-      onSuccess: lock.start
+      onSuccess: startCountdown
     }
   )
 }
 
 const onSubmit = async () => {
+  if (!state.email || !state.code || !state.password) {
+    return message.warning('请填写完整信息')
+  }
+
   const params = {
     email: state.email,
     code: state.code,
@@ -98,9 +104,7 @@ const onValidate = (e: any) => {
 
       <n-form-item label="邮箱验证码" path="code">
         <n-input placeholder="请填写验证码" type="text" v-model:value="state.code" />
-        <n-button class="mt-l5" @click="onSendEmail" :disabled="lockTime > 0">
-          获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
-        </n-button>
+        <Countdown class="mt-l5" @click="onSendEmail"> </Countdown>
       </n-form-item>
     </n-form>
 

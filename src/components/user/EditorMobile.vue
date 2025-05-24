@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ServUserMobileUpdate } from '@/api/user'
-import SmsLock from '@/plugins/sms-lock'
 import { isMobile } from '@/utils/validate'
 import { ServCommonSendSmsCode } from '@/api/common'
-import { useInject } from '@/hooks'
+import { useInject, useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
 
 const emit = defineEmits(['success'])
@@ -40,11 +39,8 @@ const rules = {
 
 const loading = ref(false)
 
-// 短信按钮倒计时
-const lockTime = ref(0)
-
 // 初始化短信按钮锁
-const lock = new SmsLock('CHANGE_MOBILE_SMS', 120, (time) => (lockTime.value = time))
+const { startCountdown, Countdown } = useSmsLock('CHANGE_MOBILE_SMS', 120)
 
 const onSendSms = async () => {
   if (!isMobile(state.mobile)) {
@@ -59,7 +55,7 @@ const onSendSms = async () => {
   const { code, data } = await ServCommonSendSmsCode(params)
   if (code != 200) return
 
-  lock.start()
+  startCountdown()
   if (data.is_debug) {
     state.sms_code = data.sms_code
     message.success('已开启验证码自动填充')
@@ -113,9 +109,7 @@ const onValidate = (e: any) => {
 
       <n-form-item label="短信验证码" path="sms_code">
         <n-input placeholder="请填写验证码" type="text" v-model:value="state.sms_code" />
-        <n-button class="mt-l5" @click="onSendSms" :disabled="lockTime > 0">
-          获取验证码 <span v-show="lockTime > 0">({{ lockTime }}s)</span>
-        </n-button>
+        <Countdown class="mt-l5" @click="onSendSms"> </Countdown>
       </n-form-item>
     </n-form>
 

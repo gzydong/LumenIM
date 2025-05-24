@@ -40,7 +40,7 @@ const {
 
 <template>
   <section v-loading="loadStatus" class="el-container is-vertical note-view">
-    <header class="el-header note-view-title app-drag">
+    <header class="el-header note-view-title app-drag border-bottom">
       <img v-if="!detail.article_id" src="@/assets/image/md.svg" class="svg-icon" />
 
       <n-icon
@@ -55,9 +55,10 @@ const {
       <h4
         :data-aid="detail.article_id"
         :contenteditable="isPreviewMode ? false : 'plaintext-only'"
-        v-text="editor.title"
         @input="onTitle"
-      />
+      >
+        {{ detail.title }}
+      </h4>
 
       <n-button size="small" strong secondary @click="onClickEditorBtn">
         <template #icon>
@@ -111,12 +112,19 @@ const {
       </p>
     </header>
 
-    <main class="el-main" style="width: 100%; max-width: 1200px; margin: 0 auto">
+    <main class="el-main">
       <MdPreview
         v-if="isPreviewMode"
         preview-theme="vuepress"
         :show-code-row-number="false"
-        style="height: 100%; padding: 10px"
+        style="
+          height: 100%;
+          border: none;
+          max-width: 1200px;
+          margin: 0 auto;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 15px;
+        "
         v-model="editor.markdown"
         :theme="themeMode"
         code-theme="github"
@@ -125,12 +133,12 @@ const {
       <MdEditor
         v-else
         v-model="editor.markdown"
-        :show-code-row-number="false"
-        :preview="false"
-        :theme="themeMode"
-        style="height: 100%"
-        @onSave="onSaveDebounce(false)"
         :toolbars="toolbars"
+        :show-code-row-number="false"
+        :theme="themeMode"
+        :preview="false"
+        style="height: 100%; border: none"
+        @onSave="onSaveDebounce(false)"
         @onUploadImg="onUploadImage"
       />
     </main>
@@ -183,6 +191,10 @@ const {
 </template>
 
 <style lang="less" scoped>
+:deep(.md-editor-toolbar-wrapper) {
+  padding: 10px 5px;
+}
+
 .note-view {
   width: 100%;
   height: 100%;
@@ -215,8 +227,9 @@ const {
       }
 
       &[contenteditable='plaintext-only']:empty::before {
-        content: '请输入标题...';
-        color: #999;
+        content: '请输入标题 ...';
+        color: #aea6a6;
+        font-weight: 300;
         pointer-events: none;
       }
     }
