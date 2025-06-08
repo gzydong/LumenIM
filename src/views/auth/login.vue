@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ServAuthLogin } from '@/api/auth'
+import { ServAuthLogin, ServAuthOauth } from '@/api/auth'
 import { setToken } from '@/utils/auth.ts'
 import { rsaEncrypt } from '@/utils/rsa'
 import { playMusic } from '@/utils/talk'
 import { useInject } from '@/hooks'
+import { Github } from '@icon-park/vue-next'
 import ws from '@/connect'
 import { useUserStore } from '@/store'
 
@@ -61,9 +62,7 @@ const onValidate = (e: Event) => {
   // 谷歌浏览器提示音需要用户主动交互才能播放，登录入口主动交互一次，后面消息提示音就能正常播放了
   playMusic(true)
 
-  formRef.value.validate((errors: any) => {
-    !errors && onLogin()
-  })
+  formRef.value.validate((errors: any) => !errors && onLogin())
 }
 
 const onClickAccount = (type: number) => {
@@ -76,6 +75,18 @@ const onClickAccount = (type: number) => {
   }
 
   onLogin()
+}
+
+const toOauth = async (type: 'github' | 'gitee') => {
+  message.loading('正在跳转第三方授权登录页面，请稍等...', { duration: 5000 })
+
+  const { code, data } = await ServAuthOauth({
+    oauth_type: type
+  })
+
+  if (code !== 200 || !data) return
+
+  location.href = data.uri
 }
 </script>
 
@@ -104,6 +115,11 @@ const onClickAccount = (type: number) => {
           />
         </n-form-item>
 
+        <n-space>
+          <n-button text color="#409eff" @click="onClickAccount(1)"> 预览账号1 </n-button>
+          <n-button text color="#409eff" @click="onClickAccount(2)"> 预览账号2 </n-button>
+        </n-space>
+
         <n-button
           type="primary"
           size="large"
@@ -127,11 +143,19 @@ const onClickAccount = (type: number) => {
 
     <footer class="el-footer" style="height: 90px">
       <n-divider style="height: 30px; margin: 0">
-        <span style="color: #ccc; font-weight: 300"> 预览账号</span>
+        <span style="color: #ccc; font-weight: 300"> 其它登录方式</span>
       </n-divider>
-      <div class="preview-account">
-        <p @click="onClickAccount(1)">预览账号:187****0001 / 密码: admin123</p>
-        <p @click="onClickAccount(2)">预览账号:187****0002 / 密码: admin123</p>
+
+      <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px">
+        <github theme="filled" size="30" @click="toOauth('github')" class="pointer" />
+
+        <img
+          src="https://files.codelife.cc/icons/gitee.svg"
+          width="30"
+          style="background-color: red; border-radius: 50%"
+          @click="toOauth('gitee')"
+          class="pointer"
+        />
       </div>
     </footer>
   </section>

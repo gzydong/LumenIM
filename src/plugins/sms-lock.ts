@@ -72,7 +72,7 @@ class SmsLock {
 
   // 清除计时器
   clear() {
-    this.timer && clearTimeout(this.timer)
+    if (this.timer) clearTimeout(this.timer)
   }
 }
 

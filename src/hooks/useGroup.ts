@@ -9,7 +9,7 @@ type GroupParmas = {
 export function useGroup() {
   const { dialog } = useInject()
   // 解散群
-  const onGroupDismiss = (params: GroupParmas, fn: Function) => {
+  const onGroupDismiss = (params: GroupParmas, fn: () => void) => {
     dialog.create({
       showIcon: false,
       title: `确定要解散[${params.name}] 群聊？ 此操作是不可逆的！`,
@@ -24,9 +24,7 @@ export function useGroup() {
           group_id: params.group_id
         })
 
-        if (code == 200) {
-          fn()
-        }
+        if (code == 200) fn()
 
         return code == 200
       }
@@ -34,7 +32,7 @@ export function useGroup() {
   }
 
   // 退群
-  const onSignOutGroup = (params: GroupParmas, fn: Function) => {
+  const onSignOutGroup = (params: GroupParmas, fn: () => void) => {
     dialog.create({
       showIcon: true,
       title: `退出 [${params.name}] 群聊？`,
@@ -49,9 +47,7 @@ export function useGroup() {
           group_id: params.group_id
         })
 
-        if (code == 200) {
-          fn()
-        }
+        if (code == 200) fn()
 
         return code == 200
       }

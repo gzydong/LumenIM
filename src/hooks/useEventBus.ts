@@ -3,7 +3,7 @@ import { bus } from '@/utils'
 
 interface Event {
   name: any
-  event: Function
+  event: (data: any) => void
 }
 
 export const useEventBus = (items: Event[]) => {

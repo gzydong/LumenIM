@@ -137,9 +137,9 @@ const onSendCodeEvent = (data: any): Promise<boolean> => {
 
 // 发送文件消息
 const onSendFileEvent = async (data: any) => {
-  let maxsize = 500 * 1024 * 1024
+  let maxsize = 100 * 1024 * 1024
   if (data.size > maxsize) {
-    message.warning('上传文件不能超过500M!')
+    message.warning('上传文件不能超过100M!')
     return true
   }
 

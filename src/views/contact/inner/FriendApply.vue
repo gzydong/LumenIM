@@ -52,7 +52,7 @@ const onAccept = throttle(async (item: Item) => {
     },
     {
       successText: '已同意',
-      onSuccess: onLoadData
+      onSuccess: () => onLoadData()
     }
   )
 
@@ -69,7 +69,7 @@ const onDecline = throttle(async (item: Item) => {
     },
     {
       successText: '已拒绝',
-      onSuccess: onLoadData
+      onSuccess: () => onLoadData()
     }
   )
 

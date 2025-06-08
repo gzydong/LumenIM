@@ -37,6 +37,11 @@ const routes = [
   },
   AuthRouter,
   {
+    path: '/oauth/callback/:oauth_type',
+    meta: { auth: false },
+    component: () => import('@/views/auth/oauth.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404 NotFound',
     component: () => import('@/views/other/not-found.vue')
@@ -56,11 +61,17 @@ const router = createRouter({
 
 // 设置中间件，权限验证
 router.beforeEach((to) => {
-  if (to.meta?.auth && !isLogin()) {
+  const login = isLogin()
+
+  if (to.meta?.auth && !login) {
     return {
       path: '/auth/login',
       query: { redirect: to.fullPath }
     }
+  }
+
+  if (['/auth/login'].includes(to.path) && login) {
+    return { path: '/' }
   }
 })
 

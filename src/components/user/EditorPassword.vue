@@ -26,7 +26,7 @@ const rules = {
   new_password2: {
     required: true,
     trigger: ['blur', 'change'],
-    // @ts-ignore
+    // @ts-expect-error
     validator(rule: any, value: string) {
       if (!value) {
         return new Error('确认密码不能为空！')

@@ -35,6 +35,8 @@ export default defineConfig(({ mode }) => {
         dts: './auto-imports.d.ts'
       }),
       Components({
+        dts: true, // 生成 components.d.ts 声明文件
+        dirs: [], // 不扫描本地组件目录
         resolvers: [NaiveUiResolver()]
       })
     ],

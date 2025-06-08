@@ -83,7 +83,7 @@ const onClickDropdown = (key: string, item: ServContactListResponseItem) => {
 
   switch (key) {
     case 'change-remark':
-      onChangeContactRemark({ user_id, nickname, remark }, () => {
+      onChangeContactRemark({ user_id, nickname, remark }, (): void => {
         loadContactList()
       })
 

@@ -54,7 +54,7 @@ const initialize = () => {
 
     let text = quill?.getText().replace(/\n+$/, '')
 
-    // @ts-ignore
+    // @ts-expect-error
     let html = editor.value?.children[0].innerHTML
 
     if (html === '<p><br></p>') html = ''

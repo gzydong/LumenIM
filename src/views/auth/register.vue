@@ -18,7 +18,7 @@ const rules = {
   },
   username: {
     required: true,
-    // @ts-ignore
+    // @ts-expect-error
     validator(rule: any, value: string) {
       if (!value) {
         return new Error('手机号不能为空！')

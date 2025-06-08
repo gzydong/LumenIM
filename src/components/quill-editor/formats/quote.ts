@@ -2,7 +2,7 @@ import Quill from 'quill'
 
 const BlockEmbed = Quill.import('blots/block/embed')
 
-// @ts-ignore
+// @ts-expect-error
 class QuoteBlot extends BlockEmbed {
   static blotName = 'quote'
   static tagName = 'div'

@@ -37,7 +37,7 @@ const { showVote = false, indexName = '', members = [], callback } = defineProps
 const editor = ref(null)
 
 const getQuill = () => {
-  // @ts-ignore
+  // @ts-expect-error
   return editor?.value?.getQuill()
 }
 
@@ -107,7 +107,7 @@ const editorOption = {
     uploader: {
       mimetypes: ['image/webp', 'image/gif', 'image/png', 'image/jpg', 'image/jpeg'],
       handler(range: any, files: File[]) {
-        // @ts-ignore
+        // @ts-expect-error
         const quill = this.quill
 
         if (!quill.scroll.query('image')) return
@@ -331,13 +331,10 @@ function loadEditorDraftText() {
 function onSubscribeMention(data: { id: number; value: string }) {
   const quill = getQuill()
 
-  // @ts-ignore
   const mention = quill.getModule('mention')
 
-  // @ts-ignore
   mention.mentionCharPos = quill.getSelection()?.index ?? quill.getLength()
 
-  // @ts-ignore
   mention.insertItem({ id: data?.id, denotationChar: '@', value: data.value }, false)
 }
 

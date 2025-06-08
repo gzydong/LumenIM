@@ -125,7 +125,7 @@ const onChangeRemark = async () => {
 
   if (code != 200) return
 
-  // @ts-ignore
+  // @ts-expect-error
   editCardPopover.value.setShow(false)
   detail.visit_card = remark.value
   loadMembers()

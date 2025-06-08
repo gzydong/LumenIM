@@ -152,6 +152,6 @@ function delayStrategy(retryCount: number): number {
 }
 
 function uuid(): string {
-  // @ts-ignore
+  // @ts-expect-error
   return uuidv4().replaceAll('-', '')
 }

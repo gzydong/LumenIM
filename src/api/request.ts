@@ -87,7 +87,7 @@ export interface ApiResponse<T = any> {
 
 export type Response<T> = Promise<ApiResponse<T>>
 
-export interface ApiOptions {
+export interface ApiOptions<T> {
   // 是否显示加载状态
   loading?: Ref<boolean>
   // 是否显示错误消息
@@ -98,10 +98,14 @@ export interface ApiOptions {
   successText?: string
   // 重试次数
   retry?: number
-  onSuccess?: Function
+  onSuccess?: (data: T) => void
 }
 
-export async function api<T = any>(uri: string, params?: any, options?: ApiOptions): Response<T> {
+export async function api<T = any>(
+  uri: string,
+  params?: any,
+  options?: ApiOptions<T>
+): Response<T> {
   if (options?.loading) options.loading.value = true
 
   try {
@@ -112,7 +116,7 @@ export async function api<T = any>(uri: string, params?: any, options?: ApiOptio
       window['$message']?.success(options?.successText)
     }
 
-    if (options?.onSuccess) options.onSuccess()
+    if (options?.onSuccess) options.onSuccess(data)
 
     return { status: 200, code, message, data: data as T }
   } catch (err: unknown) {
@@ -158,7 +162,7 @@ function error(message: string) {
 }
 
 export const createApi = <R = any, T = any>(url: string) => {
-  return (data?: R, options?: ApiOptions): Response<T> => {
+  return (data?: R, options?: ApiOptions<T>): Response<T> => {
     return api(url, data, options)
   }
 }

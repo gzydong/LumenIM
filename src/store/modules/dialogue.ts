@@ -183,7 +183,7 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 转发聊天记录
     async forwardRecord(params = {}) {
-      // @ts-ignore
+      // @ts-expect-error
       await ServTalkMessageSend({
         ...params,
         type: 'forward'

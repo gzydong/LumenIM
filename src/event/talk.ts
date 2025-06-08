@@ -44,8 +44,19 @@ class Talk extends Base {
 
     Object.assign(this, { from_id, to_from_id, talk_mode, body })
 
-    body.extra = JSON.parse(body.extra)
-    body.quote = JSON.parse(body.quote)
+    try {
+      this.body.extra = JSON.parse(this.body.extra)
+    } catch (e) {
+      this.body.extra = {}
+      console.error('JSON.parse error', e)
+    }
+
+    try {
+      this.body.quote = JSON.parse(this.body.quote)
+    } catch (e) {
+      this.body.quote = {}
+      console.error('JSON.parse error', e)
+    }
 
     this.handle()
   }
@@ -86,7 +97,7 @@ class Talk extends Base {
     // 客户端有消息提示
     if (isElectronMode()) return
 
-    useSettingsStore().isPromptTone && playMusic()
+    if (useSettingsStore().isPromptTone) playMusic()
   }
 
   handle() {

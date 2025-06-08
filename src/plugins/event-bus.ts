@@ -1,38 +1,33 @@
 class EventBus {
-  private channels = {}
+  private channels: { [key: string]: ((data: any) => void)[] } = {}
 
-  // 定义订阅方法
-  subscribe(channel: string, callback: Function) {
-    // 如果频道不存在，则创建一个新的频道
+  // 订阅方法：允许回调函数接收参数
+  subscribe(channel: string, callback?: (data: any) => void): void {
     if (!this.channels[channel]) {
       this.channels[channel] = []
     }
 
-    // 将回调函数添加到频道的订阅者列表中
-    this.channels[channel].push(callback)
+    if (callback) {
+      this.channels[channel].push(callback)
+    }
   }
 
-  // 定义发布方法
-  emit(channel: string, data: any) {
-    // 如果频道不存在，则直接返回
-    if (!this.channels[channel]) {
-      return
-    }
+  // 发布方法：传递数据给所有订阅者
+  emit(channel: string, data: any): void {
+    if (!this.channels[channel]) return
 
-    // 遍历频道的订阅者列表，并依次调用回调函数
-    this.channels[channel].forEach((callback: Function) => {
+    this.channels[channel].forEach((callback: (data: any) => void) => {
       callback(data)
     })
   }
 
-  unsubscribe(channel: string, callback: Function) {
-    // 如果频道不存在，则创建一个新的频道
-    if (!this.channels[channel]) {
-      this.channels[channel] = []
-      return
-    }
+  // 取消订阅
+  unsubscribe(channel: string, callback: (data: any) => void): void {
+    if (!this.channels[channel]) return
 
-    this.channels[channel] = this.channels[channel].filter((item: Function) => item !== callback)
+    this.channels[channel] = this.channels[channel].filter(
+      (item: (data: any) => void) => item !== callback
+    )
   }
 }
 

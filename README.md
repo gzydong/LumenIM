@@ -28,7 +28,7 @@ git clone https://gitee.com/gzydong/LumenIM.git
 git clone https://github.com/gzydong/LumenIM.git
 
 ## 安装项目依赖扩展组件
-pnpm install
+pnpm i
 
 # 启动本地开发环境
 pnpm dev

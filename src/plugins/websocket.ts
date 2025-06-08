@@ -1,6 +1,15 @@
 import { LRUCache } from 'lru-cache'
 
-// @ts-ignore
+// 定义回调函数类型
+type WsCallback = (payload: any, raw?: string) => void
+
+// 消息事件类型
+interface WebSocketEvents {
+  onOpen: (evt: Event) => void
+  onClose: (evt: CloseEvent) => void
+  onError: (evt: Event) => void
+}
+
 const cache = new LRUCache<string, boolean>({
   max: 10000,
   ttl: 3 * 60 * 1000 // 过期时间，单位为毫秒
@@ -8,10 +17,10 @@ const cache = new LRUCache<string, boolean>({
 
 const maxAttempts = 100
 
-const defaultEvent = {
-  onError: (evt: any) => console.error('WebSocket Error:', evt),
-  onOpen: (evt: any) => console.log('WebSocket Opened:', evt),
-  onClose: (evt: any) => console.log('WebSocket Closed:', evt)
+const defaultEvent: WebSocketEvents = {
+  onError: (evt: Event) => console.error('WebSocket Error:', evt),
+  onOpen: (evt: Event) => console.log('WebSocket Opened:', evt),
+  onClose: (evt: CloseEvent) => console.log('WebSocket Closed:', evt)
 }
 
 class WsSocket {
@@ -45,22 +54,28 @@ class WsSocket {
 
   lastTime: number = 0
 
-  onCallBacks: Record<string, Function> = {}
+  onCallBacks: Record<string, WsCallback> = {}
 
-  defaultEvent: Record<string, Function> = defaultEvent
+  defaultEvent: WebSocketEvents = defaultEvent
 
   constructor(
     private urlCallBack: () => string,
-    private events: Partial<typeof defaultEvent>
+    private events: Partial<WebSocketEvents>
   ) {
     this.events = { ...this.defaultEvent, ...events }
   }
 
-  on(event: string, callback: Function): this {
+  /**
+   * 绑定自定义事件回调
+   */
+  on(event: string, callback: WsCallback): this {
     this.onCallBacks[event] = callback
     return this
   }
 
+  /**
+   * 初始化 WebSocket 实例
+   */
   loadSocket(): void {
     this.connect = new WebSocket(this.urlCallBack())
     this.connect.onerror = this.onError.bind(this)
@@ -69,12 +84,18 @@ class WsSocket {
     this.connect.onclose = this.onClose.bind(this)
   }
 
+  /**
+   * 建立连接
+   */
   connection(): void {
     if (this.connect === null) {
       this.loadSocket()
     }
   }
 
+  /**
+   * 重连逻辑
+   */
   reconnect(): void {
     if (this.config.reconnect.lockReconnect || this.config.reconnect.attempts <= 0) return
 
@@ -89,10 +110,16 @@ class WsSocket {
     }, delay || 10000)
   }
 
+  /**
+   * 解析消息
+   */
   onParse(evt: MessageEvent): any {
     return JSON.parse(evt.data)
   }
 
+  /**
+   * WebSocket 打开事件处理
+   */
   onOpen(evt: Event): void {
     this.lastTime = Date.now()
 
@@ -105,11 +132,16 @@ class WsSocket {
     this.heartbeat()
   }
 
+  /**
+   * WebSocket 关闭事件处理
+   */
   onClose(evt: CloseEvent): void {
     this.events.onClose?.(evt)
     this.connect = null
 
-    this.config.heartbeat.setInterval && clearInterval(this.config.heartbeat.setInterval)
+    if (this.config.heartbeat.setInterval) {
+      clearInterval(this.config.heartbeat.setInterval)
+    }
 
     this.config.reconnect.lockReconnect = false
 
@@ -118,10 +150,16 @@ class WsSocket {
     }
   }
 
+  /**
+   * WebSocket 错误事件处理
+   */
   onError(evt: Event): void {
     this.events.onError?.(evt)
   }
 
+  /**
+   * 接收消息处理
+   */
   onMessage(evt: MessageEvent): void {
     this.lastTime = Date.now()
 
@@ -146,18 +184,29 @@ class WsSocket {
     }
   }
 
+  /**
+   * 心跳机制
+   */
   heartbeat(): void {
-    this.config.heartbeat.setInterval && clearInterval(this.config.heartbeat.setInterval)
+    if (this.config.heartbeat.setInterval) {
+      clearInterval(this.config.heartbeat.setInterval)
+    }
 
     this.config.heartbeat.setInterval = setInterval(() => {
       this.ping()
     }, this.config.heartbeat.pingInterval)
   }
 
+  /**
+   * 发送心跳包
+   */
   ping(): void {
     this.connect?.send(JSON.stringify({ event: 'ping' }))
   }
 
+  /**
+   * 发送数据
+   */
   send(message: any): void {
     if (this.connect && this.connect.readyState === WebSocket.OPEN) {
       this.connect.send(typeof message === 'string' ? message : JSON.stringify(message))
@@ -166,11 +215,19 @@ class WsSocket {
     }
   }
 
+  /**
+   * 主动关闭连接
+   */
   close(): void {
     this.connect?.close()
-    this.config.heartbeat.setInterval && clearInterval(this.config.heartbeat.setInterval)
+    if (this.config.heartbeat.setInterval) {
+      clearInterval(this.config.heartbeat.setInterval)
+    }
   }
 
+  /**
+   * 发送自定义事件
+   */
   emit(event: string, payload: any): void {
     if (this.connect && this.connect.readyState === WebSocket.OPEN) {
       this.connect.send(JSON.stringify({ event, payload }))

@@ -22,22 +22,19 @@ export const throttle = useThrottleFn
 
 /**
  * 剪贴板复制功能
- *
- * @param {String} text 复制内容
- * @param {Function} callback 复制成功回调方法
  */
-export function clipboard(text: string, callback: Function): void {
+export function clipboard(text: string, callback?: () => void): void {
   navigator.clipboard
     .writeText(text)
     .then(() => {
-      callback && callback()
+      if (callback) callback()
     })
     .catch(() => {
       alert('Oops, unable to copy')
     })
 }
 
-export async function clipboardImage(src: string, callback: Function): Promise<void> {
+export async function clipboardImage(src: string, callback: () => void): Promise<void> {
   try {
     const data = await fetch(src)
     const blob = await data.blob()

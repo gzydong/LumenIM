@@ -18,7 +18,7 @@ export const useConnectStatus = () => {
     const paths = ['/auth/login', '/auth/register', '/auth/forget']
 
     if (!paths.includes(pathname) && isLogin()) {
-      !ws.isConnect() && ws.connect()
+      if (!ws.isConnect()) ws.connect()
     }
   })
 

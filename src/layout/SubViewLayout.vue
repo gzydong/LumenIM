@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { markRaw } from 'vue'
+import { markRaw, Component } from 'vue'
 
 interface Menu {
   name: string
   path: string
-  icon: any
+  icon: Component
   iconBgColor?: string
   show?: boolean
   size?: string

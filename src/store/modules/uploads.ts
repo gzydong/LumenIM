@@ -54,7 +54,7 @@ export const useUploadsStore = defineStore('uploads', {
 
       const { upload_id, shard_size } = data
 
-      // @ts-ignore
+      // @ts-expect-error
       this.items.unshift({
         file: file,
         talk_type: talkType,

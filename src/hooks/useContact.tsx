@@ -12,7 +12,7 @@ interface IContactParams {
 export function useContact() {
   const { toShowUserInfo, dialog } = useInject()
 
-  const onDeleteContact = (item: IContactParams, fn?: Function) => {
+  const onDeleteContact = (item: IContactParams, fn?: () => void) => {
     dialog.create({
       showIcon: false,
       title: `删除好友`,
@@ -35,7 +35,7 @@ export function useContact() {
           {
             successText: '删除联系人成功',
             onSuccess: () => {
-              fn && fn()
+              if (fn) fn()
             }
           }
         )
@@ -43,7 +43,7 @@ export function useContact() {
     })
   }
 
-  const onChangeContactRemark = (item: IContactParams, fn?: Function) => {
+  const onChangeContactRemark = (item: IContactParams, fn?: (data: any) => void) => {
     let remark = ''
     const onPositiveClick = async () => {
       const { code } = await ServContactEditRemark(

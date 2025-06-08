@@ -35,11 +35,11 @@ class Connect {
     this.bindEvents()
   }
 
-  connect() {
+  connect(): void {
     this.conn.connection()
   }
 
-  disconnect() {
+  disconnect(): void {
     this.conn.close()
   }
 
