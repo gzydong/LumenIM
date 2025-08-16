@@ -40,17 +40,8 @@ const {
 
 <template>
   <section v-loading="loadStatus" class="el-container is-vertical note-view">
-    <header class="el-header note-view-title app-drag border-bottom">
+    <header class="el-header note-view-title app-drag">
       <img v-if="!detail.article_id" src="@/assets/image/md.svg" class="svg-icon" />
-
-      <n-icon
-        v-if="detail.article_id && isPreviewMode"
-        :size="22"
-        :component="IconStar"
-        :color="detail.is_asterisk == 1 ? '#ee3f4d' : ''"
-        class="pointer"
-        @click="onCollection"
-      />
 
       <h4
         :data-aid="detail.article_id"
@@ -60,21 +51,34 @@ const {
         {{ detail.title }}
       </h4>
 
-      <n-button size="small" strong secondary @click="onClickEditorBtn">
+      <!-- <n-button size="small">
+        <template #icon>
+          <n-icon size="16" :component="History" />
+        </template>
+      </n-button> -->
+
+      <n-button v-if="detail.article_id && isPreviewMode" size="small" @click="onCollection">
+        <template #icon>
+          <n-icon
+            size="16"
+            :component="IconStar"
+            :color="detail.is_asterisk == 1 ? '#ee3f4d' : ''"
+          />
+        </template>
+      </n-button>
+
+      <n-button size="small" @click="onClickEditorBtn">
         <template #icon>
           <n-icon size="16" :component="EditOne" />
         </template>
         {{ editorBtnText }}
       </n-button>
-
-      <n-button v-if="detail.article_id" secondary size="small" strong style="margin-left: 5px">
-        <template #icon>
-          <n-icon size="16" :component="History" />
-        </template>
-      </n-button>
     </header>
 
-    <header v-if="isPreviewMode" class="el-header note-view-desc text-ellipsis">
+    <header
+      v-if="isPreviewMode"
+      class="el-header note-view-desc text-ellipsis border-top border-bottom"
+    >
       <p>
         <n-icon class="icon" size="15" :component="Time" />
         <span>更新于 {{ detail.updated_at.substring(0, 16) }}分</span>
@@ -117,17 +121,11 @@ const {
         v-if="isPreviewMode"
         preview-theme="vuepress"
         :show-code-row-number="false"
-        style="
-          height: 100%;
-          border: none;
-          max-width: 1200px;
-          margin: 0 auto;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          padding: 15px;
-        "
+        style="height: 100%; border: none; padding: 15px"
         v-model="editor.markdown"
         :theme="themeMode"
         code-theme="github"
+        :codeFoldable="false"
       />
 
       <MdEditor
@@ -199,8 +197,6 @@ const {
   width: 100%;
   height: 100%;
 
-  --note-desc-bg-color: #fafafa;
-
   .note-view-title {
     min-height: 60px;
     display: flex;
@@ -242,7 +238,6 @@ const {
     padding: 20px 15px;
     overflow: hidden;
     font-size: 14px;
-    background-color: var(--note-desc-bg-color);
     position: relative;
     user-select: none;
     color: var(--im-text-color-grey);

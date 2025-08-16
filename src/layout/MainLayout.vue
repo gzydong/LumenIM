@@ -30,7 +30,6 @@ import { isElectronMode } from '@/utils/electron.ts'
   .el-aside {
     width: 60px;
     box-sizing: border-box;
-    background-color: #fafafa;
 
     &.pd20 {
       padding-top: 20px;

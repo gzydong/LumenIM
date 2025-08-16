@@ -1,13 +1,16 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import encoder from '@/utils/encoder'
 
-<template>
-  <div class="el-container"></div>
-</template>
+import { uncompress } from 'snappyjs'
 
-<style scoped lang="less">
-.el-container {
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
+const ws = new WebSocket('ws://127.0.0.1:9508/wss/default.io')
+ws.binaryType = 'arraybuffer'
+
+ws.onmessage = function (e) {
+  console.log('Received message:', encoder.decode(new Uint8Array(e.data)))
 }
-</style>
+</script>
+
+<template></template>
+
+<style scoped lang="less"></style>

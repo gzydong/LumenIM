@@ -58,7 +58,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <section class="section el-container is-vertical height100">
+  <section class="section el-container is-vertical h-full">
     <header class="el-header header border-bottom">
       <p>基础信息</p>
     </header>

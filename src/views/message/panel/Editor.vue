@@ -25,31 +25,19 @@ const settingsStore = useSettingsStore()
 const uploadsStore = useUploadsStore()
 const dialogueStore = useDialogueStore()
 const { addAsyncMessage } = useAsyncMessageStore()
-const props = defineProps({
-  uid: {
-    type: Number,
-    default: 0
-  },
-  talkMode: {
-    type: Number,
-    default: 0
-  },
-  toFromId: {
-    type: Number,
-    default: 0
-  },
-  indexName: {
-    type: String,
-    default: ''
-  },
-  online: {
-    type: Boolean,
-    default: false
-  },
-  members: {
-    default: () => [] as any[]
-  }
-})
+
+interface IEditor {
+  uid: number
+  talkMode: number
+  toFromId: number
+  indexName: string
+  online: boolean
+  members: any[]
+  aside: boolean
+}
+
+const props = defineProps<IEditor>()
+const emits = defineEmits(['trigger-aside'])
 
 const isShowHistory = ref(false)
 
@@ -240,12 +228,15 @@ const onEditorEvent = async (event: string, data: any) => {
 </script>
 
 <template>
-  <footer class="el-footer height100">
+  <footer class="el-footer h-full">
     <Editor
       :index-name="indexName"
       :show-vote="talkMode == 2"
       :members="members"
       :callback="onEditorEvent"
+      :show-aside="props.aside"
+      :show-aside-ement="talkMode == 2"
+      @trigger-aside="emits('trigger-aside')"
     />
   </footer>
 

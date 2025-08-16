@@ -8,10 +8,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    NAlert: typeof import('naive-ui')['NAlert']
     NAvatar: typeof import('naive-ui')['NAvatar']
+    NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']
+    NBreadcrumbItem: typeof import('naive-ui')['NBreadcrumbItem']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
+    NCode: typeof import('naive-ui')['NCode']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDatePicker: typeof import('naive-ui')['NDatePicker']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
@@ -26,6 +30,7 @@ declare module 'vue' {
     NIcon: typeof import('naive-ui')['NIcon']
     NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
+    NInputGroup: typeof import('naive-ui')['NInputGroup']
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
@@ -37,6 +42,7 @@ declare module 'vue' {
     NProgress: typeof import('naive-ui')['NProgress']
     NRadio: typeof import('naive-ui')['NRadio']
     NRadioGroup: typeof import('naive-ui')['NRadioGroup']
+    NResult: typeof import('naive-ui')['NResult']
     NScrollbar: typeof import('naive-ui')['NScrollbar']
     NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSpace: typeof import('naive-ui')['NSpace']
@@ -47,6 +53,7 @@ declare module 'vue' {
     NTag: typeof import('naive-ui')['NTag']
     NTooltip: typeof import('naive-ui')['NTooltip']
     NTransfer: typeof import('naive-ui')['NTransfer']
+    NTree: typeof import('naive-ui')['NTree']
     NVirtualList: typeof import('naive-ui')['NVirtualList']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

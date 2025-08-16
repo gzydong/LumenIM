@@ -48,7 +48,7 @@ const onSendEmoticon = (type: any, value: any, img = '') => {
     <input type="file" ref="fileImageRef" accept="image/*" @change="onUpload" />
   </form>
 
-  <section class="el-container is-vertical section height100">
+  <section class="el-container is-vertical section h-full">
     <header class="el-header em-header border-bottom">
       <span>{{ items[tabIndex].name }}</span>
     </header>

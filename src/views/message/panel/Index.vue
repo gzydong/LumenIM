@@ -3,13 +3,16 @@ import { useUserStore, useUploadsStore, useTalkStore } from '@/store/index.ts'
 import { ServContactOnlineStatus } from '@/api/contact.ts'
 import { ChatPlus } from '@/components/chat'
 import PanelHeader from './Header.vue'
+import ChatLayout from '@/components/chat/ChatLayout.vue'
 import Editor from './Editor.vue'
+import GroupMember from './GroupMember.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupNoticeDrawer from '@/components/group/GroupNoticeDrawer.vue'
 import UploadsModal from '@/components/basic/UploadsModal.vue'
 import { useTalkRecord } from './useTalkRecord.ts'
 import { useContextMenu } from './useContextMenu.ts'
+import { useChatAside } from './useChatAside.ts'
 import { bus } from '@/utils/index.ts'
 import { EditorConst, SessionConst } from '@/constant/event-bus.ts'
 import { TalkModeEnum } from '@/constant/chat.ts'
@@ -17,6 +20,7 @@ import { useInject, useEventBus } from '@/hooks/index.ts'
 import { formatChatMessage } from '@/components/mechat/render.tsx'
 
 const chat = useTemplateRef('chat')
+const chatAside = useChatAside()
 const userStore = useUserStore()
 const uploadsStore = useUploadsStore()
 const talkStore = useTalkStore()
@@ -24,6 +28,7 @@ const router = useRouter()
 const { records, loadChatRecord, dialogueStore, resetTalkRecord } = useTalkRecord()
 const { toShowUserInfo } = useInject()
 const members = computed(() => dialogueStore.members)
+
 const isShowEditor = computed(() => dialogueStore.isShowEditor)
 const {
   isShowMultiSelect,
@@ -98,10 +103,6 @@ const onPanelHeaderEvent = (eventType: string) => {
   events[eventType]?.()
 }
 
-const onClearUnread = () => {
-  dialogueStore.unreadBubble = 0
-}
-
 useEventBus([
   {
     name: SessionConst.Switch,
@@ -114,11 +115,15 @@ useEventBus([
 watch(
   () => talkParams.indexName,
   () => {
-    resetTalkRecord()
-    chat.value?.reload()
+    // 关闭侧边栏
+    chatAside.closeAside()
 
     // 查询好友的在线状态
     loopGetOnlineStatus()
+
+    // 清空会话信息
+    resetTalkRecord()
+    chat.value?.reload()
   },
   { immediate: true }
 )
@@ -151,9 +156,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="el-container is-vertical" id="drawer-container">
-    <!-- 头部区域 -->
-    <header class="el-header border-bottom">
+  <ChatLayout
+    :aside="chatAside.aside.show"
+    :aside-width="chatAside.aside.width"
+    :editor="isShowEditor"
+    id="drawer-container"
+  >
+    <template #header>
       <PanelHeader
         :talk-mode="talkParams.talkMode"
         :username="talkParams.username"
@@ -169,10 +178,9 @@ onUnmounted(() => {
           }
         "
       />
-    </header>
+    </template>
 
-    <!-- 聊天区域 -->
-    <main class="el-main">
+    <template #main>
       <ChatPlus
         ref="chat"
         :items="records"
@@ -187,17 +195,23 @@ onUnmounted(() => {
         @element-select="onChatElementSelect"
         @element-event="onContextMenuEvent"
         @user-click-event="onElementClickUser"
-        @on-scroll-to-bottom="onClearUnread"
+        @on-scroll-to-bottom="
+          () => {
+            dialogueStore.unreadBubble = 0
+          }
+        "
       />
-    </main>
+    </template>
 
-    <!-- 编辑器区域 -->
-    <footer
-      v-show="isShowEditor"
-      class="el-footer"
-      :style="{ height: 200 + 'px' }"
-      v-dropsize="{ min: 100, max: 600, direction: 'top', key: 'editor' }"
-    >
+    <template #aside>
+      <component
+        :is="chatAside.aside.component"
+        v-bind="chatAside.aside.props"
+        v-on="chatAside.aside.listeners"
+      />
+    </template>
+
+    <template #editor>
       <MultiSelectComponent v-if="isShowMultiSelect" />
 
       <Editor
@@ -208,9 +222,30 @@ onUnmounted(() => {
         :to-from-id="talkParams.toFromId"
         :online="talkParams.online"
         :members="members"
+        :aside="chatAside.aside.show"
+        @trigger-aside="
+          () => {
+            chatAside.aside.show = !chatAside.aside.show
+            if (chatAside.aside.show) {
+              chatAside.setAsideComponent(
+                GroupMember,
+                160,
+                {
+                  groupId: talkParams.toFromId,
+                  members: members
+                },
+                {
+                  addContact: () => {
+                    events.addGroup()
+                  }
+                }
+              )
+            }
+          }
+        "
       />
-    </footer>
-  </section>
+    </template>
+  </ChatLayout>
 
   <n-drawer
     v-model:show="uploadsStore.isShow"

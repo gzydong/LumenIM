@@ -63,7 +63,7 @@ class Connect {
   }
 
   onPing() {
-    this.conn.on('ping', () => this.emit('pong', ''))
+    this.conn.on('ping', () => this.emit('pong', null))
   }
 
   onPong() {

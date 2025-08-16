@@ -11,7 +11,7 @@ const currentLoadId = computed(() => noteStore.view.loadId)
 </script>
 
 <template>
-  <section class="el-container height100">
+  <section class="el-container h-full">
     <aside class="el-aside" style="width: 230px">
       <NoteMenu />
     </aside>

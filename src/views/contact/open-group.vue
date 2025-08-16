@@ -57,9 +57,9 @@ onLoadData()
 </script>
 
 <template>
-  <section class="el-container height100">
+  <section class="el-container h-full">
     <main class="el-main">
-      <section class="el-container is-vertical height100">
+      <section class="el-container is-vertical h-full">
         <header class="el-header me-view-header border-bottom">
           <div>公开群聊({{ items.length }})</div>
           <div>

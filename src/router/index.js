@@ -29,6 +29,7 @@ const routes = [
       {
         path: '/example',
         name: 'example',
+        meta: { auth: false },
         component: () => import('@/views/example/index.vue')
       },
       SettingRouter,

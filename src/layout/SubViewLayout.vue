@@ -94,16 +94,11 @@ defineProps<{
       .icon {
         width: 26px;
         height: 26px;
-
-        // border-radius: 5px;
-        // background-color: #1890ff;
-        // color: #ffffff;
       }
 
       .name {
         flex: auto;
         justify-content: flex-start;
-        padding-left: 6px;
       }
 
       .tips {

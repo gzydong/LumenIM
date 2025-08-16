@@ -9,7 +9,9 @@ import {
   Pic,
   FolderUpload,
   Ranking,
-  History
+  History,
+  ExpandRight,
+  ExpandLeft
 } from '@icon-park/vue-next'
 import MeEditorVote from './MeEditorVote.vue'
 import MeEditorEmoticon from './MeEditorEmoticon.vue'
@@ -22,17 +24,25 @@ import { EditorConst } from '@/constant/event-bus'
 import { defaultAvatar } from '@/constant/default'
 import { useEventBus } from '@/hooks'
 
-const emit = defineEmits(['editor-event'])
+const emit = defineEmits(['editor-event', 'trigger-aside'])
 const editorDraftStore = useEditorDraftStore()
 
 interface Props {
   showVote: boolean
+  showAside?: boolean
+  showAsideEment?: boolean
   indexName: string
   members: any[]
   callback: (event: string, data?: any) => Promise<boolean>
 }
 
-const { showVote = false, indexName = '', members = [], callback } = defineProps<Props>()
+const {
+  showVote = false,
+  showAside = false,
+  indexName = '',
+  members = [],
+  callback
+} = defineProps<Props>()
 
 const editor = ref(null)
 
@@ -179,6 +189,8 @@ const navs = reactive([
     }
   }
 ])
+
+// <expand-right theme="outline" size="24" fill="#333" :strokeWidth="2"/>
 
 async function onVoteEvent(data: any) {
   const ok = await callback('vote_event', data)
@@ -409,6 +421,15 @@ useEventBus([
       >
         <n-icon size="18" class="icon" :component="nav.icon" />
         <p class="title">{{ nav.title }}</p>
+      </div>
+
+      <div
+        v-if="showAsideEment"
+        class="toolbar-item"
+        style="margin-left: auto"
+        @click="emit('trigger-aside')"
+      >
+        <n-icon class="icon" size="18" :component="showAside ? ExpandLeft : ExpandRight" />
       </div>
     </header>
 

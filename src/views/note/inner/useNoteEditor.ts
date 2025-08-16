@@ -90,6 +90,10 @@ export function useNoteEditor() {
     if (code != 200) return
 
     store.setCollectionStatus(action == 1)
+
+    store.updateNoteItem(store.detail.article_id, {
+      is_asterisk: action
+    })
   }
 
   // 下载笔记

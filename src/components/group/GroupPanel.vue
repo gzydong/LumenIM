@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import 'md-editor-v3/lib/style.css'
 import { useUserStore } from '@/store'
 import GroupLaunch from './GroupLaunch.vue'
 import GroupManage from './manage/index.vue'
 import MemberDrawer from './MemberDrawer.vue'
 import { Comment, Close, Plus, More } from '@icon-park/vue-next'
-import { MdPreview } from 'md-editor-v3'
 import {
   ServGroupDetail,
   ServGroupMemberList,
@@ -244,28 +242,6 @@ onMounted(() => {
             </n-button>
           </div>
           <p class="text-ellipsis">查看更多</p>
-        </div>
-      </div>
-
-      <div class="info-box" style="margin-top: 30px">
-        <div class="b-box">
-          <div class="block">
-            <div class="title text-ellipsis">群公告</div>
-            <div class="text">
-              <!-- <n-button type="primary" text> 更新于 12/13 12:23 </n-button> -->
-            </div>
-          </div>
-          <div>
-            <p v-if="!detail.notice.length">暂无公告</p>
-
-            <MdPreview
-              v-else
-              style="padding: 2px; border-radius: 5px; margin-top: 10px"
-              preview-theme="vuepress"
-              :showCodeRowNumber="false"
-              v-model="detail.notice"
-            />
-          </div>
         </div>
       </div>
     </main>

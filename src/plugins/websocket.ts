@@ -78,6 +78,7 @@ class WsSocket {
    */
   loadSocket(): void {
     this.connect = new WebSocket(this.urlCallBack())
+    // this.connect.binaryType = 'arraybuffer'
     this.connect.onerror = this.onError.bind(this)
     this.connect.onopen = this.onOpen.bind(this)
     this.connect.onmessage = this.onMessage.bind(this)

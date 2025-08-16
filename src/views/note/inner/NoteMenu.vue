@@ -1,8 +1,8 @@
 <script setup>
-import RecycleModal from './RecycleModal.vue'
-import { Down, AddOne, Plus } from '@icon-park/vue-next'
-import { useNoteStore } from '@/store'
 import { useCommonContextMenu } from '@/hooks/useCommonContextMenu.ts'
+import { useNoteStore } from '@/store'
+import { Down, Plus } from '@icon-park/vue-next'
+import RecycleModal from './RecycleModal.vue'
 
 const store = useNoteStore()
 
@@ -228,7 +228,7 @@ loadWatchClassMenu()
       </span>
     </header>
 
-    <main class="el-main height100">
+    <main class="el-main h-full">
       <n-scrollbar>
         <div v-for="(menu, i) in menus" :key="i" class="menu">
           <div
@@ -250,7 +250,7 @@ loadWatchClassMenu()
             v-for="(submenu, i2) in menu.submenus"
             v-show="menu.isShowSub"
             :key="i2"
-            class="menu-level2 pointer"
+            class="menu-level2 pointer text-ellipsis"
             :class="{ actived: submenu.indexName == activedMenu }"
             @click="onMenuLevel2Event(submenu, i)"
           >

@@ -20,6 +20,9 @@ importers:
       core-js:
         specifier: ^3.39.0
         version: 3.42.0
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -50,6 +53,9 @@ importers:
       quill-mention:
         specifier: ^6.1.1
         version: 6.1.1
+      snappyjs:
+        specifier: ^0.7.0
+        version: 0.7.0
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -1192,6 +1198,9 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+
   css-render@0.15.14:
     resolution: {integrity: sha512-9nF4PdUle+5ta4W5SyZdLCCmFd37uVimSjg1evcTqKJCyvCEEj12WKzOSBNak6r4im4J4iYXKH1OWpUV5LBYFg==}
 
@@ -2047,6 +2056,9 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+
+  snappyjs@0.7.0:
+    resolution: {integrity: sha512-u5iEEXkMe2EInQio6Wv9LWHOQYRDbD2O9hzS27GpT/lwfIQhTCnHCTqedqHIHe9ZcvQo+9au6vngQayipz1NYw==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -3613,6 +3625,8 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  crypto-js@4.2.0: {}
+
   css-render@0.15.14:
     dependencies:
       '@emotion/hash': 0.8.0
@@ -4478,6 +4492,8 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
+
+  snappyjs@0.7.0: {}
 
   source-map-js@1.2.1: {}
 

@@ -200,8 +200,13 @@ defineProps<{
     }
   }
 
+  &:hover,
   &.actived {
     background-color: var(--actived-bg);
+  }
+
+  &:hover {
+    transition: all 0.3s ease-in;
   }
 }
 

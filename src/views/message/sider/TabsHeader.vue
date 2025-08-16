@@ -39,14 +39,13 @@ const onChange = (index: number) => {
 
 <template>
   <header class="el-header tabs-header">
-    <n-space class="tabs" style="flex-flow: nowrap">
+    <n-space :wrap="false">
       <n-tag
         v-for="(tab, index) in tabs"
         :bordered="false"
         :type="tabIndex == index ? 'primary' : 'default'"
         size="small"
         class="pointer"
-        round
         :key="tab.name"
         @click="onChange(index)"
       >
@@ -63,16 +62,5 @@ const onChange = (index: number) => {
   display: flex;
   align-items: center;
   padding: 0 10px;
-  overflow-x: auto;
-
-  &::-webkit-scrollbar {
-    height: 0px;
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    height: 0px;
-    background-color: transparent;
-  }
 }
 </style>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useUserStore, useTalkStore } from '@/store'
 import { ServOrganizeDepartmentList, ServOrganizePersonnelAll } from '@/api/organize'
-import { Search, Male, Female } from '@icon-park/vue-next'
 import { useInject } from '@/hooks'
+import { useTalkStore, useUserStore } from '@/store'
+import { Female, Male, Search } from '@icon-park/vue-next'
 import { NTag } from 'naive-ui'
 
 const router = useRouter()
@@ -156,7 +156,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="el-container is-vertical height100">
+  <section class="el-container is-vertical h-full">
     <header class="el-header me-view-header border-bottom">
       <div>
         <n-breadcrumb>
@@ -185,10 +185,10 @@ onMounted(() => {
     </header>
 
     <main class="el-main">
-      <section class="el-container height100">
+      <section class="el-container h-full">
         <aside
-          class="el-aside border-right pd-10"
-          style="width: 200px"
+          class="el-aside"
+          style="width: 200px; background-color: #fafafa; margin: 10px; padding: 10px"
           v-dropsize="{
             min: 200,
             max: 500,

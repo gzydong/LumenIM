@@ -71,7 +71,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section id="drawer-target" class="el-container is-vertical height100">
+  <section id="drawer-target" class="el-container is-vertical h-full">
     <header class="el-header me-view-header border-bottom">
       <div>
         <n-tabs v-model:value="tabIndex">
