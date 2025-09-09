@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ServUserUpdate, ServUserDetail } from '@/api/user.ts'
+import { fetchApi, sync } from '@/apis/request'
+import { apiUserDetail, apiUserUpdate } from '@/apis/user'
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
-import { hidePhone } from '@/utils/string'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
+import { hidePhone } from '@/utils/string'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -16,26 +17,10 @@ const detail = reactive({
   nickname: '',
   mobile: '',
   email: '',
-  gender: '0',
-  motto: '0',
+  gender: 0,
+  motto: '',
   birthday: ref()
 })
-
-const loadDetail = async () => {
-  const { code, data } = await ServUserDetail()
-  if (code != 200 || !data) return
-
-  detail.nickname = data.nickname
-  detail.mobile = data.mobile
-  detail.email = data.email
-  detail.gender = data.gender.toString()
-  detail.motto = data.motto
-  detail.avatar = data.avatar
-
-  if (data.birthday) {
-    detail.birthday = ref(data.birthday)
-  }
-}
 
 // 修改用户信息
 const onChangeDetail = async () => {
@@ -47,18 +32,21 @@ const onChangeDetail = async () => {
     return message.warning('个性签名文字长度不能超过500')
   }
 
-  const { code } = await ServUserUpdate(
+  const [err] = await fetchApi(
+    apiUserUpdate,
     {
       nickname: detail.nickname.trim(),
       avatar: detail.avatar,
       motto: detail.motto,
-      gender: parseInt(detail.gender),
+      gender: detail.gender,
       birthday: detail.birthday
     },
-    { loading, successText: '信息保存成功' }
+    {
+      loading,
+      successText: '信息保存成功'
+    }
   )
-
-  if (code != 200) return
+  if (err) return
 
   userStore.avatar = detail.avatar
   userStore.motto = detail.motto
@@ -70,7 +58,19 @@ const onUploadAvatar = (avatar: string) => {
   onChangeDetail()
 }
 
-loadDetail()
+sync(async () => {
+  const data = await apiUserDetail({})
+  detail.nickname = data.nickname
+  detail.mobile = data.mobile
+  detail.email = data.email
+  detail.gender = data.gender
+  detail.motto = data.motto
+  detail.avatar = data.avatar
+
+  if (data.birthday) {
+    detail.birthday = ref(data.birthday)
+  }
+})
 </script>
 
 <template>
@@ -120,9 +120,9 @@ loadDetail()
         <n-form-item label="我的性别：">
           <n-radio-group v-model:value="detail.gender" name="gender">
             <n-space>
-              <n-radio key="1" value="1"> 男 </n-radio>
-              <n-radio key="2" value="2"> 女 </n-radio>
-              <n-radio key="0" value="0"> 保密 </n-radio>
+              <n-radio key="1" :value="1"> 男 </n-radio>
+              <n-radio key="2" :value="2"> 女 </n-radio>
+              <n-radio key="0" :value="0"> 保密 </n-radio>
             </n-space>
           </n-radio-group>
         </n-form-item>

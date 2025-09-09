@@ -1,12 +1,13 @@
-import { defineStore } from 'pinia'
 import {
-  ServArticleDetail,
-  ServArticleClassifyList,
-  ServArticleList,
   ServArticleClassifyCreate,
+  ServArticleClassifyDelete,
+  ServArticleClassifyList,
+  ServArticleClassifySort,
   ServArticleClassifyUpdate,
-  ServArticleClassifyDelete
+  ServArticleDetail,
+  ServArticleList
 } from '@/api/article'
+import { defineStore } from 'pinia'
 
 interface Class {
   id: number
@@ -44,7 +45,6 @@ interface NoteStoreState {
       keyword: string
       find_type: number
       classify_id: number
-      tag_id: number
     }
     items: NoteItem[]
   }
@@ -77,7 +77,7 @@ export const useNoteStore = defineStore('note', {
 
       notes: {
         loadStatus: 0,
-        params: { keyword: '', find_type: 1, classify_id: 0, tag_id: 0 },
+        params: { keyword: '', find_type: 1, classify_id: 0 },
         items: []
       },
 
@@ -103,6 +103,11 @@ export const useNoteStore = defineStore('note', {
   },
 
   actions: {
+    setParams(params: { keyword: string; find_type: number; classify_id: number }) {
+      this.notes.params = Object.assign({ keyword: '', find_type: 1, classify_id: 0 }, params)
+      this.loadNoteList(params, false)
+    },
+
     close() {
       this.view.loadId = 0
     },
@@ -221,6 +226,11 @@ export const useNoteStore = defineStore('note', {
       const index = this.class.findIndex((item) => item.id === classify_id)
 
       index >= 0 && this.class.splice(index, 1)
+    },
+
+    async sort(classifyIds: number[]) {
+      const { code } = await ServArticleClassifySort({ classify_ids: classifyIds })
+      if (code != 200) return
     }
   }
 })

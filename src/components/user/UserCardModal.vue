@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { CloseOne, Male, Female, SendOne } from '@icon-park/vue-next'
 import {
-  ServContactDetail,
   ServContactApplyCreate,
+  ServContactDetail,
+  ServContactEditRemark,
   ServContactGroupList,
-  ServContactMoveGroup,
-  ServContactEditRemark
+  ServContactMoveGroup
 } from '@/api/contact.ts'
-import { useTalkStore } from '@/store'
-import { useInject } from '@/hooks'
-import { bus } from '@/utils'
 import { ContactConst } from '@/constant/event-bus.ts'
+import { useInject } from '@/hooks'
+import { useTalkStore } from '@/store'
+import { bus } from '@/utils'
 import { formatPhone } from '@/utils/string'
+import { CloseOne, Female, Male, SendOne } from '@icon-park/vue-next'
 
 const { message } = useInject()
 const router = useRouter()

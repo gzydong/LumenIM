@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import NoteMenu from './inner/NoteMenu.vue'
-import NoteList from './inner/NoteList.vue'
-import NoteView from './inner/NoteView.vue'
-import NoteEmpty from './inner/NoteEmpty.vue'
 import { useNoteStore } from '@/store'
+import NoteEmpty from './inner/NoteEmpty.vue'
+import NoteList from './inner/NoteList.vue'
+import NoteMenu from './inner/NoteMenu.vue'
+import NoteView from './inner/NoteView.vue'
 
 const noteStore = useNoteStore()
 
@@ -18,7 +18,7 @@ const currentLoadId = computed(() => noteStore.view.loadId)
 
     <aside
       class="el-aside"
-      style="width: 280px"
+      style="width: 350px"
       v-dropsize="{ min: 200, max: 500, direction: 'right', key: 'note-list' }"
     >
       <NoteList />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Add, Find } from '@icon-park/vue-next'
 import { useInject } from '@/hooks/index.ts'
+import { Add, Find } from '@icon-park/vue-next'
 const { toShowUserInfo } = useInject()
 
 const emit = defineEmits(['addContact'])
@@ -26,10 +26,7 @@ const closeSerch = () => {
 <template>
   <section class="el-container is-vertical">
     <header class="el-header border-bottom title">
-      <span v-if="!search" style="display: flex; align-items: center; gap: 5px">
-        <n-icon :component="Find" :size="18" class="pointer" @click="search = true" />
-        群成员({{ members.length }})
-      </span>
+      <span v-if="!search" class="flex-center"> 群成员({{ members.length }}) </span>
       <span v-else>
         <n-input-group size="small">
           <n-input size="small" v-model:value="keyword" :style="{ width: 'auto' }" />
@@ -37,8 +34,9 @@ const closeSerch = () => {
         </n-input-group>
       </span>
 
-      <span v-if="!search">
+      <span v-if="!search" style="gap: 8px; display: flex">
         <n-icon :component="Add" :size="18" class="pointer" @click="emit('addContact')" />
+        <n-icon :component="Find" :size="18" class="pointer" @click="search = true" />
       </span>
     </header>
 

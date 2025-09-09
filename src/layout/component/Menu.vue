@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useUserStore, useSettingsStore, useTalkStore } from '@/store'
+import { useSettingsStore, useTalkStore, useUserStore } from '@/store'
+import { BookmarkOne, GithubOne, Message, People, SettingTwo } from '@icon-park/vue-next'
 import AccountCard from './AccountCard.vue'
-import { GithubOne, SettingTwo, Message, People, BookmarkOne } from '@icon-park/vue-next'
 
 const userStore = useUserStore()
 const talkStore = useTalkStore()
@@ -93,7 +93,7 @@ const isActive = (menu) => {
         <!-- 消息提示 -->
         <div class="hotspot" v-if="nav.hotspot" />
 
-        <p>
+        <div>
           <component
             :is="nav.icon"
             :theme="isActive(nav) ? 'filled' : 'outline'"
@@ -101,7 +101,7 @@ const isActive = (menu) => {
             :strokeWidth="2"
             :size="22"
           />
-        </p>
+        </div>
 
         <span>{{ nav.title }}</span>
       </div>

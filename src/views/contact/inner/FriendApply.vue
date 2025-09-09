@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { Close, CheckSmall } from '@icon-park/vue-next'
 import {
-  ServContactApplyRecords,
   ServContactApplyAccept,
-  ServContactApplyDecline
+  ServContactApplyDecline,
+  ServContactApplyRecords
 } from '@/api/contact'
+import ButtonDropdown from '@/components/basic/ButtonDropdown.vue'
+import { useInject } from '@/hooks'
+import { useUserStore } from '@/store'
 import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
-import { useUserStore } from '@/store'
-import { useInject } from '@/hooks'
 
 type Item = {
   id: number
@@ -87,17 +87,16 @@ onMounted(() => {
 
 <template>
   <section
-    v-loading="loading"
-    style="min-height: 400px"
+    style="min-height: 100%; overflow-y: auto"
     :class="{
       'flex-center': items.length == 0
     }"
   >
     <n-empty v-show="items.length == 0" description="暂无相关数据" />
 
-    <div class="item" v-for="item in items" :key="item.id">
+    <div class="item border-bottom" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">
-        <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
+        <im-avatar :size="30" :src="item.avatar" :username="item.nickname" />
       </div>
 
       <div class="content pointer o-hidden" @click="onInfo(item)">
@@ -105,26 +104,26 @@ onMounted(() => {
           <span>{{ item.nickname }}</span>
           <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
         </div>
-        <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
+        <div class="remark text-ellipsis">留言: {{ item.remark }}</div>
       </div>
 
       <div class="tools">
-        <n-button @click="onAccept(item)" strong secondary circle type="primary" size="small">
-          <template #icon>
-            <n-icon :component="CheckSmall" />
-          </template>
-        </n-button>
+        <ButtonDropdown
+          primary-text="同意"
+          primary-type="default"
+          :options="[{ label: '忽略', key: 'delete' }]"
+          size="small"
+          @primary-click="onAccept(item)"
+          @select="
+            (key) => {
+              if (key == 'delete') {
+                onDecline(item)
+              }
 
-        <n-popconfirm @positive-click="onDecline(item)">
-          <template #trigger>
-            <n-button strong secondary circle type="tertiary" size="small">
-              <template #icon>
-                <n-icon :component="Close" />
-              </template>
-            </n-button>
-          </template>
-          确认要拒绝申请吗？
-        </n-popconfirm>
+              return false
+            }
+          "
+        />
       </div>
     </div>
   </section>
@@ -132,15 +131,9 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .item {
-  height: 60px;
+  min-height: 60px;
   display: flex;
   align-items: center;
-  margin: 15px;
-  transition: all 0.3s ease-in-out;
-
-  &:first-child {
-    margin-top: 0;
-  }
 
   > div {
     height: inherit;
@@ -179,7 +172,6 @@ onMounted(() => {
       color: #9a9292;
       overflow: hidden;
       width: inherit;
-      border-bottom: 1px solid var(--border-color);
     }
   }
 
@@ -188,17 +180,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-around;
-  }
-
-  &:hover {
-    background-color: var(--im-active-bg-color);
-
-    padding: 0 5px;
-    border-radius: 5px;
-
-    .remark {
-      border-bottom-color: transparent;
-    }
   }
 }
 </style>

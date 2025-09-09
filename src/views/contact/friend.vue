@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Search, Plus, Male, Female } from '@icon-park/vue-next'
-import UserSearchModal from '@/components/user/UserSearchModal.vue'
-import GroupManage from './inner/GroupManage.vue'
 import {
-  ServContactList,
   ServContactGroupList,
+  ServContactList,
   ServContactListResponseItem
 } from '@/api/contact.ts'
-import { useEventBus, useContact } from '@/hooks'
-import { ContactConst } from '@/constant/event-bus'
-import { useTalkStore } from '@/store'
-import { useRouter } from 'vue-router'
 import Dropdown from '@/components/basic/Dropdown.vue'
+import UserSearchModal from '@/components/user/UserSearchModal.vue'
+import { ContactConst } from '@/constant/event-bus'
+import { useContact, useEventBus } from '@/hooks'
+import { useTalkStore } from '@/store'
+import { Female, Male, Plus, Search } from '@icon-park/vue-next'
+import { useRouter } from 'vue-router'
+import GroupManage from './inner/GroupManage.vue'
 
 const router = useRouter()
 const talkStore = useTalkStore()

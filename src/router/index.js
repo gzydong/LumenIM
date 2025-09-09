@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import { isLogin } from '@/utils/auth.ts'
 import MainLayout from '@/layout/MainLayout.vue'
+import { isLogin } from '@/utils/auth.ts'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
-import SettingRouter from './modules/setting.js'
-import ContactRouter from './modules/contact.js'
 import AuthRouter from './modules/auth.js'
+import ContactRouter from './modules/contact.js'
+import SettingRouter from './modules/setting.js'
 
 const routes = [
   {

@@ -187,8 +187,8 @@ onMounted(() => {
     <main class="el-main">
       <section class="el-container h-full">
         <aside
-          class="el-aside"
-          style="width: 200px; background-color: #fafafa; margin: 10px; padding: 10px"
+          class="el-aside aside"
+          style="width: 200px; margin: 10px; padding: 10px"
           v-dropsize="{
             min: 200,
             max: 500,
@@ -256,8 +256,8 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .aside {
-  width: 250px;
-  padding: 8px;
+  background-color: #fafafa;
+  border-radius: 5px;
 }
 
 .item-box {
@@ -321,6 +321,10 @@ onMounted(() => {
 }
 
 html[theme-mode='dark'] {
+  .aside {
+    background-color: rgba(255, 255, 255, 5%);
+  }
+
   .item-box {
     background-color: rgba(255, 255, 255, 5%);
     border-color: transparent;

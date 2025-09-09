@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Search, SortAmountDown } from '@icon-park/vue-next'
-import { useNoteStore, NoteItem } from '@/store'
-import { debounce } from '@/utils/common'
 import Loading from '@/components/basic/Loading.vue'
+import { NoteItem, useNoteStore } from '@/store'
+import { debounce } from '@/utils/common'
+import { Search, SortAmountDown } from '@icon-park/vue-next'
 import NoteListItem from './NoteListItem.vue'
 import { useNoteListContextMenu } from './useNoteListContextMenu.ts'
 
@@ -54,7 +54,7 @@ const onSearchInput = debounce(() => {
       <n-empty v-else description="暂无相关数据" />
     </main>
 
-    <main class="el-main" v-else>
+    <main class="el-main" style="padding: 8px" v-else>
       <n-scrollbar>
         <NoteListItem
           v-for="note in items"

@@ -1,15 +1,18 @@
 <script lang="ts" setup>
+import { isElectronMode } from '@/utils/electron.ts'
 import Menu from './component/Menu.vue'
 import Sponsor from './component/Sponsor.vue'
-import { isElectronMode } from '@/utils/electron.ts'
 </script>
 
 <template>
   <section class="el-container is-vertical im-container">
+    <!-- <header class="el-header border-bottom flex" style="height: 50px; align-items: center">
+      <div style="font-size: 18px">LumenIM</div>
+    </header> -->
     <main class="el-main">
       <section class="el-container">
-        <aside :class="{ pd20: isElectronMode() }" class="el-aside app-drag">
-          <Menu></Menu>
+        <aside :class="{ pd20: isElectronMode() }" class="el-aside app-drag border-right">
+          <Menu />
         </aside>
         <main class="el-main">
           <router-view />
@@ -40,10 +43,6 @@ import { isElectronMode } from '@/utils/electron.ts'
 html[theme-mode='dark'] {
   .im-container {
     background-color: unset;
-
-    .el-aside {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
   }
 }
 </style>

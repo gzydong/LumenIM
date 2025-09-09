@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import { useUserStore, useUploadsStore, useTalkStore } from '@/store/index.ts'
 import { ServContactOnlineStatus } from '@/api/contact.ts'
+import UploadsModal from '@/components/basic/UploadsModal.vue'
 import { ChatPlus } from '@/components/chat'
-import PanelHeader from './Header.vue'
 import ChatLayout from '@/components/chat/ChatLayout.vue'
-import Editor from './Editor.vue'
-import GroupMember from './GroupMember.vue'
-import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupNoticeDrawer from '@/components/group/GroupNoticeDrawer.vue'
-import UploadsModal from '@/components/basic/UploadsModal.vue'
-import { useTalkRecord } from './useTalkRecord.ts'
-import { useContextMenu } from './useContextMenu.ts'
-import { useChatAside } from './useChatAside.ts'
-import { bus } from '@/utils/index.ts'
-import { EditorConst, SessionConst } from '@/constant/event-bus.ts'
-import { TalkModeEnum } from '@/constant/chat.ts'
-import { useInject, useEventBus } from '@/hooks/index.ts'
+import GroupPanel from '@/components/group/GroupPanel.vue'
 import { formatChatMessage } from '@/components/mechat/render.tsx'
+import { TalkModeEnum } from '@/constant/chat.ts'
+import { EditorConst, SessionConst } from '@/constant/event-bus.ts'
+import { useEventBus, useInject } from '@/hooks/index.ts'
+import { useTalkStore, useUploadsStore, useUserStore } from '@/store/index.ts'
+import { bus } from '@/utils/index.ts'
+import Editor from './Editor.vue'
+import GroupMember from './GroupMember.vue'
+import PanelHeader from './Header.vue'
+import { useChatAside } from './useChatAside.ts'
+import { useContextMenu } from './useContextMenu.ts'
+import { useTalkRecord } from './useTalkRecord.ts'
 
 const chat = useTemplateRef('chat')
 const chatAside = useChatAside()
@@ -229,7 +229,7 @@ onUnmounted(() => {
             if (chatAside.aside.show) {
               chatAside.setAsideComponent(
                 GroupMember,
-                160,
+                180,
                 {
                   groupId: talkParams.toFromId,
                   members: members

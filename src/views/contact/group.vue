@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ServGroupList } from '@/api/group.ts'
-import { Search, Plus } from '@icon-park/vue-next'
-import { useUserStore, useTalkStore } from '@/store'
-import GroupPanel from '@/components/group/GroupPanel.vue'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
+import GroupPanel from '@/components/group/GroupPanel.vue'
+import { useTalkStore, useUserStore } from '@/store'
+import { Plus, Search } from '@icon-park/vue-next'
 import GroupCard from './inner/GroupCard.vue'
 
 import { useRouter } from 'vue-router'

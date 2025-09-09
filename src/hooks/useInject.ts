@@ -1,9 +1,9 @@
-import type { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
-import type { DialogApiInjection } from 'naive-ui/es/dialog/src/DialogProvider'
-import type { NotificationApiInjection } from 'naive-ui/es/notification/src/NotificationProvider'
-import type { ModalApiInjection } from 'naive-ui/es/modal/src/ModalProvider'
 import UserCardModal from '@/components/user/UserCardModal.vue'
 import { useUserStore } from '@/store'
+import type { DialogApiInjection } from 'naive-ui/es/dialog/src/DialogProvider'
+import type { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
+import type { ModalApiInjection } from 'naive-ui/es/modal/src/ModalProvider'
+import type { NotificationApiInjection } from 'naive-ui/es/notification/src/NotificationProvider'
 
 export function useInject() {
   const dialog: DialogApiInjection = window['$dialog']

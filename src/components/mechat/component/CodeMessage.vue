@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Copy, Stretching } from '@icon-park/vue-next'
-import { clipboard } from '@/utils/common'
 import { useInject } from '@/hooks'
+import { clipboard } from '@/utils/common'
+import { Copy, Stretching } from '@icon-park/vue-next'
 
 const props = defineProps<{
   code: string
@@ -26,9 +26,9 @@ const onClipboard = () => {
   >
     <header class="el-header header">
       <p>{{ lang }}</p>
-      <p>
-        <n-icon class="icon" :size="16" :component="Copy" @click="onClipboard" />
-        <n-icon class="icon" :size="16" :component="Stretching" @click="full = !full" />
+      <p style="display: flex; gap: 5px">
+        <n-icon class="icon" :size="18" :component="Copy" @click="onClipboard" />
+        <n-icon class="icon" :size="18" :component="Stretching" @click="full = !full" />
       </p>
     </header>
 

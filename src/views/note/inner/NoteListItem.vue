@@ -46,7 +46,7 @@ const tools = () => {
 
   min-height: 50px;
   padding: 8px;
-  margin: 8px;
+  margin-bottom: 8px;
   transition: all 0.5s ease;
   border-radius: 3px;
   border: 1px solid transparent;

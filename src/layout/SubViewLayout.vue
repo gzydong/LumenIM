@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { markRaw, Component } from 'vue'
+import { Component, markRaw } from 'vue'
 
 interface Menu {
   name: string
@@ -19,7 +19,10 @@ defineProps<{
 
 <template>
   <section class="el-container is-vertical section">
-    <header class="el-header border-bottom">{{ title }}</header>
+    <header class="el-header border-bottom">
+      <div style="font-size: 18px">{{ title }}</div>
+      <slot name="action"></slot>
+    </header>
     <section class="el-container o-hidden">
       <aside class="el-aside border-right">
         <router-link v-for="(menu, key) in menus" :to="menu.path" :key="key">
@@ -57,10 +60,11 @@ defineProps<{
 
   .el-header {
     height: 60px;
-    line-height: 60px;
-    padding-left: 15px;
-    font-size: 18px;
+    padding: 0 15px;
     -webkit-app-region: drag;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .el-aside {
@@ -94,6 +98,7 @@ defineProps<{
       .icon {
         width: 26px;
         height: 26px;
+        margin-right: 10px;
       }
 
       .name {

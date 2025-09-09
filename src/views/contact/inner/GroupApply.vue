@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { Close, CheckSmall } from '@icon-park/vue-next'
+import { ServGroupApplyAgree, ServGroupApplyAll, ServGroupApplyDecline } from '@/api/group'
+import ButtonDropdown from '@/components/basic/ButtonDropdown.vue'
+import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
-import { ServGroupApplyAll, ServGroupApplyDecline, ServGroupApplyAgree } from '@/api/group'
 import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
-import { useInject } from '@/hooks'
-import { NInput } from 'naive-ui'
 
 interface Item {
   id: number
@@ -18,7 +17,7 @@ interface Item {
   group_name: string
 }
 
-const { toShowUserInfo, message, dialog } = useInject()
+const { toShowUserInfo, message } = useInject()
 const userStore = useUserStore()
 const items = ref<Item[]>([])
 const loading = ref(true)
@@ -52,40 +51,16 @@ const onAgree = throttle(async (item: Item) => {
 }, 1000)
 
 const onDelete = (item: Item) => {
-  let remark = ''
-
-  const onPositiveClick = async () => {
-    if (!remark.length) return false
-
-    await ServGroupApplyDecline(
-      {
-        apply_id: item.id,
-        remark: remark
-      },
-      {
-        successText: '已拒绝',
-        onSuccess: onLoadData
-      }
-    )
-
-    return false
-  }
-
-  dialog.create({
-    title: '拒绝入群申请',
-    content: () => {
-      return h(NInput, {
-        defaultValue: '',
-        placeholder: '请填写拒绝原因',
-        style: { marginTop: '20px' },
-        onInput: (value) => (remark = value),
-        autofocus: true
-      })
+  ServGroupApplyDecline(
+    {
+      apply_id: item.id,
+      remark: '已拒绝'
     },
-    negativeText: '取消',
-    positiveText: '提交',
-    onPositiveClick
-  })
+    {
+      successText: '已拒绝',
+      onSuccess: onLoadData
+    }
+  )
 }
 
 onMounted(() => {
@@ -97,44 +72,49 @@ onMounted(() => {
 
 <template>
   <section
-    v-loading="loading"
-    style="min-height: 400px"
+    style="min-height: 100%; overflow-y: auto"
     :class="{
       'flex-center': items.length == 0
     }"
   >
     <n-empty v-show="items.length == 0" description="暂无相关数据"> </n-empty>
 
-    <div class="item" v-for="item in items" :key="item.id">
+    <div class="item border-bottom" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">
-        <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
+        <im-avatar :size="30" :src="item.avatar" :username="item.nickname" />
       </div>
 
       <div class="content pointer o-hidden" @click="onInfo(item)">
         <div class="username">
           <span>
-            <n-tag :bordered="false" size="small" type="primary">
-              {{ item.group_name }}
-            </n-tag>
             {{ item.nickname }}
           </span>
           <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
         </div>
-        <div class="remark text-ellipsis">备注: {{ item.remark }}</div>
+        <div class="text text-ellipsis">
+          <span>申请加入:</span>
+          <n-button text type="primary">&nbsp;{{ item.group_name }} </n-button>
+        </div>
+        <div class="remark text-ellipsis">留言: {{ item.remark }}</div>
       </div>
 
       <div class="tools">
-        <n-button @click="onAgree(item)" strong secondary circle size="small" type="primary">
-          <template #icon>
-            <n-icon :component="CheckSmall" />
-          </template>
-        </n-button>
+        <ButtonDropdown
+          primary-text="同意"
+          primary-type="default"
+          :options="[{ label: '忽略', key: 'delete' }]"
+          size="small"
+          @primary-click="onAgree(item)"
+          @select="
+            (key) => {
+              if (key == 'delete') {
+                onDelete(item)
+              }
 
-        <n-button @click="onDelete(item)" strong secondary circle type="tertiary" size="small">
-          <template #icon>
-            <n-icon :component="Close" />
-          </template>
-        </n-button>
+              return false
+            }
+          "
+        />
       </div>
     </div>
   </section>
@@ -142,15 +122,9 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .item {
-  height: 60px;
+  min-height: 60px;
   display: flex;
   align-items: center;
-  margin: 15px;
-  transition: all 0.3s ease-in;
-
-  &:first-child {
-    margin-top: 0;
-  }
 
   > div {
     height: inherit;
@@ -159,7 +133,7 @@ onMounted(() => {
   .avatar {
     width: 40px;
     display: flex;
-    align-items: center;
+    align-items: start;
   }
 
   .content {
@@ -189,7 +163,6 @@ onMounted(() => {
       color: #9a9292;
       overflow: hidden;
       width: inherit;
-      border-bottom: 1px solid var(--border-color);
     }
   }
 
@@ -198,17 +171,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-around;
-  }
-
-  &:hover {
-    background-color: var(--im-active-bg-color);
-
-    padding: 0 5px;
-    border-radius: 5px;
-
-    .remark {
-      border-bottom-color: transparent;
-    }
   }
 }
 </style>

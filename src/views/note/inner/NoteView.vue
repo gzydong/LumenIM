@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-import 'md-editor-v3/lib/style.css'
-import { MdEditor, MdPreview } from 'md-editor-v3'
 import {
-  Share,
-  Delete as IconDelete,
-  DownloadFour,
-  Star as IconStar,
-  EditOne,
-  CategoryManagement,
-  Time,
-  TextMessage,
-  FolderUpload,
   ApplicationTwo,
+  CategoryManagement,
   Comments,
-  History
+  DownloadFour,
+  EditOne,
+  FolderUpload,
+  Delete as IconDelete,
+  Star as IconStar,
+  Share,
+  TextMessage,
+  Time
 } from '@icon-park/vue-next'
+import { MdEditor, MdPreview } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 import AnnexUploadModal from './AnnexUploadModal.vue'
 import { useNoteEditor } from './useNoteEditor.ts'
 

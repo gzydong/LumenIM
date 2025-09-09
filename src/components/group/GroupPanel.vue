@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { useUserStore } from '@/store'
-import GroupLaunch from './GroupLaunch.vue'
-import GroupManage from './manage/index.vue'
-import MemberDrawer from './MemberDrawer.vue'
-import { Comment, Close, Plus, More } from '@icon-park/vue-next'
 import {
   ServGroupDetail,
   ServGroupMemberList,
-  ServGroupSecede,
-  ServGroupMemberUpdateRemark
+  ServGroupMemberUpdateRemark,
+  ServGroupSecede
 } from '@/api/group.ts'
 import { useInject } from '@/hooks'
+import { useUserStore } from '@/store'
+import { Close, Comment, More, Plus } from '@icon-park/vue-next'
+import GroupLaunch from './GroupLaunch.vue'
+import GroupManage from './manage/index.vue'
+import MemberDrawer from './MemberDrawer.vue'
 
 const userStore = useUserStore()
 const { toShowUserInfo } = useInject()
@@ -210,6 +210,17 @@ onMounted(() => {
       </div>
 
       <div class="member-box2">
+        <div class="member-item" @click="isShowGroup = true">
+          <div class="avatar flex-center">
+            <n-button circle>
+              <template #icon>
+                <n-icon :component="Plus" />
+              </template>
+            </n-button>
+          </div>
+          <p class="text-ellipsis">添加成员</p>
+        </div>
+
         <div
           class="member-item"
           v-for="item in members.slice(0, 10)"
@@ -220,17 +231,6 @@ onMounted(() => {
             <im-avatar :size="35" :src="item.avatar" :username="item.nickname" />
           </div>
           <p class="text-ellipsis">{{ item.nickname }}</p>
-        </div>
-
-        <div class="member-item" @click="isShowGroup = true">
-          <div class="avatar flex-center">
-            <n-button circle>
-              <template #icon>
-                <n-icon :component="Plus" />
-              </template>
-            </n-button>
-          </div>
-          <p class="text-ellipsis">添加成员</p>
         </div>
 
         <div class="member-item" @click="isShowMemberList = true">
