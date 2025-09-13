@@ -1,5 +1,6 @@
+import { fetchUploadImage } from '@/apis/customize'
+import { sync } from '@/apis/request'
 import type { Delta } from 'quill/core'
-import { ServUploadImage } from '@/api/upload'
 
 interface Item {
   type: number
@@ -185,10 +186,17 @@ export function onUploadImage(file: File) {
       form.append('width', image.width.toString())
       form.append('height', image.height.toString())
 
-      const { code, data } = await ServUploadImage(form)
-      code == 200 && resolve(data.src)
-
-      URL.revokeObjectURL(image.src)
+      sync(
+        async () => {
+          const data = await fetchUploadImage(form)
+          resolve(data.src)
+        },
+        {
+          onComplete: () => {
+            URL.revokeObjectURL(image.src)
+          }
+        }
+      )
     }
   })
 }

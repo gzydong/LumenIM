@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, useTemplateRef } from 'vue'
-import { ServTalkHistoryRecords } from '@/api/chat'
-import { Calendar } from '@icon-park/vue-next'
-import * as components from '@/constant/chat'
-import { ITalkRecord } from '@/types/chat'
+import { fetchMessageHistoryRecords } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { ChatPlus } from '@/components/chat'
 import { formatChatMessage } from '@/components/mechat/render.tsx'
+import * as components from '@/constant/chat'
+import { ITalkRecord } from '@/types/chat'
+import { safeParseJson } from '@/utils/common'
+import { Calendar } from '@icon-park/vue-next'
+import { reactive, ref, useTemplateRef } from 'vue'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -63,20 +65,20 @@ const loadChatRecord = async (): Promise<boolean> => {
     model.loading = true
   }
 
-  const { code, data } = await ServTalkHistoryRecords(params)
+  const [err, data] = await fetchApi(fetchMessageHistoryRecords, params)
   model.loading = false
 
-  if (code != 200) return true
+  if (err) return true
 
   if (params.cursor === 0) {
     items.value = []
   }
 
-  let list = data.items || []
-
-  list.map((item: any) => {
-    item.extra = JSON.parse(item.extra)
-    item.quote = JSON.parse(item.quote)
+  const list = data.items.map((item: any) => {
+    item.extra = safeParseJson(item.extra)
+    item.quote = safeParseJson(item.quote)
+    item.status = 1
+    return item
   })
 
   if (list.length) {

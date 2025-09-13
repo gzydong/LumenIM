@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import 'md-editor-v3/lib/style.css'
 import { MdEditor } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 
-import { ref, onMounted } from 'vue'
-import { ServGroupDetail, ServGroupNoticeUpdate } from '@/api/group'
-import { ServUploadImage } from '@/api/upload'
+import { fetchGroupDetail, fetchGroupNoticeEdit } from '@/apis/api'
+import { fetchUploadImage } from '@/apis/customize'
+import { fetchApi, sync } from '@/apis/request'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   groupId: {
@@ -15,7 +16,8 @@ const props = defineProps({
 
 const editorContent = ref('')
 const onSave = async () => {
-  await ServGroupNoticeUpdate(
+  await fetchApi(
+    fetchGroupNoticeEdit,
     {
       group_id: props.groupId,
       content: editorContent.value
@@ -32,16 +34,16 @@ const onUploadImage = async (files: File[], callback: any) => {
   const form = new FormData()
   form.append('file', files[0])
 
-  const { code, data } = await ServUploadImage(form)
-  if (code != 200) return
-
-  callback([data.src])
+  sync(async () => {
+    const data = await fetchUploadImage(form)
+    callback([data.src])
+  })
 }
 
 const loadDetail = async () => {
-  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
 
-  if (code != 200) return
+  if (err) return
 
   editorContent.value = data.notice?.content || ''
 }

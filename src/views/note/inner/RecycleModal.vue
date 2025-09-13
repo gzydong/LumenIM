@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { CalendarThirty, Undo, Delete, ToBottom } from '@icon-park/vue-next'
-import Loading from '@/components/basic/Loading.vue'
 import {
-  ServArticleForeverDelete,
-  ServArticleRecoverDelete,
-  ServArticleAnnexRecycleList,
-  ServeDownloadAnnex as onDownload,
-  ServArticleAnnexForeverDelete,
-  ServArticleAnnexRecover,
-  ServArticleRecycleList
-} from '@/api/article.ts'
+  fetchArticleAnnexForeverDelete,
+  fetchArticleAnnexRecover,
+  fetchArticleAnnexRecoverList,
+  fetchArticleForeverDelete,
+  fetchArticleRecover,
+  fetchArticleRecoverList
+} from '@/apis/api'
+import { fetchApi, sync } from '@/apis/request'
+import Loading from '@/components/basic/Loading.vue'
+import { getToken } from '@/utils/auth'
+import { CalendarThirty, Delete, ToBottom, Undo } from '@icon-park/vue-next'
 
 const emit = defineEmits(['close'])
 
@@ -67,51 +68,75 @@ const triggerType = (index: number) => {
 
 // 加载笔记列表
 const loadNoteList = async () => {
-  state.note.loading = true
-  const { code, data } = await ServArticleRecycleList()
-  state.note.loading = false
+  sync(
+    async () => {
+      state.note.loading = true
+      const data = await fetchArticleRecoverList({})
 
-  if (code != 200) return
-  state.note.items = data.items
+      // @ts-ignore
+      state.note.items = data.items
+    },
+    {
+      onComplete: () => {
+        state.note.loading = false
+      }
+    }
+  )
 }
 
 const loadAnnexList = async () => {
-  state.annex.loading = true
+  sync(
+    async () => {
+      state.annex.loading = true
+      const data = await fetchArticleAnnexRecoverList({})
 
-  const { code, data } = await ServArticleAnnexRecycleList()
-  state.annex.loading = false
-
-  if (code != 200) return
-  state.annex.items = data.items
+      // @ts-ignore
+      state.annex.items = data.items
+    },
+    {
+      onComplete: () => {
+        state.annex.loading = false
+      }
+    }
+  )
 }
 
 // 永久删除笔记
 const onDeleteArticle = async (index: number, article_id: number) => {
-  const { code } = await ServArticleForeverDelete({ article_id })
-
-  if (code != 200) return
+  const [err] = await fetchApi(fetchArticleForeverDelete, { article_id })
+  if (err) return
   state.note.items.splice(index, 1)
 }
 
 // 恢复已删除笔记
 const onRecoverArticle = async (index: number, article_id: number) => {
-  const { code } = await ServArticleRecoverDelete({ article_id })
-
-  if (code != 200) return
+  const [err] = await fetchApi(fetchArticleRecover, { article_id })
+  if (err) return
   state.note.items.splice(index, 1)
 }
 
 const onRecoverAnnex = async (index: number, annex_id: number) => {
-  const { code } = await ServArticleAnnexRecover({ annex_id })
-
-  if (code != 200) return
+  const [err] = await fetchApi(fetchArticleAnnexRecover, { annex_id })
+  if (err) return
   state.annex.items.splice(index, 1)
 }
 const onDeleteAnnex = async (index: number, annex_id: number) => {
-  const { code } = await ServArticleAnnexForeverDelete({ annex_id })
-
-  if (code != 200) return
+  const [err] = await fetchApi(fetchArticleAnnexForeverDelete, { annex_id })
+  if (err) return
   state.annex.items.splice(index, 1)
+}
+
+// 下载笔记附件服务接口
+const onDownload = (annex_id) => {
+  const api = import.meta.env.VITE_BASE_API
+  try {
+    const link = document.createElement('a')
+
+    link.href = `${api}/api/v1/article-annex/download?annex_id=${annex_id}&token=${getToken()}`
+    link.click()
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 onMounted(() => {

@@ -117,7 +117,7 @@ loadWatchClassMenu()
             <div class="content">
               {{ item.class_name }}
             </div>
-            <div class="more-icon" @click="onContextMenu($event, item)">
+            <div class="more-icon" @click.stop="onContextMenu($event, item)">
               <n-icon size="16" :component="More" />
             </div>
             <n-tag

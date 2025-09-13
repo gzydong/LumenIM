@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServUserPasswordUpdate } from '@/api/user'
+import { fetchUserPasswordUpdate } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { rsaEncrypt } from '@/utils/rsa'
 
 const model = defineModel({ default: false })
@@ -42,7 +43,8 @@ const rules = {
 const loading = ref(false)
 
 const onSubmit = async () => {
-  await ServUserPasswordUpdate(
+  await fetchApi(
+    fetchUserPasswordUpdate,
     {
       old_password: rsaEncrypt(state.old_password),
       new_password: rsaEncrypt(state.new_password)

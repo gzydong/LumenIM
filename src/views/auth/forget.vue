@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ServAuthForget } from '@/api/auth'
-import { ServCommonSendSmsCode } from '@/api/common'
-import { isMobile } from '@/utils/validate'
+import { fetchAuthForget, fetchCommonSendSms } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
+import { isMobile } from '@/utils/validate'
 
 // 初始化短信按钮锁
 const { startCountdown, Countdown } = useSmsLock('FORGET_PSW_SMS', 120)
@@ -45,7 +45,8 @@ const model = reactive({
 })
 
 const onForget = async () => {
-  const { code } = await ServAuthForget(
+  const [err] = await fetchApi(
+    fetchAuthForget,
     {
       mobile: model.username,
       password: rsaEncrypt(model.password),
@@ -54,7 +55,7 @@ const onForget = async () => {
     { loading, successText: '密码修改成功' }
   )
 
-  if (code != 200) return
+  if (err) return
 
   setTimeout(() => {
     router.push('/auth/login')
@@ -75,13 +76,17 @@ const onSendSms = async () => {
     return window['$message'].warning('请正确填写手机号')
   }
 
-  await ServCommonSendSmsCode(
+  const [err] = await fetchApi(
+    fetchCommonSendSms,
     {
       mobile: model.username,
       channel: 'forget_account'
     },
-    { loading, successText: '短信发送成功', onSuccess: startCountdown }
+    { loading, successText: '短信发送成功' }
   )
+
+  if (err) return
+  startCountdown()
 }
 </script>
 

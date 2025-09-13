@@ -142,7 +142,7 @@ export class Encoder {
     const low = view.getUint32(12, false)
     const msgid = BigInt(high) * BigInt(0x100000000) + BigInt(low)
 
-    let offset = 16
+    const offset = 16
     let payload = buf.slice(offset)
 
     // 先解密

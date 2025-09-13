@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { Search, AddOne } from '@icon-park/vue-next'
+import { fetchGroupOvertList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import GroupApply from '@/components/group/GroupApply.vue'
-import GroupCard from './inner/GroupCard.vue'
-import { ServGroupOvertList } from '@/api/group.ts'
 import { debounce } from '@/utils/common'
+import { AddOne, Search } from '@icon-park/vue-next'
+import GroupCard from './inner/GroupCard.vue'
 
 const model = reactive({
   isShow: false,
@@ -19,12 +20,12 @@ const search = reactive({
 const items = ref<any[]>([])
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupOvertList({
+  const [err, data] = await fetchApi(fetchGroupOvertList, {
     page: search.page,
     name: search.name
   })
 
-  if (code != 200) return
+  if (err) return
 
   const list = data.items || []
   if (search.page == 1) {

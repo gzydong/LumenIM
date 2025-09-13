@@ -1,15 +1,16 @@
-import { useNoteStore, useSettingsStore } from '@/store'
-import { type ToolbarNames, type Themes } from 'md-editor-v3'
 import {
-  ServArticleCollect,
-  ServArticleEdit,
-  ServArticleDelete,
-  ServArticleMoveClassify
-} from '@/api/article'
-import { ServUploadImage } from '@/api/upload'
-import { downloadBlobFile } from '@/utils/file'
+  fetchArticleAsterisk,
+  fetchArticleDelete,
+  fetchArticleEdit,
+  fetchArticleMove
+} from '@/apis/api'
+import { fetchUploadImage } from '@/apis/customize'
+import { fetchApi, sync } from '@/apis/request'
 import { useInject } from '@/hooks'
+import { useNoteStore, useSettingsStore } from '@/store'
 import { debounce } from '@/utils/common'
+import { downloadBlobFile } from '@/utils/file'
+import { type Themes, type ToolbarNames } from 'md-editor-v3'
 
 const toolbars: ToolbarNames[] = [
   'revoke',
@@ -72,26 +73,23 @@ export function useNoteEditor() {
     const form = new FormData()
     form.append('file', files[0])
 
-    const { code, data } = await ServUploadImage(form)
-    if (code != 200) return
-
-    callback([data.src])
+    sync(async () => {
+      const data = await fetchUploadImage(form)
+      callback(data.src)
+    })
   }
 
   // 收藏笔记
   const onCollection = async () => {
     const action = store.detail.is_asterisk == 1 ? 2 : 1
 
-    const { code } = await ServArticleCollect({
-      article_id: store.detail.article_id,
-      action: action
-    })
-
-    if (code != 200) return
+    const { article_id } = store.detail
+    const [err] = await fetchApi(fetchArticleAsterisk, { article_id, action })
+    if (err) return
 
     store.setCollectionStatus(action == 1)
 
-    store.updateNoteItem(store.detail.article_id, {
+    store.updateNoteItem(article_id, {
       is_asterisk: action
     })
   }
@@ -113,38 +111,29 @@ export function useNoteEditor() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        await ServArticleDelete(
-          {
-            article_id: store.detail.article_id
-          },
-          {
-            onSuccess: () => {
-              store.loadNoteList({}, false)
-              store.close()
-            }
-          }
-        )
+        const { article_id } = store.detail
+        const [err] = await fetchApi(fetchArticleDelete, { article_id })
+
+        if (err) return
+        store.loadNoteList({}, false)
+        store.close()
       }
     })
   }
 
   // 修改笔记分类
-  const onChangeClassify = (classify_id: number) => {
+  const onChangeClassify = async (classify_id: number) => {
     const { article_id } = store.detail
 
-    ServArticleMoveClassify(
-      { article_id, classify_id },
-      {
-        onSuccess: () => {
-          const find = store.class.find((i) => i.id == classify_id)
-          store.detail.classify_id = classify_id
-          store.detail.class_name = find?.class_name || ''
+    const [err] = await fetchApi(fetchArticleMove, { article_id, classify_id })
+    if (err) return
 
-          store.loadNoteList({}, false)
-          store.loadClass()
-        }
-      }
-    )
+    const find = store.class.find((i) => i.id == classify_id)
+    store.detail.classify_id = classify_id
+    store.detail.class_name = find?.class_name || ''
+
+    store.loadNoteList({}, false)
+    store.loadClass()
   }
 
   // 保存笔记
@@ -169,8 +158,8 @@ export function useNoteEditor() {
       md_content: editor.markdown
     }
 
-    const { code, data } = await ServArticleEdit(params, { loading: saveLoading })
-    if (code != 200) return
+    const [err, data] = await fetchApi(fetchArticleEdit, params, { loading: saveLoading })
+    if (err) return
 
     if (store.detail.article_id == 0) {
       store.loadClass()

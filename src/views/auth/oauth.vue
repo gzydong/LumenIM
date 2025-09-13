@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ServAuthOauthLogin } from '@/api/auth'
-import { setToken } from '@/utils/auth.ts'
-import { useInject } from '@/hooks'
 import ws from '@/connect'
+import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
+import { setToken } from '@/utils/auth.ts'
 import BindMobile from './BindMobile.vue'
 
-import { useRouter, useRoute } from 'vue-router'
+import { fetchAuthOauthLogin } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { useRoute, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const { message } = useInject()
@@ -22,8 +23,8 @@ async function toOauthLogin(params: {
   code: string
   state: string
 }) {
-  const { data } = await ServAuthOauthLogin(params)
-  if (!data) return
+  const [err, data] = await fetchApi(fetchAuthOauthLogin, params)
+  if (err) return
 
   if (data.is_authorize == 'N') {
     authStatus.value = 'binding'

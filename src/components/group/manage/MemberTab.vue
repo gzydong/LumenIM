@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Search, Plus } from '@icon-park/vue-next'
-import GroupLaunch from '../GroupLaunch.vue'
+import {
+  fetchGroupAssignAdmin,
+  fetchGroupHandover,
+  fetchGroupMemberList,
+  fetchGroupNoSpeak,
+  fetchGroupRemoveMember
+} from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
 import { StateDropdown } from '@/types/global'
-import { useInject } from '@/hooks'
-
-import {
-  ServGroupMemberList,
-  ServGroupMemberRemove,
-  ServGroupAssignAdmin,
-  ServGroupTransfer,
-  ServGroupMemberMute
-} from '@/api/group.ts'
+import { Plus, Search } from '@icon-park/vue-next'
+import GroupLaunch from '../GroupLaunch.vue'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -70,7 +70,8 @@ const dropdown = reactive<StateDropdown>({
 })
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupMemberList(
+  const [err, data] = await fetchApi(
+    fetchGroupMemberList,
     {
       group_id: props.groupId
     },
@@ -79,14 +80,14 @@ const onLoadData = async () => {
     }
   )
 
-  if (code != 200) return
+  if (err) return
 
   let list = data.items || []
-  list.forEach((item: Item) => {
-    item.is_delete = false
+  list.map((item: any) => {
+    return { ...item, is_delete: false }
   })
 
-  items.value = list
+  items.value = list as Item[]
 }
 
 const onDelete = (item: Item) => {
@@ -96,7 +97,8 @@ const onDelete = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await ServGroupMemberRemove(
+      await fetchApi(
+        fetchGroupRemoveMember,
         {
           group_id: props.groupId,
           user_ids: [item.user_id]
@@ -119,7 +121,8 @@ const onBatchDelete = () => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await ServGroupMemberRemove(
+      await fetchApi(
+        fetchGroupRemoveMember,
         {
           group_id: props.groupId,
           user_ids: filterCheck.value.map((item: Item) => item.user_id)
@@ -170,7 +173,8 @@ const onAssignAdmin = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await ServGroupAssignAdmin(
+      await fetchApi(
+        fetchGroupAssignAdmin,
         {
           action: item.leader === 3 ? 1 : 2,
           group_id: props.groupId,
@@ -192,7 +196,8 @@ const onTransfer = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await ServGroupTransfer(
+      await fetchApi(
+        fetchGroupHandover,
         {
           group_id: props.groupId,
           user_id: item.user_id
@@ -219,7 +224,8 @@ const onForbidden = (item: Item) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await ServGroupMemberMute(
+      await fetchApi(
+        fetchGroupNoSpeak,
         {
           action: item.is_mute === 1 ? 2 : 1,
           group_id: props.groupId,

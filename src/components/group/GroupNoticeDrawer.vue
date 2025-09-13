@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import 'md-editor-v3/lib/style.css'
-import { ServGroupDetail, ServGroupNoticeUpdate } from '@/api/group'
-import { MdPreview, MdEditor } from 'md-editor-v3'
-import { Editor, CheckCorrect } from '@icon-park/vue-next'
+import { fetchGroupDetail, fetchGroupNoticeEdit } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useSettingsStore } from '@/store'
-import { type Themes } from 'md-editor-v3'
+import { CheckCorrect, Editor } from '@icon-park/vue-next'
+import { MdEditor, MdPreview, type Themes } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 
 const isShow = defineModel({ default: false })
 
@@ -28,12 +28,12 @@ const detail = ref({
 })
 
 async function loadDetail() {
-  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
 
-  if (code != 200) return
+  if (err) return
 
   detail.value = {
-    updated_at: data.notice?.updated_at || '',
+    updated_at: data?.notice?.updated_at || '',
     content: data.notice?.content || '',
     modify_user_name: data.notice?.modify_user_name || ''
   }
@@ -56,12 +56,12 @@ const onSave = async () => {
     return (isEditorMode.value = false)
   }
 
-  const { code } = await ServGroupNoticeUpdate({
+  const [err] = await fetchApi(fetchGroupNoticeEdit, {
     group_id: props.groupId,
     content: editorContent.value
   })
 
-  if (code != 200) return
+  if (err) return
 
   isEditorMode.value = false
   detail.value.content = editorContent.value

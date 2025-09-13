@@ -1,19 +1,20 @@
+import { fetchTalkSessionDelete, fetchTalkSessionDisturb, fetchTalkSessionTop } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { useContact, useGroup, useInject } from '@/hooks'
+import { IDropdownOption, useCommonContextMenu } from '@/hooks/useCommonContextMenu.ts'
+import { useDialogueStore, useTalkStore } from '@/store'
 import { ISession } from '@/types/chat'
 import { renderIcon } from '@/utils/common'
 import {
-  ArrowUp,
   ArrowDown,
-  Delete,
+  ArrowUp,
   Clear,
-  Remind,
   CloseRemind,
+  Delete,
   EditTwo,
-  IdCard
+  IdCard,
+  Remind
 } from '@icon-park/vue-next'
-import { ServTalkTopping, ServTalkDelete, ServTalkDisturb } from '@/api/chat'
-import { useDialogueStore, useTalkStore } from '@/store'
-import { useCommonContextMenu, IDropdownOption } from '@/hooks/useCommonContextMenu.ts'
-import { useInject, useContact, useGroup } from '@/hooks'
 
 export function useSessionMenu() {
   const dialogueStore = useDialogueStore()
@@ -97,25 +98,25 @@ export function useSessionMenu() {
 
   // 移除会话
   const onRemoveTalk = async (item: ISession) => {
-    const { code } = await ServTalkDelete({
+    const [err] = await fetchApi(fetchTalkSessionDelete, {
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id
     })
 
-    if (code == 200) {
+    if (!err) {
       onDeleteTalk(item.index_name)
     }
   }
 
   // 设置消息免打扰
   const onSetDisturb = async (item: ISession) => {
-    const { code } = await ServTalkDisturb({
+    const [err] = await fetchApi(fetchTalkSessionDisturb, {
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
       action: item.is_disturb === 2 ? 1 : 2
     })
 
-    if (code == 200) {
+    if (!err) {
       talkStore.updateItem({
         index_name: item.index_name,
         is_disturb: item.is_disturb === 1 ? 2 : 1
@@ -129,13 +130,13 @@ export function useSessionMenu() {
       return message.warning('置顶最多不能超过18个会话')
     }
 
-    const { code } = await ServTalkTopping({
+    const [err] = await fetchApi(fetchTalkSessionTop, {
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
       action: item.is_top === 2 ? 1 : 2
     })
 
-    if (code == 200) {
+    if (!err) {
       talkStore.updateItem({
         index_name: item.index_name,
         is_top: item.is_top === 1 ? 2 : 1

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ServUserMobileUpdate } from '@/api/user'
-import { isMobile } from '@/utils/validate'
-import { ServCommonSendSmsCode } from '@/api/common'
+import { fetchCommonSendSms, fetchUserMobileUpdate } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject, useSmsLock } from '@/hooks'
 import { rsaEncrypt } from '@/utils/rsa'
+import { isMobile } from '@/utils/validate'
 
 const emit = defineEmits(['success'])
 
@@ -52,11 +52,11 @@ const onSendSms = async () => {
     channel: 'change_account'
   }
 
-  const { code, data } = await ServCommonSendSmsCode(params)
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchCommonSendSms, params)
+  if (err) return
 
   startCountdown()
-  if (data.is_debug) {
+  if (data.sms_code) {
     state.sms_code = data.sms_code
     message.success('已开启验证码自动填充')
   } else {
@@ -71,7 +71,7 @@ const onSubmit = async () => {
     password: rsaEncrypt(state.password)
   }
 
-  await ServUserMobileUpdate(params, {
+  await fetchApi(fetchUserMobileUpdate, params, {
     loading,
     successText: '手机号修改成功',
     onSuccess: () => {

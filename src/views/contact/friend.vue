@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import {
-  ServContactGroupList,
-  ServContactList,
-  ServContactListResponseItem
-} from '@/api/contact.ts'
+import { fetchContactGroupList, fetchContactList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { ContactListResponse_Item } from '@/apis/types'
 import Dropdown from '@/components/basic/Dropdown.vue'
 import UserSearchModal from '@/components/user/UserSearchModal.vue'
 import { ContactConst } from '@/constant/event-bus'
@@ -22,11 +20,11 @@ const loading = ref(false)
 const isShowGroupModal = ref(false)
 const keywords = ref('')
 const index = ref(0)
-const items = ref<ServContactListResponseItem[]>([])
+const items = ref<ContactListResponse_Item[]>([])
 const groups: any = ref([])
 
 const filter: any = computed(() => {
-  return items.value.filter((item: ServContactListResponseItem) => {
+  return items.value.filter((item: ContactListResponse_Item) => {
     let value = item.remark || item.nickname
 
     let findIndex = value.toLowerCase().indexOf(keywords.value.toLowerCase())
@@ -39,24 +37,24 @@ const filter: any = computed(() => {
 })
 
 const loadContactList = async () => {
-  const { code, data } = await ServContactList({}, { loading })
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchContactList, {}, { loading })
+  if (err) return
 
   items.value = data?.items || []
 }
 
 const loadContactGroupList = async () => {
-  const { code, data } = await ServContactGroupList()
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchContactGroupList, {})
+  if (err) return
 
   groups.value = data?.items || []
 }
 
-const onToTalk = (item: ServContactListResponseItem) => {
+const onToTalk = (item: ContactListResponse_Item) => {
   talkStore.toTalk(1, item.user_id, router)
 }
 
-const onInfo = (item: ServContactListResponseItem) => {
+const onInfo = (item: ContactListResponse_Item) => {
   toShowUserInfo(item.user_id)
 }
 
@@ -72,13 +70,11 @@ const onToolsMenu = (value: string) => {
 }
 
 const onChangeRemark = (data: { user_id: number; remark: string }) => {
-  let item: any = items.value.find(
-    (item: ServContactListResponseItem) => item.user_id == data.user_id
-  )
+  let item: any = items.value.find((item: ContactListResponse_Item) => item.user_id == data.user_id)
   item && (item.remark = data.remark)
 }
 
-const onClickDropdown = (key: string, item: ServContactListResponseItem) => {
+const onClickDropdown = (key: string, item: ContactListResponse_Item) => {
   const { user_id, nickname, remark } = item
 
   switch (key) {

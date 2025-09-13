@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServGroupCreate, ServGroupInvite, ServGroupInviteList } from '@/api/group'
+import { fetchGroupCreate, fetchGroupGetInviteFriends, fetchGroupInvite } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
 import { NAvatar, TransferRenderTargetLabel } from 'naive-ui'
 
@@ -63,8 +64,8 @@ const onLoad = async () => {
     group_id: props.groupId
   }
 
-  const { code, data } = await ServGroupInviteList(option, { loading })
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchGroupGetInviteFriends, option, { loading })
+  if (err) return
 
   const list = data?.items || []
 
@@ -88,12 +89,12 @@ const onCreateSubmit = async (user_ids: number[]) => {
     return message.error('请输入群名称')
   }
 
-  const { code, data } = await ServGroupCreate({
+  const [err, data] = await fetchApi(fetchGroupCreate, {
     user_ids,
     name: modelGroupName.value.trim()
   })
 
-  if (code != 200) return
+  if (err) return
 
   message.success('创建成功')
   emit('onSubmit', data.group_id, modelGroupName.value.trim())
@@ -101,12 +102,12 @@ const onCreateSubmit = async (user_ids: number[]) => {
 }
 
 const onInviteSubmit = async (user_ids: number[]) => {
-  const { code } = await ServGroupInvite({
+  const [err] = await fetchApi(fetchGroupInvite, {
     user_ids,
     group_id: props.groupId
   })
 
-  if (code != 200) return
+  if (err) return
 
   message.success('邀请成功')
   emit('onInvite', props.groupId)

@@ -1,19 +1,10 @@
 <script lang="ts" setup>
-import { Search, CheckSmall, Close } from '@icon-park/vue-next'
-import { ServGroupApplyList, ServGroupApplyDecline, ServGroupApplyAgree } from '@/api/group'
-import { throttle } from '@/utils/common'
+import { fetchGroupApplyAgree, fetchGroupApplyDecline, fetchGroupApplyList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { GroupApplyListResponse_Item } from '@/apis/types'
 import { useInject } from '@/hooks'
+import { CheckSmall, Close, Search } from '@icon-park/vue-next'
 import { NInput } from 'naive-ui'
-
-interface Item {
-  id: number
-  user_id: number
-  group_id: number
-  avatar: string
-  nickname: string
-  remark: string
-  created_at: string
-}
 
 const emit = defineEmits(['close'])
 
@@ -26,7 +17,7 @@ const props = defineProps({
 
 const keywords = ref('')
 const batchDelete = ref(false)
-const items = ref<Item[]>([])
+const items = ref<GroupApplyListResponse_Item[]>([])
 const { toShowUserInfo, dialog } = useInject()
 
 const filterSearch = computed(() => {
@@ -40,27 +31,28 @@ const filterSearch = computed(() => {
 })
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupApplyList({
+  const [err, data] = await fetchApi(fetchGroupApplyList, {
     group_id: props.groupId
   })
 
-  if (code == 200) {
+  if (!err) {
     items.value = data.items || []
   }
 }
 
-const onUserInfo = (item: Item) => {
+const onUserInfo = (item: GroupApplyListResponse_Item) => {
   toShowUserInfo(item.user_id)
 }
 
-const onRowClick = (item: Item) => {
+const onRowClick = (item: GroupApplyListResponse_Item) => {
   if (batchDelete.value == true) {
     console.log(item)
   }
 }
 
-const onAgree = throttle(async (item: Item) => {
-  await ServGroupApplyAgree(
+const onAgree = async (item: GroupApplyListResponse_Item) => {
+  await fetchApi(
+    fetchGroupApplyAgree,
     {
       apply_id: item.id
     },
@@ -69,9 +61,9 @@ const onAgree = throttle(async (item: Item) => {
       onSuccess: onLoadData
     }
   )
-}, 1000)
+}
 
-const onDelete = (item: Item) => {
+const onDelete = (item: GroupApplyListResponse_Item) => {
   let remark = ''
   const modal = dialog.create({
     title: '拒绝入群申请',
@@ -91,7 +83,8 @@ const onDelete = (item: Item) => {
 
       modal.loading = true
 
-      await ServGroupApplyDecline(
+      await fetchApi(
+        fetchGroupApplyDecline,
         {
           apply_id: item.id,
           remark: remark

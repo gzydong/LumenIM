@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ServUserEmailUpdate } from '@/api/user.ts'
-import { ServCommonSendEmailCode } from '@/api/common'
-import { rsaEncrypt } from '@/utils/rsa'
+import { fetchUserEmailUpdate } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject, useSmsLock } from '@/hooks'
+import { rsaEncrypt } from '@/utils/rsa'
 
 const model = defineModel({ default: false })
 const emit = defineEmits(['success'])
@@ -43,16 +43,9 @@ const onSendEmail = async () => {
   if (!state.email) {
     return message.warning('请填写新邮箱')
   }
+  startCountdown()
 
-  await ServCommonSendEmailCode(
-    {
-      email: state.email
-    },
-    {
-      successText: '邮件发送成功',
-      onSuccess: startCountdown
-    }
-  )
+  return message.warning('待开发')
 }
 
 const onSubmit = async () => {
@@ -66,7 +59,7 @@ const onSubmit = async () => {
     password: rsaEncrypt(state.password)
   }
 
-  await ServUserEmailUpdate(params, {
+  await fetchApi(fetchUserEmailUpdate, params, {
     loading,
     successText: '邮箱修改成功',
     onSuccess: () => {

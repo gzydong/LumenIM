@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { VueDraggable } from 'vue-draggable-plus'
-import { Drag, Delete } from '@icon-park/vue-next'
-import { ServContactGroupUpdate, ServContactGroupList } from '@/api/contact'
+import { fetchContactGroupList, fetchContactGroupSave } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
+import { Delete, Drag } from '@icon-park/vue-next'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const emit = defineEmits(['close', 'relaod'])
 
@@ -24,9 +25,8 @@ const onMaskClick = () => {
 }
 
 const onLoadData = async () => {
-  let { code, data } = await ServContactGroupList({}, { loading })
-
-  if (code != 200) return
+  let [err, data] = await fetchApi(fetchContactGroupList, {}, { loading })
+  if (err) return
 
   let items = data?.items || []
   for (const item of items) {
@@ -46,7 +46,8 @@ const onLoadData = async () => {
 }
 
 const onSubmit = async () => {
-  const { code } = await ServContactGroupUpdate(
+  const [err] = await fetchApi(
+    fetchContactGroupSave,
     {
       items: options.value
     },
@@ -54,11 +55,10 @@ const onSubmit = async () => {
       successText: '已保存'
     }
   )
+  if (err) return
 
-  if (code == 200) {
-    emit('relaod')
-    emit('close')
-  }
+  emit('relaod')
+  emit('close')
 }
 
 const addOption = () => {

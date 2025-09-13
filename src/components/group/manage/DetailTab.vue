@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { fetchGroupDetail, fetchGroupSetting } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
-import { ServGroupDetail, ServeGroupUpdate } from '@/api/group.ts'
 
 const emit = defineEmits(['close'])
 
@@ -27,8 +28,8 @@ const onUploadAvatar = (avatar: string) => {
 }
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupDetail({ group_id: props.groupId })
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
+  if (err) return
 
   modelDetail.name = data.group_name
   modelDetail.avatar = data.avatar
@@ -40,7 +41,8 @@ async function onSubmitBaseInfo() {
     return window['$message'].info('群名称不能为空')
   }
 
-  await ServeGroupUpdate(
+  await fetchApi(
+    fetchGroupSetting,
     {
       group_id: props.groupId,
       group_name: modelDetail.name,

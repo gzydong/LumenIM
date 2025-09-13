@@ -1,7 +1,8 @@
-import { useInject } from './useInject.ts'
-import { ServContactDelete, ServContactEditRemark } from '@/api/contact.ts'
+import { fetchContactDelete, fetchContactEditRemark } from '@/apis/api.ts'
+import { fetchApi } from '@/apis/request.ts'
 import { NInput } from 'naive-ui'
 import { h } from 'vue'
+import { useInject } from './useInject.ts'
 
 interface IContactParams {
   user_id: number
@@ -30,15 +31,12 @@ export function useContact() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        await ServContactDelete(
-          { user_id: item.user_id },
-          {
-            successText: '删除联系人成功',
-            onSuccess: () => {
-              if (fn) fn()
-            }
-          }
-        )
+        const options = { successText: '删除联系人成功' }
+
+        const [err] = await fetchApi(fetchContactDelete, { user_id: item.user_id }, options)
+        if (err) return false
+
+        if (fn) fn()
       }
     })
   }
@@ -46,25 +44,27 @@ export function useContact() {
   const onChangeContactRemark = (item: IContactParams, fn?: (data: any) => void) => {
     let remark = ''
     const onPositiveClick = async () => {
-      const { code } = await ServContactEditRemark(
+      const [err] = await fetchApi(
+        fetchContactEditRemark,
         {
           user_id: item.user_id,
           remark: remark
         },
         {
-          successText: '备注修改成功',
-          onSuccess: () => {
-            if (fn) {
-              fn({
-                user_id: item.user_id,
-                remark: remark
-              })
-            }
-          }
+          successText: '备注修改成功'
         }
       )
 
-      return code == 200
+      if (err) return false
+
+      if (fn) {
+        fn({
+          user_id: item.user_id,
+          remark: remark
+        })
+      }
+
+      return true
     }
 
     dialog.create({

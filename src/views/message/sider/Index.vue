@@ -1,20 +1,20 @@
 <script setup lang="ts">
+import { fetchTalkSessionClearUnreadNum } from '@/apis/api.ts'
+import GroupLaunch from '@/components/group/GroupLaunch.vue'
+import UserSearchModal from '@/components/user/UserSearchModal.vue'
+import { SessionConst } from '@/constant/event-bus'
+import { useEventBus } from '@/hooks'
 import { useDialogueStore, useTalkStore } from '@/store'
+import { ISession } from '@/types/chat'
+import { bus } from '@/utils'
+import { formatTalkItem, getCacheIndexName } from '@/utils/talk'
 import type { VirtualListInst } from 'naive-ui'
-import TalkItem from './TalkItem.vue'
+import SearchHeader from './SearchHeader.vue'
 import Skeleton from './Skeleton.vue'
 import TabsHeader from './TabsHeader.vue'
+import TalkItem from './TalkItem.vue'
 import TopHeader from './TopHeader.vue'
-import SearchHeader from './SearchHeader.vue'
-import { ServTalkClearUnread } from '@/api/chat.ts'
-import GroupLaunch from '@/components/group/GroupLaunch.vue'
-import { getCacheIndexName, formatTalkItem } from '@/utils/talk'
-import { ISession } from '@/types/chat'
-import { useEventBus } from '@/hooks'
-import { bus } from '@/utils'
-import { SessionConst } from '@/constant/event-bus'
 import { useSessionMenu } from './useSessionMenu.ts'
-import UserSearchModal from '@/components/user/UserSearchModal.vue'
 
 const { ContextMenuElement, onContextMenu, onToTopTalk } = useSessionMenu()
 
@@ -63,7 +63,7 @@ const onTabTalk = (item: ISession, follow = false) => {
 
   if (item.unread_num > 0) {
     talkStore.clearUnreadNum(item.index_name)
-    ServTalkClearUnread(data)
+    fetchTalkSessionClearUnreadNum(data)
   }
 
   if (follow) scrollToItem(item)

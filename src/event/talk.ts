@@ -1,12 +1,13 @@
-import Base from './base'
-import { nextTick } from 'vue'
-import { datetime } from '@/utils/datetime'
+import { fetchTalkSessionClearUnreadNum, fetchTalkSessionCreate } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import * as message from '@/constant/chat'
+import { useAsyncMessageStore, useDialogueStore, useSettingsStore, useTalkStore } from '@/store'
 import type { ISession } from '@/types/chat'
-import { formatTalkItem, playMusic } from '@/utils/talk'
+import { datetime } from '@/utils/datetime'
 import { isElectronMode } from '@/utils/electron'
-import { ServTalkClearUnread, ServTalkCreate } from '@/api/chat'
-import { useTalkStore, useDialogueStore, useSettingsStore, useAsyncMessageStore } from '@/store'
+import { formatTalkItem, playMusic } from '@/utils/talk'
+import { nextTick } from 'vue'
+import Base from './base'
 
 /**
  * 好友状态事件
@@ -152,12 +153,12 @@ class Talk extends Base {
    * 加载对接节点
    */
   async addTalkItem() {
-    const { code, data } = await ServTalkCreate({
+    const [err, data] = await fetchApi(fetchTalkSessionCreate, {
       talk_mode: this.talk_mode,
       to_from_id: this.to_from_id
     })
 
-    if (code !== 200) return
+    if (err) return
 
     useTalkStore().addItem({ ...formatTalkItem(data), unread_num: 1 } as ISession)
   }
@@ -188,7 +189,7 @@ class Talk extends Base {
 
     if (this.getAccountId() !== this.from_id) {
       // 这里需要做节流操作
-      ServTalkClearUnread({
+      fetchTalkSessionClearUnreadNum({
         talk_mode: this.talk_mode,
         to_from_id: this.to_from_id
       })

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServContactSearch } from '@/api/contact.ts'
+import { fetchContactSearch } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
 
 const { toShowUserInfo } = useInject()
@@ -21,14 +22,15 @@ const onShowError = (value: boolean) => {
 const onSubmit = async () => {
   if (!keyword.value.length) return
 
-  const { code, data } = await ServContactSearch(
+  const [err, data] = await fetchApi(
+    fetchContactSearch,
     { mobile: keyword.value },
     {
       error: false
     }
   )
 
-  if (code !== 200 || !data) {
+  if (err) {
     return onShowError(true)
   }
 

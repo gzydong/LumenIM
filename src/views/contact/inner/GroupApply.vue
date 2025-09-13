@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ServGroupApplyAgree, ServGroupApplyAll, ServGroupApplyDecline } from '@/api/group'
+import { fetchGroupApplyAgree, fetchGroupApplyAll, fetchGroupApplyDecline } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import ButtonDropdown from '@/components/basic/ButtonDropdown.vue'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
-import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
 
 interface Item {
@@ -23,9 +23,9 @@ const items = ref<Item[]>([])
 const loading = ref(true)
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupApplyAll({}, { loading })
+  const [err, data] = await fetchApi(fetchGroupApplyAll, {})
 
-  if (code != 200) return
+  if (err) return
 
   items.value = data.items || []
 }
@@ -34,10 +34,11 @@ const onInfo = (item: Item) => {
   toShowUserInfo(item.user_id)
 }
 
-const onAgree = throttle(async (item: Item) => {
+const onAgree = async (item: Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await ServGroupApplyAgree(
+  await fetchApi(
+    fetchGroupApplyAgree,
     {
       apply_id: item.id
     },
@@ -48,10 +49,11 @@ const onAgree = throttle(async (item: Item) => {
   )
 
   loading.destroy()
-}, 1000)
+}
 
 const onDelete = (item: Item) => {
-  ServGroupApplyDecline(
+  fetchApi(
+    fetchGroupApplyDecline,
     {
       apply_id: item.id,
       remark: '已拒绝'
@@ -71,12 +73,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section
-    style="min-height: 100%; overflow-y: auto"
-    :class="{
-      'flex-center': items.length == 0
-    }"
-  >
+  <section v-loading="loading" style="min-height: 100%; height: 100%; overflow-y: auto">
     <n-empty v-show="items.length == 0" description="暂无相关数据"> </n-empty>
 
     <div class="item border-bottom" v-for="item in items" :key="item.id">

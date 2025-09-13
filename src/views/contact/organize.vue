@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ServOrganizeDepartmentList, ServOrganizePersonnelAll } from '@/api/organize'
+import { fetchOrganizeDepartmentList, fetchOrganizePersonnelList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
 import { useTalkStore, useUserStore } from '@/store'
 import { Female, Male, Search } from '@icon-park/vue-next'
@@ -17,7 +18,7 @@ const items = ref<any[]>([])
 const filter = computed(() => {
   return items.value.filter((item) => {
     return (
-      item.nickname.match(keywords.value) != null &&
+      item.nickname?.match(keywords.value) != null &&
       (ancestors.value == '' || item.ancestors.indexOf(ancestors.value) > -1)
     )
   })
@@ -113,27 +114,26 @@ const tag = () => {
 }
 
 async function onLoadDepartment() {
-  const { code, data } = await ServOrganizeDepartmentList()
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchOrganizeDepartmentList, {})
+  if (err) return
 
-  let items = data.items || []
-  items = items.map((item: any) => {
-    return {
-      parent_id: item.parent_id,
-      dept_id: item.dept_id,
-      dept_name: item.dept_name,
-      ancestors: item.dept_id > 0 ? `${item.ancestors},${item.dept_id}` : '',
-      prefix: item.dept_id == -1 ? tag : null,
-      suffix: item.count
-    }
-  })
-
-  tree.value = toTree(items)
+  tree.value = toTree(
+    data.items.map((item: any) => {
+      return {
+        parent_id: item.parent_id,
+        dept_id: item.dept_id,
+        dept_name: item.dept_name,
+        ancestors: item.dept_id > 0 ? `${item.ancestors},${item.dept_id}` : '',
+        prefix: item.dept_id == -1 ? tag : null,
+        suffix: item.count
+      }
+    })
+  )
 }
 
 async function onLoadData() {
-  const { code, data } = await ServOrganizePersonnelAll()
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchOrganizePersonnelList, {})
+  if (err) return
 
   const users = data.items || []
 

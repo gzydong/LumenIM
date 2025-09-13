@@ -1,9 +1,7 @@
+import { fetchEmoticonDelete, fetchEmoticonList } from '@/apis/api'
+import { fetchEmoticonUpload2 } from '@/apis/customize'
+import { fetchApi, sync } from '@/apis/request'
 import { defineStore } from 'pinia'
-import {
-  ServCustomizeEmoticonList,
-  ServCustomizeEmoticonUpload,
-  ServCustomizeEmoticonDelete
-} from '@/api/emoticon'
 
 export const useEditorStore = defineStore('editor', {
   state: () => {
@@ -27,15 +25,11 @@ export const useEditorStore = defineStore('editor', {
   },
   actions: {
     // 加载用户表情包
-    async loadUserEmoticon() {
-      const {
-        code,
-        data: { items }
-      } = await ServCustomizeEmoticonList()
-
-      if (code != 200) return
-
-      this.emoticon.items[1].children = items || []
+    loadUserEmoticon() {
+      sync(async () => {
+        const { items } = await fetchEmoticonList({})
+        this.emoticon.items[1].children = items || []
+      })
     },
 
     // 自定义上传用户表情包
@@ -43,25 +37,20 @@ export const useEditorStore = defineStore('editor', {
       const params = new FormData()
       params.append('file', file)
 
-      const { code, data } = await ServCustomizeEmoticonUpload(params)
-
-      if (code != 200) return
-
-      this.emoticon.items[1]?.children?.unshift(data)
+      try {
+        const data = await fetchEmoticonUpload2(params)
+        this.emoticon.items[1]?.children?.unshift(data)
+      } catch (err) {
+        alert(err)
+      }
     },
 
     // 删除自定义上传用户表情包
     async removeUserEmoticon(resoure: { index: number; emoticon_id: number }) {
       const { index, emoticon_id } = resoure
 
-      const { code } = await ServCustomizeEmoticonDelete(
-        { emoticon_id },
-        {
-          successText: '删除成功'
-        }
-      )
-
-      if (code != 200) return
+      const [err] = await fetchApi(fetchEmoticonDelete, { emoticon_id })
+      if (err) return
 
       this.emoticon.items[1]?.children.splice(index, 1)
     }

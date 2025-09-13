@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { ArticleListResponse_Item } from '@/apis/types.js'
 import Loading from '@/components/basic/Loading.vue'
-import { NoteItem, useNoteStore } from '@/store'
+import { useNoteStore } from '@/store'
 import { debounce } from '@/utils/common'
 import { Search, SortAmountDown } from '@icon-park/vue-next'
 import NoteListItem from './NoteListItem.vue'
@@ -19,7 +20,7 @@ const keyword = computed({
   }
 })
 
-const onCatDetail = (item: NoteItem) => {
+const onCatDetail = (item: ArticleListResponse_Item) => {
   store.loadDetail(item.article_id)
 }
 

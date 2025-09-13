@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServContactOnlineStatus } from '@/api/contact.ts'
+import { fetchContactOnlineStatus } from '@/apis/api.ts'
+import { fetchApi } from '@/apis/request.ts'
 import UploadsModal from '@/components/basic/UploadsModal.vue'
 import { ChatPlus } from '@/components/chat'
 import ChatLayout from '@/components/chat/ChatLayout.vue'
@@ -133,11 +134,11 @@ async function loopGetOnlineStatus() {
     return
   }
 
-  const { code, data } = await ServContactOnlineStatus({
+  const [err, data] = await fetchApi(fetchContactOnlineStatus, {
     user_id: talkParams.toFromId
   })
 
-  if (code === 200 && data) {
+  if (!err) {
     talkParams.online = data.online_status == 'Y'
   }
 }

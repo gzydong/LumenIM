@@ -1,35 +1,25 @@
 <script lang="ts" setup>
 import {
-  ServContactApplyAccept,
-  ServContactApplyDecline,
-  ServContactApplyRecords
-} from '@/api/contact'
+  fetchContactApplyAccept,
+  fetchContactApplyDecline,
+  fetchContactApplyList
+} from '@/apis/api'
+import { fetchApi } from '@/apis/request'
+import { ContactApplyListResponse_Item } from '@/apis/types'
 import ButtonDropdown from '@/components/basic/ButtonDropdown.vue'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
-import { throttle } from '@/utils/common'
 import { formatTime } from '@/utils/datetime'
-
-type Item = {
-  id: number
-  user_id: number
-  friend_id: number
-  remark: string
-  nickname: string
-  avatar: string
-  created_at: string
-}
 
 const userStore = useUserStore()
 const { toShowUserInfo, message } = useInject()
-const items = ref<Item[]>([])
+const items = ref<ContactApplyListResponse_Item[]>([])
 const loading = ref(true)
 const isContactApply = computed(() => userStore.isContactApply)
 
 const onLoadData = async (isClearTip = false) => {
-  const { code, data } = await ServContactApplyRecords({}, { loading })
-
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchContactApplyList, {}, { loading })
+  if (err) return
 
   items.value = data?.items || []
 
@@ -38,43 +28,43 @@ const onLoadData = async (isClearTip = false) => {
   }
 }
 
-const onInfo = (item: Item) => {
+const onInfo = (item: ContactApplyListResponse_Item) => {
   toShowUserInfo(item.user_id)
 }
 
-const onAccept = throttle(async (item: Item) => {
+const onAccept = async (item: ContactApplyListResponse_Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await ServContactApplyAccept(
+  const [err] = await fetchApi(
+    fetchContactApplyAccept,
     {
       apply_id: item.id,
-      remark: item.nickname
+      remark: '拒绝'
     },
-    {
-      successText: '已同意',
-      onSuccess: () => onLoadData()
-    }
+    { successText: '已同意' }
   )
+  if (err) return
 
+  onLoadData()
   loading.destroy()
-}, 1000)
+}
 
-const onDecline = throttle(async (item: Item) => {
+const onDecline = async (item: ContactApplyListResponse_Item) => {
   let loading = message.loading('请稍等，正在处理')
 
-  await ServContactApplyDecline(
+  const [err] = await fetchApi(
+    fetchContactApplyDecline,
     {
       apply_id: item.id,
-      remark: item.nickname
+      remark: '拒绝'
     },
-    {
-      successText: '已拒绝',
-      onSuccess: () => onLoadData()
-    }
+    { successText: '已拒绝' }
   )
+  if (err) return
 
+  onLoadData()
   loading.destroy()
-}, 1000)
+}
 
 watch(isContactApply, () => {
   onLoadData(false)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ServGroupVoteSubmit, ServGroupVoteDetail } from '@/api/group'
+import { fetchGroupVoteDetail, fetchGroupVoteSubmit } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { IVoteDetail } from '@/types/chat'
 
 const props = defineProps<{
@@ -32,20 +33,23 @@ const onCheckboxChange = (checked: boolean, option: any) => {
   option.is_checked = checked
 }
 
-const onLoadDetail = () => {
-  ServGroupVoteDetail({ vote_id: props.vote_id }).then(({ data }) => {
-    detail.value = data
+const onLoadDetail = async () => {
+  const [err, data] = await fetchApi(fetchGroupVoteDetail, { vote_id: props.vote_id })
 
-    let items: string[] = []
-    for (const v of data.answered_users) {
-      for (const option of v.options) {
-        items.push(option)
-      }
+  if (err) return
+
+  // @ts-ignore
+  detail.value = data
+
+  let items: string[] = []
+  for (const v of data.answered_users) {
+    for (const option of v.options) {
+      items.push(option)
     }
+  }
 
-    detail.value.answer_options.forEach((option: any) => {
-      option.progress = (items.filter((item) => item == option.key).length / items.length) * 100
-    })
+  detail.value.answer_options.forEach((option: any) => {
+    option.progress = (items.filter((item) => item == option.key).length / items.length) * 100
   })
 }
 
@@ -59,7 +63,7 @@ const onSubmit = async () => {
     .filter((option) => option.is_checked)
     .map((option) => option.key)
 
-  await ServGroupVoteSubmit({
+  await fetchApi(fetchGroupVoteSubmit, {
     vote_id: props.vote_id,
     options: items
   })

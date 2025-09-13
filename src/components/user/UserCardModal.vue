@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import {
-  ServContactApplyCreate,
-  ServContactDetail,
-  ServContactEditRemark,
-  ServContactGroupList,
-  ServContactMoveGroup
-} from '@/api/contact.ts'
+  fetchContactApplyCreate,
+  fetchContactChangeGroup,
+  fetchContactDetail,
+  fetchContactEditRemark,
+  fetchContactGroupList
+} from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { ContactConst } from '@/constant/event-bus.ts'
 import { useInject } from '@/hooks'
 import { useTalkStore } from '@/store'
@@ -65,9 +66,9 @@ const groupName = computed(() => {
 })
 
 const onLoadUser = async () => {
-  const { code, data } = await ServContactDetail({ user_id: props.userId }, { loading })
+  const [err, data] = await fetchApi(fetchContactDetail, { user_id: props.userId }, { loading })
 
-  if (code != 200 || !data) return
+  if (err) return
 
   Object.assign(userInfo, {
     user_id: data.user_id,
@@ -86,8 +87,8 @@ const onLoadUser = async () => {
 }
 
 const onLoadUserGroup = async () => {
-  const { code, data } = await ServContactGroupList()
-  if (code != 200 || !data) return
+  const [err, data] = await fetchApi(fetchContactGroupList, {})
+  if (err) return
 
   let items = data.items || []
 
@@ -107,18 +108,20 @@ const onJoinContact = async () => {
     return message.info('备注信息不能为空')
   }
 
-  await ServContactApplyCreate(
+  const options = { successText: '申请发送成功' }
+
+  const [err] = await fetchApi(
+    fetchContactApplyCreate,
     {
       user_id: props.userId,
       remark: applyRemark.value
     },
-    {
-      successText: '申请发送成功',
-      onSuccess: () => {
-        isOpenFrom.value = false
-      }
-    }
+    options
   )
+
+  if (err) return
+
+  isOpenFrom.value = false
 }
 
 const onChangeRemark = async () => {
@@ -135,31 +138,35 @@ const onChangeRemark = async () => {
     bus.emit(ContactConst.UpdateRemark, params)
   }
 
-  await ServContactEditRemark(
+  const [err] = await fetchApi(
+    fetchContactEditRemark,
     {
       user_id: props.userId,
       remark: friendRemark.value
     },
     {
-      successText: '备注修改成功',
-      onSuccess
+      successText: '备注修改成功'
     }
   )
+
+  if (err) return
+  onSuccess()
 }
 
 const handleSelectGroup = async (value: number) => {
-  await ServContactMoveGroup(
+  const [err] = await fetchApi(
+    fetchContactChangeGroup,
     {
       user_id: props.userId,
       group_id: value
     },
     {
-      successText: '分组修改成功',
-      onSuccess: () => {
-        userInfo.contact_group_id = value
-      }
+      successText: '分组修改成功'
     }
   )
+
+  if (err) return
+  userInfo.contact_group_id = value
 }
 
 const onClose = () => {

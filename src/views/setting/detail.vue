@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { fetchUserDetail, fetchUserDetailUpdate } from '@/apis/api'
 import { fetchApi, sync } from '@/apis/request'
-import { apiUserDetail, apiUserUpdate } from '@/apis/user'
 import AvatarCropper from '@/components/basic/AvatarCropper.vue'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
@@ -33,7 +33,7 @@ const onChangeDetail = async () => {
   }
 
   const [err] = await fetchApi(
-    apiUserUpdate,
+    fetchUserDetailUpdate,
     {
       nickname: detail.nickname.trim(),
       avatar: detail.avatar,
@@ -59,7 +59,7 @@ const onUploadAvatar = (avatar: string) => {
 }
 
 sync(async () => {
-  const data = await apiUserDetail({})
+  const data = await fetchUserDetail({})
   detail.nickname = data.nickname
   detail.mobile = data.mobile
   detail.email = data.email

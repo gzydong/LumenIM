@@ -57,7 +57,7 @@ export function createApi<R = any, T = any>(
         clearTimeout(timeoutId)
 
         const data = await res.json()
-        if (res.ok) return data.data
+        if (res.ok) return data?.data || data
 
         throw new ApiError(data?.code || 400, data?.message || '业务错误')
       })
@@ -83,6 +83,7 @@ export interface FetchApiOption {
   error?: boolean // 是否显示错误消息
   errorText?: string // 自定义错误信息
   successText?: string // 成功显示的文本信息
+  onSuccess?: () => void
 }
 
 export async function fetchApi<R, T>(
@@ -105,9 +106,61 @@ export async function fetchApi<R, T>(
   } catch (err) {
     if (options?.error) error((err as Error)?.message || '未知错误')
 
-    return [err, undefined] as [any, undefined]
+    return [err, undefined] as [any, T]
   } finally {
     if (options?.loading) options.loading.value = false
+  }
+}
+
+/**
+ * 使用 fetch 上传文件
+ * @param url 上传接口地址
+ * @param data FormData 数据
+ * @param options 请求选项
+ * @returns Promise
+ */
+export const upload = async (url: string, data: FormData, options?: RequestInit): Promise<any> => {
+  options = { method: 'POST', ...options }
+
+  try {
+    // 获取认证 token
+    const token = auth.getToken()
+
+    // 构建请求选项
+    const fetchOptions: RequestInit = {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...options?.headers
+      },
+      body: data
+    }
+
+    // 发起请求
+    const response = await fetch(import.meta.env.VITE_BASE_API + url, fetchOptions)
+
+    // 解析响应
+    const result = await response.json()
+
+    if (response.ok) {
+      return result?.data || result
+    }
+
+    throw new ApiError(result?.code || response.status || 400, result?.message || '上传失败')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      throw err
+    }
+
+    // 更详细的错误分类
+    if (err instanceof TypeError) {
+      throw new ApiError(-1, '网络连接失败')
+    } else if (err instanceof Error && err.name === 'AbortError') {
+      throw new ApiError(-2, '请求超时')
+    }
+
+    // @ts-ignore
+    throw new ApiError(-3, err?.message || '未知错误')
   }
 }
 
@@ -157,5 +210,7 @@ function error(message: string) {
   }
 }
 
-export interface EmptyRequest {}
+export interface EmptyRequest {
+  [key: string]: any
+}
 export interface EmptyResponse {}

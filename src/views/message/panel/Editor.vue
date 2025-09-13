@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import {
-  useTalkStore,
-  useDialogueStore,
-  useSettingsStore,
-  useUploadsStore,
-  useEditorStore,
-  useAsyncMessageStore
-} from '@/store'
-import ws from '@/connect'
-import { ServTalkMessageSend } from '@/api/chat.ts'
-import { ServGroupVoteCreate } from '@/api/group.ts'
-import { throttle } from '@/utils/common'
-import { getVideoImage } from '@/utils/file'
+import { fetchGroupVoteCreate } from '@/apis/api'
+import { fetchMessageSend, fetchUploadImage } from '@/apis/customize'
+import { fetchApi } from '@/apis/request'
 import Editor from '@/components/editor/Editor.vue'
 import HistoryRecord from '@/components/mechat/HistoryRecord.vue'
-import { ServUploadImage } from '@/api/upload.ts'
-import { bus } from '@/utils'
+import ws from '@/connect'
 import { useInject } from '@/hooks'
+import {
+  useAsyncMessageStore,
+  useDialogueStore,
+  useEditorStore,
+  useSettingsStore,
+  useTalkStore,
+  useUploadsStore
+} from '@/store'
+import { bus } from '@/utils'
+import { throttle } from '@/utils/common'
+import { getVideoImage } from '@/utils/file'
 
 const { message } = useInject()
 const talkStore = useTalkStore()
@@ -60,8 +60,8 @@ const onSendMessage = async (data: any = {}): Promise<boolean> => {
   }
 
   // 同步发送
-  const { code } = await ServTalkMessageSend(params)
-  return code == 200
+  const [err] = await fetchApi(fetchMessageSend, params)
+  return err === undefined
 }
 
 // 发送文本消息
@@ -92,24 +92,24 @@ const onSendVideoEvent = async (data: any) => {
   const coverForm = new FormData()
   coverForm.append('file', resp.file)
 
-  const cover = await ServUploadImage(coverForm)
-  if (cover.code != 200) return false
-
   const form = new FormData()
   form.append('file', data)
 
-  const video = await ServUploadImage(form)
-  if (video.code != 200) return false
-
-  return await onSendMessage({
-    type: 'video',
-    body: {
-      url: video.data.src,
-      cover: cover.data.src,
-      duration: parseInt(`${resp.duration}`),
-      size: data.size
-    }
-  })
+  try {
+    const cover = await fetchUploadImage(coverForm)
+    const video = await fetchUploadImage(form)
+    return await onSendMessage({
+      type: 'video',
+      body: {
+        url: video.data.src,
+        cover: cover.data.src,
+        duration: parseInt(`${resp.duration}`),
+        size: data.size
+      }
+    })
+  } catch (e) {
+    return false
+  }
 }
 
 // 发送代码消息
@@ -137,7 +137,7 @@ const onSendFileEvent = async (data: any) => {
 
 // 发送投票消息
 const onSendVoteEvent = async (data: any) => {
-  const { code } = await ServGroupVoteCreate({
+  const [err] = await fetchApi(fetchGroupVoteCreate, {
     group_id: props.toFromId,
     mode: data.mode,
     is_anonymous: data.is_anonymous,
@@ -145,7 +145,7 @@ const onSendVoteEvent = async (data: any) => {
     options: data.options
   })
 
-  return code == 200
+  return err === undefined
 }
 
 // 发送表情消息

@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { fileFormatSize } from '@/utils/string'
-import { getFileNameSuffix } from '@/utils/file'
-import {
-  ServArticleAnnexUpload,
-  ServeDownloadAnnex as onDownload,
-  ServArticleAnnexDelete
-} from '@/api/article.ts'
-import { useNoteStore, NoteFileItem } from '@/store'
-import { UploadOne } from '@icon-park/vue-next'
+import { fetchArticleAnnexDelete } from '@/apis/api'
+import { fetchArticleAnnexUpload } from '@/apis/customize'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
+import { NoteFileItem, useNoteStore } from '@/store'
+import { getToken } from '@/utils/auth'
+import { getFileNameSuffix } from '@/utils/file'
+import { fileFormatSize } from '@/utils/string'
+import { UploadOne } from '@icon-park/vue-next'
 
 const { message, dialog } = useInject()
 const store = useNoteStore()
@@ -33,8 +32,8 @@ const onUpload = async (e: any) => {
   from.append('annex', file)
   from.append('article_id', `${detail.value.article_id}`)
 
-  const { code, data } = await ServArticleAnnexUpload(from, { loading })
-  if (code == 200) {
+  const [err, data] = await fetchApi(fetchArticleAnnexUpload, from, { loading })
+  if (!err) {
     store.detail.annex_list.push(data)
   }
 }
@@ -49,13 +48,26 @@ const onDelete = (item: NoteFileItem) => {
       textColor: '#ffffff'
     },
     onPositiveClick: async () => {
-      let { code } = await ServArticleAnnexDelete({ annex_id: item.annex_id })
-      if (code != 200) return
+      const [err] = await fetchApi(fetchArticleAnnexDelete, { annex_id: item.annex_id })
+      if (err) return
 
       store.detail.annex_list = store.detail.annex_list.filter((i) => i.annex_id != item.annex_id)
       return true
     }
   })
+}
+
+// 下载笔记附件服务接口
+const onDownload = (annex_id) => {
+  const api = import.meta.env.VITE_BASE_API
+  try {
+    const link = document.createElement('a')
+
+    link.href = `${api}/api/v1/article-annex/download?annex_id=${annex_id}&token=${getToken()}`
+    link.click()
+  } catch (e) {
+    console.error(e)
+  }
 }
 </script>
 

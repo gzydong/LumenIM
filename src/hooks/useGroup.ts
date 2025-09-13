@@ -1,5 +1,6 @@
+import { fetchGroupDismiss, fetchGroupSecede } from '@/apis/api.ts'
+import { fetchApi } from '@/apis/request.ts'
 import { useInject } from './useInject.ts'
-import { ServGroupSecede, ServGroupDismiss } from '@/api/group'
 
 type GroupParmas = {
   group_id: number
@@ -20,13 +21,13 @@ export function useGroup() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        const { code } = await ServGroupDismiss({
+        const [err] = await fetchApi(fetchGroupDismiss, {
           group_id: params.group_id
         })
 
-        if (code == 200) fn()
+        if (!err) fn()
 
-        return code == 200
+        return err === undefined
       }
     })
   }
@@ -43,13 +44,13 @@ export function useGroup() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        const { code } = await ServGroupSecede({
+        const [err] = await fetchApi(fetchGroupSecede, {
           group_id: params.group_id
         })
 
-        if (code == 200) fn()
+        if (!err) fn()
 
-        return code == 200
+        return err === undefined
       }
     })
   }

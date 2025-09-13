@@ -1,11 +1,12 @@
-import { defineStore } from 'pinia'
-import { useDialogueStore } from './dialogue'
-import { useUserStore } from './user'
-import { ServTalkMessageSend } from '@/api/chat'
-import { v4 as uuidv4 } from 'uuid'
-import { nextTick } from 'vue'
+import { fetchMessageSend } from '@/apis/customize'
+import { fetchApi } from '@/apis/request'
 import * as chat from '@/constant/chat'
 import { datetime } from '@/utils/datetime'
+import { defineStore } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
+import { nextTick } from 'vue'
+import { useDialogueStore } from './dialogue'
+import { useUserStore } from './user'
 
 type IAsyncMessage = {
   msg_id?: string // 消息ID
@@ -46,8 +47,8 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
 
   async function sendMessage(message: IAsyncMessage, retryCount = 0) {
     try {
-      const { code } = await ServTalkMessageSend(message)
-      if (code !== 200) {
+      const [err] = await fetchApi(fetchMessageSend, message)
+      if (err) {
         if (retryCount < MAX_RETRIES) {
           await delay(delayStrategy(retryCount))
           await sendMessage(message, retryCount + 1)

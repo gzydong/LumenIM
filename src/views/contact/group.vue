@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ServGroupList } from '@/api/group.ts'
 import GroupLaunch from '@/components/group/GroupLaunch.vue'
 import GroupPanel from '@/components/group/GroupPanel.vue'
 import { useTalkStore, useUserStore } from '@/store'
 import { Plus, Search } from '@icon-park/vue-next'
 import GroupCard from './inner/GroupCard.vue'
 
+import { fetchGroupList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -13,7 +14,7 @@ const userStore = useUserStore()
 const talkStore = useTalkStore()
 const isShowCreateGroupBox = ref(false)
 const keywords = ref('')
-const items = ref([])
+const items = ref<any[]>([])
 
 const params = reactive({
   isShow: false,
@@ -43,9 +44,9 @@ const filter = computed((): any[] => {
 })
 
 const onLoadData = async () => {
-  const { code, data } = await ServGroupList()
+  const [err, data] = await fetchApi(fetchGroupList, {})
 
-  if (code == 200) {
+  if (!err) {
     items.value = data.items || []
   }
 }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServGroupNoticeUpdate } from '@/api/group'
+import { fetchGroupNoticeEdit } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 
 const emit = defineEmits(['close', 'success'])
 const props = defineProps({
@@ -59,7 +60,7 @@ const onSubmit = async () => {
     is_confirm: 1
   }
 
-  await ServGroupNoticeUpdate(params, {
+  await fetchApi(fetchGroupNoticeEdit, params, {
     loading,
     onSuccess: () => {
       emit('success')

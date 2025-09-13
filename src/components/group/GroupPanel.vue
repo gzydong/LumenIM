@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {
-  ServGroupDetail,
-  ServGroupMemberList,
-  ServGroupMemberUpdateRemark,
-  ServGroupSecede
-} from '@/api/group.ts'
+  fetchGroupDetail,
+  fetchGroupMemberList,
+  fetchGroupRemarkUpdate,
+  fetchGroupSecede
+} from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
 import { Close, Comment, More, Plus } from '@icon-park/vue-next'
@@ -70,12 +71,13 @@ const onToInfo = (item: any) => {
  * 加载群信息
  */
 async function loadDetail() {
-  const { code, data } = await ServGroupDetail(
+  const [err, data] = await fetchApi(
+    fetchGroupDetail,
     { group_id: props.groupId },
     { error: false, loading }
   )
 
-  if (code != 200) return
+  if (err) return
 
   remark.value = data.visit_card
   detail.avatar = data.avatar
@@ -89,9 +91,13 @@ async function loadDetail() {
  * 加载成员列表
  */
 async function loadMembers() {
-  const { code, data } = await ServGroupMemberList({ group_id: props.groupId }, { error: false })
+  const [err, data] = await fetchApi(
+    fetchGroupMemberList,
+    { group_id: props.groupId },
+    { error: false }
+  )
 
-  if (code != 200) return
+  if (err) return
 
   members.value = data.items || []
 }
@@ -101,7 +107,8 @@ const onClose = () => {
 }
 
 const onSignOut = async () => {
-  await ServGroupSecede(
+  await fetchApi(
+    fetchGroupSecede,
     { group_id: props.groupId },
     {
       successText: '已退出群聊',
@@ -111,7 +118,8 @@ const onSignOut = async () => {
 }
 
 const onChangeRemark = async () => {
-  const { code } = await ServGroupMemberUpdateRemark(
+  const [err] = await fetchApi(
+    fetchGroupRemarkUpdate,
     {
       group_id: props.groupId,
       remark: remark.value
@@ -121,7 +129,7 @@ const onChangeRemark = async () => {
     }
   )
 
-  if (code != 200) return
+  if (err) return
 
   // @ts-expect-error
   editCardPopover.value.setShow(false)

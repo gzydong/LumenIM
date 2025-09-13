@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { ServTalkForwardRecords } from '@/api/chat'
-import { ITalkRecord } from '@/types/chat'
+import { fetchMessageForwardRecords } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { ChatPlus } from '@/components/chat'
 import { formatChatMessage } from '@/components/mechat/render'
+import { ITalkRecord } from '@/types/chat'
+import { safeParseJson } from '@/utils/common'
+import { onMounted, ref } from 'vue'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -31,19 +33,22 @@ const onMaskClick = () => {
 const customMessageRender = (item: any) => formatChatMessage(0, item)
 
 const onLoadData = async () => {
-  let { code, data } = await ServTalkForwardRecords({
-    msg_ids: props.msgIds,
+  const [err, data] = await fetchApi(fetchMessageForwardRecords, {
+    msg_ids: props.msgIds as string[],
     talk_mode: props.talkMode
   })
 
-  if (code != 200) {
+  if (err) {
     return alert('获取会话记录失败')
   }
 
-  items.value = data.items || []
-  title.value = `会话记录(${items.value.length})`
+  items.value = data.items.map((item: any) => {
+    item.extra = safeParseJson(item.extra)
+    item.quote = safeParseJson(item.quote)
+    return item
+  })
 
-  console.log(data.items)
+  title.value = `会话记录(${items.value.length})`
 }
 
 onMounted(() => {

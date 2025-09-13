@@ -66,6 +66,7 @@
     "vite": "^6.3.5",
     "vite-plugin-compression": "^0.5.1",
     "vue-eslint-parser": "^10.0.0",
-    "vue-tsc": "^2.2.8"
+    "vue-tsc": "^2.2.8",
+    "yaml": "^2.8.1"
   }
 }

@@ -1,9 +1,10 @@
 <script setup>
+import { fetchUploadImage } from '@/apis/customize'
+import { sync } from '@/apis/request'
+import { Close, Redo, RefreshOne, Undo, UploadOne } from '@icon-park/vue-next'
 import { reactive, ref } from 'vue'
-import { Close, UploadOne, RefreshOne, Redo, Undo } from '@icon-park/vue-next'
-import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { ServUploadImage } from '@/api/upload'
+import 'vue-cropper/dist/index.css'
 
 const emit = defineEmits(['close', 'success'])
 const state = reactive({
@@ -84,9 +85,11 @@ const onSubmit = () => {
     const form = new FormData()
     form.append('file', file)
 
-    const { code, data } = await ServUploadImage(form)
-
-    code == 200 && emit('success', data.src)
+    sync(async () => {
+      const data = await fetchUploadImage(form)
+      emit('success', data.src)
+      console.log(data)
+    })
   })
 }
 </script>

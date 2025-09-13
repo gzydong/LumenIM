@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServGroupDismiss, ServGroupMute, ServGroupDetail, ServGroupOvert } from '@/api/group'
+import { fetchGroupDetail, fetchGroupDismiss, fetchGroupMute, fetchGroupOvert } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -18,35 +19,36 @@ const detail = reactive({
 })
 
 const onLoadData = async () => {
-  const { data, code } = await ServGroupDetail({ group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
 
-  if (code != 200) return
+  if (err) return
 
   detail.is_mute = data.is_mute === 1
   detail.is_overt = data.is_overt === 1
 }
 
 const onDismiss = async () => {
-  const { code } = await ServGroupDismiss(
+  const [err] = await fetchApi(
+    fetchGroupDismiss,
     { group_id: props.groupId },
     {
       successText: '群聊已解散'
     }
   )
 
-  code == 200 && emit('close')
+  !err && emit('close')
 }
 
 const onMute = async (value: boolean) => {
   detail.mute_loading = true
 
-  const { code } = await ServGroupMute({
+  const [err] = await fetchApi(fetchGroupMute, {
     group_id: props.groupId,
     action: value ? 1 : 2
   })
 
   detail.mute_loading = false
-  if (code != 200) return
+  if (err) return
 
   detail.is_mute = value
 }
@@ -54,13 +56,13 @@ const onMute = async (value: boolean) => {
 const onOvert = async (value: boolean) => {
   detail.overt_loading = true
 
-  const { code } = await ServGroupOvert({
+  const [err] = await fetchApi(fetchGroupOvert, {
     group_id: props.groupId,
     action: value ? 1 : 2
   })
 
   detail.overt_loading = false
-  if (code != 200) return
+  if (err) return
 
   detail.is_overt = value
 }

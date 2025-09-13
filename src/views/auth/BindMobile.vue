@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ServAuthOauthBind } from '@/api/auth'
-import { isMobile } from '@/utils/validate'
-import { ServCommonSendSmsCode } from '@/api/common'
+import { fetchAuthOauthBind, fetchCommonSendSms } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject, useSmsLock } from '@/hooks'
+import { isMobile } from '@/utils/validate'
 
 const emit = defineEmits(['success'])
 
@@ -45,11 +45,11 @@ const onSendSms = async () => {
     channel: 'oauth_bind'
   }
 
-  const { code, data } = await ServCommonSendSmsCode(params)
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchCommonSendSms, params)
+  if (err) return
 
   startCountdown()
-  if (data.is_debug) {
+  if (data.sms_code) {
     state.sms_code = data.sms_code
     message.success('已开启验证码自动填充')
   } else {
@@ -64,12 +64,12 @@ const onSubmit = async () => {
     bind_token
   }
 
-  const { code, data } = await ServAuthOauthBind(params, {
+  const [err, data] = await fetchApi(fetchAuthOauthBind, params, {
     loading,
     successText: '手机号绑定成功'
   })
 
-  if (code != 200) return
+  if (err) return
 
   emit('success', data?.authorize)
 }

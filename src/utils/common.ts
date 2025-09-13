@@ -1,6 +1,6 @@
-import { h } from 'vue'
+import { useDebounceFn, useThrottleFn } from '@vueuse/core'
 import { NIcon } from 'naive-ui'
-import { useThrottleFn, useDebounceFn } from '@vueuse/core'
+import { h } from 'vue'
 
 /**
  * 防抖函数
@@ -135,5 +135,14 @@ export function getExploreOs(userAgent: string = ''): string {
     return 'Mac OS'
   } else {
     return 'Windows'
+  }
+}
+
+export function safeParseJson(json: string) {
+  try {
+    return JSON.parse(json)
+  } catch (e) {
+    console.error(e, json)
+    return {}
   }
 }

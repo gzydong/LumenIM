@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServGroupApplyCreate } from '@/api/group'
+import { fetchGroupApplyCreate } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 
 const remark = ref('')
 const props = defineProps({
@@ -19,7 +20,8 @@ const onMaskClick = () => {
 }
 
 const onSubmit = async () => {
-  const { code } = await ServGroupApplyCreate(
+  const [err] = await fetchApi(
+    fetchGroupApplyCreate,
     {
       group_id: props.groupId,
       remark: remark.value
@@ -27,7 +29,7 @@ const onSubmit = async () => {
     { loading, successText: '入群申请提交成功...' }
   )
 
-  if (code == 200) onMaskClick()
+  if (!err) onMaskClick()
 }
 </script>
 

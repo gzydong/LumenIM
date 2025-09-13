@@ -1,9 +1,15 @@
 <script lang="ts" setup>
-import { ServAuthRegister } from '@/api/auth'
-import { ServCommonSendSmsCode } from '@/api/common'
-import { isMobile } from '@/utils/validate'
-import { useSmsLock } from '@/hooks'
+import { fetchAuthRegister, fetchCommonSendSms } from '@/apis/api'
+import { sync } from '@/apis/request'
+import ws from '@/connect'
+import { useInject, useSmsLock } from '@/hooks'
+import { useUserStore } from '@/store'
+import { setToken } from '@/utils/auth'
 import { rsaEncrypt } from '@/utils/rsa'
+import { isMobile } from '@/utils/validate'
+
+const { message } = useInject()
+const userStore = useUserStore()
 
 // 初始化短信按钮锁
 const { startCountdown, Countdown } = useSmsLock('REGISTER_SMS', 60)
@@ -51,22 +57,22 @@ const model = reactive({
 })
 
 const onRegister = async () => {
-  await ServAuthRegister(
-    {
+  const options = { loading }
+  sync(async () => {
+    const data = await fetchAuthRegister({
       nickname: model.nickname,
       mobile: model.username,
       password: rsaEncrypt(model.password),
       sms_code: model.sms_code,
       platform: 'web'
-    },
-    {
-      loading,
-      successText: '注册成功',
-      onSuccess: () => {
-        router.push('/auth/login')
-      }
-    }
-  )
+    })
+
+    setToken(data.access_token, data.expires_in)
+    ws.connect()
+    message.success('注册成功，即将进入系统')
+    userStore.loadSetting()
+    router.push('/')
+  }, options)
 }
 
 const onValidate = (e) => {
@@ -83,25 +89,21 @@ const onSendSms = async () => {
     return window['$message'].warning('请正确填写手机号')
   }
 
-  const { code, data } = await ServCommonSendSmsCode(
-    {
+  const options = { loading, successText: '短信发送成功' }
+
+  sync(async () => {
+    const data = await fetchCommonSendSms({
       mobile: model.username,
       channel: 'register'
-    },
-    {
-      loading,
-      successText: '短信发送成功'
+    })
+
+    startCountdown()
+
+    if (data?.sms_code) {
+      model.sms_code = data.sms_code
+      window['$message'].success('已开启验证码自动填充')
     }
-  )
-
-  if (code != 200) return
-
-  startCountdown()
-
-  if (data?.is_debug) {
-    model.sms_code = data.sms_code
-    window['$message'].success('已开启验证码自动填充')
-  }
+  }, options)
 }
 </script>
 

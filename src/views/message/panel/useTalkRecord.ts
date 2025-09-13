@@ -1,6 +1,7 @@
-import { ServTalkRecords } from '@/api/chat'
+import { fetchMessageRecords } from '@/apis/api'
 import { useDialogueStore } from '@/store'
 import { ITalkRecord } from '@/types/chat'
+import { safeParseJson } from '@/utils/common'
 
 export function useTalkRecord() {
   const dialogueStore = useDialogueStore()
@@ -22,28 +23,25 @@ export function useTalkRecord() {
 
     try {
       console.log('Loading talk records with request:', request)
-      const { code, data, message } = await ServTalkRecords(request)
+      const data = await fetchMessageRecords(request)
 
       if (request.talk_mode !== talk.talk_mode || request.to_from_id !== talk.to_from_id) {
         console.error('Talk mode or to_from_id changed')
         throw new Error('Talk mode or to_from_id changed')
       }
 
-      if (code !== 200) {
-        console.error('API error:', message)
-        throw new Error(message)
-      }
-
       if (request.cursor === 0) {
         dialogueStore.clearDialogueRecord()
       }
 
-      data.items.map((item: any) => {
-        item.extra = JSON.parse(item.extra || '{}')
-        item.quote = JSON.parse(item.quote || '{}')
+      const list = data.items.map((item: any) => {
+        item.extra = safeParseJson(item.extra || '{}')
+        item.quote = safeParseJson(item.quote || '{}')
+        item.status = 1
+        return item
       })
 
-      dialogueStore.unshiftDialogueRecord(data.items.reverse())
+      dialogueStore.unshiftDialogueRecord(list.reverse())
       cursor = data.cursor
 
       return data.items.length < request.limit ? false : true

@@ -1,11 +1,16 @@
-import { defineStore } from 'pinia'
-import { ServTalkMessageDelete, ServTalkMessageRevoke, ServTalkMessageSend } from '@/api/chat'
-import { ServGroupMemberList } from '@/api/group'
-import { ServContactDetail } from '@/api/contact'
+import {
+  fetchContactDetail,
+  fetchEmoticonCreate,
+  fetchGroupMemberList,
+  fetchMessageDelete,
+  fetchMessageRevoke
+} from '@/apis/api'
+import { fetchMessageSend } from '@/apis/customize'
+import { fetchApi } from '@/apis/request'
 import { TalkModeEnum } from '@/constant/chat'
-import { ServCustomizeEmoticonCreate } from '@/api/emoticon'
-import { useEditorStore } from './editor'
 import { ITalkRecord } from '@/types/chat'
+import { defineStore } from 'pinia'
+import { useEditorStore } from './editor'
 
 // 键盘消息事件定时器
 let keyboardTimeout: NodeJS.Timeout
@@ -85,9 +90,9 @@ export const useDialogueStore = defineStore('dialogue', {
       const { to_from_id: group_id } = this.target
 
       this.members = []
-      const { code, data } = await ServGroupMemberList({ group_id })
+      const [err, data] = await fetchApi(fetchGroupMemberList, { group_id })
 
-      if (code != 200 && this.target.to_from_id != group_id) return
+      if (!err || this.target.to_from_id != group_id) return
 
       this.members = data?.items.map((item: any) => ({
         id: item.user_id,
@@ -102,9 +107,8 @@ export const useDialogueStore = defineStore('dialogue', {
     // 更新提及列表
     async loadContactDetail() {
       const { to_from_id: user_id } = this.target
-      const { code, data } = await ServContactDetail({ user_id })
-
-      if (code != 200 && this.target.to_from_id != user_id) return
+      const [err, data] = await fetchApi(fetchContactDetail, { user_id })
+      if (err || this.target.to_from_id != user_id) return
 
       this.target.description = data?.motto || ''
     },
@@ -161,42 +165,46 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 删除聊天记录
     async deleteRecord(msgIds: string[]) {
-      const { code } = await ServTalkMessageDelete({
+      const [err] = await fetchApi(fetchMessageDelete, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
         msg_ids: msgIds
       })
 
-      code == 200 && this.batchDelDialogueRecord(msgIds)
+      if (!err) return
+
+      this.batchDelDialogueRecord(msgIds)
     },
 
     // 撤销聊天记录
     async revokeRecord(msg_id: string) {
-      const { code } = await ServTalkMessageRevoke({
+      const [err] = await fetchApi(fetchMessageRevoke, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
         msg_id
       })
 
-      code == 200 && this.updateDialogueRecord({ msg_id, is_revoked: 1 })
+      if (err) return
+
+      this.updateDialogueRecord({ msg_id, is_revoked: 1 })
     },
 
     // 转发聊天记录
     async forwardRecord(params = {}) {
       // @ts-expect-error
-      await ServTalkMessageSend({
+      await fetchMessageSend({
         ...params,
         type: 'forward'
       })
     },
 
     async collectImage(params = {}) {
-      await ServCustomizeEmoticonCreate(params, {
-        successText: '收藏成功',
-        onSuccess: () => {
-          useEditorStore().loadUserEmoticon()
-        }
+      const [err] = await fetchApi(fetchEmoticonCreate, params, {
+        successText: '收藏成功'
       })
+
+      if (err) return
+      useEditorStore().loadUserEmoticon()
     },
 
     /**

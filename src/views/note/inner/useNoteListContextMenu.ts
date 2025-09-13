@@ -1,7 +1,8 @@
-import { useCommonContextMenu, IDropdownOption } from '@/hooks/useCommonContextMenu.ts'
-import { useNoteStore } from '@/store'
-import { ServArticleDelete, ServArticleMoveClassify } from '@/api/article'
+import { fetchArticleDelete, fetchArticleMove } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
+import { IDropdownOption, useCommonContextMenu } from '@/hooks/useCommonContextMenu.ts'
+import { useNoteStore } from '@/store'
 export function useNoteListContextMenu() {
   const store = useNoteStore()
   const { dialog } = useInject()
@@ -9,16 +10,12 @@ export function useNoteListContextMenu() {
   const { menu, ContextMenuElement } = useCommonContextMenu(handle)
 
   // 修改笔记分类
-  const onChangeClassify = (article_id: number, classify_id: number) => {
-    ServArticleMoveClassify(
-      { article_id, classify_id },
-      {
-        onSuccess: () => {
-          store.loadNoteList({}, false)
-          store.loadClass()
-        }
-      }
-    )
+  const onChangeClassify = async (article_id: number, classify_id: number) => {
+    const [err] = await fetchApi(fetchArticleMove, { article_id, classify_id })
+    if (err) return
+
+    store.loadNoteList({}, false)
+    store.loadClass()
   }
 
   const onDelete = (article_id: number) => {
@@ -32,17 +29,11 @@ export function useNoteListContextMenu() {
         textColor: '#ffffff'
       },
       onPositiveClick: async () => {
-        await ServArticleDelete(
-          {
-            article_id
-          },
-          {
-            onSuccess: () => {
-              store.loadNoteList({}, false)
-              store.loadClass()
-            }
-          }
-        )
+        const [err] = await fetchApi(fetchArticleDelete, { article_id })
+        if (err) return
+
+        store.loadNoteList({}, false)
+        store.loadClass()
       }
     })
   }

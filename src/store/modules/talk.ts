@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { ServTalkList, ServTalkCreate } from '@/api/chat'
 
+import { fetchTalkSessionCreate, fetchTalkSessionList } from '@/apis/api.ts'
+import { fetchApi } from '@/apis/request.ts'
+import { ISession } from '@/types/chat'
 import { formatTalkItem, KEY_INDEX_NAME } from '@/utils/talk'
 import { useEditorDraftStore } from './editor-draft.ts'
-import { ISession } from '@/types/chat'
 
 export const useTalkStore = defineStore('talk', {
   state: () => ({
@@ -88,23 +89,24 @@ export const useTalkStore = defineStore('talk', {
     },
 
     async loadTalkList() {
-      const { code, data } = await ServTalkList()
-      if (code !== 200) return
+      const [err, data] = await fetchApi(fetchTalkSessionList, {})
+      if (err) return
 
       this.loadStatus = 3
 
       const editorDraftStore = useEditorDraftStore()
 
-      const items = data.items?.map((item: any) => {
-        const value = formatTalkItem(item)
+      const items =
+        data.items?.map((item: any) => {
+          const value = formatTalkItem(item)
 
-        const draft = editorDraftStore.items[value.index_name]
-        if (draft) {
-          value.draft_text = JSON.parse(draft).text || ''
-        }
+          const draft = editorDraftStore.items[value.index_name]
+          if (draft) {
+            value.draft_text = JSON.parse(draft).text || ''
+          }
 
-        return value
-      })
+          return value
+        }) || []
 
       // 排序
       this.items = items.sort((a: ISession, b: ISession) => {
@@ -126,8 +128,8 @@ export const useTalkStore = defineStore('talk', {
         return await router.push(route)
       }
 
-      const { code, data } = await ServTalkCreate({ talk_mode, to_from_id })
-      if (code !== 200) return
+      const [err, data] = await fetchApi(fetchTalkSessionCreate, { talk_mode, to_from_id })
+      if (err) return
 
       if (this.findIndex(indexName) === -1) {
         this.addItem(formatTalkItem(data) as ISession)

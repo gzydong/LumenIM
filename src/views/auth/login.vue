@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ServAuthLogin, ServAuthOauth } from '@/api/auth'
+import { fetchAuthLogin, fetchAuthOauth } from '@/apis/api'
+import { sync } from '@/apis/request'
+import ws from '@/connect'
+import { useInject } from '@/hooks'
+import { useUserStore } from '@/store'
 import { setToken } from '@/utils/auth.ts'
 import { rsaEncrypt } from '@/utils/rsa'
 import { playMusic } from '@/utils/talk'
-import { useInject } from '@/hooks'
 import { Github } from '@icon-park/vue-next'
-import ws from '@/connect'
-import { useUserStore } from '@/store'
 
 const { message } = useInject()
 const userStore = useUserStore()
@@ -34,26 +35,23 @@ const model = reactive({
 })
 
 const onLogin = async () => {
-  const { code, data } = await ServAuthLogin(
-    {
-      mobile: model.username,
-      password: rsaEncrypt(model.password),
-      platform: 'web'
+  sync(
+    async () => {
+      const data = await fetchAuthLogin({
+        mobile: model.username,
+        password: rsaEncrypt(model.password),
+        platform: 'web'
+      })
+
+      setToken(data.access_token, data.expires_in)
+      ws.connect()
+      message.success('登录成功，即将进入系统')
+      userStore.loadSetting()
+
+      router.push(route.params?.redirect || ('/' as any))
     },
-    {
-      loading
-    }
+    { loading }
   )
-
-  if (code !== 200 || !data) return
-
-  setToken(data.access_token, data.expires_in)
-  ws.connect()
-  message.success('登录成功，即将进入系统')
-  userStore.loadSetting()
-
-  const redirect: any = route.params?.redirect || '/'
-  router.push(redirect)
 }
 
 const onValidate = (e: Event) => {
@@ -77,16 +75,12 @@ const onClickAccount = (type: number) => {
   onLogin()
 }
 
-const toOauth = async (type: 'github' | 'gitee') => {
-  message.loading('正在跳转第三方授权登录页面，请稍等...', { duration: 5000 })
-
-  const { code, data } = await ServAuthOauth({
-    oauth_type: type
+const toOauth = async (oauth_type: 'github' | 'gitee') => {
+  sync(async () => {
+    message.loading('正在跳转第三方授权登录页面，请稍等...', { duration: 5000 })
+    const data = await fetchAuthOauth({ oauth_type })
+    location.href = data.uri
   })
-
-  if (code !== 200 || !data) return
-
-  location.href = data.uri
 }
 </script>
 

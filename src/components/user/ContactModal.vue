@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { fetchContactList, fetchGroupList } from '@/apis/api'
+import { fetchApi } from '@/apis/request'
 import { Search } from '@icon-park/vue-next'
-import { ServContactList } from '@/api/contact'
-import { ServGroupList } from '@/api/group'
 
 const emit = defineEmits(['close', 'on-submit'])
 
@@ -41,9 +41,8 @@ const onLoad = () => {
 }
 
 const onLoadContact = async () => {
-  const { code, data } = await ServContactList({}, { loading })
-
-  if (code != 200) return
+  const [err, data] = await fetchApi(fetchContactList, {}, { loading })
+  if (err) return
 
   items.value = (data?.items || []).map((item: any) => {
     return {
@@ -61,9 +60,9 @@ const onLoadContact = async () => {
 const onLoadGroup = async () => {
   if (loadGroupStatus.value) return
 
-  const { code, data } = await ServGroupList({}, { loading })
+  const [err, data] = await fetchApi(fetchGroupList, {}, { loading })
 
-  if (code != 200) return
+  if (err) return
 
   const list = data.items.map((item: any) => {
     return {

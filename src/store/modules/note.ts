@@ -1,34 +1,15 @@
-import {
-  ServArticleClassifyCreate,
-  ServArticleClassifyDelete,
-  ServArticleClassifyList,
-  ServArticleClassifySort,
-  ServArticleClassifyUpdate,
-  ServArticleDetail,
-  ServArticleList
-} from '@/api/article'
 import { defineStore } from 'pinia'
 
-interface Class {
-  id: number
-  class_name: string
-  count: number
-  is_default: number
-}
-
-export interface NoteItem {
-  article_id: number
-  title: string
-  abstract: string
-  classify_id: number
-  class_name: string
-  image: string
-  is_asterisk: number
-  status: number
-  tags_id: string
-  created_at: string
-  updated_at: string
-}
+import {
+  fetchArticleClassDelete,
+  fetchArticleClassEdit,
+  fetchArticleClassList,
+  fetchArticleClassSort,
+  fetchArticleDetail,
+  fetchArticleList
+} from '@/apis/api'
+import { fetchApi } from '@/apis/request.ts'
+import { ArticleClassListResponse_Item, ArticleListResponse_Item } from '@/apis/types'
 
 export interface NoteFileItem {
   annex_id: number
@@ -38,7 +19,7 @@ export interface NoteFileItem {
 }
 
 interface NoteStoreState {
-  class: Class[]
+  class: ArticleClassListResponse_Item[]
   notes: {
     loadStatus: number
     params: {
@@ -46,7 +27,7 @@ interface NoteStoreState {
       find_type: number
       classify_id: number
     }
-    items: NoteItem[]
+    items: ArticleListResponse_Item[]
   }
   view: {
     editorMode: string
@@ -136,8 +117,8 @@ export const useNoteStore = defineStore('note', {
     },
 
     async loadClass() {
-      const { code, data } = await ServArticleClassifyList()
-      if (code != 200) return
+      const [err, data] = await fetchApi(fetchArticleClassList, {})
+      if (err) return
 
       this.class = data.items
     },
@@ -152,10 +133,10 @@ export const useNoteStore = defineStore('note', {
       this.notes.loadStatus = 0
       this.notes.items = []
 
-      const { code, data } = await ServArticleList({ ...this.notes.params })
-      if (code != 200) return
+      const [err, { items }] = await fetchApi(fetchArticleList, { ...this.notes.params })
+      if (err) return
 
-      this.notes.items = data.items
+      this.notes.items = items
       this.notes.loadStatus = 1
     },
 
@@ -172,13 +153,17 @@ export const useNoteStore = defineStore('note', {
 
       this.setEditorMode('preview')
 
-      const { code, data } = await ServArticleDetail({ article_id: articleId })
+      const [err, data] = await fetchApi(fetchArticleDetail, { article_id: articleId })
 
-      if (code != 200 || data.article_id != this.view.loadId) return
+      if (err || data?.article_id != this.view.loadId) return
 
       this.view.loadStatus = 1
 
-      this.detail = data
+      this.detail = {
+        ...data,
+        status: 1,
+        class_name: ''
+      } as NoteStoreState['detail']
 
       const node = this.class.find((item) => item.id == data.classify_id)
       if (node) {
@@ -199,9 +184,8 @@ export const useNoteStore = defineStore('note', {
     // 编辑分类
     async editClass(classifyId: number, name: string) {
       if (classifyId === 0) {
-        // 创建
-        const { code, data } = await ServArticleClassifyCreate({ name })
-        if (code != 200) return
+        const [err, data] = await fetchApi(fetchArticleClassEdit, { name })
+        if (err) return
 
         return this.class.unshift({
           id: data.classify_id,
@@ -211,26 +195,23 @@ export const useNoteStore = defineStore('note', {
         })
       }
 
-      // 更新
-      const { code } = await ServArticleClassifyUpdate({ classify_id: classifyId, name })
-      if (code != 200) return
+      const [err] = await fetchApi(fetchArticleClassEdit, { classify_id: classifyId, name })
+      if (err) return
 
       const item = this.class.find((item) => item.id === classifyId)
       item && Object.assign(item, { class_name: name })
     },
 
     async deleteClass(classify_id: number) {
-      const { code } = await ServArticleClassifyDelete({ classify_id })
-      if (code != 200) return
+      const [err] = await fetchApi(fetchArticleClassDelete, { classify_id })
+      if (err) return
 
       const index = this.class.findIndex((item) => item.id === classify_id)
-
       index >= 0 && this.class.splice(index, 1)
     },
 
     async sort(classifyIds: number[]) {
-      const { code } = await ServArticleClassifySort({ classify_ids: classifyIds })
-      if (code != 200) return
+      await fetchApi(fetchArticleClassSort, { classify_ids: classifyIds })
     }
   }
 })
