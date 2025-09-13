@@ -1,6 +1,6 @@
 <script setup>
 import { useNoteStore } from '@/store'
-import { CalendarThirty, FolderFocus, Right } from '@icon-park/vue-next'
+import { CalendarThirty, DocAdd, FolderFocus, Right } from '@icon-park/vue-next'
 import NoteMenuClass from './NoteMenuClass.vue'
 import RecycleModal from './RecycleModal.vue'
 
@@ -22,13 +22,10 @@ onInit()
 <template>
   <section class="el-container is-vertical section h-full w-full">
     <header class="el-header menu-header">
-      <n-button
-        type="primary"
-        round
-        @click="() => store.addNewNote(getCalssId())"
-        block
-        text-color="#ffffff"
-      >
+      <n-button round ghost type="primary" @click="() => store.addNewNote(getCalssId())" block>
+        <template #icon>
+          <n-icon size="16" :component="DocAdd" />
+        </template>
         新建笔记
       </n-button>
     </header>

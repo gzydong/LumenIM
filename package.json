@@ -14,7 +14,6 @@
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
     "@vueuse/core": "^13.1.0",
-    "axios": "^1.8.4",
     "core-js": "^3.39.0",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
