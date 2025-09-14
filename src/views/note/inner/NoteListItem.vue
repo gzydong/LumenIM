@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { MoreOne, Star } from '@icon-park/vue-next'
 
+const emit = defineEmits(['click-more'])
+
 defineProps<{
   title: string
   datetime: string
@@ -10,7 +12,7 @@ defineProps<{
 }>()
 
 const tools = () => {
-  console.log('asdfa')
+  emit('click-more')
 }
 </script>
 

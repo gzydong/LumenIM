@@ -1,6 +1,6 @@
 <script setup>
 import { useNoteStore } from '@/store'
-import { CalendarThirty, DocAdd, FolderFocus, Right } from '@icon-park/vue-next'
+import { CalendarThirty, DeleteThemes, DocAdd, FolderFocus, Right } from '@icon-park/vue-next'
 import NoteMenuClass from './NoteMenuClass.vue'
 import RecycleModal from './RecycleModal.vue'
 
@@ -22,7 +22,7 @@ onInit()
 <template>
   <section class="el-container is-vertical section h-full w-full">
     <header class="el-header menu-header">
-      <n-button round ghost type="primary" @click="() => store.addNewNote(getCalssId())" block>
+      <n-button ghost @click="() => store.addNewNote(getCalssId())" block>
         <template #icon>
           <n-icon size="16" :component="DocAdd" />
         </template>
@@ -32,9 +32,18 @@ onInit()
 
     <header class="el-header menu-sub-header">
       <span style="color: rgb(108 102 102)">我的笔记</span>
-      <n-button size="tiny" ghost round color="red" @click="isShowRecycleModal = true">
-        回收站
-      </n-button>
+
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-icon
+            size="16"
+            :component="DeleteThemes"
+            @click="isShowRecycleModal = true"
+            class="pointer"
+          />
+        </template>
+        <span>回收站</span>
+      </n-popover>
     </header>
 
     <n-scrollbar class="el-main h-full">

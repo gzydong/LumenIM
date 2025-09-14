@@ -162,7 +162,6 @@ export interface ArticleListRequest {
 
 export interface ArticleListResponse {
   items: ArticleListResponse_Item[]
-  paginate?: ArticleListResponse_Paginate
 }
 
 export interface ArticleListResponse_Item {
@@ -177,12 +176,6 @@ export interface ArticleListResponse_Item {
   created_at: string
   updated_at: string
   abstract: string
-}
-
-export interface ArticleListResponse_Paginate {
-  page?: number
-  size?: number
-  total?: number
 }
 
 export interface ArticleMoveRequest {

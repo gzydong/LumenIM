@@ -73,7 +73,10 @@ loadWatchClassMenu()
     <div class="category-header">
       <div class="title" style="color: rgb(108 102 102)">笔记分类({{ store.class.length }})</div>
       <div class="icon pointer" @click="isShowAddInput = true">
-        <n-icon size="18" :component="Add" />
+        <n-popover trigger="hover">
+          <template #trigger> <n-icon size="16" :component="Add" /> </template>
+          <span>新建分类</span>
+        </n-popover>
       </div>
     </div>
 
@@ -120,15 +123,7 @@ loadWatchClassMenu()
             <div class="more-icon" @click.stop="onContextMenu($event, item)">
               <n-icon size="16" :component="More" />
             </div>
-            <n-tag
-              v-show="item.count > 0"
-              class="more-num tag-scale"
-              :bordered="false"
-              type="primary"
-              size="small"
-            >
-              {{ item.count }}
-            </n-tag>
+            <div class="more-num">{{ item.count > 0 ? item.count : '' }}</div>
           </template>
         </div>
       </VueDraggable>

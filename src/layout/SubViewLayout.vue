@@ -86,7 +86,7 @@ defineProps<{
       display: flex;
       align-items: center;
       color: var(--im-text-color);
-      padding-left: 10px;
+      padding-left: 8px;
 
       > div {
         height: 100%;
@@ -115,9 +115,9 @@ defineProps<{
         }
       }
 
-      &:hover,
       &.selectd {
-        background-color: var(--im-hover-bg-color);
+        background-color: #4f84ff;
+        color: #ffffff;
       }
     }
   }
