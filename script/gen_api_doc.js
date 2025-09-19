@@ -170,8 +170,8 @@ function generateApiMethods(doc) {
       const description = generateApiMethodDescription(operation)
       apiCode += `${description}\n`
       apiCode += `export const fetch${camelCase(operationId).replaceAll('_', '')} = createApi<${requestType}, ${responseType}>(\n`
-      apiCode += `  '${finalPath}',\n`
-      apiCode += `  { method: '${method.toUpperCase()}' }\n`
+      apiCode += `  '${finalPath}'\n`
+      // apiCode += `  { method: '${method.toUpperCase()}' }\n`
       apiCode += `)\n\n`
     }
   }

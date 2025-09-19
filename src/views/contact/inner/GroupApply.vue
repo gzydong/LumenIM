@@ -23,7 +23,7 @@ const items = ref<Item[]>([])
 const loading = ref(true)
 
 const onLoadData = async () => {
-  const [err, data] = await fetchApi(fetchGroupApplyAll, {})
+  const [err, data] = await fetchApi(fetchGroupApplyAll, {}, { loading })
 
   if (err) return
 
@@ -73,8 +73,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <section v-loading="loading" style="min-height: 100%; height: 100%; overflow-y: auto">
-    <n-empty v-show="items.length == 0" description="暂无相关数据"> </n-empty>
+  <section
+    v-loading="loading"
+    style="height: 100%; overflow-y: auto"
+    :class="{
+      'flex-center': !items.length
+    }"
+  >
+    <n-empty v-show="!items.length" description="暂无群通知"> </n-empty>
 
     <div class="item border-bottom" v-for="item in items" :key="item.id">
       <div class="avatar" @click="onInfo(item)">
@@ -122,6 +128,7 @@ onMounted(() => {
   min-height: 60px;
   display: flex;
   align-items: center;
+  padding: 6px 0;
 
   > div {
     height: inherit;
@@ -145,6 +152,7 @@ onMounted(() => {
       line-height: 25px;
       display: flex;
       align-items: center;
+      font-size: 15px;
 
       .time {
         font-size: 12px;

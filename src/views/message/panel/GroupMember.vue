@@ -25,7 +25,7 @@ const closeSerch = () => {
 
 <template>
   <section class="el-container is-vertical">
-    <header class="el-header border-bottom title">
+    <header class="el-header title">
       <span v-if="!search" class="flex-center"> 群成员({{ members.length }}) </span>
       <span v-else>
         <n-input-group size="small">

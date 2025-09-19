@@ -17,7 +17,7 @@ const currentLoadId = computed(() => noteStore.view.loadId)
     </aside>
 
     <aside
-      class="el-aside"
+      class="el-aside border-left border-right"
       style="width: 350px"
       v-dropsize="{ min: 200, max: 500, direction: 'right', key: 'note-list' }"
     >

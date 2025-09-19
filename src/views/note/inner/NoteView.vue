@@ -50,23 +50,18 @@ const {
         {{ detail.title }}
       </h4>
 
-      <!-- <n-button size="small">
-        <template #icon>
-          <n-icon size="16" :component="History" />
-        </template>
-      </n-button> -->
+      <n-icon
+        class="pointer"
+        v-if="detail.article_id && isPreviewMode"
+        @click="onCollection"
+        size="16"
+        :component="IconStar"
+        :color="detail.is_asterisk == 1 ? '#ee3f4d' : ''"
+      />
 
-      <n-button v-if="detail.article_id && isPreviewMode" size="small" @click="onCollection">
-        <template #icon>
-          <n-icon
-            size="16"
-            :component="IconStar"
-            :color="detail.is_asterisk == 1 ? '#ee3f4d' : ''"
-          />
-        </template>
-      </n-button>
+      <n-divider vertical />
 
-      <n-button size="small" @click="onClickEditorBtn">
+      <n-button text size="small" @click="onClickEditorBtn">
         <template #icon>
           <n-icon size="16" :component="EditOne" />
         </template>
@@ -74,10 +69,7 @@ const {
       </n-button>
     </header>
 
-    <header
-      v-if="isPreviewMode"
-      class="el-header note-view-desc text-ellipsis border-top border-bottom"
-    >
+    <header v-if="isPreviewMode" class="el-header note-view-desc text-ellipsis border-top">
       <p>
         <n-icon class="icon" size="15" :component="Time" />
         <span>更新于 {{ detail.updated_at.substring(0, 16) }}分</span>

@@ -2,10 +2,9 @@
 html {
   --im-primary-color: #1890ff;
   --im-bg-color: #ffffff;
-  --line-border-color: #f5f5f5;
   --border-color: #eeeaea;
   --im-text-color: #333;
-  --im-text-color-grey: #333;
+  --im-text-color-grey: #a5a0a0;
   --im-active-bg-color: #f5f5f5;
   --im-hover-bg-color: #f5f5f5;
 
@@ -27,14 +26,15 @@ html {
   --chat-assistant-bg-color: rgba(46, 50, 56, 0.05);
   --chat-user-bg-color: #daf3fd;
   --chat-bg-grey-color: rgba(46, 50, 56, 0.05);
+
+  --note-list-active-bg-color: #e5e6eb;
 }
 
 // 黑色主题
 html[theme-mode='dark'] {
   --im-primary-color: #1890ff;
-  --im-bg-color: #1e1e1e;
-  --line-border-color: rgba(255, 255, 255, 0.09);
-  --border-color: rgba(255, 255, 255, 0.09);
+  --im-bg-color: #0a0a0a;
+  --border-color: rgb(245 245 240 / 10%);
   --im-text-color: rgba(255, 255, 255, 0.82);
   --im-text-color-grey: rgba(255, 255, 255, 0.52);
   --im-active-bg-color: #2c2c32;
@@ -58,6 +58,8 @@ html[theme-mode='dark'] {
   --chat-assistant-bg-color: rgba(255, 255, 255, 0.12);
   --chat-user-bg-color: rgba(255, 255, 255, 0.12);
   --chat-bg-grey-color: rgba(255, 255, 255, 0.12);
+
+  --note-list-active-bg-color: rgba(255, 255, 255, 0.1);
 
   ::selection {
     background: #d3d3d3;
@@ -87,7 +89,7 @@ body {
 }
 
 .md-editor-dark {
-  --md-bk-color: #242424 !important;
+  --md-bk-color: var(--im-bg-color) !important;
 
   &:hover {
     --md-scrollbar-thumb-color: #848281 !important;

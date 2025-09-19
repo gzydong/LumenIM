@@ -91,7 +91,8 @@ export async function fetchApi<R, T>(
   param: R,
   options?: FetchApiOption
 ) {
-  if (!options?.error) options = { ...options, error: true }
+  // 默认显示错误消息
+  if (options?.error === undefined) options = { ...options, error: true }
 
   try {
     if (options?.loading) options.loading.value = true

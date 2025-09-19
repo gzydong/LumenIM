@@ -40,10 +40,6 @@ defineProps<{
             <div class="name">
               {{ menu.name || '' }}
             </div>
-
-            <div class="tips" v-if="menu.tips">
-              <span class="badge">{{ menu.tips }}</span>
-            </div>
           </div>
         </router-link>
       </aside>
@@ -79,10 +75,10 @@ defineProps<{
 
     .menu {
       height: 36px;
-      padding: 0 5px;
+      padding: 0 8px;
       font-size: 14px;
       border-radius: 5px;
-      margin: 6px 0px;
+      margin: 8px 0px;
       display: flex;
       align-items: center;
       color: var(--im-text-color);
@@ -106,17 +102,8 @@ defineProps<{
         justify-content: flex-start;
       }
 
-      .tips {
-        width: 30px;
-
-        .badge {
-          background-color: #ff4d4f;
-          color: white;
-        }
-      }
-
       &.selectd {
-        background-color: #4f84ff;
+        background-color: var(--im-primary-color);
         color: #ffffff;
       }
     }

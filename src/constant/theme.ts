@@ -22,6 +22,16 @@ export const darkThemeOverrides: GlobalThemeOverrides = {
   ...overrides,
   common: {
     ...overrides.common,
-    bodyColor: '#1e1e1e'
+    bodyColor: '#0a0a0a',
+    modalColor: '#121212'
+  },
+  Popover: {
+    color: '#121212'
+  },
+  Drawer: {
+    color: '#121212'
+  },
+  Dialog: {
+    color: '#121212'
   }
 }

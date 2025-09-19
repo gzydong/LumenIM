@@ -45,19 +45,19 @@ const menus = reactive([
           <n-badge dot :show="isNew" :offset="[-80, 5]">
             <div class="flex pointer" style="align-items: center; gap: 8px">
               <n-icon :component="Mail" :size="18" />
-              <span>好友/群通知</span>
+              <span>好友(群)通知</span>
             </div>
           </n-badge>
         </template>
 
         <n-tabs type="line" justify-content="start" pane-style="height: 500px;width: 350px;">
           <n-tab-pane name="friend" tab="好友通知">
-            <n-scrollbar style="height: 100%">
+            <n-scrollbar content-style="height: 500px">
               <FriendApply />
             </n-scrollbar>
           </n-tab-pane>
           <n-tab-pane name="group" tab="入群通知">
-            <n-scrollbar style="height: 100%">
+            <n-scrollbar content-style="height: 500px">
               <GroupApply />
             </n-scrollbar>
           </n-tab-pane>

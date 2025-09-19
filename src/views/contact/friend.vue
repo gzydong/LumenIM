@@ -296,13 +296,6 @@ useEventBus([{ name: ContactConst.UpdateRemark, event: onChangeRemark }])
 
 html[theme-mode='dark'] {
   .item-box {
-    background-color: rgba(255, 255, 255, 5%);
-    border-color: transparent;
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 10%);
-    }
-
     .content {
       &-text {
         color: rgba(255, 255, 255, 50%);

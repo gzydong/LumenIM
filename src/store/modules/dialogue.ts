@@ -92,7 +92,7 @@ export const useDialogueStore = defineStore('dialogue', {
       this.members = []
       const [err, data] = await fetchApi(fetchGroupMemberList, { group_id })
 
-      if (!err || this.target.to_from_id != group_id) return
+      if (err || this.target.to_from_id != group_id) return
 
       this.members = data?.items.map((item: any) => ({
         id: item.user_id,

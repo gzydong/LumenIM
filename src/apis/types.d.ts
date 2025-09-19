@@ -740,41 +740,12 @@ export interface GroupNoSpeakRequest {
 export interface GroupNoSpeakResponse {
 }
 
-export interface GroupNoticeDeleteRequest {
-  group_id?: number
-  notice_id?: number
-}
-
-export interface GroupNoticeDeleteResponse {
-}
-
 export interface GroupNoticeEditRequest {
   group_id?: number
   content?: string
 }
 
 export interface GroupNoticeEditResponse {
-}
-
-export interface GroupNoticeListRequest {
-  group_id?: number
-}
-
-export interface GroupNoticeListResponse {
-  items?: GroupNoticeListResponse_Item[]
-}
-
-export interface GroupNoticeListResponse_Item {
-  id?: number
-  title?: string
-  content?: string
-  is_top?: number
-  is_confirm?: number
-  confirm_users?: string
-  avatar?: string
-  creator_id?: number
-  created_at?: string
-  updated_at?: string
 }
 
 export interface GroupOvertListRequest {

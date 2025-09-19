@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import ApplyTab from './ApplyTab.vue'
+import ConfigTab from './ConfigTab.vue'
 import DetailTab from './DetailTab.vue'
 import MemberTab from './MemberTab.vue'
 import NoticeTab from './NoticeTab.vue'
-import ApplyTab from './ApplyTab.vue'
-import ConfigTab from './ConfigTab.vue'
 
 const emit = defineEmits(['close'])
 

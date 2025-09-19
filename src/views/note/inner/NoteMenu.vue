@@ -22,7 +22,7 @@ onInit()
 <template>
   <section class="el-container is-vertical section h-full w-full">
     <header class="el-header menu-header">
-      <n-button ghost @click="() => store.addNewNote(getCalssId())" block>
+      <n-button ghost round @click="() => store.addNewNote(getCalssId())" block>
         <template #icon>
           <n-icon size="16" :component="DocAdd" />
         </template>

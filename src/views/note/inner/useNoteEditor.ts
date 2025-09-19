@@ -83,8 +83,14 @@ export function useNoteEditor() {
   const onCollection = async () => {
     const action = store.detail.is_asterisk == 1 ? 2 : 1
 
+    const message = action == 1 ? '已收藏' : '已取消收藏'
+
     const { article_id } = store.detail
-    const [err] = await fetchApi(fetchArticleAsterisk, { article_id, action })
+    const [err] = await fetchApi(
+      fetchArticleAsterisk,
+      { article_id, action },
+      { successText: message }
+    )
     if (err) return
 
     store.setCollectionStatus(action == 1)

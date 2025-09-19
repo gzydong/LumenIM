@@ -45,7 +45,7 @@ const onSearchInput = debounce(() => {
       />
     </header>
 
-    <header class="el-header header-tools">
+    <header class="el-header header-tools border-top">
       <span>{{ items.length }} 篇笔记</span>
       <span><n-icon size="18" :component="SortAmountDown" /></span>
     </header>
@@ -57,17 +57,21 @@ const onSearchInput = debounce(() => {
 
     <main class="el-main" style="padding: 8px" v-else>
       <n-scrollbar>
-        <NoteListItem
-          v-for="note in items"
-          :key="note.article_id"
-          :title="note.title"
-          :datetime="note.updated_at"
-          :classname="note.class_name"
-          :active="loadId == note.article_id"
-          :is-asterisk="note.is_asterisk == 1"
-          @click="onCatDetail(note)"
-          @contextmenu.prevent="onContextMenu($event, note)"
-        />
+        <template v-for="note in items" :key="note.article_id">
+          <NoteListItem
+            :title="note.title"
+            :datetime="note.updated_at"
+            :classname="note.class_name"
+            :active="loadId == note.article_id"
+            :is-asterisk="note.is_asterisk == 1"
+            @click="onCatDetail(note)"
+            @contextmenu.prevent="onContextMenu($event, note)"
+          />
+        </template>
+
+        <div style="text-align: center; margin: 20px 0; color: var(--im-text-color-grey)">
+          已加载全部笔记
+        </div>
       </n-scrollbar>
     </main>
   </section>
@@ -76,34 +80,29 @@ const onSearchInput = debounce(() => {
 </template>
 <style lang="less" scoped>
 .note-list-view {
-  --im-note-list-bg-color: #f4f6f9;
-  --header-desc-border-color: #ece8e8;
-
   width: 100%;
   height: 100%;
-  background: var(--im-note-list-bg-color);
 
   .header-search {
     height: 60px;
     text-align: center;
-    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
 
     .icon-search {
-      position: absolute;
-      left: 19px;
-      top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     input {
       height: 30px;
-      width: 70%;
-      position: absolute;
-      left: 40px;
-      top: 15px;
-      padding: 0 3px;
-      font-size: 14px;
       background: transparent;
       color: var(--im-text-color);
+      flex: auto;
+      margin-left: 4px;
+      padding: 0 8px;
 
       &::-webkit-input-placeholder {
         color: rgb(158, 150, 150);
@@ -116,21 +115,20 @@ const onSearchInput = debounce(() => {
     height: 40px;
     line-height: 40px;
     position: relative;
-    color: #7b7777;
-    border-top: 1px solid var(--header-desc-border-color);
-    border-bottom: 1px solid var(--header-desc-border-color);
-    font-size: 13px;
+    font-size: 14px;
     padding: 0 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #fafafa;
   }
 }
 
 html[theme-mode='dark'] {
   .note-list-view {
-    --im-note-list-bg-color: #1b1b1b;
-    --header-desc-border-color: #1f1f23;
+    .header-tools {
+      background: rgb(16 16 16);
+    }
   }
 }
 </style>

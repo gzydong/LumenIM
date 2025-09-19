@@ -26,7 +26,7 @@ const filters = computed(() => {
 })
 </script>
 <template>
-  <n-drawer v-model:show="isShow" :width="320" placement="right" to="#group-panel">
+  <n-drawer v-model:show="isShow" :width="320" placement="right" to="#drawer-container">
     <n-drawer-content :body-content-style="{ padding: 0 }" title="群聊成员" closable>
       <div class="member-box">
         <div>

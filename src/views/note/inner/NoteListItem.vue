@@ -14,19 +14,44 @@ defineProps<{
 const tools = () => {
   emit('click-more')
 }
+
+// 格式化时间显示，如果是本年度则不显示年份
+const formatDateTime = (datetime: string) => {
+  if (!datetime) return ''
+
+  const date = new Date(datetime)
+  const currentYear = new Date().getFullYear()
+  const dateYear = date.getFullYear()
+
+  // 如果是本年度，只显示月日和时间
+  if (dateYear === currentYear) {
+    // 返回格式 MM/DD HH:mm
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${month}/${day} ${hours}:${minutes}`
+  } else {
+    // 如果不是本年度，显示年月日和时间
+    const year = String(date.getFullYear()).substring(2) // 只取年份后两位
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${year}/${month}/${day} ${hours}:${minutes}`
+  }
+}
 </script>
 
 <template>
-  <div class="note-list-item pointer" :class="{ active: active }">
+  <div class="note-list-item pointer border-bottom" :class="{ active: active }">
     <div class="title text-ellipsis">
       <n-icon v-if="isAsterisk" size="16" :component="Star" class="pointer" color="red" />
       {{ title }}
     </div>
 
     <div class="content">
-      <span style="width: 100%; max-width: fit-content"
-        >{{ datetime?.substring(2, 16)?.split('-').join('/') }}
-      </span>
+      <span style="width: 100%; max-width: fit-content">{{ formatDateTime(datetime) }} </span>
       <n-divider vertical />
       <span class="text-ellipsis">{{ classname }}</span>
 
@@ -43,21 +68,18 @@ const tools = () => {
 
 <style lang="less">
 .note-list-item {
-  --article-bg-color: #ffffff;
-  --articl-hover-border-color: #1890ff;
-
   min-height: 50px;
-  padding: 8px;
-  margin-bottom: 8px;
   transition: all 0.5s ease;
-  border-radius: 3px;
-  border: 1px solid transparent;
   overflow: hidden;
-  background-color: var(--article-bg-color);
+  padding: 8px;
+  margin: 8px 0;
+  user-select: none;
 
-  &.active,
-  &:hover {
-    border-color: var(--articl-hover-border-color);
+  &:hover,
+  &.active {
+    border-color: transparent;
+    border-radius: 10px;
+    background-color: var(--note-list-active-bg-color);
   }
 
   .title {
@@ -73,20 +95,9 @@ const tools = () => {
     line-height: 26px;
     font-size: 13px;
     width: 100%;
-    color: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
-  }
-}
-
-html[theme-mode='dark'] {
-  .note-list-item {
-    --article-bg-color: rgba(255, 255, 255, 0.05);
-    --articl-hover-border-color: rgba(255, 255, 255, 0.3);
-
-    .content {
-      color: rgba(255, 255, 255, 0.4) !important;
-    }
+    color: var(--im-text-color-grey);
   }
 }
 </style>
