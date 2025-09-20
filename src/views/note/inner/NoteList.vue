@@ -69,7 +69,15 @@ const onSearchInput = debounce(() => {
           />
         </template>
 
-        <div style="text-align: center; margin: 20px 0; color: var(--im-text-color-grey)">
+        <div
+          style="
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 16px;
+            color: var(--im-text-color-grey);
+            font-size: 12px;
+          "
+        >
           已加载全部笔记
         </div>
       </n-scrollbar>

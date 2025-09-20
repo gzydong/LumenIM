@@ -72,7 +72,7 @@ const {
     <header v-if="isPreviewMode" class="el-header note-view-desc text-ellipsis border-top">
       <p>
         <n-icon class="icon" size="15" :component="Time" />
-        <span>更新于 {{ detail.updated_at.substring(0, 16) }}分</span>
+        <span>更新于 {{ detail.updated_at.substring(0, 16) }}</span>
       </p>
 
       <p class="pointer">
@@ -214,7 +214,7 @@ const {
       }
 
       &[contenteditable='plaintext-only']:empty::before {
-        content: '请输入标题 ...';
+        content: '请输入标题...';
         color: #aea6a6;
         font-weight: 300;
         pointer-events: none;
@@ -226,21 +226,19 @@ const {
     height: 30px;
     display: flex;
     align-items: center;
-    padding: 20px 15px;
-    overflow: hidden;
-    font-size: 14px;
-    position: relative;
+    padding: 20px 16px;
     user-select: none;
     color: var(--im-text-color-grey);
 
     p {
-      display: inline;
+      display: flex;
+      align-items: center;
 
       span {
-        margin-left: 3px;
+        margin-left: 6px;
       }
 
-      margin-right: 10px;
+      margin-right: 16px;
     }
   }
 }

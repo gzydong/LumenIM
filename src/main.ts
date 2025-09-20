@@ -1,10 +1,10 @@
-import '@/assets/css/define/theme.less'
 import '@/assets/css/define/global.less'
+import '@/assets/css/define/theme.less'
 import '@/assets/css/dropsize.less'
 import { createApp } from 'vue'
-import router from './router'
 import App from './App.vue'
 import * as plugins from './plugins'
+import router from './router'
 
 function bootstrap() {
   const app = createApp(App)

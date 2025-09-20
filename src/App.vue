@@ -3,7 +3,7 @@ import ws from '@/connect.ts'
 import AppProvider from '@/layout/AppProvider.vue'
 import { useUserStore } from '@/store'
 import { isLogin } from '@/utils/auth.ts'
-
+import { JsUpdateDetector } from './plugins/update-detector'
 const { loadSetting } = useUserStore()
 
 const init = () => {
@@ -13,6 +13,10 @@ const init = () => {
 
 onMounted(() => {
   isLogin() && init()
+
+  new JsUpdateDetector({
+    checkInterval: 5 * 60 * 1000
+  })
 })
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSettingsStore, useTalkStore, useUserStore } from '@/store'
-import { BookmarkOne, GithubOne, Message, People, SettingTwo } from '@icon-park/vue-next'
+import { GithubOne, Message, NotebookOne, People, SettingTwo } from '@icon-park/vue-next'
 import AccountCard from './AccountCard.vue'
 
 const userStore = useUserStore()
@@ -28,7 +28,7 @@ const menus = reactive([
   },
   {
     link: '/note',
-    icon: markRaw(BookmarkOne),
+    icon: markRaw(NotebookOne),
     title: '笔记'
   },
   {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PeoplePlusOne, MenuUnfoldOne, MenuFoldOne, Announcement, More } from '@icon-park/vue-next'
+import { Announcement, MenuFoldOne, MenuUnfoldOne, More, PeoplePlusOne } from '@icon-park/vue-next'
 
 const emit = defineEmits(['evnet', 'changeSessionMenu'])
 
@@ -46,14 +46,12 @@ const onSetMenu = () => {
     </div>
 
     <div class="module left-module">
-      <span class="tag" v-show="talkMode == 2"> 群聊 </span>
-      <span class="tag red" v-show="talkMode == 1 && !online"> 好友 </span>
-      <span class="tag" v-show="talkMode == 1 && online" style="background-color: rgb(65, 174, 60)">
-        在线
-      </span>
-      <span class="nickname text-ellipsis">{{ username }}</span>
+      <span class="tag" v-show="talkMode == 2"> 群 </span>
+      <span class="tag red" v-show="talkMode == 1"> 友 </span>
+      <span class="nickname text-ellipsis" :class="{ opacity: talkMode == 1 && !online }"
+        >{{ username }} <span v-show="talkMode == 2 && num">({{ num }} 人)</span></span
+      >
       <span class="keyboard" v-show="keyboard">对方正在输入...</span>
-      <span class="num" v-show="talkMode == 2 && num">({{ num }})</span>
       <p class="desc text-ellipsis" v-show="description.length">
         {{ description }}
       </p>
@@ -159,6 +157,10 @@ const onSetMenu = () => {
     position: relative;
     flex: 1 auto;
 
+    .opacity {
+      opacity: 0.7;
+    }
+
     .keyboard {
       animation: inputfade 1s infinite;
       -webkit-animation: inputfade 1s infinite;
@@ -168,11 +170,13 @@ const onSetMenu = () => {
 
     .desc {
       position: absolute;
-      left: 0;
+      left: 27px;
       bottom: 0;
       width: 80%;
       font-size: 12px;
-      opacity: 0.4;
+      opacity: 0.5;
+      transform: scale(0.9);
+      transform-origin: left;
     }
   }
 
@@ -221,13 +225,12 @@ const onSetMenu = () => {
   background: rgb(81 139 254);
   height: 18px;
   line-height: 18px;
-  padding: 1px 3px;
+  padding: 1px 5px;
   font-size: 10px;
   color: white;
-  border-radius: 3px;
+  border-radius: 2px;
   margin-right: 8px;
   flex-shrink: 0;
-
   &.red {
     background: #f97348;
   }
