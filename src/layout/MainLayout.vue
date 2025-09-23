@@ -11,7 +11,7 @@ import Sponsor from './component/Sponsor.vue'
     </header> -->
     <main class="el-main">
       <section class="el-container">
-        <aside :class="{ pd20: isElectronMode() }" class="el-aside app-drag border-right">
+        <aside :class="{ 'pd-t20': isElectronMode() }" class="el-aside app-drag border-right">
           <Menu />
         </aside>
         <main class="el-main">
@@ -28,21 +28,11 @@ import Sponsor from './component/Sponsor.vue'
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--im-bg-color);
 
   .el-aside {
     width: 60px;
     box-sizing: border-box;
-
-    &.pd20 {
-      padding-top: 20px;
-    }
-  }
-}
-
-html[theme-mode='dark'] {
-  .im-container {
-    background-color: unset;
   }
 }
 </style>

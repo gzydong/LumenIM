@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import '@icon-park/vue-next/styles/index.css'
-import { onMounted } from 'vue'
-import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/vue-next'
-import { zhCN, dateZhCN } from 'naive-ui'
-import hljs from 'highlight.js/lib/core'
-import { NotificationApi, MessageApi, DialogApi, ModalApi } from '@/layout/common'
 import {
-  useThemeMode,
-  useVisibilityChange,
-  useUnreadMessage,
-  useConnectStatus,
+  useAccessPrompt,
   useClickEvent,
-  useAccessPrompt
+  useConnectStatus,
+  useThemeMode,
+  useUnreadMessage,
+  useVisibilityChange
 } from '@/hooks'
+import { DialogApi, MessageApi, ModalApi, NotificationApi } from '@/layout/common'
+import { DEFAULT_ICON_CONFIGS, IconProvider } from '@icon-park/vue-next'
+import '@icon-park/vue-next/styles/index.css'
+import hljs from 'highlight.js/lib/core'
+import { dateZhCN, zhCN } from 'naive-ui'
+import { onMounted } from 'vue'
 
 IconProvider({
   ...DEFAULT_ICON_CONFIGS,
@@ -26,11 +26,7 @@ const { getDarkTheme, getThemeOverride } = useThemeMode()
 
 onMounted(() => {
   useVisibilityChange()
-
-  if (import.meta.env.ENV == 'production') {
-    useAccessPrompt()
-  }
-
+  useAccessPrompt()
   useUnreadMessage()
   useConnectStatus()
   useClickEvent()

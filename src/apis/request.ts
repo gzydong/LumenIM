@@ -1,4 +1,4 @@
-import * as auth from '@/utils/auth.ts'
+import { getToken } from '@/utils/auth.ts'
 
 export interface ApiOptions extends RequestInit {
   timeout?: number
@@ -25,56 +25,79 @@ const defaultOptions: ApiOptions = {
 }
 
 // 高阶函数：创建 API 调用函数
-export function createApi<R = any, T = any>(
+export function createApi<R, T>(
   url: string,
-  options?: RequestInit
-): (params: R) => Promise<T> {
-  options = options || {}
-  options.method = 'POST'
+  method?: string
+): (params: R, options?: ApiOptions) => Promise<T> {
+  return async (params: R, options?: ApiOptions): Promise<T> => {
+    options = options || {}
+    options.method = options.method || method || 'POST'
 
-  // @ts-ignore
-  return async (params: R): Promise<T> => {
-    const abortController = new AbortController()
-    const timeoutId = setTimeout(() => {
-      abortController.abort()
-    }, defaultOptions.timeout)
+    const uri = import.meta.env.VITE_BASE_API + url
 
-    const token = auth.getToken()
-    // @ts-ignore
-    defaultOptions.headers['Authorization'] = `Bearer ${token}`
+    const req: RequestInit = { ...defaultOptions, ...options }
+    req.headers = { ...req.headers, ...options.headers }
 
-    return fetch(import.meta.env.VITE_BASE_API + url, {
-      ...defaultOptions,
-      ...options,
-      headers: {
-        ...defaultOptions.headers,
-        ...options?.headers
-      },
-      body: JSON.stringify(params),
-      signal: abortController.signal
-    })
-      .then(async (res) => {
-        clearTimeout(timeoutId)
+    const token = getToken()
+    if (token) {
+      req.headers['Authorization'] = `Bearer ${token}`
+    }
+
+    if (options.method != 'GET') {
+      req.body = JSON.stringify(params)
+    }
+
+    const request = async () => {
+      try {
+        if (!options.signal) {
+          const abortController = new AbortController()
+          setTimeout(() => {
+            abortController.abort()
+          }, options.timeout || defaultOptions.timeout)
+
+          req.signal = abortController.signal
+        }
+
+        const res = await fetch(uri, req)
 
         const data = await res.json()
-        if (res.ok) return data?.data || data
+        if (res.status === 200) return data
 
         throw new ApiError(data?.code || 400, data?.message || '业务错误')
-      })
-      .catch((err) => {
-        clearTimeout(timeoutId)
+      } catch (e: any) {
+        if (e instanceof ApiError) throw e
 
-        if (err instanceof ApiError) throw err
-
-        // 更详细的错误分类
-        if (err instanceof TypeError) {
-          throw new ApiError(-1, '网络连接失败')
-        } else if (err.name === 'AbortError') {
+        if (e instanceof TypeError) {
+          throw new ApiError(-1, '网络连接失败，请重试')
+        } else if (e instanceof Error && e.name === 'AbortError') {
           throw new ApiError(-2, '请求超时')
         }
 
-        throw new ApiError(-3, err?.message || '未知错误')
-      })
+        throw new ApiError(-3, e?.message || '未知错误')
+      }
+    }
+
+    const retry = options.retry || 2 // 默认重试2次
+    for (let i = 0; i <= retry; i++) {
+      try {
+        return await request()
+      } catch (e: any) {
+        const isRetriableError = e instanceof ApiError && [-1, -2].includes(e.err_code)
+        const hasRetryAttempts = i < retry
+
+        // 检查是否是需要重试的错误类型，并且还有重试次数
+        if (isRetriableError && hasRetryAttempts && !options?.signal) {
+          const delay = options.retryDelay || 1000 // ms
+          await new Promise((resolve) => setTimeout(resolve, delay))
+          continue
+        }
+
+        throw e
+      }
+    }
+
+    // 添加默认返回值以解决 TypeScript 错误
+    throw new ApiError(-4, '请求失败')
   }
 }
 
@@ -125,7 +148,7 @@ export const upload = async (url: string, data: FormData, options?: RequestInit)
 
   try {
     // 获取认证 token
-    const token = auth.getToken()
+    const token = getToken()
 
     // 构建请求选项
     const fetchOptions: RequestInit = {

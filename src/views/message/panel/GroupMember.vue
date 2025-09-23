@@ -28,10 +28,13 @@ const closeSerch = () => {
     <header class="el-header title">
       <span v-if="!search" class="flex-center"> 群成员({{ members.length }}) </span>
       <span v-else>
-        <n-input-group size="small">
-          <n-input size="small" v-model:value="keyword" :style="{ width: 'auto' }" />
-          <n-button size="small" type="primary" ghost @click="closeSerch">取消</n-button>
-        </n-input-group>
+        <n-input
+          size="small"
+          v-model:value="keyword"
+          :style="{ width: 'auto' }"
+          @blur="closeSerch"
+          v-focus
+        />
       </span>
 
       <span v-if="!search" style="gap: 8px; display: flex">
