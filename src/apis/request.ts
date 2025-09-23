@@ -25,7 +25,7 @@ const defaultOptions: ApiOptions = {
 }
 
 // 高阶函数：创建 API 调用函数
-export function createApi<R, T>(
+export function createApi<R = any, T = any>(
   url: string,
   method?: string
 ): (params: R, options?: ApiOptions) => Promise<T> {
@@ -49,11 +49,11 @@ export function createApi<R, T>(
 
     const request = async () => {
       try {
-        if (!options.signal) {
+        if (!options?.signal) {
           const abortController = new AbortController()
           setTimeout(() => {
             abortController.abort()
-          }, options.timeout || defaultOptions.timeout)
+          }, options?.timeout || defaultOptions.timeout)
 
           req.signal = abortController.signal
         }
@@ -87,7 +87,7 @@ export function createApi<R, T>(
 
         // 检查是否是需要重试的错误类型，并且还有重试次数
         if (isRetriableError && hasRetryAttempts && !options?.signal) {
-          const delay = options.retryDelay || 1000 // ms
+          const delay = options?.retryDelay || 1000 // ms
           await new Promise((resolve) => setTimeout(resolve, delay))
           continue
         }

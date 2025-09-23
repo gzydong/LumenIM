@@ -1,19 +1,17 @@
 // 自动生成的类型定义
-// 注：***请勿手动修改此文件***  
+// 注：***请勿手动修改此文件***
 
 export interface ArticleAnnexDeleteRequest {
   annex_id?: number
 }
 
-export interface ArticleAnnexDeleteResponse {
-}
+export interface ArticleAnnexDeleteResponse {}
 
 export interface ArticleAnnexForeverDeleteRequest {
   annex_id?: number
 }
 
-export interface ArticleAnnexForeverDeleteResponse {
-}
+export interface ArticleAnnexForeverDeleteResponse {}
 
 export interface ArticleAnnexRecoverListRequest {
   page?: number
@@ -38,8 +36,7 @@ export interface ArticleAnnexRecoverRequest {
   annex_id?: number
 }
 
-export interface ArticleAnnexRecoverResponse {
-}
+export interface ArticleAnnexRecoverResponse {}
 
 export interface ArticleAsteriskRequest {
   /** 文章ID */
@@ -48,15 +45,13 @@ export interface ArticleAsteriskRequest {
   action?: number
 }
 
-export interface ArticleAsteriskResponse {
-}
+export interface ArticleAsteriskResponse {}
 
 export interface ArticleClassDeleteRequest {
   classify_id: number
 }
 
-export interface ArticleClassDeleteResponse {
-}
+export interface ArticleClassDeleteResponse {}
 
 export interface ArticleClassEditRequest {
   classify_id?: number
@@ -67,8 +62,7 @@ export interface ArticleClassEditResponse {
   classify_id: number
 }
 
-export interface ArticleClassListRequest {
-}
+export interface ArticleClassListRequest {}
 
 export interface ArticleClassListResponse {
   items: ArticleClassListResponse_Item[]
@@ -86,15 +80,13 @@ export interface ArticleClassSortRequest {
   classify_ids: number[]
 }
 
-export interface ArticleClassSortResponse {
-}
+export interface ArticleClassSortResponse {}
 
 export interface ArticleDeleteRequest {
   article_id?: number
 }
 
-export interface ArticleDeleteResponse {
-}
+export interface ArticleDeleteResponse {}
 
 export interface ArticleDetailRequest {
   article_id?: number
@@ -149,8 +141,7 @@ export interface ArticleForeverDeleteRequest {
   article_id?: number
 }
 
-export interface ArticleForeverDeleteResponse {
-}
+export interface ArticleForeverDeleteResponse {}
 
 export interface ArticleListRequest {
   keyword?: string
@@ -183,8 +174,7 @@ export interface ArticleMoveRequest {
   classify_id?: number
 }
 
-export interface ArticleMoveResponse {
-}
+export interface ArticleMoveResponse {}
 
 export interface ArticleRecoverListRequest {
   page?: number
@@ -210,16 +200,14 @@ export interface ArticleRecoverRequest {
   article_id?: number
 }
 
-export interface ArticleRecoverResponse {
-}
+export interface ArticleRecoverResponse {}
 
 export interface ArticleTagsRequest {
   article_id?: number
   tag_ids?: number[]
 }
 
-export interface ArticleTagsResponse {
-}
+export interface ArticleTagsResponse {}
 
 export interface AuthForgetRequest {
   /** 手机号 */
@@ -230,8 +218,7 @@ export interface AuthForgetRequest {
   sms_code: string
 }
 
-export interface AuthForgetResponse {
-}
+export interface AuthForgetResponse {}
 
 export interface AuthLoginRequest {
   /** 登录手机号 */
@@ -313,8 +300,7 @@ export interface CommonSendEmailRequest {
   email?: string
 }
 
-export interface CommonSendEmailResponse {
-}
+export interface CommonSendEmailResponse {}
 
 export interface CommonSendSmsRequest {
   mobile?: string
@@ -329,35 +315,30 @@ export interface CommonSendTestRequest {
   email?: string
 }
 
-export interface CommonSendTestResponse {
-}
+export interface CommonSendTestResponse {}
 
 export interface ContactApplyAcceptRequest {
   apply_id?: number
   remark?: string
 }
 
-export interface ContactApplyAcceptResponse {
-}
+export interface ContactApplyAcceptResponse {}
 
 export interface ContactApplyCreateRequest {
   user_id?: number
   remark?: string
 }
 
-export interface ContactApplyCreateResponse {
-}
+export interface ContactApplyCreateResponse {}
 
 export interface ContactApplyDeclineRequest {
   apply_id?: number
   remark?: string
 }
 
-export interface ContactApplyDeclineResponse {
-}
+export interface ContactApplyDeclineResponse {}
 
-export interface ContactApplyListRequest {
-}
+export interface ContactApplyListRequest {}
 
 export interface ContactApplyListResponse {
   items: ContactApplyListResponse_Item[]
@@ -373,8 +354,7 @@ export interface ContactApplyListResponse_Item {
   created_at: string
 }
 
-export interface ContactApplyUnreadNumRequest {
-}
+export interface ContactApplyUnreadNumRequest {}
 
 export interface ContactApplyUnreadNumResponse {
   num: number
@@ -385,15 +365,13 @@ export interface ContactChangeGroupRequest {
   group_id?: number
 }
 
-export interface ContactChangeGroupResponse {
-}
+export interface ContactChangeGroupResponse {}
 
 export interface ContactDeleteRequest {
   user_id: number
 }
 
-export interface ContactDeleteResponse {
-}
+export interface ContactDeleteResponse {}
 
 export interface ContactDetailRequest {
   user_id: number
@@ -418,11 +396,9 @@ export interface ContactEditRemarkRequest {
   remark?: string
 }
 
-export interface ContactEditRemarkResponse {
-}
+export interface ContactEditRemarkResponse {}
 
-export interface ContactGroupListRequest {
-}
+export interface ContactGroupListRequest {}
 
 export interface ContactGroupListResponse {
   /** 分组列表 */
@@ -450,11 +426,9 @@ export interface ContactGroupSaveRequest_Item {
   name?: string
 }
 
-export interface ContactGroupSaveResponse {
-}
+export interface ContactGroupSaveResponse {}
 
-export interface ContactListRequest {
-}
+export interface ContactListRequest {}
 
 export interface ContactListResponse {
   items: ContactListResponse_Item[]
@@ -512,16 +486,14 @@ export interface EmoticonDeleteRequest {
   emoticon_id?: number
 }
 
-export interface EmoticonDeleteResponse {
-}
+export interface EmoticonDeleteResponse {}
 
 export interface EmoticonItem {
   emoticon_id?: number
   url?: string
 }
 
-export interface EmoticonListRequest {
-}
+export interface EmoticonListRequest {}
 
 export interface EmoticonListResponse {
   items?: EmoticonItem[]
@@ -552,11 +524,9 @@ export interface GroupApplyAgreeRequest {
   apply_id?: number
 }
 
-export interface GroupApplyAgreeResponse {
-}
+export interface GroupApplyAgreeResponse {}
 
-export interface GroupApplyAllRequest {
-}
+export interface GroupApplyAllRequest {}
 
 export interface GroupApplyAllResponse {
   items: GroupApplyAllResponse_Item[]
@@ -578,23 +548,20 @@ export interface GroupApplyCreateRequest {
   remark?: string
 }
 
-export interface GroupApplyCreateResponse {
-}
+export interface GroupApplyCreateResponse {}
 
 export interface GroupApplyDeclineRequest {
   apply_id?: number
   remark?: string
 }
 
-export interface GroupApplyDeclineResponse {
-}
+export interface GroupApplyDeclineResponse {}
 
 export interface GroupApplyDeleteRequest {
   apply_id?: number
 }
 
-export interface GroupApplyDeleteResponse {
-}
+export interface GroupApplyDeleteResponse {}
 
 export interface GroupApplyListRequest {
   group_id?: number
@@ -614,8 +581,7 @@ export interface GroupApplyListResponse_Item {
   created_at: string
 }
 
-export interface GroupApplyUnreadNumRequest {
-}
+export interface GroupApplyUnreadNumRequest {}
 
 export interface GroupApplyUnreadNumResponse {
   num: number
@@ -627,8 +593,7 @@ export interface GroupAssignAdminRequest {
   action?: number
 }
 
-export interface GroupAssignAdminResponse {
-}
+export interface GroupAssignAdminResponse {}
 
 export interface GroupCreateRequest {
   name?: string
@@ -668,27 +633,23 @@ export interface GroupDismissRequest {
   group_id?: number
 }
 
-export interface GroupDismissResponse {
-}
+export interface GroupDismissResponse {}
 
 export interface GroupHandoverRequest {
   group_id?: number
   user_id?: number
 }
 
-export interface GroupHandoverResponse {
-}
+export interface GroupHandoverResponse {}
 
 export interface GroupInviteRequest {
   group_id?: number
   user_ids?: number[]
 }
 
-export interface GroupInviteResponse {
-}
+export interface GroupInviteResponse {}
 
-export interface GroupListRequest {
-}
+export interface GroupListRequest {}
 
 export interface GroupListResponse {
   items: GroupListResponse_Item[]
@@ -728,8 +689,7 @@ export interface GroupMuteRequest {
   action?: number
 }
 
-export interface GroupMuteResponse {
-}
+export interface GroupMuteResponse {}
 
 export interface GroupNoSpeakRequest {
   group_id?: number
@@ -737,16 +697,14 @@ export interface GroupNoSpeakRequest {
   action?: number
 }
 
-export interface GroupNoSpeakResponse {
-}
+export interface GroupNoSpeakResponse {}
 
 export interface GroupNoticeEditRequest {
   group_id?: number
   content?: string
 }
 
-export interface GroupNoticeEditResponse {
-}
+export interface GroupNoticeEditResponse {}
 
 export interface GroupOvertListRequest {
   page?: number
@@ -776,31 +734,27 @@ export interface GroupOvertRequest {
   action?: number
 }
 
-export interface GroupOvertResponse {
-}
+export interface GroupOvertResponse {}
 
 export interface GroupRemarkUpdateRequest {
   group_id?: number
   remark?: string
 }
 
-export interface GroupRemarkUpdateResponse {
-}
+export interface GroupRemarkUpdateResponse {}
 
 export interface GroupRemoveMemberRequest {
   group_id?: number
   user_ids?: number[]
 }
 
-export interface GroupRemoveMemberResponse {
-}
+export interface GroupRemoveMemberResponse {}
 
 export interface GroupSecedeRequest {
   group_id?: number
 }
 
-export interface GroupSecedeResponse {
-}
+export interface GroupSecedeResponse {}
 
 export interface GroupSettingRequest {
   group_id?: number
@@ -809,8 +763,7 @@ export interface GroupSettingRequest {
   profile?: string
 }
 
-export interface GroupSettingResponse {
-}
+export interface GroupSettingResponse {}
 
 export interface GroupVoteCreateRequest {
   group_id?: number
@@ -820,8 +773,7 @@ export interface GroupVoteCreateRequest {
   options?: string[]
 }
 
-export interface GroupVoteCreateResponse {
-}
+export interface GroupVoteCreateResponse {}
 
 export interface GroupVoteDetailRequest {
   vote_id?: number
@@ -856,8 +808,7 @@ export interface GroupVoteSubmitRequest {
   options?: string[]
 }
 
-export interface GroupVoteSubmitResponse {
-}
+export interface GroupVoteSubmitResponse {}
 
 export interface MessageDeleteRequest {
   talk_mode: number
@@ -865,8 +816,7 @@ export interface MessageDeleteRequest {
   msg_ids: string[]
 }
 
-export interface MessageDeleteResponse {
-}
+export interface MessageDeleteResponse {}
 
 export interface MessageForwardRecordsRequest {
   talk_mode?: number
@@ -921,11 +871,9 @@ export interface MessageRevokeRequest {
   msg_id: string
 }
 
-export interface MessageRevokeResponse {
-}
+export interface MessageRevokeResponse {}
 
-export interface OrganizeDepartmentListRequest {
-}
+export interface OrganizeDepartmentListRequest {}
 
 export interface OrganizeDepartmentListResponse {
   items: OrganizeDepartmentListResponse_Item[]
@@ -939,8 +887,7 @@ export interface OrganizeDepartmentListResponse_Item {
   count: number
 }
 
-export interface OrganizePersonnelListRequest {
-}
+export interface OrganizePersonnelListRequest {}
 
 export interface OrganizePersonnelListResponse {
   items: OrganizePersonnelListResponse_Item[]
@@ -987,8 +934,7 @@ export interface TalkSessionClearUnreadNumRequest {
   to_from_id?: number
 }
 
-export interface TalkSessionClearUnreadNumResponse {
-}
+export interface TalkSessionClearUnreadNumResponse {}
 
 export interface TalkSessionCreateRequest {
   /** 1:私聊 2:群聊 */
@@ -1018,8 +964,7 @@ export interface TalkSessionDeleteRequest {
   to_from_id?: number
 }
 
-export interface TalkSessionDeleteResponse {
-}
+export interface TalkSessionDeleteResponse {}
 
 export interface TalkSessionDisturbRequest {
   talk_mode?: number
@@ -1027,8 +972,7 @@ export interface TalkSessionDisturbRequest {
   action?: number
 }
 
-export interface TalkSessionDisturbResponse {
-}
+export interface TalkSessionDisturbResponse {}
 
 export interface TalkSessionItem {
   id: number
@@ -1045,8 +989,7 @@ export interface TalkSessionItem {
   updated_at: string
 }
 
-export interface TalkSessionListRequest {
-}
+export interface TalkSessionListRequest {}
 
 export interface TalkSessionListResponse {
   items?: TalkSessionItem[]
@@ -1058,11 +1001,9 @@ export interface TalkSessionTopRequest {
   action?: number
 }
 
-export interface TalkSessionTopResponse {
-}
+export interface TalkSessionTopResponse {}
 
-export interface UserDetailRequest {
-}
+export interface UserDetailRequest {}
 
 export interface UserDetailResponse {
   id: number
@@ -1083,8 +1024,7 @@ export interface UserDetailUpdateRequest {
   birthday?: string
 }
 
-export interface UserDetailUpdateResponse {
-}
+export interface UserDetailUpdateResponse {}
 
 export interface UserEmailUpdateRequest {
   email?: string
@@ -1092,8 +1032,7 @@ export interface UserEmailUpdateRequest {
   code?: string
 }
 
-export interface UserEmailUpdateResponse {
-}
+export interface UserEmailUpdateResponse {}
 
 export interface UserMobileUpdateRequest {
   mobile?: string
@@ -1101,19 +1040,16 @@ export interface UserMobileUpdateRequest {
   sms_code?: string
 }
 
-export interface UserMobileUpdateResponse {
-}
+export interface UserMobileUpdateResponse {}
 
 export interface UserPasswordUpdateRequest {
   old_password?: string
   new_password?: string
 }
 
-export interface UserPasswordUpdateResponse {
-}
+export interface UserPasswordUpdateResponse {}
 
-export interface UserSettingRequest {
-}
+export interface UserSettingRequest {}
 
 export interface UserSettingResponse {
   user_info: UserSettingResponse_UserInfo
@@ -1138,4 +1074,3 @@ export interface UserSettingResponse_UserInfo {
   mobile: string
   email: string
 }
-
