@@ -1,5 +1,5 @@
 import { fetchEmoticonDelete, fetchEmoticonList } from '@/apis/api'
-import { fetchEmoticonUpload2 } from '@/apis/customize'
+import { fetchEmoticonCustomizeUpload } from '@/apis/customize'
 import { fetchApi, sync } from '@/apis/request'
 import { defineStore } from 'pinia'
 
@@ -38,7 +38,7 @@ export const useEditorStore = defineStore('editor', {
       params.append('file', file)
 
       try {
-        const data = await fetchEmoticonUpload2(params)
+        const data = await fetchEmoticonCustomizeUpload(params)
         this.emoticon.items[1]?.children?.unshift(data)
       } catch (err) {
         alert(err)

@@ -1,5 +1,4 @@
-// 自动生成的类型定义
-// 注：***请勿手动修改此文件***
+// 自动生成的类型定义(注：请勿手动修改此文件)
 
 export interface ArticleAnnexDeleteRequest {
   annex_id?: number
