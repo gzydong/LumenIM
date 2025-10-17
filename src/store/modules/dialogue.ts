@@ -171,7 +171,7 @@ export const useDialogueStore = defineStore('dialogue', {
         msg_ids: msgIds
       })
 
-      if (!err) return
+      if (err) return
 
       this.batchDelDialogueRecord(msgIds)
     },

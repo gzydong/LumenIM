@@ -1,7 +1,7 @@
 export type ApiFunction<R, T> = (params: R, options?: ApiOptions) => Promise<T>
 
 export type IRequestInterceptor = (
-  uri: string,
+  url: string,
   req: RequestInit
 ) => Promise<RequestInit> | RequestInit
 
@@ -23,26 +23,30 @@ export interface ApiOptions extends RequestInit {
   retryDelay?: number // 重试延迟（毫秒）
 }
 
-export const defaultOptions: ApiOptions = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  timeout: 10000 // 默认10秒超时
-}
-
 export class ApiClient {
   private readonly baseUrl: string
 
-  private readonly options: ApiOptions
+  private readonly defaultOptions: ApiOptions = {
+    method: 'POST',
+    timeout: 5000, // 默认超时5秒
+    retry: 1, // 默认重试一次
+    retryDelay: 500, // 默认重试延迟500ms
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
 
-  interceptor = new Interceptors()
+  public readonly interceptor = new Interceptors()
 
   constructor(baseUrl: string, options?: ApiOptions) {
     this.baseUrl = baseUrl
-    this.options = {
-      ...defaultOptions,
-      ...options
+    this.defaultOptions = {
+      ...this.defaultOptions,
+      ...options,
+      headers: {
+        ...(this.defaultOptions.headers as Record<string, string>),
+        ...(options?.headers as Record<string, string>)
+      }
     }
   }
 
@@ -50,11 +54,18 @@ export class ApiClient {
     return async (params: R, options?: ApiOptions): Promise<T> => {
       const uri = this.baseUrl + url
 
-      const mergedOptions: ApiOptions = { ...this.options, ...options }
-      mergedOptions.method = mergedOptions.method || method || 'POST'
+      const mergedOptions: ApiOptions = {
+        ...this.defaultOptions,
+        ...options,
+        method: options?.method || method || this.defaultOptions.method
+      }
 
-      let req: RequestInit = { ...defaultOptions, ...mergedOptions }
-      req.headers = { ...defaultOptions.headers, ...this.options.headers, ...options?.headers }
+      let req: RequestInit = { ...mergedOptions }
+
+      req.headers = {
+        ...(this.defaultOptions.headers as Record<string, string>),
+        ...(options?.headers as Record<string, string>)
+      }
 
       if (mergedOptions.method != 'GET') {
         if (params instanceof FormData) {
@@ -77,7 +88,7 @@ export class ApiClient {
             abortController = new AbortController()
             timer = setTimeout(() => {
               abortController?.abort()
-            }, mergedOptions.timeout ?? defaultOptions.timeout)
+            }, mergedOptions.timeout)
             req.signal = abortController.signal
           }
 
@@ -96,33 +107,33 @@ export class ApiClient {
             typeof body?.code === 'number' ? body.code : 400,
             body?.message || '业务错误'
           )
-        } catch (e: any) {
-          if (e instanceof ApiError) throw e
-          if (e instanceof TypeError) {
+        } catch (err: any) {
+          if (err instanceof ApiError) throw err
+          if (err instanceof TypeError) {
             throw new ApiError(-1, '网络连接失败，请重试')
-          } else if (e instanceof Error && e.name === 'AbortError') {
+          } else if (err instanceof Error && err.name === 'AbortError') {
             throw new ApiError(-2, '请求超时')
           }
-          throw new ApiError(-3, e?.message || '未知错误')
+          throw new ApiError(-3, err?.message || '未知错误')
         } finally {
-          timer && clearTimeout(timer)
+          if (timer) clearTimeout(timer)
         }
       }
 
       // 优化重试参数判断，支持 retry=0
-      const retry = mergedOptions.retry ?? 2
+      const retry = mergedOptions.retry ?? 1
       for (let i = 0; i <= retry; i++) {
         try {
           return await to()
-        } catch (e: any) {
-          const isRetriableError = e instanceof ApiError && [-1, -2].includes(e.errcode)
+        } catch (err: any) {
+          const isRetriableErr = err instanceof ApiError && [-1, -2].includes(err.errcode)
           const hasRetryAttempts = i < retry
-          if (isRetriableError && hasRetryAttempts && !mergedOptions.signal) {
+          if (isRetriableErr && hasRetryAttempts && !mergedOptions.signal) {
             const delay = mergedOptions.retryDelay ?? 1000
             await new Promise((resolve) => setTimeout(resolve, delay))
             continue
           }
-          throw e
+          throw err
         }
       }
 

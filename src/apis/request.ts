@@ -1,5 +1,6 @@
 import { ApiClient, ApiError } from '@/apis/client'
 import { deleteToken, getToken } from '@/utils/auth.ts'
+import { useThrottleFn } from '@vueuse/core'
 
 export const client = new ApiClient(import.meta.env.VITE_BASE_API, {
   headers: {
@@ -21,11 +22,24 @@ client.interceptor.request.use((_: string, req: RequestInit) => {
   return req
 })
 
+const showAuthDialog = useThrottleFn(() => {
+  deleteToken()
+
+  window['$modal']?.create({
+    preset: 'dialog',
+    title: '登录提示',
+    content: '登录已过期，请重新登录',
+    style: 'width: 500px;',
+    positiveText: '立即登录',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      location.href = '/auth/login'
+    }
+  })
+}, 5000)
+
 client.interceptor.response.use((res: Response, body: any) => {
-  if (res.status == 401) {
-    console.log('[request] 登录已过期，请重新登录')
-    deleteToken()
-  }
+  if (res.status == 401) showAuthDialog()
 
   return body
 })

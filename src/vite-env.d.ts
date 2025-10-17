@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import { ModalApiInjection } from 'naive-ui/es/modal/src/ModalProvider'
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   const component: DefineComponent<{}, {}, any>
@@ -19,4 +21,6 @@ declare interface Window {
     setBadge(value: number): void
     openLink(url: string): void
   }
+
+  $modal: ModalApiInjection
 }
