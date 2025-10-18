@@ -1,28 +1,28 @@
 <script lang="ts" setup>
-import QuillEditor, { Quill, Delta } from '@/components/quill-editor'
-import Emitter from 'quill/core/emitter.js'
-import { reactive, watch, ref, markRaw, computed, onMounted, onUnmounted } from 'vue'
-import {
-  Voice as IconVoice,
-  SourceCode,
-  SmilingFace,
-  Pic,
-  FolderUpload,
-  Ranking,
-  History,
-  ExpandRight,
-  ExpandLeft
-} from '@icon-park/vue-next'
-import MeEditorVote from './MeEditorVote.vue'
-import MeEditorEmoticon from './MeEditorEmoticon.vue'
-import MeEditorCode from './MeEditorCode.vue'
-import MeEditorRecorder from './MeEditorRecorder.vue'
-import { useEditorDraftStore } from '@/store'
-import { deltaToMessage, deltaToString, isEmptyDelta, onUploadImage } from './util.ts'
-import { getImageInfo } from '@/utils/file'
-import { EditorConst } from '@/constant/event-bus'
+import QuillEditor, { Delta, Quill } from '@/components/quill-editor'
 import { defaultAvatar } from '@/constant/default'
+import { EditorConst } from '@/constant/event-bus'
 import { useEventBus } from '@/hooks'
+import { useEditorDraftStore } from '@/store'
+import { getImageInfo } from '@/utils/file'
+import {
+  ExpandLeft,
+  ExpandRight,
+  FolderUpload,
+  History,
+  Voice as IconVoice,
+  Pic,
+  Ranking,
+  SmilingFace,
+  SourceCode
+} from '@icon-park/vue-next'
+import Emitter from 'quill/core/emitter.js'
+import { computed, markRaw, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import MeEditorCode from './MeEditorCode.vue'
+import MeEditorEmoticon from './MeEditorEmoticon.vue'
+import MeEditorRecorder from './MeEditorRecorder.vue'
+import MeEditorVote from './MeEditorVote.vue'
+import { deltaToMessage, deltaToString, isEmptyDelta, onUploadImage } from './util.ts'
 
 const emit = defineEmits(['editor-event', 'trigger-aside'])
 const editorDraftStore = useEditorDraftStore()
@@ -386,7 +386,7 @@ useEventBus([
 
 <template>
   <section class="el-container is-vertical editor">
-    <header class="el-header toolbar border-top">
+    <header class="el-header toolbar">
       <n-popover
         placement="top-start"
         trigger="click"

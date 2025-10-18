@@ -107,7 +107,7 @@ onMounted(() => {
       <n-empty description="暂无相关数据" />
     </main>
 
-    <main v-else class="el-main me-scrollbar me-scrollbar-thumb pd-10">
+    <main v-else class="el-main me-scrollbar me-scrollbar-thumb pd-10" id="drawer-container">
       <div class="cards">
         <GroupCard
           v-for="item in filter"
